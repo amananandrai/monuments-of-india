@@ -28,6 +28,11 @@ import { buildMysorePalace } from './monuments/mysore-palace.js';
 import { buildSanchi } from './monuments/sanchi-stupa.js';
 import { buildMahabodhi } from './monuments/mahabodhi-temple.js';
 import { buildRedFort } from './monuments/red-fort.js';
+import { buildVictoriaMemorial } from './monuments/victoria-memorial.js';
+import { buildCsmt } from './monuments/csmt.js';
+import { buildKailasa } from './monuments/kailasa-temple.js';
+import { buildVittala } from './monuments/vittala-temple-hampi.js';
+import { buildPadmanabhaswamy } from './monuments/padmanabhaswamy-temple.js';
 
 export const MONUMENTS = [
   { id: 'qutub-minar', state: 'Delhi', lat: 28.5245, lng: 77.1855, type: 'memorial', name: 'Qutub Minar', local: 'क़ुतुब मीनार', lang: 'hi', place: 'Mehrauli, Delhi', built: '1199–1220', stat: ['Height', '72.5 m'], style: 'Indo-Islamic', material: 'Red sandstone and marble', build: buildQutub,
@@ -90,4 +95,14 @@ export const MONUMENTS = [
     facts: ['Built by the merchant Dharna Shah from 1437 and dedicated to Adinatha.', 'Its 1,444 carved marble pillars are said to be all different.', 'A four-faced (chaturmukha) temple, open on all four sides.'] },
   { id: 'chennakesava-temple', state: 'Karnataka', lat: 12.2759, lng: 76.8817, type: 'sacred', name: 'Chennakesava Temple', local: 'ಚೆನ್ನಕೇಶವ ದೇವಾಲಯ', lang: 'kn', place: 'Somanathapura, Karnataka', built: '1258', stat: ['Shrines', '3'], style: 'Hoysala', material: 'Soapstone', build: buildChennakesava,
     facts: ['Built by Somanatha, a commander of the Hoysala king Narasimha III.', 'Three star-shaped shrines stand on a raised, star-shaped platform.', 'Friezes of elephants, horsemen and epic scenes run round its base; a UNESCO site since 2023.'] },
+  { id: 'victoria-memorial', state: 'West Bengal', lat: 22.5448, lng: 88.3426, type: 'memorial', name: 'Victoria Memorial', local: 'ভিক্টোরিয়া মেমোরিয়াল', lang: 'bn', place: 'Maidan, Kolkata', built: '1906–1921', stat: ['Height', '56 m'], style: 'Indo-Saracenic', material: 'White Makrana marble', build: buildVictoriaMemorial,
+    facts: ['Built in memory of Queen Victoria and designed by William Emerson.', 'It is clad in white Makrana marble, the same stone as the Taj Mahal.', 'A bronze Angel of Victory, about 4.9 m tall, turns with the wind on top of the dome.'] },
+  { id: 'csmt', state: 'Maharashtra', lat: 18.9398, lng: 72.8355, type: 'civic', name: 'Chhatrapati Shivaji Maharaj Terminus', local: 'छत्रपती शिवाजी महाराज टर्मिनस', lang: 'mr', place: 'Fort, Mumbai', built: '1878–1888', stat: ['Platforms', '18'], style: 'Victorian Gothic', material: 'Sandstone and limestone', build: buildCsmt,
+    facts: ['Designed by Frederick William Stevens and opened as Victoria Terminus in 1887, the year of Queen Victoria’s Golden Jubilee.', 'It blends Victorian Gothic Revival with traditional Indian architecture.', 'A statue representing Progress stands on the central dome; a UNESCO World Heritage Site since 2004.'] },
+  { id: 'kailasa-temple', state: 'Maharashtra', lat: 20.0258, lng: 75.178, type: 'sacred', name: 'Kailasa Temple, Ellora', local: 'कैलास मंदिर, वेरूळ', lang: 'mr', place: 'Ellora, Maharashtra', built: '8th century', stat: ['Height', '30 m'], style: 'Dravidian (Rashtrakuta)', material: 'Basalt, carved from one rock', build: buildKailasa,
+    facts: ['Carved out of a single basalt cliff under the Rashtrakuta king Krishna I.', 'Sculptors cut downward from the top, removing an estimated 200,000 tonnes of rock.', 'It is Cave 16 of the Ellora Caves, a UNESCO World Heritage Site since 1983.'] },
+  { id: 'vittala-temple-hampi', state: 'Karnataka', lat: 15.3422, lng: 76.4746, type: 'sacred', name: 'Vittala Temple, Hampi', local: 'ವಿಜಯ ವಿಠ್ಠಲ ದೇವಸ್ಥಾನ', lang: 'kn', place: 'Hampi, Karnataka', built: '15th–16th c.', stat: ['Musical pillars', '56'], style: 'Vijayanagara', material: 'Granite', build: buildVittala,
+    facts: ['Built in Vijayanagara, the capital of the Vijayanagara Empire, among Hampi’s granite boulders.', 'The stone chariot in its courtyard is a shrine to Garuda, carved to look like a temple car.', 'The main hall’s 56 pillars ring with musical notes when tapped; Hampi is a UNESCO site since 1986.'] },
+  { id: 'padmanabhaswamy-temple', state: 'Kerala', lat: 8.4828, lng: 76.9436, type: 'sacred', name: 'Padmanabhaswamy Temple', local: 'ശ്രീ പത്മനാഭസ്വാമി ക്ഷേത്രം', lang: 'ml', place: 'Thiruvananthapuram, Kerala', built: '16th–18th c.', stat: ['Gopuram', '30 m'], style: 'Dravidian and Kerala', material: 'Granite', build: buildPadmanabhaswamy,
+    facts: ['Dedicated to Vishnu as Padmanabha, reclining on the serpent Anantha.', 'Its seven-tier eastern gopuram rises over the Padma Theertham tank.', 'A long corridor of carved granite pillars runs round the inner shrine.'] },
 ];

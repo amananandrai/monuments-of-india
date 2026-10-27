@@ -354,7 +354,10 @@ export const PAINT = ['#3d7cc0', '#d4493a', '#e6b13a', '#4c9a5a', '#f0e8d6', '#b
 export const paintMats = PAINT.map((c) => mat(c, 0.75));
 
 // Dravidian gateway tower: granite base, then tapering storeys of painted stucco figures and a barrel-vault crown.
-export function gopuram(w, d, h, tiers, seed) {
+const paletteMats = new Map();
+export function gopuram(w, d, h, tiers, seed, palette = PAINT) {
+  if (!paletteMats.has(palette)) paletteMats.set(palette, palette.map((c) => mat(c, 0.75)));
+  const pm = paletteMats.get(palette);
   const g = new THREE.Group(), R = rng(seed), figs = [];
   const bh = h * 0.2;
   g.add(box(w, bh * 0.3, d, M.graniteDark), box(w * 0.96, bh * 0.7, d * 0.96, M.granite, 0, bh * 0.3));
@@ -366,7 +369,7 @@ export function gopuram(w, d, h, tiers, seed) {
     const t = i / tiers;
     tw = w * (1 - 0.55 * t); td = d * (1 - 0.5 * t);
     g.add(box(tw, th * 0.74, td, M.stucco, 0, y));
-    g.add(box(tw + 0.6, th * 0.26, td + 0.6, paintMats[(i + seed) % PAINT.length], 0, y + th * 0.74));
+    g.add(box(tw + 0.6, th * 0.26, td + 0.6, pm[(i + seed) % pm.length], 0, y + th * 0.74));
     const nx = Math.max(2, Math.floor(tw / 1.3)), nz = Math.max(1, Math.floor(td / 1.3));
     for (let k = 0; k < nx; k++) for (const s of [-1, 1]) figs.push([-tw / 2 + (k + 0.5) * (tw / nx), y + th * 0.08, s * (td / 2 + 0.22), 0.75, th * (0.45 + R() * 0.2), 0.45]);
     for (let k = 0; k < nz; k++) for (const s of [-1, 1]) figs.push([s * (tw / 2 + 0.22), y + th * 0.08, -td / 2 + (k + 0.5) * (td / nz), 0.45, th * (0.45 + R() * 0.2), 0.75]);
@@ -385,7 +388,7 @@ export function gopuram(w, d, h, tiers, seed) {
     o.scale.set(sx, sy, sz);
     o.updateMatrix();
     im.setMatrixAt(i, o.matrix);
-    im.setColorAt(i, c.set(PAINT[Math.floor(R() * PAINT.length)]));
+    im.setColorAt(i, c.set(palette[Math.floor(R() * palette.length)]));
   });
   im.castShadow = true;
   im.receiveShadow = true;
@@ -557,5 +560,25 @@ export function tricolour(h) {
   const w = 6, s = 4 / 3;
   [M.flagSaffron, M.flagWhite, M.flagGreen].forEach((m, i) => g.add(box(w, s, 0.1, m, w / 2 + 0.15, h - s * (i + 1), 0)));
   g.add(at(mesh(new THREE.TorusGeometry(0.55, 0.07, 6, 24), M.navy), w / 2 + 0.15, h - s * 1.5, 0));
+  return g;
+}
+
+// A hipped roof over a w×d rectangle, base at y = 0.
+export function hipRoof(w, d, h, m) {
+  const o = mesh(new THREE.ConeGeometry(Math.SQRT1_2, 1, 4).rotateY(Math.PI / 4).translate(0, 0.5, 0), m);
+  o.scale.set(w, h, d);
+  return o;
+}
+// A stylised elephant facing +z, standing at y = 0.
+export function elephant(m, s = 1) {
+  const g = new THREE.Group();
+  g.add(box(2.4, 2.2, 3.6, m, 0, 1.6, 0), box(1.8, 1.8, 1.4, m, 0, 2.6, 2.2));
+  for (const [x, z] of [[-0.7, 1.2], [0.7, 1.2], [-0.7, -1.2], [0.7, -1.2]]) g.add(cyl(0.38, 0.42, 1.7, m, x, 0, z, 8));
+  const trunk = cyl(0.22, 0.34, 1.9, m, 0, 0, 0, 8);
+  trunk.position.set(0, 1.9, 3.0);
+  trunk.rotation.x = 0.25;
+  g.add(trunk);
+  for (const x of [-1, 1]) g.add(box(0.15, 1.3, 1.1, m, x * 0.95, 2.4, 1.9));
+  g.scale.setScalar(s);
   return g;
 }
