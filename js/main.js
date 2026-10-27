@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { nightState, V, box } from './helpers.js';
 import { MONUMENTS } from './data.js';
+import { createMap } from './map.js';
 
 /* ---------- scene ---------- */
 const stage = document.getElementById('stage');
@@ -147,48 +148,98 @@ function flyTo(h, instant) {
 }
 controls.addEventListener('start', () => { tween = null; });
 
+
 function select(i, instant = false) {
-  i = (i + MONUMENTS.length) % MONUMENTS.length;
-  if (i === current) return;
-  const r = getBuilt(i);
-  built.forEach((b, k) => { b.group.visible = k === i; });
-  const first = current === -1;
-  current = i;
-  // Switching between very different scales: start the flight from the same angle, scaled to the new size.
-  if (!first && !instant) {
-    const prevDist = camera.position.distanceTo(controls.target);
-    home = computeHome(r);
-    const off = camera.position.clone().sub(controls.target).normalize().multiplyScalar(Math.max(prevDist, home.dist * 1.6));
-    controls.target.copy(home.target);
-    camera.position.copy(home.target).add(off);
-  } else {
-    home = computeHome(r);
+  if (i !== current) {
+    const r = getBuilt(i);
+    built.forEach((b, k) => { b.group.visible = k === i; });
+    const first = current === -1;
+    current = i;
+    // Switching between very different scales: start the flight from the same angle, scaled to the new size.
+    if (!first && !instant) {
+      const prevDist = camera.position.distanceTo(controls.target);
+      home = computeHome(r);
+      const off = camera.position.clone().sub(controls.target).normalize().multiplyScalar(Math.max(prevDist, home.dist * 1.6));
+      controls.target.copy(home.target);
+      camera.position.copy(home.target).add(off);
+    } else {
+      home = computeHome(r);
+    }
+    setEnvironment(home);
+    flyTo(home, first || instant);
+    renderInfo(MONUMENTS[i]);
   }
-  setEnvironment(home);
-  flyTo(home, first || instant);
-  renderInfo(MONUMENTS[i]);
-  document.querySelectorAll('.item').forEach((el, k) => el.setAttribute('aria-current', String(k === i)));
-  const active = document.querySelectorAll('.item')[i];
-  active?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
-  try { history.replaceState(null, '', '#' + MONUMENTS[i].id); } catch (e) { /* ignore */ }
+  items.forEach((el, k) => el.setAttribute('aria-current', String(k === i)));
+  items[i].scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
 }
 
-/* ---------- UI ---------- */
+/* ---------- sidebar: grouped by state, with search ---------- */
 const $ = (id) => document.getElementById(id);
+const byId = new Map(MONUMENTS.map((m, i) => [m.id, i]));
+const items = new Array(MONUMENTS.length);
+const order = [];
 const list = $('list');
-MONUMENTS.forEach((mo, i) => {
-  const li = document.createElement('li');
-  const b = document.createElement('button');
-  b.className = 'item';
-  b.type = 'button';
-  b.innerHTML = `<span class="name"></span><span class="h"></span><span class="place"></span>`;
-  b.querySelector('.name').textContent = mo.name;
-  b.querySelector('.h').textContent = mo.stat[1];
-  b.querySelector('.place').textContent = mo.place;
-  b.addEventListener('click', () => select(i));
-  li.appendChild(b);
-  list.appendChild(li);
+const groups = new Map();
+MONUMENTS.forEach((m, i) => { if (!groups.has(m.state)) groups.set(m.state, []); groups.get(m.state).push(i); });
+[...groups.keys()].sort().forEach((state) => {
+  const g = document.createElement('li');
+  g.className = 'grp';
+  const h = document.createElement('button');
+  h.type = 'button';
+  h.className = 'grp-h';
+  h.setAttribute('aria-expanded', 'true');
+  h.innerHTML = '<span class="grp-name"></span><span class="grp-n"></span>';
+  h.querySelector('.grp-name').textContent = state;
+  h.querySelector('.grp-n').textContent = groups.get(state).length;
+  const ul = document.createElement('ul');
+  h.addEventListener('click', () => {
+    const open = h.getAttribute('aria-expanded') !== 'true';
+    h.setAttribute('aria-expanded', String(open));
+    ul.hidden = !open;
+  });
+  for (const i of groups.get(state)) {
+    const mo = MONUMENTS[i];
+    order.push(i);
+    const li = document.createElement('li');
+    li.dataset.i = i;
+    const b = document.createElement('button');
+    b.className = 'item';
+    b.type = 'button';
+    b.innerHTML = `<span class="name"></span><span class="h"></span><span class="place"></span>`;
+    b.querySelector('.name').textContent = mo.name;
+    b.querySelector('.h').textContent = mo.stat[1];
+    b.querySelector('.place').textContent = mo.place;
+    b.addEventListener('click', () => showMonument(i, { push: mode === 'map' }));
+    b.addEventListener('pointerenter', () => map.highlight(mo.id));
+    b.addEventListener('pointerleave', () => map.highlight(null));
+    b.addEventListener('focus', () => map.highlight(mo.id));
+    b.addEventListener('blur', () => map.highlight(null));
+    items[i] = b;
+    li.appendChild(b);
+    ul.appendChild(li);
+  }
+  g.append(h, ul);
+  list.appendChild(g);
 });
+const q = $('q');
+q.placeholder = `Search ${MONUMENTS.length} monuments`;
+q.addEventListener('input', () => {
+  const t = q.value.trim().toLowerCase();
+  list.querySelectorAll('.grp').forEach((g) => {
+    let any = false;
+    g.querySelectorAll('li').forEach((li) => {
+      const m = MONUMENTS[+li.dataset.i];
+      const hit = !t || `${m.name} ${m.place} ${m.state} ${m.style}`.toLowerCase().includes(t);
+      li.hidden = !hit;
+      any = any || hit;
+    });
+    g.hidden = !any;
+    if (t) { g.querySelector('ul').hidden = false; g.querySelector('.grp-h').setAttribute('aria-expanded', 'true'); }
+  });
+  $('q-empty').hidden = !!list.querySelector('.grp:not([hidden])');
+});
+$('sub').textContent = `${MONUMENTS.length} landmarks modelled in 3D at their real proportions. Pick one on the map or from the list, then drag to walk around it.`;
+
 function renderInfo(mo) {
   $('p-place').textContent = mo.place;
   $('p-name').textContent = mo.name;
@@ -204,8 +255,45 @@ function renderInfo(mo) {
 }
 if (matchMedia('(max-width: 760px)').matches) $('p-facts-wrap').open = false;
 
-$('prev').addEventListener('click', () => select(current - 1));
-$('next').addEventListener('click', () => select(current + 1));
+/* ---------- views: the map home and a monument's 3D scene ---------- */
+let mode = 'map';
+const map = createMap($('mapview'), MONUMENTS, { onSelect: (id) => showMonument(byId.get(id), { push: true }) });
+
+function setUrl(hash, push) {
+  const url = hash ? `#${hash}` : location.pathname + location.search;
+  try { history[push ? 'pushState' : 'replaceState'](null, '', url); } catch (e) { /* ignore */ }
+}
+function showMonument(i, { push = false, instant = false } = {}) {
+  mode = 'monument';
+  stage.classList.remove('is-map');
+  resize();
+  select(i, instant);
+  setUrl(MONUMENTS[i].id, push);
+  document.title = `${MONUMENTS[i].name} · Monuments of India`;
+}
+function showMap(push = false) {
+  mode = 'map';
+  stage.classList.add('is-map');
+  items.forEach((el) => el.setAttribute('aria-current', 'false'));
+  setUrl('', push);
+  document.title = 'Monuments of India';
+  map.render();
+}
+function route() {
+  const i = byId.get(location.hash.slice(1));
+  if (i === undefined) showMap();
+  else showMonument(i, { instant: current === -1 });
+}
+addEventListener('popstate', route);
+addEventListener('hashchange', route);
+
+const step = (d) => {
+  const pos = order.indexOf(current);
+  showMonument(order[(pos + d + order.length) % order.length]);
+};
+$('to-map').addEventListener('click', () => showMap(true));
+$('prev').addEventListener('click', () => step(-1));
+$('next').addEventListener('click', () => step(1));
 $('reset').addEventListener('click', () => { home = computeHome(built.get(current)); flyTo(home); });
 const rotBtn = $('rotate');
 rotBtn.setAttribute('aria-pressed', String(controls.autoRotate));
@@ -214,9 +302,10 @@ rotBtn.addEventListener('click', () => {
   rotBtn.setAttribute('aria-pressed', String(controls.autoRotate));
 });
 addEventListener('keydown', (e) => {
-  if (e.target.closest && e.target.closest('input, textarea')) return;
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); select(current + 1); }
-  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); select(current - 1); }
+  if (mode !== 'monument' || (e.target.closest && e.target.closest('input, textarea'))) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); step(1); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); step(-1); }
+  if (e.key === 'Escape') showMap(true);
 });
 
 function resize() {
@@ -232,6 +321,7 @@ resize();
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 function loop(now) {
   requestAnimationFrame(loop);
+  if (mode !== 'monument') return;
   if (tween) {
     const k = Math.min(1, (now - tween.t0) / tween.dur), e = ease(k);
     camera.position.lerpVectors(tween.fromPos, tween.toPos, e);
@@ -243,7 +333,6 @@ function loop(now) {
   renderer.render(scene, camera);
 }
 
-const fromHash = MONUMENTS.findIndex((m) => m.id === location.hash.slice(1));
-select(fromHash >= 0 ? fromHash : 2, true);
+route();
 statusEl.hidden = true;
 requestAnimationFrame(loop);

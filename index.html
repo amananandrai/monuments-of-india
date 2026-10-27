@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Thirty Indian landmarks, from the Qutub Minar to the Howrah Bridge, modelled in interactive 3D.">
+<meta name="description" content="Indian landmarks, from the Qutub Minar to the Howrah Bridge, modelled in interactive 3D and placed on a map of India.">
 <title>Monuments of India</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,16 +17,26 @@
     <header class="masthead">
       <h1>Monuments of India</h1>
       <p class="hi" lang="hi">भारत के स्मारक</p>
-      <p class="sub">Thirty landmarks modelled in 3D at their real proportions. Pick one, then drag to walk around it.</p>
+      <p class="sub" id="sub">Landmarks modelled in 3D at their real proportions. Pick one on the map or from the list, then drag to walk around it.</p>
     </header>
+    <div class="search">
+      <label class="visually-hidden" for="q">Search monuments</label>
+      <input id="q" type="search" autocomplete="off" spellcheck="false">
+      <p class="q-empty" id="q-empty" hidden>No monument matches that search.</p>
+    </div>
     <ul class="list" id="list"></ul>
   </aside>
 
-  <main class="stage" id="stage">
+  <main class="stage is-map" id="stage">
     <canvas id="scene" aria-label="3D model of the selected monument"></canvas>
+    <div class="mapview" id="mapview"></div>
     <div class="status" id="status">Loading the 3D engine…</div>
 
     <div class="toolbar">
+      <button class="btn" id="to-map" type="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 3.5 5.5 2l5 1.5 4-1.5v10.5l-4 1.5-5-1.5-4 1.5zM5.5 2v10.5M10.5 3.5V14"/></svg>
+        <span class="label">Map</span>
+      </button>
       <button class="btn" id="prev" type="button" aria-label="Previous monument">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg>
       </button>
