@@ -1,0 +1,93 @@
+import { buildQutub } from './monuments/qutub-minar.js';
+import { buildGateway } from './monuments/gateway-of-india.js';
+import { buildTaj } from './monuments/taj-mahal.js';
+import { buildCharminar } from './monuments/charminar.js';
+import { buildRamMandir } from './monuments/ram-mandir.js';
+import { buildBrihadeeswara } from './monuments/brihadeeswara-temple.js';
+import { buildIndiaGate } from './monuments/india-gate.js';
+import { buildStatue } from './monuments/statue-of-unity.js';
+import { buildHowrah } from './monuments/howrah-bridge.js';
+import { buildJagannath } from './monuments/jagannath-puri-temple.js';
+import { buildGoldenTemple } from './monuments/golden-temple.js';
+import { buildHawaMahal } from './monuments/hawa-mahal.js';
+import { buildKonark } from './monuments/konark-sun-temple.js';
+import { buildMeenakshi } from './monuments/meenakshi-temple.js';
+import { buildLotusTemple } from './monuments/lotus-temple.js';
+import { buildOldParliament } from './monuments/old-parliament-house.js';
+import { buildRashtrapatiBhavan } from './monuments/rashtrapati-bhavan.js';
+import { buildHumayun } from './monuments/humayuns-tomb.js';
+import { buildJamaMasjid } from './monuments/jama-masjid.js';
+import { buildNewParliament } from './monuments/new-parliament-house.js';
+import { buildDilwara } from './monuments/dilwara-temples.js';
+import { buildAkshardham } from './monuments/akshardham.js';
+import { buildKandariya } from './monuments/kandariya-mahadeva.js';
+import { buildRanakpur } from './monuments/ranakpur-jain-temple.js';
+import { buildChennakesava } from './monuments/chennakesava-temple.js';
+import { buildGolGumbaz } from './monuments/gol-gumbaz.js';
+import { buildMysorePalace } from './monuments/mysore-palace.js';
+import { buildSanchi } from './monuments/sanchi-stupa.js';
+import { buildMahabodhi } from './monuments/mahabodhi-temple.js';
+import { buildRedFort } from './monuments/red-fort.js';
+
+export const MONUMENTS = [
+  { id: 'qutub-minar', name: 'Qutub Minar', local: 'क़ुतुब मीनार', lang: 'hi', place: 'Mehrauli, Delhi', built: '1199–1220', stat: ['Height', '72.5 m'], style: 'Indo-Islamic', material: 'Red sandstone and marble', build: buildQutub,
+    facts: ['Begun by Qutb ud-Din Aibak and completed by his successor Iltutmish; Firoz Shah Tughlaq later rebuilt the top storeys.', 'Its five storeys taper from a 14.3 m base to 2.7 m at the top, each ringed by a projecting balcony.', 'The Qutb complex has been a UNESCO World Heritage Site since 1993.'] },
+  { id: 'gateway-of-india', name: 'Gateway of India', local: 'गेटवे ऑफ़ इंडिया', lang: 'hi', place: 'Apollo Bunder, Mumbai', built: '1913–1924', stat: ['Height', '26 m'], style: 'Indo-Saracenic', material: 'Yellow basalt and concrete', build: buildGateway,
+    facts: ['Built to commemorate the 1911 landing of King George V and Queen Mary in Bombay.', 'Designed by the Scottish architect George Wittet, facing the Arabian Sea.', 'The last British troops left India through its arch in February 1948.'] },
+  { id: 'taj-mahal', name: 'Taj Mahal', local: 'ताज महल', lang: 'hi', place: 'Agra, Uttar Pradesh', built: '1632–1653', stat: ['Height', '73 m'], style: 'Mughal', material: 'White Makrana marble', build: buildTaj,
+    facts: ['Commissioned by Shah Jahan as a tomb for his wife Mumtaz Mahal.', 'The four minarets lean slightly outward, so in an earthquake they would fall away from the tomb.', 'A UNESCO World Heritage Site since 1983.'] },
+  { id: 'charminar', name: 'Charminar', local: 'चारमीनार', lang: 'hi', place: 'Hyderabad, Telangana', built: '1591', stat: ['Height', '56 m'], style: 'Qutb Shahi', material: 'Granite, limestone and lime mortar', build: buildCharminar,
+    facts: ['Built by Muhammad Quli Qutb Shah, the founder of Hyderabad.', 'Each of its four sides opens in a grand arch onto a street of the old city.', 'A small mosque occupies the western side of the top floor.'] },
+  { id: 'ram-mandir', name: 'Ram Mandir', local: 'राम मंदिर', lang: 'hi', place: 'Ayodhya, Uttar Pradesh', built: '2020–2024', stat: ['Height', '49 m'], style: 'Nagara', material: 'Pink Bansi Paharpur sandstone', build: buildRamMandir,
+    facts: ['Consecrated on 22 January 2024.', 'Designed by the Sompura family, temple architects for generations.', 'The main structure was built without iron or steel.'] },
+  { id: 'brihadeeswara-temple', name: 'Brihadeeswara Temple', local: 'பெருவுடையார் கோயில்', lang: 'ta', place: 'Thanjavur, Tamil Nadu', built: '1003–1010 CE', stat: ['Height', '66 m'], style: 'Dravidian (Chola)', material: 'Granite', build: buildBrihadeeswara,
+    facts: ['Built by the Chola emperor Rajaraja I.', 'The vimana rises in 13 tiers and is crowned by a capstone estimated at 80 tonnes.', 'Part of the Great Living Chola Temples, a UNESCO site since 1987.'] },
+  { id: 'india-gate', name: 'India Gate', local: 'इंडिया गेट', lang: 'hi', place: 'Kartavya Path, New Delhi', built: '1921–1931', stat: ['Height', '42 m'], style: 'Memorial arch', material: 'Red and buff Bharatpur sandstone', build: buildIndiaGate,
+    facts: ['Designed by Edwin Lutyens as the All India War Memorial.', 'It honours soldiers of the British Indian Army who died between 1914 and 1921.', 'More than 13,000 names are inscribed on its surfaces.'] },
+  { id: 'statue-of-unity', name: 'Statue of Unity', local: 'સ્ટેચ્યુ ઓફ યુનિટી', lang: 'gu', place: 'Ekta Nagar, Gujarat', built: '2013–2018', stat: ['Height', '182 m'], style: 'Monumental statue', material: 'Bronze cladding over steel and concrete', build: buildStatue,
+    facts: ['Depicts Sardar Vallabhbhai Patel, India’s first Deputy Prime Minister.', 'The world’s tallest statue, unveiled on 31 October 2018.', 'Designed by the sculptor Ram V. Sutar, it faces the Sardar Sarovar Dam on the Narmada.'] },
+  { id: 'howrah-bridge', name: 'Howrah Bridge', local: 'রবীন্দ্র সেতু', lang: 'bn', place: 'Kolkata, West Bengal', built: '1936–1943', stat: ['Length', '705 m'], style: 'Cantilever truss', material: 'Riveted high-tensile steel', build: buildHowrah,
+    facts: ['Its 457 m main span crosses the Hooghly with no pier in the river between the two towers.', 'Built with 26,500 tonnes of steel, 23,500 of them high-tensile steel from Tata Steel.', 'Renamed Rabindra Setu in 1965 after Rabindranath Tagore.'] },
+  { id: 'jagannath-puri-temple', name: 'Jagannath Puri Temple', local: 'ଶ୍ରୀ ଜଗନ୍ନାଥ ମନ୍ଦିର', lang: 'or', place: 'Puri, Odisha', built: '12th century', stat: ['Height', '65 m'], style: 'Kalinga', material: 'Khondalite stone', build: buildJagannath,
+    facts: ['Built by King Anantavarman Chodaganga Deva of the Eastern Ganga dynasty.', 'The flag on its summit is changed every day by a priest who climbs the tower.', 'Each year the Rath Yatra carries the deities through Puri on giant wooden chariots.'] },
+  { id: 'golden-temple', name: 'Golden Temple', local: 'ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ', lang: 'pa', place: 'Amritsar, Punjab', built: '1581–1604', stat: ['Sanctum', '12.25 m square'], style: 'Sikh', material: 'Marble and gilded copper', build: buildGoldenTemple,
+    facts: ['Founded by Guru Arjan, the fifth Sikh Guru, who installed the Adi Granth here in 1604.', 'Its upper storeys were covered in gilded copper under Maharaja Ranjit Singh in the early 19th century.', 'The shrine stands in the Amrit Sarovar pool, reached by a single causeway; its langar serves free meals to tens of thousands of people every day.'] },
+  { id: 'hawa-mahal', name: 'Hawa Mahal', local: 'हवा महल', lang: 'hi', place: 'Jaipur, Rajasthan', built: '1799', stat: ['Height', '15 m'], style: 'Rajput', material: 'Red and pink sandstone', build: buildHawaMahal,
+    facts: ['Built by Maharaja Sawai Pratap Singh and designed by Lal Chand Ustad.', 'Its 953 small latticed windows (jharokhas) let the women of the court watch street life unseen.', 'The five-storey façade is barely one room deep; breezes through the screens gave it the name “Palace of Winds”.'] },
+  { id: 'konark-sun-temple', name: 'Konark Sun Temple', local: 'କୋଣାର୍କ ସୂର୍ଯ୍ୟ ମନ୍ଦିର', lang: 'or', place: 'Konark, Odisha', built: 'c. 1250 CE', stat: ['Height', '39 m'], style: 'Kalinga', material: 'Khondalite stone', build: buildKonark,
+    facts: ['Built by King Narasimhadeva I of the Eastern Ganga dynasty as a giant stone chariot for Surya, the Sun god.', 'Its 24 carved wheels work as sundials: the shadows of the spokes tell the time of day.', 'The main tower collapsed centuries ago; what stands is its porch. A UNESCO World Heritage Site since 1984.'] },
+  { id: 'meenakshi-temple', name: 'Meenakshi Temple', local: 'மீனாட்சி அம்மன் கோவில்', lang: 'ta', place: 'Madurai, Tamil Nadu', built: '16th–17th c.', stat: ['Height', '52 m'], style: 'Dravidian (Nayak)', material: 'Granite and painted stucco', build: buildMeenakshi,
+    facts: ['Dedicated to Meenakshi, a form of Parvati, and her consort Sundareswarar, a form of Shiva.', 'Its 14 gopurams are covered in thousands of painted stucco figures of gods, animals and demons.', 'The tallest, the southern gopuram, rises about 52 m above the old city.'] },
+  { id: 'lotus-temple', name: 'Lotus Temple', local: 'कमल मंदिर', lang: 'hi', place: 'Kalkaji, New Delhi', built: '1980–1986', stat: ['Height', '34 m'], style: 'Expressionist', material: 'Greek Pentelic marble on concrete', build: buildLotusTemple,
+    facts: ['A Baháʼí House of Worship, open to people of every faith.', 'Its 27 free-standing marble-clad petals are arranged in clusters of three to form nine sides.', 'Designed by the Iranian-born architect Fariborz Sahba and surrounded by nine pools.'] },
+  { id: 'gol-gumbaz', name: 'Gol Gumbaz', local: 'ಗೋಲ ಗುಮ್ಮಟ', lang: 'kn', place: 'Vijayapura, Karnataka', built: '1626–1656', stat: ['Height', '51 m'], style: 'Deccan (Adil Shahi)', material: 'Dark basalt with lime plaster', build: buildGolGumbaz,
+    facts: ['The mausoleum of Muhammad Adil Shah of the Bijapur Sultanate.', 'Its dome, about 44 m across, is one of the largest ever built without internal supports.', 'In the whispering gallery around the inside of the dome, a faint sound echoes several times.'] },
+  { id: 'mysore-palace', name: 'Mysore Palace', local: 'ಮೈಸೂರು ಅರಮನೆ', lang: 'kn', place: 'Mysuru, Karnataka', built: '1897–1912', stat: ['Height', '44 m'], style: 'Indo-Saracenic', material: 'Grey granite with pink marble domes', build: buildMysorePalace,
+    facts: ['Seat of the Wadiyar dynasty; it replaced an older wooden palace that burned down in 1897.', 'Designed by the British architect Henry Irwin.', 'On festival nights, and through Dasara, it is lit with nearly 100,000 bulbs. Switch to dark mode to see them.'] },
+  { id: 'sanchi-stupa', name: 'Sanchi Stupa', local: 'साँची स्तूप', lang: 'hi', place: 'Sanchi, Madhya Pradesh', built: '3rd c. BCE', stat: ['Height', '16.5 m'], style: 'Buddhist (Mauryan)', material: 'Sandstone', build: buildSanchi,
+    facts: ['Commissioned by the emperor Ashoka over relics of the Buddha.', 'Its four gateways (toranas), added in the 1st century BCE, are carved with scenes from the Buddha’s life and the Jataka tales.', 'A UNESCO World Heritage Site since 1989.'] },
+  { id: 'mahabodhi-temple', name: 'Mahabodhi Temple', local: 'महाबोधि मंदिर', lang: 'hi', place: 'Bodh Gaya, Bihar', built: '5th–6th c. CE', stat: ['Height', '55 m'], style: 'Gupta-era brick', material: 'Brick with stucco', build: buildMahabodhi,
+    facts: ['Marks the place where Siddhartha Gautama attained enlightenment under the Bodhi tree.', 'Ashoka built the first shrine here; the present brick temple dates from the Gupta period.', 'One of the oldest brick temples still standing in India, and a UNESCO site since 2002.'] },
+  { id: 'red-fort', name: 'Red Fort', local: 'लाल क़िला', lang: 'hi', place: 'Old Delhi', built: '1639–1648', stat: ['Walls', 'up to 33 m'], style: 'Mughal', material: 'Red sandstone', build: buildRedFort,
+    facts: ['Built by Shah Jahan as the palace-fortress of his new capital, Shahjahanabad.', 'Every Independence Day the Prime Minister raises the national flag here and addresses the nation.', 'Its walls run about 2.5 km; a UNESCO World Heritage Site since 2007.'] },
+  { id: 'old-parliament-house', name: 'Old Parliament House', local: 'संविधान सदन', lang: 'hi', place: 'Sansad Marg, New Delhi', built: '1921–1927', stat: ['Diameter', '170 m'], style: 'Lutyens’ Delhi', material: 'Red and buff sandstone', build: buildOldParliament,
+    facts: ['Designed by Edwin Lutyens and Herbert Baker, and opened in 1927.', 'The Constituent Assembly met in its domed Central Hall to frame the Constitution of India.', '144 sandstone columns ring its verandah; it was renamed Samvidhan Sadan in 2023.'] },
+  { id: 'rashtrapati-bhavan', name: 'Rashtrapati Bhavan', local: 'राष्ट्रपति भवन', lang: 'hi', place: 'Raisina Hill, New Delhi', built: '1912–1929', stat: ['Rooms', '340'], style: 'Lutyens’ Delhi', material: 'Cream and red Dholpur sandstone', build: buildRashtrapatiBhavan,
+    facts: ['The official residence of the President of India, designed by Edwin Lutyens.', 'It has 340 rooms on four floors.', 'Its great dome blends a classical form with the shape of the Buddhist stupa at Sanchi.'] },
+  { id: 'humayuns-tomb', name: 'Humayun’s Tomb', local: 'हुमायूँ का मक़बरा', lang: 'hi', place: 'Nizamuddin, New Delhi', built: '1565–1572', stat: ['Height', '47 m'], style: 'Mughal', material: 'Red sandstone and white marble', build: buildHumayun,
+    facts: ['Commissioned by Humayun’s widow, Empress Bega Begum, and designed by Mirak Mirza Ghiyas.', 'The first garden-tomb on the Indian subcontinent, and a model for the Taj Mahal.', 'A UNESCO World Heritage Site since 1993.'] },
+  { id: 'jama-masjid', name: 'Jama Masjid', local: 'जामा मस्जिद', lang: 'hi', place: 'Chandni Chowk, Old Delhi', built: '1650–1656', stat: ['Minarets', '40 m'], style: 'Mughal', material: 'Red sandstone and white marble', build: buildJamaMasjid,
+    facts: ['Built by Shah Jahan, facing the Red Fort across the old city.', 'Its courtyard can hold about 25,000 worshippers.', 'Three marble domes striped in black crown the prayer hall, flanked by two tall minarets.'] },
+  { id: 'new-parliament-house', name: 'New Parliament House', local: 'संसद भवन', lang: 'hi', place: 'Sansad Marg, New Delhi', built: '2020–2023', stat: ['Lok Sabha', '888 seats'], style: 'Contemporary', material: 'Red and buff sandstone', build: buildNewParliament,
+    facts: ['Inaugurated on 28 May 2023, beside the 1927 building it replaced.', 'Its triangular plan was designed by the architect Bimal Patel.', 'A 6.5 m bronze National Emblem crowns the roof above the central Constitution Hall.'] },
+  { id: 'dilwara-temples', name: 'Dilwara Temples', local: 'दिलवाड़ा मंदिर', lang: 'hi', place: 'Mount Abu, Rajasthan', built: '11th–13th c.', stat: ['Temples', '5'], style: 'Jain (Maru-Gurjara)', material: 'White marble', build: buildDilwara,
+    facts: ['The oldest, Vimal Vasahi, was built in 1031 by Vimal Shah, a minister of the Chaulukya king.', 'The marble is carved so finely it looks translucent; the domed ceilings hang down in lotus pendants.', 'A plain outer wall hides the temples and the rows of shrine cells around their courtyards.'] },
+  { id: 'akshardham', name: 'Swaminarayan Akshardham', local: 'स्वामिनारायण अक्षरधाम', lang: 'hi', place: 'New Delhi', built: '2000–2005', stat: ['Height', '43 m'], style: 'Maru-Gurjara', material: 'Pink sandstone and Italian marble', build: buildAkshardham,
+    facts: ['Opened in November 2005 by the BAPS Swaminarayan Sanstha.', 'The main monument has 234 carved pillars, nine domes and more than 20,000 sculpted figures.', 'It rests on the Gajendra Pith, a plinth carved with 148 life-size elephants.'] },
+  { id: 'kandariya-mahadeva', name: 'Kandariya Mahadeva Temple', local: 'कंदरिया महादेव मंदिर', lang: 'hi', place: 'Khajuraho, Madhya Pradesh', built: 'c. 1030 CE', stat: ['Height', '31 m'], style: 'Nagara (Chandela)', material: 'Sandstone', build: buildKandariya,
+    facts: ['The largest temple at Khajuraho, built under the Chandela dynasty.', 'Its tower is wrapped in 84 smaller spires that rise like the peaks of Mount Kailash.', 'Over 800 sculptures cover its walls; Khajuraho has been a UNESCO site since 1986.'] },
+  { id: 'ranakpur-jain-temple', name: 'Ranakpur Jain Temple', local: 'रणकपुर जैन मंदिर', lang: 'hi', place: 'Ranakpur, Rajasthan', built: '15th century', stat: ['Pillars', '1,444'], style: 'Jain (Maru-Gurjara)', material: 'Light marble', build: buildRanakpur,
+    facts: ['Built by the merchant Dharna Shah from 1437 and dedicated to Adinatha.', 'Its 1,444 carved marble pillars are said to be all different.', 'A four-faced (chaturmukha) temple, open on all four sides.'] },
+  { id: 'chennakesava-temple', name: 'Chennakesava Temple', local: 'ಚೆನ್ನಕೇಶವ ದೇವಾಲಯ', lang: 'kn', place: 'Somanathapura, Karnataka', built: '1258', stat: ['Shrines', '3'], style: 'Hoysala', material: 'Soapstone', build: buildChennakesava,
+    facts: ['Built by Somanatha, a commander of the Hoysala king Narasimha III.', 'Three star-shaped shrines stand on a raised, star-shaped platform.', 'Friezes of elephants, horsemen and epic scenes run round its base; a UNESCO site since 2023.'] },
+];
