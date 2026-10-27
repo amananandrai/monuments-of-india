@@ -69,6 +69,16 @@ import { buildBaidyanath } from './monuments/baidyanath-temple.js';
 import { buildNageshwar } from './monuments/nageshwar-temple.js';
 import { buildRamanathaswamy } from './monuments/ramanathaswamy-temple.js';
 import { buildGrishneshwar } from './monuments/grishneshwar-temple.js';
+import { buildDhamek } from './monuments/dhamek-stupa.js';
+import { buildAjanta } from './monuments/ajanta-caves.js';
+import { buildRumtek } from './monuments/rumtek-monastery.js';
+import { buildThiksey } from './monuments/thiksey-monastery.js';
+import { buildKeyMonastery } from './monuments/key-monastery.js';
+import { buildGommateshwara } from './monuments/gommateshwara.js';
+import { buildPalitana } from './monuments/palitana-temples.js';
+import { buildShikharji } from './monuments/shikharji.js';
+import { buildParshvanath } from './monuments/parshvanath-temple-khajuraho.js';
+import { buildSonijiKiNasiyan } from './monuments/soniji-ki-nasiyan.js';
 
 export const MONUMENTS = [
   { id: 'qutub-minar', state: 'Delhi', lat: 28.5245, lng: 77.1855, type: 'memorial', name: 'Qutub Minar', local: 'क़ुतुब मीनार', lang: 'hi', place: 'Mehrauli, Delhi', built: '1199–1220', stat: ['Height', '72.5 m'], style: 'Indo-Islamic', material: 'Red sandstone and marble', build: buildQutub,
@@ -213,4 +223,24 @@ export const MONUMENTS = [
     facts: ['On Rameswaram island; tradition says Rama worshipped Shiva here before crossing to Lanka.', 'Its pillared corridors, about 1.2 km in all, are the longest of any Hindu temple.', 'Pilgrims bathe in 22 sacred wells (theerthams) inside the temple.'] },
   { id: 'grishneshwar-temple', state: 'Maharashtra', lat: 20.0247, lng: 75.1697, type: 'sacred', name: 'Grishneshwar Temple', local: 'घृष्णेश्वर मंदिर', lang: 'mr', place: 'Verul, near Ellora', built: '18th century', stat: ['Jyotirlinga', '12th of 12'], style: 'Nagara (Maratha)', material: 'Red basalt', build: buildGrishneshwar,
     facts: ['Near the Ellora Caves; it is counted as the last of the twelve Jyotirlingas.', 'It was rebuilt in red basalt in the 18th century by Ahilyabai Holkar.', 'Its five-tiered spire and walls are carved with the ten avatars of Vishnu and other figures.'] },
+  { id: 'dhamek-stupa', state: 'Uttar Pradesh', lat: 25.3811, lng: 83.0247, type: 'sacred', name: 'Dhamek Stupa', local: 'धमेख स्तूप', lang: 'hi', place: 'Sarnath, Uttar Pradesh', built: 'c. 500 CE', stat: ['Height', '43.6 m'], style: 'Gupta', material: 'Stone and brick', build: buildDhamek,
+    facts: ['It marks the deer park where the Buddha gave his first sermon after his enlightenment.', 'Built around 500 CE over an older stupa from Ashoka’s time, it is about 43.6 m high and 28 m across.', 'Its lower stone drum is carved with bands of flowers and geometric patterns.'] },
+  { id: 'ajanta-caves', state: 'Maharashtra', lat: 20.5519, lng: 75.7033, type: 'sacred', name: 'Ajanta Caves', local: 'अजिंठा लेणी', lang: 'mr', place: 'Ajanta, Maharashtra', built: '2nd c. BCE–c. 480 CE', stat: ['Caves', '30'], style: 'Rock-cut Buddhist', material: 'Basalt', build: buildAjanta,
+    facts: ['Thirty Buddhist caves cut into a horseshoe-shaped cliff above the Waghora river.', 'Their murals are among the finest surviving paintings of ancient India.', 'Rediscovered by a British hunting party in 1819; a UNESCO World Heritage Site since 1983.'] },
+  { id: 'rumtek-monastery', state: 'Sikkim', lat: 27.2886, lng: 88.5616, type: 'sacred', name: 'Rumtek Monastery', local: 'རུམ་ཐེག་དགོན་པ།', lang: 'bo', place: 'Near Gangtok, Sikkim', built: '1960s', stat: ['School', 'Karma Kagyu'], style: 'Tibetan Buddhist', material: 'Stone, timber and gilt', build: buildRumtek,
+    facts: ['The seat in exile of the Karmapa, head of the Karma Kagyu school of Tibetan Buddhism.', 'The 16th Karmapa rebuilt it in the 1960s, modelled on Tsurphu Monastery in Tibet.', 'It looks out across the valley towards Gangtok.'] },
+  { id: 'thiksey-monastery', state: 'Ladakh', lat: 34.0559, lng: 77.6675, type: 'sacred', name: 'Thiksey Monastery', local: 'ཁྲིག་རྩེ་དགོན་པ།', lang: 'bo', place: 'Near Leh, Ladakh', built: '15th century', stat: ['Storeys', '12'], style: 'Tibetan Buddhist (Gelug)', material: 'Stone, mud brick and timber', build: buildThiksey,
+    facts: ['A twelve-storey Gelug monastery on a hill above the Indus, often compared to the Potala Palace in Lhasa.', 'Its Maitreya temple holds a statue of the future Buddha about 15 m tall, installed in 1970.', 'It is one of the largest monasteries in Ladakh.'] },
+  { id: 'key-monastery', state: 'Himachal Pradesh', lat: 32.2977, lng: 78.0119, type: 'sacred', name: 'Key Monastery', local: 'ཀྱི་དགོན་པ།', lang: 'bo', place: 'Spiti Valley, Himachal Pradesh', built: 'Founded c. 11th c.', stat: ['Altitude', '4,166 m'], style: 'Tibetan Buddhist', material: 'Stone and mud brick', build: buildKeyMonastery,
+    facts: ['The largest monastery in the Spiti Valley, founded about a thousand years ago.', 'It sits on a conical hill above the Spiti river at about 4,166 m.', 'Rebuilt many times after raids, its buildings are piled up the hill like a fortress.'] },
+  { id: 'gommateshwara', state: 'Karnataka', lat: 12.8541, lng: 76.4847, type: 'sacred', name: 'Gommateshwara Statue', local: 'ಗೊಮ್ಮಟೇಶ್ವರ', lang: 'kn', place: 'Shravanabelagola, Karnataka', built: 'c. 983 CE', stat: ['Height', '17.4 m'], style: 'Monolithic statue', material: 'Granite', build: buildGommateshwara,
+    facts: ['A 17.4 m statue of the Jain saint Bahubali, carved from a single block of granite.', 'It was commissioned by Chavundaraya, a minister of the Western Ganga dynasty.', 'Every 12 years the Mahamastakabhisheka festival bathes it in milk, saffron and flowers.'] },
+  { id: 'palitana-temples', state: 'Gujarat', lat: 21.478, lng: 71.79, type: 'sacred', name: 'Palitana Temples', local: 'પાલીતાણા દેરાસર', lang: 'gu', place: 'Shatrunjaya hill, Gujarat', built: '11th–20th c.', stat: ['Temples', '800+'], style: 'Maru-Gurjara', material: 'Marble', build: buildPalitana,
+    facts: ['More than 800 Jain temples crown Shatrunjaya hill above the town of Palitana.', 'Pilgrims climb more than 3,000 stone steps to reach them.', 'Built over some 900 years, it is one of the holiest Jain pilgrimage sites.'] },
+  { id: 'shikharji', state: 'Jharkhand', lat: 23.9622, lng: 86.1281, type: 'sacred', name: 'Shikharji', local: 'श्री सम्मेद शिखरजी', lang: 'hi', place: 'Parasnath Hill, Jharkhand', built: '18th c. onward', stat: ['Tirthankaras', '20'], style: 'Jain', material: 'Marble and stone', build: buildShikharji,
+    facts: ['On Parasnath Hill, the highest point in Jharkhand.', 'Jain tradition holds that 20 of the 24 Tirthankaras attained liberation (moksha) here.', 'A shrine (tonk) for each of them stands along the ridge, on a pilgrim circuit of about 27 km.'] },
+  { id: 'parshvanath-temple-khajuraho', state: 'Madhya Pradesh', lat: 24.8494, lng: 79.9363, type: 'sacred', name: 'Parshvanath Temple, Khajuraho', local: 'पार्श्वनाथ मंदिर', lang: 'hi', place: 'Khajuraho, Madhya Pradesh', built: 'c. 950–970 CE', stat: ['UNESCO site', '1986'], style: 'Nagara (Chandela)', material: 'Sandstone', build: buildParshvanath,
+    facts: ['The largest Jain temple at Khajuraho, built under the Chandela kings.', 'Its walls carry some of Khajuraho’s finest sculpture, in bands round the shrine.', 'Part of the Khajuraho Group of Monuments, a UNESCO World Heritage Site since 1986.'] },
+  { id: 'soniji-ki-nasiyan', state: 'Rajasthan', lat: 26.4583, lng: 74.6339, type: 'sacred', name: 'Soniji Ki Nasiyan', local: 'सोनीजी की नसियाँ', lang: 'hi', place: 'Ajmer, Rajasthan', built: '1864–1895', stat: ['Also called', 'Golden Temple'], style: 'Jain', material: 'Red sandstone and gilded wood', build: buildSonijiKiNasiyan,
+    facts: ['Built in red sandstone by the Soni family of Ajmer between 1864 and 1895.', 'Its Swarna Nagari hall holds a gilded model of Jain cosmology and the city of Ayodhya.', 'It is also known as the Golden Temple of Ajmer.'] },
 ];

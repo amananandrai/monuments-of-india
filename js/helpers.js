@@ -627,3 +627,15 @@ export function nagaraTemple({
   g.userData.length = z;
   return g;
 }
+// A Tibetan-style block: whitewashed walls, dark tapering windows and a maroon parapet band.
+const TIB_WHITE = mat('#efece4', 0.85), TIB_MAROON = mat('#6b2a22', 0.85), TIB_WINDOW = mat('#2a2220', 0.8);
+export function tibetanBlock(w, h, d, floors = 2, wallM = TIB_WHITE) {
+  const g = new THREE.Group();
+  g.add(box(w, h, d, wallM), box(w + 0.3, Math.min(1.6, h * 0.14), d + 0.3, TIB_MAROON, 0, h - Math.min(1.6, h * 0.14)));
+  const n = Math.max(1, Math.floor(w / 3.4));
+  for (let fl = 0; fl < floors; fl++) for (let k = 0; k < n; k++) {
+    g.add(onFace(box(1.1, 1.5, 0.2, TIB_WINDOW, 0, 0.8 + fl * ((h * 0.8) / floors)), 0, d / 2, -w / 2 + (k + 0.5) * (w / n)));
+  }
+  return g;
+}
+export const TIBETAN = { white: TIB_WHITE, maroon: TIB_MAROON, window: TIB_WINDOW };
