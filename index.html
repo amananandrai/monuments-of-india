@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Fifteen Indian landmarks, from the Qutub Minar to the Howrah Bridge, modelled in interactive 3D.">
+<meta name="description" content="Twenty Indian landmarks, from the Qutub Minar to the Howrah Bridge, modelled in interactive 3D.">
 <title>Monuments of India</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -303,7 +303,7 @@ details.facts ul {
     <header class="masthead">
       <h1>Monuments of India</h1>
       <p class="hi" lang="hi">भारत के स्मारक</p>
-      <p class="sub">Fifteen landmarks modelled in 3D at their real proportions. Pick one, then drag to walk around it.</p>
+      <p class="sub">Twenty landmarks modelled in 3D at their real proportions. Pick one, then drag to walk around it.</p>
     </header>
     <ul class="list" id="list"></ul>
   </aside>
@@ -401,9 +401,23 @@ const M = {
   khondDark: mat('#5f5347', 0.95),
   stucco: mat('#e9dcc0', 0.85),
   lotus: mat('#f4f3ef', 0.4, 0, { side: THREE.DoubleSide }),
+  deccan: mat('#8d877c', 0.9),
+  deccanLight: mat('#b3ada1', 0.85),
+  mysore: mat('#bcb3a4', 0.85),
+  mysoreRose: mat('#d8a29c', 0.7),
+  sanchi: mat('#c8a885', 0.9),
+  bodh: mat('#c3b294', 0.9),
+  leaf: mat('#4e7c3b', 0.95, 0, { flatShading: true }),
+  flagSaffron: mat('#ff9933', 0.7),
+  flagWhite: mat('#f6f6f2', 0.7),
+  flagGreen: mat('#138808', 0.7),
+  navy: mat('#06038d', 0.6),
   saffron: mat('#ef7d1a', 0.7, 0, { side: THREE.DoubleSide }),
   flagRed: mat('#d23a24', 0.7, 0, { side: THREE.DoubleSide }),
 };
+// Objects shown only in the night scene (e.g. festival lighting); applyTheme toggles them.
+const nightOnly = [];
+let isNight = false;
 const flatCache = new Map();
 const flat = (m) => {
   if (!flatCache.has(m)) { const c = m.clone(); c.flatShading = true; flatCache.set(m, c); }
@@ -488,9 +502,9 @@ function archPanel(aw, ah, pointed, m, depth = 0.3) {
   return mesh(new THREE.ExtrudeGeometry(p, { depth, bevelEnabled: false, curveSegments: 14 }), m);
 }
 
+const ONION = [[0.86, 0], [0.98, 0.18], [1.06, 0.45], [1.0, 0.75], [0.8, 1.05], [0.5, 1.32], [0.22, 1.58], [0.06, 1.78], [0, 1.85]];
 function onionDome(r, m) {
-  return lathe([[0.86, 0], [0.98, 0.18], [1.06, 0.45], [1.0, 0.75], [0.8, 1.05], [0.5, 1.32], [0.22, 1.58], [0.06, 1.78], [0, 1.85]]
-    .map(([a, b]) => [a * r, b * r]), m, 48);
+  return lathe(ONION.map(([a, b]) => [a * r, b * r]), m, 48);
 }
 function hemi(r, m, seg = 32) {
   return mesh(new THREE.SphereGeometry(r, seg, Math.max(6, seg / 2), 0, Math.PI * 2, 0, Math.PI / 2), m);
@@ -1264,6 +1278,238 @@ function buildLotusTemple() {
   return { group: g, focus: f, view: [0.9, 0.3, 1.25] };
 }
 
+function instBoxes(list, m) {
+  const im = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), m, list.length);
+  const o = new THREE.Object3D();
+  list.forEach(([x, y, z, sx, sy, sz], i) => {
+    o.position.set(x, y + sy / 2, z);
+    o.scale.set(sx, sy, sz);
+    o.updateMatrix();
+    im.setMatrixAt(i, o.matrix);
+  });
+  im.castShadow = true;
+  im.receiveShadow = true;
+  return im;
+}
+
+function buildGolGumbaz() {
+  const D = M.deccan, Dl = M.deccanLight, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(box(120, 0.25, 120, M.path));
+  f.add(box(60, 1.5, 60, D));
+  const b = 1.5, H = 27, s = 23.75;
+  f.add(box(47.5, H, 47.5, D, 0, b, 0));
+  f.add(box(50.5, 1.2, 50.5, Dl, 0, b + H - 5.2));
+  for (const a of FACES) {
+    f.add(onFace(at(archPanel(15, 22, true, Dl, 0.4), 0, b + 0.5, 0), a, s));
+    f.add(onFace(at(archPanel(4, 6, true, M.recess, 0.3), 0, b + 0.5, 0), a, s + 0.42));
+    for (const lat of [-13.5, 13.5]) for (const y of [1, 11.5]) f.add(onFace(at(archPanel(7, 9, true, Dl, 0.4), 0, b + y, 0), a, s, lat));
+    for (let k = -7; k <= 7; k++) f.add(onFace(at(archPanel(1.6, 2.6, true, M.recess, 0.2), 0, b + H - 3.6, 0), a, s, k * 2.6));
+  }
+  // Seven-storey octagonal towers at the corners
+  for (const x of [-s, s]) for (const z of [-s, s]) {
+    for (let i = 0; i < 7; i++) {
+      f.add(cyl(3.9, 4.1, 4.6, D, x, b + i * 5, z, 8));
+      f.add(cyl(4.5, 4.5, 0.4, Dl, x, b + i * 5 + 4.6, z, 8));
+    }
+    f.add(at(onionDome(3.7, Dl), x, b + 35, z), at(finial(3), x, b + 35 + 6.6, z));
+  }
+  // Drum ringed with leaf-shaped petals, then the great dome
+  f.add(cyl(23.5, 23.5, 2.6, D, 0, b + H, 0, 64));
+  for (let k = 0; k < 40; k++) f.add(onFace(at(archPanel(3.4, 4.4, true, Dl, 0.5), 0, b + H + 1.6, 0), (k / 40) * Math.PI * 2, 21.8));
+  f.add(at(hemi(22, Dl, 64), 0, b + H + 2.6, 0));
+  f.add(at(finial(4), 0, b + H + 2.6 + 21.9, 0));
+  return { group: g, focus: f };
+}
+
+function bulbPoints(pts) {
+  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  const p = new THREE.Points(geo, new THREE.PointsMaterial({ color: '#ffd27a', size: 0.55, sizeAttenuation: true }));
+  p.visible = isNight;
+  nightOnly.push(p);
+  return p;
+}
+function buildMysorePalace() {
+  const S = M.mysore, Rz = M.mysoreRose, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  const bulbs = [];
+  const line = (a, b, step = 0.9) => {
+    const n = Math.max(1, Math.round(a.distanceTo(b) / step));
+    for (let i = 0; i <= n; i++) bulbs.push(a.clone().lerp(b, i / n));
+  };
+  const rect = (x0, x1, y, z0, z1) => {
+    line(V(x0, y, z0), V(x1, y, z0)); line(V(x1, y, z0), V(x1, y, z1));
+    line(V(x1, y, z1), V(x0, y, z1)); line(V(x0, y, z1), V(x0, y, z0));
+  };
+  const verticals = (x0, x1, z0, z1, y0, y1) => { for (const x of [x0, x1]) for (const z of [z0, z1]) line(V(x, y0, z), V(x, y1, z)); };
+  const arch = (aw, ah, x, y, z) => {
+    const r = aw / 2, s = ah - rise(r, true), p = new THREE.Shape();
+    p.moveTo(-r, 0); p.lineTo(-r, s); archTop(p, r, s, true); p.lineTo(r, 0);
+    p.getSpacedPoints(Math.round(ah * 2.4)).forEach((q) => { if (q.y > 0.05) bulbs.push(V(x + q.x, y + q.y, z)); });
+  };
+  const dome = (cx, cy, cz, r) => {
+    for (let m = 0; m < 12; m++) {
+      const a = (m / 12) * Math.PI * 2;
+      for (let i = 0; i < ONION.length - 1; i++) for (let t = 0; t < 1; t += 0.34) {
+        const pr = ONION[i][0] + (ONION[i + 1][0] - ONION[i][0]) * t, py = ONION[i][1] + (ONION[i + 1][1] - ONION[i][1]) * t;
+        bulbs.push(V(cx + Math.cos(a) * pr * r * 1.02, cy + py * r, cz + Math.sin(a) * pr * r * 1.02));
+      }
+    }
+  };
+  g.add(box(170, 0.15, 90, M.grass, 0, 0, 72), box(12, 0.2, 90, M.path, 0, 0, 72));
+  const b = 1;
+  f.add(box(84, b, 54, S));
+  f.add(box(76, 16, 46, S, 0, b, 0), box(77, 0.8, 47, M.lime, 0, b + 16, 0));
+  rect(-38.5, 38.5, b + 16.9, -23.5, 23.5);
+  verticals(-38, 38, -23, 23, b, b + 16);
+  for (let k = -3; k <= 3; k++) {
+    if (k === 0) continue;
+    f.add(onFace(at(archPanel(7, 11, true, M.recess, 0.3), 0, b + 0.5, 0), 0, 23, k * 10));
+    f.add(onFace(at(archPanel(4.5, 4, true, M.recess, 0.3), 0, b + 11.5, 0), 0, 23, k * 10));
+    arch(7, 11, k * 10, b + 0.5, 23.4);
+    arch(4.5, 4, k * 10, b + 11.5, 23.4);
+  }
+  // Five-storey central tower with the gilded dome
+  const tz = 18, th = 31;
+  f.add(box(17, th, 16, S, 0, b, tz));
+  for (let i = 0; i < 5; i++) {
+    const y = b + i * 6.2, big = i === 0;
+    f.add(box(17.6, 0.5, 16.6, M.lime, 0, y + 6.2 - 0.5, tz));
+    for (const a of [0, Math.PI / 2, -Math.PI / 2]) {
+      const o = onFace(at(archPanel(big ? 8 : 4.2, big ? 5.6 : 4.4, true, M.recess, 0.3), 0, y + 0.3, 0), a, a ? 8.5 : 8);
+      o.position.z += tz;
+      f.add(o);
+    }
+    arch(big ? 8 : 4.2, big ? 5.6 : 4.4, 0, y + 0.3, tz + 8.4);
+  }
+  verticals(-8.5, 8.5, tz - 8, tz + 8, b, b + th);
+  rect(-8.6, 8.6, b + th, tz - 8.1, tz + 8.1);
+  for (const x of [-7, 7]) for (const z of [-6.5, 6.5]) f.add(at(chhatri(1.6, 5, S, Rz), x, b + th, tz + z));
+  f.add(cyl(6, 6, 2, S, 0, b + th, tz, 32), at(onionDome(6.5, M.gild), 0, b + th + 2, tz), at(finial(4), 0, b + th + 2 + 6.5 * 1.78, tz));
+  dome(0, b + th + 2, tz, 6.5);
+  for (const sgn of [-1, 1]) {
+    const x = sgn * 34, z = 19;
+    f.add(box(10, 22, 10, S, x, b, z), box(10.6, 0.5, 10.6, M.lime, x, b + 16, z));
+    f.add(cyl(3.8, 3.8, 1.5, S, x, b + 22, z, 24), at(onionDome(4.2, Rz), x, b + 23.5, z), at(finial(3), x, b + 23.5 + 7.4, z));
+    verticals(x - 5, x + 5, z - 5, z + 5, b, b + 22);
+    rect(x - 5.1, x + 5.1, b + 22, z - 5.1, z + 5.1);
+    dome(x, b + 23.5, z, 4.2);
+    f.add(at(chhatri(3, 8, S, Rz), x, b + 16.8, -19));
+  }
+  for (const x of [-22, -12, 12, 22]) f.add(at(chhatri(2.2, 6.5, S, Rz), x, b + 16.8, 20.5));
+  f.add(bulbPoints(bulbs));
+  return { group: g, focus: f, view: [0.55, 0.3, 1.2] };
+}
+
+function torana(m) {
+  const g = new THREE.Group();
+  for (const x of [-2.4, 2.4]) g.add(box(0.9, 6.5, 0.9, m, x), box(1.6, 1.4, 1.6, m, x, 6.5));
+  for (let k = 0; k < 3; k++) {
+    const y = 7.9 + k * 1.7;
+    g.add(box(8.6, 0.55, 0.6, m, 0, y));
+    for (const x of [-4.4, 4.4]) {
+      const v = cyl(0.42, 0.42, 0.62, m, 0, 0, 0, 12);
+      v.rotation.x = Math.PI / 2;
+      v.position.set(x, y + 0.27, 0);
+      g.add(v);
+    }
+    if (k < 2) for (const x of [-1.5, 0, 1.5]) g.add(box(0.45, 1.15, 0.45, m, x, y + 0.55));
+  }
+  g.add(at(mesh(new THREE.TorusGeometry(0.7, 0.12, 6, 20), m), 0, 12.6, 0));
+  for (const x of [-2.4, 2.4]) g.add(box(0.3, 1.2, 0.3, m, x, 11.95));
+  return g;
+}
+function buildSanchi() {
+  const S = M.sanchi, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(cyl(44, 44, 0.2, M.grass, 0, 0, 0, 64), cyl(25.5, 25.5, 0.3, M.path, 0, 0, 0, 64));
+  // Medhi (drum) with its walkway railing, then the hemispherical anda
+  f.add(cyl(18.3, 18.6, 4.3, S, 0, 0, 0, 64), ring(18.2, 1.1, S, 4.3, 64));
+  const dome = mesh(new THREE.SphereGeometry(16.5, 64, 24, 0, Math.PI * 2, 0, Math.PI / 2), S, 0, 4.3, 0);
+  dome.scale.y = 0.75;
+  f.add(dome);
+  const top = 4.3 + 16.5 * 0.75 - 0.3;
+  for (const x of [-2, -0.67, 0.67, 2]) for (const z of [-2, 2]) f.add(box(0.3, 1.6, 0.3, S, x, top, z), box(0.3, 1.6, 0.3, S, z, top, x));
+  for (const y of [0.5, 1.2]) for (const s of [-2, 2]) f.add(box(4.3, 0.25, 0.3, S, 0, top + y, s), box(0.3, 0.25, 4.3, S, s, top + y, 0));
+  f.add(cyl(0.15, 0.15, 4.6, S, 0, top, 0, 8));
+  [[1.8, 2.0], [1.4, 3.1], [1.0, 4.2]].forEach(([r, y]) => f.add(cyl(r, r, 0.25, S, 0, top + y, 0, 24)));
+  // Ground railing (vedika) and the four gateways
+  const posts = [];
+  for (let k = 0; k < 120; k++) { const a = (k / 120) * Math.PI * 2; posts.push([Math.cos(a) * 22, 0, Math.sin(a) * 22, 0.5, 3, 0.5]); }
+  f.add(instBoxes(posts, S));
+  for (const y of [0.9, 1.7, 2.5]) f.add(ring(22, 0.35, S, y, 120));
+  f.add(ring(22, 0.45, S, 3, 120));
+  for (const a of FACES) f.add(onFace(torana(S), a, 23.4));
+  return { group: g, focus: f, view: [0.9, 0.32, 1.25] };
+}
+
+function buildMahabodhi() {
+  const S = M.bodh, g = new THREE.Group(), f = new THREE.Group(), R = rng(11);
+  g.add(f);
+  g.add(box(80, 0.3, 90, M.path, 0, 0, -6));
+  f.add(box(28, 5, 28, S), box(17, 8, 17, S, 0, 5, 0));
+  f.add(box(8, 7, 6, S, 0, 5, 11), at(archPanel(3.4, 5, true, M.recess, 0.3), 0, 5, 14));
+  const main = shikhara(15, 38, S, (t) => 1 - 0.66 * t, 22);
+  f.add(at(main, 0, 13, 0));
+  for (const x of [-10.5, 10.5]) for (const z of [-10.5, 10.5]) f.add(at(shikhara(4, 13, S, (t) => 1 - 0.6 * t, 10), x, 5, z));
+  // Stone railing around the temple
+  const posts = [];
+  for (let k = -18; k <= 18; k += 1.5) for (const s of [-18, 18]) posts.push([k, 0, s, 0.4, 2.4, 0.4], [s, 0, k, 0.4, 2.4, 0.4]);
+  f.add(instBoxes(posts, S));
+  for (const y of [0.8, 1.6]) for (const s of [-18, 18]) f.add(box(36, 0.25, 0.3, S, 0, y, s), box(0.3, 0.25, 36, S, s, y, 0));
+  // The Bodhi tree behind the temple, and votive stupas in the courtyard
+  f.add(cyl(1.1, 1.7, 10, M.wood, 0, 0, -28, 10));
+  for (let i = 0; i < 10; i++) f.add(at(mesh(new THREE.IcosahedronGeometry(5 + R() * 2.5, 1), M.leaf), (R() - 0.5) * 12, 11 + R() * 6, -28 + (R() - 0.5) * 12));
+  for (let i = 0; i < 12; i++) {
+    const x = (R() < 0.5 ? -1 : 1) * (22 + R() * 12), z = (R() - 0.5) * 60;
+    f.add(cyl(1.3, 1.5, 1, S, x, 0, z, 16), at(hemi(1.3, S, 16), x, 1, z), cyl(0.1, 0.1, 1.2, S, x, 2.2, z, 6));
+  }
+  return { group: g, focus: f, view: [0.95, 0.35, 1.15] };
+}
+
+function tricolour(h) {
+  const g = new THREE.Group();
+  g.add(cyl(0.12, 0.16, h, M.flagWhite, 0, 0, 0, 8));
+  const w = 6, s = 4 / 3;
+  [M.flagSaffron, M.flagWhite, M.flagGreen].forEach((m, i) => g.add(box(w, s, 0.1, m, w / 2 + 0.15, h - s * (i + 1), 0)));
+  g.add(at(mesh(new THREE.TorusGeometry(0.55, 0.07, 6, 24), M.navy), w / 2 + 0.15, h - s * 1.5, 0));
+  return g;
+}
+function buildRedFort() {
+  const Rd = M.red, Rl = M.redLight, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(box(300, 0.25, 12, M.grass, 0, 0, 18), box(300, 0.2, 22, M.asphalt, 0, 0, 36));
+  const merlons = [];
+  const wall = (x0, x1, focus) => {
+    const t = focus ? f : g;
+    t.add(box(x1 - x0, 18, 10, Rd, (x0 + x1) / 2, 0, 0), box(x1 - x0, 0.8, 10.4, Rl, (x0 + x1) / 2, 17.2, 0));
+    for (let x = x0 + 1.3; x < x1; x += 2.6) merlons.push([x, 18, 4.6, 1.5, 1.8, 0.8]);
+  };
+  const bastion = (x, focus) => {
+    const t = focus ? f : g;
+    t.add(cyl(8, 9, 20, Rd, x, 0, 2, 24), cyl(8.4, 8.4, 0.8, Rl, x, 19.2, 2, 24), at(chhatri(4.5, 10, Rd, M.marble), x, 20, 2));
+  };
+  for (const s of [-1, 1]) {
+    wall(s < 0 ? -60 : 16, s < 0 ? -16 : 60, true);
+    wall(s < 0 ? -140 : 60, s < 0 ? -60 : 140, false);
+    bastion(s * 60, true);
+    bastion(s * 140, false);
+  }
+  g.add(instBoxes(merlons, Rd));
+  // Lahori Gate: arched gatehouse between octagonal towers, a row of chhatris, and the national flag
+  f.add(box(32, 23, 18, Rd, 0, 0, 2), box(32.6, 1, 18.6, Rl, 0, 23, 2));
+  f.add(onFace(at(archPanel(13, 20, true, Rl, 0.4), 0, 0.5, 0), 0, 11));
+  f.add(onFace(at(archPanel(9, 15, true, M.recess, 0.3), 0, 0.5, 0), 0, 11.42));
+  for (const x of [-17.5, 17.5]) {
+    f.add(cyl(4, 4.3, 26, Rd, x, 0, 9, 8));
+    for (const y of [8, 16, 23]) f.add(cyl(4.6, 4.6, 0.5, Rl, x, y, 9, 8));
+    f.add(at(chhatri(3.4, 8, Rd, M.marble), x, 26, 9));
+  }
+  for (let k = -3; k <= 3; k++) f.add(at(chhatri(1.25, 4.5, Rd, M.marble), k * 3.5, 24, 9.5));
+  f.add(at(tricolour(14), 0, 24, -2));
+  return { group: g, focus: f, view: [0.5, 0.28, 1.2] };
+}
+
 const MONUMENTS = [
   { id: 'qutub-minar', name: 'Qutub Minar', local: 'क़ुतुब मीनार', lang: 'hi', place: 'Mehrauli, Delhi', built: '1199–1220', stat: ['Height', '72.5 m'], style: 'Indo-Islamic', material: 'Red sandstone and marble', build: buildQutub,
     facts: ['Begun by Qutb ud-Din Aibak and completed by his successor Iltutmish; Firoz Shah Tughlaq later rebuilt the top storeys.', 'Its five storeys taper from a 14.3 m base to 2.7 m at the top, each ringed by a projecting balcony.', 'The Qutb complex has been a UNESCO World Heritage Site since 1993.'] },
@@ -1295,6 +1541,16 @@ const MONUMENTS = [
     facts: ['Dedicated to Meenakshi, a form of Parvati, and her consort Sundareswarar, a form of Shiva.', 'Its 14 gopurams are covered in thousands of painted stucco figures of gods, animals and demons.', 'The tallest, the southern gopuram, rises about 52 m above the old city.'] },
   { id: 'lotus-temple', name: 'Lotus Temple', local: 'कमल मंदिर', lang: 'hi', place: 'Kalkaji, New Delhi', built: '1980–1986', stat: ['Height', '34 m'], style: 'Expressionist', material: 'Greek Pentelic marble on concrete', build: buildLotusTemple,
     facts: ['A Baháʼí House of Worship, open to people of every faith.', 'Its 27 free-standing marble-clad petals are arranged in clusters of three to form nine sides.', 'Designed by the Iranian-born architect Fariborz Sahba and surrounded by nine pools.'] },
+  { id: 'gol-gumbaz', name: 'Gol Gumbaz', local: 'ಗೋಲ ಗುಮ್ಮಟ', lang: 'kn', place: 'Vijayapura, Karnataka', built: '1626–1656', stat: ['Height', '51 m'], style: 'Deccan (Adil Shahi)', material: 'Dark basalt with lime plaster', build: buildGolGumbaz,
+    facts: ['The mausoleum of Muhammad Adil Shah of the Bijapur Sultanate.', 'Its dome, about 44 m across, is one of the largest ever built without internal supports.', 'In the whispering gallery around the inside of the dome, a faint sound echoes several times.'] },
+  { id: 'mysore-palace', name: 'Mysore Palace', local: 'ಮೈಸೂರು ಅರಮನೆ', lang: 'kn', place: 'Mysuru, Karnataka', built: '1897–1912', stat: ['Height', '44 m'], style: 'Indo-Saracenic', material: 'Grey granite with pink marble domes', build: buildMysorePalace,
+    facts: ['Seat of the Wadiyar dynasty; it replaced an older wooden palace that burned down in 1897.', 'Designed by the British architect Henry Irwin.', 'On festival nights, and through Dasara, it is lit with nearly 100,000 bulbs. Switch to dark mode to see them.'] },
+  { id: 'sanchi-stupa', name: 'Sanchi Stupa', local: 'साँची स्तूप', lang: 'hi', place: 'Sanchi, Madhya Pradesh', built: '3rd c. BCE', stat: ['Height', '16.5 m'], style: 'Buddhist (Mauryan)', material: 'Sandstone', build: buildSanchi,
+    facts: ['Commissioned by the emperor Ashoka over relics of the Buddha.', 'Its four gateways (toranas), added in the 1st century BCE, are carved with scenes from the Buddha’s life and the Jataka tales.', 'A UNESCO World Heritage Site since 1989.'] },
+  { id: 'mahabodhi-temple', name: 'Mahabodhi Temple', local: 'महाबोधि मंदिर', lang: 'hi', place: 'Bodh Gaya, Bihar', built: '5th–6th c. CE', stat: ['Height', '55 m'], style: 'Gupta-era brick', material: 'Brick with stucco', build: buildMahabodhi,
+    facts: ['Marks the place where Siddhartha Gautama attained enlightenment under the Bodhi tree.', 'Ashoka built the first shrine here; the present brick temple dates from the Gupta period.', 'One of the oldest brick temples still standing in India, and a UNESCO site since 2002.'] },
+  { id: 'red-fort', name: 'Red Fort', local: 'लाल क़िला', lang: 'hi', place: 'Old Delhi', built: '1639–1648', stat: ['Walls', 'up to 33 m'], style: 'Mughal', material: 'Red sandstone', build: buildRedFort,
+    facts: ['Built by Shah Jahan as the palace-fortress of his new capital, Shahjahanabad.', 'Every Independence Day the Prime Minister raises the national flag here and addresses the nation.', 'Its walls run about 2.5 km; a UNESCO World Heritage Site since 2007.'] },
 ];
 
 /* ---------- scene ---------- */
@@ -1360,6 +1616,8 @@ function applyTheme() {
   skyMat.uniforms.horizon.value.copy(col('--sky-horizon'));
   groundMat.color.copy(col('--ground'));
   scene.fog.color.copy(col('--sky-horizon'));
+  isNight = night;
+  nightOnly.forEach((o) => { o.visible = night; });
   if (night) {
     hemiLight.color.set('#8796c8'); hemiLight.groundColor.set('#2a2630'); hemiLight.intensity = 0.55;
     sun.color.set('#a9b8ff'); sun.intensity = 0.7;
