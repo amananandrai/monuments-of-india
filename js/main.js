@@ -8,6 +8,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { nightState, V, box } from './helpers.js';
 import { attachSurface, surface } from './surface.js';
 import { separateCoplanar } from './coplanar.js';
+import { naturalize } from './naturalize.js';
+import { loadPhotoTextures } from './textures.js';
 import { MONUMENTS } from './data.js';
 import { createMap } from './map.js';
 
@@ -31,6 +33,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
+loadPhotoTextures(renderer);
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(38, 1, 0.5, 20000);
@@ -131,6 +134,7 @@ function getBuilt(i) {
   if (!built.has(i)) {
     const r = MONUMENTS[i].build();
     r.focus = r.focus || r.group;
+    naturalize(r.group);
     // Faces that share a plane get different depth offsets, so they don't flicker.
     separateCoplanar(r.group, 0.005);
     scene.add(r.group);

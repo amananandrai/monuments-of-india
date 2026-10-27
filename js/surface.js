@@ -5,12 +5,23 @@ import * as THREE from 'three';
 // size on every model regardless of how its geometry was built. Each kind also adds a bump
 // from the same pattern, weathering (grime near the ground, faint rain streaks) and a small
 // per-object tint so that repeated pieces don't look cloned.
-export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7 };
+export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8 };
+
+// Photo textures (CC0, Poly Haven) are registered by key and blended in by triplanar projection.
+export const PHOTOS = {};
+const surfaced = new Set();
+export function photoLoaded(key) { surfaced.forEach((m) => { if (m.userData.photoKey === key) m.needsUpdate = true; }); }
 
 const COMMON = /* glsl */ `
 varying vec3 vSurfPos;
 varying vec3 vSurfNormal;
 varying float vSurfVar;
+#ifdef SURF_PHOTO
+uniform sampler2D sPhoto;
+uniform vec3 sPhotoAvg;
+uniform float sPhotoScale;
+uniform float sPhotoMix;
+#endif
 float sHash(vec3 p) { p = fract(p * 0.1031); p += dot(p, p.zyx + 31.32); return fract((p.x + p.y) * p.z); }
 float sNoise(vec3 p) {
   vec3 i = floor(p), f = fract(p);
@@ -81,6 +92,21 @@ const PATTERN = /* glsl */ `
   sTint = 0.9 + 0.2 * sHash(vec3(floor(q.x + q.y), floor(q.x - q.y), 1.0)) + 0.6 * line;
   sH = line * 0.5;
   sRough = -0.25;
+#elif SURF_KIND == 8
+  float clump = sNoise(sp * 1.6), leaf = sNoise(sp * 7.0);
+  sTint = 0.68 + 0.5 * clump + 0.18 * (leaf - 0.5);
+  sH = clump * 1.2 + leaf * 0.6;
+  sRough = 0.1;
+#endif
+#ifdef SURF_PHOTO
+  // Photo detail, projected along each world axis and blended by the surface normal, then
+  // divided by the photo's average colour so the model keeps its own colour.
+  vec3 sPw = pow(abs(sn), vec3(4.0));
+  sPw /= (sPw.x + sPw.y + sPw.z);
+  vec3 sPc = texture2D(sPhoto, sp.zy * sPhotoScale).rgb * sPw.x + texture2D(sPhoto, sp.xz * sPhotoScale).rgb * sPw.y + texture2D(sPhoto, sp.xy * sPhotoScale).rgb * sPw.z;
+  diffuseColor.rgb *= mix(vec3(1.0), sPc / max(sPhotoAvg, vec3(0.02)), sPhotoMix);
+  sH = dot(sPc, vec3(0.333)) * 2.5 + sH * 0.3;
+  sTint = mix(sTint, 1.0, 0.7);
 #endif
 #if SURF_KIND == 1 || SURF_KIND == 2 || SURF_KIND == 3
   // Weathering: grime near the ground and faint vertical rain streaks on walls
@@ -93,8 +119,15 @@ const PATTERN = /* glsl */ `
   diffuseColor.rgb *= sTint;
 `;
 
-function patch(shader, kind, bump) {
+function patch(shader, kind, bump, photo) {
   shader.defines = { ...(shader.defines || {}), SURF_KIND: kind };
+  if (photo) {
+    shader.defines.SURF_PHOTO = 1;
+    shader.uniforms.sPhoto = { value: photo.texture };
+    shader.uniforms.sPhotoAvg = { value: photo.avg };
+    shader.uniforms.sPhotoScale = { value: photo.scale };
+    shader.uniforms.sPhotoMix = { value: photo.mix };
+  }
   shader.vertexShader = shader.vertexShader
     .replace('#include <common>', '#include <common>\nvarying vec3 vSurfPos;\nvarying vec3 vSurfNormal;\nvarying float vSurfVar;')
     .replace('#include <project_vertex>', `#include <project_vertex>
@@ -118,7 +151,7 @@ function patch(shader, kind, bump) {
   normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`);
 }
 
-const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 1.2, tiles: 0.6 };
+const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 1.2, tiles: 0.6, foliage: 1.6 };
 
 // Choose a surface for a material from its look, unless one was set with surface().
 function guess(m) {
@@ -134,11 +167,13 @@ function guess(m) {
 // Hook the procedural surface into a MeshStandardMaterial (done for every material made with mat()).
 export function attachSurface(m) {
   if (!m.isMeshStandardMaterial) return m;
+  surfaced.add(m);
+  const photo = () => (m.userData.photoKey && PHOTOS[m.userData.photoKey]) || null;
   m.onBeforeCompile = (shader) => {
     const kind = guess(m);
-    if (kind !== 'none') patch(shader, KINDS[kind], BUMP[kind]);
+    if (kind !== 'none') patch(shader, KINDS[kind], BUMP[kind], photo());
   };
-  m.customProgramCacheKey = () => 'surf:' + guess(m);
+  m.customProgramCacheKey = () => 'surf:' + guess(m) + (photo() ? ':' + m.userData.photoKey : '');
   return m;
 }
 

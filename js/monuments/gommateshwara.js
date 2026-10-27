@@ -1,24 +1,44 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, lathe, at, limb, V, chhatri, inst, unitBox, aroundRect } from '../helpers.js';
+import { surface } from '../surface.js';
+import { mat, mesh, box, at, V, chhatri, inst, unitBox, aroundRect, ellipsoid, capsule, tube, smoothLathe } from '../helpers.js';
 
 const GRANITE = mat('#c9c3b6', 0.8);
+// The statue is one smooth monolith, so it gets plain stone rather than coursed masonry.
+const STATUE = surface(mat('#cfc9bc', 0.75), 'marble');
 const HILL = mat('#9a917f', 0.95, 0, { flatShading: true });
 const VINE = mat('#5c7a44', 0.9);
 
-// Bahubali standing in kayotsarga: upright, arms straight at his sides, vines climbing his limbs.
+// Bahubali standing in kayotsarga: upright, arms straight at his sides, with creepers winding
+// up his legs and arms, curled hair and long ears, all as carved from the one block of granite.
 function bahubali() {
-  const g = new THREE.Group(), G = GRANITE;
+  const g = new THREE.Group(), G = STATUE;
   for (const s of [-1, 1]) {
-    g.add(box(1.6, 0.8, 2.8, G, s * 1.3, 0, 0.5), limb(V(s * 1.3, 0.6, 0), V(s * 1.4, 4.8, 0), 0.85, 1.05, G), limb(V(s * 1.4, 4.8, 0), V(s * 1.5, 8.4, 0), 1.05, 1.35, G));
-    g.add(limb(V(s * 3.4, 15.2, 0), V(s * 3.6, 11.4, 0.1), 0.9, 0.8, G), limb(V(s * 3.6, 11.4, 0.1), V(s * 3.5, 7.4, 0.2), 0.8, 0.65, G));
-    for (let k = 0; k < 4; k++) g.add(cyl(1.2, 1.2, 0.15, VINE, s * 1.45, 1.8 + k * 1.6, 0, 10));
+    g.add(ellipsoid(0.9, 0.45, 1.6, G, s * 1.25, 0.4, 0.5));
+    g.add(capsule(V(s * 1.25, 0.7, 0), V(s * 1.35, 4.6, 0), 0.62, G, 0.85), capsule(V(s * 1.35, 4.6, 0), V(s * 1.45, 8.6, 0), 0.85, G, 1.25));
+    g.add(capsule(V(s * 3.35, 15.1, 0), V(s * 3.6, 11.5, 0.1), 0.85, G, 0.72), capsule(V(s * 3.6, 11.5, 0.1), V(s * 3.5, 7.8, 0.2), 0.72, G, 0.58));
+    g.add(ellipsoid(0.55, 1.1, 0.42, G, s * 3.5, 7.2, 0.25));
+    // Creepers spiralling up the legs and the arms
+    for (const [x0, y0, y1, r] of [[s * 1.3, 0.8, 8.4, 1.1], [s * 3.5, 7.6, 14.6, 0.95]]) {
+      const pts = [];
+      for (let k = 0; k <= 26; k++) { const a = k * 0.62 + (s > 0 ? 0 : Math.PI); pts.push([x0 + Math.sin(a) * r, y0 + (k / 26) * (y1 - y0), Math.cos(a) * r]); }
+      g.add(tube(pts, 0.12, VINE, 120, 6));
+    }
   }
-  const torso = at(lathe([[2.6, 0], [2.9, 1.6], [3.2, 4], [3.6, 6.2], [3.2, 7.2], [1.2, 7.8], [0, 7.9]], G, 24), 0, 8.2, 0);
-  torso.scale.z = 0.7;
+  const torso = smoothLathe([[2.4, 0], [2.7, 1.4], [2.9, 3.6], [3.5, 5.6], [3.6, 6.6], [2.6, 7.4], [1.0, 7.8], [0.1, 7.9]], G);
+  torso.position.y = 8.2;
+  torso.scale.z = 0.66;
   g.add(torso);
-  const head = mesh(new THREE.SphereGeometry(1.5, 18, 14), G, 0, 17.2, 0.1);
-  head.scale.set(0.9, 1.15, 0.95);
-  g.add(cyl(0.7, 0.8, 1, G, 0, 15.6, 0, 12), head, at(mesh(new THREE.SphereGeometry(1.45, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2), mat('#8d877a', 0.9)), 0, 17.6, 0));
+  for (const s of [-1, 1]) g.add(ellipsoid(1.1, 1.0, 1.0, G, s * 3.25, 15.1, 0));
+  g.add(capsule(V(0, 15.6, 0), V(0, 16.4, 0.1), 0.75, G, 0.75));
+  g.add(ellipsoid(1.32, 1.65, 1.4, G, 0, 17.4, 0.1), ellipsoid(0.24, 0.42, 0.3, G, 0, 17.2, 1.42));
+  for (const s of [-1, 1]) g.add(ellipsoid(0.22, 0.95, 0.4, G, s * 1.32, 17.0, 0));
+  // Tight curls of hair over the crown
+  const curls = [];
+  for (let k = 0; k < 140; k++) {
+    const phi = Math.acos(1 - (k + 0.5) / 140 * 1.1), th = k * 2.39996;
+    curls.push([Math.sin(phi) * Math.cos(th) * 1.32, 17.55 + Math.cos(phi) * 1.62, 0.05 + Math.sin(phi) * Math.sin(th) * 1.36, 0.36, 0.3, 0.36]);
+  }
+  g.add(inst(new THREE.SphereGeometry(0.5, 10, 8), curls, mat('#8d877a', 0.9)));
   return g;
 }
 

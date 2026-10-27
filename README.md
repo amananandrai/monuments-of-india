@@ -14,6 +14,12 @@ Every model is built procedurally from primitives at roughly real-world proporti
 
 Surfaces are generated in the shader (`js/surface.js`) from world position: sandstone and granite masonry with block joints, marble veining, brick courses, rock, earth, lattice screens and glazed tiles, each with a matching bump, grime near the ground, rain streaks and a slight per-piece tint. Lighting adds a sky environment map for reflections, ambient occlusion (desktop only) and bloom for lights at night.
 
+The stones of the best-known monuments (Taj Mahal, Red Fort, Qutub Minar, India Gate, Gateway of India, Charminar, Hawa Mahal, Golden Temple, Victoria Memorial, Mysore Palace) also carry photo detail, projected triplanar and tinted to each model's own colour (`js/textures.js`). Rocks, hills, mountains and trees are rebuilt at higher resolution and sculpted with noise (`js/naturalize.js`), with snow on the high peaks, and the statues are modelled from smooth rounded forms.
+
+## Textures
+
+Photo textures in `assets/textures` are from [Poly Haven](https://polyhaven.com) (CC0): marble_01, red_sandstone_wall, sandstone_blocks_08, plastered_stone_wall, plastered_wall_02, granite_wall and rock_face_03.
+
 ## Map data
 
 State boundaries and India's outline come from [Natural Earth](https://www.naturalearthdata.com) (public domain), using its India point-of-view boundaries, simplified into `js/india-map.js`.

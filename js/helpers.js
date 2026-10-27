@@ -67,7 +67,7 @@ export const nightState = { on: false, objects: [] };
 export const flatCache = new Map();
 
 export const flat = (m) => {
-  if (!flatCache.has(m)) { const c = attachSurface(m.clone()); c.flatShading = true; flatCache.set(m, c); }
+  if (!flatCache.has(m)) { const c = attachSurface(m.clone()); c.flatShading = true; c.userData.keepFacets = true; flatCache.set(m, c); }
   return flatCache.get(m);
 };
 
@@ -336,18 +336,14 @@ export function wheel(r, m) {
 
 export function horse(m) {
   const g = new THREE.Group();
-  g.add(box(1.3, 1.4, 3.2, m, 0, 1.7, 0));
-  for (const [x, z] of [[-0.45, 1.2], [0.45, 1.2], [-0.45, -1.2], [0.45, -1.2]]) g.add(box(0.35, 1.75, 0.35, m, x, 0, z));
-  const neck = box(0.75, 1.8, 0.9, m);
-  neck.position.set(0, 3.3, 1.6);
-  neck.rotation.x = 0.55;
-  const head = box(0.6, 0.65, 1.5, m);
-  head.position.set(0, 4.1, 2.4);
-  head.rotation.x = 0.25;
-  const tail = box(0.25, 1.2, 0.25, m);
-  tail.position.set(0, 2.3, -1.8);
-  tail.rotation.x = -0.4;
-  g.add(neck, head, tail);
+  g.add(ellipsoid(0.72, 0.72, 1.6, m, 0, 2.1, 0), ellipsoid(0.66, 0.7, 0.6, m, 0, 2.2, 1.1), ellipsoid(0.66, 0.66, 0.6, m, 0, 2.15, -1.1));
+  g.add(capsule(V(0, 2.5, 1.3), V(0, 3.75, 2.05), 0.42, m, 0.3), capsule(V(0, 3.85, 2.1), V(0, 3.4, 3.0), 0.3, m, 0.2));
+  for (const x of [-0.12, 0.12]) g.add(cyl(0, 0.08, 0.32, m, x, 4.05, 2.15, 6));
+  for (const [x, z] of [[-0.38, 1.05], [0.38, 1.05], [-0.38, -1.15], [0.38, -1.15]]) {
+    g.add(capsule(V(x, 2.0, z), V(x, 1.0, z + 0.05), 0.24, m, 0.15), capsule(V(x, 1.0, z + 0.05), V(x, 0.12, z), 0.13, m, 0.12));
+  }
+  g.add(tube([[0, 4.0, 1.95], [0, 3.6, 1.6], [0, 3.0, 1.25]], 0.12, m, 16, 6));
+  g.add(tube([[0, 2.4, -1.7], [0, 2.0, -2.0], [0, 1.2, -2.05]], 0.14, m, 16, 6));
   return g;
 }
 
@@ -574,13 +570,16 @@ export function hipRoof(w, d, h, m) {
 // A stylised elephant facing +z, standing at y = 0.
 export function elephant(m, s = 1) {
   const g = new THREE.Group();
-  g.add(box(2.4, 2.2, 3.6, m, 0, 1.6, 0), box(1.8, 1.8, 1.4, m, 0, 2.6, 2.2));
-  for (const [x, z] of [[-0.7, 1.2], [0.7, 1.2], [-0.7, -1.2], [0.7, -1.2]]) g.add(cyl(0.38, 0.42, 1.7, m, x, 0, z, 8));
-  const trunk = cyl(0.22, 0.34, 1.9, m, 0, 0, 0, 8);
-  trunk.position.set(0, 1.9, 3.0);
-  trunk.rotation.x = 0.25;
-  g.add(trunk);
-  for (const x of [-1, 1]) g.add(box(0.15, 1.3, 1.1, m, x * 0.95, 2.4, 1.9));
+  g.add(ellipsoid(1.25, 1.15, 1.85, m, 0, 2.25, 0), ellipsoid(0.92, 0.98, 0.9, m, 0, 2.75, 1.85));
+  for (const x of [-1, 1]) {
+    const ear = ellipsoid(0.12, 0.85, 0.72, m, x * 0.92, 2.7, 1.55);
+    ear.rotation.y = x * 0.35;
+    g.add(ear);
+  }
+  g.add(tube([[0, 2.55, 2.65], [0, 1.9, 3.15], [0, 1.0, 3.2], [0, 0.45, 3.0]], 0.24, m, 24, 10));
+  for (const x of [-0.42, 0.42]) g.add(tube([[x, 2.15, 2.45], [x * 1.1, 1.7, 2.95], [x * 0.9, 1.75, 3.35]], 0.08, m, 12, 6));
+  for (const [x, z] of [[-0.72, 1.1], [0.72, 1.1], [-0.72, -1.1], [0.72, -1.1]]) g.add(capsule(V(x, 1.7, z), V(x, 0.25, z), 0.42, m, 0.4));
+  g.add(tube([[0, 2.6, -1.8], [0, 2.0, -2.0], [0, 1.4, -1.95]], 0.07, m, 12, 6));
   g.scale.setScalar(s);
   return g;
 }
@@ -641,3 +640,43 @@ export function tibetanBlock(w, h, d, floors = 2, wallM = TIB_WHITE) {
   return g;
 }
 export const TIBETAN = { white: TIB_WHITE, maroon: TIB_MAROON, window: TIB_WINDOW };
+
+/* ---------- smooth organic forms, for statues and animals ---------- */
+export function ellipsoid(rx, ry, rz, m, x = 0, y = 0, z = 0) {
+  const o = mesh(new THREE.SphereGeometry(1, 40, 28), m, x, y, z);
+  o.scale.set(rx, ry, rz);
+  return o;
+}
+// A tapered capsule from a (radius r1) to b (radius r2): limbs, necks, trunks.
+export function capsule(a, b, r1, m, r2 = r1) {
+  const len = a.distanceTo(b), pts = [];
+  for (let i = 0; i <= 8; i++) { const t = -Math.PI / 2 + (i / 8) * (Math.PI / 2); pts.push(new THREE.Vector2(Math.max(1e-4, Math.cos(t) * r1), Math.sin(t) * r1)); }
+  for (let i = 0; i <= 8; i++) { const t = (i / 8) * (Math.PI / 2); pts.push(new THREE.Vector2(Math.max(1e-4, Math.cos(t) * r2), len + Math.sin(t) * r2)); }
+  const o = mesh(new THREE.LatheGeometry(pts, 28), m);
+  o.position.copy(a);
+  o.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
+  return o;
+}
+// A smooth tube through points [[x, y, z], ...]: vines, snakes, tails, draped cloth ends.
+export function tube(points, r, m, seg = 64, radial = 12) {
+  const curve = new THREE.CatmullRomCurve3(points.map(([x, y, z]) => new THREE.Vector3(x, y, z)));
+  return mesh(new THREE.TubeGeometry(curve, seg, r, radial, false), m);
+}
+// A lathe whose profile is a smooth spline through [[radius, y], ...].
+export function smoothLathe(pts, m, seg = 72, samples = 72) {
+  const curve = new THREE.SplineCurve(pts.map(([r, y]) => new THREE.Vector2(r, y)));
+  return mesh(new THREE.LatheGeometry(curve.getPoints(samples).map((p) => new THREE.Vector2(Math.max(0, p.x), p.y)), seg), m);
+}
+// Vertical folds in cloth: ripple a lathe's radius, strongest at yFrom and fading to nothing at yTo.
+export function drape(o, folds, amp, yFrom, yTo) {
+  const pos = o.geometry.attributes.position, v = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i++) {
+    v.fromBufferAttribute(pos, i);
+    const w = Math.min(1, Math.max(0, (v.y - yTo) / (yFrom - yTo)));
+    if (w <= 0) continue;
+    const a = Math.atan2(v.x, v.z), k = 1 + amp * w * Math.cos(folds * a + Math.sin(a * 3) * 0.6);
+    pos.setXYZ(i, v.x * k, v.y, v.z * k);
+  }
+  o.geometry.computeVertexNormals();
+  return o;
+}
