@@ -10,7 +10,7 @@ const FOREST = mat('#4f6a3a', 0.95);
 export function buildAjanta() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(500, 0.2, 400, FOREST), box(18, 0.4, 260, M.water, 0, 0, 40));
+  g.add(box(500, 0.2, 400, FOREST), box(18, 0.4, 260, M.river, 0, 0, 40));
   const R = 70, H = 40, a0 = -0.15 * Math.PI, a1 = 1.15 * Math.PI, N = 30;
   const cliff = [], top = [], caves = [], porch = [];
   for (let k = 0; k <= 80; k++) {

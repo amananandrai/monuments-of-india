@@ -6,7 +6,7 @@ import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { nightState, V, box } from './helpers.js';
-import { attachSurface, surface } from './surface.js';
+import { attachSurface, surface, waterTime } from './surface.js';
 import { separateCoplanar } from './coplanar.js';
 import { naturalize } from './naturalize.js';
 import { loadPhotoTextures } from './textures.js';
@@ -59,6 +59,11 @@ const groundMat = surface(attachSurface(new THREE.MeshStandardMaterial({ roughne
 const ground = new THREE.Mesh(new THREE.CircleGeometry(1, 96), groundMat);
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
+// The ground sits behind everything in depth, so river sheets and lawns a few centimetres above it
+// always win, even kilometres away where the depth buffer is coarse.
+groundMat.polygonOffset = true;
+groundMat.polygonOffsetFactor = 1;
+groundMat.polygonOffsetUnits = 1;
 scene.add(ground);
 
 scene.fog = new THREE.Fog(0xffffff, 100, 1000);
@@ -380,6 +385,7 @@ const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 function loop(now) {
   requestAnimationFrame(loop);
   if (mode !== 'monument') return;
+  if (!reduceMotion) waterTime.value = now / 1000;
   if (tween) {
     const k = Math.min(1, (now - tween.t0) / tween.dur), e = ease(k);
     camera.position.lerpVectors(tween.fromPos, tween.toPos, e);

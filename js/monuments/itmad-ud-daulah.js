@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, lathe, at, onFace, FACES, archPanel, chhatri, finial, inst, unitBox } from '../helpers.js';
+import { M, mat, box, cyl, lathe, at, onFace, FACES, archPanel, chhatri, finial, inst, unitBox, sheet } from '../helpers.js';
 
 // Pietra dura: inlaid panels of coloured stone set into the white marble.
 const INLAY = [mat('#8a5a3c', 0.5), mat('#c9a24a', 0.45), mat('#4f6b4a', 0.5), mat('#2f2b2a', 0.5)];
@@ -8,7 +8,7 @@ export function buildItmadUdDaulah() {
   const Mb = M.marble, g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // Charbagh garden on the bank of the Yamuna
-  g.add(box(150, 0.15, 150, M.grass, 0, 0, 20), box(400, 0.4, 120, M.water, 0, -0.1, -110));
+  g.add(box(150, 0.15, 150, M.grass, 0, 0, 20), sheet(400, 120, M.river, 0, 0.3, -110));
   for (const [w, d] of [[5, 150], [150, 5]]) g.add(box(w + 3, 0.25, d + 3, M.path, 0, 0, 20), box(w, 0.35, d, M.water, 0, 0, 20));
   f.add(box(50, 1.5, 50, M.red), box(36, 2, 36, Mb, 0, 1.5));
   const B = 3.5, s = 11;

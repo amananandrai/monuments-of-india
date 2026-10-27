@@ -11,7 +11,7 @@ export function buildKedarnath() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(9);
   g.add(f);
   // The glacial valley: Mandakini river, meadow and the Kedarnath massif behind
-  g.add(box(240, 0.2, 240, SLOPE), box(14, 0.4, 260, M.water, 70, 0, 0));
+  g.add(box(240, 0.2, 240, SLOPE), box(14, 0.4, 260, M.river, 70, 0, 0));
   for (let i = 0; i < 7; i++) {
     const a = -Math.PI / 2 + (i - 3) * 0.32, d = 330 + R() * 80, h = 260 + R() * 160, x = Math.cos(a) * d, z = Math.sin(a) * d;
     g.add(mesh(new THREE.ConeGeometry(h * 0.6, h, 7).translate(0, h / 2, 0), ROCK, x, 0, z), mesh(new THREE.ConeGeometry(h * 0.27, h * 0.45, 7).translate(0, h * 0.775, 0), SNOW, x, 0, z));

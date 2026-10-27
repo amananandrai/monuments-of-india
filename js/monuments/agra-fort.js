@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, at, onFace, archPanel, chhatri, hemi, finial, inst, unitBox, unitCyl, aroundRect } from '../helpers.js';
+import { M, mesh, box, cyl, at, onFace, archPanel, chhatri, hemi, finial, inst, unitBox, unitCyl, aroundRect, sheet } from '../helpers.js';
 
 // The curved, gilded "bangaldar" roof of the Khas Mahal pavilions.
 function bangaldar(w, d, h, m) {
@@ -13,7 +13,7 @@ function bangaldar(w, d, h, m) {
 export function buildAgraFort() {
   const Rd = M.red, Rl = M.redLight, Mb = M.marble, g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(700, 0.4, 260, M.water, 0, -0.1, -150), box(320, 0.2, 200, M.path, 0, 0, 60));
+  g.add(sheet(700, 260, M.river, 0, 0.3, -150), box(320, 0.2, 200, M.path, 0, 0, 60));
   // Crescent of red sandstone walls along the river, with round bastions
   const R = 125, wall = [], merlons = [];
   for (let k = 0; k <= 60; k++) {

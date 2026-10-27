@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, V, box, group, strut } from '../helpers.js';
+import { M, V, box, group, strut, sheet } from '../helpers.js';
 
 export function buildHowrah() {
   const g = new THREE.Group(), t = new THREE.Group();
@@ -42,6 +42,6 @@ export function buildHowrah() {
   }
   g.add(box(1100, 1.4, 2 * W + 4, M.asphalt, 0, deck - 1.4, 0));
   for (const s of [-1, 1]) g.add(box(260, deck - 1.4, 420, M.bank, s * 465, 0, 0));
-  g.add(box(3600, 0.4, 3600, M.water, 0, -0.3, 0));
+  g.add(sheet(3600, 3600, M.river, 0, 0.1, 0));
   return { group: g, focus: t, view: [0.45, 0.28, 1.2] };
 }

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, lathe, group, at, onFace, FACES, archPanel, onionDome, hemi, finial, kalash, chhatri, ribbed } from '../helpers.js';
+import { M, mesh, box, cyl, lathe, group, at, onFace, FACES, archPanel, onionDome, hemi, finial, kalash, chhatri, ribbed, sheet } from '../helpers.js';
 
 export function buildGoldenTemple() {
   const G = M.gild, Gd = M.gildDeep, W = M.marble, g = new THREE.Group(), f = new THREE.Group();
@@ -9,7 +9,7 @@ export function buildGoldenTemple() {
     g.add(box(200, 0.8, 25, W, 0, 0, s * 87.5), box(25, 0.8, 150, W, s * 87.5, 0, 0));
     g.add(box(220, 9, 10, M.lime, 0, 0, s * 105), box(10, 9, 200, M.lime, s * 105, 0, 0));
   }
-  g.add(box(150, 0.5, 150, M.water, 0, -0.2, 0));
+  g.add(sheet(150, 150, M.lake, 0, 0.3, 0));
   const b = 1.6;
   f.add(box(20, b, 20, W));
   // Guru's Bridge from the Darshani Deori gateway

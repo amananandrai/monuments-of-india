@@ -14,7 +14,7 @@ export function buildBibiKaMaqbara() {
   for (const x of [-33, 33]) for (const z of [-33, 33]) f.add(at(minaret(30, 1.8, PLASTER, { capM: Mb }), x, 5, z));
   // Chamfered tomb with tall iwans, a marble dome and corner kiosks
   const P = 5, s = 16, c = 5.5, H = 18;
-  f.add(at(chamferPrism(s, c, H, PLASTER), 0, P, 0), box(2 * s + 0.6, 0.8, 2 * s + 0.6, M.marbleShade, 0, P + H - 0.8));
+  f.add(at(chamferPrism(s, c, H, PLASTER), 0, P, 0), box(2 * s + 0.6, 1.4, 2 * s + 0.6, M.marbleShade, 0, P + H - 0.8));
   for (const a of FACES) {
     f.add(onFace(box(13, H + 2, 1, PLASTER, 0, P), a, s + 0.5));
     f.add(onFace(at(archPanel(9, 15, true, M.marbleShade, 0.3), 0, P + 0.4, 0), a, s + 1));

@@ -10,7 +10,7 @@ const OCHRE = mat('#b8562f', 0.85);
 export function buildThiksey() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(61);
   g.add(f);
-  g.add(box(400, 0.2, 400, mat('#b49e7c', 0.95)), box(30, 0.4, 400, M.water, 120, 0, 0));
+  g.add(box(400, 0.2, 400, mat('#b49e7c', 0.95)), box(30, 0.4, 400, M.river, 120, 0, 0));
   for (let i = 0; i < 7; i++) {
     const a = -Math.PI * 0.9 + i * 0.3, d = 380 + R() * 100, h = 200 + R() * 140, x = Math.cos(a) * d, z = Math.sin(a) * d;
     g.add(mesh(new THREE.ConeGeometry(h * 0.8, h, 7).translate(0, h / 2, 0), PEAK, x, 0, z), mesh(new THREE.ConeGeometry(h * 0.24, h * 0.3, 7).translate(0, h * 0.85, 0), SNOW, x, 0, z));

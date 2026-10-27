@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, rng, nagaraTemple, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, at, rng, nagaraTemple, inst, unitBox, sheet } from '../helpers.js';
 
 const WHITE = mat('#efe9de', 0.85);
 const SHADE = mat('#cdbfa6', 0.9);
@@ -9,7 +9,7 @@ export function buildOmkareshwar() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(41);
   g.add(f);
   // The Narmada, with Mandhata island rising from it
-  g.add(box(700, 0.4, 500, M.water, 0, -0.1, 0));
+  g.add(sheet(700, 500, M.river, 0, 0.3, 0));
   const island = mesh(new THREE.CylinderGeometry(70, 110, 34, 12, 2), HILL, 0, 16.5, -70);
   island.scale.z = 0.7;
   g.add(island);

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, chhatri, hemi, finial, onFace, archPanel } from '../helpers.js';
+import { M, mat, box, cyl, at, chhatri, hemi, finial, onFace, archPanel, sheet } from '../helpers.js';
 
 const STONE = mat('#c39a6e', 0.88);
 const SHADE = mat('#a27b52', 0.9);
@@ -25,7 +25,7 @@ export function buildSherShahSuri() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // The square artificial lake and the causeway to the tomb
-  g.add(box(260, 0.15, 260, M.grass), box(200, 0.5, 200, M.water, 0, -0.2, 0), box(8, 1.2, 70, SHADE, 0, 0, 66));
+  g.add(box(260, 0.15, 260, M.grass), sheet(200, 200, M.lake, 0, 0.3, 0), box(8, 1.2, 70, SHADE, 0, 0, 66));
   // Stepped square platform with corner pavilions, rising from the water
   f.add(box(80, 4, 80, SHADE), box(66, 4, 66, STONE, 0, 4));
   for (const x of [-30, 30]) for (const z of [-30, 30]) f.add(at(chhatri(3.4, 10, STONE), x, 8, z));

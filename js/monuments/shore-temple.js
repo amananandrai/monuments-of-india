@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, rng, flat, kalash, inst, unitBox, aroundRect } from '../helpers.js';
+import { M, mat, mesh, box, at, rng, flat, kalash, inst, unitBox, aroundRect, sheet } from '../helpers.js';
 
 const GRANITE = mat('#8f8577', 0.95);
 const GRANITE_DARK = mat('#6d655a', 0.95);
@@ -29,7 +29,7 @@ export function buildShoreTemple() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(17);
   g.add(f);
   // Beach, the Bay of Bengal, and the boulder breakwater between temple and sea
-  g.add(box(220, 0.3, 160, SAND, 0, 0, 20), box(400, 0.4, 260, M.water, 0, -0.1, -200));
+  g.add(box(220, 0.3, 160, SAND, 0, 0, 20), sheet(400, 260, M.sea, 0, 0.3, -200));
   for (let i = 0; i < 22; i++) {
     const r = 1.5 + R() * 2.5;
     g.add(mesh(new THREE.IcosahedronGeometry(r, 0), ROCK, -50 + i * 4.8 + R() * 2, r * 0.4, -38 + R() * 4));

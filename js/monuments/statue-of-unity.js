@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, V, mesh, box, at, ellipsoid, capsule, tube, smoothLathe, drape } from '../helpers.js';
+import { M, V, mesh, box, at, ellipsoid, capsule, tube, smoothLathe, drape, sheet } from '../helpers.js';
 
 // Sardar Patel, standing in dhoti, kurta and a shawl over the shoulders, arms at his sides.
 function patel(B) {
@@ -43,6 +43,6 @@ export function buildStatue() {
   f.add(box(46, 16, 46, M.marbleShade, 0, 42));
   f.add(at(patel(M.bronze), 0, 58, 0));
   g.add(box(160, 0.3, 160, M.grass));
-  g.add(box(2400, 0.4, 2400, M.water, 0, -0.32, 0));
+  g.add(sheet(2400, 2400, M.river, 0, 0.08, 0));
   return { group: g, focus: f };
 }

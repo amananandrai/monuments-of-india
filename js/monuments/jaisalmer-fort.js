@@ -16,7 +16,8 @@ export function buildJaisalmer() {
   const H = 22, RX = 92, RZ = 54, wall = [], bastions = [];
   for (let k = 0; k < 99; k++) {
     const a = (k / 99) * Math.PI * 2, x = Math.cos(a) * RX, z = Math.sin(a) * RZ;
-    bastions.push([x, H, z, 8, 13, 8]);
+    // Neighbouring crowns step by 25 cm, so overlapping tops never share a plane (99 divides by 3).
+    bastions.push([x, H, z, 8, 13 + (k % 3) * 0.25, 8]);
     wall.push([x, H, z, 7, 10, 2.6, Math.atan2(-Math.cos(a) * RZ, -Math.sin(a) * RX)]);
   }
   f.add(inst(unitCyl(12), bastions, GOLD), inst(unitBox(), wall, GOLD));

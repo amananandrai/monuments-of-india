@@ -5,6 +5,14 @@ export { surface };
 export const mat = (color, roughness = 0.85, metalness = 0, extra = {}) =>
   attachSurface(new THREE.MeshStandardMaterial({ color, roughness, metalness, envMapIntensity: 0.7, ...extra }));
 
+// Water: a dark body colour, since most of what reads as water is the sky reflected at a low angle,
+// and ripples of the given [wavelength in metres, speed, steepness].
+function water(color, wave) {
+  const m = surface(mat(color, 0.06, 0, { envMapIntensity: 1 }), 'water');
+  m.userData.wave = wave;
+  return m;
+}
+
 export const M = {
   marble: mat('#f2eee6', 0.45),
   marbleShade: mat('#c9c0b0', 0.6),
@@ -25,7 +33,10 @@ export const M = {
   gold: mat('#d6a640', 0.3, 0.85),
   concrete: mat('#aaa59b', 0.9),
   asphalt: surface(mat('#3c3c40', 0.9), 'ground'),
-  water: mat('#3e6f86', 0.18, 0.1),
+  water: water('#2b5b63', [1.2, 0.5, 0.05]),
+  sea: water('#1d4458', [9, 0.6, 0.06]),
+  river: water('#4b5847', [4, 0.9, 0.05]),
+  lake: water('#24505a', [5, 0.4, 0.035]),
   grass: mat('#6b8a4c', 0.95),
   path: mat('#cdbd9c', 0.95),
   bank: mat('#7d7059', 0.95),
@@ -83,6 +94,14 @@ export function mesh(geo, m, x = 0, y = 0, z = 0) {
 }
 
 export const box = (w, h, d, m, x = 0, y = 0, z = 0) => mesh(new THREE.BoxGeometry(w, h, d), m, x, y + h / 2, z);
+
+// A sea or river as one flat sheet at height y: no sides to cut through banks and ghats, and no
+// bottom face lying near the ground.
+export function sheet(w, d, m, x = 0, y = 0, z = 0) {
+  const o = mesh(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), m, x, y, z);
+  o.castShadow = false;
+  return o;
+}
 
 export const cyl = (rt, rb, h, m, x = 0, y = 0, z = 0, seg = 24) => mesh(new THREE.CylinderGeometry(rt, rb, h, seg), m, x, y + h / 2, z);
 

@@ -4,8 +4,12 @@ import * as THREE from 'three';
 // shader from world-space position, so no texture files are needed and a 1 m block is the same
 // size on every model regardless of how its geometry was built. Each kind also adds a bump
 // from the same pattern, weathering (grime near the ground, faint rain streaks) and a small
-// per-object tint so that repeated pieces don't look cloned.
-export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8 };
+// per-object tint so that repeated pieces don't look cloned. Water is its own kind: moving ripples
+// that tilt the normal, so the sky reflects in a broken, shifting band instead of a flat sheen.
+export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9 };
+
+// Seconds since the page opened, shared by every water material; main.js advances it each frame.
+export const waterTime = { value: 0 };
 
 // Photo textures (CC0, Poly Haven) are registered by key and blended in by triplanar projection.
 export const PHOTOS = {};
@@ -30,6 +34,22 @@ float sNoise(vec3 p) {
              mix(mix(sHash(i + vec3(0, 0, 1)), sHash(i + vec3(1, 0, 1)), f.x), mix(sHash(i + vec3(0, 1, 1)), sHash(i + vec3(1, 1, 1)), f.x), f.y), f.z);
 }
 float sFbm(vec3 p) { float a = 0.5, s = 0.0; for (int i = 0; i < 4; i++) { s += a * sNoise(p); p *= 2.03; a *= 0.5; } return s; }
+#if SURF_KIND == 9
+uniform float sTime;
+uniform vec3 sWave; // wavelength in metres, speed, steepness
+// Wave height in metres: four octaves of drifting noise, each turning in a new direction. An octave
+// fades out once its wavelength nears a few pixels (fw is metres per pixel), so distant water stays calm.
+float sWaterH(vec2 p, float fw) {
+  float t = sTime * sWave.y, h = 0.0, a = 1.0, f = 1.0 / sWave.x;
+  vec2 dir = vec2(0.8, 0.6);
+  for (int i = 0; i < 4; i++) {
+    float fade = 1.0 - smoothstep(0.12, 0.35, fw * f);
+    h += a * fade * sNoise(vec3(p * f + dir * t * f * sWave.x * 0.25, t * 0.35 + float(i) * 7.1));
+    f *= 2.13; a *= 0.48; dir = vec2(-dir.y * 0.9 + dir.x * 0.44, dir.x * 0.9 + dir.y * 0.44);
+  }
+  return h * sWave.x * sWave.z;
+}
+#endif
 // Face coordinates: horizontal faces use (x, z); walls use their horizontal axis and height.
 vec2 sFaceUV(vec3 p, vec3 n) { vec3 a = abs(n); return a.y > 0.7 ? p.xz : vec2(a.x > a.z ? p.z : p.x, p.y); }
 // Running-bond joints for blocks of size s: returns 1 on a joint, 0 on the face of a block.
@@ -97,6 +117,12 @@ const PATTERN = /* glsl */ `
   sTint = 0.68 + 0.5 * clump + 0.18 * (leaf - 0.5);
   sH = clump * 1.2 + leaf * 0.6;
   sRough = 0.1;
+#elif SURF_KIND == 9
+  // Broad patches of slightly darker and lighter water, as wind and depth vary, and wind slicks:
+  // rough and glassy streaks a few hundred metres long that break up the sky's reflection.
+  float slick = sFbm(vec3(sp.x / 260.0, sp.z / 110.0, sTime * 0.004));
+  sTint = (0.9 + 0.2 * sNoise(vec3(sp.xz / (sWave.x * 12.0), sTime * 0.02))) * (0.92 + 0.16 * slick);
+  sRough = 0.22 * smoothstep(0.35, 0.7, slick);
 #endif
 #ifdef SURF_PHOTO
   // Photo detail, projected along each world axis and blended by the surface normal, then
@@ -113,14 +139,28 @@ const PATTERN = /* glsl */ `
   sTint *= mix(0.8, 1.0, smoothstep(0.0, 5.0, sp.y));
   sTint *= 1.0 - 0.07 * smoothstep(0.55, 0.9, sNoise(vec3(sp.x * 1.3, sp.y * 0.06, sp.z * 1.3))) * (1.0 - abs(sn.y));
 #endif
-#if SURF_KIND != 5
+#if SURF_KIND != 5 && SURF_KIND != 9
   sTint *= 0.95 + 0.1 * vSurfVar;
 #endif
   diffuseColor.rgb *= sTint;
 `;
 
-function patch(shader, kind, bump, photo) {
+// The water normal comes from the wave height's slope in world x and z, so it is right at any
+// distance; only upward faces ripple, and a pool's stone sides keep their own normal.
+const WATER_NORMAL = /* glsl */ `
+  if (sn.y > 0.5) {
+    float wFw = max(length(fwidth(sp)), 1e-4), we = sWave.x * 0.04;
+    float w0 = sWaterH(sp.xz, wFw);
+    vec3 wN = normalize(vec3(-(sWaterH(sp.xz + vec2(we, 0.0), wFw) - w0) / we, 1.0, -(sWaterH(sp.xz + vec2(0.0, we), wFw) - w0) / we));
+    normal = normalize((viewMatrix * vec4(wN, 0.0)).xyz);
+  }`;
+
+function patch(shader, kind, bump, photo, wave) {
   shader.defines = { ...(shader.defines || {}), SURF_KIND: kind };
+  if (kind === KINDS.water) {
+    shader.uniforms.sTime = waterTime;
+    shader.uniforms.sWave = { value: new THREE.Vector3(...wave) };
+  }
   if (photo) {
     shader.defines.SURF_PHOTO = 1;
     shader.uniforms.sPhoto = { value: photo.texture };
@@ -147,11 +187,11 @@ function patch(shader, kind, bump, photo) {
     .replace('#include <common>', '#include <common>\n' + COMMON)
     .replace('#include <color_fragment>', '#include <color_fragment>\n' + PATTERN)
     .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n  roughnessFactor = clamp(roughnessFactor + sRough, 0.05, 1.0);')
-    .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
-  normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`);
+    .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\n' + (kind === KINDS.water ? WATER_NORMAL
+      : `  normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`));
 }
 
-const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 1.2, tiles: 0.6, foliage: 1.6 };
+const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 1.2, tiles: 0.6, foliage: 1.6, water: 0 };
 
 // Choose a surface for a material from its look, unless one was set with surface().
 function guess(m) {
@@ -171,7 +211,7 @@ export function attachSurface(m) {
   const photo = () => (m.userData.photoKey && PHOTOS[m.userData.photoKey]) || null;
   m.onBeforeCompile = (shader) => {
     const kind = guess(m);
-    if (kind !== 'none') patch(shader, KINDS[kind], BUMP[kind], photo());
+    if (kind !== 'none') patch(shader, KINDS[kind], BUMP[kind], photo(), m.userData.wave);
   };
   m.customProgramCacheKey = () => 'surf:' + guess(m) + (photo() ? ':' + m.userData.photoKey : '');
   return m;
