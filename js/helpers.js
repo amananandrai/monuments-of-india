@@ -582,3 +582,10 @@ export function elephant(m, s = 1) {
   g.scale.setScalar(s);
   return g;
 }
+// A Lucknow-style roof turret (guldasta): slender fluted shaft, tiny onion dome and spike.
+export function guldasta(h, r, m) {
+  const g = new THREE.Group();
+  g.add(cyl(r, r * 1.2, h, m, 0, 0, 0, 8), cyl(r * 1.5, r * 1.5, h * 0.06, m, 0, h * 0.55, 0, 8));
+  g.add(at(onionDome(r * 1.3, m), 0, h, 0), at(finial(r * 2.2), 0, h + r * 2.3, 0));
+  return g;
+}

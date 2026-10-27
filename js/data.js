@@ -48,6 +48,16 @@ import { buildTirumala } from './monuments/tirumala-temple.js';
 import { buildCapitolComplex } from './monuments/capitol-complex.js';
 import { buildHidimba } from './monuments/hidimba-devi-temple.js';
 import { buildBandraWorli } from './monuments/bandra-worli-sea-link.js';
+import { buildBulandDarwaza } from './monuments/buland-darwaza.js';
+import { buildPanchMahal } from './monuments/panch-mahal.js';
+import { buildBaraImambara } from './monuments/bara-imambara.js';
+import { buildRumiDarwaza } from './monuments/rumi-darwaza.js';
+import { buildChotaImambara } from './monuments/chota-imambara.js';
+import { buildItmadUdDaulah } from './monuments/itmad-ud-daulah.js';
+import { buildAkbarsTomb } from './monuments/akbars-tomb.js';
+import { buildAgraFort } from './monuments/agra-fort.js';
+import { buildBibiKaMaqbara } from './monuments/bibi-ka-maqbara.js';
+import { buildSafdarjung } from './monuments/safdarjung-tomb.js';
 
 export const MONUMENTS = [
   { id: 'qutub-minar', state: 'Delhi', lat: 28.5245, lng: 77.1855, type: 'memorial', name: 'Qutub Minar', local: 'क़ुतुब मीनार', lang: 'hi', place: 'Mehrauli, Delhi', built: '1199–1220', stat: ['Height', '72.5 m'], style: 'Indo-Islamic', material: 'Red sandstone and marble', build: buildQutub,
@@ -150,4 +160,24 @@ export const MONUMENTS = [
     facts: ['Built in 1553 by Maharaja Bahadur Singh over a cave shrine to Hidimba Devi.', 'Its three square roofs of wooden shingles are crowned by a brass cone.', 'It stands in the Dhungiri forest of tall deodar cedars above Manali.'] },
   { id: 'bandra-worli-sea-link', state: 'Maharashtra', lat: 19.0388, lng: 72.818, type: 'civic', name: 'Bandra–Worli Sea Link', local: 'वांद्रे–वरळी सागरी सेतू', lang: 'mr', place: 'Mumbai, Maharashtra', built: '2000–2009', stat: ['Length', '5.6 km'], style: 'Cable-stayed bridge', material: 'Steel and concrete', build: buildBandraWorli,
     facts: ['Opened in 2009, it links Bandra and Worli across Mahim Bay.', 'Its cable-stayed main span hangs from pylons about 128 m tall.', 'Officially the Rajiv Gandhi Sea Link, it carries eight lanes of traffic.'] },
+  { id: 'buland-darwaza', state: 'Uttar Pradesh', lat: 27.0937, lng: 77.6603, type: 'memorial', name: 'Buland Darwaza', local: 'बुलंद दरवाज़ा', lang: 'hi', place: 'Fatehpur Sikri, Uttar Pradesh', built: 'c. 1575–1601', stat: ['Height', '54 m'], style: 'Mughal', material: 'Red sandstone and white marble', build: buildBulandDarwaza,
+    facts: ['Akbar built it as the great southern gateway to the Jama Masjid of Fatehpur Sikri.', 'Including its broad flight of steps, it rises about 54 m above the ground.', 'An inscription on it quotes a saying of Jesus: the world is a bridge, so pass over it. Fatehpur Sikri is a UNESCO site since 1986.'] },
+  { id: 'panch-mahal', state: 'Uttar Pradesh', lat: 27.0942, lng: 77.6638, type: 'fort', name: 'Panch Mahal', local: 'पंच महल', lang: 'hi', place: 'Fatehpur Sikri, Uttar Pradesh', built: '1570s', stat: ['Columns', '176'], style: 'Mughal', material: 'Red sandstone', build: buildPanchMahal,
+    facts: ['A five-storey open pavilion in Akbar’s palace at Fatehpur Sikri, built to catch the breeze.', 'Each storey is smaller than the one below, rising to a single domed kiosk on top.', 'It stands on 176 carved columns; stone screens once enclosed its open sides.'] },
+  { id: 'bara-imambara', state: 'Uttar Pradesh', lat: 26.8693, lng: 80.9126, type: 'sacred', name: 'Bara Imambara', local: 'بڑا امام باڑہ', lang: 'ur', place: 'Lucknow, Uttar Pradesh', built: '1784–1791', stat: ['Central hall', '50 m long'], style: 'Nawabi (Awadhi)', material: 'Lakhauri brick and lime plaster', build: buildBaraImambara,
+    facts: ['Built by Nawab Asaf-ud-Daula, partly as a relief project during the famine of 1784.', 'Its vaulted central hall is one of the largest arched halls in the world built without beams.', 'Above it lies the Bhool Bhulaiya, a maze of narrow passages; the Asfi Mosque stands beside it.'] },
+  { id: 'rumi-darwaza', state: 'Uttar Pradesh', lat: 26.8697, lng: 80.9152, type: 'memorial', name: 'Rumi Darwaza', local: 'رومی دروازہ', lang: 'ur', place: 'Lucknow, Uttar Pradesh', built: '1784', stat: ['Height', '18 m'], style: 'Nawabi (Awadhi)', material: 'Brick and lime plaster', build: buildRumiDarwaza,
+    facts: ['Built by Nawab Asaf-ud-Daula beside the Bara Imambara.', 'Often called the Turkish Gate, it is said to be modelled on the Sublime Porte in Istanbul.', 'A flared, flower-like crown rises above its arch, topped by an eight-sided kiosk.'] },
+  { id: 'chota-imambara', state: 'Uttar Pradesh', lat: 26.873, lng: 80.9035, type: 'sacred', name: 'Chota Imambara', local: 'چھوٹا امام باڑہ', lang: 'ur', place: 'Lucknow, Uttar Pradesh', built: '1837–1838', stat: ['Completed', '1838'], style: 'Nawabi (Awadhi)', material: 'Brick and lime plaster', build: buildChotaImambara,
+    facts: ['Built by Nawab Muhammad Ali Shah as his own mausoleum and a hall for Muharram gatherings.', 'It is famed for its chandeliers and gilt mirrors; black Quranic calligraphy runs along its white facade.', 'Two small replicas of the Taj Mahal stand in its garden.'] },
+  { id: 'itmad-ud-daulah', state: 'Uttar Pradesh', lat: 27.1929, lng: 78.0311, type: 'memorial', name: 'Itmad-ud-Daulah’s Tomb', local: 'एतमाद-उद-दौला का मक़बरा', lang: 'hi', place: 'Agra, Uttar Pradesh', built: '1622–1628', stat: ['Nickname', 'Baby Taj'], style: 'Mughal', material: 'White marble with pietra dura', build: buildItmadUdDaulah,
+    facts: ['Built by the empress Nur Jahan for her father, Mirza Ghiyas Beg.', 'The first Mughal tomb faced entirely in white marble, it is often called the Baby Taj.', 'Its walls are inlaid with coloured stone in the pietra dura technique, later used at the Taj Mahal.'] },
+  { id: 'akbars-tomb', state: 'Uttar Pradesh', lat: 27.2203, lng: 77.9505, type: 'memorial', name: 'Akbar’s Tomb', local: 'अकबर का मक़बरा', lang: 'hi', place: 'Sikandra, Agra', built: '1605–1613', stat: ['Storeys', '5'], style: 'Mughal', material: 'Red sandstone and white marble', build: buildAkbarsTomb,
+    facts: ['Akbar began his own tomb; his son Jahangir completed it in 1613.', 'Its five storeys rise in tiers of kiosks to a white marble terrace open to the sky.', 'The southern gateway carries four white marble minarets, the first on a Mughal gateway.'] },
+  { id: 'agra-fort', state: 'Uttar Pradesh', lat: 27.1795, lng: 78.0211, type: 'fort', name: 'Agra Fort', local: 'आगरा का क़िला', lang: 'hi', place: 'Agra, Uttar Pradesh', built: '1565–1573', stat: ['Walls', '2.5 km'], style: 'Mughal', material: 'Red sandstone and white marble', build: buildAgraFort,
+    facts: ['Akbar rebuilt the fort in red sandstone between 1565 and 1573.', 'Shah Jahan added white marble palaces and spent his last years confined here, within sight of the Taj Mahal.', 'A UNESCO World Heritage Site since 1983.'] },
+  { id: 'bibi-ka-maqbara', state: 'Maharashtra', lat: 19.9017, lng: 75.3203, type: 'memorial', name: 'Bibi Ka Maqbara', local: 'बीबी का मकबरा', lang: 'mr', place: 'Chhatrapati Sambhajinagar, Maharashtra', built: '1660s', stat: ['Nickname', 'Taj of the Deccan'], style: 'Mughal', material: 'Marble, basalt and lime plaster', build: buildBibiKaMaqbara,
+    facts: ['Built by Prince Azam Shah in memory of his mother, Dilras Banu Begum, wife of Aurangzeb.', 'Modelled on the Taj Mahal, it is known as the Taj of the Deccan.', 'Only the dome is marble; most of the rest is basalt finished with fine lime plaster.'] },
+  { id: 'safdarjung-tomb', state: 'Delhi', lat: 28.5893, lng: 77.2106, type: 'memorial', name: 'Safdarjung’s Tomb', local: 'सफ़दरजंग का मक़बरा', lang: 'hi', place: 'Lodhi Road, New Delhi', built: '1754', stat: ['Dome', 'White marble'], style: 'Late Mughal', material: 'Red and buff sandstone, marble', build: buildSafdarjung,
+    facts: ['Built in 1754 by Nawab Shuja-ud-Daula for his father Safdarjung, prime minister of the Mughal empire.', 'It is often called the last great garden tomb of the Mughals.', 'It stands in a walled charbagh garden with water channels and corner pavilions.'] },
 ];
