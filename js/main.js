@@ -7,6 +7,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { nightState, V, box } from './helpers.js';
 import { attachSurface, surface } from './surface.js';
+import { separateCoplanar } from './coplanar.js';
 import { MONUMENTS } from './data.js';
 import { createMap } from './map.js';
 
@@ -130,6 +131,8 @@ function getBuilt(i) {
   if (!built.has(i)) {
     const r = MONUMENTS[i].build();
     r.focus = r.focus || r.group;
+    // Faces that share a plane get different depth offsets, so they don't flicker.
+    separateCoplanar(r.group, 0.005);
     scene.add(r.group);
     built.set(i, r);
   }
