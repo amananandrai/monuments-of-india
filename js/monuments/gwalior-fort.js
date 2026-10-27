@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, hemi, finial, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, hemi, finial, inst, unitBox, surface } from '../helpers.js';
 
 const SAND = mat('#c9b08a', 0.9);
 const SAND_DARK = mat('#a68d68', 0.9);
 const CLIFF = mat('#8f7a5c', 0.95, 0, { flatShading: true });
-const TILES = [mat('#2f6fa8', 0.5), mat('#3c9a6a', 0.5), mat('#e3b23c', 0.5)];
+const TILES = [mat('#2f6fa8', 0.5), mat('#3c9a6a', 0.5), mat('#e3b23c', 0.5)].map((m) => surface(m, 'tiles'));
 
 export function buildGwaliorFort() {
   const g = new THREE.Group(), f = new THREE.Group();

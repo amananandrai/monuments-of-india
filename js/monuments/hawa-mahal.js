@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import { M, box, cyl, group, at, hemi, finial } from '../helpers.js';
+import { M, mat, box, cyl, group, at, hemi, finial, surface } from '../helpers.js';
+
+const JALI = surface(mat('#d98a73', 0.85), 'lattice');
 
 export function buildHawaMahal() {
   const P = M.hawa, L = M.hawaLight, g = new THREE.Group(), f = new THREE.Group();
@@ -15,7 +17,7 @@ export function buildHawaMahal() {
       const bay = cyl(0.85, 0.85, h * 0.6, P, x, y + h * 0.1, 0.25, 6);
       bay.rotation.y = Math.PI / 6;
       f.add(bay);
-      f.add(box(0.78, h * 0.38, 0.08, M.recess, x, y + h * 0.18, 1.0));
+      f.add(box(0.78, h * 0.38, 0.08, JALI, x, y + h * 0.18, 1.0));
       f.add(at(hemi(0.85, L, 10), x, y + h * 0.7, 0.25));
     }
     f.add(box(w + 0.4, 0.22, 6.6, M.lime, 0, y + h - 0.22, -2.0));

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, ring, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, rng, ring, inst, unitBox, surface } from '../helpers.js';
 
 const RED = mat('#a5473a', 0.85);
-const BRICK = mat('#8c5a45', 0.95);
+const BRICK = surface(mat('#8c5a45', 0.95), 'brick');
 
 // The flame-shaped memorial: a tapering shaft whose outline flickers like a flame.
 function flame(h, m) {

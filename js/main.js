@@ -1,6 +1,12 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { nightState, V, box } from './helpers.js';
+import { attachSurface, surface } from './surface.js';
 import { MONUMENTS } from './data.js';
 import { createMap } from './map.js';
 
@@ -17,7 +23,9 @@ try {
   statusEl.textContent = 'Your browser could not start WebGL, which this page needs to draw the 3D models.';
   throw e;
 }
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+// Ambient occlusion is skipped on phone-sized screens, where it costs too much.
+const fancy = !matchMedia('(max-width: 760px)').matches;
+renderer.setPixelRatio(Math.min(devicePixelRatio, fancy ? 1.5 : 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -43,7 +51,7 @@ sky.renderOrder = -1;
 sky.frustumCulled = false;
 scene.add(sky);
 
-const groundMat = new THREE.MeshStandardMaterial({ roughness: 1 });
+const groundMat = surface(attachSurface(new THREE.MeshStandardMaterial({ roughness: 1, envMapIntensity: 0.5 })), 'ground');
 const ground = new THREE.Mesh(new THREE.CircleGeometry(1, 96), groundMat);
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
@@ -59,6 +67,34 @@ scene.add(sun, sun.target);
 const flood = new THREE.DirectionalLight(0xffb36b, 0);
 scene.add(flood, flood.target);
 
+// An environment map rendered from the same sky and ground, so gold, bronze and polished
+// marble reflect their surroundings; it also supplies soft ambient light.
+const pmrem = new THREE.PMREMGenerator(renderer);
+const envScene = new THREE.Scene();
+const envGroundMat = new THREE.MeshBasicMaterial();
+envScene.add(new THREE.Mesh(new THREE.SphereGeometry(10, 32, 16), skyMat));
+const envGround = new THREE.Mesh(new THREE.CircleGeometry(10, 32), envGroundMat);
+envGround.rotation.x = -Math.PI / 2;
+envGround.position.y = -0.4;
+envScene.add(envGround);
+let envRT = null;
+function updateEnvironment() {
+  if (envRT) envRT.dispose();
+  envRT = pmrem.fromScene(envScene, 0.04);
+  scene.environment = envRT.texture;
+}
+
+// Post-processing: ambient occlusion in corners and under eaves, and a glow for lights at night.
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const gtao = new GTAOPass(scene, camera, 1, 1);
+gtao.enabled = fancy;
+composer.addPass(gtao);
+const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.7, 0.5, 0.9);
+bloom.enabled = false;
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
 function applyTheme() {
   const cs = getComputedStyle(document.documentElement);
   const col = (n) => new THREE.Color(cs.getPropertyValue(n).trim() || '#888');
@@ -69,15 +105,18 @@ function applyTheme() {
   scene.fog.color.copy(col('--sky-horizon'));
   nightState.on = night;
   nightState.objects.forEach((o) => { o.visible = night; });
+  envGroundMat.color.copy(col('--ground')).multiplyScalar(0.8);
+  bloom.enabled = night;
   if (night) {
-    hemiLight.color.set('#8796c8'); hemiLight.groundColor.set('#2a2630'); hemiLight.intensity = 0.55;
+    hemiLight.color.set('#8796c8'); hemiLight.groundColor.set('#2a2630'); hemiLight.intensity = 0.3;
     sun.color.set('#a9b8ff'); sun.intensity = 0.7;
     flood.intensity = 1.6;
   } else {
-    hemiLight.color.set('#d4e4ff'); hemiLight.groundColor.set('#b49a72'); hemiLight.intensity = 0.9;
+    hemiLight.color.set('#d4e4ff'); hemiLight.groundColor.set('#b49a72'); hemiLight.intensity = 0.45;
     sun.color.set('#fff1dc'); sun.intensity = 2.8;
     flood.intensity = 0;
   }
+  updateEnvironment();
 }
 applyTheme();
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
@@ -132,6 +171,8 @@ function setEnvironment(h) {
   sc.updateProjectionMatrix();
   sun.shadow.bias = -0.0004;
   sun.shadow.normalBias = radius * 0.0012;
+  // Scale the occlusion radius to the monument: a kiosk and a 700 m bridge need very different reaches.
+  gtao.updateGtaoMaterial({ radius: THREE.MathUtils.clamp(radius * 0.04, 0.8, 24), thickness: 1, distanceExponent: 1, scale: 1.1 });
   flood.position.copy(target).addScaledVector(V(0.35, 0.3, 1).normalize(), radius * 3);
   flood.target.position.copy(target);
 }
@@ -312,6 +353,8 @@ function resize() {
   const w = stage.clientWidth, h = stage.clientHeight;
   if (!w || !h) return;
   renderer.setSize(w, h, false);
+  composer.setPixelRatio(renderer.getPixelRatio());
+  composer.setSize(w, h);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
 }
@@ -330,7 +373,7 @@ function loop(now) {
   }
   controls.update();
   sky.position.copy(camera.position);
-  renderer.render(scene, camera);
+  composer.render();
 }
 
 route();

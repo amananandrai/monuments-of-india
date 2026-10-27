@@ -10,6 +10,10 @@ The site opens on a map of India with a pin for every monument; numbered pins gr
 
 Every model is built procedurally from primitives at roughly real-world proportions, so there are no model files to download. Drag to orbit, scroll or pinch to zoom, and use ← → to switch monuments. Link to one directly with a hash, e.g. `#taj-mahal`.
 
+## Rendering
+
+Surfaces are generated in the shader (`js/surface.js`) from world position: sandstone and granite masonry with block joints, marble veining, brick courses, rock, earth, lattice screens and glazed tiles, each with a matching bump, grime near the ground, rain streaks and a slight per-piece tint. Lighting adds a sky environment map for reflections, ambient occlusion (desktop only) and bloom for lights at night.
+
 ## Map data
 
 State boundaries and India's outline come from [Natural Earth](https://www.naturalearthdata.com) (public domain), using its India point-of-view boundaries, simplified into `js/india-map.js`.

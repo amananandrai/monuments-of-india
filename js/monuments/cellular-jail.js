@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, inst, unitBox, hipRoof } from '../helpers.js';
+import { M, mat, box, cyl, at, inst, unitBox, hipRoof, surface } from '../helpers.js';
 
-const BRICK = mat('#a4573f', 0.9);
+const BRICK = surface(mat('#a4573f', 0.9), 'brick');
 const LIME = mat('#e9e3d6', 0.85);
 const DARK = mat('#2b2523', 0.8);
 

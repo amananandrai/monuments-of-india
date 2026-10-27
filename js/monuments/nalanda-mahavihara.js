@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { M, mat, box, at, rng, inst, unitBox, aroundRect } from '../helpers.js';
+import { M, mat, box, at, rng, inst, unitBox, aroundRect, surface } from '../helpers.js';
 
-const BRICK = mat('#a5553b', 0.95);
-const BRICK_DARK = mat('#844230', 0.95);
+const BRICK = surface(mat('#a5553b', 0.95), 'brick');
+const BRICK_DARK = surface(mat('#844230', 0.95), 'brick');
 
 // A ruined monastery: a square of monks' cells round a courtyard, walls broken to uneven heights.
 function vihara(size, R) {

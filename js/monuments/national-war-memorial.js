@@ -32,6 +32,6 @@ export function buildNationalWarMemorial() {
   f.add(ring(42, 4, LIGHT, 0.3, 64), ring(44, 0.8, GRANITE, 4.3, 64));
   f.add(cyl(20, 20, 0.6, LIGHT, 0, 0.3, 0, 48), cyl(4.6, 4.6, 1.2, GRANITE, 0, 0.9, 0, 24));
   f.add(mesh(new THREE.CylinderGeometry(0.4, 1.8, 15.5, 4).rotateY(Math.PI / 4).translate(0, 2.1 + 7.75, 0), GRANITE));
-  f.add(cyl(1.4, 1.8, 1.4, mat('#ff8c2e', 0.4, 0, { emissive: '#ff6a00', emissiveIntensity: 0.7 }), 0, 2.1, 0, 16));
+  f.add(cyl(1.4, 1.8, 1.4, mat('#ff8c2e', 0.4, 0, { emissive: '#ff6a00', emissiveIntensity: 2.4 }), 0, 2.1, 0, 16));
   return { group: g, focus: f, view: [0.5, 0.55, 1.15] };
 }

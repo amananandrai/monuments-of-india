@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, rng, pidaRoof, wheel, elephant, inst, unitCyl } from '../helpers.js';
+import { mat, mesh, box, cyl, at, rng, pidaRoof, wheel, elephant, inst, unitCyl, surface } from '../helpers.js';
 
 const GRANITE = mat('#a58d6e', 0.9);
 const GRANITE_DARK = mat('#7d6a53', 0.9);
-const BRICK = mat('#a86b4b', 0.9);
+const BRICK = surface(mat('#a86b4b', 0.9), 'brick');
 const BOULDER = mat('#9c7b5c', 0.95, 0, { flatShading: true });
 
 function pillaredHall(w, d, h, step) {

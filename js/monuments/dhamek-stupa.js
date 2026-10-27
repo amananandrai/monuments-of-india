@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, inst, unitBox, onFace } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, rng, inst, unitBox, onFace, surface } from '../helpers.js';
 
 const STONE = mat('#b8a88e', 0.9);
-const BRICK = mat('#9c6a4f', 0.95, 0, { flatShading: true });
+const BRICK = surface(mat('#9c6a4f', 0.95), 'brick');
 const RUIN = mat('#a5553b', 0.95);
 
 export function buildDhamek() {

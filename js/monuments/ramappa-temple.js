@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { M, mat, box, at, starPrism, pidaRoof, kalash, inst, unitCyl, unitBox, aroundRect } from '../helpers.js';
+import { M, mat, box, at, starPrism, pidaRoof, kalash, inst, unitCyl, unitBox, aroundRect, surface } from '../helpers.js';
 
 const DOLERITE = mat('#4d4a47', 0.8);
 const SAND = mat('#b49a7c', 0.9);
-const BRICK = mat('#a5674c', 0.9);
+const BRICK = surface(mat('#a5674c', 0.9), 'brick');
 
 export function buildRamappa() {
   const g = new THREE.Group(), f = new THREE.Group();

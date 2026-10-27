@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, lathe, at, onFace, archPanel, ribbed, inst, unitBox } from '../helpers.js';
+import { M, mat, box, cyl, lathe, at, onFace, archPanel, ribbed, inst, unitBox, surface } from '../helpers.js';
 
-const BRICK = mat('#a9583f', 0.85);
+const BRICK = surface(mat('#a9583f', 0.85), 'brick');
 const WHITE = mat('#ece6da', 0.8);
 const METAL = mat('#8a9097', 0.45, 0.5);
 

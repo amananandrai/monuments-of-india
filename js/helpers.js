@@ -1,7 +1,9 @@
 import * as THREE from 'three';
+import { attachSurface, surface } from './surface.js';
+export { surface };
 
 export const mat = (color, roughness = 0.85, metalness = 0, extra = {}) =>
-  new THREE.MeshStandardMaterial({ color, roughness, metalness, ...extra });
+  attachSurface(new THREE.MeshStandardMaterial({ color, roughness, metalness, envMapIntensity: 0.7, ...extra }));
 
 export const M = {
   marble: mat('#f2eee6', 0.45),
@@ -22,15 +24,15 @@ export const M = {
   steel: mat('#8e9ba5', 0.5, 0.55),
   gold: mat('#d6a640', 0.3, 0.85),
   concrete: mat('#aaa59b', 0.9),
-  asphalt: mat('#3c3c40', 0.9),
+  asphalt: surface(mat('#3c3c40', 0.9), 'ground'),
   water: mat('#3e6f86', 0.18, 0.1),
   grass: mat('#6b8a4c', 0.95),
   path: mat('#cdbd9c', 0.95),
   bank: mat('#7d7059', 0.95),
   stoneDark: mat('#2d2a2a', 0.8),
-  wood: mat('#5b4330', 0.8),
-  gild: mat('#e3b54a', 0.32, 0.5),
-  gildDeep: mat('#b8862a', 0.45, 0.5),
+  wood: surface(mat('#5b4330', 0.8), 'ground'),
+  gild: mat('#e3b54a', 0.28, 0.85),
+  gildDeep: mat('#b8862a', 0.38, 0.75),
   hawa: mat('#df8f78', 0.85),
   hawaLight: mat('#eba792', 0.85),
   lime: mat('#f3ede2', 0.85),
@@ -45,18 +47,18 @@ export const M = {
   sanchi: mat('#c8a885', 0.9),
   bodh: mat('#c3b294', 0.9),
   leaf: mat('#4e7c3b', 0.95, 0, { flatShading: true }),
-  flagSaffron: mat('#ff9933', 0.7),
-  flagWhite: mat('#f6f6f2', 0.7),
-  flagGreen: mat('#138808', 0.7),
-  navy: mat('#06038d', 0.6),
+  flagSaffron: surface(mat('#ff9933', 0.7), 'none'),
+  flagWhite: surface(mat('#f6f6f2', 0.7), 'none'),
+  flagGreen: surface(mat('#138808', 0.7), 'none'),
+  navy: surface(mat('#06038d', 0.6), 'none'),
   cream: mat('#e5d2aa', 0.85),
   khaj: mat('#d4b48c', 0.9),
   khajShade: mat('#b39570', 0.9),
   ranak: mat('#efe7d6', 0.6),
   soap: mat('#7d7a6b', 0.9),
   soapDark: mat('#5e5c50', 0.9),
-  saffron: mat('#ef7d1a', 0.7, 0, { side: THREE.DoubleSide }),
-  flagRed: mat('#d23a24', 0.7, 0, { side: THREE.DoubleSide }),
+  saffron: surface(mat('#ef7d1a', 0.7, 0, { side: THREE.DoubleSide }), 'none'),
+  flagRed: surface(mat('#d23a24', 0.7, 0, { side: THREE.DoubleSide }), 'none'),
 };
 
 // Objects shown only in the night scene (e.g. festival lighting); applyTheme toggles them.
@@ -65,7 +67,7 @@ export const nightState = { on: false, objects: [] };
 export const flatCache = new Map();
 
 export const flat = (m) => {
-  if (!flatCache.has(m)) { const c = m.clone(); c.flatShading = true; flatCache.set(m, c); }
+  if (!flatCache.has(m)) { const c = attachSurface(m.clone()); c.flatShading = true; flatCache.set(m, c); }
   return flatCache.get(m);
 };
 
@@ -93,7 +95,7 @@ export const ring = (r, h, m, y = 0, seg = 40) => {
 export const dsCache = new Map();
 
 export function doubleSided(m) {
-  if (!dsCache.has(m)) { const c = m.clone(); c.side = THREE.DoubleSide; dsCache.set(m, c); }
+  if (!dsCache.has(m)) { const c = attachSurface(m.clone()); c.side = THREE.DoubleSide; dsCache.set(m, c); }
   return dsCache.get(m);
 }
 
@@ -529,7 +531,7 @@ export function stellateTower(r, h, m, md, tiers = 7) {
 
 export function bulbPoints(pts) {
   const geo = new THREE.BufferGeometry().setFromPoints(pts);
-  const p = new THREE.Points(geo, new THREE.PointsMaterial({ color: '#ffd27a', size: 0.55, sizeAttenuation: true }));
+  const p = new THREE.Points(geo, new THREE.PointsMaterial({ color: new THREE.Color(2.4, 1.8, 0.8), size: 0.55, sizeAttenuation: true }));
   p.visible = nightState.on;
   nightState.objects.push(p);
   return p;
