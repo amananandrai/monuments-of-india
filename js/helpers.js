@@ -589,3 +589,41 @@ export function guldasta(h, r, m) {
   g.add(at(onionDome(r * 1.3, m), 0, h, 0), at(finial(r * 2.2), 0, h + r * 2.3, 0));
   return g;
 }
+// A North Indian (Nagara) temple along the z axis: the sanctum and its curved spire at z = 0,
+// with halls (mandapas) stepping out towards +z. halls: [[width, wallHeight, roofTiers, 'pida' | 'dome']].
+export function nagaraTemple({
+  w = 12, h = 22, m, shade = m, spireM = m, plinth = 2, urus = 4, uruScale = 0.5,
+  halls = [[14, 8, 4]], prof = nagaraProfile, flagM = M.saffron, hallM = m, crown = null,
+} = {}) {
+  const g = new THREE.Group();
+  const sw = w * 1.15;
+  g.add(box(sw, w * 0.7, sw, m, 0, plinth, 0));
+  const sy = plinth + w * 0.7;
+  const spire = shikhara(w, h, spireM, prof, 16);
+  g.add(at(spire, 0, sy, 0), at(crown || flag(Math.max(3, w * 0.45), flagM), 0, sy + spire.userData.top - 0.5, 0));
+  const ring = (n, dist, scale, hs) => {
+    for (let k = 0; k < n; k++) {
+      const a = (k / n) * Math.PI * 2 + (n === 4 ? 0 : Math.PI / n);
+      g.add(onFace(at(shikhara(w * scale, h * hs, spireM, prof, 10), 0, sy, 0), a, dist));
+    }
+  };
+  if (urus >= 4) ring(4, w * 0.5, uruScale, 0.62);
+  if (urus >= 8) ring(4, w * 0.72, uruScale * 0.62, 0.38);
+  let z = sw / 2;
+  for (const [hw, hh, tiers, kind = 'pida'] of halls) {
+    z += hw / 2;
+    g.add(box(hw, hh, hw, hallM, 0, plinth, z), box(hw + 0.8, 0.6, hw + 0.8, shade, 0, plinth + hh, z));
+    const ry = plinth + hh + 0.6;
+    if (kind === 'dome') {
+      g.add(cyl(hw * 0.36, hw * 0.36, hw * 0.12, hallM, 0, ry, z, 24), at(onionDome(hw * 0.36, spireM), 0, ry + hw * 0.12, z), at(kalash(hw * 0.12), 0, ry + hw * 0.12 + hw * 0.65, z));
+    } else {
+      const r = pidaRoof(hw * 0.95, hw * 0.4, tiers, Math.max(0.6, hw * 0.06), hallM, shade);
+      g.add(at(r, 0, ry, z), at(bell(hw * 0.18, hallM), 0, ry + r.userData.top, z), at(kalash(hw * 0.12), 0, ry + r.userData.top + hw * 0.18, z));
+    }
+    z += hw / 2;
+  }
+  g.add(box(sw + 8, plinth, z + sw / 2 + 6, shade, 0, 0, (z - sw / 2) / 2 + 3));
+  for (let k = 0; k < 4; k++) g.add(box(6, plinth - k * (plinth / 4), 1.5, shade, 0, 0, z + 6.75 + k * 1.5));
+  g.userData.length = z;
+  return g;
+}

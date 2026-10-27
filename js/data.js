@@ -58,6 +58,17 @@ import { buildAkbarsTomb } from './monuments/akbars-tomb.js';
 import { buildAgraFort } from './monuments/agra-fort.js';
 import { buildBibiKaMaqbara } from './monuments/bibi-ka-maqbara.js';
 import { buildSafdarjung } from './monuments/safdarjung-tomb.js';
+import { buildSomnath } from './monuments/somnath-temple.js';
+import { buildMallikarjuna } from './monuments/mallikarjuna-temple.js';
+import { buildMahakaleshwar } from './monuments/mahakaleshwar-temple.js';
+import { buildOmkareshwar } from './monuments/omkareshwar-temple.js';
+import { buildBhimashankar } from './monuments/bhimashankar-temple.js';
+import { buildKashiVishwanath } from './monuments/kashi-vishwanath-temple.js';
+import { buildTrimbakeshwar } from './monuments/trimbakeshwar-temple.js';
+import { buildBaidyanath } from './monuments/baidyanath-temple.js';
+import { buildNageshwar } from './monuments/nageshwar-temple.js';
+import { buildRamanathaswamy } from './monuments/ramanathaswamy-temple.js';
+import { buildGrishneshwar } from './monuments/grishneshwar-temple.js';
 
 export const MONUMENTS = [
   { id: 'qutub-minar', state: 'Delhi', lat: 28.5245, lng: 77.1855, type: 'memorial', name: 'Qutub Minar', local: 'क़ुतुब मीनार', lang: 'hi', place: 'Mehrauli, Delhi', built: '1199–1220', stat: ['Height', '72.5 m'], style: 'Indo-Islamic', material: 'Red sandstone and marble', build: buildQutub,
@@ -180,4 +191,26 @@ export const MONUMENTS = [
     facts: ['Built by Prince Azam Shah in memory of his mother, Dilras Banu Begum, wife of Aurangzeb.', 'Modelled on the Taj Mahal, it is known as the Taj of the Deccan.', 'Only the dome is marble; most of the rest is basalt finished with fine lime plaster.'] },
   { id: 'safdarjung-tomb', state: 'Delhi', lat: 28.5893, lng: 77.2106, type: 'memorial', name: 'Safdarjung’s Tomb', local: 'सफ़दरजंग का मक़बरा', lang: 'hi', place: 'Lodhi Road, New Delhi', built: '1754', stat: ['Dome', 'White marble'], style: 'Late Mughal', material: 'Red and buff sandstone, marble', build: buildSafdarjung,
     facts: ['Built in 1754 by Nawab Shuja-ud-Daula for his father Safdarjung, prime minister of the Mughal empire.', 'It is often called the last great garden tomb of the Mughals.', 'It stands in a walled charbagh garden with water channels and corner pavilions.'] },
+  { id: 'somnath-temple', state: 'Gujarat', lat: 20.888, lng: 70.4012, type: 'sacred', name: 'Somnath Temple', local: 'સોમનાથ મંદિર', lang: 'gu', place: 'Prabhas Patan, Gujarat', built: 'Rebuilt 1951', stat: ['Jyotirlinga', '1st of 12'], style: 'Maru-Gurjara (Chalukya)', material: 'Sandstone', build: buildSomnath,
+    facts: ['Revered as the first of the twelve Jyotirlingas, on the Arabian Sea coast.', 'Destroyed and rebuilt many times; the present temple was completed in 1951.', 'An arrow pillar on its sea wall marks that no land lies in a straight line between it and the South Pole.'] },
+  { id: 'mallikarjuna-temple', state: 'Andhra Pradesh', lat: 16.074, lng: 78.8681, type: 'sacred', name: 'Mallikarjuna Temple', local: 'శ్రీశైలం మల్లికార్జున ఆలయం', lang: 'te', place: 'Srisailam, Andhra Pradesh', built: 'Expanded 14th–16th c.', stat: ['Jyotirlinga', 'and Shakti Peetha'], style: 'Dravidian', material: 'Stone', build: buildMallikarjuna,
+    facts: ['On Srisailam hill in the Nallamala forest, above the Krishna river.', 'It is both a Jyotirlinga and a Shakti Peetha, with the shrine of the goddess Bhramaramba.', 'Its high outer walls are carved with friezes; its gopurams were raised under Vijayanagara rulers.'] },
+  { id: 'mahakaleshwar-temple', state: 'Madhya Pradesh', lat: 23.1828, lng: 75.7682, type: 'sacred', name: 'Mahakaleshwar Temple', local: 'महाकालेश्वर मंदिर', lang: 'hi', place: 'Ujjain, Madhya Pradesh', built: 'Rebuilt 18th c.', stat: ['Lingam faces', 'South'], style: 'Bhumija and Maratha', material: 'Stone', build: buildMahakaleshwar,
+    facts: ['Beside the Shipra river in Ujjain; its lingam is the only Jyotirlinga that faces south.', 'Its Bhasma Aarti, offered with sacred ash before dawn each day, is famous.', 'The temple has three levels; the Nagchandreshwar shrine on top opens only on Nag Panchami.'] },
+  { id: 'omkareshwar-temple', state: 'Madhya Pradesh', lat: 22.2456, lng: 76.1517, type: 'sacred', name: 'Omkareshwar Temple', local: 'ओंकारेश्वर मंदिर', lang: 'hi', place: 'Mandhata island, Madhya Pradesh', built: 'Rebuilt 18th c.', stat: ['River', 'Narmada'], style: 'Nagara', material: 'Stone', build: buildOmkareshwar,
+    facts: ['On Mandhata island in the Narmada, which is said to be shaped like the sacred syllable Om.', 'Pilgrims reach the island by bridge or boat and bathe at its ghats.', 'Mamleshwar, across the river, is worshipped together with it as one Jyotirlinga.'] },
+  { id: 'bhimashankar-temple', state: 'Maharashtra', lat: 19.0719, lng: 73.5357, type: 'sacred', name: 'Bhimashankar Temple', local: 'भीमाशंकर मंदिर', lang: 'mr', place: 'Sahyadri hills, Maharashtra', built: '13th–18th c.', stat: ['Source of', 'Bhima river'], style: 'Nagara', material: 'Black basalt', build: buildBhimashankar,
+    facts: ['In the forested Sahyadri hills, at the source of the Bhima river.', 'Its stone temple combines older Nagara work with an 18th-century hall added by Nana Phadnavis.', 'The forest around it is a wildlife sanctuary, home of the Indian giant squirrel.'] },
+  { id: 'kashi-vishwanath-temple', state: 'Uttar Pradesh', lat: 25.3109, lng: 83.0107, type: 'sacred', name: 'Kashi Vishwanath Temple', local: 'काशी विश्वनाथ मंदिर', lang: 'hi', place: 'Varanasi, Uttar Pradesh', built: '1780', stat: ['Corridor', '2021'], style: 'Nagara', material: 'Stone with gold plating', build: buildKashiVishwanath,
+    facts: ['The present temple was built in 1780 by the Maratha queen Ahilyabai Holkar.', 'Maharaja Ranjit Singh had its spire and dome covered in gold in 1835.', 'The Kashi Vishwanath Corridor, opened in 2021, links it directly to the ghats of the Ganga.'] },
+  { id: 'trimbakeshwar-temple', state: 'Maharashtra', lat: 19.9322, lng: 73.5309, type: 'sacred', name: 'Trimbakeshwar Temple', local: 'त्र्यंबकेश्वर मंदिर', lang: 'mr', place: 'Trimbak, Nashik', built: '1755–1786', stat: ['Lingam', 'Three faces'], style: 'Nagara', material: 'Black basalt', build: buildTrimbakeshwar,
+    facts: ['Built in black basalt by the Peshwa Balaji Bajirao between 1755 and 1786.', 'Its lingam has three faces, for Brahma, Vishnu and Shiva.', 'It stands below the Brahmagiri hills, where the Godavari river rises.'] },
+  { id: 'baidyanath-temple', state: 'Jharkhand', lat: 24.4924, lng: 86.7003, type: 'sacred', name: 'Baidyanath Temple', local: 'बाबा बैद्यनाथ धाम', lang: 'hi', place: 'Deoghar, Jharkhand', built: '16th c. (present form)', stat: ['Temples', '22'], style: 'Nagara', material: 'Stone and lime plaster', build: buildBaidyanath,
+    facts: ['The Baba Baidyanath Dham complex in Deoghar has 22 temples; it is also a Shakti Peetha.', 'Its spire is crowned by a panchashula, a five-pointed trident, instead of the usual trishula.', 'In the month of Shravan, pilgrims walk over 100 km carrying Ganga water to offer here.'] },
+  { id: 'nageshwar-temple', state: 'Gujarat', lat: 22.3355, lng: 69.0874, type: 'sacred', name: 'Nageshwar Temple', local: 'નાગેશ્વર મંદિર', lang: 'gu', place: 'Dwarka, Gujarat', built: 'Rebuilt 1990s', stat: ['Shiva statue', '25 m'], style: 'Nagara', material: 'Pink stone', build: buildNageshwar,
+    facts: ['On the road between Dwarka and Beyt Dwarka on the Saurashtra coast.', 'A 25 m statue of a seated Shiva rises in the temple garden.', 'Nageshwar means lord of serpents; devotees pray here for protection from poisons.'] },
+  { id: 'ramanathaswamy-temple', state: 'Tamil Nadu', lat: 9.2881, lng: 79.3174, type: 'sacred', name: 'Ramanathaswamy Temple', local: 'இராமநாதசுவாமி கோயில்', lang: 'ta', place: 'Rameswaram, Tamil Nadu', built: '12th–17th c.', stat: ['Corridors', 'about 1.2 km'], style: 'Dravidian', material: 'Granite', build: buildRamanathaswamy,
+    facts: ['On Rameswaram island; tradition says Rama worshipped Shiva here before crossing to Lanka.', 'Its pillared corridors, about 1.2 km in all, are the longest of any Hindu temple.', 'Pilgrims bathe in 22 sacred wells (theerthams) inside the temple.'] },
+  { id: 'grishneshwar-temple', state: 'Maharashtra', lat: 20.0247, lng: 75.1697, type: 'sacred', name: 'Grishneshwar Temple', local: 'घृष्णेश्वर मंदिर', lang: 'mr', place: 'Verul, near Ellora', built: '18th century', stat: ['Jyotirlinga', '12th of 12'], style: 'Nagara (Maratha)', material: 'Red basalt', build: buildGrishneshwar,
+    facts: ['Near the Ellora Caves; it is counted as the last of the twelve Jyotirlingas.', 'It was rebuilt in red basalt in the 18th century by Ahilyabai Holkar.', 'Its five-tiered spire and walls are carved with the ten avatars of Vishnu and other figures.'] },
 ];
