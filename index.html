@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Twenty Indian landmarks, from the Qutub Minar to the Howrah Bridge, modelled in interactive 3D.">
+<meta name="description" content="Thirty Indian landmarks, from the Qutub Minar to the Howrah Bridge, modelled in interactive 3D.">
 <title>Monuments of India</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -303,7 +303,7 @@ details.facts ul {
     <header class="masthead">
       <h1>Monuments of India</h1>
       <p class="hi" lang="hi">भारत के स्मारक</p>
-      <p class="sub">Twenty landmarks modelled in 3D at their real proportions. Pick one, then drag to walk around it.</p>
+      <p class="sub">Thirty landmarks modelled in 3D at their real proportions. Pick one, then drag to walk around it.</p>
     </header>
     <ul class="list" id="list"></ul>
   </aside>
@@ -412,6 +412,12 @@ const M = {
   flagWhite: mat('#f6f6f2', 0.7),
   flagGreen: mat('#138808', 0.7),
   navy: mat('#06038d', 0.6),
+  cream: mat('#e5d2aa', 0.85),
+  khaj: mat('#d4b48c', 0.9),
+  khajShade: mat('#b39570', 0.9),
+  ranak: mat('#efe7d6', 0.6),
+  soap: mat('#7d7a6b', 0.9),
+  soapDark: mat('#5e5c50', 0.9),
   saffron: mat('#ef7d1a', 0.7, 0, { side: THREE.DoubleSide }),
   flagRed: mat('#d23a24', 0.7, 0, { side: THREE.DoubleSide }),
 };
@@ -1292,6 +1298,396 @@ function instBoxes(list, m) {
   return im;
 }
 
+// Instanced copies of a base-anchored geometry: list items are [x, y, z, sx, sy, sz, rotY?].
+function inst(geo, list, m) {
+  const im = new THREE.InstancedMesh(geo, m, list.length);
+  const o = new THREE.Object3D();
+  list.forEach(([x, y, z, sx, sy, sz, ry = 0], i) => {
+    o.position.set(x, y, z);
+    o.rotation.set(0, ry, 0);
+    o.scale.set(sx, sy, sz);
+    o.updateMatrix();
+    im.setMatrixAt(i, o.matrix);
+  });
+  im.castShadow = true;
+  im.receiveShadow = true;
+  return im;
+}
+const unitBox = () => new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0);
+const unitCyl = (seg = 12) => new THREE.CylinderGeometry(0.5, 0.5, 1, seg).translate(0, 0.5, 0);
+const unitHemi = (seg = 20) => new THREE.SphereGeometry(0.5, seg, Math.max(4, seg / 2), 0, Math.PI * 2, 0, Math.PI / 2);
+const unitSpire = () => new THREE.ConeGeometry(0.5, 1, 4).rotateY(Math.PI / 4).translate(0, 0.5, 0);
+// Points spaced along the edges of a rectangle, for colonnades and rows of shrine cells.
+function aroundRect(w, d, step, inset = 0) {
+  const pts = [], hw = w / 2 - inset, hd = d / 2 - inset;
+  for (let x = -hw; x <= hw + 1e-6; x += step) pts.push([x, -hd, 0], [x, hd, Math.PI]);
+  for (let z = -hd + step; z < hd - 1e-6; z += step) pts.push([-hw, z, Math.PI / 2], [hw, z, -Math.PI / 2]);
+  return pts;
+}
+// A square prism with chamfered corners (Mughal tomb plan), base at y = 0.
+function chamferPrism(s, c, h, m) {
+  const sh = new THREE.Shape();
+  sh.moveTo(-s + c, -s); sh.lineTo(s - c, -s); sh.lineTo(s, -s + c); sh.lineTo(s, s - c);
+  sh.lineTo(s - c, s); sh.lineTo(-s + c, s); sh.lineTo(-s, s - c); sh.lineTo(-s, -s + c); sh.closePath();
+  const geo = new THREE.ExtrudeGeometry(sh, { depth: h, bevelEnabled: false });
+  geo.rotateX(-Math.PI / 2);
+  return mesh(geo, m);
+}
+// A star-shaped prism (Hoysala stellate plan), base at y = 0.
+function starPrism(n, rO, rI, h, m) {
+  const sh = new THREE.Shape();
+  for (let i = 0; i < n * 2; i++) {
+    const a = (i / (n * 2)) * Math.PI * 2, r = i % 2 ? rI : rO;
+    if (i === 0) sh.moveTo(Math.cos(a) * r, Math.sin(a) * r); else sh.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+  }
+  sh.closePath();
+  const geo = new THREE.ExtrudeGeometry(sh, { depth: h, bevelEnabled: false });
+  geo.rotateX(-Math.PI / 2);
+  return mesh(geo, m);
+}
+// A half-ring arch spanning between two points at the same height.
+function hoopArch(a, b, m, tube = 0.18) {
+  const r = a.distanceTo(b) / 2;
+  const o = mesh(new THREE.TorusGeometry(r, tube, 6, 18, Math.PI), m);
+  o.position.copy(a).add(b).multiplyScalar(0.5);
+  o.rotation.y = -Math.atan2(b.z - a.z, b.x - a.x);
+  return o;
+}
+
+/* ----- Delhi ----- */
+function buildOldParliament() {
+  const Rd = M.red, Bf = M.buff, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(cyl(135, 135, 0.15, M.grass, 0, 0, 0, 64));
+  f.add(cyl(88, 89, 2, M.redLight, 0, 0, 0, 96), cyl(85, 85, 8, Rd, 0, 2, 0, 96));
+  const wins = [], cols = [];
+  for (let k = 0; k < 72; k++) { const a = (k / 72) * Math.PI * 2; wins.push([Math.sin(a) * 85.05, 3.5, Math.cos(a) * 85.05, 2.4, 4, 0.3, a]); }
+  for (let k = 0; k < 144; k++) { const a = (k / 144) * Math.PI * 2; cols.push([Math.sin(a) * 84.4, 10.8, Math.cos(a) * 84.4, 1.5, 9, 1.5]); }
+  f.add(inst(unitBox(), wins, M.recess), inst(unitCyl(14), cols, Bf));
+  f.add(cyl(86, 86, 0.8, Rd, 0, 10, 0, 96), cyl(81, 81, 10, Bf, 0, 10, 0, 96));
+  f.add(cyl(86.2, 86.2, 1.6, Bf, 0, 19.8, 0, 96), ring(86, 1.4, Rd, 21.4, 96));
+  f.add(cyl(80.5, 80.5, 0.6, M.concrete, 0, 20, 0, 96));
+  // Three chambers radiating from the domed Central Hall
+  for (let k = 0; k < 3; k++) {
+    const c = group(box(30, 4, 44, Bf, 0, 20.6, 45), box(31, 0.6, 45, Rd, 0, 24.6, 45), at(hemi(8, Bf, 24), 0, 25.2, 45));
+    f.add(c.rotateY((k * 2 * Math.PI) / 3 + Math.PI / 3));
+  }
+  f.add(cyl(18, 18, 8, Bf, 0, 20, 0, 48), cyl(18.6, 18.6, 1, Rd, 0, 27, 0, 48));
+  const dome = hemi(18, Bf, 48);
+  dome.position.y = 28;
+  dome.scale.y = 0.45;
+  f.add(dome);
+  for (let k = 0; k < 6; k++) {
+    const p = group(box(20, 13, 9, Bf, 0, 2, 89), box(24, 2, 12, Rd, 0, 0, 90), box(21, 1, 10, Rd, 0, 15, 89));
+    f.add(p.rotateY((k * Math.PI) / 3));
+  }
+  return { group: g, focus: f, view: [0.8, 0.42, 1.2] };
+}
+
+function buildRashtrapatiBhavan() {
+  const Rd = M.red, Cr = M.cream, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(box(240, 0.2, 200, M.path, 0, 0, 110));
+  for (const s of [-1, 1]) g.add(box(70, 0.25, 160, M.grass, s * 70, 0, 110));
+  f.add(box(196, 10, 64, Rd), box(186, 12, 58, Cr, 0, 10, 0), box(190, 1, 62, M.buff, 0, 21.6, 0));
+  for (const s of [-1, 1]) {
+    f.add(box(36, 10, 30, Rd, s * 80, 0, 44), box(34, 12, 28, Cr, s * 80, 10, 44), box(36, 1, 30, M.buff, s * 80, 22, 44));
+    f.add(at(chhatri(3, 8, Cr), s * 80, 23, 44), at(chhatri(3, 8, Cr), s * 86, 22.6, -24));
+  }
+  // Durbar Hall portico: twelve columns over a broad flight of steps
+  f.add(box(70, 10, 10, Rd, 0, 0, 37));
+  for (let k = 0; k < 5; k++) f.add(box(60, 10 - k * 2, 3, Rd, 0, 0, 43.5 + k * 3));
+  for (let k = 0; k < 12; k++) f.add(cyl(1.3, 1.4, 13, Cr, -27.5 + k * 5, 10, 38, 16));
+  f.add(box(64, 2.4, 8, Cr, 0, 23, 37), box(66, 0.8, 9, M.buff, 0, 25.4, 37));
+  // The great dome on its drum, with a railing band like the one at Sanchi
+  f.add(cyl(15, 15, 5, Cr, 0, 22.6, 0, 48), cyl(15.6, 15.6, 1.4, Rd, 0, 27.6, 0, 48));
+  f.add(at(hemi(14.5, Cr, 48), 0, 29, 0), cyl(1.4, 2, 2.4, Cr, 0, 43.2, 0, 16));
+  const col = group(box(7, 6, 7, Rd), cyl(1.3, 1.7, 30, Cr, 0, 6, 0, 16), at(mesh(new THREE.SphereGeometry(1.6, 16, 12), M.bronze), 0, 37.2, 0), at(finial(4), 0, 38.6, 0));
+  g.add(at(col, 0, 0, 120));
+  return { group: g, focus: f, view: [0.5, 0.26, 1.2] };
+}
+
+function persianDome(r, m) {
+  return lathe([[1, 0], [1.04, 0.35], [0.96, 0.72], [0.72, 1.02], [0.4, 1.2], [0, 1.27]].map(([a, b]) => [a * r, b * r]), m, 48);
+}
+function buildHumayun() {
+  const Rd = M.red, Mb = M.marble, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(box(280, 0.15, 280, M.grass));
+  for (const [w, d] of [[4, 280], [280, 4]]) g.add(box(w + 4, 0.25, d + 4, M.path), box(w, 0.35, d, M.water));
+  // Arcaded plinth
+  const P = 6.5, S = 48;
+  f.add(box(96, P, 96, Rd), box(97, 0.6, 97, Mb, 0, P - 0.6, 0));
+  for (const a of FACES) {
+    for (let k = -7; k <= 7; k++) if (k) f.add(onFace(at(archPanel(3.6, 5, true, M.recess, 0.2), 0, 0.5, 0), a, S, k * 6));
+    for (let k = 0; k < 4; k++) f.add(onFace(box(10, P - k * 1.6, 2, Rd, 0, 0, 0), a, S + 1 + k * 2));
+  }
+  // The tomb: chamfered square with white-framed iwans
+  const s = 24, c = 8, H = 18;
+  f.add(at(chamferPrism(s, c, H, Rd), 0, P, 0), box(2 * s + 0.6, 1, 2 * s + 0.6, Mb, 0, P + H - 1));
+  for (const a of FACES) {
+    f.add(onFace(box(18, H + 2, 1.2, Mb, 0, P), a, s + 0.6));
+    f.add(onFace(at(archPanel(13, 17, true, M.redLight, 0.3), 0, P + 0.4, 0), a, s + 1.2));
+    f.add(onFace(at(archPanel(6, 9, true, M.recess, 0.3), 0, P + 0.4, 0), a, s + 1.52));
+    const ca = a + Math.PI / 4, cd = (s - c / 2) * Math.SQRT2;
+    for (const y of [1, 10]) f.add(onFace(at(archPanel(5, 7.5, true, M.recess, 0.25), 0, P + y, 0), ca, cd));
+  }
+  for (const x of [-14, 14]) for (const z of [-14, 14]) f.add(at(chhatri(3, 8, Rd, Mb), x, P + H, z));
+  f.add(cyl(12.5, 12.5, 5, Mb, 0, P + H, 0, 48), cyl(13, 13, 0.6, Rd, 0, P + H + 4.4, 0, 48));
+  f.add(at(persianDome(12, Mb), 0, P + H + 5, 0), at(finial(5), 0, P + H + 5 + 15, 0));
+  return { group: g, focus: f, view: [0.9, 0.36, 1.25] };
+}
+
+function domeBands(cx, cy, cz, r, m) {
+  const g = new THREE.Group();
+  for (const t of [0.22, 0.5, 0.8]) {
+    const i = Math.floor(t * (ONION.length - 1)), u = t * (ONION.length - 1) - i;
+    const rr = (ONION[i][0] + (ONION[i + 1][0] - ONION[i][0]) * u) * r, yy = (ONION[i][1] + (ONION[i + 1][1] - ONION[i][1]) * u) * r;
+    g.add(cyl(rr * 1.015, rr * 1.015, r * 0.06, m, cx, cy + yy - r * 0.03, cz, 48));
+  }
+  return g;
+}
+function buildJamaMasjid() {
+  const Rd = M.red, Mb = M.marble, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(box(200, 0.2, 200, M.path));
+  const P = 6;
+  f.add(box(110, P, 110, Rd), box(96, 0.2, 96, M.redLight, 0, P, 6));
+  // Cloisters on three sides, with gateways east, north and south
+  for (const [w, d, x, z] of [[110, 8, 0, 51], [8, 102, -51, 0], [8, 102, 51, 0]]) f.add(box(w, 7, d, Rd, x, P, z), box(w + 0.4, 0.5, d + 0.4, Mb, x, P + 7, z));
+  const gate = (big) => {
+    const w = big ? 24 : 18, h = big ? 18 : 15, gr = new THREE.Group();
+    gr.add(box(w, h, 14, Rd), box(w + 0.4, 0.6, 14.4, Mb, 0, h - 0.6), at(archPanel(w * 0.42, h * 0.75, true, M.recess, 0.3), 0, 0.3, 7));
+    for (const x of [-w / 2 + 2, w / 2 - 2]) gr.add(at(chhatri(1.8, 5.5, Rd, Mb), x, h, 5));
+    gr.add(at(onionDome(3.2, Mb), 0, h, 0));
+    return gr;
+  };
+  f.add(at(gate(true), 0, P, 51));
+  for (let k = 0; k < 6; k++) f.add(box(34 - k * 2, P - k, 3, Rd, 0, 0, 59.5 + k * 3));
+  for (const s of [-1, 1]) f.add(at(gate(false), s * 51, P, 0).rotateY(s * Math.PI / 2));
+  // Prayer hall with eleven arches, three striped marble domes and two minarets
+  const hz = -40;
+  f.add(box(80, 14, 24, Rd, 0, P, hz), box(80.4, 0.6, 24.4, Mb, 0, P + 13.4, hz));
+  f.add(box(18, 20, 1.2, Mb, 0, P, hz + 12.6), at(archPanel(12, 17, true, M.recess, 0.4), 0, P + 0.4, hz + 13.2));
+  for (let k = 0; k < 5; k++) for (const s of [-1, 1]) f.add(at(archPanel(4.4, 8.5, true, M.recess, 0.3), s * (14 + k * 5.6), P + 0.5, hz + 12));
+  [[-18, 7], [0, 9.5], [18, 7]].forEach(([x, r]) => {
+    f.add(cyl(r * 0.92, r * 0.92, 3, Mb, x, P + 14, hz - 2, 32));
+    f.add(at(onionDome(r, Mb), x, P + 17, hz - 2), domeBands(x, P + 17, hz - 2, r, M.stoneDark), at(finial(r * 0.6), x, P + 17 + r * 1.78, hz - 2));
+  });
+  for (const s of [-1, 1]) f.add(at(minaret(34, 2.2, Rd, { capM: Mb }), s * 40, P, hz + 12));
+  f.add(box(16, 0.6, 12, Mb, 0, P, 8), box(14, 0.7, 10, M.water, 0, P, 8));
+  for (const x of [-51, 51]) f.add(at(chhatri(3, 8, Rd, Mb), x, P + 7.5, 51));
+  return { group: g, focus: f, view: [0.65, 0.42, 1.2] };
+}
+
+function buildNewParliament() {
+  const Rd = M.red, Bf = M.buff, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(cyl(130, 130, 0.15, M.grass, 0, 0, 0, 64));
+  // Triangular plan with chamfered corners; built from world (x, z) points
+  const R = 74, c = 20, V3 = [0, 1, 2].map((i) => { const a = Math.PI / 2 + (i * 2 * Math.PI) / 3; return [Math.cos(a) * R, Math.sin(a) * R]; });
+  const poly = [];
+  V3.forEach((v, i) => {
+    const p = V3[(i + 2) % 3], n = V3[(i + 1) % 3];
+    const to = (q) => { const dx = q[0] - v[0], dz = q[1] - v[1], l = Math.hypot(dx, dz); return [v[0] + (dx / l) * c, v[1] + (dz / l) * c]; };
+    poly.push(to(p), to(n));
+  });
+  const prism = (scale, h, m, y) => {
+    const sh = new THREE.Shape();
+    poly.forEach(([x, z], i) => (i ? sh.lineTo(x * scale, -z * scale) : sh.moveTo(x * scale, -z * scale)));
+    sh.closePath();
+    const geo = new THREE.ExtrudeGeometry(sh, { depth: h, bevelEnabled: false });
+    geo.rotateX(-Math.PI / 2);
+    return mesh(geo, m, 0, y, 0);
+  };
+  f.add(prism(1.04, 1.5, Rd, 0), prism(1, 6, Rd, 1.5), prism(0.98, 15, Bf, 7.5), prism(1.0, 1.2, Rd, 22.5), prism(0.95, 0.3, M.cream, 23.7));
+  // Vertical stone fins around the upper storeys
+  const fins = [];
+  poly.forEach(([x0, z0], i) => {
+    const [x1, z1] = poly[(i + 1) % poly.length], len = Math.hypot(x1 - x0, z1 - z0), n = Math.floor(len / 2.6);
+    const nx = (z1 - z0) / len, nz = -(x1 - x0) / len, ry = Math.atan2(x1 - x0, z1 - z0) + Math.PI / 2;
+    for (let k = 1; k < n; k++) {
+      const t = k / n;
+      fins.push([x0 + (x1 - x0) * t + nx * 0.5, 7.5, z0 + (z1 - z0) * t + nz * 0.5, 1.2, 15, 0.8, ry]);
+    }
+  });
+  f.add(inst(unitBox(), fins, Bf));
+  // Ceremonial entrances at the three corners
+  V3.forEach(([x, z]) => {
+    const a = Math.atan2(x, z), d = Math.hypot(x, z) - c * 0.866 + 3;
+    f.add(onFace(group(box(18, 18, 6, Bf, 0, 1.5), box(19, 1.2, 7, Rd, 0, 19.5), at(archPanel(8, 13, false, M.recess, 0.3), 0, 1.5, 3)), a, d));
+  });
+  // Constitution Hall at the centre, crowned by the bronze National Emblem
+  const hall = cyl(20, 20, 5, Bf, 0, 23.7, 0, 3);
+  hall.rotation.y = Math.PI / 6;
+  f.add(hall, box(4, 2, 4, Bf, 0, 28.7, 0), cyl(2.4, 3, 1.4, M.bronze, 0, 30.7, 0, 16), cyl(2.7, 2.7, 0.9, M.bronze, 0, 32.1, 0, 16));
+  for (const a of FACES) f.add(onFace(group(box(1.4, 2.4, 2.4, M.bronze, 0, 33), at(mesh(new THREE.SphereGeometry(0.9, 12, 10), M.bronze), 0, 35.6, 0.3)), a, 1.1));
+  return { group: g, focus: f, view: [0.85, 0.4, 1.2] };
+}
+
+/* ----- Carved temples ----- */
+function buildDilwara() {
+  const Mb = M.marble, Sh = M.marbleShade, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(box(130, 0.2, 140, M.grass));
+  f.add(box(48, 1.5, 70, Sh), box(48.6, 5, 0.8, M.plaster, 0, 1.5, 35));
+  // Rows of shrine cells (devakulikas) with little spires, behind a pillared cloister
+  const cells = aroundRect(44, 66, 3.2, 1.6), cellList = [], spires = [], posts = [];
+  cells.forEach(([x, z, ry]) => {
+    cellList.push([x, 1.5, z, 3, 4, 3, ry]);
+    spires.push([x, 5.5, z, 2.6, 3.4, 2.6, ry]);
+    posts.push([x + Math.sin(ry) * 3.2, 1.5, z + Math.cos(ry) * 3.2, 0.5, 3.6, 0.5]);
+  });
+  f.add(inst(unitBox(), cellList, Mb), inst(unitSpire(), spires, Mb), inst(unitCyl(10), posts, Mb));
+  f.add(at(group(...[[44, 3.6, -29.4], [44, 3.6, 29.4]].map(([w, d, z]) => box(w - 6, 0.4, d, Sh, 0, 5.1, z)), ...[-19.4, 19.4].map((x) => box(3.6, 0.4, 60, Sh, x, 5.1, 0)))));
+  // Main shrine, closed hall and the open Ranga Mandapa with its ribbed dome and hoop arches
+  f.add(box(10, 8, 10, Mb, 0, 1.5, -16), at(shikhara(9, 12, Mb, nagaraProfile, 12), 0, 9.5, -16));
+  const gm = pidaRoof(10, 5, 4, 0.8, Mb, Sh);
+  f.add(box(10, 7, 10, Mb, 0, 1.5, -5), at(gm, 0, 8.5, -5), at(bell(2.6, Mb), 0, 8.5 + gm.userData.top, -5));
+  const rz = 9, pc = [];
+  for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) pc.push([-6 + i * 4, 2.5, rz - 6 + j * 4, 0.9, 6.5, 0.9]);
+  f.add(box(17, 1, 17, Sh, 0, 1.5, rz), inst(unitCyl(12), pc, Mb));
+  for (const j of [0, 3]) for (let i = 0; i < 3; i++) f.add(hoopArch(V(-6 + i * 4, 7.3, rz - 6 + j * 4), V(-2 + i * 4, 7.3, rz - 6 + j * 4), Mb));
+  for (const i of [0, 3]) for (let j = 0; j < 3; j++) f.add(hoopArch(V(-6 + i * 4, 7.3, rz - 6 + j * 4), V(-6 + i * 4, 7.3, rz - 2 + j * 4), Mb));
+  f.add(cyl(9.2, 9.2, 1.2, Mb, 0, 9, rz, 8));
+  f.add(at(ribbed(lathe([[8.4, 0], [7.8, 1.1], [6.2, 2.3], [4, 3.3], [1.5, 3.9], [0, 4]], Mb, 48), 24, 0.04), 0, 10.2, rz), at(kalash(1.6), 0, 14.2, rz));
+  return { group: g, focus: f, view: [0.85, 0.55, 1.15] };
+}
+
+function buildAkshardham() {
+  const P = M.pink, Ps = M.pinkShade, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(box(250, 0.2, 270, M.path), box(150, 0.3, 166, M.water, 0, 0, 0));
+  // Two-storey parikrama colonnade around the complex
+  const pw = 230, pd = 250, cols = [], domes = [];
+  aroundRect(pw - 8, pd - 8, 4).forEach(([x, z]) => cols.push([x, 0, z, 1, 11, 1]));
+  aroundRect(pw, pd, 10).forEach(([x, z]) => domes.push([x, 12.4, z, 4, 3.4, 4]));
+  for (const s of [-1, 1]) g.add(box(pw, 12, 6, M.red, 0, 0, s * (pd / 2)), box(6, 12, pd, M.red, s * (pw / 2), 0, 0));
+  g.add(inst(unitCyl(10), cols, M.redLight), inst(unitHemi(16), domes, M.redLight));
+  // Gajendra Pith: the plinth with its frieze of elephants
+  f.add(box(100, 5, 116, Ps));
+  const eles = [];
+  aroundRect(100.8, 116.8, 2.6).forEach(([x, z, ry]) => eles.push([x, 0.8, z, 2.2, 2.4, 1.1, ry]));
+  f.add(inst(unitBox(), eles, M.stoneDark));
+  f.add(box(88, 4, 102, P, 0, 5, 0));
+  for (let k = 0; k < 5; k++) f.add(box(24, 9 - k * 1.8, 3, P, 0, 0, 52.5 + k * 3));
+  // The mandir: pillared body, a broad eave, nine domes and four corner spires
+  f.add(box(68, 16, 82, M.ranak, 0, 9, 0));
+  const pil = [];
+  aroundRect(72, 86, 3).forEach(([x, z]) => pil.push([x, 9, z, 1.3, 15.5, 1.3]));
+  f.add(inst(unitCyl(12), pil, P), box(76, 1.4, 90, Ps, 0, 24.5, 0), box(72, 1.6, 86, P, 0, 25.9, 0));
+  const prof = [[1, 0], [1.02, 0.3], [0.9, 0.66], [0.6, 0.95], [0.25, 1.12], [0, 1.15]];
+  const dome = (x, z, r) => {
+    f.add(cyl(r * 1.08, r * 1.08, r * 0.35, P, x, 27.5, z, 32));
+    f.add(at(ribbed(lathe(prof.map(([a, b]) => [a * r, b * r]), P, 48), 24, 0.05), x, 27.5 + r * 0.35, z));
+    f.add(at(kalash(r * 0.28), x, 27.5 + r * 0.35 + r * 1.13, z));
+  };
+  dome(0, 0, 11);
+  for (const [x, z] of [[-22, -26], [22, -26], [-22, 26], [22, 26], [0, -32], [0, 32], [-26, 0], [26, 0]]) dome(x, z, 5.2);
+  for (const x of [-31, 31]) for (const z of [-38, 38]) f.add(at(shikhara(6, 11, P, nagaraProfile, 10), x, 27.5, z));
+  return { group: g, focus: f, view: [0.75, 0.38, 1.2] };
+}
+
+function buildKandariya() {
+  const S = M.khaj, Sd = M.khajShade, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(box(90, 0.2, 110, M.grass));
+  f.add(box(32, 3, 64, Sd));
+  for (let k = 0; k < 4; k++) f.add(box(8, 3 - k * 0.75, 2, Sd, 0, 0, 33 + k * 2));
+  // Moulded base and sculpted wall, with projecting balconies on the halls
+  f.add(box(24, 2, 42, S, 0, 3, -4), box(22, 6, 40, S, 0, 5, -4));
+  for (const z of [0, 13]) f.add(box(29, 3.6, 9, S, 0, 6, z), box(30.5, 0.6, 10.5, Sd, 0, 9.6, z));
+  const figs = [];
+  for (const y of [5.4, 7.4]) aroundRect(22.4, 40.4, 1.2).forEach(([x, z, ry]) => figs.push([x, y, z - 4, 0.7, 1.5, 0.35, ry]));
+  f.add(inst(unitBox(), figs, Sd), box(23, 0.5, 41, Sd, 0, 11, -4));
+  // Roofs rising in steps from the entrance porch to the main tower
+  [[22, 9, 4, 3], [12, 13, 5, 4], [1, 17, 6, 5]].forEach(([z, w0, n, br]) => {
+    const r = pidaRoof(w0, w0 * 0.42, n, 0.85, S, Sd);
+    f.add(at(r, 0, 11.5, z), at(bell(br * 0.7, S), 0, 11.5 + r.userData.top, z), at(kalash(br * 0.45), 0, 11.5 + r.userData.top + br * 0.72, z));
+  });
+  f.add(box(10, 6, 6, S, 0, 5, 22));
+  // Main shikhara wrapped in tiers of smaller spires, like a range of peaks
+  const tz = -15, ty = 11.5, prof = (t) => 1 - 0.7 * Math.pow(t, 1.3);
+  f.add(at(shikhara(15, 19, S, prof, 20), 0, ty, tz));
+  for (const a of FACES) {
+    const u = onFace(at(shikhara(9, 13.5, S, prof, 12), 0, ty, 0), a, 6.5);
+    u.position.z += tz;
+    f.add(u);
+  }
+  for (let k = 0; k < 8; k++) {
+    const a = (k / 8) * Math.PI * 2 + Math.PI / 8, u = onFace(at(shikhara(6, 8.5, S, prof, 8), 0, ty, 0), a, 9.5);
+    u.position.z += tz;
+    f.add(u);
+  }
+  for (let k = 0; k < 12; k++) {
+    const a = (k / 12) * Math.PI * 2, u = onFace(at(shikhara(3.6, 5, S, prof, 6), 0, ty, 0), a, 11.8);
+    u.position.z += tz;
+    f.add(u);
+  }
+  return { group: g, focus: f, view: [1.1, 0.32, 0.85] };
+}
+
+function buildRanakpur() {
+  const Mb = M.ranak, Sh = M.marbleShade, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(box(150, 0.2, 150, M.grass));
+  f.add(box(64, 5, 66, Sh), box(60, 7, 62, Mb, 0, 5, 0), box(61, 0.6, 63, Sh, 0, 12, 0));
+  // Entrances on all four sides of the chaturmukha temple
+  for (const a of FACES) {
+    for (let k = 0; k < 5; k++) f.add(onFace(box(9, 5 - k, 2, Sh, 0, 0, 0), a, 34 + k * 2));
+    const p = onFace(group(box(11, 8, 5, Mb, 0, 5), at(pidaRoof(11, 5, 3, 0.8, Mb, Sh), 0, 13, 0)), a, 33);
+    f.add(p);
+  }
+  // Pillars round the edge, a forest of domes on the roof, and spires over the cells
+  const pil = [], drums = [], domes = [], spires = [];
+  aroundRect(61, 63, 2.4).forEach(([x, z]) => pil.push([x, 5, z, 0.8, 7, 0.8]));
+  aroundRect(58, 60, 3.4, 1).forEach(([x, z, ry]) => spires.push([x, 12.6, z, 2.2, 2.8, 2.2, ry]));
+  for (let i = -3; i <= 3; i++) for (let j = -3; j <= 3; j++) {
+    if (Math.abs(i) <= 1 && Math.abs(j) <= 1) continue;
+    if (Math.abs(i) === 3 && Math.abs(j) === 3) continue;
+    const r = (i + j) % 2 === 0 ? 3.2 : 2.3, x = i * 7.6, z = j * 7.6;
+    drums.push([x, 12.6, z, r * 2.1, 1.3, r * 2.1]);
+    domes.push([x, 13.9, z, r * 2, r * 1.7, r * 2]);
+  }
+  f.add(inst(unitCyl(10), pil, Mb), inst(unitCyl(16), drums, Mb), inst(unitHemi(20), domes, Mb), inst(unitSpire(), spires, Mb));
+  f.add(box(22, 5, 22, Mb, 0, 12.6, 0));
+  const main = shikhara(15, 19, Mb, nagaraProfile, 16);
+  f.add(at(main, 0, 17.6, 0), at(flag(6, M.flagRed), 0, 17.6 + main.userData.top - 1, 0));
+  for (const a of FACES) f.add(onFace(at(shikhara(7.5, 11, Mb, nagaraProfile, 10), 0, 17.6, 0), a, 8.5));
+  for (const x of [-24, 24]) for (const z of [-24, 24]) f.add(at(shikhara(7, 10, Mb, nagaraProfile, 10), x, 12.6, z));
+  return { group: g, focus: f, view: [0.95, 0.5, 1.1] };
+}
+
+function stellateTower(r, h, m, md, tiers = 7) {
+  const g = new THREE.Group(), th = h / tiers;
+  for (let i = 0; i < tiers; i++) {
+    const rr = r * (1 - (0.55 * i) / tiers);
+    g.add(at(starPrism(16, rr, rr * 0.82, th * 0.7, m), 0, i * th, 0), at(starPrism(16, rr * 1.04, rr * 0.86, th * 0.3, md), 0, i * th + th * 0.7, 0));
+  }
+  const tr = r * 0.45;
+  g.add(at(ribbed(hemi(tr, m, 32), 16, 0.08), 0, h, 0), at(kalash(tr * 0.9), 0, h + tr * 0.95, 0));
+  return g;
+}
+function buildChennakesava() {
+  const m = M.soap, md = M.soapDark, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(box(110, 0.2, 120, M.grass), box(70, 0.25, 80, M.path));
+  // Cloister of 64 cells around the courtyard, entered through a gateway
+  for (const [w, d, x, z] of [[66, 5, 0, -37.5], [5, 80, -32.5, 0], [5, 80, 32.5, 0], [24, 5, -21, 37.5], [24, 5, 21, 37.5]]) f.add(box(w, 4.5, d, m, x, 0, z));
+  const posts = [];
+  aroundRect(58, 72, 3).forEach(([x, z]) => posts.push([x, 0, z, 0.6, 4, 0.6]));
+  f.add(inst(unitCyl(8), posts, m), box(18, 7, 6, m, 0, 0, 37.5), at(pidaRoof(18, 8, 3, 0.9, m, md), 0, 7, 37.5));
+  // Star-shaped platform carrying three star-shaped shrines around a pillared hall
+  const B = 1.8, shrines = [[0, -10], [-11, 0], [11, 0]];
+  f.add(box(28, B, 26, md, 0, 0, 4), box(16, 6, 16, m, 0, B, 6), box(18, 0.8, 18, md, 0, B + 6, 6), at(pidaRoof(14, 6, 3, 0.8, m, md), 0, B + 6.8, 6));
+  for (const [x, z] of shrines) {
+    f.add(at(starPrism(16, 9, 7.6, B, md), x, 0, z), at(starPrism(16, 6, 5, 7, m), x, B, z));
+    for (const y of [0.5, 1.6, 2.7]) f.add(at(starPrism(16, 6.25, 5.2, 0.6, md), x, B + y, z));
+    f.add(at(stellateTower(5.6, 9, m, md), x, B + 7, z));
+  }
+  return { group: g, focus: f, view: [0.85, 0.55, 1.15] };
+}
+
 function buildGolGumbaz() {
   const D = M.deccan, Dl = M.deccanLight, g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
@@ -1551,6 +1947,26 @@ const MONUMENTS = [
     facts: ['Marks the place where Siddhartha Gautama attained enlightenment under the Bodhi tree.', 'Ashoka built the first shrine here; the present brick temple dates from the Gupta period.', 'One of the oldest brick temples still standing in India, and a UNESCO site since 2002.'] },
   { id: 'red-fort', name: 'Red Fort', local: 'लाल क़िला', lang: 'hi', place: 'Old Delhi', built: '1639–1648', stat: ['Walls', 'up to 33 m'], style: 'Mughal', material: 'Red sandstone', build: buildRedFort,
     facts: ['Built by Shah Jahan as the palace-fortress of his new capital, Shahjahanabad.', 'Every Independence Day the Prime Minister raises the national flag here and addresses the nation.', 'Its walls run about 2.5 km; a UNESCO World Heritage Site since 2007.'] },
+  { id: 'old-parliament-house', name: 'Old Parliament House', local: 'संविधान सदन', lang: 'hi', place: 'Sansad Marg, New Delhi', built: '1921–1927', stat: ['Diameter', '170 m'], style: 'Lutyens’ Delhi', material: 'Red and buff sandstone', build: buildOldParliament,
+    facts: ['Designed by Edwin Lutyens and Herbert Baker, and opened in 1927.', 'The Constituent Assembly met in its domed Central Hall to frame the Constitution of India.', '144 sandstone columns ring its verandah; it was renamed Samvidhan Sadan in 2023.'] },
+  { id: 'rashtrapati-bhavan', name: 'Rashtrapati Bhavan', local: 'राष्ट्रपति भवन', lang: 'hi', place: 'Raisina Hill, New Delhi', built: '1912–1929', stat: ['Rooms', '340'], style: 'Lutyens’ Delhi', material: 'Cream and red Dholpur sandstone', build: buildRashtrapatiBhavan,
+    facts: ['The official residence of the President of India, designed by Edwin Lutyens.', 'It has 340 rooms on four floors.', 'Its great dome blends a classical form with the shape of the Buddhist stupa at Sanchi.'] },
+  { id: 'humayuns-tomb', name: 'Humayun’s Tomb', local: 'हुमायूँ का मक़बरा', lang: 'hi', place: 'Nizamuddin, New Delhi', built: '1565–1572', stat: ['Height', '47 m'], style: 'Mughal', material: 'Red sandstone and white marble', build: buildHumayun,
+    facts: ['Commissioned by Humayun’s widow, Empress Bega Begum, and designed by Mirak Mirza Ghiyas.', 'The first garden-tomb on the Indian subcontinent, and a model for the Taj Mahal.', 'A UNESCO World Heritage Site since 1993.'] },
+  { id: 'jama-masjid', name: 'Jama Masjid', local: 'जामा मस्जिद', lang: 'hi', place: 'Chandni Chowk, Old Delhi', built: '1650–1656', stat: ['Minarets', '40 m'], style: 'Mughal', material: 'Red sandstone and white marble', build: buildJamaMasjid,
+    facts: ['Built by Shah Jahan, facing the Red Fort across the old city.', 'Its courtyard can hold about 25,000 worshippers.', 'Three marble domes striped in black crown the prayer hall, flanked by two tall minarets.'] },
+  { id: 'new-parliament-house', name: 'New Parliament House', local: 'संसद भवन', lang: 'hi', place: 'Sansad Marg, New Delhi', built: '2020–2023', stat: ['Lok Sabha', '888 seats'], style: 'Contemporary', material: 'Red and buff sandstone', build: buildNewParliament,
+    facts: ['Inaugurated on 28 May 2023, beside the 1927 building it replaced.', 'Its triangular plan was designed by the architect Bimal Patel.', 'A 6.5 m bronze National Emblem crowns the roof above the central Constitution Hall.'] },
+  { id: 'dilwara-temples', name: 'Dilwara Temples', local: 'दिलवाड़ा मंदिर', lang: 'hi', place: 'Mount Abu, Rajasthan', built: '11th–13th c.', stat: ['Temples', '5'], style: 'Jain (Maru-Gurjara)', material: 'White marble', build: buildDilwara,
+    facts: ['The oldest, Vimal Vasahi, was built in 1031 by Vimal Shah, a minister of the Chaulukya king.', 'The marble is carved so finely it looks translucent; the domed ceilings hang down in lotus pendants.', 'A plain outer wall hides the temples and the rows of shrine cells around their courtyards.'] },
+  { id: 'akshardham', name: 'Swaminarayan Akshardham', local: 'स्वामिनारायण अक्षरधाम', lang: 'hi', place: 'New Delhi', built: '2000–2005', stat: ['Height', '43 m'], style: 'Maru-Gurjara', material: 'Pink sandstone and Italian marble', build: buildAkshardham,
+    facts: ['Opened in November 2005 by the BAPS Swaminarayan Sanstha.', 'The main monument has 234 carved pillars, nine domes and more than 20,000 sculpted figures.', 'It rests on the Gajendra Pith, a plinth carved with 148 life-size elephants.'] },
+  { id: 'kandariya-mahadeva', name: 'Kandariya Mahadeva Temple', local: 'कंदरिया महादेव मंदिर', lang: 'hi', place: 'Khajuraho, Madhya Pradesh', built: 'c. 1030 CE', stat: ['Height', '31 m'], style: 'Nagara (Chandela)', material: 'Sandstone', build: buildKandariya,
+    facts: ['The largest temple at Khajuraho, built under the Chandela dynasty.', 'Its tower is wrapped in 84 smaller spires that rise like the peaks of Mount Kailash.', 'Over 800 sculptures cover its walls; Khajuraho has been a UNESCO site since 1986.'] },
+  { id: 'ranakpur-jain-temple', name: 'Ranakpur Jain Temple', local: 'रणकपुर जैन मंदिर', lang: 'hi', place: 'Ranakpur, Rajasthan', built: '15th century', stat: ['Pillars', '1,444'], style: 'Jain (Maru-Gurjara)', material: 'Light marble', build: buildRanakpur,
+    facts: ['Built by the merchant Dharna Shah from 1437 and dedicated to Adinatha.', 'Its 1,444 carved marble pillars are said to be all different.', 'A four-faced (chaturmukha) temple, open on all four sides.'] },
+  { id: 'chennakesava-temple', name: 'Chennakesava Temple', local: 'ಚೆನ್ನಕೇಶವ ದೇವಾಲಯ', lang: 'kn', place: 'Somanathapura, Karnataka', built: '1258', stat: ['Shrines', '3'], style: 'Hoysala', material: 'Soapstone', build: buildChennakesava,
+    facts: ['Built by Somanatha, a commander of the Hoysala king Narasimha III.', 'Three star-shaped shrines stand on a raised, star-shaped platform.', 'Friezes of elephants, horsemen and epic scenes run round its base; a UNESCO site since 2023.'] },
 ];
 
 /* ---------- scene ---------- */
