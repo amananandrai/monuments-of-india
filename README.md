@@ -2,9 +2,9 @@
 
 **Live site: https://monuments-of-india-nu.vercel.app**
 
-Indian landmarks modelled in interactive 3D with [three.js](https://threejs.org/):
+Fifty Indian landmarks modelled in interactive 3D with [three.js](https://threejs.org/):
 
-Qutub Minar · Gateway of India · Taj Mahal · Charminar · Ram Mandir · Brihadeeswara Temple · India Gate · Statue of Unity · Howrah Bridge · Jagannath Puri Temple · Golden Temple · Hawa Mahal · Konark Sun Temple · Meenakshi Temple · Lotus Temple · Gol Gumbaz · Mysore Palace · Sanchi Stupa · Mahabodhi Temple · Red Fort · Old Parliament House · Rashtrapati Bhavan · Humayun’s Tomb · Jama Masjid · New Parliament House · Dilwara Temples · Swaminarayan Akshardham · Kandariya Mahadeva Temple · Ranakpur Jain Temple · Chennakesava Temple · Victoria Memorial · Chhatrapati Shivaji Maharaj Terminus · Kailasa Temple, Ellora · Vittala Temple, Hampi · Padmanabhaswamy Temple · Basilica of Bom Jesus · Kamakhya Temple · Tawang Monastery · Amber Fort · Rani ki Vav · Ramappa Temple · Kedarnath Temple · Hazratbal Shrine · Shore Temple · Gwalior Fort
+Qutub Minar · Gateway of India · Taj Mahal · Charminar · Ram Mandir · Brihadeeswara Temple · India Gate · Statue of Unity · Howrah Bridge · Jagannath Puri Temple · Golden Temple · Hawa Mahal · Konark Sun Temple · Meenakshi Temple · Lotus Temple · Gol Gumbaz · Mysore Palace · Sanchi Stupa · Mahabodhi Temple · Red Fort · Old Parliament House · Rashtrapati Bhavan · Humayun’s Tomb · Jama Masjid · New Parliament House · Dilwara Temples · Swaminarayan Akshardham · Kandariya Mahadeva Temple · Ranakpur Jain Temple · Chennakesava Temple · Victoria Memorial · Chhatrapati Shivaji Maharaj Terminus · Kailasa Temple, Ellora · Vittala Temple, Hampi · Padmanabhaswamy Temple · Basilica of Bom Jesus · Kamakhya Temple · Tawang Monastery · Amber Fort · Rani ki Vav · Ramappa Temple · Kedarnath Temple · Hazratbal Shrine · Shore Temple · Gwalior Fort · Nalanda Mahavihara · Tirumala Venkateswara Temple · Capitol Complex, Chandigarh · Hidimba Devi Temple · Bandra–Worli Sea Link
 
 The site opens on a map of India with a pin for every monument; numbered pins group nearby monuments and zoom in when selected. Pick a pin, or search the list grouped by state, to open its 3D model.
 

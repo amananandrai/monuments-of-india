@@ -43,6 +43,11 @@ import { buildKedarnath } from './monuments/kedarnath-temple.js';
 import { buildHazratbal } from './monuments/hazratbal-shrine.js';
 import { buildShoreTemple } from './monuments/shore-temple.js';
 import { buildGwaliorFort } from './monuments/gwalior-fort.js';
+import { buildNalanda } from './monuments/nalanda-mahavihara.js';
+import { buildTirumala } from './monuments/tirumala-temple.js';
+import { buildCapitolComplex } from './monuments/capitol-complex.js';
+import { buildHidimba } from './monuments/hidimba-devi-temple.js';
+import { buildBandraWorli } from './monuments/bandra-worli-sea-link.js';
 
 export const MONUMENTS = [
   { id: 'qutub-minar', state: 'Delhi', lat: 28.5245, lng: 77.1855, type: 'memorial', name: 'Qutub Minar', local: 'क़ुतुब मीनार', lang: 'hi', place: 'Mehrauli, Delhi', built: '1199–1220', stat: ['Height', '72.5 m'], style: 'Indo-Islamic', material: 'Red sandstone and marble', build: buildQutub,
@@ -135,4 +140,14 @@ export const MONUMENTS = [
     facts: ['Built by the Pallava king Narasimhavarman II (Rajasimha) beside the Bay of Bengal.', 'One of the oldest structural stone temples in South India: two Shiva shrines and one to Vishnu.', 'Part of the Group of Monuments at Mahabalipuram, a UNESCO World Heritage Site since 1984.'] },
   { id: 'gwalior-fort', state: 'Madhya Pradesh', lat: 26.2307, lng: 78.1691, type: 'fort', name: 'Gwalior Fort', local: 'ग्वालियर क़िला', lang: 'hi', place: 'Gwalior, Madhya Pradesh', built: '8th–16th c.', stat: ['Man Mandir', '1486–1516'], style: 'Rajput (Tomar)', material: 'Sandstone with glazed tiles', build: buildGwaliorFort,
     facts: ['Raja Man Singh Tomar built the Man Mandir palace on the fort between 1486 and 1516.', 'Its walls are decorated with blue, green and yellow tiles of ducks, elephants and banana trees.', 'The fort crowns a sandstone hill above Gwalior; Babur is said to have called it the pearl among India’s forts.'] },
+  { id: 'nalanda-mahavihara', state: 'Bihar', lat: 25.1357, lng: 85.4433, type: 'sacred', name: 'Nalanda Mahavihara', local: 'नालन्दा महाविहार', lang: 'hi', place: 'Nalanda, Bihar', built: '5th–12th c.', stat: ['UNESCO site', '2016'], style: 'Gupta and Pala brick', material: 'Brick', build: buildNalanda,
+    facts: ['Founded in the 5th century CE under the Gupta kings, it was one of the world’s first residential universities.', 'Scholars came from China, Korea, Tibet and Central Asia; the pilgrim Xuanzang studied here.', 'Its brick ruins include the stepped Sariputta Stupa; a UNESCO World Heritage Site since 2016.'] },
+  { id: 'tirumala-venkateswara-temple', state: 'Andhra Pradesh', lat: 13.6833, lng: 79.3474, type: 'sacred', name: 'Tirumala Venkateswara Temple', local: 'తిరుమల వేంకటేశ్వర ఆలయం', lang: 'te', place: 'Tirumala, Andhra Pradesh', built: 'Expanded 9th–16th c.', stat: ['Altitude', '853 m'], style: 'Dravidian', material: 'Granite with gilded copper', build: buildTirumala,
+    facts: ['Dedicated to Venkateswara, a form of Vishnu, on the Tirumala hills.', 'The vimana over the sanctum, called Ananda Nilayam, is covered in gold.', 'It is one of the most visited places of worship in the world.'] },
+  { id: 'capitol-complex', state: 'Chandigarh', lat: 30.7597, lng: 76.8073, type: 'civic', name: 'Capitol Complex, Chandigarh', local: 'ਕੈਪੀਟਲ ਕੰਪਲੈਕਸ', lang: 'pa', place: 'Sector 1, Chandigarh', built: '1951–1965', stat: ['Secretariat', '254 m long'], style: 'Modernist', material: 'Raw concrete', build: buildCapitolComplex,
+    facts: ['Designed by Le Corbusier as the seat of government for Chandigarh, the new capital of Punjab.', 'Its Palace of Assembly, Secretariat and High Court face each other across a vast concrete plaza. The model brings them closer together than they really are.', 'The Open Hand Monument turns in the wind; the complex became a UNESCO World Heritage Site in 2016.'] },
+  { id: 'hidimba-devi-temple', state: 'Himachal Pradesh', lat: 32.2484, lng: 77.1797, type: 'sacred', name: 'Hidimba Devi Temple', local: 'हिडिम्बा देवी मंदिर', lang: 'hi', place: 'Manali, Himachal Pradesh', built: '1553', stat: ['Height', '24 m'], style: 'Himalayan pagoda', material: 'Stone and deodar wood', build: buildHidimba,
+    facts: ['Built in 1553 by Maharaja Bahadur Singh over a cave shrine to Hidimba Devi.', 'Its three square roofs of wooden shingles are crowned by a brass cone.', 'It stands in the Dhungiri forest of tall deodar cedars above Manali.'] },
+  { id: 'bandra-worli-sea-link', state: 'Maharashtra', lat: 19.0388, lng: 72.818, type: 'civic', name: 'Bandra–Worli Sea Link', local: 'वांद्रे–वरळी सागरी सेतू', lang: 'mr', place: 'Mumbai, Maharashtra', built: '2000–2009', stat: ['Length', '5.6 km'], style: 'Cable-stayed bridge', material: 'Steel and concrete', build: buildBandraWorli,
+    facts: ['Opened in 2009, it links Bandra and Worli across Mahim Bay.', 'Its cable-stayed main span hangs from pylons about 128 m tall.', 'Officially the Rajiv Gandhi Sea Link, it carries eight lanes of traffic.'] },
 ];
