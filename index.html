@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Ten Indian landmarks, from the Qutub Minar to the Howrah Bridge, modelled in interactive 3D.">
+<meta name="description" content="Fifteen Indian landmarks, from the Qutub Minar to the Howrah Bridge, modelled in interactive 3D.">
 <title>Monuments of India</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -303,7 +303,7 @@ details.facts ul {
     <header class="masthead">
       <h1>Monuments of India</h1>
       <p class="hi" lang="hi">भारत के स्मारक</p>
-      <p class="sub">Ten landmarks modelled in 3D at their real proportions. Pick one, then drag to walk around it.</p>
+      <p class="sub">Fifteen landmarks modelled in 3D at their real proportions. Pick one, then drag to walk around it.</p>
     </header>
     <ul class="list" id="list"></ul>
   </aside>
@@ -392,6 +392,15 @@ const M = {
   bank: mat('#7d7059', 0.95),
   stoneDark: mat('#2d2a2a', 0.8),
   wood: mat('#5b4330', 0.8),
+  gild: mat('#e3b54a', 0.32, 0.5),
+  gildDeep: mat('#b8862a', 0.45, 0.5),
+  hawa: mat('#df8f78', 0.85),
+  hawaLight: mat('#eba792', 0.85),
+  lime: mat('#f3ede2', 0.85),
+  khond: mat('#7f705f', 0.95),
+  khondDark: mat('#5f5347', 0.95),
+  stucco: mat('#e9dcc0', 0.85),
+  lotus: mat('#f4f3ef', 0.4, 0, { side: THREE.DoubleSide }),
   saffron: mat('#ef7d1a', 0.7, 0, { side: THREE.DoubleSide }),
   flagRed: mat('#d23a24', 0.7, 0, { side: THREE.DoubleSide }),
 };
@@ -959,6 +968,302 @@ function buildJagannath() {
   return { group: g, focus: f, view: [1.05, 0.4, 1.05] };
 }
 
+// Radial ribs on a lathe or cylinder, e.g. a lotus-ribbed dome.
+function ribbed(o, n, amt) {
+  const p = o.geometry.attributes.position;
+  for (let k = 0; k < p.count; k++) {
+    const x = p.getX(k), z = p.getZ(k);
+    if (Math.hypot(x, z) < 1e-3) continue;
+    const f = 1 + amt * Math.abs(Math.cos(Math.atan2(z, x) * n / 2));
+    p.setX(k, x * f); p.setZ(k, z * f);
+  }
+  o.geometry.computeVertexNormals();
+  return o;
+}
+function rng(seed) {
+  let s = seed >>> 0;
+  return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
+}
+
+function buildGoldenTemple() {
+  const G = M.gild, Gd = M.gildDeep, W = M.marble, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  // Parikrama walkway around the Amrit Sarovar, with the complex's buildings beyond it
+  for (const s of [-1, 1]) {
+    g.add(box(200, 0.8, 25, W, 0, 0, s * 87.5), box(25, 0.8, 150, W, s * 87.5, 0, 0));
+    g.add(box(220, 9, 10, M.lime, 0, 0, s * 105), box(10, 9, 200, M.lime, s * 105, 0, 0));
+  }
+  g.add(box(150, 0.5, 150, M.water, 0, -0.2, 0));
+  const b = 1.6;
+  f.add(box(20, b, 20, W));
+  // Guru's Bridge from the Darshani Deori gateway
+  f.add(box(64, b, 6, W, -43, 0, 0));
+  for (const z of [-2.9, 2.9]) {
+    f.add(box(64, 0.6, 0.25, W, -43, b, z));
+    for (let x = -72; x <= -14; x += 8) {
+      f.add(cyl(0.08, 0.08, 2.2, G, x, b, z, 6));
+      f.add(at(mesh(new THREE.SphereGeometry(0.28, 10, 8), G), x, b + 2.4, z));
+    }
+  }
+  f.add(box(14, 9, 16, W, -86, 0.8, 0), box(12.5, 3.5, 14.5, G, -86, 9.8, 0));
+  for (const z of [-5, 5]) f.add(at(chhatri(1.4, 4.4, G), -86, 13.3, z));
+  // Harmandir Sahib: marble lower storey, gilded upper storeys
+  f.add(box(12.25, 6, 12.25, W, 0, b));
+  f.add(box(12.6, 0.4, 12.6, Gd, 0, b + 6));
+  f.add(box(12.25, 6.5, 12.25, G, 0, b + 6.4));
+  f.add(box(13.4, 0.6, 13.4, G, 0, b + 12.9));
+  for (const a of FACES) {
+    for (const lat of [-3.6, 0, 3.6]) f.add(onFace(at(archPanel(1.8, 4.4, true, Gd, 0.2), 0, b + 0.4, 0), a, 6.13, lat));
+    for (let k = -2; k <= 2; k++) f.add(onFace(at(archPanel(1.3, 3, true, Gd, 0.2), 0, b + 7.6, 0), a, 6.13, k * 2.1));
+    for (let k = -2.5; k <= 2.5; k++) {
+      const d = onFace(new THREE.Group(), a, 6.3, k * 2.1);
+      d.add(cyl(0.42, 0.42, 0.6, G, 0, b + 13.5, 0, 10), at(hemi(0.45, G, 12), 0, b + 14.1, 0));
+      f.add(d);
+    }
+  }
+  for (const x of [-5.4, 5.4]) for (const z of [-5.4, 5.4]) f.add(at(chhatri(1.2, 4.5, G), x, b + 13.5, z));
+  const top = b + 13.5;
+  f.add(cyl(3.6, 3.6, 1.6, G, 0, top, 0, 32));
+  f.add(at(lathe([[2.8, 0], [4.4, 0.7], [4.7, 1.1], [3.8, 1.2], [0, 1.2]], G, 32), 0, top + 1.6, 0));
+  f.add(at(ribbed(onionDome(4, G), 16, 0.06), 0, top + 2.6, 0));
+  f.add(at(kalash(2.6, G), 0, top + 2.6 + 7.3, 0));
+  f.add(at(finial(3), 0, top + 2.6 + 10, 0));
+  return { group: g, focus: f, view: [-1.1, 0.36, 0.75] };
+}
+
+function buildHawaMahal() {
+  const P = M.hawa, L = M.hawaLight, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(box(100, 0.2, 14, M.asphalt, 0, 0, 12), box(100, 0.3, 4, M.path, 0, 0, 3.5));
+  const floors = [[46, 3.6], [46, 3.0], [30, 3.0], [20, 3.0], [11, 3.0]];
+  let y = 0;
+  floors.forEach(([w, h], fi) => {
+    f.add(box(w, h, 5, P, 0, y, -2.5));
+    const n = Math.floor(w / 1.9), step = w / n;
+    for (let i = 0; i < n; i++) {
+      const x = -w / 2 + step * (i + 0.5);
+      const bay = cyl(0.85, 0.85, h * 0.6, P, x, y + h * 0.1, 0.25, 6);
+      bay.rotation.y = Math.PI / 6;
+      f.add(bay);
+      f.add(box(0.78, h * 0.38, 0.08, M.recess, x, y + h * 0.18, 1.0));
+      f.add(at(hemi(0.85, L, 10), x, y + h * 0.7, 0.25));
+    }
+    f.add(box(w + 0.4, 0.22, 6.6, M.lime, 0, y + h - 0.22, -2.0));
+    const next = floors[fi + 1];
+    if (next && next[0] < w) for (const s of [-1, 1]) f.add(box((w - next[0]) / 2, 0.8, 5, L, s * (w + next[0]) / 4, y + h, -2.5));
+    y += h;
+  });
+  f.add(box(3.4, 1.4, 3, P, 0, y, -1.2), at(hemi(1.6, L, 16), 0, y + 1.4, -1.2), at(finial(2), 0, y + 2.9, -1.2));
+  for (const x of [-3.8, 3.8]) f.add(box(2, 0.9, 2, P, x, y, -1.2), at(hemi(1, L, 12), x, y + 0.9, -1.2), at(finial(1.3), x, y + 1.85, -1.2));
+  return { group: g, focus: f, view: [0.4, 0.2, 1.2] };
+}
+
+function wheel(r, m) {
+  const g = new THREE.Group();
+  g.add(mesh(new THREE.TorusGeometry(r, r * 0.11, 6, 28), m));
+  g.add(mesh(new THREE.TorusGeometry(r * 0.78, r * 0.04, 4, 28), m));
+  const hub = mesh(new THREE.CylinderGeometry(r * 0.2, r * 0.2, r * 0.35, 12), m);
+  hub.rotation.x = Math.PI / 2;
+  g.add(hub);
+  for (let i = 0; i < 8; i++) {
+    const s = mesh(new THREE.BoxGeometry(i % 2 ? r * 0.05 : r * 0.12, r * 2, r * 0.08), m);
+    s.rotation.z = (i * Math.PI) / 8;
+    g.add(s);
+  }
+  return g;
+}
+function horse(m) {
+  const g = new THREE.Group();
+  g.add(box(1.3, 1.4, 3.2, m, 0, 1.7, 0));
+  for (const [x, z] of [[-0.45, 1.2], [0.45, 1.2], [-0.45, -1.2], [0.45, -1.2]]) g.add(box(0.35, 1.75, 0.35, m, x, 0, z));
+  const neck = box(0.75, 1.8, 0.9, m);
+  neck.position.set(0, 3.3, 1.6);
+  neck.rotation.x = 0.55;
+  const head = box(0.6, 0.65, 1.5, m);
+  head.position.set(0, 4.1, 2.4);
+  head.rotation.x = 0.25;
+  const tail = box(0.25, 1.2, 0.25, m);
+  tail.position.set(0, 2.3, -1.8);
+  tail.rotation.x = -0.4;
+  g.add(neck, head, tail);
+  return g;
+}
+function buildKonark() {
+  const K = M.khond, Kd = M.khondDark, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(box(80, 0.25, 170, M.path, 0, 0, 10));
+  // The chariot: a 6 m plinth carried on 24 carved wheels
+  const L = 76, zc = -6, B = 6, zf = zc + L / 2;
+  f.add(box(32, 4.6, L, Kd, 0, 0, zc), box(29, 1.4, L - 4, K, 0, 4.6, zc));
+  for (let i = 0; i < 12; i++) {
+    const z = zc - L / 2 + 4 + i * ((L - 8) / 11);
+    for (const s of [-1, 1]) {
+      const w = wheel(1.55, Kd);
+      w.position.set(s * 16.2, 2.2, z);
+      w.rotation.y = Math.PI / 2;
+      f.add(w);
+    }
+  }
+  for (let k = 0; k < 4; k++) f.add(box(10, B - k * 1.5, 2, K, 0, 0, zf + 1 + k * 2));
+  for (const x of [-15.5, -12.5, -9.5, 8, 11, 14, 17]) {
+    const h = horse(Kd);
+    h.position.set(x, 0.8, zf + 4);
+    f.add(box(2, 0.8, 4.5, K, x, 0, zf + 4), h);
+  }
+  // Jagamohana (the surviving porch) with three tiers of pida roof
+  const jz = zf - 16;
+  f.add(box(26, 12, 26, K, 0, B, jz), box(30, 12, 16, K, 0, B, jz), box(16, 12, 30, K, 0, B, jz));
+  let y = B + 12;
+  [[29, 22], [20, 14], [13, 8]].forEach(([w0, w1], i) => {
+    const r = pidaRoof(w0, w1, 4, 0.75, K, Kd);
+    f.add(at(r, 0, y, jz));
+    y += r.userData.top;
+    if (i < 2) {
+      const tw = w1 - 2.5;
+      f.add(box(tw, 2.6, tw, Kd, 0, y, jz));
+      for (const a of FACES) for (const k of [-1, 0, 1]) {
+        const s = onFace(box(1, 2.2, 0.8, K, 0, y, 0), a, tw / 2 + 0.4, k * tw / 3.2);
+        s.position.z += jz;
+        f.add(s);
+      }
+      y += 2.6;
+    }
+  });
+  f.add(at(bell(4.2, K), 0, y, jz));
+  const am = mesh(new THREE.SphereGeometry(3, 24, 8), flat(K), 0, y + 4.4 + 1.2, jz);
+  am.scale.y = 0.4;
+  f.add(am, at(kalash(1.8, K), 0, y + 6.8, jz));
+  // Ruined base of the collapsed main tower, and the roofless Natamandira in front
+  const dz = zc - L / 2 + 16;
+  f.add(box(26, 7, 26, Kd, 0, B, dz), box(18, 3, 13, K, -2, B + 7, dz + 3), box(9, 2, 8, Kd, 5, B + 10, dz - 4));
+  const nz = zf + 26, R = rng(7);
+  f.add(box(24, 4, 24, Kd, 0, 0, nz), box(22, 1, 22, K, 0, 4, nz));
+  for (const x of [-7.5, -2.5, 2.5, 7.5]) for (const z of [-7.5, -2.5, 2.5, 7.5]) f.add(cyl(0.6, 0.7, 2 + R() * 3, K, x, 5, nz + z, 8));
+  return { group: g, focus: f, view: [1.1, 0.38, 0.9] };
+}
+
+const PAINT = ['#3d7cc0', '#d4493a', '#e6b13a', '#4c9a5a', '#f0e8d6', '#b65aa0', '#e07a2e'];
+const paintMats = PAINT.map((c) => mat(c, 0.75));
+// Dravidian gateway tower: granite base, then tapering storeys of painted stucco figures and a barrel-vault crown.
+function gopuram(w, d, h, tiers, seed) {
+  const g = new THREE.Group(), R = rng(seed), figs = [];
+  const bh = h * 0.2;
+  g.add(box(w, bh * 0.3, d, M.graniteDark), box(w * 0.96, bh * 0.7, d * 0.96, M.granite, 0, bh * 0.3));
+  g.add(box(w * 0.2, bh * 0.85, d + 0.2, M.recess));
+  g.add(box(w * 1.02, bh * 0.08, d * 1.02, M.graniteDark, 0, bh));
+  const th = (h * 0.68) / tiers;
+  let y = bh * 1.08, tw = w, td = d;
+  for (let i = 0; i < tiers; i++) {
+    const t = i / tiers;
+    tw = w * (1 - 0.55 * t); td = d * (1 - 0.5 * t);
+    g.add(box(tw, th * 0.74, td, M.stucco, 0, y));
+    g.add(box(tw + 0.6, th * 0.26, td + 0.6, paintMats[(i + seed) % PAINT.length], 0, y + th * 0.74));
+    const nx = Math.max(2, Math.floor(tw / 1.3)), nz = Math.max(1, Math.floor(td / 1.3));
+    for (let k = 0; k < nx; k++) for (const s of [-1, 1]) figs.push([-tw / 2 + (k + 0.5) * (tw / nx), y + th * 0.08, s * (td / 2 + 0.22), 0.75, th * (0.45 + R() * 0.2), 0.45]);
+    for (let k = 0; k < nz; k++) for (const s of [-1, 1]) figs.push([s * (tw / 2 + 0.22), y + th * 0.08, -td / 2 + (k + 0.5) * (td / nz), 0.45, th * (0.45 + R() * 0.2), 0.75]);
+    y += th;
+  }
+  const sr = td * 0.32, sl = tw * 0.92;
+  const shala = mesh(new THREE.CylinderGeometry(sr, sr, sl, 18), M.stucco, 0, y + sr * 0.5, 0);
+  shala.rotation.z = Math.PI / 2;
+  g.add(shala);
+  const nk = Math.max(3, Math.round(sl / 2.6) | 1);
+  for (let k = 0; k < nk; k++) g.add(at(kalash(Math.min(2.2, sr * 0.9), M.gild), -sl / 2 + (k + 0.5) * (sl / nk), y + sr * 1.45, 0));
+  const im = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), mat('#ffffff', 0.75), figs.length);
+  const o = new THREE.Object3D(), c = new THREE.Color();
+  figs.forEach(([x, fy, z, sx, sy, sz], i) => {
+    o.position.set(x, fy + sy / 2, z);
+    o.scale.set(sx, sy, sz);
+    o.updateMatrix();
+    im.setMatrixAt(i, o.matrix);
+    im.setColorAt(i, c.set(PAINT[Math.floor(R() * PAINT.length)]));
+  });
+  im.castShadow = true;
+  im.receiveShadow = true;
+  g.add(im);
+  return g;
+}
+function buildMeenakshi() {
+  const S = M.stucco, Gr = M.granite, g = new THREE.Group();
+  g.add(box(240, 0.3, 270, M.path));
+  for (const s of [-1, 1]) g.add(box(242, 8, 2.5, S, 0, 0, s * 130), box(2.5, 8, 260, S, s * 120, 0, 0));
+  for (const s of [-1, 1]) g.add(box(112, 7, 2, S, 0, 0, s * 62), box(2, 7, 124, S, s * 55, 0, 0));
+  // The four outer gopurams (the southern one is the tallest) and four inner ones
+  for (const [x, z, h, rot, seed] of [[0, 130, 52, 0, 1], [0, -130, 47, 0, 2], [120, 0, 49, Math.PI / 2, 3], [-120, 0, 48, Math.PI / 2, 4]]) {
+    const t = gopuram(30, 18, h, 11, seed);
+    t.position.set(x, 0, z);
+    t.rotation.y = rot;
+    g.add(t);
+  }
+  for (const [x, z, h, rot, seed] of [[0, 62, 30, 0, 5], [0, -62, 27, 0, 6], [55, 0, 32, Math.PI / 2, 7], [-55, 0, 26, Math.PI / 2, 8]]) {
+    const t = gopuram(18, 11, h, 7, seed);
+    t.position.set(x, 0, z);
+    t.rotation.y = rot;
+    g.add(t);
+  }
+  // Gilded vimanas over the two main shrines
+  for (const [x, z, s] of [[12, -20, 1], [-28, 28, 0.8]]) {
+    const v = new THREE.Group();
+    v.add(box(12, 6, 12, S));
+    const r = pidaRoof(10, 4.5, 4, 0.9, M.gild, M.gildDeep);
+    v.add(at(r, 0, 6, 0), at(hemi(2.6, M.gild, 16), 0, 6 + r.userData.top, 0), at(kalash(1.6), 0, 8.4 + r.userData.top, 0));
+    v.position.set(x, 0, z);
+    v.scale.setScalar(s);
+    g.add(v);
+  }
+  g.add(box(44, 7, 32, Gr, 22, 0, 30), box(34, 7, 40, Gr, -22, 0, -28));
+  // Golden Lotus Tank with its cloister, and the Thousand Pillar Hall
+  g.add(box(40, 0.8, 46, Gr, -86, 0, 10), box(32, 0.9, 38, M.water, -86, 0, 10));
+  for (const s of [-1, 1]) g.add(box(44, 4.5, 3, S, -86, 0, 10 + s * 24.5), box(3, 4.5, 52, S, -86 + s * 22, 0, 10));
+  g.add(cyl(0.15, 0.15, 3, M.gild, -86, 0.9, 10, 6), at(onionDome(1, M.gild), -86, 3.9, 10));
+  g.add(box(40, 7, 40, Gr, 82, 0, 84));
+  return { group: g, view: [0.75, 0.42, 1.2] };
+}
+
+// One marble petal as a curved shell; its spine is a quadratic curve in (radius, height), and it faces +z.
+function petal(P0, P1, P2, halfW, bulge, segU = 12, segV = 28) {
+  const pos = [], idx = [];
+  for (let j = 0; j <= segV; j++) {
+    const v = j / segV, a = (1 - v) * (1 - v), b = 2 * (1 - v) * v, c = v * v;
+    const r = a * P0[0] + b * P1[0] + c * P2[0], y = a * P0[1] + b * P1[1] + c * P2[1];
+    const dr = 2 * (1 - v) * (P1[0] - P0[0]) + 2 * v * (P2[0] - P1[0]);
+    const dy = 2 * (1 - v) * (P1[1] - P0[1]) + 2 * v * (P2[1] - P1[1]);
+    const len = Math.hypot(dr, dy) || 1, nr = dy / len, ny = -dr / len;
+    const w = halfW * Math.sin(Math.PI * (0.15 + 0.85 * v));
+    for (let i = 0; i <= segU; i++) {
+      const u = -1 + (2 * i) / segU, off = bulge * w * (1 - u * u);
+      pos.push(u * w, y + ny * off, r + nr * off);
+    }
+  }
+  for (let j = 0; j < segV; j++) for (let i = 0; i < segU; i++) {
+    const p = j * (segU + 1) + i;
+    idx.push(p, p + segU + 1, p + 1, p + 1, p + segU + 1, p + segU + 2);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setIndex(idx);
+  geo.computeVertexNormals();
+  return mesh(geo, M.lotus);
+}
+function buildLotusTemple() {
+  const g = new THREE.Group(), f = new THREE.Group(), deg = Math.PI / 180;
+  g.add(f);
+  g.add(cyl(85, 85, 0.2, M.grass, 0, 0, 0, 64));
+  f.add(cyl(40, 42, 2, M.plaster, 0, 0.2, 0, 9), cyl(34, 36, 2, M.marble, 0, 2.2, 0, 9));
+  const B = 4.2;
+  for (let k = 0; k < 9; k++) {
+    const t = k * 40 * deg, t2 = t + 20 * deg;
+    f.add(petal([11, B], [14.5, B + 20], [1.2, B + 30], 5.6, 0.35).rotateY(t));
+    f.add(petal([16, B], [22, B + 15], [13, B + 23.5], 7.6, 0.35).rotateY(t2));
+    f.add(petal([22, B], [31, B + 12.5], [36, B + 3.5], 8, -0.3).rotateY(t));
+    const pool = new THREE.Group();
+    pool.add(box(22, 0.7, 12, M.marble, 0, 0.2, 52), box(19, 0.75, 9, M.water, 0, 0.2, 52));
+    f.add(pool.rotateY(t2));
+  }
+  for (let k = 0; k < 9; k++) g.add(group(box(5, 0.3, 40, M.path, 0, 0.2, 60)).rotateY(k * 40 * deg));
+  return { group: g, focus: f, view: [0.9, 0.3, 1.25] };
+}
+
 const MONUMENTS = [
   { id: 'qutub-minar', name: 'Qutub Minar', local: 'क़ुतुब मीनार', lang: 'hi', place: 'Mehrauli, Delhi', built: '1199–1220', stat: ['Height', '72.5 m'], style: 'Indo-Islamic', material: 'Red sandstone and marble', build: buildQutub,
     facts: ['Begun by Qutb ud-Din Aibak and completed by his successor Iltutmish; Firoz Shah Tughlaq later rebuilt the top storeys.', 'Its five storeys taper from a 14.3 m base to 2.7 m at the top, each ringed by a projecting balcony.', 'The Qutb complex has been a UNESCO World Heritage Site since 1993.'] },
@@ -980,6 +1285,16 @@ const MONUMENTS = [
     facts: ['Its 457 m main span crosses the Hooghly with no pier in the river between the two towers.', 'Built with 26,500 tonnes of steel, 23,500 of them high-tensile steel from Tata Steel.', 'Renamed Rabindra Setu in 1965 after Rabindranath Tagore.'] },
   { id: 'jagannath-puri-temple', name: 'Jagannath Puri Temple', local: 'ଶ୍ରୀ ଜଗନ୍ନାଥ ମନ୍ଦିର', lang: 'or', place: 'Puri, Odisha', built: '12th century', stat: ['Height', '65 m'], style: 'Kalinga', material: 'Khondalite stone', build: buildJagannath,
     facts: ['Built by King Anantavarman Chodaganga Deva of the Eastern Ganga dynasty.', 'The flag on its summit is changed every day by a priest who climbs the tower.', 'Each year the Rath Yatra carries the deities through Puri on giant wooden chariots.'] },
+  { id: 'golden-temple', name: 'Golden Temple', local: 'ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ', lang: 'pa', place: 'Amritsar, Punjab', built: '1581–1604', stat: ['Sanctum', '12.25 m square'], style: 'Sikh', material: 'Marble and gilded copper', build: buildGoldenTemple,
+    facts: ['Founded by Guru Arjan, the fifth Sikh Guru, who installed the Adi Granth here in 1604.', 'Its upper storeys were covered in gilded copper under Maharaja Ranjit Singh in the early 19th century.', 'The shrine stands in the Amrit Sarovar pool, reached by a single causeway; its langar serves free meals to tens of thousands of people every day.'] },
+  { id: 'hawa-mahal', name: 'Hawa Mahal', local: 'हवा महल', lang: 'hi', place: 'Jaipur, Rajasthan', built: '1799', stat: ['Height', '15 m'], style: 'Rajput', material: 'Red and pink sandstone', build: buildHawaMahal,
+    facts: ['Built by Maharaja Sawai Pratap Singh and designed by Lal Chand Ustad.', 'Its 953 small latticed windows (jharokhas) let the women of the court watch street life unseen.', 'The five-storey façade is barely one room deep; breezes through the screens gave it the name “Palace of Winds”.'] },
+  { id: 'konark-sun-temple', name: 'Konark Sun Temple', local: 'କୋଣାର୍କ ସୂର୍ଯ୍ୟ ମନ୍ଦିର', lang: 'or', place: 'Konark, Odisha', built: 'c. 1250 CE', stat: ['Height', '39 m'], style: 'Kalinga', material: 'Khondalite stone', build: buildKonark,
+    facts: ['Built by King Narasimhadeva I of the Eastern Ganga dynasty as a giant stone chariot for Surya, the Sun god.', 'Its 24 carved wheels work as sundials: the shadows of the spokes tell the time of day.', 'The main tower collapsed centuries ago; what stands is its porch. A UNESCO World Heritage Site since 1984.'] },
+  { id: 'meenakshi-temple', name: 'Meenakshi Temple', local: 'மீனாட்சி அம்மன் கோவில்', lang: 'ta', place: 'Madurai, Tamil Nadu', built: '16th–17th c.', stat: ['Height', '52 m'], style: 'Dravidian (Nayak)', material: 'Granite and painted stucco', build: buildMeenakshi,
+    facts: ['Dedicated to Meenakshi, a form of Parvati, and her consort Sundareswarar, a form of Shiva.', 'Its 14 gopurams are covered in thousands of painted stucco figures of gods, animals and demons.', 'The tallest, the southern gopuram, rises about 52 m above the old city.'] },
+  { id: 'lotus-temple', name: 'Lotus Temple', local: 'कमल मंदिर', lang: 'hi', place: 'Kalkaji, New Delhi', built: '1980–1986', stat: ['Height', '34 m'], style: 'Expressionist', material: 'Greek Pentelic marble on concrete', build: buildLotusTemple,
+    facts: ['A Baháʼí House of Worship, open to people of every faith.', 'Its 27 free-standing marble-clad petals are arranged in clusters of three to form nine sides.', 'Designed by the Iranian-born architect Fariborz Sahba and surrounded by nine pools.'] },
 ];
 
 /* ---------- scene ---------- */
