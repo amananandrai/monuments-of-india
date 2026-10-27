@@ -15,7 +15,7 @@ export function buildHumayun() {
   }
   // The tomb: chamfered square with white-framed iwans
   const s = 24, c = 8, H = 18;
-  f.add(at(chamferPrism(s, c, H, Rd), 0, P, 0), box(2 * s + 0.6, 1, 2 * s + 0.6, Mb, 0, P + H - 1));
+  f.add(at(chamferPrism(s, c, H, Rd), 0, P, 0), box(2 * s + 0.6, 1.6, 2 * s + 0.6, Mb, 0, P + H - 1));
   for (const a of FACES) {
     f.add(onFace(box(18, H + 2, 1.2, Mb, 0, P), a, s + 0.6));
     f.add(onFace(at(archPanel(13, 17, true, M.redLight, 0.3), 0, P + 0.4, 0), a, s + 1.2));

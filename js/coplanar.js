@@ -46,7 +46,11 @@ function clashes(a, b, tol) {
     const overQ = Math.min(a.box.max[q], b.box.max[q]) - Math.max(a.box.min[q], b.box.min[q]);
     if (overP <= tol || overQ <= tol) continue;
     const ax = AXES[k];
-    if (Math.abs(a.box.max[ax] - b.box.max[ax]) < tol || Math.abs(a.box.min[ax] - b.box.min[ax]) < tol) return true;
+    if (Math.abs(a.box.max[ax] - b.box.max[ax]) < tol) return true;
+    // Bottoms resting on the ground are never seen, since the camera stays above it. Offsetting a
+    // lawn for its hidden bottom would pull its top in front of water a few centimetres higher.
+    const hidden = k === 1 && Math.max(a.box.min.y, b.box.min.y) < tol;
+    if (!hidden && Math.abs(a.box.min[ax] - b.box.min[ax]) < tol) return true;
   }
   return false;
 }

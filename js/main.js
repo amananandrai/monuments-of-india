@@ -59,6 +59,11 @@ const groundMat = surface(attachSurface(new THREE.MeshStandardMaterial({ roughne
 const ground = new THREE.Mesh(new THREE.CircleGeometry(1, 96), groundMat);
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
+// The ground sits behind everything in depth, so river sheets and lawns a few centimetres above it
+// always win, even kilometres away where the depth buffer is coarse.
+groundMat.polygonOffset = true;
+groundMat.polygonOffsetFactor = 1;
+groundMat.polygonOffsetUnits = 1;
 scene.add(ground);
 
 scene.fog = new THREE.Fog(0xffffff, 100, 1000);
