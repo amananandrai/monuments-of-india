@@ -38,6 +38,11 @@ import { buildKamakhya } from './monuments/kamakhya-temple.js';
 import { buildTawang } from './monuments/tawang-monastery.js';
 import { buildAmberFort } from './monuments/amber-fort.js';
 import { buildRaniKiVav } from './monuments/rani-ki-vav.js';
+import { buildRamappa } from './monuments/ramappa-temple.js';
+import { buildKedarnath } from './monuments/kedarnath-temple.js';
+import { buildHazratbal } from './monuments/hazratbal-shrine.js';
+import { buildShoreTemple } from './monuments/shore-temple.js';
+import { buildGwaliorFort } from './monuments/gwalior-fort.js';
 
 export const MONUMENTS = [
   { id: 'qutub-minar', state: 'Delhi', lat: 28.5245, lng: 77.1855, type: 'memorial', name: 'Qutub Minar', local: 'क़ुतुब मीनार', lang: 'hi', place: 'Mehrauli, Delhi', built: '1199–1220', stat: ['Height', '72.5 m'], style: 'Indo-Islamic', material: 'Red sandstone and marble', build: buildQutub,
@@ -120,4 +125,14 @@ export const MONUMENTS = [
     facts: ['Begun in 1592 by Raja Man Singh I, a general of the Mughal emperor Akbar.', 'Its Sheesh Mahal, the mirror palace, is lined with thousands of tiny mirrors.', 'One of the Hill Forts of Rajasthan, a UNESCO World Heritage Site since 2013.'] },
   { id: 'rani-ki-vav', state: 'Gujarat', lat: 23.8589, lng: 72.1016, type: 'civic', name: 'Rani ki Vav', local: 'રાણકી વાવ', lang: 'gu', place: 'Patan, Gujarat', built: '11th century', stat: ['Depth', '27 m'], style: 'Maru-Gurjara', material: 'Sandstone', build: buildRaniKiVav,
     facts: ['A stepwell built in memory of the Chaulukya king Bhima I, traditionally by his queen Udayamati.', 'It descends seven levels and holds more than 500 principal sculptures, many of Vishnu’s avatars.', 'A UNESCO World Heritage Site since 2014; it appears on the ₹100 note.'] },
+  { id: 'ramappa-temple', state: 'Telangana', lat: 18.2591, lng: 79.9431, type: 'sacred', name: 'Ramappa Temple', local: 'రామప్ప దేవాలయం', lang: 'te', place: 'Palampet, Telangana', built: '1213 CE', stat: ['UNESCO site', '2021'], style: 'Kakatiya', material: 'Sandstone, dolerite and light brick', build: buildRamappa,
+    facts: ['Built in 1213 by Recherla Rudra, a general of the Kakatiya king Ganapati Deva.', 'It is named after its chief sculptor, Ramappa, which is rare for an Indian temple.', 'Its tower is built of bricks light enough to float on water; a UNESCO World Heritage Site since 2021.'] },
+  { id: 'kedarnath-temple', state: 'Uttarakhand', lat: 30.7352, lng: 79.0669, type: 'sacred', name: 'Kedarnath Temple', local: 'केदारनाथ मंदिर', lang: 'hi', place: 'Kedarnath, Uttarakhand', built: '8th c. (by tradition)', stat: ['Altitude', '3,583 m'], style: 'Himalayan Nagara', material: 'Grey stone slabs', build: buildKedarnath,
+    facts: ['One of the twelve Jyotirlingas of Shiva, high in the Garhwal Himalaya.', 'Built of large grey stone slabs; tradition links its revival to Adi Shankaracharya.', 'In the 2013 floods a huge boulder lodged behind it and shielded the temple.'] },
+  { id: 'hazratbal-shrine', state: 'Jammu and Kashmir', lat: 34.1287, lng: 74.8414, type: 'sacred', name: 'Hazratbal Shrine', local: 'حضرت بل', lang: 'ks', place: 'Srinagar, Jammu and Kashmir', built: '1968–1979', stat: ['Minarets', '1'], style: 'Mughal-inspired', material: 'White marble', build: buildHazratbal,
+    facts: ['It stands on the north-western shore of Dal Lake in Srinagar.', 'It houses the Moi-e-Muqqadas, a relic believed to be a hair of the Prophet Muhammad.', 'The present white marble shrine, completed in 1979, is known as the only domed mosque in Srinagar.'] },
+  { id: 'shore-temple', state: 'Tamil Nadu', lat: 12.6165, lng: 80.1993, type: 'sacred', name: 'Shore Temple', local: 'கடற்கரைக் கோயில்', lang: 'ta', place: 'Mahabalipuram, Tamil Nadu', built: 'c. 700–728 CE', stat: ['Shrines', '3'], style: 'Dravidian (Pallava)', material: 'Granite', build: buildShoreTemple,
+    facts: ['Built by the Pallava king Narasimhavarman II (Rajasimha) beside the Bay of Bengal.', 'One of the oldest structural stone temples in South India: two Shiva shrines and one to Vishnu.', 'Part of the Group of Monuments at Mahabalipuram, a UNESCO World Heritage Site since 1984.'] },
+  { id: 'gwalior-fort', state: 'Madhya Pradesh', lat: 26.2307, lng: 78.1691, type: 'fort', name: 'Gwalior Fort', local: 'ग्वालियर क़िला', lang: 'hi', place: 'Gwalior, Madhya Pradesh', built: '8th–16th c.', stat: ['Man Mandir', '1486–1516'], style: 'Rajput (Tomar)', material: 'Sandstone with glazed tiles', build: buildGwaliorFort,
+    facts: ['Raja Man Singh Tomar built the Man Mandir palace on the fort between 1486 and 1516.', 'Its walls are decorated with blue, green and yellow tiles of ducks, elephants and banana trees.', 'The fort crowns a sandstone hill above Gwalior; Babur is said to have called it the pearl among India’s forts.'] },
 ];
