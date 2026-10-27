@@ -1,0 +1,1229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Ten Indian landmarks, from the Qutub Minar to the Howrah Bridge, modelled in interactive 3D.">
+<title>Monuments of India</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600&family=Rozha+One&display=swap">
+<style>
+/* Layout: a monument index rail on the left, a full-bleed 3D stage on the right with a floating plaque; on phones the rail becomes a swipeable strip under the stage. */
+:root {
+  --bg: #eceef3;
+  --fg: #1c1f30;
+  --muted: #5a5f77;
+  --line: rgba(28, 31, 48, 0.12);
+  --panel: rgba(248, 249, 252, 0.86);
+  --active: rgba(208, 106, 18, 0.12);
+  --accent: #b8590c;
+  --sky-top: #86afd4;
+  --sky-horizon: #ebe2d3;
+  --ground: #b7a684;
+  --scene-mode: day;
+  --font-display: "Rozha One", "Georgia", serif;
+  --font-body: "Hind", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10121d;
+    --fg: #ebeaf2;
+    --muted: #a0a3ba;
+    --line: rgba(235, 234, 242, 0.12);
+    --panel: rgba(18, 20, 33, 0.8);
+    --active: rgba(242, 160, 61, 0.14);
+    --accent: #f2a03d;
+    --sky-top: #060a1a;
+    --sky-horizon: #2c2944;
+    --ground: #24242f;
+    --scene-mode: night;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10121d;
+  --fg: #ebeaf2;
+  --muted: #a0a3ba;
+  --line: rgba(235, 234, 242, 0.12);
+  --panel: rgba(18, 20, 33, 0.8);
+  --active: rgba(242, 160, 61, 0.14);
+  --accent: #f2a03d;
+  --sky-top: #060a1a;
+  --sky-horizon: #2c2944;
+  --ground: #24242f;
+  --scene-mode: night;
+  color-scheme: dark;
+}
+
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  overflow: hidden;
+}
+.app {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+}
+.side {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-right: 1px solid var(--line);
+}
+.masthead {
+  padding: 22px 20px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.masthead h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.masthead .hi {
+  margin: 4px 0 0;
+  color: var(--accent);
+  font-size: 15px;
+}
+.masthead p.sub {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 2px 10px;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.item:hover { background: var(--line); }
+.item:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.item[aria-current="true"] { background: var(--active); }
+.item[aria-current="true"] .name { color: var(--accent); }
+.item .name { font-weight: 600; font-size: 15px; }
+.item .h {
+  color: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.item .place { grid-column: 1 / -1; color: var(--muted); font-size: 12.5px; }
+
+.stage {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+#scene { display: block; width: 100%; height: 100%; touch-action: none; }
+.status {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 14px;
+  pointer-events: none;
+}
+.toolbar {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 6px;
+}
+.btn {
+  height: 36px;
+  min-width: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--fg);
+  font: 500 13px/1 var(--font-body);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn:hover { border-color: var(--accent); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn[aria-pressed="true"] { color: var(--accent); }
+.btn svg { width: 16px; height: 16px; }
+
+.plaque {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  width: min(380px, calc(100% - 32px));
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.plaque .eyebrow {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.plaque h2 {
+  margin: 2px 0 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.plaque .local { margin: 2px 0 0; color: var(--accent); font-size: 15px; }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 12px 0 0;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--line);
+}
+.stats div { min-width: 0; }
+.stats dt {
+  color: var(--muted);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.stats dd {
+  margin: 0;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+}
+details.facts { margin-top: 10px; }
+details.facts summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+details.facts ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  font-size: 13.5px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hint {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+  .side { display: contents; }
+  .masthead {
+    grid-row: 1;
+    padding: 12px 16px 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .masthead h1 { font-size: 22px; }
+  .masthead .hi { margin: 0; font-size: 13px; }
+  .masthead p.sub { display: none; }
+  .stage { grid-row: 2; }
+  .list {
+    grid-row: 3;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 16px;
+    border-top: 1px solid var(--line);
+    scroll-snap-type: x proximity;
+  }
+  .list li { flex: 0 0 auto; scroll-snap-align: start; }
+  .item { width: 160px; padding: 7px 10px; }
+  .plaque { padding: 12px 14px; }
+  .plaque h2 { font-size: 24px; }
+  .hint { display: none; }
+  .toolbar { top: 12px; right: 12px; }
+  .btn .label { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .list { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="side">
+    <header class="masthead">
+      <h1>Monuments of India</h1>
+      <p class="hi" lang="hi">भारत के स्मारक</p>
+      <p class="sub">Ten landmarks modelled in 3D at their real proportions. Pick one, then drag to walk around it.</p>
+    </header>
+    <ul class="list" id="list"></ul>
+  </aside>
+
+  <main class="stage" id="stage">
+    <canvas id="scene" aria-label="3D model of the selected monument"></canvas>
+    <div class="status" id="status">Loading the 3D engine…</div>
+
+    <div class="toolbar">
+      <button class="btn" id="prev" type="button" aria-label="Previous monument">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg>
+      </button>
+      <button class="btn" id="next" type="button" aria-label="Next monument">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg>
+      </button>
+      <button class="btn" id="rotate" type="button" aria-pressed="true">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 8a5.5 5.5 0 1 1-1.8-4.1"/><path d="M12 1.5v2.8H9.2"/></svg>
+        <span class="label">Auto-rotate</span>
+      </button>
+      <button class="btn" id="reset" type="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4"/></svg>
+        <span class="label">Reset view</span>
+      </button>
+    </div>
+
+    <section class="plaque" id="plaque" aria-live="polite">
+      <p class="eyebrow" id="p-place"></p>
+      <h2 id="p-name"></h2>
+      <p class="local" id="p-local"></p>
+      <dl class="stats">
+        <div><dt id="p-stat-label">Height</dt><dd id="p-stat"></dd></div>
+        <div><dt>Built</dt><dd id="p-built"></dd></div>
+        <div><dt>Style</dt><dd id="p-style"></dd></div>
+      </dl>
+      <details class="facts" id="p-facts-wrap" open>
+        <summary id="p-material"></summary>
+        <ul id="p-facts"></ul>
+      </details>
+    </section>
+    <p class="hint">Drag to orbit · scroll or pinch to zoom · ← → to switch</p>
+  </main>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script>
+  window.addEventListener('error', function () {
+    var s = document.getElementById('status');
+    if (s && !s.hidden) s.textContent = 'The 3D engine could not load. Check your connection and reload the page.';
+  });
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* ---------- materials ---------- */
+const mat = (color, roughness = 0.85, metalness = 0, extra = {}) =>
+  new THREE.MeshStandardMaterial({ color, roughness, metalness, ...extra });
+const M = {
+  marble: mat('#f2eee6', 0.45),
+  marbleShade: mat('#c9c0b0', 0.6),
+  recess: mat('#4a3f38', 0.9),
+  red: mat('#a4553b', 0.85),
+  redLight: mat('#b86b4f', 0.85),
+  buff: mat('#cfae86', 0.85),
+  basalt: mat('#c4a46c', 0.85),
+  plaster: mat('#ddd3bf', 0.85),
+  granite: mat('#a08d70', 0.9),
+  graniteDark: mat('#7d6d57', 0.9),
+  pink: mat('#e3ad93', 0.8),
+  pinkShade: mat('#c98f77', 0.85),
+  puri: mat('#e4ddcf', 0.85),
+  puriShade: mat('#b8ab95', 0.9),
+  bronze: mat('#8a6644', 0.45, 0.6),
+  steel: mat('#8e9ba5', 0.5, 0.55),
+  gold: mat('#d6a640', 0.3, 0.85),
+  concrete: mat('#aaa59b', 0.9),
+  asphalt: mat('#3c3c40', 0.9),
+  water: mat('#3e6f86', 0.18, 0.1),
+  grass: mat('#6b8a4c', 0.95),
+  path: mat('#cdbd9c', 0.95),
+  bank: mat('#7d7059', 0.95),
+  stoneDark: mat('#2d2a2a', 0.8),
+  wood: mat('#5b4330', 0.8),
+  saffron: mat('#ef7d1a', 0.7, 0, { side: THREE.DoubleSide }),
+  flagRed: mat('#d23a24', 0.7, 0, { side: THREE.DoubleSide }),
+};
+const flatCache = new Map();
+const flat = (m) => {
+  if (!flatCache.has(m)) { const c = m.clone(); c.flatShading = true; flatCache.set(m, c); }
+  return flatCache.get(m);
+};
+
+/* ---------- geometry helpers (y = bottom of object) ---------- */
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+function mesh(geo, m, x = 0, y = 0, z = 0) {
+  const o = new THREE.Mesh(geo, m);
+  o.position.set(x, y, z);
+  o.castShadow = true;
+  o.receiveShadow = true;
+  return o;
+}
+const box = (w, h, d, m, x = 0, y = 0, z = 0) => mesh(new THREE.BoxGeometry(w, h, d), m, x, y + h / 2, z);
+const cyl = (rt, rb, h, m, x = 0, y = 0, z = 0, seg = 24) => mesh(new THREE.CylinderGeometry(rt, rb, h, seg), m, x, y + h / 2, z);
+const ring = (r, h, m, y = 0, seg = 40) => {
+  const o = mesh(new THREE.CylinderGeometry(r, r, h, seg, 1, true), m, 0, y + h / 2, 0);
+  o.material = m.side === THREE.DoubleSide ? m : doubleSided(m);
+  return o;
+};
+const dsCache = new Map();
+function doubleSided(m) {
+  if (!dsCache.has(m)) { const c = m.clone(); c.side = THREE.DoubleSide; dsCache.set(m, c); }
+  return dsCache.get(m);
+}
+const lathe = (pts, m, seg = 40) => mesh(new THREE.LatheGeometry(pts.map(([r, y]) => new THREE.Vector2(r, y)), seg), m);
+function group(...kids) { const g = new THREE.Group(); kids.forEach((k) => g.add(k)); return g; }
+function at(o, x = 0, y = 0, z = 0) { o.position.set(x, y, z); return o; }
+// Place an object on the face of a building whose outward normal points at `angle` (0 = +z).
+function onFace(o, angle, dist, lat = 0) {
+  o.position.x = Math.sin(angle) * dist + Math.cos(angle) * lat;
+  o.position.z = Math.cos(angle) * dist - Math.sin(angle) * lat;
+  o.rotation.y = angle;
+  return o;
+}
+const FACES = [0, Math.PI / 2, Math.PI, -Math.PI / 2];
+
+function strut(a, b, t, m) {
+  const o = new THREE.Mesh(new THREE.BoxGeometry(t, t, a.distanceTo(b)), m);
+  o.position.copy(a).add(b).multiplyScalar(0.5);
+  o.lookAt(b);
+  o.castShadow = true;
+  o.receiveShadow = true;
+  return o;
+}
+function limb(a, b, r1, r2, m) {
+  const o = mesh(new THREE.CylinderGeometry(r2, r1, a.distanceTo(b), 20), m);
+  o.position.copy(a).add(b).multiplyScalar(0.5);
+  o.quaternion.setFromUnitVectors(V(0, 1, 0), b.clone().sub(a).normalize());
+  return o;
+}
+
+function archTop(p, r, s, pointed) {
+  if (pointed) {
+    p.bezierCurveTo(-r, s + r * 0.75, -r * 0.3, s + r * 1.1, 0, s + r * 1.4);
+    p.bezierCurveTo(r * 0.3, s + r * 1.1, r, s + r * 0.75, r, s);
+  } else {
+    p.absarc(0, s, r, Math.PI, 0, true);
+  }
+}
+const rise = (r, pointed) => (pointed ? r * 1.4 : r);
+// A wall of w×h×d with an arch of width aw and apex height ah cut through it (front/back faces on ±z).
+function archWall(w, h, d, aw, ah, pointed, m) {
+  const r = aw / 2, s = ah - rise(r, pointed);
+  const p = new THREE.Shape();
+  p.moveTo(-w / 2, 0); p.lineTo(-r, 0); p.lineTo(-r, s);
+  archTop(p, r, s, pointed);
+  p.lineTo(r, 0); p.lineTo(w / 2, 0); p.lineTo(w / 2, h); p.lineTo(-w / 2, h); p.closePath();
+  const geo = new THREE.ExtrudeGeometry(p, { depth: d, bevelEnabled: false, curveSegments: 18 });
+  geo.translate(0, 0, -d / 2);
+  return mesh(geo, m);
+}
+// A thin arch-shaped slab, used for niches and recessed arches on facades (faces +z).
+function archPanel(aw, ah, pointed, m, depth = 0.3) {
+  const r = aw / 2, s = ah - rise(r, pointed);
+  const p = new THREE.Shape();
+  p.moveTo(-r, 0); p.lineTo(-r, s);
+  archTop(p, r, s, pointed);
+  p.lineTo(r, 0); p.closePath();
+  return mesh(new THREE.ExtrudeGeometry(p, { depth, bevelEnabled: false, curveSegments: 14 }), m);
+}
+
+function onionDome(r, m) {
+  return lathe([[0.86, 0], [0.98, 0.18], [1.06, 0.45], [1.0, 0.75], [0.8, 1.05], [0.5, 1.32], [0.22, 1.58], [0.06, 1.78], [0, 1.85]]
+    .map(([a, b]) => [a * r, b * r]), m, 48);
+}
+function hemi(r, m, seg = 32) {
+  return mesh(new THREE.SphereGeometry(r, seg, Math.max(6, seg / 2), 0, Math.PI * 2, 0, Math.PI / 2), m);
+}
+function finial(h, m = M.gold) {
+  const g = new THREE.Group();
+  g.add(cyl(h * 0.03, h * 0.05, h * 0.75, m, 0, 0, 0, 8));
+  g.add(at(mesh(new THREE.SphereGeometry(h * 0.09, 12, 8), m), 0, h * 0.32, 0));
+  g.add(at(mesh(new THREE.SphereGeometry(h * 0.07, 12, 8), m), 0, h * 0.52, 0));
+  g.add(cyl(0, h * 0.04, h * 0.25, m, 0, h * 0.75, 0, 8));
+  return g;
+}
+function kalash(s, m = M.gold) {
+  return lathe([[0, 0], [0.32, 0], [0.45, 0.22], [0.38, 0.42], [0.14, 0.52], [0.24, 0.6], [0.1, 0.72], [0.05, 1.0], [0, 1.12]]
+    .map(([a, b]) => [a * s, b * s]), m, 24);
+}
+function bell(r, m) {
+  return lathe([[r, 0], [r * 0.96, r * 0.28], [r * 0.72, r * 0.68], [r * 0.38, r * 0.95], [0, r * 1.05]], m, 32);
+}
+function chhatri(r, h, m, domeM = m) {
+  const g = new THREE.Group();
+  g.add(cyl(r * 1.05, r * 1.05, h * 0.06, m));
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2;
+    g.add(cyl(r * 0.07, r * 0.07, h * 0.38, m, Math.cos(a) * r * 0.82, h * 0.06, Math.sin(a) * r * 0.82, 6));
+  }
+  g.add(cyl(r * 1.0, r * 1.25, h * 0.07, m, 0, h * 0.44));
+  g.add(at(onionDome(r * 0.95, domeM), 0, h * 0.51, 0));
+  g.add(at(finial(r * 0.9), 0, h * 0.51 + r * 1.72, 0));
+  return g;
+}
+function minaret(h, r, m, { balconies = 3, cap = 'chhatri', seg = 16, capM = m } = {}) {
+  const g = new THREE.Group();
+  const shaftTop = h * 0.8;
+  g.add(cyl(r * 1.3, r * 1.35, h * 0.04, m, 0, 0, 0, seg));
+  let y = h * 0.04, rt = r;
+  const sec = (shaftTop - y) / balconies;
+  for (let i = 0; i < balconies; i++) {
+    const rb = r * (1 - 0.14 * i / balconies);
+    rt = r * (1 - 0.14 * (i + 1) / balconies);
+    g.add(cyl(rt, rb, sec, m, 0, y, 0, seg));
+    y += sec;
+    const bh = Math.max(0.3, r * 0.28);
+    g.add(cyl(rt * 1.55, rt * 1.05, bh, m, 0, y - bh, 0, seg));
+    g.add(ring(rt * 1.55, bh * 1.1, m, y, seg));
+  }
+  if (cap === 'chhatri') g.add(at(chhatri(rt * 1.25, h - y, m, capM), 0, y, 0));
+  else {
+    g.add(cyl(rt * 0.95, rt * 0.95, r * 1.2, m, 0, y, 0, seg));
+    g.add(at(onionDome(rt * 1.1, capM), 0, y + r * 1.2, 0));
+    g.add(at(finial(r * 1.4), 0, y + r * 1.2 + rt * 2.0, 0));
+  }
+  return g;
+}
+// Curvilinear temple tower built from stacked cross-shaped slices; prof(t) gives width at height t∈[0,1].
+function shikhara(baseW, h, m, prof, n = 16) {
+  const g = new THREE.Group();
+  const sh = h / n;
+  for (let i = 0; i < n; i++) {
+    const w = baseW * prof(i / n), y = i * sh;
+    g.add(box(w * 0.84, sh, w * 0.84, m, 0, y, 0));
+    g.add(box(w, sh * 0.8, w * 0.6, m, 0, y, 0));
+    g.add(box(w * 0.6, sh * 0.8, w, m, 0, y, 0));
+  }
+  const top = baseW * prof(1);
+  g.add(box(top * 0.62, sh * 0.7, top * 0.62, m, 0, h, 0));
+  const ar = top * 0.64, ay = h + sh * 0.7;
+  const am = mesh(new THREE.SphereGeometry(ar, 28, 10), flat(m), 0, ay + ar * 0.42, 0);
+  am.scale.y = 0.42;
+  g.add(am);
+  const ky = ay + ar * 0.84;
+  g.add(at(kalash(top * 0.65), 0, ky, 0));
+  g.userData.top = ky + top * 0.65 * 1.12;
+  g.userData.topW = top;
+  return g;
+}
+// Stacked horizontal slabs (pida roof) from width w0 to w1.
+function pidaRoof(w0, w1, count, u, m, mRecess) {
+  const g = new THREE.Group();
+  let y = 0;
+  for (let i = 0; i < count; i++) {
+    const w = w0 + (w1 - w0) * (i / Math.max(1, count - 1));
+    g.add(box(w, u, w, m, 0, y, 0));
+    g.add(box(w - u * 1.6, u * 0.55, w - u * 1.6, mRecess, 0, y + u, 0));
+    y += u * 1.55;
+  }
+  g.userData.top = y;
+  return g;
+}
+function flag(h, m, poleM = M.wood) {
+  const g = new THREE.Group();
+  g.add(cyl(h * 0.012, h * 0.016, h, poleM, 0, 0, 0, 6));
+  const s = new THREE.Shape();
+  s.moveTo(0, h); s.lineTo(h * 0.55, h * 0.88); s.lineTo(0, h * 0.74); s.closePath();
+  g.add(mesh(new THREE.ShapeGeometry(s), m));
+  return g;
+}
+
+/* ---------- monuments ---------- */
+function buildQutub() {
+  const g = new THREE.Group();
+  g.add(box(26, 1.2, 26, M.redLight));
+  const tiers = [[7.15, 5.7, 29, M.red, 0], [5.7, 4.6, 15, M.red, 1], [4.6, 3.6, 11.5, M.red, 2], [3.6, 2.95, 8, M.marble, 3], [2.95, 2.4, 8.5, M.marble, 4]];
+  let y = 1.2;
+  for (const [rb, rt, h, m, i] of tiers) {
+    const geo = new THREE.CylinderGeometry(rt, rb, h, 144, 6);
+    const pos = geo.attributes.position;
+    for (let k = 0; k < pos.count; k++) {
+      const x = pos.getX(k), z = pos.getZ(k);
+      if (Math.hypot(x, z) < 0.01) continue;
+      const a = Math.atan2(z, x);
+      let f;
+      if (i === 0) f = 1 + 0.07 * Math.abs(Math.cos(a * 12));           // alternating round and angular flutes
+      else if (i === 1) f = 1 + 0.06 * Math.abs(Math.cos(a * 12));
+      else if (i === 2) { const t = ((a / Math.PI) * 12) % 2; f = 1 + 0.08 * (1 - Math.abs((t < 0 ? t + 2 : t) - 1)); } // star flutes
+      else f = 1 + 0.025 * Math.abs(Math.cos(a * 16));
+      pos.setX(k, x * f); pos.setZ(k, z * f);
+    }
+    geo.computeVertexNormals();
+    g.add(mesh(geo, m, 0, y + h / 2, 0));
+    if (i < 3) for (const t of [0.28, 0.62]) g.add(cyl(rb - (rb - rt) * t + 0.35, rb - (rb - rt) * t + 0.35, 0.7, M.redLight, 0, y + h * t, 0, 48));
+    if (i === 3) g.add(cyl(rt * 1.07, rb * 1.07, 1.2, M.red, 0, y + h * 0.45, 0, 48));
+    y += h;
+    if (i < 4) {
+      g.add(cyl(rt + 1.4, rt + 0.3, 1.1, i < 3 ? M.redLight : M.marble, 0, y - 1.1, 0, 48));
+      g.add(ring(rt + 1.4, 0.8, i < 3 ? M.red : M.marbleShade, y, 48));
+    }
+  }
+  g.add(at(chhatri(2.1, 5, M.red, M.marble), 0, y, 0));
+  return { group: g };
+}
+
+function buildGateway() {
+  const m = M.basalt, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  f.add(box(50, 1.5, 22, M.concrete));
+  const b = 1.5;
+  f.add(at(archWall(18, 18, 14, 8.5, 14.5, false, m), 0, b, 0));
+  f.add(at(archWall(13.9, 12, 17.9, 5, 10, false, m), 0, b, 0).rotateY(Math.PI / 2));
+  f.add(box(19, 2.6, 15, m, 0, b + 18));
+  f.add(box(19.8, 0.8, 15.8, M.plaster, 0, b + 20.6));
+  f.add(cyl(5, 5, 2, m, 0, b + 21.4, 0, 32));
+  f.add(at(hemi(5, m), 0, b + 23.4, 0));
+  f.add(at(finial(3.5), 0, b + 28.2, 0));
+  for (const x of [-8.6, 8.6]) for (const z of [-6.6, 6.6]) {
+    f.add(cyl(1.4, 1.5, 23.5, m, x, b, z, 8));
+    f.add(cyl(1.9, 1.9, 0.6, M.plaster, x, b + 18, z, 8));
+    f.add(at(onionDome(1.55, m), x, b + 23.5, z));
+    f.add(at(finial(1.8), x, b + 26.3, z));
+  }
+  for (const s of [-1, 1]) {
+    f.add(at(archWall(9, 11, 9, 4.2, 8.5, true, m), s * 13.5, b, 0));
+    f.add(box(9.8, 1, 9.8, M.plaster, s * 13.5, b + 11));
+    for (const z of [-4.2, 4.2]) {
+      f.add(cyl(0.9, 1, 13.5, m, s * 17.8, b, z, 8));
+      f.add(at(onionDome(1, m), s * 17.8, b + 13.5, z));
+    }
+  }
+  g.add(box(70, 0.25, 30, M.path, 0, 0, -12));
+  g.add(box(600, 0.4, 300, M.water, 0, -0.3, 160));
+  return { group: g, focus: f, view: [-0.9, 0.32, 1.25] };
+}
+
+function buildTaj() {
+  const g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  f.add(box(118, 1.5, 118, M.red));
+  f.add(box(95, 6, 95, M.marble, 0, 1.5));
+  const P = 7.5;
+  const s = 28.5, c = 9.5, H = 30;
+  const sh = new THREE.Shape();
+  sh.moveTo(-s + c, -s); sh.lineTo(s - c, -s); sh.lineTo(s, -s + c); sh.lineTo(s, s - c);
+  sh.lineTo(s - c, s); sh.lineTo(-s + c, s); sh.lineTo(-s, s - c); sh.lineTo(-s, -s + c); sh.closePath();
+  const geo = new THREE.ExtrudeGeometry(sh, { depth: H, bevelEnabled: false });
+  geo.rotateX(-Math.PI / 2);
+  f.add(mesh(geo, M.marble, 0, P, 0));
+  f.add(box(2 * s + 0.6, 1.2, 2 * s + 0.6, M.marbleShade, 0, P + H - 0.6));
+  for (const a of FACES) {
+    f.add(onFace(box(21, H + 2, 1.2, M.marble, 0, P), a, s + 0.6));
+    f.add(onFace(at(archPanel(14, 24, true, M.marbleShade, 0.4), 0, P + 0.5, 0), a, s + 1.2));
+    f.add(onFace(at(archPanel(6, 11, true, M.recess, 0.3), 0, P + 0.5, 0), a, s + 1.62));
+    for (const lat of [-15.3, 15.3]) for (const y of [1.5, 15.5]) {
+      f.add(onFace(at(archPanel(4.6, 11, true, M.marbleShade, 0.3), 0, P + y, 0), a, s, lat));
+    }
+    const ca = a + Math.PI / 4, cd = (s - c / 2) * Math.SQRT2;
+    for (const y of [1.5, 15.5]) f.add(onFace(at(archPanel(5.2, 11, true, M.marbleShade, 0.3), 0, P + y, 0), ca, cd));
+  }
+  const top = P + H;
+  f.add(cyl(14, 14, 7, M.marble, 0, top, 0, 48));
+  f.add(cyl(14.6, 14.6, 0.8, M.marbleShade, 0, top + 6.2, 0, 48));
+  f.add(at(onionDome(14.5, M.marble), 0, top + 7, 0));
+  f.add(at(finial(9), 0, top + 7 + 14.5 * 1.8, 0));
+  for (const x of [-16, 16]) for (const z of [-16, 16]) f.add(at(chhatri(4.2, 9, M.marble), x, top, z));
+  for (const x of [-42, 42]) for (const z of [-42, 42]) f.add(at(minaret(41, 2.6, M.marble), x, P, z));
+  // Charbagh garden and reflecting pool in front of the tomb
+  g.add(box(8, 0.35, 150, M.water, 0, 0, 135));
+  g.add(box(12, 0.3, 150, M.path, 0, 0, 135).translateY(-0.02));
+  for (const x of [-24, 24]) g.add(box(34, 0.2, 150, M.grass, x, 0, 135));
+  g.add(box(16, 0.8, 16, M.marble, 0, 0, 135));
+  g.add(box(12, 0.9, 12, M.water, 0, 0, 135));
+  return { group: g, focus: f };
+}
+
+function buildCharminar() {
+  const m = M.plaster, g = new THREE.Group();
+  g.add(box(32, 0.8, 32, M.granite));
+  const b = 0.8;
+  g.add(at(archWall(20, 21, 20, 11, 16.5, true, m), 0, b, 0));
+  g.add(at(archWall(19.9, 21, 19.9, 11, 16.5, true, m), 0, b, 0).rotateY(Math.PI / 2));
+  g.add(box(21.6, 0.9, 21.6, m, 0, b + 21));
+  for (const a of FACES) {
+    for (let k = -2; k <= 2; k++) g.add(onFace(at(archPanel(1.8, 3.2, true, M.recess, 0.2), 0, b + 22.4, 0), a, 9.8, k * 3.2));
+  }
+  g.add(box(19.6, 4.6, 19.6, m, 0, b + 21.9));
+  g.add(box(21, 0.7, 21, m, 0, b + 26.5));
+  g.add(box(18.6, 3.6, 18.6, m, 0, b + 27.2));
+  for (const a of FACES) for (let k = -3; k <= 3; k++) g.add(onFace(at(archPanel(1.5, 2.6, true, M.recess, 0.2), 0, b + 27.6, 0), a, 9.3, k * 2.4));
+  g.add(box(19.2, 1, 19.2, m, 0, b + 30.8));
+  for (const x of [-10, 10]) for (const z of [-10, 10]) {
+    const t = new THREE.Group();
+    t.add(cyl(2.4, 2.7, 31.5, m, 0, 0, 0, 12));
+    for (const y of [21, 31.5]) t.add(cyl(3.8, 2.7, 0.8, m, 0, y - 0.8, 0, 12), ring(3.8, 0.9, m, y, 12));
+    t.add(cyl(2.2, 2.4, 7.5, m, 0, 31.5, 0, 12));
+    t.add(cyl(3.4, 2.2, 0.7, m, 0, 38.3, 0, 12), ring(3.4, 0.8, m, 39, 12));
+    t.add(cyl(2.0, 2.2, 6.5, m, 0, 39, 0, 12));
+    t.add(cyl(3.0, 2.0, 0.6, m, 0, 44.9, 0, 12), ring(3.0, 0.7, m, 45.5, 12));
+    t.add(at(onionDome(2.3, m), 0, 45.5, 0));
+    t.add(at(finial(4), 0, 49.6, 0));
+    g.add(at(t, x, b, z));
+  }
+  return { group: g };
+}
+
+function nagaraProfile(t) { return 1 - 0.6 * Math.pow(t, 1.45); }
+function mandap(w, h, roofCount, m, shade) {
+  const g = new THREE.Group();
+  g.add(box(w - 3, h, w - 3, shade));
+  const n = Math.max(3, Math.round(w / 2.6));
+  for (let i = 0; i <= n; i++) {
+    const t = -w / 2 + 0.6 + (i / n) * (w - 1.2);
+    for (const [x, z] of [[t, w / 2 - 0.6], [t, -w / 2 + 0.6], [w / 2 - 0.6, t], [-w / 2 + 0.6, t]]) g.add(cyl(0.38, 0.42, h, m, x, 0, z, 8));
+  }
+  g.add(box(w + 1, 1, w + 1, m, 0, h));
+  const roof = pidaRoof(w * 0.92, w * 0.42, roofCount, 0.9, m, shade);
+  g.add(at(roof, 0, h + 1, 0));
+  const ry = h + 1 + roof.userData.top;
+  g.add(at(bell(w * 0.2, m), 0, ry, 0));
+  g.add(at(kalash(w * 0.12), 0, ry + w * 0.2, 0));
+  return g;
+}
+function buildRamMandir() {
+  const m = M.pink, sh = M.pinkShade, g = new THREE.Group();
+  g.add(box(62, 2, 96, sh));
+  g.add(box(58, 2, 92, m, 0, 2));
+  g.add(box(54, 2.5, 88, sh, 0, 4));
+  const P = 6.5;
+  for (let i = 0; i < 6; i++) g.add(box(10, P - i * 1.08, 1.4, m, 0, 0, 44 + 1.4 * i + 0.7));
+  // Garbhagriha with the main shikhara and four attached minor spires
+  const gz = -26;
+  g.add(box(22, 12, 22, m, 0, P, gz));
+  g.add(box(24, 1.2, 24, sh, 0, P + 12, gz));
+  const main = shikhara(19, 30, m, nagaraProfile, 18);
+  g.add(at(main, 0, P + 13.2, gz));
+  g.add(at(flag(7, M.saffron), 0, P + 13.2 + main.userData.top - 1, gz));
+  for (const a of FACES) {
+    const u = onFace(at(shikhara(8, 14, m, nagaraProfile, 10), 0, P + 13.2, 0), a, 9.5);
+    u.position.z += gz;
+    g.add(u);
+  }
+  g.add(at(mandap(24, 10, 8, m, sh), 0, P, -3));
+  g.add(at(mandap(18, 9, 7, m, sh), 0, P, 17));
+  g.add(at(mandap(14, 8, 6, m, sh), 0, P, 33));
+  for (const x of [-17, 17]) g.add(at(mandap(10, 8, 5, m, sh), x, P, -3));
+  return { group: g, view: [0.95, 0.38, 1.15] };
+}
+
+function buildBrihadeeswara() {
+  const m = M.granite, d = M.graniteDark, g = new THREE.Group();
+  g.add(box(70, 0.4, 150, M.path, 0, 0, 30));
+  g.add(box(31, 4, 31, d));
+  g.add(box(29, 12, 29, m, 0, 4));
+  for (const a of FACES) {
+    for (let k = -3; k <= 3; k++) g.add(onFace(box(1.4, 12, 0.6, m, 0, 4), a, 14.5, k * 3.8));
+    g.add(onFace(box(3, 6, 0.4, M.recess, 0, 7), a, 14.55, 0));
+  }
+  g.add(box(31, 1.2, 31, d, 0, 16));
+  let y = 17.2, w = 27.5;
+  const tiers = 13, th = 2.9, w1 = 9.5;
+  for (let i = 0; i < tiers; i++) {
+    g.add(box(w, th * 0.72, w, m, 0, y));
+    g.add(box(w + 0.9, th * 0.28, w + 0.9, d, 0, y + th * 0.72));
+    const k = Math.max(0.8, w * 0.07), ky = y + th;
+    if (i < tiers - 1) for (const x of [-1, 1]) for (const z of [-1, 1]) g.add(box(k, k, k, m, x * (w / 2 - k / 2), ky, z * (w / 2 - k / 2)));
+    if (i < tiers - 1) for (const a of FACES) g.add(onFace(box(w * 0.3, k * 0.9, k, m, 0, ky), a, w / 2 - k / 2));
+    y += th;
+    w -= (27.5 - w1) / tiers;
+  }
+  g.add(box(8, 2.6, 8, d, 0, y));
+  const dome = mesh(new THREE.SphereGeometry(7, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), flat(m), 0, y + 2.6, 0);
+  dome.rotation.y = Math.PI / 8;
+  dome.scale.y = 0.85;
+  g.add(dome);
+  g.add(at(kalash(3.4), 0, y + 2.6 + 5.9, 0));
+  // Mandapas leading east to the Nandi pavilion
+  g.add(box(16, 10, 10, m, 0, 0, 20));
+  g.add(box(22, 11, 34, m, 0, 0, 41));
+  g.add(box(23, 1, 35, d, 0, 11, 41));
+  for (let z = 25; z <= 57; z += 4) for (const x of [-10.5, 10.5]) g.add(box(1.5, 1.4, 1.5, m, x, 12, z));
+  g.add(box(18, 9, 12, m, 0, 0, 64));
+  g.add(box(19, 0.8, 13, d, 0, 9, 64));
+  g.add(box(10, 1, 5, d, 0, 0, 72));
+  const n = new THREE.Group();
+  n.add(box(15, 1.5, 15, d));
+  for (const x of [-6, -2, 2, 6]) for (const z of [-6, 6]) n.add(cyl(0.45, 0.5, 7, m, x, 1.5, z, 8));
+  for (const z of [-2, 2]) for (const x of [-6, 6]) n.add(cyl(0.45, 0.5, 7, m, x, 1.5, z, 8));
+  n.add(box(16, 1.2, 16, d, 0, 8.5));
+  n.add(at(pidaRoof(13, 6, 3, 1, m, d), 0, 9.7, 0));
+  n.add(box(2.6, 2.4, 5.4, M.stoneDark, 0, 1.5, 0.4));
+  n.add(box(1.6, 2, 1.6, M.stoneDark, 0, 3, -2.6));
+  n.add(box(1.6, 1, 1.2, M.stoneDark, 0, 3.9, -1.2));
+  g.add(at(n, 0, 0, 96));
+  return { group: g, view: [1.0, 0.42, 1.0] };
+}
+
+function buildIndiaGate() {
+  const m = M.buff, r = M.red, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  f.add(box(36, 1, 22, r));
+  f.add(box(31, 1.4, 17, r, 0, 1));
+  const b = 2.4;
+  f.add(at(archWall(24, 30, 12, 9.2, 21, false, m), 0, b, 0));
+  f.add(at(archWall(11.9, 17, 23.9, 4.4, 11, false, m), 0, b, 0).rotateY(Math.PI / 2));
+  f.add(box(24.4, 0.9, 12.4, r, 0, b + 15.5));
+  for (const s of [-1, 1]) for (const z of [-6.15, 6.15]) f.add(box(1.4, 28, 0.4, m, s * 8.4, b, z));
+  f.add(box(25.2, 1, 13.2, m, 0, b + 30));
+  f.add(box(23, 5.5, 11, m, 0, b + 31));
+  f.add(box(23.8, 0.8, 11.8, m, 0, b + 36.5));
+  f.add(box(20, 1.6, 9.2, m, 0, b + 37.3));
+  f.add(box(16, 1.3, 7.6, m, 0, b + 38.9));
+  f.add(cyl(3.4, 3.8, 1, m, 0, b + 40.2, 0, 40));
+  f.add(at(lathe([[0, 0], [2.6, 0], [3.8, 0.6], [4.4, 1.3], [4.5, 1.5], [3.9, 1.5], [0, 0.9]], m, 40), 0, b + 41.2, 0));
+  const c = new THREE.Group();
+  c.add(box(12, 1, 12, r));
+  for (const x of [-4.2, 4.2]) for (const z of [-4.2, 4.2]) c.add(box(1.6, 10, 1.6, m, x, 1, z));
+  c.add(box(11, 1.6, 11, m, 0, 11));
+  c.add(at(hemi(4, m), 0, 12.6, 0));
+  c.add(at(finial(3.5), 0, 16.4, 0));
+  g.add(at(c, 0, 0, 70));
+  g.add(box(18, 0.2, 260, M.path, 0, 0, 60));
+  for (const x of [-34, 34]) g.add(box(48, 0.15, 260, M.grass, x, 0, 60));
+  return { group: g, focus: f };
+}
+
+function buildStatue() {
+  const g = new THREE.Group(), f = new THREE.Group(), s = new THREE.Group();
+  g.add(f);
+  f.add(box(82, 22, 82, M.concrete));
+  f.add(box(62, 20, 62, M.concrete, 0, 22));
+  f.add(box(46, 16, 46, M.marbleShade, 0, 42));
+  const B = M.bronze;
+  for (const x of [-7.5, 7.5]) s.add(box(10, 4.5, 17, B, x, 0, 3));
+  const dhoti = lathe([[17.5, 3], [19.5, 9], [18.4, 30], [16.8, 55], [16, 80], [15.2, 90], [0, 90]], B, 48);
+  dhoti.scale.z = 0.62;
+  s.add(dhoti);
+  const torso = lathe([[15.2, 88], [16.5, 102], [18.5, 120], [20, 133], [17, 141], [7, 145], [0, 145]], B, 48);
+  torso.scale.z = 0.62;
+  s.add(torso);
+  const shawl = lathe([[21.2, 108], [21.8, 122], [22.2, 134], [18.6, 142], [8, 146], [0, 146.2]], B, 48);
+  shawl.scale.z = 0.7;
+  s.add(shawl);
+  for (const side of [-1, 1]) {
+    const sh = V(side * 21, 136, 0), el = V(side * 24, 110, 1.5), wr = V(side * 22.5, 88, 3);
+    s.add(at(mesh(new THREE.SphereGeometry(6.2, 20, 14), B), sh.x, sh.y, sh.z));
+    s.add(limb(sh, el, 6.2, 5.2, B), limb(el, wr, 5.2, 4.2, B));
+    const hand = mesh(new THREE.SphereGeometry(4.6, 18, 12), B, side * 22.4, 83.5, 3.2);
+    hand.scale.set(0.8, 1.25, 0.9);
+    s.add(hand);
+  }
+  s.add(cyl(6.5, 7.2, 12, B, 0, 143, 0, 24));
+  const head = mesh(new THREE.SphereGeometry(11, 32, 24), B, 0, 165, 0.8);
+  head.scale.set(0.86, 1.1, 0.95);
+  s.add(head);
+  s.add(box(2.2, 4, 3.2, B, 0, 160, 10.2));
+  for (const x of [-9.4, 9.4]) s.add(box(1.6, 5, 3, B, x, 162, 0.2));
+  s.scale.setScalar(182 / 177.4);
+  f.add(at(s, 0, 58, 0));
+  g.add(box(160, 0.3, 160, M.grass));
+  g.add(box(2400, 0.4, 2400, M.water, 0, -0.32, 0));
+  return { group: g, focus: f };
+}
+
+function buildHowrah() {
+  const g = new THREE.Group(), t = new THREE.Group();
+  g.add(t);
+  const xs = [];
+  const seg = (a, b, n) => { for (let i = 0; i < n; i++) xs.push(a + ((b - a) * i) / n); };
+  seg(-330, -228.5, 5); seg(-228.5, -80, 7); seg(-80, 80, 8); seg(80, 228.5, 7); seg(228.5, 330, 5); xs.push(330);
+  const deck = 10, W = 11, S = M.steel;
+  const topY = (x) => {
+    const a = Math.abs(x);
+    if (a <= 80) return 38;
+    if (a <= 228.5) return 38 + ((a - 80) / 148.5) * 44;
+    return 82 - ((a - 228.5) / 101.5) * 58;
+  };
+  for (const z of [-W, W]) {
+    xs.forEach((x, i) => {
+      const T = V(x, topY(x), z), Bt = V(x, deck, z);
+      const tower = Math.abs(Math.abs(x) - 228.5) < 0.5;
+      t.add(tower ? strut(V(x, 0, z), V(x, 86, z), 3.4, S) : strut(Bt, T, 1.1, S));
+      if (i < xs.length - 1) {
+        const x2 = xs[i + 1], T2 = V(x2, topY(x2), z), B2 = V(x2, deck, z);
+        t.add(strut(T, T2, 1.9, S), strut(Bt, B2, 1.9, S));
+        t.add(i % 2 ? strut(T, B2, 0.9, S) : strut(Bt, T2, 0.9, S));
+      }
+    });
+  }
+  xs.forEach((x, i) => {
+    const y = topY(x);
+    if (y - deck < 14) return;
+    t.add(strut(V(x, y, -W), V(x, y, W), 0.9, S));
+    if (i < xs.length - 1) {
+      const x2 = xs[i + 1], y2 = topY(x2);
+      if (y2 - deck >= 14) t.add(strut(V(x, y, -W), V(x2, y2, W), 0.55, S), strut(V(x, y, W), V(x2, y2, -W), 0.55, S));
+    }
+  });
+  for (const x of [-228.5, 228.5]) {
+    for (const y of [deck + 22, 60, 75, 86]) t.add(strut(V(x, y, -W), V(x, y, W), 1.8, S));
+    t.add(strut(V(x, deck + 22, -W), V(x, 60, W), 1, S), strut(V(x, deck + 22, W), V(x, 60, -W), 1, S));
+    g.add(box(18, deck - 1.4, 36, M.concrete, x, -0.3, 0));
+  }
+  g.add(box(1100, 1.4, 2 * W + 4, M.asphalt, 0, deck - 1.4, 0));
+  for (const s of [-1, 1]) g.add(box(260, deck - 1.4, 420, M.bank, s * 465, 0, 0));
+  g.add(box(3600, 0.4, 3600, M.water, 0, -0.3, 0));
+  return { group: g, focus: t, view: [0.45, 0.28, 1.2] };
+}
+
+function kalingaProfile(t) { return 1 - 0.44 * Math.pow(t, 2.3); }
+function buildJagannath() {
+  const m = M.puri, d = M.puriShade, g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  g.add(box(84, 1.2, 116, M.path));
+  for (const [w, dd, x, z] of [[90, 2, 0, -59], [2, 120, -45, 0], [2, 120, 45, 0], [36, 2, -27, 59], [36, 2, 27, 59]]) g.add(box(w, 7, dd, d, x, 0, z));
+  const gate = new THREE.Group();
+  gate.add(box(18, 9, 10, m));
+  gate.add(box(6, 6, 10.4, M.recess, 0, 0, 0));
+  gate.add(at(pidaRoof(18, 7, 5, 0.9, m, d), 0, 9, 0));
+  g.add(at(gate, 0, 0, 59));
+  const B = 1.2;
+  // Rekha deula (main sanctum tower)
+  const dz = -30;
+  f.add(box(22, 16, 22, m, 0, B, dz), box(26, 16, 14, m, 0, B, dz), box(14, 16, 26, m, 0, B, dz));
+  f.add(box(27, 1, 27, d, 0, B + 15, dz));
+  const tower = shikhara(24, 36, m, kalingaProfile, 20);
+  f.add(at(tower, 0, B + 16, dz));
+  const ty = B + 16 + tower.userData.top;
+  const chakra = new THREE.Group();
+  chakra.add(mesh(new THREE.TorusGeometry(2.4, 0.3, 8, 32), M.steel));
+  for (let i = 0; i < 4; i++) chakra.add(box(0.2, 4.6, 0.2, M.steel, 0, -2.3, 0).rotateZ((i / 4) * Math.PI));
+  f.add(at(chakra, 0, ty + 2.4, dz));
+  f.add(at(flag(9, M.flagRed), 0, ty + 2, dz + 0.6));
+  f.add(at(flag(7, M.saffron), 0.6, ty + 2, dz - 0.4).rotateY(Math.PI * 0.7));
+  // Jagamohana, Natamandapa and Bhogamandapa with stepped pida roofs
+  const halls = [[22, 13, 11, 24, 9, -5], [18, 9, 7, 19, 8.5, 15], [15, 8, 6, 16, 7, 31]];
+  for (const [w, h, n, w0, w1, z] of halls) {
+    f.add(box(w, h, w, m, 0, B, z), box(w + 4, h, w * 0.6, m, 0, B, z), box(w * 0.6, h, w + 4, m, 0, B, z));
+    const roof = pidaRoof(w0, w1, n, 1.2, m, d);
+    f.add(at(roof, 0, B + h, z));
+    const ry = B + h + roof.userData.top;
+    f.add(at(bell(w1 * 0.55, m), 0, ry, z));
+    const am = mesh(new THREE.SphereGeometry(w1 * 0.3, 24, 8), flat(m), 0, ry + w1 * 0.62, z);
+    am.scale.y = 0.4;
+    f.add(am);
+    f.add(at(kalash(w1 * 0.35), 0, ry + w1 * 0.72, z));
+  }
+  return { group: g, focus: f, view: [1.05, 0.4, 1.05] };
+}
+
+const MONUMENTS = [
+  { id: 'qutub-minar', name: 'Qutub Minar', local: 'क़ुतुब मीनार', lang: 'hi', place: 'Mehrauli, Delhi', built: '1199–1220', stat: ['Height', '72.5 m'], style: 'Indo-Islamic', material: 'Red sandstone and marble', build: buildQutub,
+    facts: ['Begun by Qutb ud-Din Aibak and completed by his successor Iltutmish; Firoz Shah Tughlaq later rebuilt the top storeys.', 'Its five storeys taper from a 14.3 m base to 2.7 m at the top, each ringed by a projecting balcony.', 'The Qutb complex has been a UNESCO World Heritage Site since 1993.'] },
+  { id: 'gateway-of-india', name: 'Gateway of India', local: 'गेटवे ऑफ़ इंडिया', lang: 'hi', place: 'Apollo Bunder, Mumbai', built: '1913–1924', stat: ['Height', '26 m'], style: 'Indo-Saracenic', material: 'Yellow basalt and concrete', build: buildGateway,
+    facts: ['Built to commemorate the 1911 landing of King George V and Queen Mary in Bombay.', 'Designed by the Scottish architect George Wittet, facing the Arabian Sea.', 'The last British troops left India through its arch in February 1948.'] },
+  { id: 'taj-mahal', name: 'Taj Mahal', local: 'ताज महल', lang: 'hi', place: 'Agra, Uttar Pradesh', built: '1632–1653', stat: ['Height', '73 m'], style: 'Mughal', material: 'White Makrana marble', build: buildTaj,
+    facts: ['Commissioned by Shah Jahan as a tomb for his wife Mumtaz Mahal.', 'The four minarets lean slightly outward, so in an earthquake they would fall away from the tomb.', 'A UNESCO World Heritage Site since 1983.'] },
+  { id: 'charminar', name: 'Charminar', local: 'चारमीनार', lang: 'hi', place: 'Hyderabad, Telangana', built: '1591', stat: ['Height', '56 m'], style: 'Qutb Shahi', material: 'Granite, limestone and lime mortar', build: buildCharminar,
+    facts: ['Built by Muhammad Quli Qutb Shah, the founder of Hyderabad.', 'Each of its four sides opens in a grand arch onto a street of the old city.', 'A small mosque occupies the western side of the top floor.'] },
+  { id: 'ram-mandir', name: 'Ram Mandir', local: 'राम मंदिर', lang: 'hi', place: 'Ayodhya, Uttar Pradesh', built: '2020–2024', stat: ['Height', '49 m'], style: 'Nagara', material: 'Pink Bansi Paharpur sandstone', build: buildRamMandir,
+    facts: ['Consecrated on 22 January 2024.', 'Designed by the Sompura family, temple architects for generations.', 'The main structure was built without iron or steel.'] },
+  { id: 'brihadeeswara-temple', name: 'Brihadeeswara Temple', local: 'பெருவுடையார் கோயில்', lang: 'ta', place: 'Thanjavur, Tamil Nadu', built: '1003–1010 CE', stat: ['Height', '66 m'], style: 'Dravidian (Chola)', material: 'Granite', build: buildBrihadeeswara,
+    facts: ['Built by the Chola emperor Rajaraja I.', 'The vimana rises in 13 tiers and is crowned by a capstone estimated at 80 tonnes.', 'Part of the Great Living Chola Temples, a UNESCO site since 1987.'] },
+  { id: 'india-gate', name: 'India Gate', local: 'इंडिया गेट', lang: 'hi', place: 'Kartavya Path, New Delhi', built: '1921–1931', stat: ['Height', '42 m'], style: 'Memorial arch', material: 'Red and buff Bharatpur sandstone', build: buildIndiaGate,
+    facts: ['Designed by Edwin Lutyens as the All India War Memorial.', 'It honours soldiers of the British Indian Army who died between 1914 and 1921.', 'More than 13,000 names are inscribed on its surfaces.'] },
+  { id: 'statue-of-unity', name: 'Statue of Unity', local: 'સ્ટેચ્યુ ઓફ યુનિટી', lang: 'gu', place: 'Ekta Nagar, Gujarat', built: '2013–2018', stat: ['Height', '182 m'], style: 'Monumental statue', material: 'Bronze cladding over steel and concrete', build: buildStatue,
+    facts: ['Depicts Sardar Vallabhbhai Patel, India’s first Deputy Prime Minister.', 'The world’s tallest statue, unveiled on 31 October 2018.', 'Designed by the sculptor Ram V. Sutar, it faces the Sardar Sarovar Dam on the Narmada.'] },
+  { id: 'howrah-bridge', name: 'Howrah Bridge', local: 'রবীন্দ্র সেতু', lang: 'bn', place: 'Kolkata, West Bengal', built: '1936–1943', stat: ['Length', '705 m'], style: 'Cantilever truss', material: 'Riveted high-tensile steel', build: buildHowrah,
+    facts: ['Its 457 m main span crosses the Hooghly with no pier in the river between the two towers.', 'Built with 26,500 tonnes of steel, 23,500 of them high-tensile steel from Tata Steel.', 'Renamed Rabindra Setu in 1965 after Rabindranath Tagore.'] },
+  { id: 'jagannath-puri-temple', name: 'Jagannath Puri Temple', local: 'ଶ୍ରୀ ଜଗନ୍ନାଥ ମନ୍ଦିର', lang: 'or', place: 'Puri, Odisha', built: '12th century', stat: ['Height', '65 m'], style: 'Kalinga', material: 'Khondalite stone', build: buildJagannath,
+    facts: ['Built by King Anantavarman Chodaganga Deva of the Eastern Ganga dynasty.', 'The flag on its summit is changed every day by a priest who climbs the tower.', 'Each year the Rath Yatra carries the deities through Puri on giant wooden chariots.'] },
+];
+
+/* ---------- scene ---------- */
+const stage = document.getElementById('stage');
+const canvas = document.getElementById('scene');
+const statusEl = document.getElementById('status');
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+} catch (e) {
+  statusEl.textContent = 'Your browser could not start WebGL, which this page needs to draw the 3D models.';
+  throw e;
+}
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, 0.5, 20000);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.autoRotate = !reduceMotion;
+controls.autoRotateSpeed = 0.6;
+controls.maxPolarAngle = Math.PI / 2 - 0.04;
+
+const skyMat = new THREE.ShaderMaterial({
+  side: THREE.BackSide, depthWrite: false, fog: false, toneMapped: false,
+  uniforms: { top: { value: new THREE.Color() }, horizon: { value: new THREE.Color() } },
+  vertexShader: 'varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+  fragmentShader: 'uniform vec3 top; uniform vec3 horizon; varying vec3 vDir; void main(){ float t = pow(clamp(vDir.y,0.0,1.0),0.55); gl_FragColor = vec4(mix(horizon, top, t),1.0); \n#include <colorspace_fragment>\n }',
+});
+const sky = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 16), skyMat);
+sky.renderOrder = -1;
+sky.frustumCulled = false;
+scene.add(sky);
+
+const groundMat = new THREE.MeshStandardMaterial({ roughness: 1 });
+const ground = new THREE.Mesh(new THREE.CircleGeometry(1, 96), groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+scene.fog = new THREE.Fog(0xffffff, 100, 1000);
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x888888, 1);
+scene.add(hemiLight);
+const sun = new THREE.DirectionalLight(0xffffff, 3);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+scene.add(sun, sun.target);
+const flood = new THREE.DirectionalLight(0xffb36b, 0);
+scene.add(flood, flood.target);
+
+function applyTheme() {
+  const cs = getComputedStyle(document.documentElement);
+  const col = (n) => new THREE.Color(cs.getPropertyValue(n).trim() || '#888');
+  const night = cs.getPropertyValue('--scene-mode').trim() === 'night';
+  skyMat.uniforms.top.value.copy(col('--sky-top'));
+  skyMat.uniforms.horizon.value.copy(col('--sky-horizon'));
+  groundMat.color.copy(col('--ground'));
+  scene.fog.color.copy(col('--sky-horizon'));
+  if (night) {
+    hemiLight.color.set('#8796c8'); hemiLight.groundColor.set('#2a2630'); hemiLight.intensity = 0.55;
+    sun.color.set('#a9b8ff'); sun.intensity = 0.7;
+    flood.intensity = 1.6;
+  } else {
+    hemiLight.color.set('#d4e4ff'); hemiLight.groundColor.set('#b49a72'); hemiLight.intensity = 0.9;
+    sun.color.set('#fff1dc'); sun.intensity = 2.8;
+    flood.intensity = 0;
+  }
+}
+applyTheme();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class', 'style'] });
+
+/* ---------- framing & switching ---------- */
+const built = new Map();
+let current = -1, home = null, tween = null;
+
+function getBuilt(i) {
+  if (!built.has(i)) {
+    const r = MONUMENTS[i].build();
+    r.focus = r.focus || r.group;
+    scene.add(r.group);
+    built.set(i, r);
+  }
+  return built.get(i);
+}
+
+function computeHome(r) {
+  const box = new THREE.Box3().setFromObject(r.focus);
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+  const radius = size.length() / 2;
+  const vfov = THREE.MathUtils.degToRad(camera.fov);
+  const hfov = 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect);
+  const dist = (radius / Math.sin(Math.min(vfov, hfov) / 2)) * 1.02;
+  const dir = V(...(r.view || [0.9, 0.34, 1.25])).normalize();
+  const target = V(center.x, center.y * 0.95, center.z);
+  return { target, pos: target.clone().addScaledVector(dir, dist), dist, radius };
+}
+
+function setEnvironment(h) {
+  const { dist, radius, target } = h;
+  camera.near = Math.max(0.1, dist / 300);
+  camera.far = dist * 14;
+  camera.updateProjectionMatrix();
+  sky.scale.setScalar(camera.far * 0.9);
+  ground.scale.setScalar(dist * 8);
+  scene.fog.near = dist * 1.6;
+  scene.fog.far = dist * 7;
+  controls.minDistance = radius * 0.35;
+  controls.maxDistance = dist * 3;
+  const sdir = V(-0.55, 0.85, 0.45).normalize();
+  sun.position.copy(target).addScaledVector(sdir, radius * 3);
+  sun.target.position.copy(target);
+  const sc = sun.shadow.camera;
+  sc.left = sc.bottom = -radius * 1.4;
+  sc.right = sc.top = radius * 1.4;
+  sc.near = radius * 0.5;
+  sc.far = radius * 6;
+  sc.updateProjectionMatrix();
+  sun.shadow.bias = -0.0004;
+  sun.shadow.normalBias = radius * 0.0012;
+  flood.position.copy(target).addScaledVector(V(0.35, 0.3, 1).normalize(), radius * 3);
+  flood.target.position.copy(target);
+}
+
+function flyTo(h, instant) {
+  if (instant || reduceMotion) {
+    camera.position.copy(h.pos);
+    controls.target.copy(h.target);
+    tween = null;
+    controls.update();
+    return;
+  }
+  tween = { t0: performance.now(), dur: 1100, fromPos: camera.position.clone(), fromTarget: controls.target.clone(), toPos: h.pos, toTarget: h.target };
+}
+controls.addEventListener('start', () => { tween = null; });
+
+function select(i, instant = false) {
+  i = (i + MONUMENTS.length) % MONUMENTS.length;
+  if (i === current) return;
+  const r = getBuilt(i);
+  built.forEach((b, k) => { b.group.visible = k === i; });
+  const first = current === -1;
+  current = i;
+  // Switching between very different scales: start the flight from the same angle, scaled to the new size.
+  if (!first && !instant) {
+    const prevDist = camera.position.distanceTo(controls.target);
+    home = computeHome(r);
+    const off = camera.position.clone().sub(controls.target).normalize().multiplyScalar(Math.max(prevDist, home.dist * 1.6));
+    controls.target.copy(home.target);
+    camera.position.copy(home.target).add(off);
+  } else {
+    home = computeHome(r);
+  }
+  setEnvironment(home);
+  flyTo(home, first || instant);
+  renderInfo(MONUMENTS[i]);
+  document.querySelectorAll('.item').forEach((el, k) => el.setAttribute('aria-current', String(k === i)));
+  const active = document.querySelectorAll('.item')[i];
+  active?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
+  try { history.replaceState(null, '', '#' + MONUMENTS[i].id); } catch (e) { /* ignore */ }
+}
+
+/* ---------- UI ---------- */
+const $ = (id) => document.getElementById(id);
+const list = $('list');
+MONUMENTS.forEach((mo, i) => {
+  const li = document.createElement('li');
+  const b = document.createElement('button');
+  b.className = 'item';
+  b.type = 'button';
+  b.innerHTML = `<span class="name"></span><span class="h"></span><span class="place"></span>`;
+  b.querySelector('.name').textContent = mo.name;
+  b.querySelector('.h').textContent = mo.stat[1];
+  b.querySelector('.place').textContent = mo.place;
+  b.addEventListener('click', () => select(i));
+  li.appendChild(b);
+  list.appendChild(li);
+});
+function renderInfo(mo) {
+  $('p-place').textContent = mo.place;
+  $('p-name').textContent = mo.name;
+  $('p-local').textContent = mo.local;
+  $('p-local').lang = mo.lang;
+  $('p-stat-label').textContent = mo.stat[0];
+  $('p-stat').textContent = mo.stat[1];
+  $('p-built').textContent = mo.built;
+  $('p-style').textContent = mo.style;
+  $('p-material').textContent = mo.material;
+  const ul = $('p-facts');
+  ul.replaceChildren(...mo.facts.map((t) => { const li = document.createElement('li'); li.textContent = t; return li; }));
+}
+if (matchMedia('(max-width: 760px)').matches) $('p-facts-wrap').open = false;
+
+$('prev').addEventListener('click', () => select(current - 1));
+$('next').addEventListener('click', () => select(current + 1));
+$('reset').addEventListener('click', () => { home = computeHome(built.get(current)); flyTo(home); });
+const rotBtn = $('rotate');
+rotBtn.setAttribute('aria-pressed', String(controls.autoRotate));
+rotBtn.addEventListener('click', () => {
+  controls.autoRotate = !controls.autoRotate;
+  rotBtn.setAttribute('aria-pressed', String(controls.autoRotate));
+});
+addEventListener('keydown', (e) => {
+  if (e.target.closest && e.target.closest('input, textarea')) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); select(current + 1); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); select(current - 1); }
+});
+
+function resize() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(stage);
+resize();
+
+const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (tween) {
+    const k = Math.min(1, (now - tween.t0) / tween.dur), e = ease(k);
+    camera.position.lerpVectors(tween.fromPos, tween.toPos, e);
+    controls.target.lerpVectors(tween.fromTarget, tween.toTarget, e);
+    if (k >= 1) tween = null;
+  }
+  controls.update();
+  sky.position.copy(camera.position);
+  renderer.render(scene, camera);
+}
+
+const fromHash = MONUMENTS.findIndex((m) => m.id === location.hash.slice(1));
+select(fromHash >= 0 ? fromHash : 2, true);
+statusEl.hidden = true;
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
