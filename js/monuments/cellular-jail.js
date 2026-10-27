@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, inst, unitBox, hipRoof, surface } from '../helpers.js';
+import { M, mat, box, cyl, at, inst, unitBox, hipRoof, surface, sheet } from '../helpers.js';
 
 const BRICK = surface(mat('#a4573f', 0.9), 'brick');
 const LIME = mat('#e9e3d6', 0.85);
@@ -21,7 +21,7 @@ function wing(len, h) {
 export function buildCellularJail() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(900, 0.4, 900, M.water, 0, -0.1, 0), box(320, 0.7, 300, mat('#6f8c4a', 0.95)));
+  g.add(sheet(900, 900, M.sea, 0, 0.3, 0), box(320, 0.7, 300, mat('#6f8c4a', 0.95)));
   // Seven wings once radiated from the central tower like spokes; three survive in full
   const lens = [100, 100, 100, 14, 14, 14, 14];
   for (let k = 0; k < 7; k++) {

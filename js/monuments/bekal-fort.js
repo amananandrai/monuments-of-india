@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet } from '../helpers.js';
 
 const LATERITE = mat('#8f4e36', 0.95);
 const LATERITE_DARK = mat('#6e3a27', 0.95);
@@ -8,7 +8,7 @@ const LATERITE_DARK = mat('#6e3a27', 0.95);
 export function buildBekal() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(1200, 0.4, 1200, M.water, 0, -0.1, 0), box(400, 0.4, 60, mat('#e2cfa5', 0.95), 0, 0, 120), box(400, 0.3, 200, mat('#5b7d43', 0.95), 0, 0, 250));
+  g.add(sheet(1200, 1200, M.sea, 0, 0.2, 0), box(400, 0.4, 60, mat('#e2cfa5', 0.95), 0, 0, 120), box(400, 0.3, 200, mat('#5b7d43', 0.95), 0, 0, 250));
   const head = mesh(new THREE.CylinderGeometry(80, 100, 8, 20).translate(0, 4, 0), mat('#5b7d43', 0.95, 0, { flatShading: true }));
   g.add(head, box(80, 8, 80, mat('#5b7d43', 0.95), 0, 0, 90));
   // Outline: a great circle on the sea side and a tapering neck towards the land

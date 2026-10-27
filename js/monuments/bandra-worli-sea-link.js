@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, rng, V, strut, inst, unitBox } from '../helpers.js';
+import { M, mat, box, at, rng, V, strut, inst, unitBox, sheet } from '../helpers.js';
 
 const CONCRETE = mat('#c9c6bf', 0.85);
 const CABLE = mat('#e8e6e1', 0.5, 0.3);
@@ -15,7 +15,7 @@ function pylon(h, deckY, w) {
 export function buildBandraWorli() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(37);
   g.add(f);
-  g.add(box(4000, 0.4, 2400, M.water, 0, -0.2, 0));
+  g.add(sheet(4000, 2400, M.sea, 0, 0.2, 0));
   const deckY = 20, W = 24, H = 128, span = 250;
   // Deck on piers out to the approach viaducts
   f.add(box(520, 2.4, W, CONCRETE, 0, deckY - 2.4, 0), box(520, 0.3, W - 2, M.asphalt, 0, deckY, 0));

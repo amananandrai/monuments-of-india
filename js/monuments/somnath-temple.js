@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, nagaraTemple } from '../helpers.js';
+import { M, mat, box, cyl, at, nagaraTemple, sheet } from '../helpers.js';
 
 const STONE = mat('#d8b07a', 0.85);
 const SHADE = mat('#b8905c', 0.9);
@@ -8,7 +8,7 @@ export function buildSomnath() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // The Arabian Sea behind, and the sea wall with its arrow pillar
-  g.add(box(600, 0.4, 300, M.water, 0, -0.1, -190), box(160, 0.2, 140, M.path, 0, 0, 10));
+  g.add(sheet(600, 300, M.sea, 0, 0.3, -190), box(160, 0.2, 140, M.path, 0, 0, 10));
   f.add(box(110, 3, 4, SHADE, 0, 0, -38));
   f.add(cyl(0.8, 1, 9, STONE, 30, 3, -38, 10), cyl(0, 0.9, 2.4, M.gild, 30, 12, -38, 8));
   // The temple in Chalukya (Maru-Gurjara) style: tall spire with two rings of minor spires, and two halls

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, onFace, archPanel, nagaraTemple, guldasta } from '../helpers.js';
+import { M, mat, box, at, onFace, archPanel, nagaraTemple, guldasta, sheet } from '../helpers.js';
 
 const CHUNAR = mat('#d9b48f', 0.85);
 const SHADE = mat('#b8906a', 0.9);
@@ -8,7 +8,7 @@ export function buildKashiVishwanath() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // The Ganga and the ghats at the foot of the Kashi Vishwanath Corridor
-  g.add(box(600, 0.4, 200, M.water, 0, -0.1, 190), box(300, 0.2, 200, M.path, 0, 0, -10));
+  g.add(sheet(600, 200, M.river, 0, 0.3, 190), box(300, 0.2, 200, M.path, 0, 0, -10));
   for (let k = 0; k < 9; k++) g.add(box(120, 9 - k, 3, SHADE, 0, 0, 78 + k * 3));
   // The corridor: a broad stepped plaza framed by arcaded buildings, running down to the river
   f.add(box(60, 9, 120, CHUNAR, 0, 0, 20));

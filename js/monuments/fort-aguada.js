@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet } from '../helpers.js';
 
 const LATERITE = mat('#9b5b3f', 0.95);
 const LATERITE_DARK = mat('#7d4530', 0.95);
@@ -9,7 +9,7 @@ export function buildFortAguada() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // The headland at the mouth of the Mandovi, with the Arabian Sea beyond
-  g.add(box(1200, 0.4, 1200, M.water, 0, -0.1, 0));
+  g.add(sheet(1200, 1200, M.sea, 0, 0.3, 0));
   const head = mesh(new THREE.CylinderGeometry(110, 150, 24, 14).translate(0, 12, 0), mat('#6c7d48', 0.95, 0, { flatShading: true }));
   head.scale.z = 0.7;
   g.add(head, box(120, 0.4, 30, mat('#dcc9a3', 0.95), 60, 0, 120));

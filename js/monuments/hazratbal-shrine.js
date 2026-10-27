@@ -8,7 +8,7 @@ export function buildHazratbal() {
   const Mb = M.marble, g = new THREE.Group(), f = new THREE.Group(), R = rng(13);
   g.add(f);
   // Dal Lake in front, the lawns, and the Zabarwan hills across the water
-  g.add(box(600, 0.4, 300, M.water, 0, 0, 200), box(220, 0.3, 110, M.grass, 0, 0, -10));
+  g.add(box(600, 0.4, 300, M.lake, 0, 0, 200), box(220, 0.3, 110, M.grass, 0, 0, -10));
   for (let i = 0; i < 5; i++) {
     const h = 70 + R() * 50, x = -260 + i * 130 + R() * 40;
     g.add(mesh(new THREE.ConeGeometry(h * 1.6, h, 8).translate(0, h / 2, 0), HILL, x, 0, 420 + R() * 60));

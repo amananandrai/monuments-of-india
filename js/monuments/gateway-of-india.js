@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, box, cyl, group, at, archWall, onionDome, hemi, finial } from '../helpers.js';
+import { M, box, cyl, group, at, archWall, onionDome, hemi, finial, sheet } from '../helpers.js';
 
 export function buildGateway() {
   const m = M.basalt, g = new THREE.Group(), f = new THREE.Group();
@@ -28,6 +28,6 @@ export function buildGateway() {
     }
   }
   g.add(box(70, 0.25, 30, M.path, 0, 0, -12));
-  g.add(box(600, 0.4, 300, M.water, 0, -0.3, 160));
+  g.add(sheet(600, 300, M.sea, 0, 0.1, 160));
   return { group: g, focus: f, view: [-0.9, 0.32, 1.25] };
 }

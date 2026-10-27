@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, rng, chhatri, onFace, archPanel, hemi, finial, inst, unitBox } from '../helpers.js';
+import { M, mat, box, cyl, at, rng, chhatri, onFace, archPanel, hemi, finial, inst, unitBox, sheet } from '../helpers.js';
 
 const CREAM = mat('#efe6d2', 0.8);
 const SHADE = mat('#d3c6a8', 0.85);
@@ -8,7 +8,7 @@ export function buildCityPalaceUdaipur() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(101);
   g.add(f);
   // Lake Pichola in front, the Lake Palace on its island, and the ridge behind
-  g.add(box(800, 0.4, 400, M.water, 0, -0.1, 160), box(800, 0.2, 200, mat('#8c8a5e', 0.95), 0, 0, -140));
+  g.add(sheet(800, 400, M.lake, 0, 0.3, 160), box(800, 0.2, 200, mat('#8c8a5e', 0.95), 0, 0, -140));
   g.add(box(70, 3, 50, SHADE, 30, 0, 160), box(60, 9, 40, CREAM, 30, 3, 160));
   for (const [x, z] of [[8, 145], [52, 145], [8, 175], [52, 175]]) g.add(at(chhatri(3, 8, CREAM), x, 12, z));
   // The palace: a 244 m front built up over four centuries, blocks of differing heights crowned with kiosks

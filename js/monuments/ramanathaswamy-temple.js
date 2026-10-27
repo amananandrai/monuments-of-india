@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, gopuram, pidaRoof, hemi, kalash, inst, unitCyl, aroundRect } from '../helpers.js';
+import { M, mat, box, at, gopuram, pidaRoof, hemi, kalash, inst, unitCyl, aroundRect, sheet } from '../helpers.js';
 
 const STONE = ['#cfc6b3', '#b9ae97', '#ddd5c4', '#a89c83'];
 const GRANITE = mat('#a89c83', 0.9);
@@ -9,7 +9,7 @@ export function buildRamanathaswamy() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // Rameswaram island in the sea
-  g.add(box(1400, 0.4, 1400, M.water, 0, -0.1, 0), box(320, 0.5, 300, mat('#dcc9a3', 0.95), 0, 0, 0));
+  g.add(sheet(1400, 1400, M.sea, 0, 0.3, 0), box(320, 0.5, 300, mat('#dcc9a3', 0.95), 0, 0, 0));
   // Outer walls and the great gopurams on east and west
   const W = 140, D = 190;
   for (const s of [-1, 1]) f.add(box(W, 8, 3, LIME, 0, 0, s * D / 2), box(3, 8, D, LIME, s * W / 2, 0, 0));
