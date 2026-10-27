@@ -33,6 +33,11 @@ import { buildCsmt } from './monuments/csmt.js';
 import { buildKailasa } from './monuments/kailasa-temple.js';
 import { buildVittala } from './monuments/vittala-temple-hampi.js';
 import { buildPadmanabhaswamy } from './monuments/padmanabhaswamy-temple.js';
+import { buildBomJesus } from './monuments/bom-jesus.js';
+import { buildKamakhya } from './monuments/kamakhya-temple.js';
+import { buildTawang } from './monuments/tawang-monastery.js';
+import { buildAmberFort } from './monuments/amber-fort.js';
+import { buildRaniKiVav } from './monuments/rani-ki-vav.js';
 
 export const MONUMENTS = [
   { id: 'qutub-minar', state: 'Delhi', lat: 28.5245, lng: 77.1855, type: 'memorial', name: 'Qutub Minar', local: 'क़ुतुब मीनार', lang: 'hi', place: 'Mehrauli, Delhi', built: '1199–1220', stat: ['Height', '72.5 m'], style: 'Indo-Islamic', material: 'Red sandstone and marble', build: buildQutub,
@@ -105,4 +110,14 @@ export const MONUMENTS = [
     facts: ['Built in Vijayanagara, the capital of the Vijayanagara Empire, among Hampi’s granite boulders.', 'The stone chariot in its courtyard is a shrine to Garuda, carved to look like a temple car.', 'The main hall’s 56 pillars ring with musical notes when tapped; Hampi is a UNESCO site since 1986.'] },
   { id: 'padmanabhaswamy-temple', state: 'Kerala', lat: 8.4828, lng: 76.9436, type: 'sacred', name: 'Padmanabhaswamy Temple', local: 'ശ്രീ പത്മനാഭസ്വാമി ക്ഷേത്രം', lang: 'ml', place: 'Thiruvananthapuram, Kerala', built: '16th–18th c.', stat: ['Gopuram', '30 m'], style: 'Dravidian and Kerala', material: 'Granite', build: buildPadmanabhaswamy,
     facts: ['Dedicated to Vishnu as Padmanabha, reclining on the serpent Anantha.', 'Its seven-tier eastern gopuram rises over the Padma Theertham tank.', 'A long corridor of carved granite pillars runs round the inner shrine.'] },
+  { id: 'basilica-of-bom-jesus', state: 'Goa', lat: 15.5009, lng: 73.9116, type: 'sacred', name: 'Basilica of Bom Jesus', local: 'बॉम जेझू बासिलिका', lang: 'kok', place: 'Old Goa, Goa', built: '1594–1605', stat: ['Consecrated', '1605'], style: 'Baroque', material: 'Laterite and basalt', build: buildBomJesus,
+    facts: ['Completed by the Jesuits in 1605, it holds the remains of St Francis Xavier.', 'Its lime plaster was stripped away in the 20th century, exposing the red laterite stone.', 'Part of the Churches and Convents of Goa, a UNESCO World Heritage Site since 1986.'] },
+  { id: 'kamakhya-temple', state: 'Assam', lat: 26.1664, lng: 91.7055, type: 'sacred', name: 'Kamakhya Temple', local: 'কামাখ্যা মন্দিৰ', lang: 'as', place: 'Nilachal Hill, Guwahati', built: 'Rebuilt 1565', stat: ['Mahavidya shrines', '10'], style: 'Nilachal', material: 'Stone', build: buildKamakhya,
+    facts: ['One of the most revered Shakti peethas, on Nilachal Hill above the Brahmaputra.', 'Rebuilt in 1565 under the Koch dynasty, with the beehive-shaped dome of the Nilachal style.', 'Each June the Ambubachi Mela draws pilgrims from across India.'] },
+  { id: 'tawang-monastery', state: 'Arunachal Pradesh', lat: 27.5856, lng: 91.8594, type: 'sacred', name: 'Tawang Monastery', local: 'རྟ་དབང་དགོན་པ།', lang: 'bo', place: 'Tawang, Arunachal Pradesh', built: '1680–1681', stat: ['Altitude', '3,000 m'], style: 'Tibetan Buddhist', material: 'Stone, timber and lime', build: buildTawang,
+    facts: ['Founded by Merak Lama Lodre Gyatso at the wish of the 5th Dalai Lama.', 'The largest Buddhist monastery in India, on a ridge about 3,000 m up.', 'Its three-storey assembly hall houses a gilded statue of the Buddha about 8 m tall.'] },
+  { id: 'amber-fort', state: 'Rajasthan', lat: 26.9855, lng: 75.8513, type: 'fort', name: 'Amber Fort', local: 'आमेर का किला', lang: 'hi', place: 'Amer, Jaipur', built: '16th–18th c.', stat: ['Founded', '1592'], style: 'Rajput and Mughal', material: 'Sandstone and marble', build: buildAmberFort,
+    facts: ['Begun in 1592 by Raja Man Singh I, a general of the Mughal emperor Akbar.', 'Its Sheesh Mahal, the mirror palace, is lined with thousands of tiny mirrors.', 'One of the Hill Forts of Rajasthan, a UNESCO World Heritage Site since 2013.'] },
+  { id: 'rani-ki-vav', state: 'Gujarat', lat: 23.8589, lng: 72.1016, type: 'civic', name: 'Rani ki Vav', local: 'રાણકી વાવ', lang: 'gu', place: 'Patan, Gujarat', built: '11th century', stat: ['Depth', '27 m'], style: 'Maru-Gurjara', material: 'Sandstone', build: buildRaniKiVav,
+    facts: ['A stepwell built in memory of the Chaulukya king Bhima I, traditionally by his queen Udayamati.', 'It descends seven levels and holds more than 500 principal sculptures, many of Vishnu’s avatars.', 'A UNESCO World Heritage Site since 2014; it appears on the ₹100 note.'] },
 ];
