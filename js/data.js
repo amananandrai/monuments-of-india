@@ -79,6 +79,26 @@ import { buildPalitana } from './monuments/palitana-temples.js';
 import { buildShikharji } from './monuments/shikharji.js';
 import { buildParshvanath } from './monuments/parshvanath-temple-khajuraho.js';
 import { buildSonijiKiNasiyan } from './monuments/soniji-ki-nasiyan.js';
+import { buildMehrangarh } from './monuments/mehrangarh-fort.js';
+import { buildChittorgarh } from './monuments/chittorgarh-fort.js';
+import { buildJaisalmer } from './monuments/jaisalmer-fort.js';
+import { buildGolconda } from './monuments/golconda-fort.js';
+import { buildDaulatabad } from './monuments/daulatabad-fort.js';
+import { buildCityPalaceUdaipur } from './monuments/city-palace-udaipur.js';
+import { buildLaxmiVilas } from './monuments/laxmi-vilas-palace.js';
+import { buildFortAguada } from './monuments/fort-aguada.js';
+import { buildBekal } from './monuments/bekal-fort.js';
+import { buildCoochBehar } from './monuments/cooch-behar-palace.js';
+import { buildSherShahSuri } from './monuments/sher-shah-suri-tomb.js';
+import { buildCellularJail } from './monuments/cellular-jail.js';
+import { buildShaheedMinar } from './monuments/shaheed-minar.js';
+import { buildTipuGumbaz } from './monuments/tipu-sultan-gumbaz.js';
+import { buildQutbShahiTombs } from './monuments/qutb-shahi-tombs.js';
+import { buildVivekanandaRock } from './monuments/vivekananda-rock-memorial.js';
+import { buildJallianwala } from './monuments/jallianwala-bagh.js';
+import { buildKargilMemorial } from './monuments/kargil-war-memorial.js';
+import { buildNationalWarMemorial } from './monuments/national-war-memorial.js';
+import { buildKirtiMandir } from './monuments/kirti-mandir.js';
 
 export const MONUMENTS = [
   { id: 'qutub-minar', state: 'Delhi', lat: 28.5245, lng: 77.1855, type: 'memorial', name: 'Qutub Minar', local: 'क़ुतुब मीनार', lang: 'hi', place: 'Mehrauli, Delhi', built: '1199–1220', stat: ['Height', '72.5 m'], style: 'Indo-Islamic', material: 'Red sandstone and marble', build: buildQutub,
@@ -243,4 +263,44 @@ export const MONUMENTS = [
     facts: ['The largest Jain temple at Khajuraho, built under the Chandela kings.', 'Its walls carry some of Khajuraho’s finest sculpture, in bands round the shrine.', 'Part of the Khajuraho Group of Monuments, a UNESCO World Heritage Site since 1986.'] },
   { id: 'soniji-ki-nasiyan', state: 'Rajasthan', lat: 26.4583, lng: 74.6339, type: 'sacred', name: 'Soniji Ki Nasiyan', local: 'सोनीजी की नसियाँ', lang: 'hi', place: 'Ajmer, Rajasthan', built: '1864–1895', stat: ['Also called', 'Golden Temple'], style: 'Jain', material: 'Red sandstone and gilded wood', build: buildSonijiKiNasiyan,
     facts: ['Built in red sandstone by the Soni family of Ajmer between 1864 and 1895.', 'Its Swarna Nagari hall holds a gilded model of Jain cosmology and the city of Ayodhya.', 'It is also known as the Golden Temple of Ajmer.'] },
+  { id: 'mehrangarh-fort', state: 'Rajasthan', lat: 26.2978, lng: 73.0185, type: 'fort', name: 'Mehrangarh Fort', local: 'मेहरानगढ़ क़िला', lang: 'hi', place: 'Jodhpur, Rajasthan', built: 'From 1459', stat: ['Walls', 'up to 36 m'], style: 'Rajput', material: 'Red sandstone', build: buildMehrangarh,
+    facts: ['Founded by Rao Jodha in 1459 on a rocky hill high above Jodhpur.', 'Its walls rise up to 36 m high and 21 m thick.', 'Below it spreads the Blue City, its houses washed in indigo.'] },
+  { id: 'chittorgarh-fort', state: 'Rajasthan', lat: 24.8887, lng: 74.6477, type: 'fort', name: 'Chittorgarh Fort', local: 'चित्तौड़गढ़ क़िला', lang: 'hi', place: 'Chittorgarh, Rajasthan', built: '7th–16th c.', stat: ['Area', 'about 280 ha'], style: 'Rajput', material: 'Stone', build: buildChittorgarh,
+    facts: ['Spread over about 280 hectares on a long plateau, it is one of the largest forts in India.', 'Rana Kumbha raised the nine-storey Vijay Stambh, the Tower of Victory, around 1448.', 'One of the Hill Forts of Rajasthan, a UNESCO World Heritage Site since 2013.'] },
+  { id: 'jaisalmer-fort', state: 'Rajasthan', lat: 26.9124, lng: 70.9126, type: 'fort', name: 'Jaisalmer Fort', local: 'सोनार क़िला', lang: 'hi', place: 'Jaisalmer, Rajasthan', built: 'From 1156', stat: ['Bastions', '99'], style: 'Rajput', material: 'Yellow sandstone', build: buildJaisalmer,
+    facts: ['Founded in 1156 by Rawal Jaisal on Trikuta hill in the Thar Desert.', 'Its yellow sandstone glows gold at sunset, giving it the name Sonar Qila, the Golden Fort.', 'One of the few living forts: thousands of people still live inside its 99 bastions.'] },
+  { id: 'golconda-fort', state: 'Telangana', lat: 17.3833, lng: 78.4011, type: 'fort', name: 'Golconda Fort', local: 'గోల్కొండ కోట', lang: 'te', place: 'Hyderabad, Telangana', built: '13th–17th c.', stat: ['Rulers', 'Qutb Shahis'], style: 'Deccan', material: 'Granite', build: buildGolconda,
+    facts: ['The Qutb Shahi sultans turned an older mud fort into this granite citadel from 1518.', 'A handclap at the Fateh Darwaza gate can be heard at the Bala Hissar pavilion on the summit.', 'Golconda was famous for its diamond trade; the Koh-i-Noor is believed to have come from mines in the region.'] },
+  { id: 'daulatabad-fort', state: 'Maharashtra', lat: 19.9425, lng: 75.2131, type: 'fort', name: 'Daulatabad Fort', local: 'दौलताबाद किल्ला', lang: 'mr', place: 'Near Chhatrapati Sambhajinagar, Maharashtra', built: '12th–15th c.', stat: ['Capital moved', '1327'], style: 'Deccan', material: 'Stone', build: buildDaulatabad,
+    facts: ['Built as Devagiri by the Yadava kings, on a conical hill with sheer cut-away sides and a moat.', 'In 1327 Muhammad bin Tughlaq renamed it Daulatabad and moved his capital here from Delhi.', 'The Chand Minar, a tall victory tower, was added in 1435.'] },
+  { id: 'city-palace-udaipur', state: 'Rajasthan', lat: 24.5764, lng: 73.6835, type: 'fort', name: 'City Palace, Udaipur', local: 'सिटी पैलेस, उदयपुर', lang: 'hi', place: 'Udaipur, Rajasthan', built: 'From 1559', stat: ['Facade', 'about 244 m'], style: 'Rajput', material: 'Granite and marble', build: buildCityPalaceUdaipur,
+    facts: ['Begun in 1559 by Maharana Udai Singh II, founder of Udaipur.', 'Its front on Lake Pichola stretches about 244 m, added to over some 400 years.', 'The Lake Palace (Jag Niwas) seems to float on the lake in front of it.'] },
+  { id: 'laxmi-vilas-palace', state: 'Gujarat', lat: 22.2939, lng: 73.1916, type: 'fort', name: 'Laxmi Vilas Palace', local: 'લક્ષ્મી વિલાસ પેલેસ', lang: 'gu', place: 'Vadodara, Gujarat', built: '1878–1890', stat: ['Size', '4× Buckingham Palace'], style: 'Indo-Saracenic', material: 'Sandstone and marble', build: buildLaxmiVilas,
+    facts: ['Built for Maharaja Sayajirao Gaekwad III of Baroda and completed in 1890.', 'Said to be four times the size of Buckingham Palace, it is among the largest private homes ever built.', 'It was designed by Major Charles Mant in the Indo-Saracenic style.'] },
+  { id: 'fort-aguada', state: 'Goa', lat: 15.492, lng: 73.7735, type: 'fort', name: 'Fort Aguada', local: 'आग्वाद किल्लो', lang: 'kok', place: 'Candolim, Goa', built: '1612', stat: ['Lighthouse', '1864'], style: 'Portuguese', material: 'Laterite', build: buildFortAguada,
+    facts: ['Built by the Portuguese in 1612 to guard the mouth of the Mandovi river.', 'Its name comes from the freshwater spring that supplied passing ships.', 'Its lighthouse of 1864 is one of the oldest in Asia.'] },
+  { id: 'bekal-fort', state: 'Kerala', lat: 12.3926, lng: 75.0331, type: 'fort', name: 'Bekal Fort', local: 'ബേക്കൽ കോട്ട', lang: 'ml', place: 'Kasaragod, Kerala', built: 'c. 1650', stat: ['Area', 'about 16 ha'], style: 'Keladi', material: 'Laterite', build: buildBekal,
+    facts: ['Built around 1650 by Shivappa Nayaka of the Keladi dynasty.', 'Shaped like a keyhole and washed by the sea on three sides, it is the largest fort in Kerala.', 'A tall round observation tower stands at its centre.'] },
+  { id: 'cooch-behar-palace', state: 'West Bengal', lat: 26.326, lng: 89.4384, type: 'fort', name: 'Cooch Behar Palace', local: 'কোচবিহার রাজবাড়ি', lang: 'bn', place: 'Cooch Behar, West Bengal', built: '1887', stat: ['Modelled on', 'Buckingham Palace'], style: 'Italian Renaissance', material: 'Brick', build: buildCoochBehar,
+    facts: ['Built in 1887 for Maharaja Nripendra Narayan of Cooch Behar.', 'Its classical design was inspired by Buckingham Palace in London.', 'A tall metal dome over the Durbar Hall crowns the two-storey brick palace.'] },
+  { id: 'sher-shah-suri-tomb', state: 'Bihar', lat: 24.9474, lng: 84.0181, type: 'memorial', name: 'Sher Shah Suri’s Tomb', local: 'शेरशाह सूरी का मक़बरा', lang: 'hi', place: 'Sasaram, Bihar', built: '1540–1545', stat: ['Height', '37 m'], style: 'Indo-Afghan (Sur)', material: 'Red sandstone', build: buildSherShahSuri,
+    facts: ['Built for Sher Shah Suri, the Afghan ruler who drove the Mughal emperor Humayun out of India.', 'The octagonal tomb rises in three tiers from the middle of a square artificial lake.', 'It is reached by a causeway across the water.'] },
+  { id: 'cellular-jail', state: 'Andaman and Nicobar', lat: 11.6744, lng: 92.7476, type: 'memorial', name: 'Cellular Jail', local: 'सेल्युलर जेल', lang: 'hi', place: 'Port Blair, Andaman Islands', built: '1896–1906', stat: ['Cells', '693'], style: 'Colonial prison', material: 'Brick', build: buildCellularJail,
+    facts: ['Built by the British to hold political prisoners in solitary confinement; it was known as Kala Pani.', 'Seven three-storey wings of cells radiated from a central watchtower like the spokes of a wheel.', 'Three wings survive; it has been a National Memorial since 1979.'] },
+  { id: 'shaheed-minar', state: 'West Bengal', lat: 22.5625, lng: 88.351, type: 'memorial', name: 'Shaheed Minar', local: 'শহীদ মিনার', lang: 'bn', place: 'Maidan, Kolkata', built: '1828', stat: ['Height', '48 m'], style: 'Mixed (Egyptian, Syrian, Turkish)', material: 'Stone', build: buildShaheedMinar,
+    facts: ['Built in 1828 as the Ochterlony Monument, it was renamed Shaheed Minar in 1969 to honour the martyrs of the freedom struggle.', 'About 48 m tall, it blends an Egyptian-style base, a Syrian-style column and a Turkish cupola.', 'Two balconies near the top look out over the Maidan.'] },
+  { id: 'tipu-sultan-gumbaz', state: 'Karnataka', lat: 12.4095, lng: 76.7045, type: 'memorial', name: 'Tipu Sultan’s Gumbaz', local: 'ಗುಂಬಜ್, ಶ್ರೀರಂಗಪಟ್ಟಣ', lang: 'kn', place: 'Srirangapatna, Karnataka', built: '1782–1784', stat: ['Interred', 'Hyder Ali, Tipu'], style: 'Indo-Islamic', material: 'Lime plaster and granite', build: buildTipuGumbaz,
+    facts: ['Built by Tipu Sultan as the mausoleum of his father Hyder Ali and mother Fatima Begum.', 'Tipu himself was buried here after he died defending Srirangapatna in 1799.', 'Its white dome rises over a colonnade of dark granite pillars, in a garden of cypress trees.'] },
+  { id: 'qutb-shahi-tombs', state: 'Telangana', lat: 17.395, lng: 78.396, type: 'memorial', name: 'Qutb Shahi Tombs', local: 'కుతుబ్ షాహీ సమాధులు', lang: 'te', place: 'Hyderabad, Telangana', built: '16th–17th c.', stat: ['Tombs', 'about 30'], style: 'Qutb Shahi', material: 'Granite and lime plaster', build: buildQutbShahiTombs,
+    facts: ['The royal necropolis of the Qutb Shahi sultans who ruled from Golconda.', 'Each tomb is a domed cube on a raised terrace, many ringed by arcades.', 'They stand in the Ibrahim Bagh garden, about a kilometre north of Golconda Fort.'] },
+  { id: 'vivekananda-rock-memorial', state: 'Tamil Nadu', lat: 8.078, lng: 77.555, type: 'memorial', name: 'Vivekananda Rock Memorial', local: 'விவேகானந்தர் பாறை நினைவகம்', lang: 'ta', place: 'Kanyakumari, Tamil Nadu', built: '1970', stat: ['Offshore', 'about 500 m'], style: 'Mixed Indian temple styles', material: 'Stone', build: buildVivekanandaRock,
+    facts: ['Built in 1970 on the rock where Swami Vivekananda is said to have meditated in 1892.', 'It stands off the southern tip of India, where the Arabian Sea, Indian Ocean and Bay of Bengal meet.', 'The 41 m statue of the poet Thiruvalluvar, unveiled in 2000, stands on the neighbouring rock.'] },
+  { id: 'jallianwala-bagh', state: 'Punjab', lat: 31.6207, lng: 74.8801, type: 'memorial', name: 'Jallianwala Bagh', local: 'ਜਲ੍ਹਿਆਂਵਾਲਾ ਬਾਗ਼', lang: 'pa', place: 'Amritsar, Punjab', built: 'Memorial 1961', stat: ['Massacre', '13 April 1919'], style: 'Modern memorial', material: 'Red sandstone', build: buildJallianwala,
+    facts: ['Marks the massacre of 13 April 1919, when British troops fired on an unarmed crowd gathered here.', 'The flame-shaped memorial was designed by the American architect Benjamin Polk and opened in 1961.', 'The Martyrs’ Well and walls still marked by bullets are preserved in the garden.'] },
+  { id: 'kargil-war-memorial', state: 'Ladakh', lat: 34.431, lng: 75.757, type: 'memorial', name: 'Kargil War Memorial', local: 'कारगिल युद्ध स्मारक', lang: 'hi', place: 'Dras, Ladakh', built: 'Opened 2004', stat: ['Altitude', 'about 3,280 m'], style: 'Modern memorial', material: 'Pink sandstone', build: buildKargilMemorial,
+    facts: ['Honours the Indian soldiers who fell in the Kargil War of 1999.', 'It faces Tololing, one of the peaks recaptured in the war.', 'Its sandstone wall carries the names of the fallen, beside a giant national flag.'] },
+  { id: 'national-war-memorial', state: 'Delhi', lat: 28.6125, lng: 77.233, type: 'memorial', name: 'National War Memorial', local: 'राष्ट्रीय समर स्मारक', lang: 'hi', place: 'Kartavya Path, New Delhi', built: '2019', stat: ['Names', '25,000+'], style: 'Modern memorial', material: 'Granite', build: buildNationalWarMemorial,
+    facts: ['Opened in 2019 beside India Gate, it honours the soldiers who died for independent India.', 'Its four concentric circles stand for immortality, bravery, sacrifice and protection.', 'The names of more than 25,000 soldiers are inscribed on its granite tablets.'] },
+  { id: 'kirti-mandir', state: 'Gujarat', lat: 21.6417, lng: 69.6087, type: 'memorial', name: 'Kirti Mandir', local: 'કીર્તિ મંદિર', lang: 'gu', place: 'Porbandar, Gujarat', built: '1947–1950', stat: ['Height', '79 ft'], style: 'Mixed', material: 'Stone', build: buildKirtiMandir,
+    facts: ['A memorial beside the house where Mahatma Gandhi was born in 1869.', 'Its tower is 79 feet tall, one foot for each year of his life.', 'It also honours Kasturba Gandhi, his wife.'] },
 ];
