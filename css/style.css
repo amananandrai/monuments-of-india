@@ -1,4 +1,4 @@
-/* Layout: a searchable monument index grouped by state on the left; the stage on the right opens on a map of India, then shows a full-bleed 3D model with a floating plaque. On phones the index becomes a swipeable strip under the stage. */
+/* Layout: a searchable monument index grouped by state on the left; the stage on the right opens on a map of India, then shows a full-bleed 3D model with a floating plaque. On phones the plaque collapses to a bar under the model and the index becomes a swipeable strip below it. */
 :root {
   --bg: #eceef3;
   --fg: #1c1f30;
@@ -209,6 +209,7 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
+.p-toggle { display: none; }
 .plaque .eyebrow {
   margin: 0;
   color: var(--muted);
@@ -435,17 +436,75 @@ details.facts ul {
   .list .grp, .list .grp ul { display: contents; }
   .list .grp ul[hidden] { display: contents !important; }
   .grp-h, .search { display: none; }
-  .item { width: 160px; padding: 7px 10px; }
+  .item { width: 184px; padding: 7px 10px; }
   .maphead { right: 12px; top: 12px; max-width: 46%; padding: 8px 12px; }
   .maphead h2 { font-size: 18px; }
   .maphead p { display: none; }
   .legend { left: 12px; bottom: 12px; grid-template-columns: repeat(2, auto); }
-  .plaque { padding: 12px 14px; }
-  .plaque h2 { font-size: 24px; }
+  /* The stage stacks the model above the plaque, so the details never cover the monument. */
+  .app { height: 100dvh; }
+  .stage { display: flex; flex-direction: column; }
+  #scene { flex: 1 1 auto; min-height: 0; height: auto; }
+  .plaque {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    width: auto;
+    flex: none;
+    padding: 10px 16px;
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 0;
+    background: var(--bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .p-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 12px;
+    cursor: pointer;
+  }
+  .p-head > p, .p-head > h2 { grid-column: 1; min-width: 0; }
+  .plaque .eyebrow { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .plaque h2 { font-size: 22px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .plaque .local { font-size: 14px; }
+  .p-toggle {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--fg);
+    cursor: pointer;
+  }
+  .p-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .p-toggle svg { width: 16px; height: 16px; transition: transform 0.2s; }
+  .plaque.is-open .p-toggle svg { transform: rotate(180deg); }
+  .p-more { display: none; }
+  .plaque.is-open .p-more {
+    display: block;
+    max-height: 38dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .stats { margin-top: 10px; }
   .hint { display: none; }
-  .toolbar { top: 12px; right: 12px; }
+  .toolbar { top: 10px; right: 10px; }
+  .btn { height: 40px; min-width: 40px; border-radius: 20px; padding: 0 10px; }
   .btn .label { display: none; }
+  .list { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+  .item { grid-template-columns: minmax(0, 1fr) auto; }
+  .item .name, .item .place { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 }
 @media (prefers-reduced-motion: reduce) {
   .list { scroll-behavior: auto; }
+  .p-toggle svg { transition: none; }
 }
