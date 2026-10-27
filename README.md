@@ -1,5 +1,7 @@
 # Monuments of India
 
+**Live site: https://monuments-of-india-nu.vercel.app**
+
 Ten Indian landmarks modelled in interactive 3D with [three.js](https://threejs.org/):
 
 Qutub Minar · Gateway of India · Taj Mahal · Charminar · Ram Mandir · Brihadeeswara Temple · India Gate · Statue of Unity · Howrah Bridge · Jagannath Puri Temple
@@ -16,4 +18,4 @@ npx serve .
 
 ## Deploy
 
-Hosted on Vercel as a static site; no build step.
+Hosted on Vercel at https://monuments-of-india-nu.vercel.app as a static site with no build step. Every push to `main` deploys to production.
