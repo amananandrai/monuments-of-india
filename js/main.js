@@ -301,7 +301,15 @@ function renderInfo(mo) {
   const ul = $('p-facts');
   ul.replaceChildren(...mo.facts.map((t) => { const li = document.createElement('li'); li.textContent = t; return li; }));
 }
-if (matchMedia('(max-width: 760px)').matches) $('p-facts-wrap').open = false;
+// On phones the plaque sits below the model as a collapsed bar; tapping it reveals the details.
+const plaque = $('plaque'), pToggle = $('p-toggle');
+function setPlaqueOpen(open) {
+  plaque.classList.toggle('is-open', open);
+  pToggle.setAttribute('aria-expanded', String(open));
+  pToggle.querySelector('.visually-hidden').textContent = open ? 'Hide details' : 'Show details';
+}
+pToggle.addEventListener('click', () => setPlaqueOpen(!plaque.classList.contains('is-open')));
+plaque.querySelector('.p-head').addEventListener('click', (e) => { if (!e.target.closest('.p-toggle') && pToggle.offsetParent) pToggle.click(); });
 
 /* ---------- views: the map home and a monument's 3D scene ---------- */
 let mode = 'map';
@@ -357,7 +365,7 @@ addEventListener('keydown', (e) => {
 });
 
 function resize() {
-  const w = stage.clientWidth, h = stage.clientHeight;
+  const w = canvas.clientWidth, h = canvas.clientHeight;
   if (!w || !h) return;
   renderer.setSize(w, h, false);
   composer.setPixelRatio(renderer.getPixelRatio());
@@ -365,7 +373,7 @@ function resize() {
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
 }
-new ResizeObserver(resize).observe(stage);
+new ResizeObserver(resize).observe(canvas);
 resize();
 
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);

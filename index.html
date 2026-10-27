@@ -54,18 +54,26 @@
     </div>
 
     <section class="plaque" id="plaque" aria-live="polite">
-      <p class="eyebrow" id="p-place"></p>
-      <h2 id="p-name"></h2>
-      <p class="local" id="p-local"></p>
-      <dl class="stats">
-        <div><dt id="p-stat-label">Height</dt><dd id="p-stat"></dd></div>
-        <div><dt>Built</dt><dd id="p-built"></dd></div>
-        <div><dt>Style</dt><dd id="p-style"></dd></div>
-      </dl>
-      <details class="facts" id="p-facts-wrap" open>
-        <summary id="p-material"></summary>
-        <ul id="p-facts"></ul>
-      </details>
+      <div class="p-head">
+        <p class="eyebrow" id="p-place"></p>
+        <h2 id="p-name"></h2>
+        <p class="local" id="p-local"></p>
+        <button class="p-toggle" id="p-toggle" type="button" aria-expanded="false" aria-controls="p-more">
+          <span class="visually-hidden">Show details</span>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 5-5 5 5"/></svg>
+        </button>
+      </div>
+      <div class="p-more" id="p-more">
+        <dl class="stats">
+          <div><dt id="p-stat-label">Height</dt><dd id="p-stat"></dd></div>
+          <div><dt>Built</dt><dd id="p-built"></dd></div>
+          <div><dt>Style</dt><dd id="p-style"></dd></div>
+        </dl>
+        <details class="facts" id="p-facts-wrap" open>
+          <summary id="p-material"></summary>
+          <ul id="p-facts"></ul>
+        </details>
+      </div>
     </section>
     <p class="hint">Drag to orbit · scroll or pinch to zoom · ← → to switch</p>
   </main>
