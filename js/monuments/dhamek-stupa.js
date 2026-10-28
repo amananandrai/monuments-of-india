@@ -4,6 +4,7 @@ import { M, mat, mesh, box, cyl, at, rng, inst, unitBox, onFace, surface } from 
 const STONE = mat('#b8a88e', 0.9);
 const BRICK = surface(mat('#9c6a4f', 0.95), 'brick');
 const RUIN = mat('#a5553b', 0.95);
+const BAND = surface(mat('#b7a48c', 0.9), 'frieze');
 
 export function buildDhamek() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(53);
@@ -21,6 +22,8 @@ export function buildDhamek() {
   for (let k = 0; k < 8; k++) {
     const a = (k / 8) * Math.PI * 2;
     f.add(onFace(box(5, 9, 1.4, STONE, 0, 2), a, 14), onFace(box(2.4, 2.6, 0.3, M.recess, 0, 6), a, 14.75));
+    // The carved register across each face, 3 cm proud so it never shares a plane with the stone.
+    f.add(onFace(box(4.6, 0.55, 0.06, BAND, 0, 2.6), a, 14.76));
   }
   for (const y of [4, 8.6]) f.add(cyl(14.4, 14.4, 1.1, mat('#a39376', 0.85), 0, y, 0, 48));
   const top = mesh(new THREE.CylinderGeometry(12.2, 13.4, 31, 40, 6), BRICK, 0, 12.2 + 15.5, 0);

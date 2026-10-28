@@ -175,6 +175,15 @@ export function archWall(w, h, d, aw, ah, pointed, m) {
   return mesh(geo, m);
 }
 
+// The soffit of a barrel vault running along z, open underneath and seen from inside.
+export function barrelVault(radius, length, m) {
+  const geo = new THREE.CylinderGeometry(radius, radius, length, 28, 1, true, -Math.PI / 2, Math.PI);
+  geo.rotateX(-Math.PI / 2);
+  const o = mesh(geo, doubleSided(m));
+  o.castShadow = false;
+  return o;
+}
+
 // A thin arch-shaped slab, used for niches and recessed arches on facades (faces +z).
 export function archPanel(aw, ah, pointed, m, depth = 0.3) {
   const r = aw / 2, s = ah - rise(r, pointed);
