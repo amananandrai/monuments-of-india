@@ -6,7 +6,7 @@ import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { nightState, V, box } from './helpers.js';
-import { attachSurface, surface, waterTime, landColor } from './surface.js';
+import { attachSurface, surface, waterTime, landColor, reflection } from './surface.js';
 import { blendIntoLand } from './landscape.js';
 import { separateCoplanar } from './coplanar.js';
 import { naturalize } from './naturalize.js';
@@ -188,6 +188,7 @@ function getBuilt(i) {
     // Faces that share a plane get different depth offsets, so they don't flicker.
     separateCoplanar(r.group, 0.005);
     blendIntoLand(r);
+    r.mirror = findMirror(r.group);
     scene.add(r.group);
     built.set(i, r);
   }
@@ -267,6 +268,8 @@ function select(i, instant = false) {
     setEnvironment(home);
     flyTo(home, first || instant);
     renderInfo(MONUMENTS[i]);
+    mirror = fancy ? r.mirror : null;
+    reflection.on.value = mirror ? 1 : 0;
   }
   items.forEach((el, k) => el.setAttribute('aria-current', String(k === i)));
   items[i].scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
@@ -428,6 +431,52 @@ addEventListener('keydown', (e) => {
   if (e.key === 'Escape') showMap(true);
 });
 
+/* ---------- reflections in seas, rivers and lakes ---------- */
+// Each frame the scene is drawn once more, at half size, from a camera mirrored below the water and
+// clipped to what stands above it. Pools are too small to bother; phones skip it, as they skip AO.
+const reflectRT = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType });
+reflection.map.value = reflectRT.texture;
+const mirrorCam = new THREE.PerspectiveCamera();
+const waterLine = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+const toTexture = new THREE.Matrix4().set(0.5, 0, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0, 0.5, 0.5, 0, 0, 0, 1);
+let mirror = null;
+
+// The reflecting water of a monument: its sheets, and the height of the largest one.
+function findMirror(root) {
+  const meshes = [];
+  let best = null, area = 0;
+  root.traverse((o) => {
+    if (!o.isMesh || !o.material.userData || !o.material.userData.reflect) return;
+    meshes.push(o);
+    const b = new THREE.Box3().setFromObject(o), a = (b.max.x - b.min.x) * (b.max.z - b.min.z);
+    if (a > area) { area = a; best = b.max.y; }
+  });
+  return meshes.length ? { y: best, meshes } : null;
+}
+
+function renderReflection() {
+  const h = mirror.y;
+  mirrorCam.copy(camera);
+  mirrorCam.position.y = 2 * h - camera.position.y;
+  mirrorCam.up.set(0, -1, 0);
+  mirrorCam.lookAt(controls.target.x, 2 * h - controls.target.y, controls.target.z);
+  mirrorCam.updateMatrixWorld();
+  reflection.matrix.value.copy(toTexture).multiply(mirrorCam.projectionMatrix).multiply(mirrorCam.matrixWorldInverse);
+  waterLine.constant = -h;
+  mirror.meshes.forEach((o) => { o.visible = false; });
+  renderer.clippingPlanes = [waterLine];
+  renderer.shadowMap.autoUpdate = false;
+  sky.position.copy(mirrorCam.position);
+  renderer.setRenderTarget(reflectRT);
+  renderer.clear();
+  renderer.render(scene, mirrorCam);
+  renderer.setRenderTarget(null);
+  renderer.clippingPlanes = [];
+  renderer.shadowMap.autoUpdate = true;
+  sky.position.copy(camera.position);
+  mirror.meshes.forEach((o) => { o.visible = true; });
+}
+
 function resize() {
   const w = canvas.clientWidth, h = canvas.clientHeight;
   if (!w || !h) return;
@@ -436,6 +485,8 @@ function resize() {
   composer.setSize(w, h);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
+  const pr = renderer.getPixelRatio() * 0.5;
+  reflectRT.setSize(Math.max(1, Math.round(w * pr)), Math.max(1, Math.round(h * pr)));
 }
 new ResizeObserver(resize).observe(canvas);
 resize();
@@ -453,6 +504,7 @@ function loop(now) {
   }
   controls.update();
   sky.position.copy(camera.position);
+  if (mirror) renderReflection();
   composer.render();
 }
 

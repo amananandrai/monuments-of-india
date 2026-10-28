@@ -12,6 +12,9 @@ export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground
 export const waterTime = { value: 0 };
 // The colour of the open land (--ground), which the open edges of lawns and water fade into.
 export const landColor = { value: new THREE.Color() };
+// The monument mirrored in its sea, river or lake: main.js renders it each frame into map, and
+// matrix takes a point on the water to where it lands in that image.
+export const reflection = { map: { value: null }, matrix: { value: new THREE.Matrix4() }, on: { value: 0 } };
 
 // Photo textures (CC0, Poly Haven) are registered by key and blended in by triplanar projection.
 export const PHOTOS = {};
@@ -42,6 +45,11 @@ uniform vec3 sLand;
 #endif
 #if SURF_KIND == 9
 uniform float sTime;
+#ifdef SURF_REFLECT
+uniform sampler2D sReflMap;
+uniform mat4 sReflMatrix;
+uniform float sReflOn;
+#endif
 uniform vec3 sWave; // wavelength in metres, speed, steepness
 // Wave height in metres: four octaves of drifting noise, each turning in a new direction. An octave
 // fades out once its wavelength nears a few pixels (fw is metres per pixel), so distant water stays calm.
@@ -207,7 +215,20 @@ const WATER_NORMAL = /* glsl */ `
     normal = normalize((viewMatrix * vec4(wN, 0.0)).xyz);
   }`;
 
-function patch(shader, kind, bump, photo, wave, edge) {
+// Seas, rivers and lakes mirror the monument: the reflected image, shaken by the ripples, replaces
+// part of the lit water, more of it the lower the angle, as on real water.
+const WATER_REFLECT = /* glsl */ `
+#ifdef SURF_REFLECT
+  if (sReflOn > 0.5) {
+    vec4 rc = sReflMatrix * vec4(vSurfPos, 1.0);
+    vec3 rN = (vec4(normal, 0.0) * viewMatrix).xyz;
+    vec3 refl = texture2D(sReflMap, rc.xy / rc.w + rN.xz * 0.06).rgb;
+    float rF = 0.02 + 0.98 * pow(1.0 - clamp(dot(normalize(vViewPosition), normal), 0.0, 1.0), 5.0);
+    outgoingLight = mix(outgoingLight, refl, rF * sKeep * 0.85);
+  }
+#endif`;
+
+function patch(shader, kind, bump, photo, wave, edge, reflect) {
   shader.defines = { ...(shader.defines || {}), SURF_KIND: kind };
   if (edge) {
     shader.defines.SURF_PATCH = 1;
@@ -216,6 +237,12 @@ function patch(shader, kind, bump, photo, wave, edge) {
     shader.uniforms.sLand = landColor;
   }
   if (kind === KINDS.water) {
+    if (reflect) {
+      shader.defines.SURF_REFLECT = 1;
+      shader.uniforms.sReflMap = reflection.map;
+      shader.uniforms.sReflMatrix = reflection.matrix;
+      shader.uniforms.sReflOn = reflection.on;
+    }
     shader.uniforms.sTime = waterTime;
     shader.uniforms.sWave = { value: new THREE.Vector3(...wave) };
   }
@@ -245,6 +272,7 @@ function patch(shader, kind, bump, photo, wave, edge) {
     .replace('#include <common>', '#include <common>\n' + COMMON)
     .replace('#include <clipping_planes_fragment>', '#include <clipping_planes_fragment>\n' + JALI_CUT)
     .replace('#include <color_fragment>', '#include <color_fragment>\n' + PATTERN)
+    .replace('#include <opaque_fragment>', WATER_REFLECT + '\n#include <opaque_fragment>')
     .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n  roughnessFactor = clamp(roughnessFactor + sRough, 0.05, 1.0);')
     .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\n' + (kind === KINDS.water ? WATER_NORMAL
       : `  normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`));
@@ -270,9 +298,9 @@ export function attachSurface(m) {
   const photo = () => (m.userData.photoKey && PHOTOS[m.userData.photoKey]) || null;
   m.onBeforeCompile = (shader) => {
     const kind = guess(m);
-    if (kind !== 'none') patch(shader, KINDS[kind], BUMP[kind], photo(), m.userData.wave, m.userData.patch);
+    if (kind !== 'none') patch(shader, KINDS[kind], BUMP[kind], photo(), m.userData.wave, m.userData.patch, m.userData.reflect);
   };
-  m.customProgramCacheKey = () => 'surf:' + guess(m) + (photo() ? ':' + m.userData.photoKey : '') + (m.userData.patch ? ':patch' : '');
+  m.customProgramCacheKey = () => 'surf:' + guess(m) + (photo() ? ':' + m.userData.photoKey : '') + (m.userData.patch ? ':patch' : '') + (m.userData.reflect ? ':reflect' : '');
   return m;
 }
 

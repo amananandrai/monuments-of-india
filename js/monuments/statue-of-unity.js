@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, V, mesh, box, at, ellipsoid, capsule, tube, smoothLathe, drape, sheet } from '../helpers.js';
+import { M, V, mesh, box, at, ellipsoid, capsule, tube, smoothLathe, drape, sheet, face, fingers } from '../helpers.js';
 
 // Sardar Patel, standing in dhoti, kurta and a shawl over the shoulders, arms at his sides.
 function patel(B) {
@@ -25,11 +25,12 @@ function patel(B) {
     const hand = ellipsoid(3.3, 5.2, 3.9, B, side * 22.2, 83.4, 4);
     hand.rotation.z = side * 0.08;
     s.add(hand, ellipsoid(1.1, 2.6, 1.2, B, side * 20.4, 84.6, 6.4));
+    // Fingers along the bottom of the hand, curling in towards the thigh
+    s.add(fingers(V(side * 22.4, 79.4, 1.6), V(side * 22.4, 79.4, 5.6), V(-side * 0.6, -0.8, 0).normalize(), 2.5, 0.95, B));
   }
-  // Neck and head: broad brow, ears, nose and the line of the jaw
+  // Neck and head: the bare crown, heavy brow and broad jaw of the 1949 portrait, clean-shaven, ears
   s.add(capsule(V(0, 142, 0), V(0, 153, 0.8), 6.4, B, 6.8));
-  s.add(ellipsoid(9.6, 12, 10.6, B, 0, 165.5, 0.8), ellipsoid(8.4, 5.6, 8.8, B, 0, 157.5, 2.2));
-  s.add(ellipsoid(2.2, 3.4, 3.2, B, 0, 163, 10.6), ellipsoid(6.6, 1.4, 2.8, B, 0, 168.6, 8.6));
+  s.add(at(face(9.6, 12.4, 10.6, B, { jaw: 0.1 }), 0, 165, 0.8));
   for (const x of [-9.2, 9.2]) s.add(ellipsoid(1.4, 3.4, 2.4, B, x, 164.5, 0.4));
   s.scale.setScalar(182 / 177.4);
   return s;

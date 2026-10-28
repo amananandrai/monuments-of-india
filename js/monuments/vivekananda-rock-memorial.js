@@ -1,18 +1,20 @@
 import * as THREE from 'three';
 import { surface } from '../surface.js';
-import { M, mat, mesh, box, cyl, at, V, pidaRoof, kalash, hemi, inst, unitCyl, aroundRect, ellipsoid, capsule, tube, smoothLathe, drape, sheet } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, V, pidaRoof, kalash, hemi, inst, unitCyl, aroundRect, ellipsoid, capsule, tube, smoothLathe, drape, sheet, face } from '../helpers.js';
 
 const STONE = mat('#c9a98a', 0.85);
 const SHADE = mat('#9c7e62', 0.9);
 const ROCK = mat('#4c4640', 0.95, 0, { flatShading: true });
 const GREY = surface(mat('#a7a39a', 0.8), 'marble');
+// The figure itself is plain stone: block joints would run across the face and the robe.
+const FIGURE = surface(mat('#a7a39a', 0.8), 'none');
 
 // The poet Thiruvalluvar: robed, hair gathered in a knot, a long beard, the right hand raised with
 // three fingers lifted and the left holding a palm-leaf manuscript. The 38 ft pedestal and 95 ft
 // figure stand for the 38 and 95 chapters of the three books of the Thirukkural.
 function thiruvalluvar() {
-  const g = new THREE.Group(), Gr = GREY;
-  g.add(box(10, 11.6, 10, Gr), box(11, 0.8, 11, mat('#8f8b83', 0.8), 0, 11.6));
+  const g = new THREE.Group(), Gr = FIGURE;
+  g.add(box(10, 11.6, 10, GREY), box(11, 0.8, 11, mat('#8f8b83', 0.8), 0, 11.6));
   const robe = drape(smoothLathe([[4.4, 0], [4.6, 4], [4.0, 10], [3.7, 15], [4.0, 20], [4.5, 24], [2.6, 26], [0.1, 26.3]], Gr), 18, 0.07, 0, 18);
   robe.position.y = 12.4;
   robe.scale.z = 0.72;
@@ -21,10 +23,21 @@ function thiruvalluvar() {
   g.add(capsule(V(4.2, 36.2, 0), V(5.2, 31.2, 1.6), 1.05, Gr, 0.9), capsule(V(5.2, 31.2, 1.6), V(5.0, 35.6, 3.6), 0.9, Gr, 0.7));
   g.add(ellipsoid(0.5, 1.0, 0.75, Gr, 5.0, 36.4, 3.9));
   for (const dx of [-0.3, 0, 0.3]) g.add(capsule(V(5.0 + dx, 37.0, 3.9), V(5.0 + dx, 38.2, 3.95), 0.13, Gr));
+  g.add(capsule(V(5.45, 36.3, 4.3), V(5.7, 37.2, 4.5), 0.15, Gr, 0.13));
   g.add(capsule(V(-4.2, 36.2, 0), V(-4.8, 31.2, 1.4), 1.05, Gr, 0.9), capsule(V(-4.8, 31.2, 1.4), V(-3.2, 29.6, 3.6), 0.9, Gr, 0.7));
   g.add(box(3.4, 0.5, 1.0, mat('#b9a27c', 0.8), -2.6, 29.3, 3.8));
   g.add(capsule(V(0, 37.4, 0), V(0, 38.8, 0.3), 1.25, Gr, 1.2));
-  g.add(ellipsoid(2.3, 2.8, 2.4, Gr, 0, 40.8, 0.4), ellipsoid(1.8, 2.4, 1.2, Gr, 0, 38.8, 1.9), ellipsoid(0.4, 0.7, 0.5, Gr, 0, 40.6, 2.7));
+  // Head, moustache, and a full beard whose lower edge stands clear of the chest
+  g.add(at(face(2.3, 2.8, 2.4, Gr), 0, 40.8, 0.4));
+  for (const s of [-1, 1]) {
+    const m = ellipsoid(0.55, 0.15, 0.26, Gr, s * 0.45, 39.92, 2.66);
+    m.rotation.set(0, -s * 0.35, s * 0.22);
+    g.add(m);
+  }
+  const beard = drape(smoothLathe([[0.1, 35.9], [0.8, 36.4], [1.5, 37.3], [1.8, 38.3], [1.7, 39.3], [1.2, 39.9], [0.1, 40.1]], Gr), 12, 0.05, 35.9, 39.5);
+  beard.scale.z = 0.5;
+  beard.position.z = 2.1;
+  g.add(beard);
   g.add(ellipsoid(1.4, 1.2, 1.4, Gr, 0, 43.2, -0.4));
   return g;
 }

@@ -7,9 +7,10 @@ export const mat = (color, roughness = 0.85, metalness = 0, extra = {}) =>
 
 // Water: a dark body colour, since most of what reads as water is the sky reflected at a low angle,
 // and ripples of the given [wavelength in metres, speed, steepness].
-function water(color, wave) {
+function water(color, wave, reflect = true) {
   const m = surface(mat(color, 0.06, 0, { envMapIntensity: 1 }), 'water');
   m.userData.wave = wave;
+  m.userData.reflect = reflect;
   return m;
 }
 
@@ -33,7 +34,7 @@ export const M = {
   gold: mat('#d6a640', 0.3, 0.85),
   concrete: mat('#aaa59b', 0.9),
   asphalt: surface(mat('#3c3c40', 0.9), 'ground'),
-  water: water('#2b5b63', [1.2, 0.5, 0.05]),
+  water: water('#2b5b63', [1.2, 0.5, 0.05], false),
   sea: water('#1d4458', [9, 0.6, 0.06]),
   river: water('#4b5847', [4, 0.9, 0.05]),
   lake: water('#24505a', [5, 0.4, 0.035]),
@@ -706,6 +707,49 @@ export function ellipsoid(rx, ry, rz, m, x = 0, y = 0, z = 0) {
   o.scale.set(rx, ry, rz);
   return o;
 }
+// A sculpted head, rx × ry × rz, facing +z: brow ridge, eye sockets with lowered lids, nose with
+// nostrils, cheekbones, lips and the line between them, philtrum and chin, carved into one smooth
+// mesh. jaw widens the lower face (Patel's is broad); a little asymmetry keeps it from reading as
+// a mask.
+export function face(rx, ry, rz, m, { jaw = 0 } = {}) {
+  const geo = new THREE.SphereGeometry(1, 160, 120), pos = geo.attributes.position, v = new THREE.Vector3();
+  const g = (x, y, cx, cy, sx, sy) => Math.exp(-(((x - cx) / sx) ** 2 + ((y - cy) / sy) ** 2));
+  const band = (t, c, w) => Math.exp(-(((t - c) / w) ** 2));
+  const step = (a, b, t) => { const k = Math.min(1, Math.max(0, (t - a) / (b - a))); return k * k * (3 - 2 * k); };
+  for (let i = 0; i < pos.count; i++) {
+    v.fromBufferAttribute(pos, i);
+    const { x, y, z } = v, ax = Math.abs(x), front = step(0.3, 0.8, z), lean = 1 + 0.03 * Math.sign(x);
+    let d = 0;
+    d += 0.06 * band(y, 0.22, 0.07) * step(0.75, 0.4, ax);
+    d -= 0.09 * (g(x, y, 0.32, 0.08, 0.15, 0.1) + g(x, y, -0.32 * lean, 0.08, 0.15, 0.1));
+    d += 0.05 * (g(x, y, 0.32, 0.055, 0.085, 0.045) + g(x, y, -0.32 * lean, 0.055, 0.085, 0.045));
+    d += band(x, 0, 0.075) * (0.04 * band(y, 0.1, 0.12) + 0.16 * step(0.14, -0.18, y) * step(-0.29, -0.21, y));
+    d += 0.05 * (g(x, y, 0.09, -0.21, 0.06, 0.05) + g(x, y, -0.09, -0.21, 0.06, 0.05));
+    d += 0.04 * (g(x, y, 0.42, -0.06, 0.16, 0.12) + g(x, y, -0.42, -0.06, 0.16, 0.12));
+    d -= 0.015 * band(x, 0, 0.03) * band(y, -0.32, 0.04);
+    d += step(0.24, 0.12, ax) * (0.035 * band(y, -0.385, 0.04) + 0.03 * band(y, -0.475, 0.04)) - 0.03 * band(y, -0.43, 0.022) * step(0.27, 0.15, ax);
+    d += 0.07 * g(x, y, 0, -0.72, 0.17, 0.12);
+    v.multiplyScalar(1 + d * front);
+    v.x *= 1 + jaw * step(-0.1, -0.6, y) * step(0, 0.5, z + 0.3);
+    pos.setXYZ(i, v.x, v.y, v.z);
+  }
+  geo.computeVertexNormals();
+  const o = mesh(geo, m);
+  o.scale.set(rx, ry, rz);
+  return o;
+}
+
+// A row of four curled fingers along the lower edge of a hand: from `a` across to `b`, each finger
+// a short capsule pointing along `dir`.
+export function fingers(a, b, dir, len, r, m) {
+  const g = new THREE.Group();
+  for (let k = 0; k < 4; k++) {
+    const p = a.clone().lerp(b, k / 3), l = len * (k === 0 || k === 3 ? 0.82 : 1);
+    g.add(capsule(p, p.clone().addScaledVector(dir, l), r, m, r * 0.85));
+  }
+  return g;
+}
+
 // A tapered capsule from a (radius r1) to b (radius r2): limbs, necks, trunks.
 export function capsule(a, b, r1, m, r2 = r1) {
   const len = a.distanceTo(b), pts = [];
