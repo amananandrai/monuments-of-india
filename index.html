@@ -9,6 +9,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600&family=Rozha+One&display=swap">
 <link rel="stylesheet" href="css/style.css">
+<script>
+  // A Day or Night choice made on an earlier visit, applied before the page is drawn.
+  try { var t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
 </head>
 <body>
 
@@ -16,6 +20,10 @@
   <aside class="side">
     <header class="masthead">
       <h1>Monuments of India</h1>
+      <button class="btn theme-btn" id="theme" type="button" aria-pressed="false">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 9.6A5.8 5.8 0 0 1 6.4 2.5a5.8 5.8 0 1 0 7.1 7.1z"/></svg>
+        <span class="label">Night</span>
+      </button>
       <p class="hi" lang="hi">भारत के स्मारक</p>
       <p class="sub" id="sub">Landmarks modelled in 3D at their real proportions. Pick one on the map or from the list, then drag to walk around it.</p>
     </header>

@@ -95,11 +95,14 @@ body {
   border-right: 1px solid var(--line);
 }
 .masthead {
+  position: relative;
   padding: 22px 20px 14px;
   border-bottom: 1px solid var(--line);
 }
+.theme-btn { position: absolute; top: 14px; right: 14px; }
 .masthead h1 {
   margin: 0;
+  padding-right: 64px;
   font-family: var(--font-display);
   font-weight: 400;
   font-size: 28px;
@@ -419,7 +422,8 @@ details.facts ul {
     gap: 10px;
     flex-wrap: wrap;
   }
-  .masthead h1 { font-size: 22px; }
+  .masthead h1 { font-size: 22px; padding-right: 0; }
+  .theme-btn { top: 50%; right: 12px; transform: translateY(-50%); }
   .masthead .hi { margin: 0; font-size: 13px; }
   .masthead p.sub { display: none; }
   .stage { grid-row: 2; }

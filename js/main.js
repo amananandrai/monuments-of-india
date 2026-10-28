@@ -6,7 +6,8 @@ import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { nightState, V, box } from './helpers.js';
-import { attachSurface, surface, waterTime } from './surface.js';
+import { attachSurface, surface, waterTime, landColor } from './surface.js';
+import { blendIntoLand } from './landscape.js';
 import { separateCoplanar } from './coplanar.js';
 import { naturalize } from './naturalize.js';
 import { loadPhotoTextures } from './textures.js';
@@ -42,13 +43,54 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.autoRotate = !reduceMotion;
 controls.autoRotateSpeed = 0.6;
-controls.maxPolarAngle = Math.PI / 2 - 0.04;
+controls.maxPolarAngle = Math.PI / 2 - 0.01;
 
+// Where the sun stands, seen from the monument: the sun light and the sun in the sky share it.
+const SUN_DIR = V(-0.55, 0.85, 0.45).normalize();
+
+// The sky: --sky-top fading to --sky-horizon, a haze band and a low line of distant hills on the
+// skyline, the sun, and clouds by day; stars by night. Clouds drift unless the visitor has asked
+// for reduced motion, when they stay where they are.
 const skyMat = new THREE.ShaderMaterial({
   side: THREE.BackSide, depthWrite: false, fog: false, toneMapped: false,
-  uniforms: { top: { value: new THREE.Color() }, horizon: { value: new THREE.Color() } },
+  uniforms: {
+    top: { value: new THREE.Color() }, horizon: { value: new THREE.Color() }, land: { value: new THREE.Color() },
+    sunDir: { value: SUN_DIR }, night: { value: 0 }, time: { value: 0 },
+  },
   vertexShader: 'varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
-  fragmentShader: 'uniform vec3 top; uniform vec3 horizon; varying vec3 vDir; void main(){ float t = pow(clamp(vDir.y,0.0,1.0),0.55); gl_FragColor = vec4(mix(horizon, top, t),1.0); \n#include <colorspace_fragment>\n }',
+  fragmentShader: /* glsl */ `
+    uniform vec3 top, horizon, land, sunDir;
+    uniform float night, time;
+    varying vec3 vDir;
+    float kHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float kNoise(vec2 p) {
+      vec2 i = floor(p), f = fract(p);
+      f = f * f * (3.0 - 2.0 * f);
+      return mix(mix(kHash(i), kHash(i + vec2(1, 0)), f.x), mix(kHash(i + vec2(0, 1)), kHash(i + vec2(1, 1)), f.x), f.y);
+    }
+    void main() {
+      vec3 dir = normalize(vDir);
+      float h = dir.y, day = 1.0 - night;
+      vec3 col = mix(horizon, top, pow(clamp(h, 0.0, 1.0), 0.55));
+      col = mix(col, horizon * mix(vec3(1.06, 1.02, 0.95), vec3(1.0), night), (1.0 - smoothstep(0.0, 0.2, h)) * 0.6);
+      float sd = max(dot(dir, sunDir), 0.0);
+      col += day * (vec3(1.0, 0.93, 0.78) * pow(sd, 1500.0) * 2.0 + vec3(1.0, 0.9, 0.7) * pow(sd, 12.0) * 0.12);
+      // Clouds on a plane overhead, thinning out towards the horizon.
+      vec2 cuv = dir.xz / (h + 0.12);
+      float n = kNoise(cuv * 1.6 + vec2(time * 0.01, 0.0)) * 0.6 + kNoise(cuv * 4.1 - vec2(0.0, time * 0.006)) * 0.4;
+      col = mix(col, mix(vec3(1.0), horizon, 0.25), smoothstep(0.5, 0.75, n) * smoothstep(0.03, 0.25, h) * 0.7 * day);
+      // Stars: one in a few hundred cells of a fine grid on the sky, round and fading near the horizon.
+      vec3 sc = dir * 400.0, sf = fract(sc) - 0.5;
+      float star = step(0.996, fract(sin(dot(floor(sc), vec3(12.9898, 78.233, 37.719))) * 43758.5453));
+      col += vec3(0.9, 0.92, 1.0) * star * smoothstep(0.35, 0.1, length(sf)) * smoothstep(0.08, 0.3, h) * night * 0.9;
+      // Distant hills: a soft ridge a degree or so above the horizon, all the way round.
+      vec2 az = normalize(dir.xz + vec2(1e-5));
+      float ridge = 0.006 + 0.024 * (kNoise(az * 3.0 + 7.0) * 0.65 + kNoise(az * 9.0 + 2.0) * 0.35);
+      vec3 hills = mix(horizon, land, 0.38);
+      col = mix(col, hills, 1.0 - smoothstep(ridge - 0.002, ridge, h));
+      gl_FragColor = vec4(col, 1.0);
+      #include <colorspace_fragment>
+    }`,
 });
 const sky = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 16), skyMat);
 sky.renderOrder = -1;
@@ -110,7 +152,10 @@ function applyTheme() {
   const night = cs.getPropertyValue('--scene-mode').trim() === 'night';
   skyMat.uniforms.top.value.copy(col('--sky-top'));
   skyMat.uniforms.horizon.value.copy(col('--sky-horizon'));
+  skyMat.uniforms.land.value.copy(col('--ground'));
+  skyMat.uniforms.night.value = night ? 1 : 0;
   groundMat.color.copy(col('--ground'));
+  landColor.value.copy(groundMat.color);
   scene.fog.color.copy(col('--sky-horizon'));
   nightState.on = night;
   nightState.objects.forEach((o) => { o.visible = night; });
@@ -142,6 +187,7 @@ function getBuilt(i) {
     naturalize(r.group);
     // Faces that share a plane get different depth offsets, so they don't flicker.
     separateCoplanar(r.group, 0.005);
+    blendIntoLand(r);
     scene.add(r.group);
     built.set(i, r);
   }
@@ -167,13 +213,13 @@ function setEnvironment(h) {
   camera.far = dist * 14;
   camera.updateProjectionMatrix();
   sky.scale.setScalar(camera.far * 0.9);
-  ground.scale.setScalar(dist * 8);
+  // The land runs well past the end of the fog, so its edge is never seen.
+  ground.scale.setScalar(dist * 12);
   scene.fog.near = dist * 1.6;
   scene.fog.far = dist * 7;
   controls.minDistance = radius * 0.35;
   controls.maxDistance = dist * 3;
-  const sdir = V(-0.55, 0.85, 0.45).normalize();
-  sun.position.copy(target).addScaledVector(sdir, radius * 3);
+  sun.position.copy(target).addScaledVector(SUN_DIR, radius * 3);
   sun.target.position.copy(target);
   const sc = sun.shadow.camera;
   sc.left = sc.bottom = -radius * 1.4;
@@ -228,6 +274,19 @@ function select(i, instant = false) {
 
 /* ---------- sidebar: grouped by state, with search ---------- */
 const $ = (id) => document.getElementById(id);
+
+// Day or night: follows the device until the visitor picks one, which is then remembered.
+const themeBtn = $('theme');
+const isNight = () => getComputedStyle(document.documentElement).getPropertyValue('--scene-mode').trim() === 'night';
+const syncThemeBtn = () => themeBtn.setAttribute('aria-pressed', String(isNight()));
+themeBtn.addEventListener('click', () => {
+  const t = isNight() ? 'light' : 'dark';
+  document.documentElement.dataset.theme = t;
+  try { localStorage.setItem('theme', t); } catch (e) { /* private window: the choice lasts this visit */ }
+  syncThemeBtn();
+});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncThemeBtn);
+syncThemeBtn();
 const byId = new Map(MONUMENTS.map((m, i) => [m.id, i]));
 const items = new Array(MONUMENTS.length);
 const order = [];
@@ -385,7 +444,7 @@ const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 function loop(now) {
   requestAnimationFrame(loop);
   if (mode !== 'monument') return;
-  if (!reduceMotion) waterTime.value = now / 1000;
+  if (!reduceMotion) waterTime.value = skyMat.uniforms.time.value = now / 1000;
   if (tween) {
     const k = Math.min(1, (now - tween.t0) / tween.dur), e = ease(k);
     camera.position.lerpVectors(tween.fromPos, tween.toPos, e);
