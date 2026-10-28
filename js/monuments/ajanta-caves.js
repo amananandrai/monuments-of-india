@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, hemi, inst, unitBox, unitCyl, archWall, barrelVault, surface } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, hemi, inst, unitBox, unitCyl, archWall, barrelVault, surface, curvedBand } from '../helpers.js';
 
 const ROCK = mat('#7a6c5c', 0.95);
 const ROCK_LIGHT = mat('#968672', 0.95);
@@ -69,23 +69,42 @@ export function buildAjanta() {
     const ry = Math.atan2(-x, -z);
     return { x, z, ry, ux: Math.sin(ry), uz: Math.cos(ry), y: 14 + Math.sin(i * 1.7) * 3 };
   };
-  // Cliff boxes that would reach into a hall are trimmed to stop at its side; the hall brings its
-  // own rock in between.
-  const cuts = Object.entries(HALLS).map(([i, [, , W]]) => ({ ...cave(+i), W }));
-  const cliff = [], top = [], caves = [], porch = [];
+  // The cliff is one curved band of rock, 52 m deep, broken where a hall brings its own rock: each
+  // run stops 0.6 m into the hall's side strip. The forest on top is one band over the whole arc,
+  // set back 0.5 m from the face.
+  const cuts = Object.entries(HALLS).map(([i, [, , W]]) => ({ ...cave(+i), half: W / 2 + 0.6 }));
+  const arc = [];
   for (let k = 0; k <= 80; k++) {
-    const t = a0 + (k / 80) * (a1 - a0), x = Math.cos(t) * R, z = -Math.sin(t) * R * 0.8;
-    const ry = Math.atan2(x, z);
-    const ox = Math.sin(ry), oz = Math.cos(ry);
-    top.push([x + ox * 30, H - 1, z + oz * 30, 10, 4, 60, ry]);
-    const c = cuts.find((c) => Math.abs((x - c.x) * Math.cos(c.ry) - (z - c.z) * Math.sin(c.ry)) < c.W / 2 + 4.5 && Math.hypot(x - c.x, z - c.z) < 30);
-    if (!c) { cliff.push([x + ox * 26, 0, z + oz * 26, 9, H, 52, ry]); continue; }
-    // Along the hall's face: s is the box's offset sideways, back how far its face sits behind the hall's.
-    const s = (x - c.x) * Math.cos(c.ry) - (z - c.z) * Math.sin(c.ry), back = -((x - c.x) * c.ux + (z - c.z) * c.uz);
-    const from = c.W / 2 + 0.05, to = Math.abs(s) + 4.5, mid = Math.sign(s) * (from + to) / 2;
-    if (to - from > 0.2) cliff.push([c.x + Math.cos(c.ry) * mid - c.ux * (back + 26), 0, c.z - Math.sin(c.ry) * mid - c.uz * (back + 26), to - from, H, 52, c.ry]);
+    const t = a0 + (k / 80) * (a1 - a0), x = Math.cos(t) * R, z = -Math.sin(t) * R * 0.8, ry = Math.atan2(x, z);
+    arc.push([x, z, Math.sin(ry), Math.cos(ry)]);
   }
-  g.add(inst(unitBox(), cliff, ROCK), inst(unitBox(), top, FOREST));
+  // Sideways offset of a point along a hall's face, or null when no hall is near.
+  const offset = ([x, z]) => {
+    const c = cuts.find((c) => Math.hypot(x - c.x, z - c.z) < 30);
+    return c ? { c, s: (x - c.x) * Math.cos(c.ry) - (z - c.z) * Math.sin(c.ry) } : null;
+  };
+  const inside = (p) => { const o = offset(p); return !!o && Math.abs(o.s) < o.c.half; };
+  const lerp = (p, q, u) => {
+    const nx = p[2] + (q[2] - p[2]) * u, nz = p[3] + (q[3] - p[3]) * u, l = Math.hypot(nx, nz);
+    return [p[0] + (q[0] - p[0]) * u, p[1] + (q[1] - p[1]) * u, nx / l, nz / l];
+  };
+  // Where the segment p → q crosses the side of the hall it enters or leaves.
+  const edge = (p, q) => {
+    const o = offset(inside(p) ? p : q), sp = offset(p).s, sq = offset(q).s, lim = Math.sign(inside(p) ? sq : sp) * o.c.half;
+    return lerp(p, q, (lim - sp) / (sq - sp));
+  };
+  const runs = [];
+  let run = inside(arc[0]) ? null : [arc[0]];
+  for (let k = 1; k < arc.length; k++) {
+    const p = arc[k - 1], q = arc[k];
+    if (run && inside(q)) { run.push(edge(p, q)); runs.push(run); run = null; }
+    else if (!run && !inside(q)) run = [edge(p, q), q];
+    else if (run) run.push(q);
+  }
+  if (run) runs.push(run);
+  for (const r of runs) if (r.length > 1) g.add(curvedBand(r, 0, 52, 0, H, ROCK));
+  g.add(curvedBand(arc, 0.5, 60, H, H + 3, FOREST));
+  const caves = [], porch = [];
   // Thirty cave fronts: dark doorways with pillared verandahs, and the three halls
   for (let i = 0; i < N; i++) {
     const { x, z, ry, ux, uz, y } = cave(i), hall = HALLS[i];

@@ -7,9 +7,10 @@ export const mat = (color, roughness = 0.85, metalness = 0, extra = {}) =>
 
 // Water: a dark body colour, since most of what reads as water is the sky reflected at a low angle,
 // and ripples of the given [wavelength in metres, speed, steepness].
-function water(color, wave) {
+function water(color, wave, reflect = true) {
   const m = surface(mat(color, 0.06, 0, { envMapIntensity: 1 }), 'water');
   m.userData.wave = wave;
+  m.userData.reflect = reflect;
   return m;
 }
 
@@ -33,7 +34,7 @@ export const M = {
   gold: mat('#d6a640', 0.3, 0.85),
   concrete: mat('#aaa59b', 0.9),
   asphalt: surface(mat('#3c3c40', 0.9), 'ground'),
-  water: water('#2b5b63', [1.2, 0.5, 0.05]),
+  water: water('#2b5b63', [1.2, 0.5, 0.05], false),
   sea: water('#1d4458', [9, 0.6, 0.06]),
   river: water('#4b5847', [4, 0.9, 0.05]),
   lake: water('#24505a', [5, 0.4, 0.035]),
@@ -172,6 +173,37 @@ export function archWall(w, h, d, aw, ah, pointed, m) {
   p.lineTo(r, 0); p.lineTo(w / 2, 0); p.lineTo(w / 2, h); p.lineTo(-w / 2, h); p.closePath();
   const geo = new THREE.ExtrudeGeometry(p, { depth: d, bevelEnabled: false, curveSegments: 18 });
   geo.translate(0, 0, -d / 2);
+  return mesh(geo, m);
+}
+
+// A wall, bank or cliff following a curve, as one continuous mesh. pts are [x, z, nx, nz]: a point
+// on the curve and the direction the band runs across it there. The band spans a to b along that
+// direction (a < b) and y0 to y1. A curve built from overlapping straight boxes instead leaves
+// neighbouring faces crossing at a shallow angle, and they flicker where they meet.
+export function curvedBand(pts, a, b, y0, y1, m) {
+  const P = (k, d, y) => V(pts[k][0] + pts[k][2] * d, y, pts[k][1] + pts[k][3] * d);
+  const pos = [];
+  // Two triangles for the quad A B C D, wound so the face points along `out`.
+  const quad = (A, B, C, D, out) => {
+    const flip = B.clone().sub(A).cross(C.clone().sub(A)).dot(out) < 0;
+    for (const v of flip ? [A, C, B, A, D, C] : [A, B, C, A, C, D]) pos.push(v.x, v.y, v.z);
+  };
+  const n = (k) => V(pts[k][2], 0, pts[k][3]);
+  for (let k = 0; k < pts.length - 1; k++) {
+    const side = n(k).add(n(k + 1));
+    quad(P(k, a, y0), P(k + 1, a, y0), P(k + 1, a, y1), P(k, a, y1), side.clone().negate());
+    quad(P(k, b, y0), P(k + 1, b, y0), P(k + 1, b, y1), P(k, b, y1), side);
+    quad(P(k, a, y1), P(k + 1, a, y1), P(k + 1, b, y1), P(k, b, y1), V(0, 1, 0));
+    quad(P(k, a, y0), P(k + 1, a, y0), P(k + 1, b, y0), P(k, b, y0), V(0, -1, 0));
+  }
+  const last = pts.length - 1;
+  for (const [k, j] of [[0, 1], [last, last - 1]]) {
+    const out = V(pts[k][0] - pts[j][0], 0, pts[k][1] - pts[j][1]);
+    quad(P(k, a, y0), P(k, b, y0), P(k, b, y1), P(k, a, y1), out);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.computeVertexNormals();
   return mesh(geo, m);
 }
 
@@ -675,6 +707,49 @@ export function ellipsoid(rx, ry, rz, m, x = 0, y = 0, z = 0) {
   o.scale.set(rx, ry, rz);
   return o;
 }
+// A sculpted head, rx × ry × rz, facing +z: brow ridge, eye sockets with lowered lids, nose with
+// nostrils, cheekbones, lips and the line between them, philtrum and chin, carved into one smooth
+// mesh. jaw widens the lower face (Patel's is broad); a little asymmetry keeps it from reading as
+// a mask.
+export function face(rx, ry, rz, m, { jaw = 0 } = {}) {
+  const geo = new THREE.SphereGeometry(1, 160, 120), pos = geo.attributes.position, v = new THREE.Vector3();
+  const g = (x, y, cx, cy, sx, sy) => Math.exp(-(((x - cx) / sx) ** 2 + ((y - cy) / sy) ** 2));
+  const band = (t, c, w) => Math.exp(-(((t - c) / w) ** 2));
+  const step = (a, b, t) => { const k = Math.min(1, Math.max(0, (t - a) / (b - a))); return k * k * (3 - 2 * k); };
+  for (let i = 0; i < pos.count; i++) {
+    v.fromBufferAttribute(pos, i);
+    const { x, y, z } = v, ax = Math.abs(x), front = step(0.3, 0.8, z), lean = 1 + 0.03 * Math.sign(x);
+    let d = 0;
+    d += 0.06 * band(y, 0.22, 0.07) * step(0.75, 0.4, ax);
+    d -= 0.09 * (g(x, y, 0.32, 0.08, 0.15, 0.1) + g(x, y, -0.32 * lean, 0.08, 0.15, 0.1));
+    d += 0.05 * (g(x, y, 0.32, 0.055, 0.085, 0.045) + g(x, y, -0.32 * lean, 0.055, 0.085, 0.045));
+    d += band(x, 0, 0.075) * (0.04 * band(y, 0.1, 0.12) + 0.16 * step(0.14, -0.18, y) * step(-0.29, -0.21, y));
+    d += 0.05 * (g(x, y, 0.09, -0.21, 0.06, 0.05) + g(x, y, -0.09, -0.21, 0.06, 0.05));
+    d += 0.04 * (g(x, y, 0.42, -0.06, 0.16, 0.12) + g(x, y, -0.42, -0.06, 0.16, 0.12));
+    d -= 0.015 * band(x, 0, 0.03) * band(y, -0.32, 0.04);
+    d += step(0.24, 0.12, ax) * (0.035 * band(y, -0.385, 0.04) + 0.03 * band(y, -0.475, 0.04)) - 0.03 * band(y, -0.43, 0.022) * step(0.27, 0.15, ax);
+    d += 0.07 * g(x, y, 0, -0.72, 0.17, 0.12);
+    v.multiplyScalar(1 + d * front);
+    v.x *= 1 + jaw * step(-0.1, -0.6, y) * step(0, 0.5, z + 0.3);
+    pos.setXYZ(i, v.x, v.y, v.z);
+  }
+  geo.computeVertexNormals();
+  const o = mesh(geo, m);
+  o.scale.set(rx, ry, rz);
+  return o;
+}
+
+// A row of four curled fingers along the lower edge of a hand: from `a` across to `b`, each finger
+// a short capsule pointing along `dir`.
+export function fingers(a, b, dir, len, r, m) {
+  const g = new THREE.Group();
+  for (let k = 0; k < 4; k++) {
+    const p = a.clone().lerp(b, k / 3), l = len * (k === 0 || k === 3 ? 0.82 : 1);
+    g.add(capsule(p, p.clone().addScaledVector(dir, l), r, m, r * 0.85));
+  }
+  return g;
+}
+
 // A tapered capsule from a (radius r1) to b (radius r2): limbs, necks, trunks.
 export function capsule(a, b, r1, m, r2 = r1) {
   const len = a.distanceTo(b), pts = [];

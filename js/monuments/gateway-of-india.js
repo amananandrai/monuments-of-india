@@ -23,7 +23,11 @@ export function buildGateway() {
     f.add(at(finial(1.8), x, b + 26.3, z));
   }
   for (const s of [-1, 1]) {
-    f.add(at(archWall(9, 11, 9, 4.2, 8.5, true, m), s * 13.5, b, 0));
+    // Each side hall is three thin arched faces, left open where it meets the central hall, so the
+    // central hall's side arch leads through into it.
+    const pt = 1;
+    for (const sz of [-1, 1]) f.add(at(archWall(9, 11, pt, 4.2, 8.5, true, m), s * 13.5, b, sz * (4.5 - pt / 2)));
+    f.add(at(archWall(9 - 2 * pt, 11, pt, 4.2, 8.5, true, m), s * (18 - pt / 2), b, 0).rotateY(Math.PI / 2));
     f.add(box(9.8, 1, 9.8, M.plaster, s * 13.5, b + 11));
     for (const z of [-4.2, 4.2]) {
       f.add(cyl(0.9, 1, 13.5, m, s * 17.8, b, z, 8));

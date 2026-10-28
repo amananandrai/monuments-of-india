@@ -1,9 +1,10 @@
 import * as THREE from 'three';
-import { M, V, mat, mesh, box, cyl, at, nagaraTemple, ellipsoid, capsule, tube, smoothLathe, surface } from '../helpers.js';
+import { M, V, mat, mesh, box, cyl, at, nagaraTemple, ellipsoid, capsule, tube, smoothLathe, surface, face, fingers } from '../helpers.js';
 
 const PINK = mat('#e4b7a0', 0.85);
 const SHADE = mat('#c4937c', 0.9);
-const SHIVA = surface(mat('#5d6f86', 0.6, 0.1), 'marble');
+// A plain surface: block joints would run across the face and the chest.
+const SHIVA = surface(mat('#5d6f86', 0.6, 0.1), 'none');
 
 // The great seated Shiva in the temple garden, about 25 m tall: cross-legged on a lotus, the
 // right hand raised in blessing, a serpent round the neck and the crescent moon in his hair.
@@ -28,18 +29,18 @@ function seatedShiva() {
   for (const sd of [-1, 1]) g.add(ellipsoid(1.9, 1.7, 1.7, S, sd * 4.6, 16.2, 0));
   const snake = [];
   for (let k = 0; k <= 30; k++) { const a = (k / 30) * Math.PI * 2.4; snake.push([Math.sin(a) * 2.4, 17.4 + k * 0.03, Math.cos(a) * 2.1]); }
-  snake.push([0.6, 19.6, 3.0], [0.4, 20.6, 3.4]);
-  g.add(tube(snake, 0.34, mat('#3f5866', 0.5, 0.1), 80, 8), ellipsoid(0.7, 0.5, 0.9, mat('#3f5866', 0.5, 0.1), 0.4, 20.9, 3.5));
+  // The cobra rises beside the right cheek, clear of the face
+  snake.push([2.4, 19.0, 1.6], [2.9, 20.4, 1.5]);
+  g.add(tube(snake, 0.34, mat('#3f5866', 0.5, 0.1), 80, 8), ellipsoid(0.7, 0.5, 0.9, mat('#3f5866', 0.5, 0.1), 2.95, 20.8, 1.7));
   // Right arm raised in abhaya mudra; left hand resting on the knee
   g.add(capsule(V(4.8, 16, 0.2), V(6.6, 12.4, 1.6), 1.2, S, 1), capsule(V(6.6, 12.4, 1.6), V(6.9, 15.8, 3.4), 1, S, 0.8));
   const palm = ellipsoid(0.55, 1.5, 1.1, S, 6.9, 16.8, 3.7);
   palm.rotation.x = -0.25;
-  g.add(palm);
+  g.add(palm, fingers(V(6.9, 18.0, 3.1), V(6.9, 18.0, 4.3), V(0, 1, 0.1).normalize(), 1.15, 0.2, S), capsule(V(6.95, 16.4, 4.5), V(7.0, 17.3, 5.1), 0.2, S, 0.17));
   g.add(capsule(V(-4.8, 16, 0.2), V(-6.4, 12.2, 1.4), 1.2, S, 1), capsule(V(-6.4, 12.2, 1.4), V(-6.2, 8.4, 3.6), 1, S, 0.8), ellipsoid(1.1, 0.7, 1.6, S, -6.1, 7.7, 4.1));
   // Head with matted locks gathered in a tall knot, the crescent moon and the third eye
   g.add(capsule(V(0, 17.6, 0), V(0, 19.4, 0.2), 1.2, S, 1.3));
-  g.add(ellipsoid(2.2, 2.7, 2.3, S, 0, 21.4, 0.3), ellipsoid(1.9, 0.9, 2.0, S, 0, 19.9, 0.7));
-  g.add(ellipsoid(0.45, 0.8, 0.6, S, 0, 21.3, 2.5), ellipsoid(0.22, 0.32, 0.1, mat('#d14b3a', 0.6), 0, 22.4, 2.45));
+  g.add(at(face(2.2, 2.8, 2.3, S), 0, 21.2, 0.3), ellipsoid(0.22, 0.32, 0.1, mat('#d14b3a', 0.6), 0, 22.4, 2.45));
   for (const sd of [-1, 1]) g.add(ellipsoid(0.4, 1.0, 0.5, S, sd * 2.2, 21.2, 0.2));
   g.add(capsule(V(0, 23.4, -0.2), V(0, 26.4, -0.6), 1.4, S, 0.9), ellipsoid(1.9, 1.0, 1.9, S, 0, 23.6, -0.1));
   const moon = mesh(new THREE.TorusGeometry(1.0, 0.2, 8, 24, Math.PI * 1.1), M.gild, -1.1, 25.2, 0.6);
