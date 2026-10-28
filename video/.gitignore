@@ -1,0 +1,8 @@
+# Installed and copied by `npm install` and `npm run sync`; renders are delivered, not committed.
+node_modules/
+site/
+lib/
+assets/textures/
+assets/fonts/
+renders/
+.hyperframes/
