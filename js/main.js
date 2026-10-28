@@ -105,7 +105,7 @@ ground.receiveShadow = true;
 // always win, even kilometres away where the depth buffer is coarse.
 groundMat.polygonOffset = true;
 groundMat.polygonOffsetFactor = 1;
-groundMat.polygonOffsetUnits = 1;
+groundMat.polygonOffsetUnits = 4;
 scene.add(ground);
 
 scene.fog = new THREE.Fog(0xffffff, 100, 1000);

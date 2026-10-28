@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, chhatri, onFace, FACES, archPanel, hemi, finial, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, chhatri, onFace, FACES, archPanel, hemi, finial, inst, unitBox, ellipseWall } from '../helpers.js';
 
 const STONE = mat('#c8b28c', 0.9);
 const RUIN = mat('#a8916d', 0.95);
@@ -29,12 +29,8 @@ export function buildChittorgarh() {
   const mesa = mesh(new THREE.CylinderGeometry(1, 1.3, 1, 14).translate(0, 0.5, 0), CLIFF);
   mesa.scale.set(L / 2, H, W / 2);
   g.add(mesa);
-  const wall = [];
-  for (let k = 0; k < 90; k++) {
-    const a = (k / 90) * Math.PI * 2;
-    wall.push([Math.cos(a) * (L / 2 - 3), H, Math.sin(a) * (W / 2 - 3), 11, 5, 2, Math.atan2(-Math.cos(a) * (W / 2), -Math.sin(a) * (L / 2))]);
-  }
-  g.add(inst(unitBox(), wall, STONE));
+  // The ring of walls round the top of the mesa, as one continuous wall
+  g.add(ellipseWall(L / 2 - 3, W / 2 - 3, 0, Math.PI * 2, 2, H, H + 5, STONE));
   // Vijay Stambh, Rana Kumbha's palace ruins, and Padmini's palace in its pool
   f.add(at(vijayStambh(), 20, H, 0));
   const ruins = [];

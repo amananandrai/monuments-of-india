@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet, ellipseWall } from '../helpers.js';
 
 const LATERITE = mat('#8f4e36', 0.95);
 const LATERITE_DARK = mat('#6e3a27', 0.95);
@@ -13,14 +13,11 @@ export function buildBekal() {
   g.add(head, box(80, 8, 80, mat('#5b7d43', 0.95), 0, 0, 90));
   // Outline: a great circle on the sea side and a tapering neck towards the land
   const H = 8, wall = [], R = 70;
-  for (let k = 0; k < 64; k++) {
-    const a = (k / 64) * Math.PI * 2;
-    if (Math.sin(a) < -0.72) continue;
-    wall.push([Math.cos(a) * R, H, -Math.sin(a) * R, 7.4, 7, 3, a + Math.PI / 2]);
-  }
+  f.add(ellipseWall(R, -R, 5.445, 10.26, 3, H, H + 7, LATERITE));
   for (const s of [-1, 1]) {
     const x0 = s * R * 0.69, z0 = R * 0.72, x1 = s * 16, z1 = 120, len = Math.hypot(x1 - x0, z1 - z0);
-    wall.push([(x0 + x1) / 2, H, (z0 + z1) / 2, len, 7, 3, Math.atan2(-(z1 - z0), x1 - x0)]);
+    // 3 cm lower than the round wall they meet, so the two tops never share a plane
+    wall.push([(x0 + x1) / 2, H, (z0 + z1) / 2, len, 6.97, 3, Math.atan2(-(z1 - z0), x1 - x0)]);
   }
   f.add(inst(unitBox(), wall, LATERITE));
   for (let k = 0; k < 8; k++) {

@@ -9,7 +9,8 @@ export function buildDilwara() {
   // Rows of shrine cells (devakulikas) with little spires, behind a pillared cloister
   const cells = aroundRect(44, 66, 3.2, 1.6), cellList = [], spires = [], posts = [];
   cells.forEach(([x, z, ry]) => {
-    cellList.push([x, 1.5, z, 3, 4, 3, ry]);
+    // 3 cm short of the cloister roof, so the cells' tops and the roof's never share a plane
+    cellList.push([x, 1.5, z, 3, 3.97, 3, ry]);
     spires.push([x, 5.5, z, 2.6, 3.4, 2.6, ry]);
     posts.push([x + Math.sin(ry) * 3.2, 1.5, z + Math.cos(ry) * 3.2, 0.5, 3.6, 0.5]);
   });
