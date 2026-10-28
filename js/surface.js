@@ -10,6 +10,8 @@ export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground
 
 // Seconds since the page opened, shared by every water material; main.js advances it each frame.
 export const waterTime = { value: 0 };
+// The colour of the open land (--ground), which the open edges of lawns and water fade into.
+export const landColor = { value: new THREE.Color() };
 
 // Photo textures (CC0, Poly Haven) are registered by key and blended in by triplanar projection.
 export const PHOTOS = {};
@@ -34,6 +36,10 @@ float sNoise(vec3 p) {
              mix(mix(sHash(i + vec3(0, 0, 1)), sHash(i + vec3(1, 0, 1)), f.x), mix(sHash(i + vec3(0, 1, 1)), sHash(i + vec3(1, 1, 1)), f.x), f.y), f.z);
 }
 float sFbm(vec3 p) { float a = 0.5, s = 0.0; for (int i = 0; i < 4; i++) { s += a * sNoise(p); p *= 2.03; a *= 0.5; } return s; }
+#ifdef SURF_PATCH
+uniform vec4 sPatchB, sPatchF; // footprint (min x, min z, max x, max z); fade margins (min x, max x, min z, max z)
+uniform vec3 sLand;
+#endif
 #if SURF_KIND == 9
 uniform float sTime;
 uniform vec3 sWave; // wavelength in metres, speed, steepness
@@ -176,6 +182,18 @@ const PATTERN = /* glsl */ `
   sTint *= 0.95 + 0.1 * vSurfVar;
 #endif
   diffuseColor.rgb *= sTint;
+  float sKeep = 1.0;
+#ifdef SURF_PATCH
+  // Fade into the open land over the margin of each open edge. Noise moves the edge in and out, so
+  // it never reads as a straight line, and the land takes the ground disc's own pattern.
+  vec4 pe = vec4(sp.x - sPatchB.x, sPatchB.z - sp.x, sp.z - sPatchB.y, sPatchB.w - sp.z);
+  vec4 pk = clamp((pe + (sNoise(vec3(sp.xz * 0.04, 3.0)) - 0.5) * sPatchF * 0.9) / max(sPatchF, vec4(1e-3)), 0.0, 1.0);
+  pk = mix(vec4(1.0), pk, step(vec4(1e-3), sPatchF));
+  sKeep = smoothstep(0.0, 1.0, pk.x * pk.y * pk.z * pk.w);
+  diffuseColor.rgb = mix(sLand * (0.84 + 0.3 * sFbm(sp * 0.05) + 0.1 * (sNoise(sp * 2.5) - 0.5)), diffuseColor.rgb, sKeep);
+  sH *= sKeep;
+  sRough += (1.0 - sKeep) * 0.9;
+#endif
 `;
 
 // The water normal comes from the wave height's slope in world x and z, so it is right at any
@@ -185,11 +203,18 @@ const WATER_NORMAL = /* glsl */ `
     float wFw = max(length(fwidth(sp)), 1e-4), we = sWave.x * 0.04;
     float w0 = sWaterH(sp.xz, wFw);
     vec3 wN = normalize(vec3(-(sWaterH(sp.xz + vec2(we, 0.0), wFw) - w0) / we, 1.0, -(sWaterH(sp.xz + vec2(0.0, we), wFw) - w0) / we));
+    wN = normalize(mix(vec3(0.0, 1.0, 0.0), wN, sKeep));
     normal = normalize((viewMatrix * vec4(wN, 0.0)).xyz);
   }`;
 
-function patch(shader, kind, bump, photo, wave) {
+function patch(shader, kind, bump, photo, wave, edge) {
   shader.defines = { ...(shader.defines || {}), SURF_KIND: kind };
+  if (edge) {
+    shader.defines.SURF_PATCH = 1;
+    shader.uniforms.sPatchB = { value: new THREE.Vector4(...edge.bounds) };
+    shader.uniforms.sPatchF = { value: new THREE.Vector4(...edge.fade) };
+    shader.uniforms.sLand = landColor;
+  }
   if (kind === KINDS.water) {
     shader.uniforms.sTime = waterTime;
     shader.uniforms.sWave = { value: new THREE.Vector3(...wave) };
@@ -245,9 +270,9 @@ export function attachSurface(m) {
   const photo = () => (m.userData.photoKey && PHOTOS[m.userData.photoKey]) || null;
   m.onBeforeCompile = (shader) => {
     const kind = guess(m);
-    if (kind !== 'none') patch(shader, KINDS[kind], BUMP[kind], photo(), m.userData.wave);
+    if (kind !== 'none') patch(shader, KINDS[kind], BUMP[kind], photo(), m.userData.wave, m.userData.patch);
   };
-  m.customProgramCacheKey = () => 'surf:' + guess(m) + (photo() ? ':' + m.userData.photoKey : '');
+  m.customProgramCacheKey = () => 'surf:' + guess(m) + (photo() ? ':' + m.userData.photoKey : '') + (m.userData.patch ? ':patch' : '');
   return m;
 }
 
