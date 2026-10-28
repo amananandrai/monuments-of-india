@@ -175,6 +175,37 @@ export function archWall(w, h, d, aw, ah, pointed, m) {
   return mesh(geo, m);
 }
 
+// A wall, bank or cliff following a curve, as one continuous mesh. pts are [x, z, nx, nz]: a point
+// on the curve and the direction the band runs across it there. The band spans a to b along that
+// direction (a < b) and y0 to y1. A curve built from overlapping straight boxes instead leaves
+// neighbouring faces crossing at a shallow angle, and they flicker where they meet.
+export function curvedBand(pts, a, b, y0, y1, m) {
+  const P = (k, d, y) => V(pts[k][0] + pts[k][2] * d, y, pts[k][1] + pts[k][3] * d);
+  const pos = [];
+  // Two triangles for the quad A B C D, wound so the face points along `out`.
+  const quad = (A, B, C, D, out) => {
+    const flip = B.clone().sub(A).cross(C.clone().sub(A)).dot(out) < 0;
+    for (const v of flip ? [A, C, B, A, D, C] : [A, B, C, A, C, D]) pos.push(v.x, v.y, v.z);
+  };
+  const n = (k) => V(pts[k][2], 0, pts[k][3]);
+  for (let k = 0; k < pts.length - 1; k++) {
+    const side = n(k).add(n(k + 1));
+    quad(P(k, a, y0), P(k + 1, a, y0), P(k + 1, a, y1), P(k, a, y1), side.clone().negate());
+    quad(P(k, b, y0), P(k + 1, b, y0), P(k + 1, b, y1), P(k, b, y1), side);
+    quad(P(k, a, y1), P(k + 1, a, y1), P(k + 1, b, y1), P(k, b, y1), V(0, 1, 0));
+    quad(P(k, a, y0), P(k + 1, a, y0), P(k + 1, b, y0), P(k, b, y0), V(0, -1, 0));
+  }
+  const last = pts.length - 1;
+  for (const [k, j] of [[0, 1], [last, last - 1]]) {
+    const out = V(pts[k][0] - pts[j][0], 0, pts[k][1] - pts[j][1]);
+    quad(P(k, a, y0), P(k, b, y0), P(k, b, y1), P(k, a, y1), out);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.computeVertexNormals();
+  return mesh(geo, m);
+}
+
 // The soffit of a barrel vault running along z, open underneath and seen from inside.
 export function barrelVault(radius, length, m) {
   const geo = new THREE.CylinderGeometry(radius, radius, length, 28, 1, true, -Math.PI / 2, Math.PI);
