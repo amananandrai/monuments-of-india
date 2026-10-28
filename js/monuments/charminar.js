@@ -5,8 +5,10 @@ export function buildCharminar() {
   const m = M.plaster, g = new THREE.Group();
   g.add(box(32, 0.8, 32, M.granite));
   const b = 0.8;
-  g.add(at(archWall(20, 21, 20, 11, 16.5, true, m), 0, b, 0));
-  g.add(at(archWall(19.9, 21, 19.9, 11, 16.5, true, m), 0, b, 0).rotateY(Math.PI / 2));
+  // Four arched faces round the open square at the centre, so each arch looks through to the others.
+  const t = 2;
+  for (const sz of [-1, 1]) g.add(at(archWall(20, 21, t, 11, 16.5, true, m), 0, b, sz * (10 - t / 2)));
+  for (const sx of [-1, 1]) g.add(at(archWall(20 - 2 * t, 21, t, 11, 16.5, true, m), sx * (10 - t / 2), b, 0).rotateY(Math.PI / 2));
   g.add(box(21.6, 0.9, 21.6, m, 0, b + 21));
   for (const a of FACES) {
     for (let k = -2; k <= 2; k++) g.add(onFace(at(archPanel(1.8, 3.2, true, M.recess, 0.2), 0, b + 22.4, 0), a, 9.8, k * 3.2));

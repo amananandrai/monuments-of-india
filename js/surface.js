@@ -6,7 +6,7 @@ import * as THREE from 'three';
 // from the same pattern, weathering (grime near the ground, faint rain streaks) and a small
 // per-object tint so that repeated pieces don't look cloned. Water is its own kind: moving ripples
 // that tilt the normal, so the sky reflects in a broken, shifting band instead of a flat sheen.
-export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9 };
+export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11 };
 
 // Seconds since the page opened, shared by every water material; main.js advances it each frame.
 export const waterTime = { value: 0 };
@@ -70,6 +70,17 @@ vec3 sPerturb(vec3 surf_pos, vec3 surf_norm, vec2 dHdxy, float faceDirection) {
 }
 `;
 
+// Cuts the lattice holes out, while they are big enough on screen not to shimmer. It runs at the
+// clipping stage, before any colour or lighting work. Shadows come from the stone around the
+// screen, since the shadow pass draws with its own material.
+const JALI_CUT = /* glsl */ `
+#if SURF_KIND == 6
+  {
+    vec2 jc = fract(sFaceUV(vSurfPos, normalize(vSurfNormal)) / 0.22);
+    if (length(fwidth(vSurfPos)) < 0.04 && min(min(jc.x, 1.0 - jc.x), min(jc.y, 1.0 - jc.y)) > 0.16) discard;
+  }
+#endif`;
+
 const PATTERN = /* glsl */ `
   vec3 sp = vSurfPos, sn = normalize(vSurfNormal);
   float sFw = length(fwidth(sp));
@@ -101,10 +112,13 @@ const PATTERN = /* glsl */ `
   sTint = 0.84 + 0.3 * sFbm(sp * 0.05) + 0.1 * (sNoise(sp * 2.5) - 0.5);
   sH = sNoise(sp * 3.0) * 0.3;
 #elif SURF_KIND == 6
-  vec2 c = fract(sFaceUV(sp, sn) / 0.24);
-  float hole = step(0.17, min(min(c.x, 1.0 - c.x), min(c.y, 1.0 - c.y))) * (1.0 - smoothstep(0.02, 0.05, sFw));
-  sTint = mix(1.0, 0.12, hole);
-  sH = -hole;
+  // Up close the holes are cut out (see JALI_CUT); further away, where they would shimmer, the
+  // screen darkens by the share of it that is open.
+  vec2 c = fract(sFaceUV(sp, sn) / 0.22);
+  float hole = step(0.16, min(min(c.x, 1.0 - c.x), min(c.y, 1.0 - c.y)));
+  float sFar = smoothstep(0.04, 0.08, sFw);
+  sTint = mix(mix(1.0, 0.55, hole), 0.75, sFar);
+  sH = -hole * (1.0 - sFar);
 #elif SURF_KIND == 7
   vec2 q = sFaceUV(sp, sn) / 0.34;
   float d = abs(fract(q.x + q.y) - 0.5) + abs(fract(q.x - q.y) - 0.5);
@@ -117,6 +131,25 @@ const PATTERN = /* glsl */ `
   sTint = 0.68 + 0.5 * clump + 0.18 * (leaf - 0.5);
   sH = clump * 1.2 + leaf * 0.6;
   sRough = 0.1;
+#elif SURF_KIND == 10
+  // Incised names: lines of short strokes, 9 cm characters on 14 cm lines. From further off the
+  // strokes merge into faint lines of text, then into an even tone.
+  vec2 uv = sFaceUV(sp, sn);
+  vec2 g = vec2(uv.x / 0.09, uv.y / 0.14), gf = fract(g);
+  float word = step(0.18, sHash(vec3(floor(g.x / 6.0), floor(g.y), 5.0)));
+  float ink = word * step(0.45, sHash(vec3(floor(g), 3.0))) * step(0.25, gf.x) * step(gf.x, 0.6) * step(0.2, gf.y) * step(gf.y, 0.8);
+  float line = word * step(0.2, gf.y) * step(gf.y, 0.8) * 0.45;
+  float sMid = smoothstep(0.006, 0.02, sFw), sFar = smoothstep(0.03, 0.08, sFw);
+  sTint = mix(mix(mix(1.0, 0.45, ink), mix(1.0, 0.7, line), sMid), 0.9, sFar);
+  sH = -ink * 0.4 * (1.0 - sMid);
+#elif SURF_KIND == 11
+  // A carved band: a row of rosettes on a 42 cm repeat, some left plain so the run is not mechanical.
+  vec2 uv = sFaceUV(sp, sn);
+  float along = uv.x / 0.42, cell = floor(along);
+  float flower = 1.0 - smoothstep(0.05, 0.16, abs(length(vec2(fract(along) - 0.5, fract(uv.y / 0.42) - 0.5)) - 0.22));
+  float petal = step(0.28, sHash(vec3(cell, floor(uv.y / 0.42), 4.0)));
+  sTint = mix(1.0, 0.68, flower * petal * sNear) * mix(1.0, 0.9, 1.0 - sNear);
+  sH = flower * petal;
 #elif SURF_KIND == 9
   // Broad patches of slightly darker and lighter water, as wind and depth vary, and wind slicks:
   // rough and glassy streaks a few hundred metres long that break up the sky's reflection.
@@ -185,13 +218,14 @@ function patch(shader, kind, bump, photo, wave) {
   vSurfVar = fract(sin(dot(sOrigin, vec3(12.9898, 78.233, 37.719))) * 43758.5453);`);
   shader.fragmentShader = shader.fragmentShader
     .replace('#include <common>', '#include <common>\n' + COMMON)
+    .replace('#include <clipping_planes_fragment>', '#include <clipping_planes_fragment>\n' + JALI_CUT)
     .replace('#include <color_fragment>', '#include <color_fragment>\n' + PATTERN)
     .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n  roughnessFactor = clamp(roughnessFactor + sRough, 0.05, 1.0);')
     .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\n' + (kind === KINDS.water ? WATER_NORMAL
       : `  normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`));
 }
 
-const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 1.2, tiles: 0.6, foliage: 1.6, water: 0 };
+const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8 };
 
 // Choose a surface for a material from its look, unless one was set with surface().
 function guess(m) {
