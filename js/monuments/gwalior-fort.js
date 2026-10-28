@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, hemi, finial, inst, unitBox, surface } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, hemi, finial, inst, unitBox, surface, ellipseWall } from '../helpers.js';
 
 const SAND = mat('#c9b08a', 0.9);
 const SAND_DARK = mat('#a68d68', 0.9);
@@ -33,12 +33,7 @@ export function buildGwaliorFort() {
   }
   [0, 1, 2].forEach((row) => p.add(inst(unitBox(), tiles.filter((t) => t[6] === row).map((t) => t.slice(0, 6)), TILES[row])));
   // Ramparts round the rest of the plateau's edge
-  const wall = [];
-  for (let k = 0; k < 90; k++) {
-    const a = (k / 90) * Math.PI * 2, x = Math.cos(a) * 147, zz = Math.sin(a) * 67;
-    if (zz > 50 && Math.abs(x) < 66) continue;
-    wall.push([x, H - 1, zz, 10.6, 6, 2.6, Math.atan2(-Math.cos(a) * 67, -Math.sin(a) * 147)]);
-  }
-  f.add(inst(unitBox(), wall, SAND));
+  // The ring of walls round the plateau, one continuous wall, open where the palace front stands
+  f.add(ellipseWall(147, 67, 2.054, 7.37, 2.6, H - 1, H + 5, SAND));
   return { group: g, focus: p, view: [0.45, 0.2, 1.25] };
 }

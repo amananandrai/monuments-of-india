@@ -9,7 +9,8 @@ function block(w, h, d, x, y, z) {
   const g = new THREE.Group();
   g.add(box(w, h, d, SAND), box(w + 0.6, 0.6, d + 0.6, SAND_DARK, 0, h));
   const n = Math.max(2, Math.floor(w / 4));
-  for (let k = 0; k < n; k++) g.add(onFace(at(archPanel(1.8, Math.min(4, h * 0.4), true, M.recess, 0.2), 0, h * 0.45, 0), 0, d / 2, -w / 2 + (k + 0.5) * (w / n)));
+  // Arched recesses along the front, standing 2 cm off the wall so their backs never meet its face
+  for (let k = 0; k < n; k++) g.add(onFace(at(archPanel(1.8, Math.min(4, h * 0.4), true, M.recess, 0.2), 0, h * 0.45, 0), 0, d / 2 + 0.02, -w / 2 + (k + 0.5) * (w / n)));
   g.position.set(x, y, z);
   return g;
 }

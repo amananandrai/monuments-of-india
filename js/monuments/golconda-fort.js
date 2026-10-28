@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, onFace, FACES, archPanel, archWall, hemi, finial, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, rng, onFace, FACES, archPanel, archWall, hemi, finial, inst, unitBox, ellipseWall } from '../helpers.js';
 
 const GRANITE = mat('#9a917f', 0.9);
 const BOULDER = mat('#8c8270', 0.95, 0, { flatShading: true });
@@ -17,12 +17,8 @@ export function buildGolconda() {
   }
   // Rings of walls climbing the hill to the Bala Hissar citadel
   for (const [r, n] of [[100, 70], [64, 46], [30, 24]]) {
-    const y = H * (1 - r / 110), wall = [];
-    for (let k = 0; k < n; k++) {
-      const a = (k / n) * Math.PI * 2;
-      wall.push([Math.cos(a) * r, y - 1, Math.sin(a) * r, (2 * Math.PI * r) / n + 0.6, 7, 2.6, -a + Math.PI / 2]);
-    }
-    f.add(inst(unitBox(), wall, GRANITE));
+    const y = H * (1 - r / 110);
+    f.add(ellipseWall(r, r, 0, Math.PI * 2, 2.6, y - 1, y + 6, GRANITE));
     for (let k = 0; k < 8; k++) {
       const a = (k / 8) * Math.PI * 2 + 0.2;
       f.add(cyl(4, 4.6, 10, GRANITE, Math.cos(a) * r, y - 1, Math.sin(a) * r, 14));

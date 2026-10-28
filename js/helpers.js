@@ -180,7 +180,7 @@ export function archWall(w, h, d, aw, ah, pointed, m) {
 // on the curve and the direction the band runs across it there. The band spans a to b along that
 // direction (a < b) and y0 to y1. A curve built from overlapping straight boxes instead leaves
 // neighbouring faces crossing at a shallow angle, and they flicker where they meet.
-export function curvedBand(pts, a, b, y0, y1, m) {
+export function curvedBand(pts, a, b, y0, y1, m, closed = false) {
   const P = (k, d, y) => V(pts[k][0] + pts[k][2] * d, y, pts[k][1] + pts[k][3] * d);
   const pos = [];
   // Two triangles for the quad A B C D, wound so the face points along `out`.
@@ -197,7 +197,7 @@ export function curvedBand(pts, a, b, y0, y1, m) {
     quad(P(k, a, y0), P(k + 1, a, y0), P(k + 1, b, y0), P(k, b, y0), V(0, -1, 0));
   }
   const last = pts.length - 1;
-  for (const [k, j] of [[0, 1], [last, last - 1]]) {
+  for (const [k, j] of closed ? [] : [[0, 1], [last, last - 1]]) {
     const out = V(pts[k][0] - pts[j][0], 0, pts[k][1] - pts[j][1]);
     quad(P(k, a, y0), P(k, b, y0), P(k, b, y1), P(k, a, y1), out);
   }
@@ -205,6 +205,20 @@ export function curvedBand(pts, a, b, y0, y1, m) {
   geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   geo.computeVertexNormals();
   return mesh(geo, m);
+}
+
+// A wall t thick round the ellipse x = cx + A cos a, z = cz + B sin a, for a from `from` to `to`
+// (a full turn closes the ring; a negative B runs z the other way), standing from y0 to y1. Built
+// with curvedBand, so it has no seams to flicker.
+export function ellipseWall(A, B, from, to, t, y0, y1, m, cx = 0, cz = 0) {
+  const turn = Math.abs(to - from) >= Math.PI * 2 - 1e-6;
+  const n = Math.max(24, Math.ceil(Math.abs(to - from) * Math.max(A, Math.abs(B)) / 2)), pts = [];
+  for (let k = 0; k <= n; k++) {
+    const a = from + (to - from) * (turn && k === n ? 0 : k / n);
+    const nx = Math.cos(a) / A, nz = Math.sin(a) / B, l = Math.hypot(nx, nz);
+    pts.push([cx + A * Math.cos(a), cz + B * Math.sin(a), nx / l, nz / l]);
+  }
+  return curvedBand(pts, -t / 2, t / 2, y0, y1, m, turn);
 }
 
 // The soffit of a barrel vault running along z, open underneath and seen from inside.
@@ -523,7 +537,8 @@ export const unitSpire = () => new THREE.ConeGeometry(0.5, 1, 4).rotateY(Math.PI
 export function aroundRect(w, d, step, inset = 0) {
   const pts = [], hw = w / 2 - inset, hd = d / 2 - inset;
   for (let x = -hw; x <= hw + 1e-6; x += step) pts.push([x, -hd, 0], [x, hd, Math.PI]);
-  for (let z = -hd + step; z < hd - 1e-6; z += step) pts.push([-hw, z, Math.PI / 2], [hw, z, -Math.PI / 2]);
+  // The sides stop half a step short of the far corner, which the first loop has already placed.
+  for (let z = -hd + step; z < hd - step / 2; z += step) pts.push([-hw, z, Math.PI / 2], [hw, z, -Math.PI / 2]);
   return pts;
 }
 

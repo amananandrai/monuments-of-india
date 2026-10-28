@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, rng, inst, unitBox, ellipseWall } from '../helpers.js';
 
 const PINK = mat('#c8917a', 0.85);
 const PEAK = mat('#8f8578', 0.95, 0, { flatShading: true });
@@ -24,12 +24,8 @@ export function buildKargilMemorial() {
   }
   // The plaza, the curved wall of names, the flame and the giant flag
   f.add(box(90, 0.6, 70, mat('#d8cbb3', 0.85)));
-  const wall = [];
-  for (let k = 0; k < 24; k++) {
-    const a = Math.PI * 0.15 + (k / 23) * Math.PI * 0.7;
-    wall.push([Math.cos(a) * 34, 0.6, -Math.sin(a) * 26, 3.4, 6, 1.4, a - Math.PI / 2]);
-  }
-  f.add(inst(unitBox(), wall, PINK));
+  // The curved wall of names behind the flame, as one continuous wall
+  f.add(ellipseWall(34, -26, Math.PI * 0.15 - 0.057, Math.PI * 0.85 + 0.057, 1.4, 0.6, 6.6, PINK));
   f.add(box(4, 3, 4, PINK, 0, 0.6, -6), cyl(0.6, 0.8, 2, mat('#ff8c2e', 0.4, 0, { emissive: '#ff6a00', emissiveIntensity: 2.4 }), 0, 3.6, -6, 10));
   f.add(at(bigFlag(40), -30, 0.6, 20));
   for (let k = 0; k < 6; k++) f.add(box(2, 1.6, 1, mat('#4d5a3a', 0.8), -20 + k * 8, 0.6, 26));

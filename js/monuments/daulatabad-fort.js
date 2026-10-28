@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, hemi, finial, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, hemi, finial, inst, unitBox, ellipseWall } from '../helpers.js';
 
 const STONE = mat('#8e8172', 0.9);
 const HILL = mat('#7d7258', 0.95, 0, { flatShading: true });
@@ -29,21 +29,11 @@ export function buildDaulatabad() {
   g.add(mesh(new THREE.ConeGeometry(60, 70, 16).translate(0, 24 + 35, 0), HILL));
   // Walls stepping up, and the citadel at the summit
   for (const [r, y] of [[60, 24], [38, 24 + 70 * (22 / 60)], [18, 24 + 70 * (42 / 60)]]) {
-    const wall = [], n = Math.round(r * 0.8);
-    for (let k = 0; k < n; k++) {
-      const a = (k / n) * Math.PI * 2;
-      wall.push([Math.cos(a) * r, y, Math.sin(a) * r, (2 * Math.PI * r) / n + 0.4, 4, 1.8, -a + Math.PI / 2]);
-    }
-    f.add(inst(unitBox(), wall, STONE));
+    f.add(ellipseWall(r, r, 0, Math.PI * 2, 1.8, y, y + 4, STONE));
   }
   f.add(box(10, 6, 8, STONE, 0, 90, 0), at(hemi(3, STONE, 16), 0, 96, 0));
   // Outer walls on the plain, with the Chand Minar inside them
-  const outer = [];
-  for (let k = 0; k < 70; k++) {
-    const a = (k / 70) * Math.PI * 2;
-    outer.push([Math.cos(a) * 130, 0, Math.sin(a) * 130, 12.2, 7, 2.6, -a + Math.PI / 2]);
-  }
-  g.add(inst(unitBox(), outer, STONE));
+  g.add(ellipseWall(130, 130, 0, Math.PI * 2, 2.6, 0, 7, STONE));
   f.add(at(chandMinar(), 40, 0, 96));
   return { group: g, focus: f, view: [0.5, 0.3, 1.2] };
 }

@@ -3,10 +3,11 @@ import { attachSurface } from './surface.js';
 
 // Many models stack boxes whose faces land in exactly the same plane (a marble band flush with
 // the top of a wall, two water channels crossing, the slices of a temple spire). Those faces
-// z-fight and flicker as the camera moves. This pass finds boxes and cylinders with coincident,
-// overlapping faces and gives each one in a clash a "layer" different from every piece it clashes
-// with (larger pieces stay at layer 0). Layered pieces get a material with a depth (polygon)
-// offset, so one face consistently wins. The geometry itself is not changed.
+// z-fight and flicker as the camera moves. This pass finds boxes, cylinders and extruded shapes
+// (star-shaped platforms, arched panels) with coincident, overlapping faces and gives each one in
+// a clash a "layer" different from every piece it clashes with (larger pieces stay at layer 0).
+// Layered pieces get a material with a depth (polygon) offset, so one face consistently wins. The
+// geometry itself is not changed.
 const AXES = ['x', 'y', 'z'];
 const tmpQ = new THREE.Quaternion();
 
@@ -20,16 +21,35 @@ function axisMap(o) {
   });
 }
 
+// The local axes on which an extruded shape has a flat cap: some of its vertices lie on the bounding
+// box's face there with their normals pointing straight out of it.
+function capAxes(geo) {
+  if (!geo.boundingBox) geo.computeBoundingBox();
+  const p = geo.attributes.position, n = geo.attributes.normal, b = geo.boundingBox, axes = [];
+  for (let k = 0; k < 3; k++) {
+    const ax = AXES[k];
+    let caps = 0;
+    for (let i = 0; i < p.count && caps < 3; i++) {
+      const v = p.getComponent(i, k), nk = n.getComponent(i, k);
+      if ((Math.abs(v - b.min[ax]) < 1e-4 && nk < -0.99) || (Math.abs(v - b.max[ax]) < 1e-4 && nk > 0.99)) caps++;
+    }
+    if (caps >= 3) axes.push(k);
+  }
+  return axes;
+}
+
 function collect(root) {
   const items = [];
   root.traverse((o) => {
     if (!o.isMesh || o.isInstancedMesh || !o.visible || !o.material.isMeshStandardMaterial) return;
     const type = o.geometry.type;
-    if (type !== 'BoxGeometry' && type !== 'CylinderGeometry') return;
+    if (type !== 'BoxGeometry' && type !== 'CylinderGeometry' && type !== 'ExtrudeGeometry') return;
     const map = axisMap(o);
-    // Boxes can be tested on all three axes; cylinders only on their flat top and bottom.
+    // Boxes can be tested on all three axes, extrusions on the axes where they have flat caps, and
+    // cylinders only on their flat top and bottom.
     const faces = [false, false, false];
     if (type === 'BoxGeometry') map.forEach((k) => { if (k !== null) faces[k] = true; });
+    else if (type === 'ExtrudeGeometry') capAxes(o.geometry).forEach((k) => { if (map[k] !== null) faces[map[k]] = true; });
     else if (map[1] === 1) faces[1] = true;
     if (!faces.some(Boolean)) return;
     const box = new THREE.Box3().setFromObject(o), size = box.getSize(new THREE.Vector3());
