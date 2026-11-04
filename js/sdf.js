@@ -62,7 +62,9 @@ export function cone(a, b, r1, r2 = r1) {
 }
 // A part that only needs working out near itself: further than `margin` outside the sphere (c, r)
 // that holds it, the distance to that sphere stands in for it. That is never more than the true
-// distance, so meshing stays safe, and points far from small parts skip them.
+// distance, so meshing stays safe, and points far from small parts skip them. The switch is a
+// small jump in the field, so margin must be wider than the fillet the part is blended with, or
+// the jump shows as a crease where it crosses the surface.
 export function bounded(f, c, r, margin = 0.4) {
   return (x, y, z) => { const d = len(x - c[0], y - c[1], z - c[2]) - r; return d > margin ? d : f(x, y, z); };
 }
@@ -72,7 +74,9 @@ export function chain(pts, k = 0.05) {
   for (let i = 0; i + 1 < pts.length; i++) segs.push(cone(pts[i], pts[i + 1], pts[i][3], pts[i + 1][3]));
   for (const p of pts) for (let a = 0; a < 3; a++) { lo[a] = Math.min(lo[a], p[a] - p[3]); hi[a] = Math.max(hi[a], p[a] + p[3]); }
   const c = lo.map((v, a) => (v + hi[a]) / 2), r = len(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) / 2;
-  return bounded((x, y, z) => { let d = Infinity; for (const s of segs) d = smin(d, s(x, y, z), k); return d; }, c, r);
+  // Blends scale with a part's thickness, so the margin does too.
+  const margin = Math.max(0.4, 2.5 * Math.max(...pts.map((p) => p[3])));
+  return bounded((x, y, z) => { let d = Infinity; for (const s of segs) d = smin(d, s(x, y, z), k); return d; }, c, r, margin);
 }
 // A box with half-sizes b = [bx, by, bz], its edges rounded by r.
 export function roundBox(c, b, r = 0) {
@@ -83,6 +87,32 @@ export function roundBox(c, b, r = 0) {
 }
 // A ring of radius R and thickness r round the y axis through c (turn it for other axes).
 export const torus = (c, R, r) => (x, y, z) => len(Math.hypot(x - c[0], z - c[2]) - R, y - c[1], 0) - r;
+
+// A solid of revolution round the vertical axis through (c[0], c[1]) in x and z: its radius runs
+// along a smooth curve through the profile [[r, y], ...] (y rising), it is squashed to sz of that
+// front to back, and the cloth of a robe or dhoti can hang in vertical folds: `folds` of them,
+// standing out by amp of the radius at y = from and fading to nothing at y = to (as drape() in
+// helpers.js does to a lathe mesh).
+export function lathe(pts, { c = [0, 0], sz = 1, folds = 0, amp = 0, from = 0, to = 0 } = {}) {
+  const curve = new THREE.SplineCurve(pts.map(([r, y]) => new THREE.Vector2(r, y))), table = curve.getPoints(160);
+  const y0 = table[0].y, y1 = table[table.length - 1].y;
+  const rAt = (y) => {
+    let lo = 0, hi = table.length - 1;
+    while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (table[mid].y < y) lo = mid; else hi = mid; }
+    const a = table[lo], b = table[hi], t = b.y > a.y ? (y - a.y) / (b.y - a.y) : 0;
+    return Math.max(0, a.x + (b.x - a.x) * Math.min(1, Math.max(0, t)));
+  };
+  return (x, y, z) => {
+    const px = x - c[0], pz = (z - c[1]) / sz;
+    let r = rAt(Math.min(y1, Math.max(y0, y)));
+    if (folds) {
+      const w = Math.min(1, Math.max(0, (y - to) / (from - to))), a = Math.atan2(px, pz);
+      r *= 1 + amp * w * Math.cos(folds * a + Math.sin(a * 3) * 0.6);
+    }
+    const dr = (Math.hypot(px, pz) - r) * Math.min(1, sz), dy = Math.max(y0 - y, y - y1);
+    return dr > 0 && dy > 0 ? Math.hypot(dr, dy) : Math.max(dr, dy);
+  };
+}
 
 /* ---------- meshing ---------- */
 
@@ -97,12 +127,13 @@ export function surfaceNets(f, lo, hi, h) {
   const B = 4, bx = Math.ceil((nx - 1) / B) + 1, by = Math.ceil((ny - 1) / B) + 1, bz = Math.ceil((nz - 1) / B) + 1;
   const C = new Float32Array(bx * by * bz), CI = (i, j, k) => i + bx * (j + by * k);
   for (let k = 0; k < bz; k++) for (let j = 0; j < by; j++) for (let i = 0; i < bx; i++) C[CI(i, j, k)] = f(lo[0] + i * B * h, lo[1] + j * B * h, lo[2] + k * B * h);
-  // A block whose eight corners all lie further from the surface than its diagonal (with a margin,
-  // since blended fields are only roughly distances) cannot contain it.
+  // A block whose eight corners all lie on the same side, further from the surface than its
+  // diagonal (with a margin, since blended fields are only roughly distances), cannot contain it.
   const far = B * h * Math.sqrt(3) * 1.5;
   for (let K = 0; K < bz - 1; K++) for (let J = 0; J < by - 1; J++) for (let Ii = 0; Ii < bx - 1; Ii++) {
-    let near = false, s = 0;
-    for (let c = 0; c < 8; c++) { const v = C[CI(Ii + (c & 1), J + ((c >> 1) & 1), K + ((c >> 2) & 1))]; if (Math.abs(v) < far) near = true; s += v; }
+    let near = false, s = 0, neg = 0;
+    for (let c = 0; c < 8; c++) { const v = C[CI(Ii + (c & 1), J + ((c >> 1) & 1), K + ((c >> 2) & 1))]; if (Math.abs(v) < far) near = true; s += v; if (v < 0) neg++; }
+    if (neg > 0 && neg < 8) near = true;
     const i0 = Ii * B, j0 = J * B, k0 = K * B, i1 = Math.min(nx - 1, i0 + B), j1 = Math.min(ny - 1, j0 + B), k1 = Math.min(nz - 1, k0 + B);
     for (let k = k0; k <= k1; k++) for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
       const id = I(i, j, k);

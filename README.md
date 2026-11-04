@@ -214,7 +214,13 @@ real-world proportions: there are no model files to download.
 - **Water:** seas, rivers, lakes and pools have their own colours and moving ripples, and on desktop
   they reflect the monument.
 - **Nature and figures:** rocks, hills, mountains and trees are sculpted with noise
-  (`js/naturalize.js`); the statues have sculpted faces and hands.
+  (`js/naturalize.js`). The statues and temple animals are each sculpted as one continuous skin
+  from a signed distance field and meshed in the browser (`js/sdf.js`, `js/details/animals.js`,
+  `js/details/figures.js`), so limbs grow out of bodies as in a carving. Examples are Patel in his
+  dhoti and shawl, the Nageshwar Shiva, Bahubali, Thiruvalluvar, the Nandis, elephants, Konark's
+  horses, temple lions and door guardians. Their crevices are darkened, dark stone is polished,
+  and faces and hands are sculpted. See
+  [`docs/realistic-statues-research.md`](docs/realistic-statues-research.md).
 - **Fine detail:** India Gate, Charminar, the Taj Mahal, the Gateway of India and the Old Parliament
   House carry a second layer of carving from `js/details/`: roundels and lettering, nested arches and
   half-domes, bracketed balconies, jalis, eaves, merlons, lotus-petal domes and finials. The parts are

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { surface } from '../surface.js';
-import { M, mat, mesh, box, cyl, at, V, pidaRoof, kalash, hemi, inst, unitCyl, aroundRect, ellipsoid, capsule, tube, smoothLathe, drape, sheet, face } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, V, pidaRoof, kalash, hemi, inst, unitCyl, aroundRect, ellipsoid, capsule, smoothLathe, drape, sheet, face } from '../helpers.js';
+import { thiruvalluvarBody } from '../details/figures.js';
 
 const STONE = mat('#c9a98a', 0.85);
 const SHADE = mat('#9c7e62', 0.9);
@@ -15,18 +16,12 @@ const FIGURE = surface(mat('#a7a39a', 0.8), 'none');
 function thiruvalluvar() {
   const g = new THREE.Group(), Gr = FIGURE;
   g.add(box(10, 11.6, 10, GREY), box(11, 0.8, 11, mat('#8f8b83', 0.8), 0, 11.6));
-  const robe = drape(smoothLathe([[4.4, 0], [4.6, 4], [4.0, 10], [3.7, 15], [4.0, 20], [4.5, 24], [2.6, 26], [0.1, 26.3]], Gr), 18, 0.07, 0, 18);
-  robe.position.y = 12.4;
-  robe.scale.z = 0.72;
-  g.add(robe, tube([[3.6, 36.5, 1.6], [1.2, 33, 3.2], [-2.4, 29, 3.0], [-3.8, 25, 2.0]], 0.9, Gr, 40, 10));
-  for (const s of [-1, 1]) g.add(ellipsoid(1.6, 1.5, 1.4, Gr, s * 4, 36.4, 0));
-  g.add(capsule(V(4.2, 36.2, 0), V(5.2, 31.2, 1.6), 1.05, Gr, 0.9), capsule(V(5.2, 31.2, 1.6), V(5.0, 35.6, 3.6), 0.9, Gr, 0.7));
-  g.add(ellipsoid(0.5, 1.0, 0.75, Gr, 5.0, 36.4, 3.9));
+  // The body as one carved skin: the robe in folds, its end across the chest, the arms and neck
+  g.add(thiruvalluvarBody(Gr));
+  // The fingers of the raised right hand, and the palm-leaf book in the left
   for (const dx of [-0.3, 0, 0.3]) g.add(capsule(V(5.0 + dx, 37.0, 3.9), V(5.0 + dx, 38.2, 3.95), 0.13, Gr));
   g.add(capsule(V(5.45, 36.3, 4.3), V(5.7, 37.2, 4.5), 0.15, Gr, 0.13));
-  g.add(capsule(V(-4.2, 36.2, 0), V(-4.8, 31.2, 1.4), 1.05, Gr, 0.9), capsule(V(-4.8, 31.2, 1.4), V(-3.2, 29.6, 3.6), 0.9, Gr, 0.7));
   g.add(box(3.4, 0.5, 1.0, mat('#b9a27c', 0.8), -2.6, 29.3, 3.8));
-  g.add(capsule(V(0, 37.4, 0), V(0, 38.8, 0.3), 1.25, Gr, 1.2));
   // Head, moustache, and a full beard whose lower edge stands clear of the chest
   g.add(at(face(2.3, 2.8, 2.4, Gr), 0, 40.8, 0.4));
   for (const s of [-1, 1]) {

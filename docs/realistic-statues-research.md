@@ -6,6 +6,43 @@ the elephants at Kailasa, Hampi and Gwalior, and the Konark horses. This covers 
 and the options that were weighed, among them a working prototype of the recommended technique. It
 ends with a recommendation and a plan.
 
+## Status
+
+Phases 1 to 4 of the plan (section 4) are built: every statue and temple animal on the site is now
+sculpted as one skin. Phase 5, scanned models, has not been started; it waits on your decision
+about model files.
+
+- **`js/sdf.js`** is the kit:
+  - ellipsoids, tapered capsules, chains, rounded boxes, tori, and lathes with folds for robes and
+    dhotis;
+  - smooth union and carving;
+  - surface nets that sample finely only near the surface;
+  - cavity shading baked as vertex colours, and a per-figure geometry cache;
+  - `statueMaterial()`, which gives stone the new `carved` surface (fine grain, no block joints)
+    and makes dark stone glossy, as oiled basalt is.
+- **`js/details/animals.js`** has:
+  - the Nandi, at Brihadeeswara, Ramappa and Kedarnath, where it now faces the shrine, and lining
+    the Shore Temple's wall, where it replaces boxes;
+  - the elephant, at Kailasa, Vittala and Gwalior;
+  - the Konark war horse, in harness with a foreleg raised;
+  - the seated lion at temple gates.
+- **`js/details/figures.js`** has:
+  - the door guardian (dvarapala), used by every temple doorway;
+  - the bodies of the Nageshwar Shiva, Sardar Patel, Bahubali and Thiruvalluvar. Their faces,
+    fingers, hair, beards and the things they hold stay meshes, set on the skin.
+
+**Checks:**
+
+- **Builds:** all 101 monuments build, and every sculpted mesh is watertight.
+- **Triangle budget:** no monument is over 170,000 triangles.
+- **First selection:** a monument with figures takes 0.4–0.7 s, the time to mesh them; after that
+  they are cached.
+- **The meshing tear:** a part that skips work far from itself must switch over further out than
+  the fillet it is blended with. Otherwise the switch shows as a crease across the surface, as it
+  first did round Bahubali's waist.
+
+![The finished figures in the site: Patel, the Nageshwar Shiva, Bahubali, Ramappa's Nandi, Konark's horses and the lions at Puri](images/statues-in-site.jpg)
+
 ## Summary
 
 - **The problem.** Every figure is assembled from separate spheres, capsules and lathes that pass
@@ -89,7 +126,8 @@ shaped triangles than marching cubes. The prototype also does two cheap things:
 - it moves each vertex onto the surface with one Newton step;
 - it takes each normal from the field's gradient, so the shading is smooth even on a coarse grid.
 
-**The prototype is in `docs/prototypes/sdf-statues/`:**
+**The prototype** (since moved into `js/sdf.js`, `js/details/animals.js` and
+`js/details/figures.js`):
 
 - `sdf.js` has the primitives, `smin`/`smax`, `chain()` for trunks, tails and garlands,
   `mirrorX()` for left/right pairs, and a surface-nets mesher of about 80 lines.
@@ -238,7 +276,9 @@ where good scans with a clear licence exist and the gain is largest, and you can
 | Thiruvalluvar | An SDF body under the robe, with the draped beard kept as a mesh. |
 | Lions and dvarapalas | Small SDF versions with the same parameters as today, so the gates keep working. They are small enough to share one mesh per kind. |
 
-## 4. Plan, if you go ahead
+## 4. Plan
+
+Phases 1 to 4 are done (see Status at the top).
 
 Each phase is like the doorway phases: it is self-contained, checked with renders, and committed
 on its own.
