@@ -1,9 +1,12 @@
 import * as THREE from 'three';
-import { M, V, box, cyl, lathe, group, at, kalash, bell, shikhara, pidaRoof, nagaraProfile, ribbed, inst, unitBox, unitCyl, aroundRect, hoopArch } from '../helpers.js';
+import { M, V, mesh, doubleSided, box, cyl, lathe, group, at, kalash, bell, shikhara, pidaRoof, nagaraProfile, ribbed, inst, unitBox, unitCyl, aroundRect, hoopArch } from '../helpers.js';
 import { trabeateGate, wallWithGaps } from '../details/temples.js';
 import { templeDoorway } from '../details/doorways.js';
 import { miniSpireGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/dilwara-temples.js';
+
+// The Ranga Mandapa's dome, [radius, height] from its springing.
+export const DOME = [[8.4, 0], [7.8, 1.1], [6.2, 2.3], [4, 3.3], [1.5, 3.9], [0, 4]];
 
 export function buildDilwara() {
   const Mb = M.marble, Sh = M.marbleShade, g = new THREE.Group(), f = new THREE.Group();
@@ -33,8 +36,12 @@ export function buildDilwara() {
   f.add(box(17, 1, 17, Sh, 0, 1.5, rz), inst(unitCyl(12), pc, Mb));
   for (const j of [0, 3]) for (let i = 0; i < 3; i++) f.add(hoopArch(V(-6 + i * 4, 7.3, rz - 6 + j * 4), V(-2 + i * 4, 7.3, rz - 6 + j * 4), Mb));
   for (const i of [0, 3]) for (let j = 0; j < 3; j++) f.add(hoopArch(V(-6 + i * 4, 7.3, rz - 6 + j * 4), V(-6 + i * 4, 7.3, rz - 2 + j * 4), Mb));
-  f.add(cyl(9.2, 9.2, 1.2, Mb, 0, 9, rz, 8));
-  f.add(at(ribbed(lathe([[8.4, 0], [7.8, 1.1], [6.2, 2.3], [4, 3.3], [1.5, 3.9], [0, 4]], Mb, 48), 24, 0.04), 0, 10.2, rz), at(kalash(1.6), 0, 14.2, rz));
+  // The dome stands open to the hall below: an octagonal drum ring, and a shell seen from both sides,
+  // so the carved ceiling inside it shows (js/details/dilwara-temples.js).
+  const Mbd = doubleSided(Mb);
+  f.add(mesh(new THREE.CylinderGeometry(9.2, 9.2, 1.2, 8, 1, true), Mbd, 0, 9.6, rz));
+  for (const [y, rx] of [[9, Math.PI / 2], [10.2, -Math.PI / 2]]) f.add(mesh(new THREE.RingGeometry(8.3, 9.2, 8, 1).rotateX(rx).rotateY(Math.PI / 8), Mbd, 0, y, rz));
+  f.add(at(ribbed(lathe(DOME, Mbd, 48), 24, 0.04), 0, 10.2, rz), at(kalash(1.6), 0, 14.2, rz));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.55, 1.15] };
 }
