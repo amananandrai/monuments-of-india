@@ -27,9 +27,9 @@ function architecture(f) {
     hall.add(mouldings(w, dd, [[0, 0.35, 0.2, GRANITE], [2.2, 0.35, 0.2, GRANITE]], GRANITE));
     for (const a of FACES) {
       const long = Math.abs(Math.sin(a)) < 0.5, len = long ? w : dd, dist = (long ? dd : w) / 2;
-      hall.add(onFace(at(figureFrieze(len - 0.6, 1.2, GRANITE, { pitch: 2.2, kinds: ['horse', 'standing', 'elephant', 'dancer'] }), 0, 0.6, 0), a, dist));
+      hall.add(onFace(at(figureFrieze(len - 0.6, 1.2, GRANITE, { pitch: 1.5, kinds: ['horse', 'standing', 'elephant', 'dancer'] }), 0, 0.6, 0), a, dist));
       hall.add(onFace(at(chhajja(len + 2.4, 1.6, 0.9, 0.15, GRANITE_DARK), 0, 2.6 + h + 0.4, 0), a, dist + 0.8));
-      hall.add(onFace(at(haraRow(len - 0.6, 1.3, GRANITE), 0, 4.3 + h, 0), a, dist - 0.75));
+      hall.add(onFace(at(haraRow(len - 0.6, 1.0, GRANITE), 0, 4.3 + h, 0), a, dist - 0.75));
     }
     d.add(hall);
   }

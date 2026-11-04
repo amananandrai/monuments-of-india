@@ -1,30 +1,61 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, onFace, archPanel, hemi, finial, ellipseWall } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, rng, onFace, archPanel, archWall, hemi, finial, ellipseWall, curvedBand, inst, unitBox } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
 import { addDetails } from '../details/golconda-fort.js';
 
 const GRANITE = mat('#9a917f', 0.9);
 const BOULDER = mat('#8c8270', 0.95, 0, { flatShading: true });
 
+// The hill's outline wanders: its foot lies at hillRadius(a) from the summit in direction a, and
+// the slope rises evenly to the summit at H. ringPoint(q, a) is the point a fraction q of the way
+// out from the summit to the foot, on the slope, with the walls' contours at RINGS.
+const H = 60;
+export const RINGS = [0.9, 0.58, 0.27];
+export function hillRadius(a) { return 110 * (1 + 0.16 * Math.sin(3 * a + 1) + 0.08 * Math.sin(5 * a + 2)); }
+export function ringPoint(q, a) { const r = q * hillRadius(a) + 2 * Math.sin(7 * a) * q; return [Math.cos(a) * r, H * (1 - q), Math.sin(a) * r]; }
+export function hillY(x, z) { const q = Math.hypot(x, z) / hillRadius(Math.atan2(z, x)); return q < 1 ? H * (1 - q) : 0; }
+
 export function buildGolconda() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(97);
   g.add(f);
   g.add(box(500, 0.2, 500, mat('#a69b7a', 0.95)));
-  // The granite hill, strewn with boulders
-  const H = 60;
-  g.add(mesh(new THREE.ConeGeometry(110, H, 12).translate(0, H / 2, 0), BOULDER));
+  // The granite hill, irregular in plan and strewn with boulders
+  const hill = new THREE.ConeGeometry(110, H, 72, 14).translate(0, H / 2, 0), hp = hill.attributes.position;
+  for (let k = 0; k < hp.count; k++) { const x = hp.getX(k), z = hp.getZ(k), s = hillRadius(Math.atan2(z, x)) / 110; hp.setX(k, x * s); hp.setZ(k, z * s); }
+  hill.computeVertexNormals();
+  g.add(mesh(hill, BOULDER));
   for (let i = 0; i < 30; i++) {
-    const a = R() * Math.PI * 2, d = 20 + R() * 80, y = H * (1 - d / 110), r = 3 + R() * 5;
-    g.add(mesh(new THREE.IcosahedronGeometry(r, 0), BOULDER, Math.cos(a) * d, y + r * 0.3, Math.sin(a) * d));
+    const a = R() * Math.PI * 2, q = 0.18 + R() * 0.72, r = 3 + R() * 5, [x, y, z] = ringPoint(q, a);
+    g.add(mesh(new THREE.IcosahedronGeometry(r, 0), BOULDER, x, y + r * 0.3, z));
   }
-  // Rings of walls climbing the hill to the Bala Hissar citadel
-  for (const [r, n] of [[100, 70], [64, 46], [30, 24]]) {
-    const y = H * (1 - r / 110);
-    f.add(ellipseWall(r, r, 0, Math.PI * 2, 2.6, y - 1, y + 6, GRANITE));
-    for (let k = 0; k < 8; k++) {
-      const a = (k / 8) * Math.PI * 2 + 0.2;
-      f.add(cyl(4, 4.6, 10, GRANITE, Math.cos(a) * r, y - 1, Math.sin(a) * r, 14));
+  // Rings of walls climbing the hill to the Bala Hissar citadel, following its contours: a solid
+  // lower wall, and above it the parapet broken into lengths of uneven height, with gaps where it
+  // has fallen.
+  const par = [];
+  for (const q of RINGS) {
+    const pts = [], n = Math.round(q * 150);
+    for (let k = 0; k <= n; k++) {
+      const a = (k / n) * Math.PI * 2, [x, , z] = ringPoint(q, a), [x1, , z1] = ringPoint(q, a + 0.01), l = Math.hypot(x1 - x, z1 - z);
+      pts.push([x, z, (z1 - z) / l, -(x1 - x) / l]);
     }
+    const y = H * (1 - q);
+    f.add(curvedBand(pts, -1.3, 1.3, y - 1.5, y + 4, GRANITE, true));
+    for (let k = 0; k < n; k++) {
+      const [x, z, nx, nz] = pts[k], [x2, z2] = pts[k + 1], hgt = 1.2 + 2.4 * (0.5 + 0.5 * Math.sin(k * 0.7 + q * 9) * Math.cos(k * 0.23));
+      if (hgt < 1.4) continue;
+      par.push([(x + x2) / 2, y + 4, (z + z2) / 2, 2.2, hgt, Math.hypot(x2 - x, z2 - z) * 0.7, Math.atan2(nx, nz)]);
+    }
+    for (let k = 0; k < 8; k++) { const [x, , z] = ringPoint(q, (k / 8) * Math.PI * 2 + 0.2); f.add(cyl(4, 4.6, 10, GRANITE, x, y - 1, z, 14)); }
+  }
+  f.add(inst(unitBox(), par, GRANITE));
+  // Roofless ruins of palaces and barracks on the slopes, their arched walls standing open.
+  for (const [q, a, w, rot] of [[0.52, 0.6, 14, 0.3], [0.5, 2.3, 12, -0.4], [0.78, 3.6, 16, 0.9], [0.8, 5.0, 12, 0.2], [0.45, 4.3, 10, 1.2], [0.82, 1.4, 13, -0.6]]) {
+    const [x, y, z] = ringPoint(q, a), ru = at(new THREE.Group(), x, y, z);
+    ru.rotation.y = rot;
+    ru.add(box(w + 2, 5, w * 0.7 + 2, GRANITE, 0, -4.5, 0));
+    ru.add(at(archWall(w, 6, 1, 3, 4.4, true, GRANITE), 0, 0.5, w * 0.35), at(archWall(w * 0.7, 4.5, 1, 2.6, 3.6, true, GRANITE), -w / 2, 0.5, 0).rotateY(Math.PI / 2));
+    ru.add(box(w * 0.5, 3, 1, GRANITE, w * 0.2, 0.5, -w * 0.35));
+    f.add(ru);
   }
   // Fateh Darwaza at the outer wall, and the Bala Hissar pavilion on the summit
   // in a stretch of the outer town wall on the plain, below the hill, between two bastions

@@ -11,14 +11,25 @@ import { lamp } from './doorways.js';
 // 1.5 apart on a square of side 36.
 function architecture(f) {
   const d = new THREE.Group(), S = M.bodh, ka = new THREE.TorusGeometry(0.62, 0.12, 5, 12, Math.PI * 1.3).rotateZ(-Math.PI * 0.15);
-  for (let r = 0; r < 7; r++) {
-    const t = 0.04 + r * 0.115, wt = 15 * (1 - 0.66 * t), y = 13 + t * 38, n = r < 3 ? 3 : r < 5 ? 2 : 1;
-    for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) for (let k = 0; k < n; k++) {
-      const lat = (k - (n - 1) / 2) * wt * 0.22, o = new THREE.Group();
-      o.add(templeNiche(0.9, 1.5, S, { figure: idol(1.25, S), crown: false }), mesh(ka, S, 0, 2.0, 0.12));
-      o.position.set(Math.sin(a) * (wt / 2) + Math.cos(a) * lat, y, Math.cos(a) * (wt / 2) - Math.sin(a) * lat);
-      o.rotation.y = a;
-      d.add(o);
+  // A niche on every storey of the tower: across the central projection of each face as many as fit,
+  // and one on each side face (the recess at 0.42 w) while it is wide enough.
+  const put = (x, y, z, a, s) => {
+    const o = new THREE.Group();
+    o.add(templeNiche(0.9, 1.5, S, { figure: idol(1.25, S), crown: false }), mesh(ka, S, 0, 2.0, 0.12));
+    o.position.set(x, y, z);
+    o.rotation.y = a;
+    o.scale.setScalar(s);
+    d.add(o);
+  };
+  for (let r = 0; r < 12; r++) {
+    const t = 0.03 + r * 0.075, wt = 15 * (1 - 0.66 * t), y = 13 + t * 38, sc = Math.min(1, wt / 11), n = Math.max(1, Math.floor((wt * 0.54) / (1.55 * sc)));
+    for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) {
+      const c = Math.cos(a), sn = Math.sin(a);
+      for (let k = 0; k < n; k++) {
+        const lat = (k - (n - 1) / 2) * ((wt * 0.54) / n);
+        put(sn * (wt / 2) + c * lat, y, c * (wt / 2) - sn * lat, a, sc);
+      }
+      if (wt * 0.12 >= 1.05 * sc) for (const sd of [-1, 1]) { const lat = sd * wt * 0.36; put(sn * wt * 0.42 + c * lat, y, c * wt * 0.42 - sn * lat, a, sc * 0.85); }
     }
   }
   // Medallions on the railing posts, outward.

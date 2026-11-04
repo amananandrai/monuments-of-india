@@ -8,6 +8,26 @@ const SAND = mat('#c9b08a', 0.9);
 const SAND_DARK = mat('#a68d68', 0.9);
 const CLIFF = mat('#8f7a5c', 0.95, 0, { flatShading: true });
 const TILES = [mat('#2f6fa8', 0.5), mat('#3c9a6a', 0.5), mat('#e3b23c', 0.5)].map((m) => surface(m, 'tiles'));
+const TILE_YELLOW = mat('#f0c64a', 0.45), TILE_GREEN = mat('#2f8a52', 0.45);
+// A flat picture about 1 m across (y from 0 to 1, facing +z), for the glazed tiles.
+function motif(kind) {
+  const sh = new THREE.Shape();
+  if (kind === 'duck') {
+    sh.moveTo(-0.45, 0.35); sh.quadraticCurveTo(-0.2, 0.05, 0.25, 0.15); sh.quadraticCurveTo(0.4, 0.25, 0.3, 0.45);
+    sh.lineTo(0.3, 0.62); sh.quadraticCurveTo(0.35, 0.8, 0.5, 0.72); sh.lineTo(0.48, 0.66); sh.quadraticCurveTo(0.4, 0.66, 0.42, 0.56);
+    sh.quadraticCurveTo(0.45, 0.4, 0.2, 0.45); sh.quadraticCurveTo(-0.1, 0.55, -0.45, 0.35);
+  } else if (kind === 'elephant') {
+    sh.moveTo(-0.45, 0.05); sh.lineTo(-0.35, 0.05); sh.lineTo(-0.33, 0.3); sh.lineTo(0.15, 0.3); sh.lineTo(0.17, 0.05); sh.lineTo(0.27, 0.05);
+    sh.lineTo(0.3, 0.4); sh.quadraticCurveTo(0.45, 0.45, 0.42, 0.2); sh.lineTo(0.48, 0.05); sh.lineTo(0.5, 0.25); sh.quadraticCurveTo(0.55, 0.65, 0.3, 0.7);
+    sh.quadraticCurveTo(-0.1, 0.85, -0.4, 0.62); sh.quadraticCurveTo(-0.52, 0.4, -0.45, 0.05);
+  } else {
+    sh.moveTo(-0.04, 0); sh.lineTo(0.04, 0); sh.lineTo(0.04, 0.5);
+    for (const [a, b, c, d] of [[0.45, 0.85, 0.3, 0.55], [0.4, 0.4, 0.08, 0.5]]) { sh.quadraticCurveTo(a, b, c, d); }
+    sh.lineTo(0.06, 0.62); sh.quadraticCurveTo(0.2, 1.0, 0.0, 0.98); sh.quadraticCurveTo(-0.2, 1.0, -0.06, 0.62);
+    sh.lineTo(-0.08, 0.5); sh.quadraticCurveTo(-0.4, 0.4, -0.3, 0.55); sh.quadraticCurveTo(-0.45, 0.85, -0.04, 0.5); sh.closePath();
+  }
+  return new THREE.ExtrudeGeometry(sh, { depth: 0.04, bevelEnabled: false, curveSegments: 5 }).translate(0, 0, 0);
+}
 
 export function buildGwaliorFort() {
   const g = new THREE.Group(), f = new THREE.Group();
@@ -35,6 +55,10 @@ export function buildGwaliorFort() {
     for (let x = -len / 2 + 2; x < len / 2 - 1; x += 2.6) tiles.push([x, y, z + 0.1, 1.8, 1.6, 0.3, row]);
   }
   [0, 1, 2].forEach((row) => p.add(inst(unitBox(), tiles.filter((t) => t[6] === row).map((t) => t.slice(0, 6)), TILES[row])));
+  // The pictures in the tiles: a row of ducks in yellow on the blue band, elephants on the green,
+  // and banana trees in green on the yellow, each set just proud of its tile.
+  const pics = [motif('duck'), motif('elephant'), motif('banana')], picM = [TILE_YELLOW, TILE_YELLOW, TILE_GREEN];
+  [0, 1, 2].forEach((row) => p.add(inst(pics[row], tiles.filter((t) => t[6] === row).map(([x, y]) => [x, y + 0.2, z + 0.26, 1.2, 1.2, 1]), picM[row])));
   // Ramparts round the rest of the plateau's edge
   // The ring of walls round the plateau, one continuous wall, open where the palace front stands
   // It stops at the Hathi Pol, the elephant gate at the east end of the palace front.

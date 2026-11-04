@@ -57,9 +57,26 @@ function ball(r, x, y, z, sx = 1, sy = 1, sz = 1, w = 6, h = 4) {
 // Figures in units of a tenth of their height, facing +z. pose: 'standing' (a deity with a tall
 // crown, arms at the sides holding attributes), 'dancer' (the tribhanga, a sway at the hips, one
 // arm raised and the other across the body), 'seated' (cross-legged, hands in the lap: a Buddha or
-// a Jina) or 'musician' (standing with a drum held before the body, as on the roof of Konark).
+// a Jina), 'musician' (standing with a drum held before the body, as on the roof of Konark) or
+// 'leader' (a modern statue: standing, arms at the sides, in a long coat and a cap); and the
+// surasundaris of Khajuraho's walls: 'mirror' (looking into a hand mirror), 'thorn' (drawing a thorn
+// from a lifted foot) and 'chauri' (an attendant with a fly-whisk over the shoulder).
 function figureParts(pose) {
   const g = new THREE.Group(), add = (...o) => o.forEach((x) => g.add(x));
+  if (pose === 'enthroned') {
+    // A sovereign seated on a throne: thighs forward, shins down, upright, sceptre and orb in hand,
+    // a small crown; the throne's high back behind.
+    for (const sx of [-0.55, 0.55]) add(seg(V(sx, 4.0, 0), V(sx, 4.0, 2.2), 0.6, 0.5), seg(V(sx, 4.0, 2.2), V(sx, 0.2, 2.3), 0.45, 0.35));
+    add(ball(1.4, 0, 3.6, 1.6, 1.1, 0.5, 1.2, 10, 6));                      // the lap and skirts
+    add(seg(V(0, 0.2, 2.0), V(0, 3.8, 2.3), 1.3, 1.1, 8));                 // the skirts falling to the floor
+    add(seg(V(0, 4.1, 0.2), V(0, 6.9, 0.2), 1.05, 0.85, 8), ball(0.95, 0, 6.6, 0.35, 1.2, 0.8, 0.8));
+    for (const s of [-1, 1]) add(ball(0.42, s * 1.05, 7.1, 0.2), seg(V(s * 1.1, 7.0, 0.2), V(s * 1.3, 5.2, 1.1), 0.3, 0.26), seg(V(s * 1.3, 5.2, 1.1), V(s * 0.9, 4.7, 2.2), 0.26, 0.22));
+    add(seg(V(0.9, 3.6, 2.3), V(0.9, 7.4, 2.4), 0.09, 0.09, 4), ball(0.32, -0.9, 4.9, 2.3));    // sceptre and orb
+    add(seg(V(0, 7.3, 0.2), V(0, 7.8, 0.2), 0.3, 0.3), ball(0.72, 0, 8.4, 0.3, 1, 1.12, 1), seg(V(0, 8.95, 0.3), V(0, 9.4, 0.3), 0.45, 0.5, 8));
+    const back = new THREE.Mesh(new THREE.BoxGeometry(2.8, 9.6, 0.5)); back.position.set(0, 4.8, -0.9); add(back);
+    const seatB = new THREE.Mesh(new THREE.BoxGeometry(2.8, 4.0, 2.6)); seatB.position.set(0, 2.0, 0.6); add(seatB);
+    return g;
+  }
   if (pose === 'seated') {
     add(ball(2.6, 0, 1.0, 0.4, 1, 0.42, 0.7, 10, 6));                    // crossed legs
     add(seg(V(0, 1.2, 0), V(0, 4.6, -0.1), 1.25, 1.0, 8));               // torso
@@ -69,11 +86,13 @@ function figureParts(pose) {
     add(ball(0.9, 0, 0.35, 0.6, 1.4, 0.35, 0.9));                         // lap
     return g;
   }
-  const sway = pose === 'dancer' ? 0.45 : 0;
-  // Legs: the weight on the left in the dancer, the right knee bent.
+  const sway = { dancer: 0.45, mirror: -0.4, thorn: 0.3, chauri: 0.25 }[pose] || 0;
+  // Legs: the weight on the left in the dancer, the right knee bent; in 'thorn' the right foot is
+  // lifted behind, to be reached for.
   add(seg(V(-0.5, 0, 0.2), V(-0.45 + sway * 0.3, 2.4, 0), 0.35, 0.5), seg(V(-0.45 + sway * 0.3, 2.4, 0), V(-0.4 + sway, 4.6, 0), 0.5, 0.75));
   if (pose === 'dancer') add(seg(V(0.9, 0.3, 0.3), V(0.85, 2.5, 0.5), 0.35, 0.5), seg(V(0.85, 2.5, 0.5), V(0.5 + sway, 4.6, 0), 0.5, 0.75));
-  else add(seg(V(0.5, 0, 0.2), V(0.45, 2.4, 0), 0.35, 0.5), seg(V(0.45, 2.4, 0), V(0.4, 4.6, 0), 0.5, 0.75));
+  else if (pose === 'thorn') add(seg(V(0.5 + sway, 4.6, 0), V(0.7, 2.9, -0.6), 0.75, 0.5), seg(V(0.7, 2.9, -0.6), V(1.0, 3.6, -2.0), 0.5, 0.33));
+  else add(seg(V(0.5, 0, 0.2), V(0.45 + sway * 0.3, 2.4, 0), 0.35, 0.5), seg(V(0.45 + sway * 0.3, 2.4, 0), V(0.4 + sway, 4.6, 0), 0.5, 0.75));
   add(seg(V(sway, 3.0, 0), V(sway, 4.9, 0), 1.25, 0.95, 8));             // the dhoti or skirt
   add(ball(1.05, sway, 4.8, 0, 1.15, 0.6, 0.85));                        // hips
   add(seg(V(sway, 4.9, 0), V(sway * 0.4, 6.4, 0), 0.75, 0.95, 8));       // waist to chest
@@ -83,6 +102,20 @@ function figureParts(pose) {
   if (pose === 'dancer') {
     add(seg(V(sh.x - 1.15, 7.0, 0), V(sh.x - 1.8, 8.6, 0.2), 0.3, 0.26), seg(V(sh.x - 1.8, 8.6, 0.2), V(sh.x - 0.9, 9.6, 0.3), 0.26, 0.22));
     add(seg(V(sh.x + 1.15, 7.0, 0), V(sh.x + 1.2, 5.6, 0.6), 0.3, 0.26), seg(V(sh.x + 1.2, 5.6, 0.6), V(sh.x - 0.5, 5.2, 0.9), 0.26, 0.22));
+  } else if (pose === 'mirror') {
+    // One hand holds a mirror up before the face, the other rests on the hip.
+    add(seg(V(sh.x - 1.15, 7.0, 0), V(sh.x - 1.3, 5.9, 0.9), 0.3, 0.26), seg(V(sh.x - 1.3, 5.9, 0.9), V(sh.x - 0.5, 8.0, 1.3), 0.26, 0.22));
+    add(seg(V(sh.x + 0.5, 8.3, 1.4), V(sh.x - 0.5, 8.0, 1.3), 0.08, 0.08, 4), ball(0.42, sh.x + 0.5, 8.6, 1.35, 1, 1.1, 0.25));
+    add(seg(V(sh.x + 1.15, 7.0, 0), V(sh.x + 1.8, 5.6, 0.1), 0.3, 0.26), seg(V(sh.x + 1.8, 5.6, 0.1), V(sh.x + 1.0, 4.8, 0.3), 0.26, 0.22));
+  } else if (pose === 'thorn') {
+    // Bending to draw a thorn from the lifted foot, the other arm raised for balance.
+    add(seg(V(sh.x + 1.15, 7.0, 0), V(sh.x + 1.2, 5.4, -0.6), 0.3, 0.26), seg(V(sh.x + 1.2, 5.4, -0.6), V(1.0, 3.8, -1.8), 0.26, 0.22));
+    add(seg(V(sh.x - 1.15, 7.0, 0), V(sh.x - 1.9, 8.5, 0.1), 0.3, 0.26), seg(V(sh.x - 1.9, 8.5, 0.1), V(sh.x - 1.3, 9.9, 0.2), 0.26, 0.22));
+  } else if (pose === 'chauri') {
+    // An attendant with a fly-whisk held up over the shoulder, the other hand at the side.
+    add(seg(V(sh.x + 1.15, 7.0, 0), V(sh.x + 1.5, 5.8, 0.6), 0.3, 0.26), seg(V(sh.x + 1.5, 5.8, 0.6), V(sh.x + 1.2, 7.4, 0.9), 0.26, 0.22));
+    add(seg(V(sh.x + 1.2, 7.3, 0.9), V(sh.x + 1.0, 9.6, 0.5), 0.07, 0.07, 4), seg(V(sh.x + 1.0, 9.6, 0.5), V(sh.x + 0.4, 10.8, 0.2), 0.3, 0.08, 5));
+    add(seg(V(sh.x - 1.15, 7.0, 0), V(sh.x - 1.45, 5.3, 0.2), 0.32, 0.27), seg(V(sh.x - 1.45, 5.3, 0.2), V(sh.x - 1.5, 3.9, 0.5), 0.27, 0.22));
   } else if (pose === 'musician') {
     for (const s of [-1, 1]) add(seg(V(sh.x + s * 1.15, 7.0, 0), V(s * 1.3, 5.6, 0.7), 0.3, 0.26), seg(V(s * 1.3, 5.6, 0.7), V(s * 0.9, 5.0, 1.4), 0.26, 0.22));
     const drum = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.75, 2.4, 10));
@@ -91,10 +124,11 @@ function figureParts(pose) {
     add(drum);
   } else {
     for (const s of [-1, 1]) add(seg(V(sh.x + s * 1.15, 7.0, 0), V(s * 1.45, 5.3, 0.2), 0.32, 0.27), seg(V(s * 1.45, 5.3, 0.2), V(s * 1.55, 3.8, 0.6), 0.27, 0.22));
-    add(seg(V(1.55, 3.4, 0.6), V(1.6, 6.2, 0.7), 0.1, 0.1, 5), ball(0.35, 1.6, 6.4, 0.7));   // a mace or lotus
+    if (pose !== 'leader') add(seg(V(1.55, 3.4, 0.6), V(1.6, 6.2, 0.7), 0.1, 0.1, 5), ball(0.35, 1.6, 6.4, 0.7));   // a mace or lotus
   }
   add(seg(V(sh.x, 7.3, 0), V(sh.x, 7.9, 0), 0.32, 0.32));                // neck
   add(ball(0.75, sh.x, 8.5, 0.1, 1, 1.12, 1));                           // head
+  if (pose === 'leader') { add(seg(V(sh.x, 8.95, 0), V(sh.x, 9.5, 0), 0.74, 0.7, 10)); return g; } // a cap
   add(seg(V(sh.x, 9.0, 0), V(sh.x, 10.0, 0), 0.72, 0.28, 8));            // crown or hair knot
   for (const s of [-1, 1]) add(ball(0.18, sh.x + s * 0.72, 8.2, 0.1, 1, 2, 1, 6, 4)); // ear ornaments
   return g;
@@ -119,7 +153,7 @@ export function figureGeo(pose = 'standing') {
 // A single figure about h tall as a mesh facing +z on y = 0 (its width and depth follow h).
 export function figure(h, m, pose = 'standing') {
   const o = mesh(figureGeo(pose), m);
-  o.scale.set(h * (pose === 'seated' ? 0.52 : 0.36), h, h * 0.24);
+  o.scale.set(h * (pose === 'seated' ? 0.52 : pose === 'enthroned' ? 0.4 : 0.36), h, h * (pose === 'enthroned' ? 0.4 : 0.24));
   return o;
 }
 
@@ -245,11 +279,46 @@ export function haraRow(len, s, m) {
   return g;
 }
 
+/* ---------- chariot wheels ---------- */
+
+// A carved stone chariot wheel, as at Konark (where the 24 wheels are sundials) and Hampi: a rim with a beaded tyre band, eight broad spokes each
+// carrying a round medallion of carving at its middle, eight thin spokes between them with a bead
+// each, and a hub of petals round a projecting axle cap. One geometry of radius r facing +z, its
+// back at z = 0.
+export function carvedWheelGeo(r) {
+  const p = [], add = (geo, x = 0, y = 0, z = 0, rz = 0) => { geo = geo.index ? geo.toNonIndexed() : geo; geo.deleteAttribute('uv'); p.push(geo.rotateZ(rz).translate(x, y, z)); };
+  const d = r * 0.3;
+  add(new THREE.CylinderGeometry(r, r, d, 48, 1, true).rotateX(Math.PI / 2), 0, 0, d / 2);
+  add(new THREE.TorusGeometry(r * 0.95, r * 0.07, 6, 48), 0, 0, d);
+  add(new THREE.TorusGeometry(r * 0.8, r * 0.05, 6, 48), 0, 0, d * 0.9);
+  for (let k = 0; k < 32; k++) { const a = (k / 32) * Math.PI * 2; add(new THREE.SphereGeometry(r * 0.035, 6, 4), Math.cos(a) * r * 0.875, Math.sin(a) * r * 0.875, d * 0.95); }
+  for (let k = 0; k < 16; k++) {
+    const a = (k / 16) * Math.PI * 2, c = Math.cos(a), sn = Math.sin(a), mid = r * 0.52;
+    if (k % 2 === 0) {
+      add(new THREE.BoxGeometry(r * 0.15, r * 0.6, d * 0.7), c * mid, sn * mid, d * 0.5, a - Math.PI / 2);
+      add(new THREE.CylinderGeometry(r * 0.14, r * 0.14, d * 0.3, 16).rotateX(Math.PI / 2), c * mid, sn * mid, d * 0.95);
+      add(new THREE.TorusGeometry(r * 0.14, r * 0.025, 4, 16), c * mid, sn * mid, d * 1.1);
+      add(new THREE.SphereGeometry(r * 0.06, 8, 5), c * mid, sn * mid, d * 1.1);
+    } else {
+      add(new THREE.BoxGeometry(r * 0.05, r * 0.6, d * 0.45), c * mid, sn * mid, d * 0.5, a - Math.PI / 2);
+      add(new THREE.SphereGeometry(r * 0.05, 8, 5), c * mid, sn * mid, d * 0.75);
+    }
+  }
+  add(new THREE.CylinderGeometry(r * 0.22, r * 0.24, d * 1.2, 20).rotateX(Math.PI / 2), 0, 0, d * 0.6);
+  for (let k = 0; k < 10; k++) { const a = (k / 10) * Math.PI * 2, q = new THREE.SphereGeometry(r * 0.07, 6, 4).scale(1, 0.55, 0.5); add(q, Math.cos(a) * r * 0.16, Math.sin(a) * r * 0.16, d * 1.2, a - Math.PI / 2); }
+  add(new THREE.CylinderGeometry(r * 0.08, r * 0.1, d * 0.8, 12).rotateX(Math.PI / 2), 0, 0, d * 1.5);
+  const g = mergeGeometries(p);
+  g.computeVertexNormals();
+  return g;
+}
+
 /* ---------- Vijayanagara pillars ---------- */
 
 // A yali pillar h tall, facing +z: a square granite shaft carved with a rearing yali (a beast with a
 // lion's body and an elephant's trunk) standing on a carved block, and a rider on its back; banded with carved blocks and capped by a flower-bud bracket (pushpa-potika) each way.
-export function yaliPillar(h, m) {
+// With `rich`, the beast stands on a small elephant rather than a block and its rider is a full
+// carved figure.
+export function yaliPillar(h, m, { rich = false } = {}) {
   const g = new THREE.Group(), w = h * 0.12;
   g.add(box(w * 1.5, h * 0.08, w * 1.5, m), box(w, h * 0.86, w, m, 0, h * 0.08));
   for (const t of [0.3, 0.62]) g.add(box(w * 1.25, h * 0.06, w * 1.25, frieze(m), 0, h * t));
@@ -257,7 +326,11 @@ export function yaliPillar(h, m) {
   g.add(placeAll(bracketGeo(h * 0.08, w * 1.1, w * 0.7), [0, Math.PI / 2, Math.PI, -Math.PI / 2].map((a) => [Math.sin(a) * w * 0.5, h, Math.cos(a) * w * 0.5, a]), m));
   // The beast, against the front face of the shaft.
   const b = new THREE.Group(), z0 = w * 0.5, u = h / 10;
-  b.add(box(w * 1.1, u * 1.3, u * 1.1, frieze(m), 0, h * 0.08, z0 + u * 0.5));
+  if (rich) {
+    const e = mesh(elephantGeo(), m, 0, h * 0.08, z0 + u * 0.75);
+    e.scale.set(u * 1.0, u * 1.3, u * 1.5);
+    b.add(e);
+  } else b.add(box(w * 1.1, u * 1.3, u * 1.1, frieze(m), 0, h * 0.08, z0 + u * 0.5));
   const body = mesh(new THREE.SphereGeometry(1, 10, 8), m, 0, h * 0.45, z0 + u * 0.55);
   body.scale.set(u * 0.75, u * 1.7, u * 0.55);
   body.rotation.x = 0.25;
@@ -274,7 +347,7 @@ export function yaliPillar(h, m) {
   snout.rotation.x = 1.2;
   b.add(head, snout);
   for (const s of [-1, 1]) b.add(mesh(new THREE.ConeGeometry(u * 0.18, u * 0.6, 5), m, s * u * 0.35, h * 0.74, z0 + u * 0.8));
-  const rider = mesh(figureGeo('stucco'), m, 0, h * 0.72, z0 + u * 0.1);
+  const rider = mesh(figureGeo(rich ? 'standing' : 'stucco'), m, 0, h * 0.72, z0 + u * 0.1);
   rider.scale.set(u * 0.8, u * 2.2, u * 0.5);
   b.add(rider);
   g.add(b);

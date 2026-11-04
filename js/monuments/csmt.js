@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, lathe, at, onFace, ribbed, hipRoof } from '../helpers.js';
+import { M, mat, mesh, box, cyl, lathe, at, onFace, ribbed, hipRoof, wheel } from '../helpers.js';
+import { figure } from '../details/sculpture.js';
 import { mergeByMaterial } from '../details/components.js';
 import { gothicDoor, gothicWindow, oculus } from '../details/colonial.js';
 import { addDetails } from '../details/csmt.js';
@@ -51,8 +52,10 @@ export function buildCsmt() {
   f.add(at(ribbed(lathe([[9, 0], [8.8, 3.4], [7.3, 7.6], [4.2, 10.8], [0, 12.6]], M.cream, 8), 8, 0.05), 0, dt + 8.6, 0));
   const lt = dt + 8.6 + 12;
   f.add(cyl(1.4, 1.8, 3, M.cream, 0, lt, 0, 8), cyl(0.5, 0.8, 1.2, M.bronze, 0, lt + 3, 0, 8));
-  f.add(cyl(0.45, 0.7, 3.4, M.bronze, 0, lt + 4.2, 0, 10), at(mesh(new THREE.SphereGeometry(0.5, 12, 10), M.bronze), 0, lt + 8, 0));
-  f.add(cyl(0.12, 0.12, 3.6, M.bronze, 0.7, lt + 6.4, 0, 6));
+  // The statue of Progress crowning the dome: a woman holding a flaming torch up over her shoulder,
+  // a spoked wheel at her side.
+  f.add(at(figure(4.4, M.bronze, 'chauri'), 0, lt + 4.2, 0), at(mesh(new THREE.ConeGeometry(0.22, 0.7, 8), M.gild), 0.17, lt + 8.75, 0.05));
+  f.add(at(wheel(0.55, M.bronze), -0.9, lt + 5.0, 0.15));
   // Side ranges and the two forward wings that frame the forecourt, each ending in a gable and turrets
   for (const s of [-1, 1]) {
     f.add(at(range(30, 16, 16, 2), s * 33, 1, -5));

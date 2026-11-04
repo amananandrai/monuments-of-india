@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { M, at, onFace } from '../helpers.js';
+import { M, at, onFace, mesh, box } from '../helpers.js';
 import { mouldings, frieze, templeNiche, idol, mergeByMaterial } from './components.js';
-import { lion, elephant } from './animals.js';
+import { lion, elephant, horse } from './animals.js';
 import { trees, shrubs, asiBoard, scatter, along } from './realism.js';
 
 // Konark, finer detail. From photographs and descriptions: the chariot's plinth is wrapped in
@@ -20,6 +20,7 @@ function architecture(f) {
   d.add(j);
   mergeByMaterial(d);
   f.add(d);
+  horses(f, zc + L / 2);
   const nz = zc + L / 2 + 26;
   for (const s of [-1, 1]) {
     const e = elephant(Kd, 0.8), l = lion(2.6, K);
@@ -27,6 +28,25 @@ function architecture(f) {
     l.position.set(s * 6, 4.6 + 2.6, nz + 13.8);
     f.add(e, l);
   }
+}
+
+// The seven horses that draw the chariot, four to the south of the stairs and three to the north,
+// each on its own pedestal with a breast strap.
+function horses(f, zf) {
+  const K = M.khond, Kd = M.khondDark, g = new THREE.Group();
+  [-22, -18.5, -15, -11.5, 9.5, 13, 16.5].forEach((x, k) => {
+    const hz = zf + 7 + (k % 2) * 1.2, ry = Math.sign(x) * 0.12;
+    const h = horse(Kd);
+    h.scale.setScalar(1.15);
+    h.position.set(x, 1.4, hz);
+    h.rotation.y = ry;
+    g.add(box(3, 1.4, 6.6, K, x, 0, hz), box(3.3, 0.25, 6.9, Kd, x, 1.15, hz));
+    const strap = mesh(new THREE.TorusGeometry(0.75, 0.08, 6, 16), K, x + Math.sin(ry) * 1.9, 4.1, hz + Math.cos(ry) * 1.9);
+    strap.rotation.y = ry;
+    strap.scale.set(0.95, 1.1, 1);
+    g.add(h, strap);
+  });
+  f.add(g);
 }
 
 // The Sun Temple at Konark: the casuarina and palm groves and kept lawns of the temple park, and

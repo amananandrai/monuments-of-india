@@ -25,7 +25,7 @@ export function charminarMinaret(m, out) {
   const t = new THREE.Group();
   const fluted = (r0, r1, y0, y1, flutes) => ribbed(cyl(r1, r0, y1 - y0, m, 0, y0, 0, 64), flutes, 0.045);
   // Shaft sections: [bottom radius, top radius, from, to]; a balcony at the top of each but the last.
-  const secs = [[2.7, 2.45, 0, 21], [2.45, 2.38, 21, 31.5], [2.28, 2.15, 31.5, 38.3], [2.08, 1.96, 38.3, 45.45]];
+  const secs = [[2.7, 2.45, 0, 21], [2.45, 2.2, 21, 31.5], [1.8, 1.68, 31.5, 38.3], [1.62, 1.5, 38.3, 45.45]];
   secs.forEach(([r0, r1, y0, y1], i) => t.add(fluted(r0, r1, y0, y1, i === 0 ? 16 : 12)));
   // The outer face of the flutes at height y (the flutes stand up to 4.5% proud of the shaft).
   const outerAt = (y) => {
@@ -40,8 +40,8 @@ export function charminarMinaret(m, out) {
     t.add(at(railingRing(R - 0.12, 1.05, STUCCO), 0, y + 0.22, 0));
   };
   balcony(21, 2.48, 3.75);
-  balcony(31.5, 2.4, 3.6);
-  balcony(38.3, 2.17, 3.25);
+  balcony(31.5, 2.22, 3.3);
+  balcony(38.3, 1.7, 2.7);
   // Arched windows round each storey, each in a moulded frame; on the lower shafts only on the
   // side facing away from the building.
   const windows = (y, aw, ah, angles) => {
@@ -55,17 +55,17 @@ export function charminarMinaret(m, out) {
   const all = [0, 1, 2, 3, 4, 5, 6, 7].map((k) => out + (k * Math.PI) / 4);
   for (const y of [3.5, 9, 14.5]) windows(y, 0.85, 2.6, outside);
   windows(24.5, 0.8, 2.7, outside);
-  windows(33.4, 0.8, 2.6, all);
-  windows(40.4, 0.72, 2.4, all);
+  windows(33.4, 0.7, 2.6, all);
+  windows(40.4, 0.62, 2.4, all);
   // Moulded rings between the windows.
   for (const y of [7.6, 13.1, 18.6, 28.6, 36.6, 43.6]) { const r = outerAt(y) + 0.06; t.add(cyl(r, r, 0.22, STUCCO, 0, y, 0, 48)); }
   // The top: an eave, a short drum, a ribbed onion dome in a cup of petals, and the spike.
-  t.add(chhajjaRing(1.96, 2.85, 45.5, 0.35, 0.12, STUCCO, 48));
-  t.add(cyl(2.0, 2.0, 0.5, m, 0, 45.4, 0, 32));
-  t.add(at(lotusDome(2.3, m, { ribs: 20, petals: 18, ribAmt: 0.03, petalM: STUCCO }), 0, 45.9, 0));
-  t.add(at(petalRing(0.35, 10, 0.5, 0.26, Math.PI - 0.6, STUCCO), 0, 45.9 + 2.3 * 1.83, 0));
+  t.add(chhajjaRing(1.5, 2.3, 45.5, 0.35, 0.12, STUCCO, 48));
+  t.add(cyl(1.55, 1.55, 0.5, m, 0, 45.4, 0, 32));
+  t.add(at(lotusDome(1.85, m, { ribs: 20, petals: 18, ribAmt: 0.03, petalM: STUCCO }), 0, 45.9, 0));
+  t.add(at(petalRing(0.3, 10, 0.45, 0.22, Math.PI - 0.6, STUCCO), 0, 45.9 + 1.85 * 1.83, 0));
   mergeByMaterial(t);
-  t.add(at(finial(4), 0, 50.0, 0));
+  t.add(at(finial(3.6), 0, 49.2, 0));
   return t;
 }
 

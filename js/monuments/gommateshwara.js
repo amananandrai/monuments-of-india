@@ -13,7 +13,7 @@ const VINE = mat('#5c7a44', 0.9);
 // Bahubali standing in kayotsarga: upright, arms straight at his sides, with creepers winding
 // up his legs and arms, curled hair and long ears, all as carved from the one block of granite.
 function bahubali() {
-  const g = new THREE.Group(), G = STATUE;
+  const g = new THREE.Group(), G = STATUE, leaves = [];
   // The body as one carved skin, from the feet to the neck
   g.add(bahubaliBody(G));
   for (const s of [-1, 1]) {
@@ -22,8 +22,24 @@ function bahubali() {
       const pts = [];
       for (let k = 0; k <= 26; k++) { const a = k * 0.62 + (s > 0 ? 0 : Math.PI); pts.push([x0 + Math.sin(a) * r, y0 + (k / 26) * (y1 - y0), Math.cos(a) * r]); }
       g.add(tube(pts, 0.12, VINE, 120, 6));
+      // Leaves along the creeper, in pairs.
+      pts.forEach(([x, y, z], k) => { if (k % 2) leaves.push([x + Math.sin(k) * 0.25, y, z + 0.2, 0.42, 0.18, 0.28, k * 1.3]); });
+    }
+    // The anthills that rose round his feet as he stood, carved beside the legs up to the knee,
+    // with snakes coming out of them.
+    const hill = new THREE.IcosahedronGeometry(1, 2), hp = hill.attributes.position;
+    for (let k = 0; k < hp.count; k++) { const y = hp.getY(k), w = 1 + 0.18 * Math.sin(hp.getX(k) * 7 + y * 5) * Math.cos(hp.getZ(k) * 6); hp.setXYZ(k, hp.getX(k) * w * (1.2 - y * 0.45), y, hp.getZ(k) * w * (1.2 - y * 0.45)); }
+    hill.computeVertexNormals();
+    const ah = mesh(hill, G, s * 3.3, 2.4, 0.3);
+    ah.scale.set(1.3, 2.6, 1.2);
+    g.add(ah);
+    for (const ph of [0, 2.4]) {
+      const sp = [];
+      for (let k = 0; k <= 12; k++) { const t = k / 12, a = ph + t * 5; sp.push([s * (3.3 + Math.cos(a) * (1.4 - t * 0.6)), 1.2 + t * 4.2, 0.3 + Math.sin(a) * (1.2 - t * 0.5)]); }
+      g.add(tube(sp, 0.13, VINE, 48, 6));
     }
   }
+  g.add(inst(new THREE.SphereGeometry(0.5, 6, 4), leaves, VINE));
   // The serene face, and the long ears
   g.add(at(face(1.32, 1.65, 1.4, G), 0, 17.4, 0.1));
   for (const s of [-1, 1]) g.add(ellipsoid(0.22, 0.95, 0.4, G, s * 1.32, 17.0, 0));

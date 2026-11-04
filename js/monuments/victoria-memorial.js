@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, lathe, at, onFace, FACES, hemi, group } from '../helpers.js';
+import { M, mesh, box, cyl, lathe, at, onFace, FACES, hemi, group, doubleSided } from '../helpers.js';
+import { figure } from '../details/sculpture.js';
 import { mergeByMaterial } from '../details/components.js';
 import { steps } from '../details/doorways.js';
 import { classicalDoor, porch } from '../details/colonial.js';
@@ -47,14 +48,17 @@ export function buildVictoriaMemorial() {
   f.add(at(lathe([[14.4, 0], [14.3, 3], [13.2, 7], [10.6, 10.8], [6.8, 13.6], [2.6, 15], [0, 15.2]], Mb, 48), 0, top + 10, 0));
   const lt = top + 10 + 14.9;
   f.add(cyl(2.4, 2.6, 3.2, Mb, 0, lt, 0, 16), at(hemi(2.4, Mb, 16), 0, lt + 3.2, 0), cyl(0.5, 0.8, 1.6, M.bronze, 0, lt + 5.4, 0, 10));
-  const angel = group(
-    cyl(0.45, 0.7, 2.8, M.bronze, 0, 0, 0, 10),
-    at(mesh(new THREE.SphereGeometry(0.42, 12, 10), M.bronze), 0, 3.2, 0),
-    box(0.15, 2.2, 1.6, M.bronze, -0.5, 1.4, -0.4).rotateZ(0.35),
-    box(0.15, 2.2, 1.6, M.bronze, 0.5, 1.4, -0.4).rotateZ(-0.35),
-    cyl(0.06, 0.2, 2, M.bronze, 0.6, 2.4, 0.5, 6).rotateX(-0.9),
-  );
-  f.add(at(angel, 0, lt + 7, 0));
+  // The Angel of Victory, a bronze figure 4.9 m high poised on a ball as a weathervane: a draped
+  // figure with a trumpet raised, and a pair of swept wings.
+  const angel = new THREE.Group();
+  angel.add(mesh(new THREE.SphereGeometry(0.55, 14, 10), M.bronze, 0, 0.3, 0), at(figure(3.6, M.bronze, 'dancer'), 0, 0.75, 0));
+  const wing = new THREE.Shape();
+  wing.moveTo(0, 0); wing.quadraticCurveTo(0.9, 0.9, 2.2, 2.6); wing.quadraticCurveTo(1.6, 1.4, 1.9, 0.7); wing.quadraticCurveTo(1.0, 0.5, 1.5, -0.3); wing.quadraticCurveTo(0.6, -0.1, 0, 0);
+  const wg = new THREE.ShapeGeometry(wing, 8);
+  for (const s of [-1, 1]) { const w = mesh(wg, doubleSided(M.bronze), s * 0.2, 2.9, -0.35); w.scale.set(s, 1, 1); w.rotation.y = s * 0.5; angel.add(w); }
+  angel.add(cyl(0.05, 0.22, 1.6, M.bronze, -0.55, 3.3, 0.4, 8).rotateX(-0.7).rotateZ(0.4));  f.add(at(angel, 0, lt + 7, 0));
+  // Queen Victoria, in bronze on her throne, on a tall pedestal in the forecourt facing the approach.
+  g.add(box(7, 1, 7, M.granite, 0, 0, 66), box(4.4, 5, 4.4, Mb, 0, 1, 66), box(5, 0.6, 5, Mb, 0, 6, 66), at(figure(4.4, M.bronze, 'enthroned'), 0, 6.6, 66));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.55, 0.3, 1.2] };
 }

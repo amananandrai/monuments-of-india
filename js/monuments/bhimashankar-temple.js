@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, bell } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, rng, lathe, doubleSided } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
 import { trees as plantTrees } from '../details/realism.js';
 import { addDetails } from '../details/bhimashankar-temple.js';
@@ -18,15 +18,19 @@ export function buildBhimashankar() {
     g.add(mesh(new THREE.CylinderGeometry(h * 0.5, h * 1.6, h, 9).translate(0, h / 2, 0), FOREST, Math.cos(a) * d, 0, Math.sin(a) * d));
   }
   const trees = [];
-  for (let i = 0; i < 80; i++) {
-    const a = R() * Math.PI * 2, d = 75 + R() * 90;
-    trees.push([Math.cos(a) * d, Math.sin(a) * d, 10 + R() * 6]);
+  // The temple lies in a hollow of the forest, the trees crowding down close round its court.
+  for (let i = 0; i < 170; i++) {
+    const a = R() * Math.PI * 2, d = 32 + Math.pow(R(), 0.8) * 130;
+    trees.push([Math.cos(a) * d, Math.sin(a) * d, 11 + R() * 7]);
   }
-  g.add(plantTrees(trees, { kind: 'mango', seed: 15 }));
+  g.add(plantTrees(trees.slice(0, 110), { kind: 'mango', seed: 15 }), plantTrees(trees.slice(110), { kind: 'neem', seed: 16 }));
   // The dark basalt temple, and the great bell hung in its own frame
   f.add(box(40, 0.4, 44, M.path), at(nagaraTemple({ w: 8, h: 13, m: BASALT, shade: SHADE, plinth: 1.5, urus: 4, halls: [[11, 6, 4]] }), 0, 0, -8));
-  f.add(cyl(0.3, 0.3, 6, M.wood, -12, 0, 8, 8), cyl(0.3, 0.3, 6, M.wood, -8, 0, 8, 8), box(5, 0.4, 0.6, M.wood, -10, 6, 8));
-  f.add(at(bell(1.3, M.bronze).rotateX(Math.PI), -10, 6, 8));
+  // The great bell (cast in 1729) in its frame of dark stone: two square piers on moulded bases, a
+  // carved beam across them and a small stepped cap, the bell hung from an iron yoke beneath.
+  for (const x of [-12.6, -7.4]) f.add(box(1.1, 0.5, 1.1, SHADE, x, 0.4, 8), box(0.8, 6, 0.8, BASALT, x, 0.9, 8), box(1.1, 0.4, 1.1, SHADE, x, 6.9, 8));
+  f.add(box(6.4, 0.7, 1.0, SHADE, -10, 7.3, 8), box(5.6, 0.5, 0.8, BASALT, -10, 8.0, 8), box(3.4, 0.4, 0.6, SHADE, -10, 8.5, 8));
+  f.add(cyl(0.08, 0.08, 1.0, M.steel, -10, 6.3, 8, 8), at(lathe([[1.3, 0], [1.22, 0.14], [0.98, 0.32], [0.8, 0.7], [0.74, 1.15], [0.6, 1.5], [0, 1.6]], doubleSided(M.bronze), 32), -10, 4.75, 8));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.36, 1.15] };
 }

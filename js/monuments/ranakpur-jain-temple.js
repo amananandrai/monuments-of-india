@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, box, group, at, onFace, FACES, shikhara, flag, nagaraProfile, inst, unitCyl, unitHemi, aroundRect } from '../helpers.js';
+import { M, box, group, at, onFace, FACES, shikhara, flag, nagaraProfile, inst, unitCyl, unitHemi, unitBox, aroundRect } from '../helpers.js';
 import { templeDoorway, templePorch } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { miniSpireGeo } from '../details/sculpture.js';
@@ -9,7 +9,19 @@ export function buildRanakpur() {
   const Mb = M.ranak, Sh = M.marbleShade, g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   g.add(box(150, 0.2, 150, M.grass));
-  f.add(box(64, 5, 66, Sh), box(60, 7, 62, Mb, 0, 5, 0), box(61, 0.6, 63, Sh, 0, 12, 0));
+  f.add(box(64, 5, 66, Sh), box(61, 0.6, 63, Sh, 0, 12, 0));
+  // The hall inside is a forest of carved pillars round the central shrine. Its west and north walls
+  // are closed; on the east and south it stands open behind the outer colonnade, so the pillars can
+  // be seen receding into the dim hall.
+  f.add(box(60, 7, 1.2, Mb, 0, 5, -30.4), box(1.2, 7, 60, Mb, -29.4, 5, -0.6), box(22, 7, 22, Mb, 0, 5, 0));
+  const forest = [], fcaps = [], fbases = [];
+  for (let x = -27; x <= 27.01; x += 3) for (let z = -28; z <= 28.01; z += 3.1) {
+    if (Math.abs(x) < 12.5 && Math.abs(z) < 12.5) continue;
+    forest.push([x, 5.4, z, 0.62, 5.6, 0.62]);
+    fbases.push([x, 5, z, 0.95, 0.4, 0.95], [x, 7.4, z, 0.78, 0.35, 0.78], [x, 9.3, z, 0.78, 0.35, 0.78]);
+    fcaps.push([x, 11, z, 1.1, 0.99, 1.1]);
+  }
+  f.add(inst(unitCyl(8), forest, Mb), inst(unitBox(), fbases, Mb), inst(unitBox(), fcaps, Sh));
   // Entrances on all four sides of the chaturmukha temple
   // each an open porch over a doorway, at the head of its flight of steps
   for (const a of FACES) {

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, at, onFace, FACES, chamferPrism, finial } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, FACES, chamferPrism, finial, onionDome, sheet } from '../helpers.js';
+import { iwan, arcadeSkin, cellRow } from './mughal.js';
 import {
   jali, frieze, niche, archSlab, archRing, rosette, bracketGeo, placeAll, aroundCircle, alongFace,
   railingRing, merlons, lotusDome, petalRing, crescentFinial, mughalChhatri, mergeByMaterial,
@@ -160,7 +161,31 @@ export function tajMinaret(out) {
 
 // The Taj Mahal's garden: the rows of cypress either side of the long water channel, its line of
 // fountains, shade trees in the four quarters, and the ASI board at the forecourt.
+// The mosque (west) and its twin the jawab (east), which face the tomb across the terrace: a red
+// sandstone hall 56 × 20 with a great iwan between two arched bays on each side, outlined in white
+// marble, octagonal towers at its corners under kiosks, and three white marble domes, the middle
+// one largest. Its front faces +z.
+function mosque() {
+  const g = new THREE.Group(), R = M.red, W = M.marble, L = 56, D = 20, H = 15, dp = 1.4;
+  g.add(box(L, H, D - dp, R, 0, 0, -dp / 2), box(L + 0.6, 0.6, D + 0.6, W, 0, H));
+  g.add(onFace(arcadeSkin(L - 16, H, cellRow(4, 9, 0, 5, 9.5, [[-6, 6]]).flatMap(([x, s0, w, h]) => [[x, s0, w, h], [x, 10.3, w * 0.6, 3.6, 'jali']]), dp, R, { trim: W, fill: 'room' }), 0, D / 2 - dp, 0));
+  g.add(onFace(at(iwan(9, 13, { m: R, trim: W, shade: M.redLight, depth: 2.4, frame: 1.4, top: 1.6, fill: 'room' }), 0, 0, 0), 0, D / 2));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(cyl(2.2, 2.4, H + 3, R, sx * (L / 2 - 1.5), 0, sz * (D / 2 - 1.5), 8), at(mughalChhatri(2, 6, R, { domeM: W }), sx * (L / 2 - 1.5), H + 3, sz * (D / 2 - 1.5)));
+  g.add(onFace(at(merlons(L - 8, 0.8, 1, 0.3, R, 0.35), 0, H + 0.6, 0), 0, D / 2 - 0.3));
+  for (const [x, r] of [[-16, 4.6], [0, 6.4], [16, 4.6]]) {
+    g.add(cyl(r * 0.92, r * 0.92, r * 0.5, W, x, H + 0.6, -1, 32), at(onionDome(r, W), x, H + 0.6 + r * 0.5, -1), at(finial(r * 0.75), x, H + 0.6 + r * 0.5 + r * 1.8, -1));
+  }
+  return mergeByMaterial(g);
+}
+
 export function addDetails(f, g) {
+  // The red sandstone terrace runs on either side of the tomb's platform to the mosque and the
+  // jawab; the Yamuna flows behind, below a sandy bank.
+  for (const s of [-1, 1]) {
+    g.add(box(108, 1.5, 118, M.red, s * 113, 0, 0));
+    g.add(at(mosque(), s * 128, 1.5, 0).rotateY(-s * Math.PI / 2));
+  }
+  g.add(sheet(1400, 60, mat('#c8b48c', 0.95), 0, 0.05, -90), sheet(1400, 300, M.lake, 0, 0.1, -270));
   g.add(fountains(along(14, [0, 64], [0, 206]).filter(([, z]) => Math.abs(z - 135) > 10), { y: 0.35, h: 1.6 }));
   for (const x of [-9, 9]) g.add(trees(along(16, [x, 62], [x, 208]).filter(([, z]) => Math.abs(z - 135) > 11), { kind: 'cypress', seed: x > 0 ? 3 : 4, h: 9 }));
   g.add(trees(scatter(16, [-40, 40, 64, 206], { seed: 5, gap: 14, avoid: [[-12, 12, 0, 220]] }), { kind: 'neem', seed: 5 }));

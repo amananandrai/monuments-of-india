@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, rng, pidaRoof, hemi, kalash, inst, unitBox, aroundRect } from '../helpers.js';
+import { M, mat, mesh, box, at, onFace, rng, pidaRoof, hemi, kalash } from '../helpers.js';
+import { figureFrieze } from '../details/sculpture.js';
 import { gopuram, wallWithGaps } from '../details/temples.js';
 import { addDetails } from '../details/mallikarjuna-temple.js';
 
@@ -17,10 +18,18 @@ export function buildMallikarjuna() {
   }
   g.add(box(220, 0.2, 220, M.path));
   // High enclosure walls carved with friezes, and a gopuram on each side
-  const W = 100, D = 120, frieze = [];
+  const W = 100, D = 120;
   for (const s of [-1, 1]) f.add(wallWithGaps('x', W, 9, 3, WALL, [[0, s > 0 ? 21 : 17]], 0, s * D / 2), wallWithGaps('z', D, 9, 3, WALL, [[0, 17]], s * W / 2, 0));
-  for (const y of [2, 5]) aroundRect(W + 3.2, D + 3.2, 1.8).forEach(([x, z, ry]) => frieze.push([x, y, z, 1.2, 1.6, 0.3, ry]));
-  f.add(inst(unitBox(), frieze, mat('#8f7c60', 0.9)));
+  // The outer face of the walls is carved in long bands of relief: processions of elephants and
+  // horses below, scenes of Shiva's devotees, dancers and musicians above, between the gopurams.
+  const carve = new THREE.Group(), WC = mat('#a8946f', 0.9);
+  for (const [a, dist, len, gw] of [[0, D / 2 + 1.5, W, 22], [Math.PI, D / 2 + 1.5, W, 18], [Math.PI / 2, W / 2 + 1.5, D, 18], [-Math.PI / 2, W / 2 + 1.5, D, 18]]) {
+    const x0 = gw / 2 + 0.8, x1 = len / 2 - 1.8, seg = x1 - x0;
+    for (const side of [-1, 1]) for (const [y, kinds] of [[1.2, ['elephant', 'horse', 'elephant', 'standing']], [4.6, ['standing', 'dancer', 'musician', 'seated']]]) {
+      carve.add(onFace(at(figureFrieze(seg, 2.2, WC, { pitch: 2.1, kinds }), 0, y, 0), a, dist, side * (x0 + seg / 2)));
+    }
+  }
+  f.add(carve);
   f.add(at(gopuram(22, 12, 34, 9, 5, CREAM), 0, 0, D / 2), at(gopuram(18, 10, 26, 7, 6, CREAM), 0, 0, -D / 2));
   for (const s of [-1, 1]) f.add(at(gopuram(18, 10, 26, 7, 7 + s, CREAM).rotateY(Math.PI / 2), s * W / 2, 0, 0));
   // The shrine of Mallikarjuna under its gilded vimana, and Bhramaramba's shrine behind

@@ -22,18 +22,24 @@ export function buildBandraWorli() {
   f.add(box(520, 2.4, W, CONCRETE, 0, deckY - 2.4, 0), box(520, 0.3, W - 2, M.asphalt, 0, deckY, 0));
   for (const s of [-1, 1]) g.add(box(540, 2.4, W, CONCRETE, s * 530, deckY - 2.4, 0), box(540, 0.3, W - 2, M.asphalt, s * 530, deckY, 0));
   const piers = [];
-  for (let x = -790; x <= 790; x += 50) if (Math.abs(x) > 40) piers.push([x, 0, 0, 4, deckY - 2.4, W * 0.6]);
+  for (let x = -790; x <= 790; x += 50) if (Math.abs(x) > 40 && Math.abs(x - 600) > 30) piers.push([x, 0, 0, 4, deckY - 2.4, W * 0.6]);
   g.add(inst(unitBox(), piers, CONCRETE));
-  // The main pylon with fans of stay cables to both sides
-  f.add(pylon(H, deckY, W));
-  for (const side of [-1, 1]) for (let k = 1; k <= 14; k++) {
-    const x = side * (k / 14) * span, top = H - 4 - k * 2.6;
-    for (const z of [-0.8, 0.8]) f.add(strut(V(0, top, z), V(x, deckY + 0.3, z * 2), 0.35, CABLE));
+  // Two cable-stayed spans: over the Bandra channel the 128 m main pylon with 250 m to either
+  // side, and over the Worli channel a second, smaller inverted-Y pylon with 150 m to either side.
+  // Each pylon carries a fan of stays to both sides in the central plane, anchored on the median.
+  for (const [cx, h, sp, n] of [[0, H, span, 14], [600, 76, 150, 10]]) {
+    const t = at(pylon(h, deckY, W), cx, 0, 0);
+    f.add(t);
+    const drop = (h - deckY) * 0.33 / n;
+    for (const side of [-1, 1]) for (let k = 1; k <= n; k++) {
+      const x = cx + side * (k / n) * sp, top = h - 4 - k * drop;
+      for (const z of [-0.8, 0.8]) f.add(strut(V(cx, top, z), V(x, deckY + 0.3, z * 2), 0.35, CABLE));
+    }
   }
   // The Mumbai skyline across the bay
   const city = [];
   for (let i = 0; i < 70; i++) city.push([-900 + i * 26 + R() * 10, 0, -700 - R() * 160, 18 + R() * 14, 30 + R() * 140, 18 + R() * 14]);
   g.add(inst(unitBox(), city, mat('#a9adb4', 0.9)));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.35, 0.25, 1.2] };
+  return { group: g, focus: f, view: [0.35, 0.22, 1.2], zoom: 0.55 };
 }

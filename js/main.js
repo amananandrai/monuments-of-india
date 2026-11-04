@@ -187,7 +187,7 @@ function getBuilt(i) {
     const r = MONUMENTS[i].build();
     r.focus = r.focus || r.group;
     // Fuller trees wherever the monument has triangles to spare.
-    upgradeTrees(r.group);
+    upgradeTrees(r.group, r.budget || 300000);
     naturalize(r.group);
     // Faces that share a plane get different depth offsets, so they don't flicker.
     separateCoplanar(r.group, 0.005);

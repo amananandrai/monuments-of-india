@@ -268,9 +268,10 @@ download.
 
   There are no people or motor vehicles, so the monument itself stays the subject. Everything is
   instanced, so a garden of fifty trees costs a few draw calls.
-- **Budget:** each monument stays under 300,000 triangles. The largest (Meenakshi, Vittala at Hampi,
-  Nageshwar, Konark) come close to that. Repeated parts are instanced, carved parts are merged by material, and a
-  monument is built only when first opened, then cached.
+- **Budget:** each monument stays under 300,000 triangles, except four of the most richly carved
+  temples (Meenakshi, Vittala at Hampi, Nageshwar, Konark), which return `budget: 500000` from their
+  builders and stay under 500,000. Repeated parts are instanced, carved parts are merged by
+  material, and a monument is built only when first opened, then cached.
 - **No flicker:** faces that share a plane get depth offsets (`js/coplanar.js`), and curved walls and
   cliffs are built as single continuous bands, so surfaces don't shimmer as the camera moves.
 - **Camera:** the home view frames the monument as built (`js/framing.js`), not the lawns, plazas
