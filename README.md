@@ -256,9 +256,11 @@ download.
   `js/details/taj-mahal.js`) that adds what stands round it, built from a shared kit
   (`js/details/realism.js`):
   - the trees and shrubs of its region: neem, banyan, mango, ashoka, coconut palms, deodars and
-    cypress avenues;
-  - flags and garlands: the tricolour, the Nishan Sahibs, saffron temple flags, Tibetan prayer flags
-    and marigold strings;
+    cypress avenues. Where a monument has triangles to spare, `upgradeTrees` replants them as
+    fuller trees: limbs with separate leaf clumps, palms with leafleted fronds, deodars in
+    drooping tiers;
+  - flags and garlands: the tricolour (a rippling cloth with the Ashoka Chakra), the Nishan Sahibs,
+    saffron temple pennants, Tibetan prayer flags and marigold strings;
   - heritage lamp posts (lit at night), fountains and the blue boards of the Archaeological Survey
     of India;
   - boats, shikaras and houseboats on the water, and stalls outside the temple gates;
@@ -266,11 +268,15 @@ download.
 
   There are no people or motor vehicles, so the monument itself stays the subject. Everything is
   instanced, so a garden of fifty trees costs a few draw calls.
-- **Budget:** each monument stays under 300,000 triangles. The largest is Nageshwar, at about
-  225,000 with its Shiva. Repeated parts are instanced, carved parts are merged by material, and a
+- **Budget:** each monument stays under 300,000 triangles. The largest (Meenakshi, Vittala at Hampi,
+  Nageshwar, Konark) come close to that. Repeated parts are instanced, carved parts are merged by material, and a
   monument is built only when first opened, then cached.
 - **No flicker:** faces that share a plane get depth offsets (`js/coplanar.js`), and curved walls and
   cliffs are built as single continuous bands, so surfaces don't shimmer as the camera moves.
+- **Camera:** the home view frames the monument as built (`js/framing.js`), not the lawns, plazas
+  and water round it, and the zoom-out stops short of the hills and forests round a monument, so
+  the camera never enters them. [`docs/audit-and-plan.md`](docs/audit-and-plan.md) records the
+  check of every monument behind these.
 - **Phones:** ambient occlusion and reflections are skipped to keep the frame rate up.
 
 ## Video
