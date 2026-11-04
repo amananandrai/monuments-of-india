@@ -14,7 +14,7 @@ export function buildGateway() {
   for (const sz of [-1, 1]) f.add(at(archWall(18, 20, t, 8.5, 16, false, m), 0, p, sz * (7 - t / 2)));
   for (const sx of [-1, 1]) f.add(at(archWall(14 - 2 * t, 19.2, t, 5.2, 11, false, m), sx * (9 - t / 2), p, 0).rotateY(Math.PI / 2));
   f.add(box(19, 2.6, 15, m, 0, b + 18));
-  f.add(box(19.8, 0.8, 15.8, M.plaster, 0, b + 20.6));
+  f.add(box(19.8, 0.78, 15.8, M.plaster, 0, b + 20.6));
   f.add(cyl(5, 5, 2, m, 0, b + 21.4, 0, 32));
   f.add(at(hemi(5, m), 0, b + 23.4, 0));
   f.add(at(finial(3.5), 0, b + 28.2, 0));

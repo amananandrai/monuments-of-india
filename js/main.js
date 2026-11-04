@@ -210,7 +210,8 @@ function computeHome(r) {
   const dist = (radius / Math.sin(Math.min(vfov, hfov) / 2)) * 1.1 * (r.zoom || 1);
   const dir = V(...(r.view || [0.9, 0.34, 1.25])).normalize();
   const target = V(center.x, center.y * 0.95, center.z);
-  return { target, pos: target.clone().addScaledVector(dir, dist), dist, radius, reach: sceneryReach(r, target, dir) };
+  // minElevation: for a monument in a pit or trench, how high the camera must stay to see in.
+  return { target, pos: target.clone().addScaledVector(dir, dist), dist, radius, reach: sceneryReach(r, target, dir), minEl: r.minElevation || 0.01 };
 }
 
 // How far the camera may pull back before it would enter the scenery round a monument (hills,
@@ -248,6 +249,7 @@ function setEnvironment(h) {
   scene.fog.far = dist * 7;
   controls.minDistance = radius * 0.35;
   controls.maxDistance = Math.max(dist * 1.15, Math.min(dist * 3, h.reach * 0.85));
+  controls.maxPolarAngle = Math.PI / 2 - h.minEl;
   sun.position.copy(target).addScaledVector(SUN_DIR, radius * 3);
   sun.target.position.copy(target);
   const sc = sun.shadow.camera;

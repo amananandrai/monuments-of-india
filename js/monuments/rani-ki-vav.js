@@ -39,5 +39,5 @@ export function buildRaniKiVav() {
   f.add(box(W, 0.6, 12, SAND_DARK, 0, 0, z1 + 6), shaft, cyl(5.4, 5.4, 0.8, M.water, 0, 0.2, z1 + 6, 32));
   addDetails(f, g);
   // Looking down the trench from the top of the steps, towards the well.
-  return { group: g, focus: f, view: [0.12, 0.53, 0.84], zoom: 0.62 };
+  return { group: g, focus: f, view: [0.12, 0.53, 0.84], zoom: 0.62, minElevation: 0.32 };
 }

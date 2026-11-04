@@ -52,7 +52,7 @@ function caveFronts(f) {
       o.add(box(1.1, 0.5, 1.1, L, c, y, 1.4), cyl(0.47, 0.47, 0.4, frieze(L), c, y + 2.3, 1.4, 8));
       o.add(cyl(0.62, 0.42, 0.45, L, c, y + 4.1, 1.4, 8), box(1.2, 0.3, 1.2, L, c, y + 4.55, 1.4));
     }
-    o.add(at(panel(9.4, 5.9, 0.35, L, null, 0.1), 0, y - 0.25, 0.71));
+    o.add(at(panel(9.4, 5.86, 0.35, L, null, 0.1), 0, y - 0.25, 0.73));
     o.add(at(doorFrame(1.6, 3, { bands: 2, bw: 0.24, depth: 0.25, d0: 0.12, m: L }), 0, y, 0.71));
     for (const s of [-1, 1]) {
       o.add(at(windowFrame(1.2, 1.4, L, { shape: 'flat', back: DARK_, frame: 0.18 }), s * 2.6, y + 1.5, 0.71));

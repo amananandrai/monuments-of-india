@@ -57,5 +57,5 @@ export function buildKailasa() {
     f.add(at(elephant(ROCK, 1.4), x, 0, 16));
   }
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.45, 0.85, 1.05] };
+  return { group: g, focus: f, view: [0.45, 0.85, 1.05], minElevation: 0.32 };
 }
