@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, onFace, FACES, onionDome, finial, minaret } from '../helpers.js';
 import { arcadeSkin, cellRow } from '../details/mughal.js';
+import { addDetails } from '../details/hazratbal-shrine.js';
 
 const HILL = mat('#5d6b4a', 0.95, 0, { flatShading: true });
 const CHINAR = mat('#c8642c', 0.9, 0, { flatShading: true });
@@ -32,5 +33,6 @@ export function buildHazratbal() {
   f.add(cyl(10, 10, 4, Mb, 0, b + 12.8, 0, 40), cyl(10.6, 10.6, 0.6, M.marbleShade, 0, b + 16.4, 0, 40));
   f.add(at(onionDome(10.5, Mb), 0, b + 16.8, 0), at(finial(5), 0, b + 16.8 + 18.7, 0));
   f.add(at(minaret(34, 2, Mb, { balconies: 3, cap: 'onion' }), 24, b, 12));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.3, 1.25] };
 }

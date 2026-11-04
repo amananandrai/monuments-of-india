@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mat, mesh, box, at, rng, inst, unitBox, unitCyl, unitSpire, chhatri } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
+import { addDetails } from '../details/jaisalmer-fort.js';
 
 const GOLD = mat('#d9a85a', 0.85);
 const GOLD_DARK = mat('#b8873f', 0.9);
@@ -35,5 +36,6 @@ export function buildJaisalmer() {
   for (const x of [-30, -20, -10]) f.add(at(chhatri(2.4, 6, GOLD), x, H + 20, 14));
   f.add(inst(unitSpire(), [[30, H + 14, -10, 6, 12, 6], [38, H + 12, -4, 5, 10, 5], [24, H + 12, -18, 5, 9, 5]], GOLD));
   f.add(inst(unitBox(), [[30, H, -10, 7, 14, 7], [38, H, -4, 6, 12, 6], [24, H, -18, 6, 12, 6]], GOLD));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.5, 0.3, 1.2] };
 }

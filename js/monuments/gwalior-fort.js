@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, hemi, finial, inst, unitBox, surface, ellipseWall } from '../helpers.js';
 import { elephant } from '../details/animals.js';
 import { fortGate } from '../details/forts.js';
+import { addDetails } from '../details/gwalior-fort.js';
 
 const SAND = mat('#c9b08a', 0.9);
 const SAND_DARK = mat('#a68d68', 0.9);
@@ -44,5 +45,6 @@ export function buildGwaliorFort() {
   hp.position.set(147 * Math.cos(ga) * 0.985, H, 67 * Math.sin(ga) * 0.985);
   hp.rotation.y = Math.atan2(Math.cos(ga) / 147, Math.sin(ga) / 67);
   f.add(hp);
+  addDetails(p, g);
   return { group: g, focus: p, view: [0.45, 0.2, 1.25] };
 }

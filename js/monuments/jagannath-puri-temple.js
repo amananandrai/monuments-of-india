@@ -3,6 +3,7 @@ import { M, flat, mesh, box, group, at, kalash, bell, shikhara, pidaRoof, flag, 
 import { trabeateGate } from '../details/temples.js';
 import { templeDoorway } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
+import { addDetails } from '../details/jagannath-puri-temple.js';
 
 export function buildJagannath() {
   const m = M.puri, d = M.puriShade, g = new THREE.Group(), f = new THREE.Group();
@@ -46,5 +47,6 @@ export function buildJagannath() {
     f.add(am);
     f.add(at(kalash(w1 * 0.35), 0, ry + w1 * 0.72, z));
   }
+  addDetails(f, g);
   return { group: g, focus: f, view: [1.05, 0.4, 1.05] };
 }

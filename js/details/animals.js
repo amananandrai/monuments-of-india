@@ -246,3 +246,68 @@ export function rideElephant(m, s = 1, { cloth = '#b3262e', trim = '#e3b54a', ho
   g.scale.setScalar(s);
   return g;
 }
+
+/* ---------- yak ---------- */
+
+// A Himalayan yak, about 1.6 m at the hump: a heavy body, a long shaggy skirt of hair hanging
+// almost to the ground, short legs, a bushy tail and wide curving horns.
+function yakField() {
+  const f = blend([
+    [E([0, 1.15, 0], [0.55, 0.55, 1.0]), 0],
+    [E([0, 1.5, 0.45], [0.45, 0.35, 0.5]), 0.25],
+    [E([0, 0.75, 0], [0.62, 0.45, 1.05]), 0.3],
+    [mirrorX(cone([0.3, 0.6, 0.6], [0.3, 0.03, 0.62], 0.13, 0.09)), 0.08],
+    [mirrorX(cone([0.3, 0.6, -0.6], [0.3, 0.03, -0.62], 0.13, 0.09)), 0.08],
+    [chain([[0, 1.25, 0.95, 0.28], [0, 1.0, 1.35, 0.2]], 0.1), 0.15],
+    [chain([[0, 1.1, -0.95, 0.12], [0, 0.6, -1.15, 0.16]], 0.08), 0.08],
+  ]);
+  return { f: flatBase(f), lo: [-0.8, -0.03, -1.45], hi: [0.8, 1.95, 1.65] };
+}
+const YAK = surface(mat('#2a2421', 0.95), 'none'), HORN = surface(mat('#d9cbb0', 0.6), 'none'), SADDLE = surface(mat('#b3262e', 0.8), 'none');
+export function yaks(spots, { y = 0 } = {}) {
+  const g = new THREE.Group();
+  spots.forEach(([x, z, ry = 0]) => {
+    const k = new THREE.Group();
+    k.add(mesh(sculpt('yak', yakField, { h: 0.05, reach: 0.25 }), statueMaterial(YAK)), box(0.9, 0.08, 0.9, SADDLE, 0, 1.68, 0.1));
+    for (const s of [-1, 1]) k.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(s * 0.15, 1.38, 1.2), new THREE.Vector3(s * 0.45, 1.5, 1.15), new THREE.Vector3(s * 0.5, 1.8, 1.25)]), 8, 0.045, 6, false), HORN));
+    k.position.set(x, y, z);
+    k.rotation.y = ry;
+    g.add(k);
+  });
+  return g;
+}
+
+/* ---------- camel ---------- */
+
+// A dromedary about 2.1 m at the hump: a single hump, a long curved neck, long thin legs with
+// broad pads, and a bright saddle cloth.
+function camelField() {
+  const f = blend([
+    [E([0, 1.75, 0], [0.42, 0.42, 0.95]), 0],
+    [E([0, 2.15, -0.05], [0.32, 0.35, 0.45]), 0.25],
+    [chain([[0, 1.85, 0.75, 0.22], [0, 1.6, 1.25, 0.15], [0, 2.1, 1.6, 0.12], [0, 2.45, 1.7, 0.11]], 0.08), 0.15],
+    [chain([[0, 2.5, 1.68, 0.13], [0, 2.4, 2.05, 0.08]], 0.05), 0.06],
+    [mirrorX(cone([0.2, 1.55, 0.6], [0.2, 0.9, 0.65], 0.11, 0.07)), 0.08],
+    [mirrorX(cone([0.2, 0.9, 0.65], [0.2, 0.05, 0.62], 0.06, 0.05)), 0.03],
+    [mirrorX(cone([0.2, 1.55, -0.6], [0.2, 0.9, -0.72], 0.14, 0.07)), 0.08],
+    [mirrorX(cone([0.2, 0.9, -0.72], [0.2, 0.05, -0.62], 0.06, 0.05)), 0.03],
+    [mirrorX(E([0.2, 0.05, 0.66], [0.11, 0.05, 0.14])), 0.03],
+    [mirrorX(E([0.2, 0.05, -0.6], [0.11, 0.05, 0.14])), 0.03],
+    [cone([0, 1.8, -0.92], [0, 1.2, -1.02], 0.05, 0.03), 0.04],
+  ]);
+  return { f: flatBase(f), lo: [-0.6, -0.03, -1.2], hi: [0.6, 2.75, 2.25] };
+}
+const CAMEL = surface(mat('#b88a5a', 0.85), 'none');
+// Camels at [x, z, ry], each with a saddle cloth and, on some, a rider.
+export function camels(spots, { y = 0, cloths = ['#b3262e', '#2f5d9a', '#e3b23c', '#2f7a3f'] } = {}) {
+  const g = new THREE.Group();
+  spots.forEach(([x, z, ry = 0, rider = false], i) => {
+    const c = new THREE.Group(), C = surface(mat(cloths[i % cloths.length], 0.8), 'none');
+    c.add(mesh(sculpt('camel', camelField, { h: 0.045, reach: 0.2 }), statueMaterial(CAMEL)), box(0.75, 0.08, 1.1, C, 0, 2.48, -0.05), box(0.05, 0.6, 1.0, C, 0.37, 1.95, -0.05), box(0.05, 0.6, 1.0, C, -0.37, 1.95, -0.05));
+    if (rider) c.add(cyl(0.17, 0.2, 0.62, surface(mat('#f4f1ea', 0.9), 'none'), 0, 2.56, -0.05, 8), mesh(new THREE.SphereGeometry(0.13, 8, 6), surface(mat('#8d5a3b', 0.7), 'none'), 0, 3.32, -0.05), mesh(new THREE.SphereGeometry(0.17, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), surface(mat('#e86a12', 0.8), 'none'), 0, 3.36, -0.05));
+    c.position.set(x, y, z);
+    c.rotation.y = ry;
+    g.add(c);
+  });
+  return g;
+}

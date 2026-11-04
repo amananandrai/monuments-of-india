@@ -188,9 +188,9 @@ export function people(spots, { seed = 5, y = 0, face = null, palette = CLOTHES 
     heads.push([x, gy + 1.6 * s, z, s, ry]);
     hc.push(SKINS[Math.floor(R() * SKINS.length)]);
   });
-  const head = new THREE.SphereGeometry(0.105, 10, 8).scale(0.9, 1.05, 1);
-  if (men.length) g.add(copies(sculpt('person', () => personField(false), { h: 0.07, reach: 0 }), CLOTH, men, mc));
-  if (women.length) g.add(copies(sculpt('person-sari', () => personField(true), { h: 0.07, reach: 0 }), CLOTH, women, wc));
+  const head = new THREE.SphereGeometry(0.105, 8, 6).scale(0.9, 1.05, 1);
+  if (men.length) g.add(copies(sculpt('person', () => personField(false), { h: 0.1, reach: 0 }), CLOTH, men, mc));
+  if (women.length) g.add(copies(sculpt('person-sari', () => personField(true), { h: 0.1, reach: 0 }), CLOTH, women, wc));
   if (heads.length) g.add(copies(head, SKIN, heads, hc));
   return g;
 }
@@ -334,4 +334,28 @@ export function vehicles(places, { seed = 9, paints = PAINTS, busPaints = ['#c25
   if (cars.length) g.add(copies(carGeos.car, plain('#ffffff', 0.35, 0.4), cars, cc), copies(carGeos.glass, plain('#1d2833', 0.15, 0.6), cars));
   if (buses.length) g.add(copies(carGeos.bus, plain('#ffffff', 0.5, 0.2), buses, busPaints));
   return g;
+}
+
+// Auto-rickshaws at [x, y, z, ry]: the three-wheeled taxis, green and yellow, with black hoods.
+let autoGeos = null;
+export function autos(places) {
+  if (!autoGeos) autoGeos = {
+    body: mergeGeometries([new THREE.BoxGeometry(1.3, 0.75, 2.1).translate(0, 0.6, -0.15), new THREE.BoxGeometry(0.9, 0.9, 0.5).translate(0, 0.75, 1.05)]),
+    hood: new THREE.CylinderGeometry(0.7, 0.7, 1.6, 10, 1, false, -Math.PI / 2, Math.PI).rotateX(Math.PI / 2).scale(1, 0.75, 1).translate(0, 1.0, 0),
+  };
+  const p = places.map(([x, y, z, ry]) => [x, y, z, 1, ry]);
+  return new THREE.Group().add(copies(autoGeos.body, plain('#ffffff', 0.45, 0.2), p, ['#2f7a3f', '#2f7a3f', '#e3b23c']), copies(autoGeos.hood, plain('#1d1d1d', 0.6), p));
+}
+// Kashmiri houseboats moored at [x, z, ry]: a long cedar hull, a carved cabin with windows, and a
+// pitched roof.
+let hbGeos = null;
+export function houseboats(spots, { y = 0 } = {}) {
+  if (!hbGeos) hbGeos = {
+    hull: new THREE.BoxGeometry(5, 1.2, 26).translate(0, 0.2, 0),
+    cabin: new THREE.BoxGeometry(4.6, 2.8, 20).translate(0, 2.2, -1),
+    roof: new THREE.CylinderGeometry(0.01, 3.4, 1.4, 4, 1).rotateY(Math.PI / 4).scale(1, 1, 4.4).translate(0, 4.3, -1),
+    windows: new THREE.BoxGeometry(4.65, 0.9, 17).translate(0, 2.4, -1),
+  };
+  const p = spots.map(([x, z, ry = 0]) => [x, y, z, 1, ry]);
+  return new THREE.Group().add(copies(hbGeos.hull, TIMBER, p), copies(hbGeos.cabin, plain('#8a5a36', 0.75), p), copies(hbGeos.roof, plain('#6d6a62', 0.8), p), copies(hbGeos.windows, plain('#2b2d33', 0.3, 0.3), p));
 }

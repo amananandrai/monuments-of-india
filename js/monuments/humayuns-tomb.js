@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, box, cyl, at, onFace, FACES, finial, chhatri, chamferPrism, persianDome } from '../helpers.js';
 import { iwan, arcadeSkin, cellRow } from '../details/mughal.js';
+import { addDetails } from '../details/humayuns-tomb.js';
 
 export function buildHumayun() {
   const Rd = M.red, Mb = M.marble, g = new THREE.Group(), f = new THREE.Group();
@@ -29,5 +30,6 @@ export function buildHumayun() {
   for (const x of [-14, 14]) for (const z of [-14, 14]) f.add(at(chhatri(3, 8, Rd, Mb), x, P + H, z));
   f.add(cyl(12.5, 12.5, 5, Mb, 0, P + H, 0, 48), cyl(13, 13, 0.6, Rd, 0, P + H + 4.4, 0, 48));
   f.add(at(persianDome(12, Mb), 0, P + H + 5, 0), at(finial(5), 0, P + H + 5 + 15, 0));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.9, 0.36, 1.25] };
 }
