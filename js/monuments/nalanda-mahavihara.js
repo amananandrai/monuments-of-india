@@ -5,12 +5,31 @@ import { addDetails } from '../details/nalanda-mahavihara.js';
 const BRICK = surface(mat('#a5553b', 0.95), 'brick');
 const BRICK_DARK = surface(mat('#844230', 0.95), 'brick');
 
-// A ruined monastery: a square of monks' cells round a courtyard, walls broken to uneven heights.
+// A ruined monastery: a square of monks' cells round a courtyard. Its thick outer wall and the
+// cross walls between the cells stand to ragged heights, the top crumbling unevenly along the length
+// and broken through in places; the cells' inner wall, onto the veranda, is lower still. Walls are
+// built in 1.2 m lengths whose heights follow a slow wave plus a little roughness.
 function vihara(size, R) {
-  const g = new THREE.Group(), cells = [];
-  aroundRect(size, size, 3.4).forEach(([x, z, ry]) => cells.push([x, 1.2, z, 3.6, 2 + R() * 3.5, 3.6, ry]));
-  aroundRect(size - 8, size - 8, 3.4).forEach(([x, z, ry]) => cells.push([x, 1.2, z, 3.6, 0.6 + R() * 1.6, 0.9, ry]));
-  g.add(box(size + 4, 1.2, size + 4, BRICK_DARK), inst(unitBox(), cells, BRICK), box(size - 10, 1.3, size - 10, M.grass, 0, 0, 0));
+  const g = new THREE.Group(), walls = [], ph = R() * 10;
+  const run = (x0, z0, x1, z1, t, hMax, hMin, breach) => {
+    const len = Math.hypot(x1 - x0, z1 - z0), n = Math.max(1, Math.round(len / 1.2)), ry = Math.atan2(x1 - x0, z1 - z0);
+    for (let k = 0; k < n; k++) {
+      const u = (k + 0.5) / n, x = x0 + (x1 - x0) * u, z = z0 + (z1 - z0) * u;
+      const wave = 0.5 + 0.5 * Math.sin(ph + (x + z) * 0.21) * Math.cos(ph * 0.7 + (x - z) * 0.13);
+      if (breach && wave < 0.12 && R() < 0.8) continue;
+      walls.push([x, 1.2, z, t, hMin + (hMax - hMin) * wave + R() * 0.6, len / n + 0.02, ry]);
+    }
+  };
+  const h = size / 2, i = h - 4.2;
+  for (const s of [-1, 1]) {
+    run(-h, s * h, h, s * h, 1.8, 6.2, 1.8, true);
+    run(s * h, -h + 0.9, s * h, h - 0.9, 1.8, 6.2, 1.8, true);
+    run(-i, s * i, i, s * i, 0.9, 2.6, 0.5, true);
+    run(s * i, -i + 0.45, s * i, i - 0.45, 0.9, 2.6, 0.5, true);
+  }
+  // Cross walls between the cells.
+  for (let c = -h + 3.4; c < h - 1; c += 3.4) for (const s of [-1, 1]) { run(c, s * (h - 0.9), c, s * (i + 0.45), 0.7, 4.2, 1, false); run(s * (h - 0.9), c, s * (i + 0.45), c, 0.7, 4.2, 1, false); }
+  g.add(box(size + 4, 1.2, size + 4, BRICK_DARK), inst(unitBox(), walls, BRICK), box(size - 10, 1.3, size - 10, M.grass, 0, 0, 0));
   g.add(box(4, 3, 4, BRICK, 0, 1.2, -size / 2 + 8));
   return g;
 }

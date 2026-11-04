@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, onFace, onionDome, finial, hemi, minaret, guldasta } from '../helpers.js';
+import { M, mat, box, at, rng, inst, unitBox, onFace, onionDome, finial, hemi, minaret, guldasta } from '../helpers.js';
 import { iwan, arcadeSkin } from '../details/mughal.js';
 import { addDetails } from '../details/bara-imambara.js';
 
@@ -25,6 +25,32 @@ function range(w, h, d, gap = null) {
   return g;
 }
 
+// The walls of a maze over the rectangle from (x0, z0), w × d, in cells of size c, carved by a
+// random depth-first walk; cells inside any of the `skip` rectangles [x0, x1, z0, z1] are left out
+// (and walled off). Returns walls as [x, z, w, d], 0.5 thick.
+function mazeWalls(x0, z0, w, d, c, R, skip) {
+  const nx = Math.floor(w / c), nz = Math.floor(d / c), id = (i, j) => j * nx + i;
+  const out = (i, j) => skip.some(([a, b, e, f]) => x0 + (i + 0.5) * c > a && x0 + (i + 0.5) * c < b && z0 + (j + 0.5) * c > e && z0 + (j + 0.5) * c < f);
+  const seen = new Set(), open = new Set(), stack = [[0, 0]];
+  seen.add(id(0, 0));
+  while (stack.length) {
+    const [i, j] = stack[stack.length - 1];
+    const nb = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([a, b]) => [i + a, j + b]).filter(([a, b]) => a >= 0 && b >= 0 && a < nx && b < nz && !seen.has(id(a, b)) && !out(a, b));
+    if (!nb.length) { stack.pop(); continue; }
+    const [a, b] = nb[Math.floor(R() * nb.length)];
+    open.add(`${Math.min(id(i, j), id(a, b))}-${Math.max(id(i, j), id(a, b))}`);
+    seen.add(id(a, b));
+    stack.push([a, b]);
+  }
+  const walls = [], t = 0.5;
+  for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
+    if (out(i, j)) continue;
+    if (i + 1 < nx && !open.has(`${id(i, j)}-${id(i + 1, j)}`)) walls.push([x0 + (i + 1) * c, z0 + (j + 0.5) * c, t, c + t]);
+    if (j + 1 < nz && !open.has(`${id(i, j)}-${id(i, j + 1)}`)) walls.push([x0 + (i + 0.5) * c, z0 + (j + 1) * c, c + t, t]);
+  }
+  return walls;
+}
+
 export function buildBaraImambara() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
@@ -33,6 +59,9 @@ export function buildBaraImambara() {
   f.add(box(90, 1.2, 34, LIME_DARK, 0, 0, -10), at(range(82, 17, 26), 0, 1.2, -10));
   for (const x of [-41, 41]) for (const z of [-23, 3]) f.add(at(guldasta(24, 1.6, LIME), x, 1.2, z));
   for (const x of [-22, 0, 22]) f.add(box(12, 4, 10, LIME, x, 19, -12), at(hemi(4, LIME, 20), x, 23, -12), at(finial(2.4), x, 27, -12));
+  // The Bhool Bhulaiya on the roof: a labyrinth of narrow passages between walls a man's height,
+  // laid out (here, generated) round the three roof pavilions.
+  f.add(inst(unitBox(), mazeWalls(-39, -21.5, 78, 23, 2.6, rng(29), [[-29, -15, -18, -6], [-7, 7, -18, -6], [15, 29, -18, -6]]).map(([x, z, w, d]) => [x, 19, z, w, 2.4, d]), LIME));
   // Gateway into the forecourt
   f.add(at(range(40, 15, 10, [-6, 6]), 0, 0, 62));
   f.add(onFace(iwan(9, 12, { m: LIME, trim: LIME_DARK, shade: LIME_DARK, depth: 1.6, frame: 1.4, top: 1.6 }), 0, 67));

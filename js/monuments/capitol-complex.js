@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, lathe, at, inst, unitBox, unitCyl } from '../helpers.js';
+import { M, mat, mesh, box, cyl, lathe, at, inst, unitBox, unitCyl, doubleSided } from '../helpers.js';
 import { addDetails } from '../details/capitol-complex.js';
 
 const CONCRETE = mat('#b3aea4', 0.95);
@@ -23,12 +23,31 @@ function palaceOfAssembly() {
   g.add(at(mesh(new THREE.ConeGeometry(7, 6, 4).rotateY(Math.PI / 4).translate(0, 3, 0), CONCRETE_DARK), -16, 17, 12));
   return g;
 }
+// The Secretariat, 254 m long: its fronts a deep brise-soleil of light concrete over dark glazing.
+// Along most of the length the egg-crate is a close grid of storey-high cells; the ministers' block
+// at the middle breaks it with double-height loggias; two ramp towers stand out from the front, their
+// sides slotted where the ramps zig-zag up inside; and on the roof stand the sculpted forms of the
+// terrace.
 function secretariat() {
-  const g = new THREE.Group(), fins = [];
-  g.add(box(254, 42, 18, CONCRETE));
-  for (let x = -125; x <= 125; x += 3.2) fins.push([x, 2, 9.2, 0.4, 38, 1.4]);
-  for (let y = 4; y < 42; y += 4.6) g.add(box(254.4, 0.5, 19.6, CONCRETE_DARK, 0, y));
-  g.add(inst(unitBox(), fins, CONCRETE_DARK));
+  const g = new THREE.Group(), fins = [], slabs = [], L = 254, H = 42, D = 18;
+  g.add(box(L, H, D - 2, mat('#3e4246', 0.4, 0.2)), box(L + 0.4, 1.2, D + 2.6, CONCRETE, 0, H));
+  for (const s of [-1, 1]) {
+    for (let x = -L / 2; x <= L / 2 + 0.01; x += 3.2) {
+      const mid = Math.abs(x) < 22;
+      if (mid && Math.round(x / 3.2) % 2) continue;
+      fins.push([x, 0, s * (D / 2 + 0.4), 0.35, H, 2.6]);
+    }
+    for (let y = 0; y < H; y += 3.5) {
+      slabs.push([-(L / 2 + 22) / 2, y, s * (D / 2 + 0.4), L / 2 - 22, 0.3, 2.6], [(L / 2 + 22) / 2, y, s * (D / 2 + 0.4), L / 2 - 22, 0.3, 2.6]);
+      if (Math.round(y / 3.5) % 2 === 0) slabs.push([0, y, s * (D / 2 + 0.4), 44, 0.45, 2.6]);
+    }
+  }
+  g.add(inst(unitBox(), fins, CONCRETE), inst(unitBox(), slabs, CONCRETE));
+  for (const x of [-70, 58]) {
+    g.add(box(12, H + 4, 10, CONCRETE, x, 0, D / 2 + 5));
+    for (let y = 3; y < H; y += 7) for (const sx of [-1, 1]) g.add(box(0.2, 1.4, 7, mat('#3e4246', 0.4, 0.2), x + sx * 6.02, y + (sx > 0 ? 3.5 : 0), D / 2 + 5));
+  }
+  g.add(at(mesh(new THREE.CylinderGeometry(5, 7, 5, 24, 1, true, 0, Math.PI), doubleSided(CONCRETE)), -30, H + 1.2, 0), box(16, 3.6, 6, CONCRETE, 40, H + 1.2, -2));
   return g;
 }
 function highCourt() {
@@ -53,8 +72,8 @@ export function buildCapitolComplex() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   g.add(box(480, 0.3, 380, CONCRETE_DARK, 0, 0, 40), box(500, 0.15, 400, M.grass, 0, -0.1, 40));
-  f.add(at(secretariat(), -60, 0, -90), at(palaceOfAssembly(), 0, 0, 0), at(highCourt().rotateY(Math.PI), 60, 0, 180));
+  f.add(at(secretariat(), -105, 0, -125), at(palaceOfAssembly(), 0, 0, 0), at(highCourt().rotateY(Math.PI), 60, 0, 180));
   g.add(at(openHand(), -150, 0, 120));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.9, 0.42, 1.1] };
+  return { group: g, focus: f, view: [0.9, 0.42, 1.1], zoom: 0.72 };
 }

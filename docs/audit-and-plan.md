@@ -222,15 +222,42 @@ Done in this pass:
 | Golden Temple | The Akal Takht, across the plaza from the Darshani Deori: marble arcades below, gilded storeys with bay windows, and a fluted golden dome. |
 | India Gate | Netaji's statue under the canopy (a new `leader` pose for `figure`). |
 
-Still to do from the review: the Statue of Unity's face and the dam; a mandapa with a lotus ceiling
-at Dilwara; a pillar-forest cutaway at Ranakpur; bracket figures and the floating-brick tower at
-Ramappa; a ruined Nalanda; the Capitol Complex's spacing and brise-soleil; the Bara Imambara's
-maze; carved walls and paired shrines at Mallikarjuna; the Om-shaped island at Omkareshwar; a
-forest and bell frame at Bhimashankar; the Kushavarta tank at Trimbakeshwar; an open corridor at
-Ramanathaswamy; the Ellora cliff beside Grishneshwar; a gilded roof that marks Rumtek; varied poses
-at Parshvanath; an open hall at Soniji; an irregular ruin at Golconda; tile pictures at Gwalior;
-the Hawa Mahal's curved plan; the Taj's mosque, jawab and river; Charminar's top-floor mosque and
-slimmer minarets; chaitya arches at Mahabodhi; pools and free-standing petals at the Lotus Temple;
-domed towers at Gol Gumbaz; Queen Victoria's statue; the Progress statue and stone animals at
-CSMT; the lion capital at the new Parliament; the barren valley at Key; and the vines and anthill
-at Gommateshwara.
+Then the rest of the review's list (the Statue of Unity was left as it is, at the owner's request):
+
+| Monument | Change |
+| --- | --- |
+| Taj Mahal | The red sandstone mosque and its twin the jawab, three domes each, on the terrace either side; the Yamuna behind a sandy bank. |
+| Charminar | Slimmer minaret shafts and domes above the roof; the mosque on the roof's western side. |
+| Lotus Temple | Nine leaf-shaped pools hugging the podium between the paths, in place of rectangles. |
+| Mahabodhi | A chaitya-arch niche with a seated Buddha across every storey of the tower, as many as fit. |
+| Hawa Mahal | Every upper window is a projecting half-octagon oriel with jali facets, dome and corbel: the honeycomb front. |
+| Gol Gumbaz | Already has seven-storey octagonal corner towers with domes; unchanged. |
+| Dilwara | The Ranga Mandapa's dome open from below: corbelled carved rings, sixteen bracket goddesses, the pendant. |
+| Ranakpur | The hall opened on its east and south sides onto a forest of carved pillars round the shrine. |
+| Ramappa | Madanika bracket figures in polished black stone leaning out from the outer pillars; the pale "floating brick" tower with miniature shrines on every ledge. |
+| Mallikarjuna | Two bands of relief (processions of elephants and horses, figures) along the outer walls. |
+| Omkareshwar | Mandhata island as terrain shaped like Om in plan, with painted houses on its slopes. |
+| Bhimashankar | Forest crowding round the court; the great bell under a stone frame. |
+| Trimbakeshwar | The Peshwa spire with rows of miniature spires and a gilded kalash; the Kushavarta tank with its steps, veranda and corner shrines. |
+| Ramanathaswamy | Each corridor a long walkway between pillars on raised platforms, with bracket capitals and painted ceiling medallions. |
+| Grishneshwar | The terraced Ellora scarp to the north, with cave mouths. |
+| Parshvanath | New figure poses from Khajuraho's walls: mirror, thorn, fly-whisk. |
+| Soniji ki Nasiyan | The gallery closed behind so the gilded city reads through its open front, with airships and elephants. |
+| Gommateshwara | Anthills with snakes beside the legs; leaves on the creepers. |
+| New Parliament | The National Emblem: four bronze lions on a wheeled abacus. |
+| Victoria Memorial | The Angel of Victory with wings and trumpet; Queen Victoria enthroned in the forecourt. |
+| CSMT | The statue of Progress, with torch and wheel, on the dome. |
+| Rumtek | A two-tier gilded roof with a clerestory and a golden gyaltsen. |
+| Key Monastery | The Spiti valley: banded, gullied mountain walls to snow, and a braided river on a gravel bed. |
+| Nalanda | Continuous brick walls standing to ragged heights, broken through in places, with the cell walls. |
+| Golconda | An irregular hill; the walls follow its contours with a broken parapet; roofless ruins on the slopes. |
+| Gwalior | Pictures in the Man Mandir's tiles: ducks, elephants and banana trees. |
+| Bara Imambara | The Bhool Bhulaiya: a maze of passages on the roof round the pavilions. |
+| Capitol Complex | The Secretariat's brise-soleil: light egg-crate over dark glazing, double-height loggias at the ministers' block, two ramp towers, roof forms; the Secretariat moved back and west of the Assembly. |
+
+New shared parts from this pass: `townHouses` (realism.js), `carvedWheelGeo` and the figure poses
+`leader`, `enthroned`, `mirror`, `thorn` and `chauri` (sculpture.js), `bhumijaRows` (temples.js),
+and options on `gopuram` (`pitch`, `kuduEvery`), `yaliPillar` (`rich`) and `nagaraTemple` (`apron`).
+
+Still open: the Statue of Unity (left as it is); the distance between the Capitol's Assembly and
+High Court, which is shorter than the real esplanade.
