@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, box, cyl, group, at, archPanel, onionDome, finial, chhatri, minaret, domeBands } from '../helpers.js';
+import { M, box, cyl, at, onionDome, finial, chhatri, minaret, domeBands } from '../helpers.js';
+import { iwan, arcadeSkin } from '../details/mughal.js';
 
 export function buildJamaMasjid() {
   const Rd = M.red, Mb = M.marble, g = new THREE.Group(), f = new THREE.Group();
@@ -11,7 +12,7 @@ export function buildJamaMasjid() {
   for (const [w, d, x, z] of [[110, 8, 0, 51], [8, 102, -51, 0], [8, 102, 51, 0]]) f.add(box(w, 7, d, Rd, x, P, z), box(w + 0.4, 0.5, d + 0.4, Mb, x, P + 7, z));
   const gate = (big) => {
     const w = big ? 24 : 18, h = big ? 18 : 15, gr = new THREE.Group();
-    gr.add(box(w, h, 14, Rd), box(w + 0.4, 0.6, 14.4, Mb, 0, h - 0.6), at(archPanel(w * 0.42, h * 0.75, true, M.recess, 0.3), 0, 0.3, 7));
+    gr.add(box(w, h, 14, Rd), box(w + 0.4, 0.6, 14.4, Mb, 0, h - 0.6), at(iwan(w * 0.42, h * 0.75, { m: Rd, trim: Mb, shade: M.redLight, depth: 1.8, frame: w * 0.08, top: h * 0.1 }), 0, 0, 7));
     for (const x of [-w / 2 + 2, w / 2 - 2]) gr.add(at(chhatri(1.8, 5.5, Rd, Mb), x, h, 5));
     gr.add(at(onionDome(3.2, Mb), 0, h, 0));
     return gr;
@@ -21,9 +22,14 @@ export function buildJamaMasjid() {
   for (const s of [-1, 1]) f.add(at(gate(false), s * 51, P, 0).rotateY(s * Math.PI / 2));
   // Prayer hall with eleven arches, three striped marble domes and two minarets
   const hz = -40;
-  f.add(box(80, 14, 24, Rd, 0, P, hz), box(80.4, 0.6, 24.4, Mb, 0, P + 13.4, hz));
-  f.add(box(18, 20, 1.2, Mb, 0, P, hz + 12.6), at(archPanel(12, 17, true, M.recess, 0.4), 0, P + 0.4, hz + 13.2));
-  for (let k = 0; k < 5; k++) for (const s of [-1, 1]) f.add(at(archPanel(4.4, 8.5, true, M.recess, 0.3), s * (14 + k * 5.6), P + 0.5, hz + 12));
+  // Its front: the great marble iwan, and five open arches either side, 1.4 m deep.
+  const cd = 1.4;
+  f.add(box(80, 14, 24 - cd, Rd, 0, P, hz - cd / 2), box(80.4, 0.6, 24.4, Mb, 0, P + 13.4, hz));
+  f.add(at(iwan(12, 17, { m: Mb, trim: Mb, shade: M.marbleShade, depth: 2.4 + cd, frame: 3, top: 3 }), 0, P, hz + 12 - cd));
+  for (const s of [-1, 1]) {
+    const cells = [0, 1, 2, 3, 4].map((k) => [s * (14 + k * 5.6) - s * 24.5, 0.5, 4.4, 8.5]);
+    f.add(at(arcadeSkin(31, 13.4, cells, cd, Rd, { trim: Mb, fill: 'room' }), s * 24.5, P, hz + 12 - cd));
+  }
   [[-18, 7], [0, 9.5], [18, 7]].forEach(([x, r]) => {
     f.add(cyl(r * 0.92, r * 0.92, 3, Mb, x, P + 14, hz - 2, 32));
     f.add(at(onionDome(r, Mb), x, P + 17, hz - 2), domeBands(x, P + 17, hz - 2, r, M.stoneDark), at(finial(r * 0.6), x, P + 17 + r * 1.78, hz - 2));

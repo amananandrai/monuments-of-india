@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { mat, mesh, box, cyl, at, flat, kalash, inst, unitBox, aroundRect, elephant } from '../helpers.js';
+import { trabeateGate } from '../details/temples.js';
+import { templeDoorway } from '../details/doorways.js';
 
 const ROCK = mat('#6f675e', 0.95);
 const ROCK_DARK = mat('#57514a', 0.95);
@@ -29,13 +31,15 @@ export function buildKailasa() {
   // The basalt cliff, cut away to leave a pit around the temple
   g.add(box(150, H, 34, ROCK, 0, 0, -67), box(47, H, 100, ROCK, -51.5, 0, 0), box(47, H, 100, ROCK, 51.5, 0, 0));
   g.add(box(150, H - 6, 40, ROCK, 0, 0, -104), box(60, 0.4, 150, ROCK_DARK, 0, 0, 0));
-  f.add(box(22, 11, 8, ROCK, -17, 0, 46), box(22, 11, 8, ROCK, 17, 0, 46), box(12, 4, 8, ROCK, 0, 7, 46));
+  // The entrance gateway cut through the rock screen, its doorway framed and guarded
+  f.add(at(trabeateGate(56, 11, 8, 5, 6.5, { m: ROCK, trim: ROCK_DARK, guardians: true }), 0, 0, 46));
   // High plinth with a frieze of elephants carrying the temple
   f.add(box(40, 8, 62, ROCK_DARK, 0, 0, -12));
   const eles = [];
   aroundRect(40.6, 62.6, 3.2).forEach(([x, z, ry]) => eles.push([x, 0.6, z - 12, 2.2, 3.2, 1.2, ry]));
   f.add(inst(unitBox(), eles, ROCK));
   f.add(box(22, 8, 24, ROCK, 0, 8, 5), box(23.5, 1, 25.5, ROCK_DARK, 0, 16, 5));
+  f.add(at(templeDoorway(2.2, 4.4, { m: ROCK, bands: 4, guardianH: 2.2 }), 0, 8, 17));
   f.add(box(20, 8, 20, ROCK, 0, 8, -26), at(vimana(19, 4, 3.4, ROCK, ROCK_DARK), 0, 16, -26));
   // Nandi pavilion on its bridge, two victory pillars and life-size elephants in the court
   f.add(box(4, 1.2, 12, ROCK, 0, 6.8, 24), box(10, 12, 10, ROCK, 0, 0, 33), box(11, 1, 11, ROCK_DARK, 0, 12, 33), at(vimana(8, 2, 2.4, ROCK, ROCK_DARK), 0, 13, 33));

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, group, at, onFace, FACES, archPanel, onionDome, finial, chhatri, minaret } from '../helpers.js';
+import { M, mesh, box, cyl, at, onionDome } from '../helpers.js';
+import { addTajDetails } from '../details/taj-mahal.js';
 
 export function buildTaj() {
   const g = new THREE.Group(), f = new THREE.Group();
@@ -14,24 +15,13 @@ export function buildTaj() {
   const geo = new THREE.ExtrudeGeometry(sh, { depth: H, bevelEnabled: false });
   geo.rotateX(-Math.PI / 2);
   f.add(mesh(geo, M.marble, 0, P, 0));
-  f.add(box(2 * s + 0.6, 1.2, 2 * s + 0.6, M.marbleShade, 0, P + H - 0.6));
-  for (const a of FACES) {
-    f.add(onFace(box(21, H + 2, 1.2, M.marble, 0, P), a, s + 0.6));
-    f.add(onFace(at(archPanel(14, 24, true, M.marbleShade, 0.4), 0, P + 0.5, 0), a, s + 1.2));
-    f.add(onFace(at(archPanel(6, 11, true, M.recess, 0.3), 0, P + 0.5, 0), a, s + 1.62));
-    for (const lat of [-15.3, 15.3]) for (const y of [1.5, 15.5]) {
-      f.add(onFace(at(archPanel(4.6, 11, true, M.marbleShade, 0.3), 0, P + y, 0), a, s, lat));
-    }
-    const ca = a + Math.PI / 4, cd = (s - c / 2) * Math.SQRT2;
-    for (const y of [1.5, 15.5]) f.add(onFace(at(archPanel(5.2, 11, true, M.marbleShade, 0.3), 0, P + y, 0), ca, cd));
-  }
   const top = P + H;
   f.add(cyl(14, 14, 7, M.marble, 0, top, 0, 48));
   f.add(cyl(14.6, 14.6, 0.8, M.marbleShade, 0, top + 6.2, 0, 48));
   f.add(at(onionDome(14.5, M.marble), 0, top + 7, 0));
-  f.add(at(finial(9), 0, top + 7 + 14.5 * 1.8, 0));
-  for (const x of [-16, 16]) for (const z of [-16, 16]) f.add(at(chhatri(4.2, 9, M.marble), x, top, z));
-  for (const x of [-42, 42]) for (const z of [-42, 42]) f.add(at(minaret(41, 2.6, M.marble), x, P, z));
+  // The pishtaqs, alcoves, calligraphy, inlay, parapets, guldastas, lotus crown and finial, the
+  // chhatris and the minarets: see js/details/taj-mahal.js.
+  addTajDetails(f, { P, s, c, H });
   // Charbagh garden and reflecting pool in front of the tomb
   g.add(box(8, 0.35, 150, M.water, 0, 0, 135));
   g.add(box(12, 0.3, 150, M.path, 0, 0, 135).translateY(-0.02));

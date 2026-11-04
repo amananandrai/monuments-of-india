@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, chhatri, onFace, archPanel, inst, unitBox, aroundRect, paintMats } from '../helpers.js';
+import { fortGate } from '../details/forts.js';
 
 const SAND = mat('#d9b77e', 0.9);
 const SAND_DARK = mat('#b8925a', 0.9);
@@ -35,8 +36,7 @@ export function buildAmberFort() {
   // Jaleb Chowk courtyard, the painted Ganesh Pol gate and the palace blocks
   f.add(box(70, 1, 34, SAND_DARK, 0, 22, -24));
   for (const [w, d, x, z] of [[70, 3, 0, -40], [3, 34, -35, -24], [3, 34, 35, -24]]) f.add(box(w, 6, d, SAND, x, 23, z));
-  f.add(box(16, 16, 6, SAND, 0, 34, -55), box(16.6, 0.8, 6.6, SAND_DARK, 0, 50, -55));
-  f.add(onFace(at(archPanel(6, 10, true, M.recess, 0.3), 0, 34.5, 0), 0, -51.9));
+  f.add(at(fortGate(16, 16, 6, 5, 9, { m: SAND, trim: SAND_DARK, crest: false }), 0, 34, -55), box(16.6, 0.8, 6.6, SAND_DARK, 0, 50, -55));
   for (let k = 0; k < 4; k++) f.add(box(14 - k * 2.6, 1.2, 0.3, paintMats[k], 0, 45 + k * 1.3, -51.8));
   f.add(block(40, 12, 22, -36, 34, -66), block(36, 10, 20, 32, 34, -64), block(30, 14, 22, 0, 34, -78));
   for (const [x, z] of [[-48, -60], [-24, -60], [18, -58], [46, -58], [-10, -72], [10, -72]]) f.add(at(chhatri(2.2, 6, SAND, M.marble), x, z === -72 ? 48 : 45, z));

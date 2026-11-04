@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, chhatri, hemi, finial, onFace, archPanel, sheet } from '../helpers.js';
+import { M, mat, box, cyl, at, chhatri, hemi, finial, onFace, sheet } from '../helpers.js';
+import { iwan } from '../details/mughal.js';
 
 const STONE = mat('#c39a6e', 0.88);
 const SHADE = mat('#a27b52', 0.9);
@@ -12,7 +13,9 @@ function octStorey(r, h, m, kiosk) {
   g.add(body, cyl(r * 1.06, r * 1.06, 0.8, SHADE, 0, h - 0.8, 0, 8).rotateY(Math.PI / 8));
   for (let k = 0; k < 8; k++) {
     const a = (k / 8) * Math.PI * 2;
-    g.add(onFace(at(archPanel(r * 0.42, h * 0.7, true, M.recess, 0.3), 0, 0.4, 0), a, r * Math.cos(Math.PI / 8)));
+    // A recessed arch on each face, screened at the back.
+    const ah = h * 0.7, aw = Math.min(r * 0.42, (ah - 1.2) / 0.7);
+    g.add(onFace(at(iwan(aw, ah, { m, trim: SHADE, shade: SHADE, depth: r * 0.06, frame: r * 0.05, top: h * 0.08, fill: 'jali', band: false }), 0, 0.4, 0), a, r * Math.cos(Math.PI / 8)));
     if (kiosk) {
       const c = a + Math.PI / 8;
       g.add(at(chhatri(kiosk, kiosk * 2.8, m), Math.sin(c) * r, h, Math.cos(c) * r));

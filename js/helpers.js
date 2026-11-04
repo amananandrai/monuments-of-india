@@ -355,23 +355,6 @@ export function flag(h, m, poleM = M.wood) {
 
 export function nagaraProfile(t) { return 1 - 0.6 * Math.pow(t, 1.45); }
 
-export function mandap(w, h, roofCount, m, shade) {
-  const g = new THREE.Group();
-  g.add(box(w - 3, h, w - 3, shade));
-  const n = Math.max(3, Math.round(w / 2.6));
-  for (let i = 0; i <= n; i++) {
-    const t = -w / 2 + 0.6 + (i / n) * (w - 1.2);
-    for (const [x, z] of [[t, w / 2 - 0.6], [t, -w / 2 + 0.6], [w / 2 - 0.6, t], [-w / 2 + 0.6, t]]) g.add(cyl(0.38, 0.42, h, m, x, 0, z, 8));
-  }
-  g.add(box(w + 1, 1, w + 1, m, 0, h));
-  const roof = pidaRoof(w * 0.92, w * 0.42, roofCount, 0.9, m, shade);
-  g.add(at(roof, 0, h + 1, 0));
-  const ry = h + 1 + roof.userData.top;
-  g.add(at(bell(w * 0.2, m), 0, ry, 0));
-  g.add(at(kalash(w * 0.12), 0, ry + w * 0.2, 0));
-  return g;
-}
-
 export function kalingaProfile(t) { return 1 - 0.44 * Math.pow(t, 2.3); }
 
 // Radial ribs on a lathe or cylinder, e.g. a lotus-ribbed dome.
@@ -424,49 +407,6 @@ export function horse(m) {
 export const PAINT = ['#3d7cc0', '#d4493a', '#e6b13a', '#4c9a5a', '#f0e8d6', '#b65aa0', '#e07a2e'];
 
 export const paintMats = PAINT.map((c) => mat(c, 0.75));
-
-// Dravidian gateway tower: granite base, then tapering storeys of painted stucco figures and a barrel-vault crown.
-const paletteMats = new Map();
-export function gopuram(w, d, h, tiers, seed, palette = PAINT) {
-  if (!paletteMats.has(palette)) paletteMats.set(palette, palette.map((c) => mat(c, 0.75)));
-  const pm = paletteMats.get(palette);
-  const g = new THREE.Group(), R = rng(seed), figs = [];
-  const bh = h * 0.2;
-  g.add(box(w, bh * 0.3, d, M.graniteDark), box(w * 0.96, bh * 0.7, d * 0.96, M.granite, 0, bh * 0.3));
-  g.add(box(w * 0.2, bh * 0.85, d + 0.2, M.recess));
-  g.add(box(w * 1.02, bh * 0.08, d * 1.02, M.graniteDark, 0, bh));
-  const th = (h * 0.68) / tiers;
-  let y = bh * 1.08, tw = w, td = d;
-  for (let i = 0; i < tiers; i++) {
-    const t = i / tiers;
-    tw = w * (1 - 0.55 * t); td = d * (1 - 0.5 * t);
-    g.add(box(tw, th * 0.74, td, M.stucco, 0, y));
-    g.add(box(tw + 0.6, th * 0.26, td + 0.6, pm[(i + seed) % pm.length], 0, y + th * 0.74));
-    const nx = Math.max(2, Math.floor(tw / 1.3)), nz = Math.max(1, Math.floor(td / 1.3));
-    for (let k = 0; k < nx; k++) for (const s of [-1, 1]) figs.push([-tw / 2 + (k + 0.5) * (tw / nx), y + th * 0.08, s * (td / 2 + 0.22), 0.75, th * (0.45 + R() * 0.2), 0.45]);
-    for (let k = 0; k < nz; k++) for (const s of [-1, 1]) figs.push([s * (tw / 2 + 0.22), y + th * 0.08, -td / 2 + (k + 0.5) * (td / nz), 0.45, th * (0.45 + R() * 0.2), 0.75]);
-    y += th;
-  }
-  const sr = td * 0.32, sl = tw * 0.92;
-  const shala = mesh(new THREE.CylinderGeometry(sr, sr, sl, 18), M.stucco, 0, y + sr * 0.5, 0);
-  shala.rotation.z = Math.PI / 2;
-  g.add(shala);
-  const nk = Math.max(3, Math.round(sl / 2.6) | 1);
-  for (let k = 0; k < nk; k++) g.add(at(kalash(Math.min(2.2, sr * 0.9), M.gild), -sl / 2 + (k + 0.5) * (sl / nk), y + sr * 1.45, 0));
-  const im = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), mat('#ffffff', 0.75), figs.length);
-  const o = new THREE.Object3D(), c = new THREE.Color();
-  figs.forEach(([x, fy, z, sx, sy, sz], i) => {
-    o.position.set(x, fy + sy / 2, z);
-    o.scale.set(sx, sy, sz);
-    o.updateMatrix();
-    im.setMatrixAt(i, o.matrix);
-    im.setColorAt(i, c.set(palette[Math.floor(R() * palette.length)]));
-  });
-  im.castShadow = true;
-  im.receiveShadow = true;
-  g.add(im);
-  return g;
-}
 
 // One marble petal as a curved shell; its spine is a quadratic curve in (radius, height), and it faces +z.
 export function petal(P0, P1, P2, halfW, bulge, segU = 12, segV = 28) {
@@ -663,44 +603,6 @@ export function guldasta(h, r, m) {
   const g = new THREE.Group();
   g.add(cyl(r, r * 1.2, h, m, 0, 0, 0, 8), cyl(r * 1.5, r * 1.5, h * 0.06, m, 0, h * 0.55, 0, 8));
   g.add(at(onionDome(r * 1.3, m), 0, h, 0), at(finial(r * 2.2), 0, h + r * 2.3, 0));
-  return g;
-}
-// A North Indian (Nagara) temple along the z axis: the sanctum and its curved spire at z = 0,
-// with halls (mandapas) stepping out towards +z. halls: [[width, wallHeight, roofTiers, 'pida' | 'dome']].
-export function nagaraTemple({
-  w = 12, h = 22, m, shade = m, spireM = m, plinth = 2, urus = 4, uruScale = 0.5,
-  halls = [[14, 8, 4]], prof = nagaraProfile, flagM = M.saffron, hallM = m, crown = null,
-} = {}) {
-  const g = new THREE.Group();
-  const sw = w * 1.15;
-  g.add(box(sw, w * 0.7, sw, m, 0, plinth, 0));
-  const sy = plinth + w * 0.7;
-  const spire = shikhara(w, h, spireM, prof, 16);
-  g.add(at(spire, 0, sy, 0), at(crown || flag(Math.max(3, w * 0.45), flagM), 0, sy + spire.userData.top - 0.5, 0));
-  const ring = (n, dist, scale, hs) => {
-    for (let k = 0; k < n; k++) {
-      const a = (k / n) * Math.PI * 2 + (n === 4 ? 0 : Math.PI / n);
-      g.add(onFace(at(shikhara(w * scale, h * hs, spireM, prof, 10), 0, sy, 0), a, dist));
-    }
-  };
-  if (urus >= 4) ring(4, w * 0.5, uruScale, 0.62);
-  if (urus >= 8) ring(4, w * 0.72, uruScale * 0.62, 0.38);
-  let z = sw / 2;
-  for (const [hw, hh, tiers, kind = 'pida'] of halls) {
-    z += hw / 2;
-    g.add(box(hw, hh, hw, hallM, 0, plinth, z), box(hw + 0.8, 0.6, hw + 0.8, shade, 0, plinth + hh, z));
-    const ry = plinth + hh + 0.6;
-    if (kind === 'dome') {
-      g.add(cyl(hw * 0.36, hw * 0.36, hw * 0.12, hallM, 0, ry, z, 24), at(onionDome(hw * 0.36, spireM), 0, ry + hw * 0.12, z), at(kalash(hw * 0.12), 0, ry + hw * 0.12 + hw * 0.65, z));
-    } else {
-      const r = pidaRoof(hw * 0.95, hw * 0.4, tiers, Math.max(0.6, hw * 0.06), hallM, shade);
-      g.add(at(r, 0, ry, z), at(bell(hw * 0.18, hallM), 0, ry + r.userData.top, z), at(kalash(hw * 0.12), 0, ry + r.userData.top + hw * 0.18, z));
-    }
-    z += hw / 2;
-  }
-  g.add(box(sw + 8, plinth, z + sw / 2 + 6, shade, 0, 0, (z - sw / 2) / 2 + 3));
-  for (let k = 0; k < 4; k++) g.add(box(6, plinth - k * (plinth / 4), 1.5, shade, 0, 0, z + 6.75 + k * 1.5));
-  g.userData.length = z;
   return g;
 }
 // A Tibetan-style block: whitewashed walls, dark tapering windows and a maroon parapet band.

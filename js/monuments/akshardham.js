@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, box, cyl, lathe, group, at, kalash, shikhara, nagaraProfile, ribbed, inst, unitBox, unitCyl, unitHemi, aroundRect } from '../helpers.js';
+import { templeDoorway } from '../details/doorways.js';
 
 export function buildAkshardham() {
   const P = M.pink, Ps = M.pinkShade, g = new THREE.Group(), f = new THREE.Group();
@@ -21,7 +22,9 @@ export function buildAkshardham() {
   // The mandir: pillared body, a broad eave, nine domes and four corner spires
   f.add(box(68, 16, 82, M.ranak, 0, 9, 0));
   const pil = [];
-  aroundRect(72, 86, 3).forEach(([x, z]) => pil.push([x, 9, z, 1.3, 15.5, 1.3]));
+  aroundRect(72, 86, 3).forEach(([x, z]) => { if (!(z > 40 && Math.abs(x) < 4.5)) pil.push([x, 9, z, 1.3, 15.5, 1.3]); });
+  // The main doorway, between its guardians, where the pillars part
+  f.add(at(templeDoorway(3, 6, { m: M.ranak, bands: 4, guardianH: 2.6 }), 0, 9, 41));
   f.add(inst(unitCyl(12), pil, P), box(76, 1.4, 90, Ps, 0, 24.5, 0), box(72, 1.6, 86, P, 0, 25.9, 0));
   const prof = [[1, 0], [1.02, 0.3], [0.9, 0.66], [0.6, 0.95], [0.25, 1.12], [0, 1.15]];
   const dome = (x, z, r) => {

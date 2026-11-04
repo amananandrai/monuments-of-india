@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, V, mat, mesh, box, cyl, at, nagaraTemple, ellipsoid, capsule, tube, smoothLathe, surface, face, fingers } from '../helpers.js';
+import { M, V, mat, mesh, box, cyl, at, ellipsoid, capsule, tube, smoothLathe, surface, face, fingers } from '../helpers.js';
+import { nagaraTemple } from '../details/temples.js';
 
 const PINK = mat('#e4b7a0', 0.85);
 const SHADE = mat('#c4937c', 0.9);

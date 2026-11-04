@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { mat, mesh, box, at, rng, inst, unitBox, unitCyl, unitSpire, chhatri } from '../helpers.js';
+import { fortGate } from '../details/forts.js';
 
 const GOLD = mat('#d9a85a', 0.85);
 const GOLD_DARK = mat('#b8873f', 0.9);
@@ -17,10 +18,12 @@ export function buildJaisalmer() {
   for (let k = 0; k < 99; k++) {
     const a = (k / 99) * Math.PI * 2, x = Math.cos(a) * RX, z = Math.sin(a) * RZ;
     // Neighbouring crowns step by 25 cm, so overlapping tops never share a plane (99 divides by 3).
-    bastions.push([x, H, z, 8, 13 + (k % 3) * 0.25, 8]);
-    wall.push([x, H, z, 7, 10, 2.6, Math.atan2(-Math.cos(a) * RZ, -Math.sin(a) * RX)]);
+    // The Akhey Pol takes the place of the walls and bastions at k = 24 to 26.
+    if (k < 24 || k > 26) bastions.push([x, H, z, 8, 13 + (k % 3) * 0.25, 8]);
+    if (k !== 24 && k !== 25) wall.push([x, H, z, 7, 10, 2.6, Math.atan2(-Math.cos(a) * RZ, -Math.sin(a) * RX)]);
   }
   f.add(inst(unitCyl(12), bastions, GOLD), inst(unitBox(), wall, GOLD));
+  f.add(at(fortGate(12, 12, 8, 4.5, 8, { m: GOLD, trim: GOLD_DARK, towers: { r: 3.4, h: 14, cap: 'merlons', seg: 12 } }), 0, H, RZ));
   // Houses, havelis, the palace and the spires of the Jain temples within the walls
   const houses = [];
   for (let i = 0; i < 220; i++) {

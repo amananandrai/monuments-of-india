@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, rng, nagaraTemple, inst, unitBox, unitSpire, ellipseWall } from '../helpers.js';
+import { M, mat, mesh, box, at, rng, inst, unitBox, unitSpire, ellipseWall } from '../helpers.js';
+import { nagaraTemple } from '../details/temples.js';
 
 const MARBLE = mat('#f1ede4', 0.6);
 const SHADE = mat('#d6cebd', 0.8);

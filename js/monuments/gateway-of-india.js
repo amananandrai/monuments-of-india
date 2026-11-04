@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, box, cyl, group, at, archWall, onionDome, hemi, finial, sheet } from '../helpers.js';
+import { M, box, cyl, at, archWall, hemi, finial, sheet } from '../helpers.js';
+import { addGatewayDetails } from '../details/gateway-of-india.js';
 
 export function buildGateway() {
   const m = M.basalt, g = new THREE.Group(), f = new THREE.Group();
@@ -16,12 +17,6 @@ export function buildGateway() {
   f.add(cyl(5, 5, 2, m, 0, b + 21.4, 0, 32));
   f.add(at(hemi(5, m), 0, b + 23.4, 0));
   f.add(at(finial(3.5), 0, b + 28.2, 0));
-  for (const x of [-8.6, 8.6]) for (const z of [-6.6, 6.6]) {
-    f.add(cyl(1.4, 1.5, 23.5 + b - p, m, x, p, z, 8));
-    f.add(cyl(1.9, 1.9, 0.6, M.plaster, x, b + 18, z, 8));
-    f.add(at(onionDome(1.55, m), x, b + 23.5, z));
-    f.add(at(finial(1.8), x, b + 26.3, z));
-  }
   for (const s of [-1, 1]) {
     // Each side hall is three thin arched faces, left open where it meets the central hall, so the
     // central hall's side arch leads through into it.
@@ -29,11 +24,10 @@ export function buildGateway() {
     for (const sz of [-1, 1]) f.add(at(archWall(9, 11, pt, 4.2, 8.5, true, m), s * 13.5, b, sz * (4.5 - pt / 2)));
     f.add(at(archWall(9 - 2 * pt, 11, pt, 4.2, 8.5, true, m), s * (18 - pt / 2), b, 0).rotateY(Math.PI / 2));
     f.add(box(9.8, 1, 9.8, M.plaster, s * 13.5, b + 11));
-    for (const z of [-4.2, 4.2]) {
-      f.add(cyl(0.9, 1, 13.5, m, s * 17.8, b, z, 8));
-      f.add(at(onionDome(1, m), s * 17.8, b + 13.5, z));
-    }
   }
+  // The turrets, lattice, eaves, attic arcade, parapets and arch mouldings: see
+  // js/details/gateway-of-india.js.
+  addGatewayDetails(f, { p, b });
   g.add(box(70, 0.25, 30, M.path, 0, 0, -12));
   g.add(sheet(600, 300, M.sea, 0, 0.1, 160));
   return { group: g, focus: f, view: [-0.9, 0.32, 1.25] };

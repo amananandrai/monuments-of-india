@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, onFace, FACES, archPanel, onionDome, finial, minaret } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, rng, onFace, FACES, onionDome, finial, minaret } from '../helpers.js';
+import { arcadeSkin, cellRow } from '../details/mughal.js';
 
 const HILL = mat('#5d6b4a', 0.95, 0, { flatShading: true });
 const CHINAR = mat('#c8642c', 0.9, 0, { flatShading: true });
@@ -20,10 +21,13 @@ export function buildHazratbal() {
   f.add(box(60, 1.2, 50, M.marbleShade, 0, 0, 0));
   const b = 1.2;
   // The shrine: arcaded marble hall, a single great dome and one minaret
-  f.add(box(40, 12, 30, Mb, 0, b, 0), box(41, 0.8, 31, M.marbleShade, 0, b + 12, 0));
+  // Arched windows 1.2 m deep all round, screened in marble lattice; the door in the middle of the front.
+  const cd = 1.2;
+  f.add(box(40 - 2 * cd, 12, 30 - 2 * cd, Mb, 0, b, 0), box(41, 0.8, 31, M.marbleShade, 0, b + 12, 0));
   for (const a of FACES) {
     const wide = a === 0 || a === Math.PI;
-    for (let k = -3; k <= 3; k++) f.add(onFace(at(archPanel(3.4, 7, true, M.recess, 0.3), 0, b + 1.5, 0), a, wide ? 15 : 20, k * (wide ? 5.2 : 3.8)));
+    const cells = cellRow(7, wide ? 5.2 : 3.8, 1.5, 3.4, 7).map((c) => [...c, a === 0 && c[0] === 0 ? 'door' : 'jali']);
+    f.add(onFace(at(arcadeSkin(wide ? 40 : 30 - 2 * cd, 12, cells, cd, Mb, { trim: M.marbleShade }), 0, b, 0), a, (wide ? 15 : 20) - cd));
   }
   f.add(cyl(10, 10, 4, Mb, 0, b + 12.8, 0, 40), cyl(10.6, 10.6, 0.6, M.marbleShade, 0, b + 16.4, 0, 40));
   f.add(at(onionDome(10.5, Mb), 0, b + 16.8, 0), at(finial(5), 0, b + 16.8 + 18.7, 0));

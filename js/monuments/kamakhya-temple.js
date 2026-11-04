@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, lathe, at, ribbed, kalash, hipRoof, FACES, onFace } from '../helpers.js';
+import { templeDoorway } from '../details/doorways.js';
+import { mergeByMaterial } from '../details/components.js';
 
 const STONE = mat('#a08766', 0.9);
 const STONE_DARK = mat('#7c6a52', 0.9);
@@ -40,7 +42,13 @@ export function buildKamakhya() {
   // Calantapa (antechamber) and the Natmandir hall with curved roofs
   f.add(box(12, 7, 10, STONE, 0, T, 2), at(dochala(14, 11, 6, STONE), 0, T + 7, 2));
   f.add(box(16, 6, 20, STONE, 0, T, 18), at(dochala(18, 21, 7, STONE_DARK), 0, T + 6, 18));
-  f.add(box(14, 5, 12, mat('#d9d1c2', 0.9), 0, T, 34), at(hipRoof(15, 13, 4, mat('#a3463a', 0.8)), 0, T + 5, 34));
+  const HALL = mat('#d9d1c2', 0.9);
+  f.add(box(14, 5, 12, HALL, 0, T, 34), at(hipRoof(15, 13, 4, mat('#a3463a', 0.8)), 0, T + 5, 34));
+  // The doorway at the front, and doors on either side of the Natmandir
+  const doors = new THREE.Group();
+  doors.add(at(templeDoorway(1.5, 2.8, { m: HALL, guardians: false }), 0, T, 40));
+  for (const s of [-1, 1]) doors.add(at(templeDoorway(1.6, 3.2, { m: STONE, guardians: false }), s * 8, T, 18).rotateY(s * Math.PI / 2));
+  f.add(mergeByMaterial(doors));
   // Shrines of the Mahavidyas round the hilltop
   for (let k = 0; k < 7; k++) {
     const a = Math.PI * 0.15 + (k / 6) * Math.PI * 1.7, x = Math.cos(a) * 30, z = Math.sin(a) * 33;

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, hipRoof, TIBETAN, inst, unitBox } from '../helpers.js';
+import { tibetanDoor } from '../details/doorways.js';
 
 const SCREE = mat('#9d8b78', 0.95, 0, { flatShading: true });
 const PEAK = mat('#86796d', 0.95, 0, { flatShading: true });
@@ -21,10 +22,12 @@ export function buildKeyMonastery() {
     const y = 14 + tier * 4.2, r = 48 * (1 - y / H) + 1, n = Math.max(3, Math.round(r * 1.1));
     for (let k = 0; k < n; k++) {
       const a = (k / n) * Math.PI * 2 + tier * 0.3;
+      if (tier === 5 && Math.abs(a - Math.PI / 2) < 0.3) continue; // the way up to the door of the top hall
       blocks.push([Math.cos(a) * r, y - 2, Math.sin(a) * r, 5 + R() * 3, 5 + R() * 2.5, 5 + R() * 2, -a]);
     }
   }
   f.add(inst(unitBox(), blocks, TIBETAN.white), inst(unitBox(), blocks.map(([x, y, z, w, h, d, ry]) => [x, y + h, z, w + 0.3, 0.6, d + 0.3, ry]), TIBETAN.maroon));
+  f.add(at(tibetanDoor(1.4, 2.4), 0, H - 4, 5));
   f.add(box(10, 6, 10, TIBETAN.white, 0, H - 4, 0), box(10.3, 0.7, 10.3, TIBETAN.maroon, 0, H + 2, 0), at(hipRoof(11, 11, 3, M.gild), 0, H + 2.7, 0), cyl(0.3, 0.7, 2, M.gild, 0, H + 5.6, 0, 8));
   return { group: g, focus: f, view: [0.6, 0.32, 1.25] };
 }

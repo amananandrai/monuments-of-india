@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, rng, shikhara, hipRoof, kalash, flag, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, at, group, rng, shikhara, hipRoof, kalash, flag, inst, unitBox } from '../helpers.js';
+import { templeDoorway, templePorch } from '../details/doorways.js';
+import { mergeByMaterial } from '../details/components.js';
 
 const STONE = mat('#8e8a82', 0.9);
 const STONE_DARK = mat('#6f6b64', 0.9);
@@ -26,6 +28,8 @@ export function buildKedarnath() {
   const t = shikhara(11, 13, STONE, (k) => 1 - 0.5 * Math.pow(k, 1.6), 12);
   f.add(at(t, 0, 11.6, -9), at(flag(4, M.saffron), 0, 11.6 + t.userData.top - 0.6, -9));
   f.add(box(14, 8, 14, STONE, 0, 2, 5), at(hipRoof(16, 16, 5, STONE_DARK), 0, 10, 5), at(kalash(1.4), 0, 15, 5));
+  // The hall's doorway in a stone porch, facing the Nandi
+  f.add(mergeByMaterial(group(at(templeDoorway(2, 4, { m: STONE }), 0, 2, 12), at(templePorch(7.6, 3.2, 6.4, STONE, STONE_DARK), 0, 2, 12))));
   f.add(box(4, 1, 6, STONE_DARK, 0, 0, 18), box(2.2, 1.8, 3.6, mat('#3b3936', 0.7), 0, 1, 18), box(1.2, 1.2, 1.2, mat('#3b3936', 0.7), 0, 2.2, 19.6));
   // Bhim Shila: the boulder that shielded the temple in 2013
   const boulder = mesh(new THREE.IcosahedronGeometry(5, 1), ROCK, 0, 3.6, -24);

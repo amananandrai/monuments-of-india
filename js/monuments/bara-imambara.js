@@ -1,19 +1,25 @@
 import * as THREE from 'three';
-import { M, mat, box, at, onFace, archPanel, onionDome, finial, hemi, minaret, guldasta } from '../helpers.js';
+import { M, mat, box, at, onFace, onionDome, finial, hemi, minaret, guldasta } from '../helpers.js';
+import { iwan, arcadeSkin } from '../details/mughal.js';
 
 const LIME = mat('#e6d8b8', 0.85);
 const LIME_DARK = mat('#cbb994', 0.85);
 
-// A two-storey Awadhi range: rows of cusped arches and a parapet of guldasta turrets.
-function range(w, h, d) {
-  const g = new THREE.Group();
-  g.add(box(w, h, d, LIME), box(w + 0.6, 0.8, d + 0.6, LIME_DARK, 0, h * 0.5), box(w + 0.6, 0.8, d + 0.6, LIME_DARK, 0, h));
-  const n = Math.floor(w / 6.4);
+// A two-storey Awadhi range: two tiers of arched cells 1.2 m deep along its front (open arcades
+// below, screened windows above) and a parapet of guldasta turrets. gap: [from, to] along x left
+// clear of cells and of the string course, for an iwan.
+function range(w, h, d, gap = null) {
+  const g = new THREE.Group(), cd = 1.2;
+  g.add(box(w, h, d - cd, LIME, 0, 0, -cd / 2), box(w + 0.6, 0.8, d + 0.6, LIME_DARK, 0, h));
+  const spans = gap ? [[-w / 2 - 0.3, gap[0]], [gap[1], w / 2 + 0.3]] : [[-w / 2 - 0.3, w / 2 + 0.3]];
+  for (const [a, b] of spans) g.add(box(b - a, 0.8, d + 0.6, LIME_DARK, (a + b) / 2, h * 0.5));
+  const n = Math.floor(w / 6.4), cells = [];
   for (let k = 0; k < n; k++) {
     const x = -w / 2 + (k + 0.5) * (w / n);
-    g.add(onFace(at(archPanel(4.4, h * 0.4, true, M.recess, 0.3), 0, 0.6, 0), 0, d / 2, x));
-    g.add(onFace(at(archPanel(3.4, h * 0.3, true, M.recess, 0.3), 0, h * 0.55, 0), 0, d / 2, x));
+    if (gap && x > gap[0] - 2 && x < gap[1] + 2) continue;
+    cells.push([x, 0.6, 4.4, h * 0.4, 'room'], [x, h * 0.55, 3.4, h * 0.3, 'jali']);
   }
+  g.add(at(arcadeSkin(w, h, cells, cd, LIME, { trim: LIME_DARK }), 0, 0, d / 2 - cd));
   for (let x = -w / 2; x <= w / 2 + 0.01; x += w / n) g.add(at(guldasta(3.4, 0.45, LIME), x, h + 0.8, d / 2 - 0.4));
   return g;
 }
@@ -27,8 +33,8 @@ export function buildBaraImambara() {
   for (const x of [-41, 41]) for (const z of [-23, 3]) f.add(at(guldasta(24, 1.6, LIME), x, 1.2, z));
   for (const x of [-22, 0, 22]) f.add(box(12, 4, 10, LIME, x, 19, -12), at(hemi(4, LIME, 20), x, 23, -12), at(finial(2.4), x, 27, -12));
   // Gateway into the forecourt
-  f.add(at(range(40, 15, 10), 0, 0, 62));
-  f.add(onFace(at(archPanel(9, 12, true, M.recess, 0.4), 0, 0.3, 0), 0, 67.4));
+  f.add(at(range(40, 15, 10, [-6, 6]), 0, 0, 62));
+  f.add(onFace(iwan(9, 12, { m: LIME, trim: LIME_DARK, shade: LIME_DARK, depth: 1.6, frame: 1.4, top: 1.6 }), 0, 67));
   // The Asfi Mosque: three domes between two minarets
   const m = new THREE.Group();
   m.add(box(40, 3, 22, LIME_DARK), at(range(36, 13, 16), 0, 3, 0));

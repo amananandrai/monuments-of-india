@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, box, at, starPrism, pidaRoof, kalash, inst, unitCyl, unitBox, aroundRect, surface } from '../helpers.js';
+import { M, mat, box, at, group, starPrism, pidaRoof, kalash, inst, unitCyl, unitBox, aroundRect, surface } from '../helpers.js';
+import { templeDoorway, steps } from '../details/doorways.js';
+import { mergeByMaterial } from '../details/components.js';
 
 const DOLERITE = mat('#4d4a47', 0.8);
 const SAND = mat('#b49a7c', 0.9);
@@ -21,6 +23,8 @@ export function buildRamappa() {
   const figs = [];
   aroundRect(19, 19, 4.6).forEach(([x, z, ry]) => figs.push([x, B + 2.6, z + 6, 0.5, 2.2, 0.4, ry]));
   f.add(inst(unitBox(), figs, mat('#2f2d2b', 0.6)));
+  // The sanctum's doorway with its door guardians, and steps up to the hall
+  f.add(mergeByMaterial(group(at(templeDoorway(1.7, 3.6, { m: DOLERITE, bands: 4 }), 0, B, -4), at(steps(5, B, 7, SAND), 0, 0, 15))));
   // Sanctum on its dark base, under the light-brick tower
   f.add(box(12, 7, 12, DOLERITE, 0, B, -10), box(13, 0.6, 13, SAND, 0, B + 7, -10));
   const tower = pidaRoof(12, 4.5, 7, 1.1, BRICK, mat('#8a523c', 0.9));

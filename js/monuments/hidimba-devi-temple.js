@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, hipRoof, finial, inst, unitCyl } from '../helpers.js';
+import { templeDoorway, steps } from '../details/doorways.js';
 
 const STONE = mat('#8d8a85', 0.95);
 const WOOD = mat('#6d5034', 0.85);
@@ -23,7 +24,8 @@ export function buildHidimba() {
   g.add(inst(unitCyl(6), trunks, M.wood), inst(new THREE.ConeGeometry(0.5, 1, 7).translate(0, 0.5, 0), crowns, DEODAR));
   // Stone base, carved timber walls and three square shingle roofs under a brass cone
   f.add(box(16, 1.2, 18, STONE, 0, 0, 0), box(11, 6, 11, STONE, 0, 1.2, 0), box(11.4, 0.6, 11.4, WOOD, 0, 7.2, 0));
-  f.add(box(3, 4.4, 0.6, WOOD, 0, 1.2, 5.6), box(2, 3.4, 0.2, M.recess, 0, 1.4, 5.95));
+  // The carved timber doorway, and steps up from the ground
+  f.add(at(templeDoorway(1.5, 3, { m: WOOD, bands: 4, guardians: false, moon: false }), 0, 1.2, 5.5), at(steps(4, 1.2, 3, STONE), 0, 0, 9));
   let y = 7.8;
   [[17, 3.2, 8.5, 3.4], [13, 2.8, 6.5, 3], [9.6, 2.4, 0, 0]].forEach(([w, rh, ww, wh]) => {
     const roof = hipRoof(w, w, rh, SHINGLE);

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, rng, onFace, archPanel, guldasta, nagaraTemple, inst, unitBox, unitSpire } from '../helpers.js';
+import { M, mat, box, cyl, at, rng, onFace, archPanel, guldasta, inst, unitBox, unitSpire } from '../helpers.js';
+import { nagaraTemple } from '../details/temples.js';
 
 const RED = mat('#a94a3c', 0.85);
 const RED_LIGHT = mat('#c26a5a', 0.85);

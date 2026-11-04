@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, FACES, archPanel, onionDome, finial, guldasta, minaret } from '../helpers.js';
+import { M, mat, box, cyl, at, onFace, FACES, onionDome, finial, guldasta, minaret } from '../helpers.js';
+import { arcadeSkin, cellRow } from '../details/mughal.js';
 
 const STONE = mat('#a59a86', 0.9);
 const PLASTER = mat('#cfc4ae', 0.85);
@@ -7,10 +8,13 @@ const PLASTER = mat('#cfc4ae', 0.85);
 // A Qutb Shahi tomb: a square chamber on a terrace, ringed by an arcade, under a bulbous dome on a petalled drum.
 function tomb(s) {
   const g = new THREE.Group(), w = 20 * s, h = 12 * s;
-  g.add(box(w * 1.7, 2 * s, w * 1.7, STONE));
-  for (const a of FACES) for (let k = -2; k <= 2; k++) g.add(onFace(at(archPanel(w * 0.2, 3.4 * s, true, M.recess, 0.25), 0, 0.1, 0), a, w * 0.85, k * w * 0.32));
-  g.add(box(w * 1.3, 6 * s, w * 1.3, PLASTER, 0, 2 * s));
-  for (const a of FACES) for (let k = -1; k <= 1; k++) g.add(onFace(at(archPanel(w * 0.28, 5 * s, true, M.recess, 0.25), 0, 2.4 * s, 0), a, w * 0.65, k * w * 0.4));
+  // The terrace, with low arched cells round it, and the arcade round the chamber, whose arches
+  // open on a gallery: both built as faces of cells set into the blocks.
+  const td = 0.8 * s, ad = 1.2 * s, faceLen = (a, L, d) => (a === 0 || a === Math.PI ? L : L - 2 * d);
+  g.add(box(w * 1.7 - 2 * td, 2 * s, w * 1.7 - 2 * td, STONE));
+  for (const a of FACES) g.add(onFace(arcadeSkin(faceLen(a, w * 1.7, td), 2 * s, cellRow(5, w * 0.32, 0.1 * s, 1.6 * s, 1.7 * s), td, STONE, { fill: 'none' }), a, w * 0.85 - td));
+  g.add(box(w * 1.3 - 2 * ad, 6 * s, w * 1.3 - 2 * ad, PLASTER, 0, 2 * s));
+  for (const a of FACES) g.add(onFace(at(arcadeSkin(faceLen(a, w * 1.3, ad), 6 * s, cellRow(3, w * 0.4, 0.4 * s, w * 0.28, 5 * s), ad, PLASTER, { fill: 'room' }), 0, 2 * s, 0), a, w * 0.65 - ad));
   g.add(box(w, h, w, PLASTER, 0, 8 * s));
   for (const x of [-w / 2, w / 2]) for (const z of [-w / 2, w / 2]) g.add(at(guldasta(4 * s, 0.5 * s, PLASTER), x, 8 * s + h, z));
   const top = 8 * s + h;
@@ -24,8 +28,8 @@ export function buildQutbShahiTombs() {
   g.add(box(260, 0.15, 220, M.grass));
   for (const [x, z, s] of [[0, 0, 1.3], [-60, -20, 1], [56, -24, 1.05], [-40, 50, 0.85], [40, 54, 0.9], [-90, 40, 0.7], [90, 20, 0.75]]) f.add(at(tomb(s), x, 0, z));
   // The great mosque, with its two minarets
-  f.add(box(40, 12, 14, PLASTER, 0, 0, -70));
-  for (let k = -3; k <= 3; k++) f.add(onFace(at(archPanel(3.6, 8, true, M.recess, 0.25), 0, 0.4, 0), 0, -63, k * 5.4));
+  f.add(box(40, 12, 13, PLASTER, 0, 0, -70.5));
+  f.add(at(arcadeSkin(40, 12, cellRow(7, 5.4, 0.4, 3.6, 8).map((c) => [...c, c[0] === 0 ? 'door' : 'room']), 1, PLASTER), 0, 0, -64));
   for (const x of [-20, 20]) f.add(at(minaret(28, 1.6, PLASTER, { cap: 'onion' }), x, 0, -63));
   return { group: g, focus: f, view: [0.6, 0.38, 1.2] };
 }

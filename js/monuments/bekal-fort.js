@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet, ellipseWall } from '../helpers.js';
+import { fortGate } from '../details/forts.js';
 
 const LATERITE = mat('#8f4e36', 0.95);
 const LATERITE_DARK = mat('#6e3a27', 0.95);
@@ -24,8 +25,11 @@ export function buildBekal() {
     const a = (k / 7) * Math.PI;
     f.add(cyl(4, 4.6, 9, LATERITE, Math.cos(a) * R, H, -Math.sin(a) * R, 14));
   }
-  // Zigzag entrance at the neck, and the tall round observation tower in the middle
-  f.add(box(14, 9, 8, LATERITE_DARK, -6, H, 120), box(14, 9, 8, LATERITE_DARK, 6, H, 128));
+  // The gate at the neck, walls joining it to the neck's sides, and inside it a baffle wall that
+  // turns the way in into a zigzag; then the tall round observation tower in the middle
+  f.add(at(fortGate(14, 10, 8, 4, 7, { m: LATERITE, trim: LATERITE_DARK, towers: { r: 3, h: 11, cap: 'merlons', seg: 14 } }), 0, H, 122));
+  for (const s of [-1, 1]) f.add(box(9.5, 6.9, 3, LATERITE, s * 11.5, H, 120));
+  f.add(box(16, 7, 3, LATERITE_DARK, -4, H, 106));
   f.add(cyl(7, 8, 18, LATERITE, 0, H, 0, 20), cyl(8, 8, 1, LATERITE_DARK, 0, H + 18, 0, 20), box(10, 1.2, 1.2, LATERITE_DARK, 0, H + 6, 9));
   return { group: g, focus: f, view: [0.5, 0.5, 1.15] };
 }

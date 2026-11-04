@@ -1,14 +1,19 @@
 import * as THREE from 'three';
 import { M, V, box, cyl, lathe, group, at, kalash, bell, shikhara, pidaRoof, nagaraProfile, ribbed, inst, unitBox, unitCyl, unitSpire, aroundRect, hoopArch } from '../helpers.js';
+import { trabeateGate, wallWithGaps } from '../details/temples.js';
+import { templeDoorway } from '../details/doorways.js';
 
 export function buildDilwara() {
   const Mb = M.marble, Sh = M.marbleShade, g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   g.add(box(130, 0.2, 140, M.grass));
-  f.add(box(48, 1.5, 70, Sh), box(48.6, 5, 0.8, M.plaster, 0, 1.5, 35));
+  // The plain outer wall, with the gateway in its middle
+  f.add(box(48, 1.5, 70, Sh), at(wallWithGaps('x', 48.6, 5, 0.8, M.plaster, [[0, 7.6]], 0, 35), 0, 1.5, 0));
+  f.add(at(trabeateGate(8, 6.5, 3, 2.6, 4, { m: M.plaster, trim: Mb, bands: 2 }), 0, 1.5, 35));
   // Rows of shrine cells (devakulikas) with little spires, behind a pillared cloister
   const cells = aroundRect(44, 66, 3.2, 1.6), cellList = [], spires = [], posts = [];
   cells.forEach(([x, z, ry]) => {
+    if (z > 30 && Math.abs(x) < 3) return; // the way in from the gateway
     // 3 cm short of the cloister roof, so the cells' tops and the roof's never share a plane
     cellList.push([x, 1.5, z, 3, 3.97, 3, ry]);
     spires.push([x, 5.5, z, 2.6, 3.4, 2.6, ry]);
@@ -20,6 +25,7 @@ export function buildDilwara() {
   f.add(box(10, 8, 10, Mb, 0, 1.5, -16), at(shikhara(9, 12, Mb, nagaraProfile, 12), 0, 9.5, -16));
   const gm = pidaRoof(10, 5, 4, 0.8, Mb, Sh);
   f.add(box(10, 7, 10, Mb, 0, 1.5, -5), at(gm, 0, 8.5, -5), at(bell(2.6, Mb), 0, 8.5 + gm.userData.top, -5));
+  f.add(at(templeDoorway(1.6, 3.2, { m: Mb, bands: 4 }), 0, 2.5, 0));
   const rz = 9, pc = [];
   for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) pc.push([-6 + i * 4, 2.5, rz - 6 + j * 4, 0.9, 6.5, 0.9]);
   f.add(box(17, 1, 17, Sh, 0, 1.5, rz), inst(unitCyl(12), pc, Mb));

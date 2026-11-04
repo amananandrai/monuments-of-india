@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, surface, box, cyl, lathe, group, at, archWall, barrelVault, hemi, finial } from '../helpers.js';
+import { M, mat, surface, box, cyl, lathe, group, at, archWall, barrelVault } from '../helpers.js';
+import { addIndiaGateDetails, addCanopyDetails } from '../details/india-gate.js';
 
 const NAMES = surface(mat('#d4bd98', 0.8), 'script');
 const BAND = surface(mat('#c9ad85', 0.9), 'frieze');
@@ -48,8 +49,9 @@ export function buildIndiaGate() {
   c.add(box(12, 1, 12, r));
   for (const x of [-4.2, 4.2]) for (const z of [-4.2, 4.2]) c.add(box(1.6, 10, 1.6, m, x, 1, z));
   c.add(box(11, 1.6, 11, m, 0, 11));
-  c.add(at(hemi(4, m), 0, 12.6, 0));
-  c.add(at(finial(3.5), 0, 16.4, 0));
+  // Carvings, lettering, roundels and mouldings: see js/details/india-gate.js.
+  addIndiaGateDetails(f, { b, top });
+  addCanopyDetails(c);
   g.add(at(c, 0, 0, 70));
   g.add(box(18, 0.2, 260, M.path, 0, 0, 60));
   for (const x of [-34, 34]) g.add(box(48, 0.15, 260, M.grass, x, 0, 60));

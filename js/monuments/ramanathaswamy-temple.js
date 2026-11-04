@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, box, at, gopuram, pidaRoof, hemi, kalash, inst, unitCyl, aroundRect, sheet } from '../helpers.js';
+import { M, mat, box, at, pidaRoof, hemi, kalash, inst, unitCyl, aroundRect, sheet } from '../helpers.js';
+import { gopuram, wallWithGaps } from '../details/temples.js';
 
 const STONE = ['#cfc6b3', '#b9ae97', '#ddd5c4', '#a89c83'];
 const GRANITE = mat('#a89c83', 0.9);
@@ -12,7 +13,7 @@ export function buildRamanathaswamy() {
   g.add(sheet(1400, 1400, M.sea, 0, 0.3, 0), box(320, 0.5, 300, mat('#dcc9a3', 0.95), 0, 0, 0));
   // Outer walls and the great gopurams on east and west
   const W = 140, D = 190;
-  for (const s of [-1, 1]) f.add(box(W, 8, 3, LIME, 0, 0, s * D / 2), box(3, 8, D, LIME, s * W / 2, 0, 0));
+  for (const s of [-1, 1]) f.add(wallWithGaps('x', W, 8, 3, LIME, [[0, s > 0 ? 29 : 25]], 0, s * D / 2), wallWithGaps('z', D, 8, 3, LIME, [[20, 15]], s * W / 2, 0));
   f.add(at(gopuram(30, 16, 38, 9, 3, STONE), 0, 0, D / 2), at(gopuram(26, 14, 32, 8, 4, STONE), 0, 0, -D / 2));
   for (const s of [-1, 1]) f.add(at(gopuram(16, 10, 18, 5, 5, STONE).rotateY(Math.PI / 2), s * W / 2, 0, 20));
   // The famous pillared corridors: three rings of colonnades round the shrines

@@ -1,11 +1,13 @@
 import * as THREE from 'three';
-import { M, box, cyl, group, at, onionDome, hemi, kalash, pidaRoof, gopuram } from '../helpers.js';
+import { M, box, cyl, group, at, onionDome, hemi, kalash, pidaRoof } from '../helpers.js';
+import { gopuram, wallWithGaps } from '../details/temples.js';
 
 export function buildMeenakshi() {
   const S = M.stucco, Gr = M.granite, g = new THREE.Group();
   g.add(box(240, 0.3, 270, M.path));
-  for (const s of [-1, 1]) g.add(box(242, 8, 2.5, S, 0, 0, s * 130), box(2.5, 8, 260, S, s * 120, 0, 0));
-  for (const s of [-1, 1]) g.add(box(112, 7, 2, S, 0, 0, s * 62), box(2, 7, 124, S, s * 55, 0, 0));
+  // The walls open where the gopurams stand, so each gate leads through.
+  for (const s of [-1, 1]) g.add(wallWithGaps('x', 242, 8, 2.5, S, [[0, 29]], 0, s * 130), wallWithGaps('z', 260, 8, 2.5, S, [[0, 29]], s * 120, 0));
+  for (const s of [-1, 1]) g.add(wallWithGaps('x', 112, 7, 2, S, [[0, 17]], 0, s * 62), wallWithGaps('z', 124, 7, 2, S, [[0, 17]], s * 55, 0));
   // The four outer gopurams (the southern one is the tallest) and four inner ones
   for (const [x, z, h, rot, seed] of [[0, 130, 52, 0, 1], [0, -130, 47, 0, 2], [120, 0, 49, Math.PI / 2, 3], [-120, 0, 48, Math.PI / 2, 4]]) {
     const t = gopuram(30, 18, h, 11, seed);

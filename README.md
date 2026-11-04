@@ -215,6 +215,22 @@ real-world proportions: there are no model files to download.
   they reflect the monument.
 - **Nature and figures:** rocks, hills, mountains and trees are sculpted with noise
   (`js/naturalize.js`); the statues have sculpted faces and hands.
+- **Fine detail:** India Gate, Charminar, the Taj Mahal, the Gateway of India and the Old Parliament
+  House carry a second layer of carving from `js/details/`: roundels and lettering, nested arches and
+  half-domes, bracketed balconies, jalis, eaves, merlons, lotus-petal domes and finials. The parts are
+  shared (`js/details/components.js`) and merged into a few meshes per monument. See
+  [`docs/monument-details.md`](docs/monument-details.md), and
+  [`docs/doorways-and-reuse-plan.md`](docs/doorways-and-reuse-plan.md) for the plan to give every
+  monument real entrances and to reuse these parts across each architectural family.
+- **Entrances:** the Nagara temples, Ram Mandir's halls and the South Indian gopurams have
+  doorways with depth from `js/details/doorways.js`. They have stepped frames, timber doors
+  standing open onto a lamp-lit sanctum, thresholds, guardians, porches and steps, and real
+  passages through the gopurams. The Mughal, Nawabi, Qutb Shahi and Deccan buildings have iwans
+  with half-domes and doors, and arcades of real arched cells, from `js/details/mughal.js`. The
+  forts' gates are passages through their gatehouses, with guard niches and doors spiked against
+  elephants, from `js/details/forts.js`. The other temples have their own porches and doorways,
+  gates on post-and-lintel lines (one with its two lions), and the monasteries have painted
+  Tibetan doors and pillared porticoes.
 - **No flicker:** faces that share a plane get depth offsets (`js/coplanar.js`), and curved walls and
   cliffs are built as single continuous bands, so surfaces don't shimmer as the camera moves.
 - **Phones:** ambient occlusion and reflections are skipped to keep the frame rate up.

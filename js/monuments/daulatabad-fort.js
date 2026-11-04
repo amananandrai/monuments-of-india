@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, hemi, finial, inst, unitBox, ellipseWall } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, hemi, finial, ellipseWall } from '../helpers.js';
+import { fortGate } from '../details/forts.js';
 
 const STONE = mat('#8e8172', 0.9);
 const HILL = mat('#7d7258', 0.95, 0, { flatShading: true });
@@ -33,7 +34,10 @@ export function buildDaulatabad() {
   }
   f.add(box(10, 6, 8, STONE, 0, 90, 0), at(hemi(3, STONE, 16), 0, 96, 0));
   // Outer walls on the plain, with the Chand Minar inside them
-  g.add(ellipseWall(130, 130, 0, Math.PI * 2, 2.6, 0, 7, STONE));
+  // open at the gate, whose doors still carry their elephant spikes
+  const ga = 1.2;
+  g.add(ellipseWall(130, 130, ga + 0.05, ga - 0.05 + Math.PI * 2, 2.6, 0, 7, STONE));
+  g.add(at(fortGate(14, 9, 8, 4.5, 7, { m: STONE, trim: mat('#a49784', 0.9), towers: { r: 3.8, h: 11, cap: 'merlons', seg: 16 } }), Math.cos(ga) * 130, 0, Math.sin(ga) * 130).rotateY(Math.PI / 2 - ga));
   f.add(at(chandMinar(), 40, 0, 96));
   return { group: g, focus: f, view: [0.5, 0.3, 1.2] };
 }

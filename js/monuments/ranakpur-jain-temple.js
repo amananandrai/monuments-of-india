@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import { M, box, group, at, onFace, FACES, shikhara, pidaRoof, flag, nagaraProfile, inst, unitCyl, unitHemi, unitSpire, aroundRect } from '../helpers.js';
+import { M, box, group, at, onFace, FACES, shikhara, flag, nagaraProfile, inst, unitCyl, unitHemi, unitSpire, aroundRect } from '../helpers.js';
+import { templeDoorway, templePorch } from '../details/doorways.js';
+import { mergeByMaterial } from '../details/components.js';
 
 export function buildRanakpur() {
   const Mb = M.ranak, Sh = M.marbleShade, g = new THREE.Group(), f = new THREE.Group();
@@ -7,14 +9,15 @@ export function buildRanakpur() {
   g.add(box(150, 0.2, 150, M.grass));
   f.add(box(64, 5, 66, Sh), box(60, 7, 62, Mb, 0, 5, 0), box(61, 0.6, 63, Sh, 0, 12, 0));
   // Entrances on all four sides of the chaturmukha temple
+  // each an open porch over a doorway, at the head of its flight of steps
   for (const a of FACES) {
     for (let k = 0; k < 5; k++) f.add(onFace(box(9, 5 - k, 2, Sh, 0, 0, 0), a, 34 + k * 2));
-    const p = onFace(group(box(11, 8, 5, Mb, 0, 5), at(pidaRoof(11, 5, 3, 0.8, Mb, Sh), 0, 13, 0)), a, 33);
-    f.add(p);
+    const fd = a === 0 || a === Math.PI ? 31 : 30;
+    f.add(onFace(at(mergeByMaterial(group(templeDoorway(2, 4, { m: Mb, bands: 4 }), templePorch(11, 3.3, 7.6, Mb, Sh))), 0, 5, 0), a, fd));
   }
   // Pillars round the edge, a forest of domes on the roof, and spires over the cells
   const pil = [], drums = [], domes = [], spires = [];
-  aroundRect(61, 63, 2.4).forEach(([x, z]) => pil.push([x, 5, z, 0.8, 7, 0.8]));
+  aroundRect(61, 63, 2.4).forEach(([x, z]) => { if (Math.min(Math.abs(x), Math.abs(z)) > 3.5) pil.push([x, 5, z, 0.8, 7, 0.8]); });
   aroundRect(58, 60, 3.4, 1).forEach(([x, z, ry]) => spires.push([x, 12.6, z, 2.2, 2.8, 2.2, ry]));
   for (let i = -3; i <= 3; i++) for (let j = -3; j <= 3; j++) {
     if (Math.abs(i) <= 1 && Math.abs(j) <= 1) continue;

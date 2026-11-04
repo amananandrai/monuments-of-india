@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, rng, flat, kalash, inst, unitBox, aroundRect, sheet } from '../helpers.js';
+import { M, mat, mesh, box, at, rng, flat, kalash, inst, unitBox, aroundRect, sheet, onFace } from '../helpers.js';
+import { templeDoorway } from '../details/doorways.js';
 
 const GRANITE = mat('#8f8577', 0.95);
 const GRANITE_DARK = mat('#6d655a', 0.95);
@@ -44,5 +45,10 @@ export function buildShoreTemple() {
   f.add(box(9, 6, 9, GRANITE, 0, 1.4, -10), at(vimana(9, 5, 2.8, GRANITE, GRANITE_DARK), 0, 7.4, -10));
   f.add(box(6, 4.5, 6, GRANITE, 0, 1.4, 9), at(vimana(6, 4, 2.2, GRANITE, GRANITE_DARK), 0, 5.9, 9));
   f.add(box(7, 3.6, 6, GRANITE, 0, 1.4, 0), box(7.6, 0.6, 6.6, GRANITE_DARK, 0, 5, 0));
+  // Their doorways: the larger shrine's to the sea, the smaller one's inland
+  const big = onFace(at(templeDoorway(1.5, 3, { m: GRANITE }), 0, 1.4, 0), Math.PI, 4.5), small = onFace(at(templeDoorway(1.15, 2.4, { m: GRANITE, guardians: false }), 0, 1.4, 0), 0, 3);
+  big.position.z -= 10;
+  small.position.z += 9;
+  f.add(big, small);
   return { group: g, focus: f, view: [0.95, 0.35, 1.0] };
 }
