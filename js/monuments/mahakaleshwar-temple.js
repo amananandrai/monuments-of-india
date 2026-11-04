@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, at, inst, unitCyl, aroundRect, kalash, flag, rng } from '../helpers.js';
-import { nagaraTemple } from '../details/temples.js';
+import { nagaraTemple, bhumijaRows } from '../details/temples.js';
 import { instances, miniSpireGeo } from '../details/sculpture.js';
 import { townHouses } from '../details/realism.js';
 import { addDetails } from '../details/mahakaleshwar-temple.js';
@@ -8,21 +8,6 @@ import { addDetails } from '../details/mahakaleshwar-temple.js';
 const STONE = mat('#e6d6b8', 0.85);
 const SHADE = mat('#b98f5f', 0.9);
 const SPIRE = mat('#eadcc0', 0.8);
-
-// The Maratha-era Bhumija spire: on each face a central band climbs to the top, and the quarters
-// between the bands are filled with rows of miniature spires, one row to each storey, diminishing
-// upward. The spire is base w, height h, its foot at y = 0; prof is its taper.
-function bhumijaRows(w, h, prof, rows = 9) {
-  const list = [];
-  for (let i = 0; i < rows; i++) {
-    const t = (i + 0.3) / rows, ww = w * prof(t), y = t * h, s = ww * 0.13;
-    for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) for (const lat of [-0.37, 0.37]) {
-      const c = Math.cos(a), sn = Math.sin(a), d = ww * 0.42 + s * 0.3, l = lat * ww;
-      list.push([sn * d + c * l, y, c * d - sn * l, s, s * 1.5, s, a]);
-    }
-  }
-  return list;
-}
 
 export function buildMahakaleshwar() {
   const g = new THREE.Group(), f = new THREE.Group();

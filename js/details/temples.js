@@ -15,6 +15,22 @@ function doorSize(wallH) {
   return { w: h * 0.5, h };
 }
 
+// The Maratha-era Bhumija spire (Mahakaleshwar, Trimbakeshwar): on each face a central band climbs to the top, and the quarters
+// between the bands are filled with rows of miniature spires, one row to each storey, diminishing
+// upward. The spire is base w, height h, its foot at y = 0; prof is its taper.
+export function bhumijaRows(w, h, prof, rows = 9) {
+  const list = [];
+  for (let i = 0; i < rows; i++) {
+    const t = (i + 0.3) / rows, ww = w * prof(t), y = t * h, s = ww * 0.13;
+    for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) for (const lat of [-0.37, 0.37]) {
+      const c = Math.cos(a), sn = Math.sin(a), d = ww * 0.42 + s * 0.3, l = lat * ww;
+      list.push([sn * d + c * l, y, c * d - sn * l, s, s * 1.5, s, a]);
+    }
+  }
+  return list;
+}
+// Returned as [x, y, z, sx, sy, sz, ry] for instances(miniSpireGeo(), …), about the spire's axis.
+
 // A North Indian (Nagara) temple along the z axis: the sanctum and its curved spire at z = 0,
 // with halls (mandapas) stepping out towards +z. halls: [[width, wallHeight, roofTiers, 'pida' | 'dome']].
 // The plinth is `apron` wider than the sanctum, so a broad hall can stand on it with room for side doors.
