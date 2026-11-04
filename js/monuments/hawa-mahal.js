@@ -60,7 +60,7 @@ export function buildHawaMahal() {
   g.add(f);
   g.add(box(100, 0.2, 14, M.asphalt, 0, 0, 12), box(100, 0.3, 4, M.path, 0, 0, 3.5));
   const floors = [[46, 3.6], [46, 3.0], [30, 3.0], [20, 3.0], [11, 3.0]];
-  const domes = [], posts = [], banglas = [], finials = [], corbels = [], cusps = [];
+  const domes = [], posts = [], banglas = [], finials = [], corbels = [], cusps = [], bays = [], panes = [];
   let y = 0;
   floors.forEach(([w, h], fi) => {
     const front = windows(w, h, 1.5);
@@ -74,6 +74,21 @@ export function buildHawaMahal() {
     for (const s of [-1, 1]) f.add(box(T, h, D - T, P, s * (w / 2 - T / 2 - 0.02), y, -D / 2));
     f.add(box(w - 0.04, 0.2, D - T, P, 0, y + h - 0.36, -D / 2));
     front.forEach((hole, k) => {
+      if (fi >= 1) {
+        // Above the ground floor every window is an oriel: a half-octagon bay standing out from the
+        // screen, a pierced window in each of its four facets, a corbel under it and a small dome
+        // with a lotus finial over it; together they make the honeycomb of the facade.
+        const r = 0.66, zc = T / 2 - 0.02, y0 = y + h * 0.13, bh = h * 0.62;
+        bays.push([hole.x, y0, zc, r, bh, r]);
+        for (const a of [-3, -1, 1, 3].map((q) => (q * Math.PI) / 8)) {
+          const dd = r * Math.cos(Math.PI / 8) + 0.012;
+          panes.push([hole.x + Math.sin(a) * dd, y0 + bh * 0.2, zc + Math.cos(a) * dd, 0.3, bh * 0.6, 0.02, a]);
+        }
+        corbels.push([hole.x, y0 - 0.16, zc + 0.2, 1.1, 0.16, 0.7], [hole.x, y0 - 0.3, zc + 0.12, 0.7, 0.14, 0.45]);
+        if (k % 4 === 2 && fi % 2 === 1) banglas.push([hole.x, y0 + bh, zc, 1.4, 0.45, 1.0]);
+        else { domes.push([hole.x, y0 + bh, zc, 1.3, 1.0, 1.3]); finials.push([hole.x, y0 + bh + 0.5, zc, 0.14, 0.42, 0.14]); }
+        return;
+      }
       // Every third window has a curved bangla roof; the rest small domes with a lotus finial.
       const top = y + h * 0.72;
       if (k % 3 === 1 && fi % 2 === 0) banglas.push([hole.x, top - 0.02, -0.05, 0.98, 0.42, 0.85]);
@@ -92,6 +107,10 @@ export function buildHawaMahal() {
     if (next && next[0] < w) for (const s of [-1, 1]) f.add(box((w - next[0]) / 2, 0.8, D + T, L, s * (w + next[0]) / 4, y + h, -D / 2));
     y += h;
   });
+  const bayGeo = new THREE.CylinderGeometry(1, 1, 1, 4, 1, false, -Math.PI / 2, Math.PI).translate(0, 0.5, 0);
+  const paneIm = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0), JALI, panes.length), po = new THREE.Object3D();
+  panes.forEach(([x, py, z, sx, sy, sz, a], i) => { po.position.set(x, py, z); po.rotation.set(0, a, 0); po.scale.set(sx, sy, sz); po.updateMatrix(); paneIm.setMatrixAt(i, po.matrix); });
+  f.add(inst(bayGeo, bays, P), paneIm);
   f.add(inst(unitHemi(10), domes, L), inst(unitBox(), posts, P), inst(banglaGeo(), banglas, L), inst(finialGeo(), finials, L), inst(unitBox(), corbels, L));
   // The cusps: small lobes turned to face out of the arch.
   const cuspM = new THREE.InstancedMesh(new THREE.TorusGeometry(0.07, 0.022, 4, 8, Math.PI), L, cusps.length), o = new THREE.Object3D();
