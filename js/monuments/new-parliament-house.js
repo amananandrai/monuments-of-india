@@ -1,5 +1,8 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, group, at, onFace, FACES, archPanel, inst, unitBox } from '../helpers.js';
+import { M, mesh, box, cyl, group, at, onFace, FACES, inst, unitBox } from '../helpers.js';
+import { mergeByMaterial } from '../details/components.js';
+import { interior, doorLeaves, steps } from '../details/doorways.js';
+import { cutSlab, headRing } from '../details/colonial.js';
 
 export function buildNewParliament() {
   const Rd = M.red, Bf = M.buff, g = new THREE.Group(), f = new THREE.Group();
@@ -33,10 +36,17 @@ export function buildNewParliament() {
     }
   });
   f.add(inst(unitBox(), fins, Bf));
-  // Ceremonial entrances at the three corners
+  // Ceremonial entrances at the three corners: a portal 6 m deep, framed in red sandstone, with
+  // bronze doors standing open at its back and steps up to it
+  const portal = mergeByMaterial(group(
+    at(cutSlab(18, 18, [[0, 0, 8, 13, 'flat']], 6, Bf), 0, 1.5, -3), box(19, 1.2, 7, Rd, 0, 19.5),
+    at(headRing(8, 13, 'flat', 0.7, 0.12, Rd), 0, 1.5, 3), box(8, 0.12, 6, Rd, 0, 1.5, 0),
+    at(interior(7.99, 13, 0.1, 0.06), 0, 1.5, -2.988), at(doorLeaves(7.98, 12.5, { open: 0.6, studs: false, m: M.bronze }), 0, 1.62, -2.98),
+    at(steps(12, 1.5, 6, Rd, 0.4), 0, 0, 3),
+  ));
   V3.forEach(([x, z]) => {
     const a = Math.atan2(x, z), d = Math.hypot(x, z) - c * 0.866 + 3;
-    f.add(onFace(group(box(18, 18, 6, Bf, 0, 1.5), box(19, 1.2, 7, Rd, 0, 19.5), at(archPanel(8, 13, false, M.recess, 0.3), 0, 1.5, 3)), a, d));
+    f.add(onFace(portal.clone(), a, d));
   });
   // Constitution Hall at the centre, crowned by the bronze National Emblem
   const hall = cyl(20, 20, 5, Bf, 0, 23.7, 0, 3);

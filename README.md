@@ -230,7 +230,10 @@ real-world proportions: there are no model files to download.
   forts' gates are passages through their gatehouses, with guard niches and doors spiked against
   elephants, from `js/details/forts.js`. The other temples have their own porches and doorways,
   gates on post-and-lintel lines (one with its two lions), and the monasteries have painted
-  Tibetan doors and pillared porticoes.
+  Tibetan doors and pillared porticoes. The colonial, Gothic Revival, Baroque and Indo-Saracenic
+  buildings have their doors from `js/details/colonial.js`: porches of paired columns, arched doors
+  with fanlights, a Gothic portal with a crocketed gable, a Baroque portal, sash and two-light
+  windows in stone surrounds, and arcades with real depth.
 - **No flicker:** faces that share a plane get depth offsets (`js/coplanar.js`), and curved walls and
   cliffs are built as single continuous bands, so surfaces don't shimmer as the camera moves.
 - **Phones:** ambient occlusion and reflections are skipped to keep the frame rate up.
