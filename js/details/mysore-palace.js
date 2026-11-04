@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, at, onFace, FACES } from '../helpers.js';
-import { rosette, chhajja, merlons, petalRing, bracketGeo, placeAll, alongFace, jharokha, mergeByMaterial } from './components.js';
+import { M, mat, box, at, onFace, FACES } from '../helpers.js';
+import { rosette, chhajja, merlons, petalRing, bracketGeo, placeAll, alongFace, jharokha, panel, frieze, archCurve, mergeByMaterial } from './components.js';
+import { figure, instances, elephantGeo } from './sculpture.js';
 import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
 import { rideElephant } from './animals.js';
 
@@ -32,10 +33,38 @@ function architecture(f) {
   f.add(d);
 }
 
+// The sculpture and finer parts, after photographs: the relief of Gajalakshmi (the goddess of
+// wealth, seated on a lotus between two elephants raising their trunks) on the parapet over the
+// central tower's front; cusps (small lobes) round the inside of each arch of the great arcade, so
+// they read as multi-foiled; and carved capitals at the springing of the arches on the piers.
+// Dimensions follow js/monuments/mysore-palace.js: b = 1, the arcade front at z = 23 (arches 7 × 11
+// at x = 10 k), the tower's front at z = 26 and its top at b + 31.
+function sculpture(f) {
+  const d = new THREE.Group(), b = 1, L = M.lime, S = M.mysore, lobe = new THREE.TorusGeometry(0.42, 0.1, 4, 8, Math.PI);
+  d.add(at(panel(8, 3.2, 0.3, L, frieze(S)), 0, b + 31, 26.02));
+  d.add(at(petalRing(0.6, 10, 0.6, 0.4, 1.2, M.gild), 0, b + 31.5, 26.3), at(figure(2, M.gild, 'seated'), 0, b + 31.6, 26.25));
+  for (const k of [-3, -2, -1, 1, 2, 3]) {
+    const pts = archCurve(3.5, 11 - 3.5 * 1.4, true, 9).slice(1, -1);
+    pts.forEach((p, i) => {
+      if (i % 2) return;
+      const o = new THREE.Mesh(lobe, L);
+      o.position.set(k * 10 + p.x * 0.93, b + 0.5 + p.y * 0.97, 23.06);
+      o.rotation.z = Math.atan2(-p.y + (11 - 4.9), -p.x) - Math.PI / 2;
+      d.add(o);
+    });
+  }
+  for (const x of [-35, -25, -15, 15, 25, 35]) d.add(box(1.8, 0.5, 0.45, L, x, b + 6.4, 23.2), box(1.4, 0.35, 0.35, L, x, b + 6.05, 23.15));
+  mergeByMaterial(d);
+  f.add(d);
+  f.add(instances(elephantGeo(), [[-2.6, b + 31.3, 26.4, 1.6, 1.8, 0.8, 0.6], [2.6, b + 31.3, 26.4, 1.6, 1.8, 0.8, -0.6]], M.gild));
+}
+
+
 // The Mysore Palace at Dasara: the caparisoned elephants of the procession on the forecourt lawn,
 // one under the golden howdah, palms and flower beds, and lamps along the drive.
 export function addDetails(f, g) {
   architecture(f);
+  sculpture(f);
   [[-24, 55, '#b3262e', '#e3b54a'], [-12, 58, '#2f5d9a', '#e3b54a'], [12, 58, '#2f7a3f', '#e3b54a'], [24, 55, '#7a1f5a', '#e3b54a']].forEach(([x, z, c, t], i) => {
     const e = rideElephant(mat('#6a605a', 0.9), 1, { cloth: c, trim: t, howdah: i === 1 });
     e.position.set(x, 0.15, z);

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mat, box, at, onFace, FACES, surface } from '../helpers.js';
-import { windowFrame, mergeByMaterial } from './components.js';
+import { windowFrame, keystone, mergeByMaterial } from './components.js';
+import { urn } from './sculpture.js';
 import { balustrade, GLASS } from './colonial.js';
 import { trees, shrubs, lampPosts, asiBoard, scatter, along } from './realism.js';
 
@@ -27,10 +28,29 @@ function architecture(f) {
   f.add(d);
 }
 
+// The sculpture and finer parts, after photographs: urns along the roof balustrade; a keystone in
+// every arch of the two arcades; pilasters between the windows of the dome's drum; and a ring of
+// small round-arched openings in its lantern. Dimensions follow js/monuments/cooch-behar-palace.js.
+function sculpture(f) {
+  const d = new THREE.Group(), W = 120, D = 30, H = 18;
+  for (let x = -57; x <= 57; x += 9.5) if (Math.abs(x) > 14) d.add(at(urn(1.3, WHITE), x, H + 2.4, D / 2 + 0.2));
+  for (let k = 0; k < 24; k++) for (const y of [0, H / 2 + 1]) {
+    const cx = -W / 2 + k * (W / 24) + W / 48;
+    if (y === 0 && Math.abs(cx) < 4) continue;
+    d.add(at(keystone(0.4, 0.75, 0.16, WHITE, 0.2), cx, y + 6.0, D / 2));
+  }
+  for (let k = 0; k < 12; k++) d.add(onFace(box(0.5, 7.6, 0.18, WHITE, 0, H + 1.4, 0.09), ((k + 0.5) / 12) * Math.PI * 2, 9));
+  for (let k = 0; k < 6; k++) d.add(onFace(at(windowFrame(0.5, 1.4, WHITE, { shape: 'round', frame: 0.1 }), 0, H + 26.2, 0), (k / 6) * Math.PI * 2, 1.62));
+  mergeByMaterial(d);
+  f.add(d);
+}
+
+
 // The Cooch Behar Palace: lotus leaves on the pond, palms and flowering shrubs in the gardens, and
 // lamps along the drive.
 export function addDetails(f, g) {
   architecture(f);
+  sculpture(f);
   const pads = scatter(26, [-96, -44, 68, 92], { seed: 3, gap: 1.6 });
   g.add(shrubs(pads.map(([x, z]) => [x, z, 1.4]), { y: 0.4, flowers: '#4f8a3a', seed: 3 }));
   g.add(trees(scatter(26, [-145, 145, -80, 165], { seed: 4, gap: 14, avoid: [[-70, 70, -25, 40], [-102, -38, 62, 98], [-8, 8, 20, 145]] }), { kind: 'palm', seed: 4 }));

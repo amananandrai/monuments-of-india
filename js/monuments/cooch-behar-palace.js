@@ -26,7 +26,7 @@ export function buildCoochBehar() {
   f.add(inst(unitBox(), pil, WHITE));
   // The projecting portico over the main door, and the tall dome over the Durbar Hall
   const door = classicalDoor(4, 8, { m: BRICK, trim: WHITE, depth: 0.5, frame: 0.7 });
-  f.add(at(porch(26, 10, H + 3, { m: BRICK, trim: WHITE, colM: WHITE, cols: 5, r: 0.9, top: 'balustrade', door, stepsDown: 0.5 }), 0, 0.5, D / 2));
+  f.add(at(porch(26, 10, H + 3, { m: BRICK, trim: WHITE, colM: WHITE, cols: 5, r: 0.9, top: 'balustrade', door, stepsDown: 0.5, order: 'corinthian' }), 0, 0.5, D / 2));
   f.add(box(28, 0.5, 10, WHITE, 0, 0, D / 2 + 5));
   f.add(cyl(9, 9, 8, WHITE, 0, H + 1.2, 0, 32), cyl(9.6, 9.6, 0.8, BRICK, 0, H + 9.2, 0, 32));
   f.add(at(ribbed(lathe([[9, 0], [8.8, 4], [7.6, 9], [5, 13], [2, 15.4], [0, 16]], METAL, 32), 16, 0.04), 0, H + 10, 0));

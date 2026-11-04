@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { mat, at, onFace, FACES } from '../helpers.js';
-import { clockFace, rosette, merlons, petalRing, jharokha, windowFrame, mergeByMaterial } from './components.js';
+import { M, mat, at, onFace, FACES } from '../helpers.js';
+import { clockFace, rosette, merlons, petalRing, jharokha, windowFrame, mughalChhatri, mergeByMaterial } from './components.js';
 import { trees, shrubs, lampPosts, fountains, scatter, along } from './realism.js';
 
 // Laxmi Vilas Palace, finer detail. From photographs: the clock tower has a dial on each face and
@@ -25,10 +25,24 @@ function architecture(f) {
   f.add(d);
 }
 
+// The sculpture and finer parts, after photographs: two tiers of jharokhas on the fronts of the end
+// pavilions, and small domed kiosks (chhatris) along the roof of the long wings between the larger
+// ones. Dimensions follow js/monuments/laxmi-vilas-palace.js: the end pavilions 20 × 20 × 30 at
+// x = ±100 (front at z = 15), the wing roof at 16.9.
+function sculpture(f) {
+  const d = new THREE.Group();
+  for (const sx of [-1, 1]) for (const x of [-6, 0, 6]) for (const y of [5.5, 12]) d.add(at(jharokha(2.4, 3, OCHRE, { d: 1.1, trim: CREAM, roof: x ? 'bangla' : 'dome' }), sx * 100 + x, y, 15.02));
+  for (const x of [-84, -72, -48, -24, 24, 48, 72, 84]) d.add(at(mughalChhatri(1.5, 5, CREAM, { finialM: M.gild }), x, 16.9, 5));
+  mergeByMaterial(d);
+  f.add(d);
+}
+
+
 // Laxmi Vilas Palace at Vadodara: the long drive to the porch lined with palms and lamps, the
 // fountain on the forecourt lawn, flower beds, and the great trees of the 700-acre grounds.
 export function addDetails(f, g) {
   architecture(f);
+  sculpture(f);
   g.add(trees([...along(9, [-12, 40], [-12, 160]), ...along(9, [12, 40], [12, 160])], { kind: 'palm', seed: 3 }));
   g.add(lampPosts([...along(8, [-8.5, 40], [-8.5, 160]), ...along(8, [8.5, 40], [8.5, 160])]));
   g.add(fountains([[-40, 60], [40, 60]], { h: 3 }), shrubs([...scatter(14, [-70, -18, 40, 90], { seed: 4, gap: 5 }), ...scatter(14, [18, 70, 40, 90], { seed: 5, gap: 5 })].map(([x, z]) => [x, z, 1.6]), { flowers: '#d0306f', seed: 4 }));

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { M, box, cyl, at, onFace, FACES, tricolour } from '../helpers.js';
-import { chhajja, bracketGeo, placeAll, alongFace, windowFrame, railing, jali, aroundCircle, mergeByMaterial } from './components.js';
+import { M, mat, box, cyl, at, onFace, FACES, lathe, surface, tricolour } from '../helpers.js';
+import { chhajja, bracketGeo, placeAll, alongFace, windowFrame, railing, jali, aroundCircle, petalRing, star, mouldings, frieze, panel, dentils, mergeByMaterial } from './components.js';
+import { instances, elephantGeo } from './sculpture.js';
 import { trees, lampPosts, along } from './realism.js';
 
 // Rashtrapati Bhavan, finer detail. From photographs and descriptions of Lutyens' design:
@@ -41,10 +42,37 @@ function architecture(f) {
   f.add(d);
 }
 
+// The sculpture and finer parts, after photographs: the Jaipur Column's bronze lotus and the glass
+// star of India on its top, and an inscribed and carved base; the shallow stone basins of Lutyens'
+// roof fountains; stone elephants either side of the great stair; and dentils under the cornice of
+// the portico. Dimensions follow js/monuments/rashtrapati-bhavan.js: the Jaipur Column at z = 120
+// (base 7 square and 6 high, the shaft to 36, a bronze ball at 37.2).
+const STAR = mat('#d8eef5', 0.08, 0.2, { transparent: true, opacity: 0.85 });
+function sculpture(f, g) {
+  const d = new THREE.Group(), Rd = M.red, Cr = M.cream, Bf = M.buff;
+  const jc = at(new THREE.Group(), 0, 0, 120);
+  jc.add(at(petalRing(1.25, 12, 1.6, 0.9, 0.5, M.bronze), 0, 36, 0));
+  for (const ry of [0, Math.PI / 2]) jc.add(at(star(6, 1.3, STAR, 0.12), 0, 43.4, -0.06).rotateY(ry));
+  jc.add(mouldings(7, 7, [[0, 0.6, 0.3, Bf], [4.6, 0.8, 0.06, frieze(Rd)], [5.6, 0.4, 0.3, Bf]], Rd));
+  for (const a of FACES) jc.add(onFace(at(panel(4.4, 2.6, 0.2, Bf, LETTERS), 0, 1.4, 0), a, 3.5));
+  g.add(mergeByMaterial(jc));
+  for (const [x, z] of [[-70, -20], [70, -20], [-70, 20], [70, 20]]) {
+    d.add(at(lathe([[0, 0], [3.2, 0], [3.6, 0.5], [3.4, 0.7], [0, 0.6]], Bf, 32), x, 22.6, z), cyl(3.15, 3.15, 0.05, M.water, x, 23.25, z, 32));
+  }
+  d.add(at(dentils(64, 0.25, 0.35, 0.4, Bf), 0, 25.05, 41));
+  mergeByMaterial(d);
+  f.add(d);
+  f.add(instances(elephantGeo(), [[-33, 2, 46, 3.4, 3.8, 4.4, 0], [33, 2, 46, 3.4, 3.8, 4.4, 0]], M.cream));
+  for (const x of [-33, 33]) f.add(box(5, 2, 6, Rd, x, 0, 46));
+}
+const LETTERS = surface(mat('#cfae86', 0.8), 'script');
+
+
 // Rashtrapati Bhavan: the tricolour on the dome, and lamps and trees along the avenue to the Jaipur
 // Column.
 export function addDetails(f, g) {
   architecture(f);
+  sculpture(f, g);
   f.add(at(tricolour(10), 0, 45.6, 0));
   g.add(trees([...along(8, [-38, 70], [-38, 200]), ...along(8, [38, 70], [38, 200])], { kind: 'neem', seed: 5 }));
   g.add(lampPosts([...along(8, [-20, 70], [-20, 200]), ...along(8, [20, 70], [20, 200])]));

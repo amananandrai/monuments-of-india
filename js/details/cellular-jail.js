@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mat, box, cyl, at, onFace, tricolour } from '../helpers.js';
-import { windowFrame, mergeByMaterial } from './components.js';
+import { windowFrame, keystone, mergeByMaterial } from './components.js';
 import { trees, shrubs, lampPosts, scatter, around } from './realism.js';
 
 // The Cellular Jail, finer detail. From photographs: white string courses mark the floors along the
@@ -27,11 +27,32 @@ function architecture(f) {
   f.add(d);
 }
 
+// The finer parts of the wings' arcades, after photographs: a keystone in every arch along the
+// corridors and an impost band between the floors on the corridor side. In each wing's frame the
+// arcade's face is at x = -4.5, its arches 2.1 × 3.2 (round) every 3 m from 1.5, floors 4.2 apart.
+function sculpture(f) {
+  const lens = [100, 100, 100, 14, 14, 14, 14], ks = [], d = new THREE.Group();
+  for (let k = 0; k < 7; k++) {
+    const ry = (k / 7) * Math.PI * 2 + 0.4, len = lens[k], w = new THREE.Group();
+    w.rotation.y = ry;
+    w.position.set(Math.sin(ry) * 9, 0, Math.cos(ry) * 9);
+    for (let fl = 0; fl < 3; fl++) {
+      for (let c = 0; c < Math.floor(len / 3); c++) w.add(at(keystone(0.32, 0.55, 0.14, LIME, 0.14), 0, 0.5 + fl * 4.2 + 3.2 - 0.32, 1.5 + c * 3).rotateY(-Math.PI / 2).translateZ(4.5));
+      if (fl) w.add(box(0.14, 0.26, len - 0.3, LIME, -4.56, fl * 4.2 - 0.1, len / 2));
+    }
+    d.add(w);
+  }
+  mergeByMaterial(d);
+  f.add(d);
+}
+
+
 // The Cellular Jail at Port Blair, now a National Memorial: the tricolour flying over the central
 // watchtower, coconut palms and flowering shrubs in the memorial gardens between the wings, and
 // lamps round the tower.
 export function addDetails(f, g) {
   architecture(f);
+  sculpture(f);
   f.add(at(tricolour(9), 0, 27.6, 0));
   const lawn = scatter(36, [-150, 150, -140, 140], { seed: 3, gap: 9 }).filter(([x, z]) => {
     // Keep clear of the three long wings, which run out from the tower at these angles

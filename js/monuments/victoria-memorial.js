@@ -35,7 +35,7 @@ export function buildVictoriaMemorial() {
   // Entrance porch with paired columns and a balustrade, over the arched main door; steps up the
   // two terraces to it
   const door = classicalDoor(4.4, 8.4, { m: Mb, trim: Sh, depth: 0.6, frame: 0.8 });
-  f.add(at(porch(26, 9, 14, { m: Mb, trim: Sh, colM: Mb, cols: 6, paired: true, r: 0.85, top: 'balustrade', door }), 0, b, 28));
+  f.add(at(porch(26, 9, 14, { m: Mb, trim: Sh, colM: Mb, cols: 6, paired: true, r: 0.85, top: 'balustrade', door, order: 'corinthian' }), 0, b, 28));
   f.add(at(steps(20, 2.5, 7, Sh, 0.36), 0, 0, 40), at(steps(20, 1, 3, Sh, 0.36), 0, 2.5, 37));
   // Drum, Renaissance dome, lantern and the bronze Angel of Victory
   const top = b + 19.2;
