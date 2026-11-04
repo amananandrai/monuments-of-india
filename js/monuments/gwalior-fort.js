@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, hemi, finial, inst, unitBox, surface, ellipseWall, elephant } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, hemi, finial, inst, unitBox, surface, ellipseWall } from '../helpers.js';
+import { elephant } from '../details/animals.js';
 import { fortGate } from '../details/forts.js';
 
 const SAND = mat('#c9b08a', 0.9);

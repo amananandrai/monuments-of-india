@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, bell, pidaRoof, rng, wheel, horse } from '../helpers.js';
+import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, bell, pidaRoof, rng, wheel } from '../helpers.js';
+import { horse } from '../details/animals.js';
 import { templeDoorway } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 

@@ -391,19 +391,6 @@ export function wheel(r, m) {
   return g;
 }
 
-export function horse(m) {
-  const g = new THREE.Group();
-  g.add(ellipsoid(0.72, 0.72, 1.6, m, 0, 2.1, 0), ellipsoid(0.66, 0.7, 0.6, m, 0, 2.2, 1.1), ellipsoid(0.66, 0.66, 0.6, m, 0, 2.15, -1.1));
-  g.add(capsule(V(0, 2.5, 1.3), V(0, 3.75, 2.05), 0.42, m, 0.3), capsule(V(0, 3.85, 2.1), V(0, 3.4, 3.0), 0.3, m, 0.2));
-  for (const x of [-0.12, 0.12]) g.add(cyl(0, 0.08, 0.32, m, x, 4.05, 2.15, 6));
-  for (const [x, z] of [[-0.38, 1.05], [0.38, 1.05], [-0.38, -1.15], [0.38, -1.15]]) {
-    g.add(capsule(V(x, 2.0, z), V(x, 1.0, z + 0.05), 0.24, m, 0.15), capsule(V(x, 1.0, z + 0.05), V(x, 0.12, z), 0.13, m, 0.12));
-  }
-  g.add(tube([[0, 4.0, 1.95], [0, 3.6, 1.6], [0, 3.0, 1.25]], 0.12, m, 16, 6));
-  g.add(tube([[0, 2.4, -1.7], [0, 2.0, -2.0], [0, 1.2, -2.05]], 0.14, m, 16, 6));
-  return g;
-}
-
 export const PAINT = ['#3d7cc0', '#d4493a', '#e6b13a', '#4c9a5a', '#f0e8d6', '#b65aa0', '#e07a2e'];
 
 export const paintMats = PAINT.map((c) => mat(c, 0.75));
@@ -581,22 +568,6 @@ export function hipRoof(w, d, h, m) {
   const o = mesh(new THREE.ConeGeometry(Math.SQRT1_2, 1, 4).rotateY(Math.PI / 4).translate(0, 0.5, 0), m);
   o.scale.set(w, h, d);
   return o;
-}
-// A stylised elephant facing +z, standing at y = 0.
-export function elephant(m, s = 1) {
-  const g = new THREE.Group();
-  g.add(ellipsoid(1.25, 1.15, 1.85, m, 0, 2.25, 0), ellipsoid(0.92, 0.98, 0.9, m, 0, 2.75, 1.85));
-  for (const x of [-1, 1]) {
-    const ear = ellipsoid(0.12, 0.85, 0.72, m, x * 0.92, 2.7, 1.55);
-    ear.rotation.y = x * 0.35;
-    g.add(ear);
-  }
-  g.add(tube([[0, 2.55, 2.65], [0, 1.9, 3.15], [0, 1.0, 3.2], [0, 0.45, 3.0]], 0.24, m, 24, 10));
-  for (const x of [-0.42, 0.42]) g.add(tube([[x, 2.15, 2.45], [x * 1.1, 1.7, 2.95], [x * 0.9, 1.75, 3.35]], 0.08, m, 12, 6));
-  for (const [x, z] of [[-0.72, 1.1], [0.72, 1.1], [-0.72, -1.1], [0.72, -1.1]]) g.add(capsule(V(x, 1.7, z), V(x, 0.25, z), 0.42, m, 0.4));
-  g.add(tube([[0, 2.6, -1.8], [0, 2.0, -2.0], [0, 1.4, -1.95]], 0.07, m, 12, 6));
-  g.scale.setScalar(s);
-  return g;
 }
 // A Lucknow-style roof turret (guldasta): slender fluted shaft, tiny onion dome and spike.
 export function guldasta(h, r, m) {

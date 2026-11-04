@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, flat, kalash, inst, unitBox, aroundRect, elephant } from '../helpers.js';
+import { mat, mesh, box, cyl, at, flat, kalash, inst, unitBox, aroundRect } from '../helpers.js';
+import { elephant } from '../details/animals.js';
 import { trabeateGate } from '../details/temples.js';
 import { templeDoorway } from '../details/doorways.js';
 
