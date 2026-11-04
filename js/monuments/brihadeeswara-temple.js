@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, pidaRoof } from '../helpers.js';
+import { templeDoorway, doorFrame, guardian } from '../details/doorways.js';
+import { mergeByMaterial } from '../details/components.js';
 
 export function buildBrihadeeswara() {
   const m = M.granite, d = M.graniteDark, g = new THREE.Group();
@@ -8,7 +10,10 @@ export function buildBrihadeeswara() {
   g.add(box(29, 12, 29, m, 0, 4));
   for (const a of FACES) {
     for (let k = -3; k <= 3; k++) g.add(onFace(box(1.4, 12, 0.6, m, 0, 4), a, 14.5, k * 3.8));
-    g.add(onFace(box(3, 6, 0.4, M.recess, 0, 7), a, 14.55, 0));
+    // A niche (devakoshta) framed in stepped bands, with its deity
+    const n = new THREE.Group();
+    n.add(doorFrame(3, 6, { bands: 2, bw: 0.3, depth: 0.6, d0: 0.35, m }), box(3, 6, 0.05, d, 0, 0, 0.03), at(guardian(4.4, m), 0, 0.1, 0.3));
+    g.add(onFace(at(mergeByMaterial(n), 0, 7, 0), a, 14.5));
   }
   g.add(box(31, 1.2, 31, d, 0, 16));
   let y = 17.2, w = 27.5;
@@ -36,6 +41,8 @@ export function buildBrihadeeswara() {
   g.add(box(18, 9, 12, m, 0, 0, 64));
   g.add(box(19, 0.8, 13, d, 0, 9, 64));
   g.add(box(10, 1, 5, d, 0, 0, 72));
+  // The doorway into the halls, under its giant door guardians (dvarapalas)
+  g.add(at(templeDoorway(2.6, 5, { m, bands: 4, guardianH: 3.6 }), 0, 1, 70));
   const n = new THREE.Group();
   n.add(box(15, 1.5, 15, d));
   for (const x of [-6, -2, 2, 6]) for (const z of [-6, 6]) n.add(cyl(0.45, 0.5, 7, m, x, 1.5, z, 8));

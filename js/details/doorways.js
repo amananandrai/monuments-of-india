@@ -116,7 +116,10 @@ export function doorFrame(w, h, { bands = 3, bw = 0.3, depth = 1.2, d0 = depth *
 // A temple doorway on a wall face: a stepped frame, a figure block in the middle of the lintel, a
 // hood above, timber leaves standing open with a dim sanctum and a lamp behind, a raised threshold
 // and a half-moon stone, and guardians at the foot of the frame. Sized by the opening w × h.
-export function templeDoorway(w, h, { m, bands = 3, bw = Math.min(0.42, Math.max(0.2, w * 0.17)), depth = null, guardians = true, hood = true, open = 1.2 } = {}) {
+export function templeDoorway(w, h, {
+  m, bands = 3, bw = Math.min(0.42, Math.max(0.2, w * 0.17)), depth = null, guardians = true, guardianH = Math.min(1.8, h * 0.42),
+  hood = true, open = 1.2, moon = true, leafM = TIMBER,
+} = {}) {
   const g = new THREE.Group();
   const d0 = Math.max(0.55, (w / 2) * Math.sin(open) + 0.08), dep = Math.max(d0 + 0.15, depth || d0 + 0.45);
   const frame = doorFrame(w, h, { bands, bw, depth: dep, d0, m });
@@ -129,16 +132,15 @@ export function templeDoorway(w, h, { m, bands = 3, bw = Math.min(0.42, Math.max
   g.add(at(interior(w * 0.999, h * 0.999), 0, 0, 0.012));
   g.add(at(lamp(Math.min(1.4, h / 3)), 0, 0.18, 0.28));
   g.add(box(w, 0.18, d0, m, 0, 0, d0 / 2));
-  g.add(at(doorLeaves(w * 0.996, (h - 0.18) * 0.98, { open }), 0, 0.18, 0.02));
+  g.add(at(doorLeaves(w * 0.996, (h - 0.18) * 0.98, { open, m: leafM }), 0, 0.18, 0.02));
   // The half-moon stone (ardhachandra) in front of the threshold.
-  const moon = mesh(new THREE.CylinderGeometry(w * 0.62, w * 0.62, 0.1, 24, 1, false, -Math.PI / 2, Math.PI), m, 0, 0.05, dep);
-  g.add(moon);
+  if (moon) g.add(mesh(new THREE.CylinderGeometry(w * 0.62, w * 0.62, 0.1, 24, 1, false, -Math.PI / 2, Math.PI), m, 0, 0.05, dep));
   if (hood) {
     g.add(at(chhajja(outerW + 0.8, dep * 0.55 + 0.4, 0.32, 0.12, m), 0, outerH + 0.42, dep * 0.45));
     g.add(box(outerW + 0.3, 0.42, dep * 0.45 + 0.05, m, 0, outerH, (dep * 0.45) / 2));
   }
-  if (guardians) for (const s of [-1, 1]) g.add(at(guardian(Math.min(1.8, h * 0.42), m), s * (outerW / 2 + 0.38), 0, 0.3));
-  g.userData = { outerW: outerW + (guardians ? 1.5 : 0), outerH: outerH + (hood ? 0.55 : 0), depth: dep };
+  if (guardians) for (const s of [-1, 1]) g.add(at(guardian(guardianH, m), s * (outerW / 2 + guardianH * 0.21), 0, guardianH * 0.17));
+  g.userData = { outerW: outerW + (guardians ? guardianH * 0.84 : 0), outerH: outerH + (hood ? 0.55 : 0), depth: dep };
   return g;
 }
 
@@ -177,5 +179,50 @@ export function templePorch(pw, pd, ph, m, shade = m) {
   g.add(at(roof, 0, ry, pd / 2 + 0.15));
   g.add(at(bell(Math.min(pw, pd) * 0.14, m), 0, ry + roof.userData.top, pd / 2 + 0.15));
   g.add(at(kalash(Math.min(pw, pd) * 0.1), 0, ry + roof.userData.top + Math.min(pw, pd) * 0.14, pd / 2 + 0.15));
+  return g;
+}
+
+// A Tibetan doorway on a whitewashed wall at z = 0: a dark frame, a lintel of red, blue and green
+// bands with a row of painted block ends, a striped curtain (shambu) hanging over it, red leaves
+// with gilt bosses standing a little open onto the dim hall, and a sill. w × h is the opening.
+const T_RED = surface(mat('#9a2b22', 0.7), 'none'), T_DARK = surface(mat('#2a2220', 0.8), 'none');
+const T_BLUE = surface(mat('#2f5d8a', 0.7), 'none'), T_GREEN = surface(mat('#3f7d4f', 0.7), 'none');
+const T_GOLD = surface(mat('#d9a636', 0.55), 'none'), T_WHITE = surface(mat('#f1ede4', 0.8), 'none');
+export function tibetanDoor(w, h) {
+  const g = new THREE.Group(), f = Math.max(0.18, w * 0.11);
+  g.add(at(interior(w, h, 0.12, 0.1), 0, 0, 0.012));
+  g.add(at(doorLeaves(w * 0.996, h * 0.98, { open: 0.45, m: T_RED }), 0, 0, 0.02));
+  for (const s of [-1, 1]) g.add(box(f, h + f, 0.14, T_DARK, s * (w + f) / 2, 0, 0.07));
+  // The lintel: a red beam, a row of block ends in alternating colours, a blue band.
+  const lw = w + 2 * f + 0.5;
+  g.add(box(lw, 0.22, 0.3, T_RED, 0, h + f, 0.15));
+  for (let k = 0, n = Math.round(lw / 0.26); k < n; k++) g.add(box(0.14, 0.14, 0.12, [T_GREEN, T_GOLD, T_BLUE][k % 3], -lw / 2 + (k + 0.5) * (lw / n), h + f + 0.24, 0.36));
+  g.add(box(lw + 0.2, 0.18, 0.4, T_BLUE, 0, h + f + 0.4, 0.2));
+  // The curtain hanging in pleated bands over the top of the door.
+  [T_WHITE, T_RED, T_BLUE, T_GOLD].forEach((m, i) => g.add(box(lw - 0.1, 0.14, 0.04, m, 0, h + f - 0.12 - i * 0.14, 0.33)));
+  g.add(box(w + 2 * f, 0.12, 0.4, T_DARK, 0, 0, 0.2));
+  g.userData = { outerW: lw + 0.2, outerH: h + f + 0.58 };
+  return g;
+}
+
+// A pillared portico before a Tibetan door: two red pillars with stepped capitals and bracket arms,
+// beams painted in bands, a flat roof with a maroon parapet, and the door at the back. pw wide, pd
+// deep, ph high, on y = 0, against a wall at z = 0. door: [w, h].
+export function tibetanPortico(pw, pd, ph, door, { parapet = T_RED } = {}) {
+  const g = new THREE.Group();
+  g.add(tibetanDoor(door[0], door[1]));
+  for (const s of [-1, 1]) {
+    const x = s * (pw / 2 - 0.5), z = pd - 0.45;
+    g.add(box(0.7, 0.3, 0.7, T_DARK, x, 0, z), box(0.42, ph - 1.1, 0.42, T_RED, x, 0.3, z));
+    g.add(box(0.6, 0.18, 0.6, T_BLUE, x, ph - 0.8, z), box(0.75, 0.18, 0.75, T_GREEN, x, ph - 0.62, z));
+    for (const dir of [-1, 1]) {
+      const b = mesh(bracketGeo(0.4, 0.7, 0.36), T_RED, x, ph - 0.44, z);
+      b.rotation.y = (dir * Math.PI) / 2;
+      g.add(b);
+    }
+  }
+  g.add(box(pw, 0.24, 0.5, T_RED, 0, ph - 0.44, pd - 0.45), box(pw + 0.2, 0.2, 0.55, T_GREEN, 0, ph - 0.2, pd - 0.45));
+  for (const s of [-1, 1]) g.add(box(0.4, 0.4, pd, T_RED, s * (pw / 2 - 0.5), ph - 0.4, pd / 2));
+  g.add(box(pw + 0.6, 0.3, pd + 0.3, T_WHITE, 0, ph, (pd + 0.3) / 2), box(pw + 0.7, 0.55, pd + 0.4, parapet, 0, ph + 0.3, (pd + 0.4) / 2));
   return g;
 }

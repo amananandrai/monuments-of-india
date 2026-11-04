@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, rng, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, rng, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, ellipsoid, capsule, V } from '../helpers.js';
 import { frieze, mergeByMaterial } from './components.js';
-import { templeDoorway, templePorch, steps, doorFrame, doorLeaves } from './doorways.js';
+import { templeDoorway, templePorch, steps, doorFrame, doorLeaves, guardian } from './doorways.js';
 
 // The shared temple builders, with real entrances: a Nagara temple's front porch, doorway and
 // side doors, a mandapa's doors, and a passage through the base of a gopuram. Moved here from
@@ -191,4 +191,30 @@ export function gopuram(w, d, h, tiers, seed, palette = PAINT) {
   im.receiveShadow = true;
   g.add(im);
   return g;
+}
+
+// A seated lion facing +z, about 2.3·s high, on its own plinth: the guardians of temple gates.
+export function lion(s, m) {
+  const g = new THREE.Group();
+  g.add(box(1.3 * s, 0.45 * s, 2 * s, m));
+  g.add(ellipsoid(0.55 * s, 0.5 * s, 0.75 * s, m, 0, 0.95 * s, -0.3 * s), ellipsoid(0.5 * s, 0.72 * s, 0.48 * s, m, 0, 1.4 * s, 0.3 * s));
+  g.add(ellipsoid(0.62 * s, 0.62 * s, 0.48 * s, m, 0, 2.0 * s, 0.42 * s), ellipsoid(0.36 * s, 0.38 * s, 0.42 * s, m, 0, 2.02 * s, 0.75 * s));
+  for (const x of [-0.24, 0.24]) g.add(capsule(V(x * s, 1.25 * s, 0.6 * s), V(x * s, 0.5 * s, 0.72 * s), 0.12 * s, m));
+  return g;
+}
+
+// A temple gate on post-and-lintel lines: a gatehouse w × h × d (front face at z = d/2) with a
+// passage pw × ph through it under a flat lintel, stepped frames on both faces, the leaves standing
+// open inward at its middle, a paved floor, and optionally guardians or lions before it.
+export function trabeateGate(w, h, d, pw, ph, { m, trim = m, bands = 3, bw = Math.min(0.45, pw * 0.1), guardians = false, lions = false, open = 1.35 } = {}) {
+  const g = new THREE.Group(), sw = (w - pw) / 2;
+  for (const s of [-1, 1]) g.add(box(sw, h, d, m, s * (pw / 2 + sw / 2), 0, 0));
+  g.add(box(pw + 0.2, h - ph, d, m, 0, ph, 0));
+  for (const a of [0, Math.PI]) g.add(onFace(doorFrame(pw, ph, { bands, bw, depth: 0.7, d0: 0.3, m: trim }), a, d / 2));
+  g.add(box(pw, 0.3, d, trim, 0, -0.28, 0));
+  g.add(at(doorLeaves(pw * 0.996, ph * 0.97, { open, inward: true }), 0, 0.02, d * 0.1));
+  const ow = pw / 2 + bands * bw;
+  if (guardians) for (const s of [-1, 1]) g.add(at(guardian(Math.min(2.6, ph * 0.5), trim), s * (ow + 0.6), 0, d / 2 + 0.45));
+  if (lions) for (const s of [-1, 1]) g.add(at(lion(Math.min(1.3, ph * 0.22), trim), s * (ow + 1.6), 0, d / 2 + 1.6));
+  return mergeByMaterial(g);
 }

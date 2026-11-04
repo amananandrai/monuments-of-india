@@ -15,7 +15,7 @@ import { pierced } from './mughal.js';
 // - crest: merlons along the top; ramp: [rise, run], a ramp up to the sill from the ground in front.
 export function fortGate(w, h, d, aw, ah, {
   m, trim = m, pointed = true, iwan = null, through = true, open = 1.3, niches = true, crest = true,
-  towers = null, ramp = null,
+  towers = null, ramp = null, spikes = true, leafM = undefined,
 } = {}) {
   const g = new THREE.Group();
   const id = iwan ? iwan.depth : 0, pd = d - id, pz = -d / 2 + pd / 2;
@@ -47,7 +47,7 @@ export function fortGate(w, h, d, aw, ah, {
   g.add(box(W, 0.3, d, trim, 0, -0.28, 0));
   // The spiked leaves, a little in front of the middle of the passage, and the threshold under them.
   const dz = pz + pd * 0.12;
-  g.add(at(doorLeaves(aw * 0.996, s * 0.97, { open, inward: true, spikes: true }), 0, 0.12, dz));
+  g.add(at(doorLeaves(aw * 0.996, s * 0.97, { open, inward: true, spikes, ...(leafM ? { m: leafM } : {}) }), 0, 0.12, dz));
   g.add(box(aw, 0.12, 0.7, trim, 0, 0, dz));
   if (iwan) {
     const fz = d / 2 - id;

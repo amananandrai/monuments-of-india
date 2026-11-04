@@ -40,7 +40,7 @@ export function pierced(len, h, holes, depth, m, pointed = true) {
 // to the springing under a lintel, a pierced screen in the arch head, timber leaves standing open
 // onto a dim room, and a threshold. `room` is the free depth in front of the wall for the leaves
 // to swing into (more inside an iwan).
-export function mughalDoorway(w, h, { m, trim = m, depth = Math.max(0.45, w * 0.18), frame = w * 0.16, top = w * 0.22, room = depth * 0.5 } = {}) {
+export function mughalDoorway(w, h, { m, trim = m, depth = Math.max(0.45, w * 0.18), frame = w * 0.16, top = w * 0.22, room = depth * 0.5, leafM = undefined } = {}) {
   const g = new THREE.Group(), W = w + 2 * frame;
   g.add(pierced(W, h + top, [[0, 0, w, h]], depth, m));
   g.add(at(archRing(w, h, true, Math.min(0.2, w * 0.05), 0.05, trim), 0, 0, depth));
@@ -54,7 +54,7 @@ export function mughalDoorway(w, h, { m, trim = m, depth = Math.max(0.45, w * 0.
   g.add(at(tympanum(wi * 0.999, hi * 0.999, true, M.recess, 0.03), 0, 0, 0.012));
   g.add(at(tympanum(wi * 0.998, hi * 0.998, true, jali(trim), 0.04), 0, 0, 0.05));
   const lw = wi / 2, open = Math.asin(Math.min(0.92, Math.max(0.2, (room - 0.05) / lw)));
-  g.add(at(doorLeaves(wi * 0.996, (si - lintel - 0.15) * 0.99, { open }), 0, 0.15, 0.02));
+  g.add(at(doorLeaves(wi * 0.996, (si - lintel - 0.15) * 0.99, { open, ...(leafM ? { m: leafM } : {}) }), 0, 0.15, 0.02));
   g.add(box(wi, 0.15, d2, trim, 0, 0, d2 / 2));
   mergeByMaterial(g);
   g.userData = { outerW: W, outerH: h + top, depth };

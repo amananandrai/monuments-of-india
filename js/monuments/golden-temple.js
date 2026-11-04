@@ -1,5 +1,9 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, lathe, group, at, onFace, FACES, archPanel, onionDome, hemi, finial, kalash, chhatri, ribbed, sheet } from '../helpers.js';
+import { M, mat, mesh, box, cyl, lathe, at, onFace, FACES, archPanel, onionDome, hemi, finial, kalash, chhatri, ribbed, sheet } from '../helpers.js';
+import { fortGate } from '../details/forts.js';
+import { mughalDoorway } from '../details/mughal.js';
+
+const SILVER = mat('#cfd3d8', 0.3, 0.85);
 
 export function buildGoldenTemple() {
   const G = M.gild, Gd = M.gildDeep, W = M.marble, g = new THREE.Group(), f = new THREE.Group();
@@ -21,7 +25,8 @@ export function buildGoldenTemple() {
       f.add(at(mesh(new THREE.SphereGeometry(0.28, 10, 8), G), x, b + 2.4, z));
     }
   }
-  f.add(box(14, 9, 16, W, -86, 0.8, 0), box(12.5, 3.5, 14.5, G, -86, 9.8, 0));
+  // The Darshani Deori: a passage through the gateway, its silver doors standing open
+  f.add(at(fortGate(16, 9, 14, 4.2, 7, { m: W, trim: G, crest: false, spikes: false, leafM: SILVER }), -86, 0.8, 0).rotateY(-Math.PI / 2), box(12.5, 3.5, 14.5, G, -86, 9.8, 0));
   for (const z of [-5, 5]) f.add(at(chhatri(1.4, 4.4, G), -86, 13.3, z));
   // Harmandir Sahib: marble lower storey, gilded upper storeys
   f.add(box(12.25, 6, 12.25, W, 0, b));
@@ -29,7 +34,9 @@ export function buildGoldenTemple() {
   f.add(box(12.25, 6.5, 12.25, G, 0, b + 6.4));
   f.add(box(13.4, 0.6, 13.4, G, 0, b + 12.9));
   for (const a of FACES) {
-    for (const lat of [-3.6, 0, 3.6]) f.add(onFace(at(archPanel(1.8, 4.4, true, Gd, 0.2), 0, b + 0.4, 0), a, 6.13, lat));
+    // A doorway on every side, with silver doors, between two arched panels
+    for (const lat of [-3.6, 3.6]) f.add(onFace(at(archPanel(1.8, 4.4, true, Gd, 0.2), 0, b + 0.4, 0), a, 6.13, lat));
+    f.add(onFace(at(mughalDoorway(1.8, 4.4, { m: W, trim: G, depth: 0.5, leafM: SILVER }), 0, b, 0), a, 6.13));
     for (let k = -2; k <= 2; k++) f.add(onFace(at(archPanel(1.3, 3, true, Gd, 0.2), 0, b + 7.6, 0), a, 6.13, k * 2.1));
     for (let k = -2.5; k <= 2.5; k++) {
       const d = onFace(new THREE.Group(), a, 6.3, k * 2.1);

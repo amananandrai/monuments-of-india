@@ -1,14 +1,17 @@
 import * as THREE from 'three';
 import { M, flat, mesh, box, group, at, kalash, bell, shikhara, pidaRoof, flag, kalingaProfile } from '../helpers.js';
+import { trabeateGate } from '../details/temples.js';
+import { templeDoorway } from '../details/doorways.js';
+import { mergeByMaterial } from '../details/components.js';
 
 export function buildJagannath() {
   const m = M.puri, d = M.puriShade, g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   g.add(box(84, 1.2, 116, M.path));
   for (const [w, dd, x, z] of [[90, 2, 0, -59], [2, 120, -45, 0], [2, 120, 45, 0], [36, 2, -27, 59], [36, 2, 27, 59]]) g.add(box(w, 7, dd, d, x, 0, z));
+  // The Singhadwara (Lion Gate): a passage through the gatehouse between its two lions
   const gate = new THREE.Group();
-  gate.add(box(18, 9, 10, m));
-  gate.add(box(6, 6, 10.4, M.recess, 0, 0, 0));
+  gate.add(trabeateGate(18, 9, 10, 4.5, 6, { m, trim: d, lions: true }));
   gate.add(at(pidaRoof(18, 7, 5, 0.9, m, d), 0, 9, 0));
   g.add(at(gate, 0, 0, 59));
   const B = 1.2;
@@ -27,6 +30,11 @@ export function buildJagannath() {
   f.add(at(flag(7, M.saffron), 0.6, ty + 2, dz - 0.4).rotateY(Math.PI * 0.7));
   // Jagamohana, Natamandapa and Bhogamandapa with stepped pida roofs
   const halls = [[22, 13, 11, 24, 9, -5], [18, 9, 7, 19, 8.5, 15], [15, 8, 6, 16, 7, 31]];
+  // The main doorway, at the front of the Bhogamandapa, and doors on the sides of the Natamandapa
+  const doors = new THREE.Group();
+  doors.add(at(templeDoorway(2, 4, { m, bands: 4 }), 0, B, 40.5));
+  for (const s of [-1, 1]) doors.add(at(templeDoorway(1.8, 3.8, { m, guardians: false }), s * 11, B, 15).rotateY(s * Math.PI / 2));
+  f.add(mergeByMaterial(doors));
   for (const [w, h, n, w0, w1, z] of halls) {
     f.add(box(w, h, w, m, 0, B, z), box(w + 4, h, w * 0.6, m, 0, B, z), box(w * 0.6, h, w + 4, m, 0, B, z));
     const roof = pidaRoof(w0, w1, n, 1.2, m, d);

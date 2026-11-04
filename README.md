@@ -228,7 +228,9 @@ real-world proportions: there are no model files to download.
   passages through the gopurams. The Mughal, Nawabi, Qutb Shahi and Deccan buildings have iwans
   with half-domes and doors, and arcades of real arched cells, from `js/details/mughal.js`. The
   forts' gates are passages through their gatehouses, with guard niches and doors spiked against
-  elephants, from `js/details/forts.js`.
+  elephants, from `js/details/forts.js`. The other temples have their own porches and doorways,
+  gates on post-and-lintel lines (one with its two lions), and the monasteries have painted
+  Tibetan doors and pillared porticoes.
 - **No flicker:** faces that share a plane get depth offsets (`js/coplanar.js`), and curved walls and
   cliffs are built as single continuous bands, so surfaces don't shimmer as the camera moves.
 - **Phones:** ambient occlusion and reflections are skipped to keep the frame rate up.

@@ -20,12 +20,16 @@ Two problems, one plan:
   `js/details/mughal.js` (see section 4).
 - **Phase 3, done:** eleven forts have gates with real passages from `js/details/forts.js`
   (see section 4).
+- **Phase 4, done:** the 21 temples, the Golden Temple and the monasteries built one by one have
+  their own porches, doorways and gate passages (see section 4).
 - **Doorway kit:**
   - `js/details/doorways.js` holds the temple parts: `doorFrame`, `templeDoorway`, `templePorch`,
     `doorLeaves`, `interior`, `lamp`, `guardian` and `steps`.
   - `js/details/mughal.js` holds the Mughal parts: `pierced`, `mughalDoorway`, `iwan`,
     `arcadeSkin` and `cellRow`.
   - `js/details/forts.js` holds `fortGate`, the plan's `gateway`.
+  - Phase 4 added `trabeateGate` and `lion` to `js/details/temples.js`, and `tibetanDoor` and
+    `tibetanPortico` to `js/details/doorways.js`.
   - `classicalDoor` comes with Phase 5.
 
 ## 1. What the site does today
@@ -219,16 +223,57 @@ Each fort's own wall is opened where its gate stands:
 
 Not done: zigzag ramps climbing the hills to the hill forts' gates.
 
-**Phase 4: hand-built temples, one at a time.** Each needs its own porch and door:
-- **Kandariya Mahadeva:** the `box(10, 6, 6)` porch becomes an open porch with a *makara* arch.
-- **Konark:** doors on three sides of the hall.
-- **Kedarnath:** a front porch.
-- **Brihadeeswara, Shore Temple, Kailasa:** sanctum doors flanked by guardian figures.
-- **Chennakesava:** star-plan doorways with a lintel.
-- **Dilwara, Ranakpur:** columned entrance halls.
-- **Ramappa, Vittala, Jagannath, Kamakhya, Mahabodhi:** porch and doorway.
-- **Golden Temple:** the Darshani Deori gate on the causeway.
-- **The monasteries:** a painted door under a curtain and a pillared porch.
+**Phase 4: hand-built temples, one at a time (21 monuments). Done.**
+New parts:
+- `trabeateGate(w, h, d, pw, ph)` in `js/details/temples.js`: a temple gate on post-and-lintel
+  lines. A passage runs through the gatehouse under a flat lintel, with stepped frames on both
+  faces, leaves standing open inward, a paved floor, and optional guardians or seated `lion`s.
+- `tibetanDoor(w, h)` and `tibetanPortico(pw, pd, ph, door)` in `js/details/doorways.js`:
+  - a dark frame and a lintel of red, blue and green bands with painted block ends;
+  - a striped curtain (shambu), and red leaves with gilt bosses standing a little open;
+  - for the portico, two red pillars with stepped capitals and bracket arms, painted beams, and a
+    flat roof with a maroon parapet.
+- `templeDoorway` gained `guardianH` (for Brihadeeswara's giant door guardians), `leafM` and
+  `moon`. `fortGate` gained `spikes` and `leafM`, and `mughalDoorway` gained `leafM`.
+
+Applied:
+- **Kandariya Mahadeva:**
+  - the solid porch is now open between four pillars, with a garland arch (torana) across its
+    front, the doorway at its back, and steps;
+  - the front transept stops at the wall, and the wall's figures leave the doorway clear.
+- **Konark:** doorways on the jagamohana's front and on both arms.
+- **Kedarnath:** a doorway in a stone porch facing the Nandi.
+- **Jagannath:** the Lion Gate is a passage between two lions; a doorway on the Bhogamandapa and
+  doors on the Natamandapa's sides.
+- **Brihadeeswara:**
+  - the front hall's doorway under 3.6 m door guardians;
+  - the vimana's four dark niches are now framed niches, each with its deity.
+- **Shore Temple:** doorways in both shrines, the larger one facing the sea.
+- **Kailasa:** the gateway through the rock screen, guarded, and the hall's doorway at the end of
+  the Nandi bridge.
+- **Chennakesava:** a gate passage through the cloister (its posts parting for it), the hall's
+  doorway and steps up the platform.
+- **Dilwara:** a gateway in the plain outer wall (the cells behind it parting), and the closed
+  hall's doorway seen through the open Ranga Mandapa.
+- **Ranakpur:** each of the four entrances an open porch over a doorway, the edge pillars parting
+  for it.
+- **Ramappa:** the sanctum's doorway, with its guardians, inside the pillared hall; steps up.
+- **Vittala:**
+  - a passage through the east gate's granite base, the compound wall opening for it;
+  - the shrine's doorway, the hall's pillars parting in front of it.
+- **Kamakhya:** a doorway at the front, and doors on the Natmandir's sides.
+- **Mahabodhi:**
+  - the east porch's pointed doorway, a landing and steps;
+  - a stone gateway (torana) where the railing now opens.
+- **Akshardham:** the main doorway between guardians, the pillars parting for it.
+- **Hidimba Devi:** a carved timber doorway and steps.
+- **Golden Temple:** the Darshani Deori as a passage with silver doors, and a doorway with
+  silver doors on every side of the Harmandir Sahib.
+- **Tawang:** the landing extended to the hall, steps up, and a portico over the door; the lowest
+  windows leave room for it.
+- **Rumtek:** a portico under the gilded roof.
+- **Key:** a door in the top hall, one block of the monks' quarters taken away to clear the way.
+- **Thiksey:** a door on the Maitreya temple.
 
 **Phase 5: colonial and Indo-Saracenic.** Victoria Memorial, CSMT, Mysore Palace, Laxmi Vilas,
 Cooch Behar Palace, Bom Jesus, Cellular Jail: `classicalDoor` and `porch`. CSMT gets a Gothic

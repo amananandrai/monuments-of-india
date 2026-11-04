@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, bell, pidaRoof, rng, wheel, horse } from '../helpers.js';
+import { templeDoorway } from '../details/doorways.js';
+import { mergeByMaterial } from '../details/components.js';
 
 export function buildKonark() {
   const K = M.khond, Kd = M.khondDark, g = new THREE.Group(), f = new THREE.Group();
@@ -26,6 +28,10 @@ export function buildKonark() {
   // Jagamohana (the surviving porch) with three tiers of pida roof
   const jz = zf - 16;
   f.add(box(26, 12, 26, K, 0, B, jz), box(30, 12, 16, K, 0, B, jz), box(16, 12, 30, K, 0, B, jz));
+  // Its three doorways, east (in front) and on the north and south arms
+  const doors = new THREE.Group();
+  for (const a of [0, Math.PI / 2, -Math.PI / 2]) doors.add(onFace(at(templeDoorway(2.2, 4.4, { m: K, bands: 4 }), 0, B, 0), a, 15));
+  f.add(at(mergeByMaterial(doors), 0, 0, jz));
   let y = B + 12;
   [[29, 22], [20, 14], [13, 8]].forEach(([w0, w1], i) => {
     const r = pidaRoof(w0, w1, 4, 0.75, K, Kd);
