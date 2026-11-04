@@ -13,7 +13,7 @@ export function buildKeyMonastery() {
   g.add(f);
   g.add(box(500, 0.2, 500, mat('#a89377', 0.95)), box(24, 0.4, 500, M.river, -140, 0, 0));
   for (let i = 0; i < 10; i++) {
-    const a = (i / 10) * Math.PI * 2, d = 300 + R() * 80, h = 160 + R() * 120, x = Math.cos(a) * d, z = Math.sin(a) * d;
+    const a = (i / 10) * Math.PI * 2, d = 540 + R() * 100, h = 200 + R() * 140, x = Math.cos(a) * d, z = Math.sin(a) * d;
     g.add(mesh(new THREE.ConeGeometry(h * 0.9, h, 7).translate(0, h / 2, 0), PEAK, x, 0, z), mesh(new THREE.ConeGeometry(h * 0.22, h * 0.25, 7).translate(0, h * 0.875, 0), SNOW, x, 0, z));
   }
   const H = 40;

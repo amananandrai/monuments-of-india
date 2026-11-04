@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, ring, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, ring, inst, unitBox } from '../helpers.js';
+import { trees as plantTrees } from '../details/realism.js';
 import { addDetails } from '../details/national-war-memorial.js';
 
 const GRANITE = mat('#6f6a66', 0.6);
 const LIGHT = mat('#d9d2c4', 0.8);
-const TREE = mat('#3f6a36', 0.95, 0, { flatShading: true });
 
 // Four concentric circles: Amar (immortality), Veerta (bravery), Tyag (sacrifice) and Rakshak (protection).
 export function buildNationalWarMemorial() {
@@ -15,9 +15,9 @@ export function buildNationalWarMemorial() {
   const trees = [];
   for (let k = 0; k < 90; k++) {
     const a = (k / 90) * Math.PI * 2;
-    trees.push([Math.cos(a) * 110, 0, Math.sin(a) * 110, 6, 12, 6]);
+    trees.push([Math.cos(a) * 110, Math.sin(a) * 110, 12]);
   }
-  g.add(inst(new THREE.IcosahedronGeometry(0.5, 0).translate(0, 0.5, 0), trees, TREE));
+  g.add(plantTrees(trees, { kind: 'neem', seed: 99 }));
   // Tyag Chakra: concentric granite walls of name tablets
   f.add(cyl(82, 82, 0.3, LIGHT, 0, 0, 0, 96));
   for (const r of [76, 68, 60]) {

@@ -3,6 +3,7 @@ import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, pidaRoof } f
 import { templeDoorway, doorFrame, guardian } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { nandi } from '../details/animals.js';
+import { kuta, shala } from '../details/sculpture.js';
 import { addDetails } from '../details/brihadeeswara-temple.js';
 
 export function buildBrihadeeswara() {
@@ -19,16 +20,19 @@ export function buildBrihadeeswara() {
   }
   g.add(box(31, 1.2, 31, d, 0, 16));
   let y = 17.2, w = 27.5;
-  const tiers = 13, th = 2.9, w1 = 9.5;
+  const tiers = 13, th = 2.9, w1 = 9.5, hara = new THREE.Group();
   for (let i = 0; i < tiers; i++) {
     g.add(box(w, th * 0.72, w, m, 0, y));
     g.add(box(w + 0.9, th * 0.28, w + 0.9, d, 0, y + th * 0.72));
     const k = Math.max(0.8, w * 0.07), ky = y + th;
-    if (i < tiers - 1) for (const x of [-1, 1]) for (const z of [-1, 1]) g.add(box(k, k, k, m, x * (w / 2 - k / 2), ky, z * (w / 2 - k / 2)));
-    if (i < tiers - 1) for (const a of FACES) g.add(onFace(box(w * 0.3, k * 0.9, k, m, 0, ky), a, w / 2 - k / 2));
+    // The storey's parapet of miniature shrines: a domed kuta on each corner, a barrel-roofed shala
+    // in the middle of each side.
+    if (i < tiers - 1) for (const x of [-1, 1]) for (const z of [-1, 1]) hara.add(at(kuta(k, m), x * (w / 2 - k / 2), ky, z * (w / 2 - k / 2)));
+    if (i < tiers - 1) for (const a of FACES) hara.add(onFace(at(shala(w * 0.3, k, m), 0, ky, 0), a, w / 2 - k / 2));
     y += th;
     w -= (27.5 - w1) / tiers;
   }
+  g.add(mergeByMaterial(hara));
   g.add(box(8, 2.6, 8, d, 0, y));
   const dome = mesh(new THREE.SphereGeometry(7, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), flat(m), 0, y + 2.6, 0);
   dome.rotation.y = Math.PI / 8;

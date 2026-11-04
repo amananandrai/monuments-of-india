@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import { M, V, box, cyl, lathe, group, at, kalash, bell, shikhara, pidaRoof, nagaraProfile, ribbed, inst, unitBox, unitCyl, unitSpire, aroundRect, hoopArch } from '../helpers.js';
+import { M, V, box, cyl, lathe, group, at, kalash, bell, shikhara, pidaRoof, nagaraProfile, ribbed, inst, unitBox, unitCyl, aroundRect, hoopArch } from '../helpers.js';
 import { trabeateGate, wallWithGaps } from '../details/temples.js';
 import { templeDoorway } from '../details/doorways.js';
+import { miniSpireGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/dilwara-temples.js';
 
 export function buildDilwara() {
@@ -20,7 +21,7 @@ export function buildDilwara() {
     spires.push([x, 5.5, z, 2.6, 3.4, 2.6, ry]);
     posts.push([x + Math.sin(ry) * 3.2, 1.5, z + Math.cos(ry) * 3.2, 0.5, 3.6, 0.5]);
   });
-  f.add(inst(unitBox(), cellList, Mb), inst(unitSpire(), spires, Mb), inst(unitCyl(10), posts, Mb));
+  f.add(inst(unitBox(), cellList, Mb), inst(miniSpireGeo(), spires, Mb), inst(unitCyl(10), posts, Mb));
   f.add(at(group(...[[44, 3.6, -29.4], [44, 3.6, 29.4]].map(([w, d, z]) => box(w - 6, 0.4, d, Sh, 0, 5.1, z)), ...[-19.4, 19.4].map((x) => box(3.6, 0.4, 60, Sh, x, 5.1, 0)))));
   // Main shrine, closed hall and the open Ranga Mandapa with its ribbed dome and hoop arches
   f.add(box(10, 8, 10, Mb, 0, 1.5, -16), at(shikhara(9, 12, Mb, nagaraProfile, 12), 0, 9.5, -16));

@@ -1,7 +1,8 @@
-# Finer detail for five monuments
+# Finer detail for the monuments
 
-The plan, and what has been built, for a second layer of detail on India Gate, Charminar, the Taj
-Mahal, the Gateway of India and the Old Parliament House.
+The plan, and what has been built, for a second layer of architectural detail. It was first built
+for India Gate, Charminar, the Taj Mahal, the Gateway of India and the Old Parliament House (the
+sections below), then carried to every other monument (see "The other monuments").
 
 ## Approach
 
@@ -160,11 +161,111 @@ Built:
 
 Later: the real count of twelve gates (the model keeps six porches); the chambers' roofs.
 
+## The other monuments
+
+Every other monument now has the same kind of layer. Each `js/details/<id>.js` has an
+`architecture()` function, called first from its `addDetails`, that adds the carving, mouldings and
+fittings in one merged group. Its comment says what it adds and which builder dimensions it follows.
+The rules above still apply.
+
+### Shared parts added
+
+- `components.js`: `beltCourse` and `mouldings` (courses round a block, as a temple's adhishthana or
+  a plinth), `pilasters`, `windowFrame` (a framed window, optionally screened), `jharokha` (an oriel
+  on brackets) with `banglaRoof`, `templeNiche` (a devakoshtha with its image and pediment), `panel`
+  (a framed sunk panel), `idol` (a cheap standing image for rows of niches), `star` (inlaid stars),
+  `fishPair` (the fish of Awadh) and `medallion` (a cheap roundel where there are hundreds).
+- `forts.js`: `towerDetail` (banded, slit round or polygonal towers) and `slitRow` (loopholes).
+- `tibetan.js` (new): `dharmaWheel` (the wheel between two deer), `gyaltsen` (victory banners),
+  `shabkhep` (window awnings) and `parapetDiscs`.
+
+### Detail in the shared builders
+
+- `nagaraTemple` (Baidyanath, Bhimashankar, Grishneshwar, Kashi Vishwanath, Mahakaleshwar,
+  Nageshwar, Omkareshwar, Palitana, Parshvanath, Shikharji, Somnath, Soniji ki Nasiyan,
+  Trimbakeshwar): base mouldings and a cornice on the sanctum, an image niche on each of its three
+  outer faces (smaller empty niches beside it on large temples), and bhumi-amalakas on the corners of
+  the spire's storeys.
+- `gopuram` (Meenakshi, Mallikarjuna, Padmanabhaswamy, Ramanathaswamy, Tirumala): plinth mouldings,
+  niches with images between pilasters on the granite base either side of the passage, and kudu
+  gables and windows on the crowning vault.
+
+### Per monument
+
+- Forts: Agra (wall courses and loopholes, banded bastions, the Amar Singh Gate's panels, the Khas
+  Mahal's screened arches and eaves, the Musamman Burj's jalis, the Diwan-i-Am's arches); Red Fort
+  (courses, loopholes, the Lahori Gate's panels and arcaded parapet, windows in the towers); Amber
+  (jharokhas on the palace fronts and the Ganesh Pol, the Diwan-i-Aam's brackets and eaves); Bekal
+  (loopholes at three levels); Chittorgarh (the Vijay and Kirti Stambhs' friezes, pilasters and
+  balconies, Padmini's palace); Daulatabad (the Chand Minar's bracketed balconies and railings);
+  Aguada (cordon and embrasures, the lighthouse gallery); Golconda (medallions on the Fateh Darwaza,
+  the Bala Hissar's eaves and parapet); Gwalior (jharokhas and tower balconies on the Man Mandir, the
+  Teli ka Mandir's niches); Jaisalmer (merlons on all 99 bastions, tiers of jharokhas); Mehrangarh
+  (the Phool Mahal's bracketed eave, jharokhas). All banded and slit their towers with `towerDetail`.
+- Mughal, Deccan and Nawabi: stacked iwans on the face strips of Humayun's and Safdarjung's tombs and
+  Bibi ka Maqbara; inlaid stars (Humayun, Safdarjung, Akbar's tomb and gateway, Buland Darwaza, Jama
+  Masjid); calligraphy bands (Buland Darwaza, Chota Imambara, Jama Masjid, Qutub Minar); merlons,
+  guldastas, lotus crowns, bracketed balconies on the minarets; jali on Akbar's top terrace and on
+  Itmad-ud-Daulah's pavilion, with coloured inlay panels; the Gol Gumbaz's bracketed cornice and
+  tower windows; arcaded parapets on the Qutb Shahi tombs; the fish of Awadh at the Imambaras;
+  Qutub Minar's muqarnas brackets; Panch Mahal's capitals, eaves and railings; the Hawa Mahal's sill
+  brackets; jharokhas on the City Palace and arcades on the Lake Palace; the Golden Temple's inlay and
+  embossed bands and bay windows.
+- Colonial and modern: Bom Jesus (pilaster capitals, volutes, dentils, belfry windows); Cooch Behar
+  (roof balustrade, drum windows); CSMT (pierced parapets, pinnacles, roundels, a clock); Laxmi Vilas
+  (clock dials, tower windows and balconies, merlons); Victoria Memorial (balustrades, pavilion
+  windows, drum column capitals); Rashtrapati Bhavan (Delhi Order bell capitals, chhajjas on
+  brackets, jali windows, the Sanchi-style railing round the dome); Mysore Palace (rosettes, eave,
+  merlons, tower balconies, lotus cups); Kirti Mandir; the new Parliament House (jali windows, a carved
+  band); the Cellular Jail (string courses, tower windows); Howrah Bridge (gusset plates, tower caps,
+  deck railings); the Bandra–Worli Sea Link (cross-beam, aviation light, cable anchors); the Capitol
+  Complex (the enamelled door, brise-soleil); the memorials (lettered tablets and bronze murals,
+  bullet marks at Jallianwala Bagh); the Statue of Unity's relief panels and railings.
+- Temples: Akshardham, Brihadeeswara (adhishthana, kudus, hall niches), Chennakesava (star friezes,
+  madanikas, screens), Dilwara (the dome's pendant), Hidimba (carved bands, eave pendants, horns),
+  Jagannath (pabhaga, niches, amalakas, lions on the tower), Kailasa, Kamakhya, Kandariya (kakshasana
+  balconies), Kedarnath, Konark (friezes, niches, gajasimhas), the Lotus Temple (stairs), Mahabodhi
+  (tower niches, railing medallions), the Ram Mandir, Ramappa (madanikas), Ranakpur, the Shore Temple
+  (pilasters, kudus, vyalas) and Vittala (clustered musical pillars, eaves); Rani ki Vav (an image in
+  every niche, friezes, brackets); Gommateshwara (the manastambha).
+- Buddhist: Dhamek (the carved band and niche images), Sanchi (railing medallions, stairway, yakshi
+  brackets), Nalanda (stucco niches on Temple 3), Ajanta (the chaitya facades' horseshoe arches,
+  kudus and Buddhas, beams over the other caves), and the monasteries (Key, Rumtek, Tawang, Thiksey)
+  with the Dharma wheel and deer, victory banners, awnings and parapet discs.
+
+Later: the interiors (the forest of pillars at Ranakpur, the Dilwara ceilings); figure sculpture in
+place of the simple `idol`; the roofscape of Jaisalmer's havelis.
+
+### Sculpture (second pass)
+
+[`fine-detail-plan.md`](fine-detail-plan.md) lists the places where blocks still stood in for
+sculpture, and what replaced them. The parts are in `js/details/sculpture.js`:
+
+- `figureGeo(pose)` and `figure()`: carved figures (standing, dancing, seated, musician) and a cheap
+  stucco figure. `elephantGeo()` and `horseGeo()` are animals. All are unit-sized, so they replace
+  `unitBox()` in an instanced row. `figureRow()` and `figureFrieze()` build rows and sunk friezes.
+- `kuta`, `shala` and `haraRow`: the miniature shrines along Dravidian storeys. `kutaGeo()` and
+  `kuduGeo()` are instanced versions for the gopurams.
+- `yaliPillar` and `clusterPillar`: the carved pillars of Vijayanagara.
+- `miniSpireGeo()`: small curved spires for rows of shrine cells.
+- The classical kit: `corinthianCapital`, `entablature`, `statue`, `urn`, `pinnacle` and
+  `gothicPinnacle`. In `colonial.js`, `column` and `porch` take `order: 'corinthian'`.
+
+These now replace the blocks. Figures stand in the wall bands at Kandariya, Parshvanath and
+Grishneshwar, and in Ramappa's brackets. Elephants carry Akshardham's and Kailasa's plinths, and
+musicians stand on Konark's roof. Painted figures, pilasters, kudus and kutas cover the gopurams,
+and kutas and shalas sit on the vimanas. Every Nagara sanctum and hall has a figure frieze, and
+the Ram Mandir's halls have carved pillars. Vittala at Hampi has clustered and yali pillars,
+plinth friezes, shrine parapets and a carved sanctum, chariot and gopuram. The colonial buildings
+have Corinthian orders, entablatures, statues, dome ribs, the lion and tiger at CSMT, the IHS at
+Bom Jesus and the Gajalakshmi at Mysore.
+
 ## Checking a change
 
 There is no build step. To see a detail module's effect, serve the folder (`npx serve .`) and open
 the monument's hash, for example `#taj-mahal`. A quick check of cost is the number of meshes and
-triangles in the built group, which should stay within the budget above.
+triangles in the built group, which should stay within the budget above. Every monument builds
+within it: the largest are Meenakshi and Vittala, at just under 300,000 triangles each.
 
 ## Sources
 

@@ -42,7 +42,7 @@ export function buildVivekanandaRock() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // Where three seas meet, off the southern tip of India
-  g.add(sheet(1400, 1400, M.sea, 0, 0.3, 0), box(600, 0.3, 120, mat('#dcc9a3', 0.95), 0, 0, 380));
+  g.add(sheet(1400, 1400, M.sea, 0, 0.3, 0), box(600, 0.42, 120, mat('#dcc9a3', 0.95), 0, 0, 380));
   for (const [x, z, s] of [[0, 0, 40], [-75, 18, 22]]) {
     const r = mesh(new THREE.IcosahedronGeometry(s, 1), ROCK, x, 0, z);
     r.scale.set(1, 0.22, 0.75);

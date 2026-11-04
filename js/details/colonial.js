@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, surface } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, surface, ribbed } from '../helpers.js';
 import { archCurve, jali, mergeByMaterial } from './components.js';
+import { corinthianCapital } from './sculpture.js';
 import { interior, doorLeaves, steps } from './doorways.js';
 
 // Doors, windows and porches for the colonial, Gothic Revival, Baroque and Indo-Saracenic
@@ -99,10 +100,18 @@ function glazingBars(w, h, shape, t, m, z, from = 0) {
 /* ---------- classical parts ---------- */
 
 // A column rc in radius and hc tall, standing at y = 0: a square plinth, a moulded base, a shaft
-// tapering a little, a bell capital and an abacus.
-export function column(rc, hc, m) {
+// tapering a little, a bell capital and an abacus. order: 'corinthian' gives the shaft flutes and
+// a capital of acanthus leaves and volutes instead.
+export function column(rc, hc, m, { order = 'plain' } = {}) {
   const g = new THREE.Group(), pl = rc * 0.5, ab = rc * 0.35, cap = rc * 1.1;
   g.add(box(rc * 2.6, pl, rc * 2.6, m), cyl(rc * 1.2, rc * 1.28, rc * 0.3, m, 0, pl, 0, 16));
+  if (order === 'corinthian') {
+    const ch = rc * 2.2 + rc * 0.32, sh = hc - pl - rc * 0.3 - ch;
+    g.add(cyl(rc * 1.1, rc * 1.1, rc * 0.12, m, 0, pl + rc * 0.3, 0, 16));
+    g.add(ribbed(cyl(rc * 0.88, rc, sh, m, 0, pl + rc * 0.3, 0, 32), 16, 0.05));
+    g.add(at(corinthianCapital(rc * 0.9, m), 0, hc - ch, 0));
+    return g;
+  }
   g.add(cyl(rc * 0.86, rc, hc - pl - rc * 0.3 - cap - ab, m, 0, pl + rc * 0.3, 0, 16));
   g.add(cyl(rc * 1.32, rc * 0.88, cap, m, 0, hc - ab - cap, 0, 16), box(rc * 2.7, ab, rc * 2.7, m, 0, hc - ab, 0));
   return g;
@@ -253,10 +262,11 @@ export function classicalDoor(w, h, {
 // pediment ('pediment'), a balustrade ('balustrade') or nothing more ('cornice'). door: a door to set
 // in the wall at the back (a classicalDoor or any part built the same way); stepsDown: steps down
 // to the ground in front. cols columns along the front, in pairs if `paired`, with pilasters
-// answering the end ones against the wall.
+// answering the end ones against the wall; order: 'corinthian' for fluted columns with acanthus
+// capitals.
 export function porch(w, d, h, {
   m, trim = m, colM = trim, cols = 4, paired = false, r = Math.min(0.9, Math.max(0.25, w / (cols * 5))),
-  top = 'cornice', ent = Math.max(0.8, h * 0.15), door = null, stepsDown = 0, side = true,
+  top = 'cornice', ent = Math.max(0.8, h * 0.15), door = null, stepsDown = 0, side = true, order = 'plain',
 } = {}) {
   const g = new THREE.Group(), fl = 0.25, hc = h - fl;
   g.add(box(w, fl, d, trim, 0, 0, d / 2));
@@ -268,11 +278,11 @@ export function porch(w, d, h, {
     for (let k = 0; k < cols; k++) xs.push(cols === 1 ? 0 : xa + (k * (xb - xa)) / (cols - 1));
   }
   const zc = d - r * 1.5;
-  for (const x of xs) g.add(at(column(r, hc, colM), x, fl, zc));
+  for (const x of xs) g.add(at(column(r, hc, colM, { order }), x, fl, zc));
   // Columns down the open sides, when the porch is deep enough to need them.
   if (side && zc > r * 6) {
     const n = Math.floor(zc / (r * 5));
-    for (let k = 1; k <= n; k++) for (const x of [xs[0], xs[xs.length - 1]]) g.add(at(column(r, hc, colM), x, fl, zc - (k * zc) / (n + 1)));
+    for (let k = 1; k <= n; k++) for (const x of [xs[0], xs[xs.length - 1]]) g.add(at(column(r, hc, colM, { order }), x, fl, zc - (k * zc) / (n + 1)));
   }
   for (const x of [xs[0], xs[xs.length - 1]]) g.add(box(r * 2.2, hc, 0.25, colM, x, fl, 0.125));
   // Architrave, a frieze set back, and the cornice with dentils under its front edge.
@@ -383,7 +393,7 @@ export function gothicWindow(w, h, { m, trim = m, depth = Math.max(0.2, w * 0.14
   g.add(at(headSlab(w * 0.999, h * 0.999, 'pointed', GLASS, 0.03), 0, 0, 0.012));
   const mw = Math.max(0.06, w * 0.06), wl = (w - mw) / 2, hl = sp + 1.4 * wl / 2;
   g.add(box(mw, sp, 0.1, trim, 0, 0, 0.06));
-  for (const s of [-1, 1]) g.add(at(headRing(wl, hl, 'pointed', mw * 0.5, 0.08, trim), s * (wl + mw) / 2, 0, 0.04));
+  for (const s of [-1, 1]) g.add(at(headRing(wl * 0.96, hl, 'pointed', mw * 0.42, 0.08, trim), s * (wl + mw) / 2, 0, 0.04));
   const R = Math.min(wl * 0.42, (h - hl) * 0.44);
   if (R > 0.08) g.add(at(mesh(new THREE.TorusGeometry(R, Math.max(0.03, mw * 0.4), 6, 20), trim), 0, hl + (h - hl) * 0.45, 0.07));
   if (sill) g.add(box(W + 0.16, 0.14, depth + 0.14, trim, 0, -0.14, (depth + 0.14) / 2));

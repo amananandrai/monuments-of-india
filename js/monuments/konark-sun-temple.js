@@ -3,6 +3,7 @@ import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, bell, pidaRo
 import { horse } from '../details/animals.js';
 import { templeDoorway } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
+import { figure } from '../details/sculpture.js';
 import { addDetails } from '../details/konark-sun-temple.js';
 
 export function buildKonark() {
@@ -43,7 +44,8 @@ export function buildKonark() {
       const tw = w1 - 2.5;
       f.add(box(tw, 2.6, tw, Kd, 0, y, jz));
       for (const a of FACES) for (const k of [-1, 0, 1]) {
-        const s = onFace(box(1, 2.2, 0.8, K, 0, y, 0), a, tw / 2 + 0.4, k * tw / 3.2);
+        // The musicians and dancers who stand on the terraces of the roof, drum or cymbals in hand.
+        const s = onFace(at(figure(2.2, K, k ? 'musician' : 'dancer'), 0, y, 0), a, tw / 2 + 0.4, k * tw / 3.2);
         s.position.z += jz;
         f.add(s);
       }

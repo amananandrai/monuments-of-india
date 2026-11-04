@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, at, onFace, FACES, kalash, bell, shikhara, pidaRoof, inst, unitBox, aroundRect } from '../helpers.js';
+import { M, mesh, box, cyl, at, onFace, FACES, kalash, bell, shikhara, pidaRoof, aroundRect } from '../helpers.js';
 import { templeDoorway, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
+import { figureRow } from '../details/sculpture.js';
 import { addDetails } from '../details/kandariya-mahadeva.js';
 
 export function buildKandariya() {
@@ -16,7 +17,7 @@ export function buildKandariya() {
   const figs = [];
   // The sculpted figures run round the walls, leaving the doorway clear.
   for (const y of [5.4, 7.4]) aroundRect(22.4, 40.4, 1.2).forEach(([x, z, ry]) => { if (!(z > 20 && Math.abs(x) < 2.6)) figs.push([x, y, z - 4, 0.7, 1.5, 0.35, ry]); });
-  f.add(inst(unitBox(), figs, Sd), box(23, 0.5, 41, Sd, 0, 11, -4));
+  f.add(figureRow(figs, Sd, { poses: ['standing', 'dancer', 'standing', 'musician'] }), box(23, 0.5, 41, Sd, 0, 11, -4));
   // Roofs rising in steps from the entrance porch to the main tower
   [[22, 9, 4, 3], [12, 13, 5, 4], [1, 17, 6, 5]].forEach(([z, w0, n, br]) => {
     const r = pidaRoof(w0, w0 * 0.42, n, 0.85, S, Sd);
@@ -25,7 +26,7 @@ export function buildKandariya() {
   // The entrance porch: open between four pillars, with a garland arch (torana) across its front,
   // the doorway into the hall at its back, and steps down to the platform.
   const porch = new THREE.Group();
-  porch.add(box(11, 2, 9, Sd, 0, 3, 20.5), box(10, 0.4, 9, S, 0, 11.1, 20.5));
+  porch.add(box(11, 1.98, 9, Sd, 0, 3, 20.5), box(10, 0.4, 9, S, 0, 11.1, 20.5));
   for (const x of [-4.3, 4.3]) for (const z of [16.6, 24.4]) {
     porch.add(box(0.9, 0.5, 0.9, Sd, x, 5, z), cyl(0.3, 0.34, 4.7, S, x, 5.5, z, 8), box(0.9, 0.4, 0.9, Sd, x, 10.2, z));
   }

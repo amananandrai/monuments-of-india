@@ -3,6 +3,8 @@ import { M, mat, mesh, box, at, rng, flat, kalash, inst, aroundRect, sheet, onFa
 import { templeDoorway } from '../details/doorways.js';
 import { nandiGeometry } from '../details/animals.js';
 import { statueMaterial } from '../sdf.js';
+import { mergeByMaterial } from '../details/components.js';
+import { kuta, shala } from '../details/sculpture.js';
 import { addDetails } from '../details/shore-temple.js';
 
 const GRANITE = mat('#8f8577', 0.95);
@@ -12,14 +14,19 @@ const ROCK = mat('#6e6a64', 0.95, 0, { flatShading: true });
 
 // A slender Pallava vimana: square tiers with corner pavilions and an octagonal cap.
 function vimana(w, tiers, th, m, md) {
-  const g = new THREE.Group();
+  const g = new THREE.Group(), hara = new THREE.Group();
   let y = 0;
   for (let i = 0; i < tiers; i++) {
     const tw = w * (1 - (0.55 * i) / tiers), k = tw * 0.16;
     g.add(box(tw, th * 0.7, tw, m, 0, y), box(tw + 0.5, th * 0.3, tw + 0.5, md, 0, y + th * 0.7));
-    for (const x of [-1, 1]) for (const z of [-1, 1]) g.add(box(k, k, k, m, x * (tw / 2 - k / 2), y + th, z * (tw / 2 - k / 2)));
+    // Miniature shrines along the storey's edge: kutas on the corners, a shala in each side.
+    if (i < tiers - 1) {
+      for (const x of [-1, 1]) for (const z of [-1, 1]) hara.add(at(kuta(k, m), x * (tw / 2 - k / 2), y + th, z * (tw / 2 - k / 2)));
+      for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) hara.add(onFace(at(shala(tw * 0.32, k, m), 0, y + th, 0), a, tw / 2 - k / 2));
+    }
     y += th;
   }
+  g.add(mergeByMaterial(hara));
   const r = w * 0.26;
   const cap = mesh(new THREE.SphereGeometry(r, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), flat(m), 0, y, 0);
   cap.rotation.y = Math.PI / 8;

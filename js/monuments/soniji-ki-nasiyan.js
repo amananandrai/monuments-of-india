@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, rng, onFace, archPanel, guldasta, inst, unitBox, unitSpire } from '../helpers.js';
+import { M, mat, box, cyl, at, rng, onFace, archPanel, guldasta, inst, unitBox } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
+import { miniSpireGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/soniji-ki-nasiyan.js';
 
 const RED = mat('#a94a3c', 0.85);
@@ -24,7 +25,7 @@ export function buildSonijiKiNasiyan() {
     town.push([x, 8.2, z, w, h, w]);
     tops.push([x, 8.2 + h, z, w, w * 1.4, w]);
   }
-  f.add(inst(unitBox(), town, M.gild), inst(unitSpire(), tops, M.gild), cyl(1.4, 2.6, 4.6, M.gild, 20, 8.2, 0, 16));
+  f.add(inst(unitBox(), town, M.gild), inst(miniSpireGeo(), tops, M.gild), cyl(1.4, 2.6, 4.6, M.gild, 20, 8.2, 0, 16));
   for (const x of [0, 40]) for (const z of [-12, 12]) f.add(at(guldasta(5, 0.5, RED), x, 15.6, z));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.45, 0.16, 1.25] };

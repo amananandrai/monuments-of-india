@@ -9,6 +9,8 @@ import { nightState, V, box } from './helpers.js';
 import { attachSurface, surface, waterTime, landColor, reflection } from './surface.js';
 import { blendIntoLand } from './landscape.js';
 import { separateCoplanar } from './coplanar.js';
+import { frameBox } from './framing.js';
+import { upgradeTrees } from './details/realism.js';
 import { naturalize } from './naturalize.js';
 import { loadPhotoTextures } from './textures.js';
 import { MONUMENTS } from './data.js';
@@ -184,6 +186,8 @@ function getBuilt(i) {
   if (!built.has(i)) {
     const r = MONUMENTS[i].build();
     r.focus = r.focus || r.group;
+    // Fuller trees wherever the monument has triangles to spare.
+    upgradeTrees(r.group);
     naturalize(r.group);
     // Faces that share a plane get different depth offsets, so they don't flicker.
     separateCoplanar(r.group, 0.005);
@@ -196,16 +200,41 @@ function getBuilt(i) {
 }
 
 function computeHome(r) {
-  const box = new THREE.Box3().setFromObject(r.focus);
+  const box = frameBox(r.focus);
   const size = box.getSize(new THREE.Vector3());
   const center = box.getCenter(new THREE.Vector3());
   const radius = size.length() / 2;
   const vfov = THREE.MathUtils.degToRad(camera.fov);
   const hfov = 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect);
-  const dist = (radius / Math.sin(Math.min(vfov, hfov) / 2)) * 1.02;
+  // A builder can ask for a closer home view (zoom < 1) where the whole site need not fit.
+  const dist = (radius / Math.sin(Math.min(vfov, hfov) / 2)) * 1.1 * (r.zoom || 1);
   const dir = V(...(r.view || [0.9, 0.34, 1.25])).normalize();
   const target = V(center.x, center.y * 0.95, center.z);
-  return { target, pos: target.clone().addScaledVector(dir, dist), dist, radius };
+  // minElevation: for a monument in a pit or trench, how high the camera must stay to see in.
+  return { target, pos: target.clone().addScaledVector(dir, dist), dist, radius, reach: sceneryReach(r, target, dir), minEl: r.minElevation || 0.01 };
+}
+
+// How far the camera may pull back before it would enter the scenery round a monument (hills,
+// peaks, cliffs, forests): rays from the target outward, at the home view's elevation and lower.
+// Inside a hill the near plane slices it into floating layers, so the zoom stops short of it.
+function sceneryReach(r, target, dir) {
+  const inFocus = new Set(), others = [], b = new THREE.Box3();
+  r.focus.traverse((o) => inFocus.add(o));
+  r.group.traverse((o) => {
+    if (!o.isMesh || !o.visible || inFocus.has(o)) return;
+    b.setFromObject(o);
+    if (b.max.y - Math.max(0, b.min.y) > 4) others.push(o);
+  });
+  if (!others.length) return Infinity;
+  const rc = new THREE.Raycaster(), el = Math.asin(dir.y);
+  let near = Infinity;
+  for (const e of [el, el * 0.5, 0.08]) for (let k = 0; k < 24; k++) {
+    const a = (k / 24) * Math.PI * 2;
+    rc.set(target, V(Math.sin(a) * Math.cos(e), Math.sin(e), Math.cos(a) * Math.cos(e)));
+    const hit = rc.intersectObjects(others, false)[0];
+    if (hit) near = Math.min(near, hit.distance);
+  }
+  return near;
 }
 
 function setEnvironment(h) {
@@ -219,7 +248,8 @@ function setEnvironment(h) {
   scene.fog.near = dist * 1.6;
   scene.fog.far = dist * 7;
   controls.minDistance = radius * 0.35;
-  controls.maxDistance = dist * 3;
+  controls.maxDistance = Math.max(dist * 1.15, Math.min(dist * 3, h.reach * 0.85));
+  controls.maxPolarAngle = Math.PI / 2 - h.minEl;
   sun.position.copy(target).addScaledVector(SUN_DIR, radius * 3);
   sun.target.position.copy(target);
   const sc = sun.shadow.camera;

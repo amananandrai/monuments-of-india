@@ -10,10 +10,10 @@ const HILL = mat('#55703f', 0.95, 0, { flatShading: true });
 export function buildTirumala() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(29);
   g.add(f);
-  // The Seshachalam hills around the temple town
+  // The Seshachalam hills around the temple town, far enough out that the camera never enters them
   for (let i = 0; i < 9; i++) {
-    const a = (i / 9) * Math.PI * 2, d = 260 + R() * 80, h = 50 + R() * 60;
-    g.add(mesh(new THREE.ConeGeometry(h * 2.2, h, 9).translate(0, h / 2, 0), HILL, Math.cos(a) * d, 0, Math.sin(a) * d));
+    const a = (i / 9) * Math.PI * 2, d = 480 + R() * 120, h = 60 + R() * 70;
+    g.add(mesh(new THREE.ConeGeometry(h * 1.5, h, 9).translate(0, h / 2, 0), HILL, Math.cos(a) * d, 0, Math.sin(a) * d));
   }
   g.add(box(220, 0.2, 220, M.path));
   const town = [];

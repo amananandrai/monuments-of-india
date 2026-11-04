@@ -225,10 +225,18 @@ download.
   round the neck, a tiger-skin cloth, and the trishul with its damaru
   (`js/details/nageshwar-temple.js`). See
   [`docs/realistic-statues-research.md`](docs/realistic-statues-research.md).
-- **Fine detail:** India Gate, Charminar, the Taj Mahal, the Gateway of India and the Old Parliament
-  House carry a second layer of carving from `js/details/`: roundels and lettering, nested arches and
-  half-domes, bracketed balconies, jalis, eaves, merlons, lotus-petal domes and finials. The parts are
-  shared (`js/details/components.js`) and merged into a few meshes per monument. See
+- **Fine detail:** every monument carries a second layer of architectural detail from
+  `js/details/`. India Gate, Charminar, the Taj Mahal, the Gateway of India and the Old Parliament
+  House have the most: roundels and lettering, nested arches and half-domes, bracketed balconies,
+  jalis, eaves, merlons, lotus-petal domes and finials. The rest have the carving of their own
+  tradition: base mouldings, image niches and amalakas on the temples, banded and slit bastions and
+  jharokhas on the forts, stacked iwans and inlaid stars on the Mughal tombs, capitals, balustrades
+  and eaves on the colonial buildings, and the Dharma wheel and victory banners on the monasteries.
+  Sculpture is modelled rather than blocked in: carved figures and elephants in the temple friezes
+  and on the gopurams, kutas and shalas on the vimanas, yali pillars at Hampi, and Corinthian
+  orders and statues on the colonial buildings (`js/details/sculpture.js`). The parts are shared
+  (`js/details/components.js`, `forts.js`, `temples.js`, `tibetan.js`, `sculpture.js`) and merged
+  or instanced into a few meshes per monument. See
   [`docs/monument-details.md`](docs/monument-details.md), and
   [`docs/doorways-and-reuse-plan.md`](docs/doorways-and-reuse-plan.md) for how every monument got
   real entrances and how these parts are reused across each architectural family.
@@ -248,9 +256,11 @@ download.
   `js/details/taj-mahal.js`) that adds what stands round it, built from a shared kit
   (`js/details/realism.js`):
   - the trees and shrubs of its region: neem, banyan, mango, ashoka, coconut palms, deodars and
-    cypress avenues;
-  - flags and garlands: the tricolour, the Nishan Sahibs, saffron temple flags, Tibetan prayer flags
-    and marigold strings;
+    cypress avenues. Where a monument has triangles to spare, `upgradeTrees` replants them as
+    fuller trees: limbs with separate leaf clumps, palms with leafleted fronds, deodars in
+    drooping tiers;
+  - flags and garlands: the tricolour (a rippling cloth with the Ashoka Chakra), the Nishan Sahibs,
+    saffron temple pennants, Tibetan prayer flags and marigold strings;
   - heritage lamp posts (lit at night), fountains and the blue boards of the Archaeological Survey
     of India;
   - boats, shikaras and houseboats on the water, and stalls outside the temple gates;
@@ -258,11 +268,15 @@ download.
 
   There are no people or motor vehicles, so the monument itself stays the subject. Everything is
   instanced, so a garden of fifty trees costs a few draw calls.
-- **Budget:** each monument stays under 300,000 triangles. The largest is Nageshwar, at about
-  225,000 with its Shiva. Repeated parts are instanced, carved parts are merged by material, and a
+- **Budget:** each monument stays under 300,000 triangles. The largest (Meenakshi, Vittala at Hampi,
+  Nageshwar, Konark) come close to that. Repeated parts are instanced, carved parts are merged by material, and a
   monument is built only when first opened, then cached.
 - **No flicker:** faces that share a plane get depth offsets (`js/coplanar.js`), and curved walls and
   cliffs are built as single continuous bands, so surfaces don't shimmer as the camera moves.
+- **Camera:** the home view frames the monument as built (`js/framing.js`), not the lawns, plazas
+  and water round it, and the zoom-out stops short of the hills and forests round a monument, so
+  the camera never enters them. [`docs/audit-and-plan.md`](docs/audit-and-plan.md) records the
+  check of every monument behind these.
 - **Phones:** ambient occlusion and reflections are skipped to keep the frame rate up.
 
 ## Video

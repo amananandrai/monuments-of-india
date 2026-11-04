@@ -1,8 +1,10 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, flat, kalash, inst, unitBox, aroundRect } from '../helpers.js';
+import { mat, mesh, box, cyl, at, onFace, flat, kalash, aroundRect } from '../helpers.js';
 import { elephant } from '../details/animals.js';
 import { trabeateGate } from '../details/temples.js';
 import { templeDoorway } from '../details/doorways.js';
+import { mergeByMaterial } from '../details/components.js';
+import { instances, elephantGeo, kuta, shala } from '../details/sculpture.js';
 import { addDetails } from '../details/kailasa-temple.js';
 
 const ROCK = mat('#6f675e', 0.95);
@@ -10,15 +12,20 @@ const ROCK_DARK = mat('#57514a', 0.95);
 
 // A Dravidian vimana in stepped tiers, crowned by an octagonal dome.
 function vimana(w, tiers, th, m, md) {
-  const g = new THREE.Group();
+  const g = new THREE.Group(), hara = new THREE.Group();
   let y = 0;
   for (let i = 0; i < tiers; i++) {
     const tw = w * (1 - (0.45 * i) / tiers);
     g.add(box(tw, th * 0.72, tw, m, 0, y), box(tw + 0.8, th * 0.28, tw + 0.8, md, 0, y + th * 0.72));
     const k = tw * 0.12;
-    for (const x of [-1, 1]) for (const z of [-1, 1]) g.add(box(k, k, k, m, x * (tw / 2 - k / 2), y + th, z * (tw / 2 - k / 2)));
+    // Miniature shrines along the storey's edge: kutas on the corners, a shala in each side.
+    if (i < tiers - 1) {
+      for (const x of [-1, 1]) for (const z of [-1, 1]) hara.add(at(kuta(k, m), x * (tw / 2 - k / 2), y + th, z * (tw / 2 - k / 2)));
+      for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) hara.add(onFace(at(shala(tw * 0.32, k, m), 0, y + th, 0), a, tw / 2 - k / 2));
+    }
     y += th;
   }
+  g.add(mergeByMaterial(hara));
   const r = w * 0.32;
   g.add(box(r * 1.2, th * 0.5, r * 1.2, md, 0, y));
   const dome = mesh(new THREE.SphereGeometry(r, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), flat(m), 0, y + th * 0.5, 0);
@@ -39,7 +46,7 @@ export function buildKailasa() {
   f.add(box(40, 8, 62, ROCK_DARK, 0, 0, -12));
   const eles = [];
   aroundRect(40.6, 62.6, 3.2).forEach(([x, z, ry]) => eles.push([x, 0.6, z - 12, 2.2, 3.2, 1.2, ry]));
-  f.add(inst(unitBox(), eles, ROCK));
+  f.add(instances(elephantGeo(), eles.map(([x, y, z, sx, sy, sz, ry]) => [x, y, z, sx, sy, sz, ry + Math.PI]), ROCK));
   f.add(box(22, 8, 24, ROCK, 0, 8, 5), box(23.5, 1, 25.5, ROCK_DARK, 0, 16, 5));
   f.add(at(templeDoorway(2.2, 4.4, { m: ROCK, bands: 4, guardianH: 2.2 }), 0, 8, 17));
   f.add(box(20, 8, 20, ROCK, 0, 8, -26), at(vimana(19, 4, 3.4, ROCK, ROCK_DARK), 0, 16, -26));
@@ -50,5 +57,5 @@ export function buildKailasa() {
     f.add(at(elephant(ROCK, 1.4), x, 0, 16));
   }
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.45, 0.85, 1.05] };
+  return { group: g, focus: f, view: [0.45, 0.85, 1.05], minElevation: 0.32 };
 }

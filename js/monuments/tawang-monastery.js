@@ -32,7 +32,7 @@ export function buildTawang() {
   const ridge = mesh(new THREE.CylinderGeometry(70, 140, 24, 14, 2), RIDGE, 0, 12 - 0.6, 0);
   g.add(ridge);
   for (let i = 0; i < 6; i++) {
-    const a = -Math.PI * 0.85 + i * 0.35, d = 380 + R() * 120, h = 150 + R() * 120;
+    const a = -Math.PI * 0.85 + i * 0.35, d = 540 + R() * 120, h = 180 + R() * 140;
     const x = Math.cos(a) * d, z = Math.sin(a) * d;
     g.add(mesh(new THREE.ConeGeometry(h * 0.7, h, 7).translate(0, h / 2, 0), PEAK, x, 0, z), mesh(new THREE.ConeGeometry(h * 0.21, h * 0.3, 7).translate(0, h * 0.85, 0), SNOW, x, 0, z));
   }

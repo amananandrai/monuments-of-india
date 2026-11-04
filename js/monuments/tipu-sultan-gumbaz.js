@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, rng, onionDome, finial, guldasta, inst, unitCyl, aroundRect } from '../helpers.js';
+import { M, mat, box, at, rng, onionDome, finial, guldasta, inst, unitCyl, aroundRect } from '../helpers.js';
+import { trees as plantTrees } from '../details/realism.js';
 import { addDetails } from '../details/tipu-sultan-gumbaz.js';
 
 const WHITE = mat('#efebe2', 0.8);
 const GRANITE = mat('#3e3b39', 0.7);
-const CYPRESS = mat('#2f4a2e', 0.95, 0, { flatShading: true });
 
 export function buildTipuGumbaz() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(103);
@@ -12,8 +12,8 @@ export function buildTipuGumbaz() {
   g.add(box(180, 0.15, 180, M.grass), box(8, 0.25, 80, M.path, 0, 0, 45));
   // Avenue of cypress trees
   const trees = [];
-  for (let k = 0; k < 10; k++) for (const s of [-1, 1]) trees.push([s * 10, 0, 20 + k * 7, 3.4, 12 + R() * 3, 3.4]);
-  g.add(inst(new THREE.ConeGeometry(0.5, 1, 8).translate(0, 0.5, 0), trees, CYPRESS));
+  for (let k = 0; k < 10; k++) for (const s of [-1, 1]) trees.push([s * 10, 20 + k * 7, 12 + R() * 3]);
+  g.add(plantTrees(trees, { kind: 'cypress', seed: 103 }));
   // Plinth, the colonnade of dark granite pillars, the white tomb and its onion dome
   f.add(box(34, 2, 34, WHITE), box(30.8, 0.8, 30.8, WHITE, 0, 12));
   const cols = [];

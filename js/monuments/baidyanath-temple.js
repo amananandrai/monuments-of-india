@@ -20,7 +20,7 @@ function panchashula(h) {
 export function buildBaidyanath() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(140, 0.2, 140, M.path));
+  g.add(box(140, 0.15, 140, M.path));
   for (const s of [-1, 1]) f.add(box(100, 5, 2, SHADE, 0, 0, s * 50), box(2, 5, 100, SHADE, s * 50, 0, 0));
   // The main temple, its spire crowned by a panchashula
   const main = nagaraTemple({ w: 12, h: 24, m: WHITE, shade: SHADE, plinth: 2, urus: 0, halls: [[12, 7, 4]], prof: (t) => 1 - 0.68 * t, crown: panchashula(6) });
