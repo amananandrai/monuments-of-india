@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, box, cyl, ring, group, at, hemi, inst, unitBox, unitCyl } from '../helpers.js';
+import { M, box, cyl, group, at, hemi, inst, unitBox, unitCyl } from '../helpers.js';
+import { addOldParliamentDetails } from '../details/old-parliament-house.js';
 
 export function buildOldParliament() {
   const Rd = M.red, Bf = M.buff, g = new THREE.Group(), f = new THREE.Group();
@@ -10,8 +11,9 @@ export function buildOldParliament() {
   for (let k = 0; k < 72; k++) { const a = (k / 72) * Math.PI * 2; wins.push([Math.sin(a) * 85.05, 3.5, Math.cos(a) * 85.05, 2.4, 4, 0.3, a]); }
   for (let k = 0; k < 144; k++) { const a = (k / 144) * Math.PI * 2; cols.push([Math.sin(a) * 84.4, 10.8, Math.cos(a) * 84.4, 1.5, 9, 1.5]); }
   f.add(inst(unitBox(), wins, M.recess), inst(unitCyl(14), cols, Bf));
-  f.add(cyl(86, 86, 0.8, Rd, 0, 10, 0, 96), cyl(81, 81, 10, Bf, 0, 10, 0, 96));
-  f.add(cyl(86.2, 86.2, 1.6, Bf, 0, 19.8, 0, 96), ring(86, 1.4, Rd, 21.4, 96));
+  // The verandah's back wall is in the shade of the colonnade and its eave.
+  f.add(cyl(86, 86, 0.8, Rd, 0, 10, 0, 96), cyl(81, 81, 10, M.khajShade, 0, 10, 0, 96));
+  f.add(cyl(86.2, 86.2, 1.6, Bf, 0, 19.8, 0, 96));
   f.add(cyl(80.5, 80.5, 0.6, M.concrete, 0, 20, 0, 96));
   // Three chambers radiating from the domed Central Hall
   for (let k = 0; k < 3; k++) {
@@ -27,5 +29,8 @@ export function buildOldParliament() {
     const p = group(box(20, 13, 9, Bf, 0, 2, 89), box(24, 2, 12, Rd, 0, 0, 90), box(21, 1, 10, Rd, 0, 15, 89));
     f.add(p.rotateY((k * Math.PI) / 3));
   }
+  // Column bases and capitals, the eave, jalis, windows, porches, the Central Hall's drum and dome,
+  // and the estate railing: see js/details/old-parliament-house.js.
+  addOldParliamentDetails(f, g);
   return { group: g, focus: f, view: [0.8, 0.42, 1.2] };
 }
