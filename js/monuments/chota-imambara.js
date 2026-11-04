@@ -34,5 +34,6 @@ export function buildChotaImambara() {
   // The two small replicas of the Taj Mahal in the garden
   for (const x of [-32, 32]) f.add(at(tajReplica(WHITE), x, 0, 18));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.6, 0.32, 1.25] };
+  // Framed on the monument itself, closer than its grounds would set.
+  return { group: g, focus: f, view: [0.6, 0.32, 1.25], zoom: 0.7 };
 }

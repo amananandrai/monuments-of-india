@@ -43,5 +43,6 @@ export function buildCellularJail() {
   f.add(cyl(9, 9, 16, BRICK, 0, 0, 0, 8), cyl(9.6, 9.6, 0.6, LIME, 0, 16, 0, 8), cyl(6, 6, 6, LIME, 0, 16.6, 0, 8), at(hipRoof(13, 13, 4, mat('#7c7a76', 0.8)), 0, 22.6, 0));
   f.add(box(4, 1, 4, LIME, 0, 26.6, 0), cyl(0.15, 0.15, 8, LIME, 0, 27.6, 0, 6));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.6, 0.55, 1.15] };
+  // Framed on the monument itself, closer than its grounds would set.
+  return { group: g, focus: f, view: [0.6, 0.55, 1.15], zoom: 0.62 };
 }

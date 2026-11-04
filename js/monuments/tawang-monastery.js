@@ -2,14 +2,13 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, group, rng, inst, unitBox, hipRoof, onFace } from '../helpers.js';
 import { tibetanPortico, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
+import { mountainRing } from '../details/terrain.js';
 import { addDetails } from '../details/tawang-monastery.js';
 
 const WHITE = mat('#efece4', 0.85);
 const MAROON = mat('#6b2a22', 0.85);
 const WINDOW = mat('#2a2220', 0.8);
 const RIDGE = mat('#6f7a55', 0.95, 0, { flatShading: true });
-const PEAK = mat('#8a8c8f', 0.95, 0, { flatShading: true });
-const SNOW = mat('#f4f6f8', 0.8, 0, { flatShading: true });
 
 // A Tibetan block: whitewashed walls, tapering dark windows and a maroon parapet band.
 // doorX: where a door stands, so the two lowest rows of windows leave room for it.
@@ -31,11 +30,9 @@ export function buildTawang() {
   // The ridge it stands on, and snow peaks of the eastern Himalaya beyond
   const ridge = mesh(new THREE.CylinderGeometry(70, 140, 24, 14, 2), RIDGE, 0, 12 - 0.6, 0);
   g.add(ridge);
-  for (let i = 0; i < 6; i++) {
-    const a = -Math.PI * 0.85 + i * 0.35, d = 540 + R() * 120, h = 180 + R() * 140;
-    const x = Math.cos(a) * d, z = Math.sin(a) * d;
-    g.add(mesh(new THREE.ConeGeometry(h * 0.7, h, 7).translate(0, h / 2, 0), PEAK, x, 0, z), mesh(new THREE.ConeGeometry(h * 0.21, h * 0.3, 7).translate(0, h * 0.85, 0), SNOW, x, 0, z));
-  }
+  // Himalayan ridges round the valley, rock to snow (js/details/terrain.js).
+  g.add(mountainRing({ inner: 470, outer: 820, h: 230, vary: 70, snow: 190, rock: ['#7e8084', '#8a8c8f', '#74767a'], cover: '#5f7349', steep: 0.82 }));
+
   const T = 24;
   f.add(box(110, 0.6, 90, M.path, 0, T - 0.6, 0));
   for (const s of [-1, 1]) f.add(box(110, 3, 1.5, WHITE, 0, T, s * 45), box(1.5, 3, 90, WHITE, s * 55, T, 0));
@@ -61,5 +58,5 @@ export function buildTawang() {
     for (let k = 0; k < 8; k++) f.add(box(0.8, 0.6, 0.05, [M.flagRed, M.saffron, M.flagGreen, M.navy, M.flagWhite][k % 5], x - Math.sign(x) * (1 + k * 1.6), T + 9.4 - k * 0.6, 20));
   }
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.6, 0.38, 1.25] };
+  return { group: g, focus: f, view: [0.6, 0.38, 1.25], fog: 10 };
 }

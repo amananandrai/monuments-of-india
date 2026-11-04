@@ -34,5 +34,6 @@ export function buildHazratbal() {
   f.add(at(onionDome(10.5, Mb), 0, b + 16.8, 0), at(finial(5), 0, b + 16.8 + 18.7, 0));
   f.add(at(minaret(34, 2, Mb, { balconies: 3, cap: 'onion' }), 24, b, 12));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.6, 0.3, 1.25] };
+  // Framed on the monument itself, closer than its grounds would set.
+  return { group: g, focus: f, view: [0.6, 0.3, 1.25], zoom: 0.62 };
 }

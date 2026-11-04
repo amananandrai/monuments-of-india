@@ -211,7 +211,7 @@ function computeHome(r) {
   const dir = V(...(r.view || [0.9, 0.34, 1.25])).normalize();
   const target = V(center.x, center.y * 0.95, center.z);
   // minElevation: for a monument in a pit or trench, how high the camera must stay to see in.
-  return { target, pos: target.clone().addScaledVector(dir, dist), dist, radius, reach: sceneryReach(r, target, dir), minEl: r.minElevation || 0.01 };
+  return { target, pos: target.clone().addScaledVector(dir, dist), dist, radius, reach: sceneryReach(r, target, dir), minEl: r.minElevation || 0.01, fog: r.fog || 7 };
 }
 
 // How far the camera may pull back before it would enter the scenery round a monument (hills,
@@ -240,13 +240,14 @@ function sceneryReach(r, target, dir) {
 function setEnvironment(h) {
   const { dist, radius, target } = h;
   camera.near = Math.max(0.1, dist / 300);
-  camera.far = dist * 14;
+  camera.far = dist * Math.max(14, h.fog * 2);
   camera.updateProjectionMatrix();
   sky.scale.setScalar(camera.far * 0.9);
   // The land runs well past the end of the fog, so its edge is never seen.
-  ground.scale.setScalar(dist * 12);
+  ground.scale.setScalar(dist * Math.max(12, h.fog * 1.8));
+  // fog: how many home distances off the haze closes in; mountain sites ask for clearer air.
   scene.fog.near = dist * 1.6;
-  scene.fog.far = dist * 7;
+  scene.fog.far = dist * h.fog;
   controls.minDistance = radius * 0.35;
   controls.maxDistance = Math.max(dist * 1.15, Math.min(dist * 3, h.reach * 0.85));
   controls.maxPolarAngle = Math.PI / 2 - h.minEl;

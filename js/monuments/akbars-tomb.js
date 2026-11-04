@@ -6,7 +6,7 @@ import { addDetails } from '../details/akbars-tomb.js';
 export function buildAkbarsTomb() {
   const Rd = M.red, Rl = M.redLight, Mb = M.marble, g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(220, 0.15, 300, M.grass, 0, 0, 40), box(10, 0.25, 110, M.path, 0, 0, 90));
+  g.add(box(220, 0.12, 300, M.grass, 0, 0, 40), box(10, 0.25, 110, M.path, 0, 0, 90));
   // The arcaded ground storey: cells 1.4 m deep, and a tall iwan in the middle of each side
   const cd = 1.4;
   f.add(box(100 - 2 * cd, 9, 100 - 2 * cd, Rd), box(101, 0.8, 101, Mb, 0, 8.2));

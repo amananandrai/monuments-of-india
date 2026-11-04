@@ -2,9 +2,9 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, lathe, at, rng, hipRoof, tibetanBlock, TIBETAN, inst, unitBox } from '../helpers.js';
 import { tibetanPortico } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
+import { mountainRing } from '../details/terrain.js';
 import { addDetails } from '../details/rumtek-monastery.js';
 
-const HILL = mat('#4e6e3c', 0.95, 0, { flatShading: true });
 const YELLOW = mat('#e6b94a', 0.8);
 // Gilded copper roofing, bright in the mountain light.
 const GILT = mat('#e7b84a', 0.32, 0.55, { emissive: '#3d2a06' });
@@ -14,10 +14,9 @@ export function buildRumtek() {
   g.add(f);
   // Forested Sikkim hills
   g.add(box(300, 0.2, 300, mat('#58783f', 0.95)));
-  for (let i = 0; i < 9; i++) {
-    const a = (i / 9) * Math.PI * 2, d = 430 + R() * 100, h = 100 + R() * 90;
-    g.add(mesh(new THREE.ConeGeometry(h * 1.1, h, 8).translate(0, h / 2, 0), HILL, Math.cos(a) * d, 0, Math.sin(a) * d));
-  }
+  // Forested Sikkim ridges (js/details/terrain.js).
+  g.add(mountainRing({ inner: 400, outer: 700, h: 170, vary: 60, rock: ['#4a5d3a', '#56693f'], cover: '#4e6e3c', steep: 0.6 }));
+
   // Courtyard ringed by monks' quarters
   f.add(box(70, 0.4, 70, M.path));
   const q = [];

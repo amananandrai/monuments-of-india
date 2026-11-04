@@ -34,5 +34,6 @@ export function buildOldParliament() {
   // and the estate railing: see js/details/old-parliament-house.js.
   addOldParliamentDetails(f, g);
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.8, 0.42, 1.2] };
+  // Framed on the monument itself, closer than its grounds would set.
+  return { group: g, focus: f, view: [0.8, 0.42, 1.2], zoom: 0.68 };
 }

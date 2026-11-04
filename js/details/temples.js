@@ -220,17 +220,19 @@ export function gopuram(w, d, h, tiers, seed, palette = PAINT, { pitch = 2.1, ku
     g.add(box(lw, bh * 0.3, d, M.graniteDark, s * (pw / 2 + lw / 2)));
     g.add(box(uw, bh * 0.7, d * 0.96, M.granite, s * (pw / 2 + uw / 2), bh * 0.3));
   }
-  g.add(box(pw + 0.4, bh - ph, d * 0.96, M.granite, 0, ph));
+  // The block over the passage stands 2 cm inside the courses either side, so their faces never meet.
+  g.add(box(pw + 0.4, bh - ph, d * 0.96 - 0.04, M.granite, 0, ph));
   g.add(box(w * 1.02, bh * 0.08, d * 1.02, M.graniteDark, 0, bh));
-  // The base's finer detail, on both faces: mouldings along the plinth course, and on the upper
+  // The base's finer detail, on both faces (the upper course's set 1.5 cm proud of the passage's
+  // door frames, whose backs lie in the same plane): mouldings along the plinth course, and on the upper
   // course a niche with an image either side of the passage, between pilasters.
   const bd = new THREE.Group(), nw = Math.min(uw * 0.3, 2.2), nh = bh * 0.7 * 0.52;
   for (const a of [0, Math.PI]) for (const sx of [-1, 1]) {
     const lo = sx * (pw / 2 + lw / 2), up = sx * (pw / 2 + uw / 2);
     for (const [y, t] of [[bh * 0.04, 0.1], [bh * 0.16, 0.06]]) bd.add(onFace(box(lw - 0.1, bh * 0.05, t, M.granite, 0, y, t / 2), a, d / 2 - 0.01, lo));
-    bd.add(onFace(at(templeNiche(nw, nh, M.granite, { figure: idol(nh * 0.86, M.granite), crown: false }), 0, bh * 0.3 + bh * 0.7 * 0.2, 0), a, d * 0.48, up));
-    bd.add(onFace(at(pilasters(uw * 0.84, 2, Math.min(0.5, uw * 0.06), bh * 0.66, 0.1, M.granite), 0, bh * 0.31, 0), a, d * 0.48, up));
-    bd.add(onFace(box(uw - 0.1, bh * 0.04, 0.16, M.granite, 0, bh * 0.94, 0.08), a, d * 0.48, up));
+    bd.add(onFace(at(templeNiche(nw, nh, M.granite, { figure: idol(nh * 0.86, M.granite), crown: false }), 0, bh * 0.3 + bh * 0.7 * 0.2, 0), a, d * 0.48 + 0.015, up));
+    bd.add(onFace(at(pilasters(uw * 0.84, 2, Math.min(0.5, uw * 0.06), bh * 0.66, 0.1, M.granite), 0, bh * 0.31, 0), a, d * 0.48 + 0.015, up));
+    bd.add(onFace(box(uw - 0.1, bh * 0.04, 0.16, M.granite, 0, bh * 0.94, 0.08), a, d * 0.48 + 0.015, up));
   }
   g.add(mergeByMaterial(bd));
   // The passage: stepped frames at both ends, beams across its ceiling, the doors at its middle.

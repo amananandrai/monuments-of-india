@@ -24,5 +24,6 @@ export function buildSanchi() {
   f.add(ring(22, 0.45, S, 3, 120));
   for (const a of FACES) f.add(onFace(torana(S), a, 23.4));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.9, 0.32, 1.25] };
+  // Framed close and from low, looking through the north gateway at the dome.
+  return { group: g, focus: f, view: [0.12, 0.2, 1], zoom: 0.72 };
 }

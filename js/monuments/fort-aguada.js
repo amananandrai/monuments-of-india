@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
+import { heightField, rough, smooth } from '../details/terrain.js';
 import { addDetails } from '../details/fort-aguada.js';
 
 const LATERITE = mat('#9b5b3f', 0.95);
@@ -12,10 +13,17 @@ export function buildFortAguada() {
   g.add(f);
   // The headland at the mouth of the Mandovi, with the Arabian Sea beyond
   g.add(sheet(1200, 1200, M.sea, 0, 0.3, 0));
-  const head = mesh(new THREE.CylinderGeometry(110, 150, 24, 14).translate(0, 12, 0), mat('#6c7d48', 0.95, 0, { flatShading: true }));
-  head.scale.z = 0.7;
-  g.add(head, box(120, 0.4, 30, mat('#dcc9a3', 0.95), 60, 0, 120));
+  // The headland: a laterite plateau 24 m high at the tip of the Bardez shore, falling in red cliffs
+  // to the sea on the west and south and to the Mandovi on the north; to the east it joins the
+  // mainland by a wooded neck.
   const H = 24;
+  g.add(heightField(900, 640, 220, (x, z) => {
+    const lobe = Math.hypot(x / 128, z / 90);
+    const w = 78 + Math.max(0, x - 60) * 0.55, neck = x > 20 ? Math.hypot(Math.max(0, 20 - x) / 40, (z + 8) / w) : 9;
+    const e = Math.min(lobe, neck) + rough(x, z, 0.04, 1.2);
+    const land = smooth(1.12, 0.92, e), hills = x > 160 ? 10 * smooth(160, 300, x) * (0.6 + 0.4 * Math.sin(z * 0.02 + x * 0.01)) : 0;
+    return land * (H + rough(x, z, 1, 0.8) + hills) - 6 * (1 - land);
+  }, { rock: ['#9b5b3f', '#8a4f37'], cover: '#6c7d48', steep: 0.72, band: 6, cx: 160 }));
   // Low, thick laterite walls with angled bastions
   const pts = [[-50, -34], [40, -40], [60, -4], [44, 34], [-30, 40], [-60, 6]], wall = [];
   pts.forEach(([x0, z0], i) => {

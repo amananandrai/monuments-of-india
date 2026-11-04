@@ -2,19 +2,23 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, kalash, flag, shikhara } from '../helpers.js';
 import { nagaraTemple, bhumijaRows } from '../details/temples.js';
 import { instances, miniSpireGeo } from '../details/sculpture.js';
+import { heightField, rough, smooth } from '../details/terrain.js';
 import { addDetails } from '../details/trimbakeshwar-temple.js';
 
 const BASALT = mat('#3d3a37', 0.8);
 const SHADE = mat('#2c2a28', 0.85);
-const HILL = mat('#6c7650', 0.95, 0, { flatShading: true });
 
 export function buildTrimbakeshwar() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // The flat-topped Brahmagiri hills behind, where the Godavari rises
-  const hill = mesh(new THREE.CylinderGeometry(120, 170, 70, 10).translate(0, 35, 0), HILL, -60, 0, -420);
-  hill.scale.z = 0.6;
-  g.add(hill, box(200, 0.2, 200, M.path));
+  // Brahmagiri: a long flat-topped Deccan trap ridge, its sides basalt cliffs in level steps above
+  // grassy slopes, behind the town to the north.
+  g.add(heightField(900, 360, 160, (x, z) => {
+    const dz = (z + 430) / 110, dx = (x + 60) / 330, e = Math.pow(Math.abs(dx) ** 3 + Math.abs(dz) ** 3, 1 / 3) + rough(x, z, 0.04, 0.6);
+    const step = Math.floor(smooth(1.6, 0.95, e) * 4) / 4;
+    return Math.max(0, 140 * (0.25 * smooth(1.9, 1.2, e) + 0.75 * step) + rough(x, z, 3, 0.5) * smooth(1.9, 1, e)) - 0.5;
+  }, { cz: -430, cx: -60, rock: ['#4d4943', '#5c5750'], cover: '#6c7650', steep: 0.7, band: 30 }), box(200, 0.2, 200, M.path));
   // Walled courtyard round the black basalt temple
   for (const s of [-1, 1]) f.add(box(80, 6, 2, mat('#5d5853', 0.9), 0, 0, s * 45), box(2, 6, 90, mat('#5d5853', 0.9), s * 40, 0, 0));
   f.add(box(20, 9, 8, BASALT, 0, 0, 45));

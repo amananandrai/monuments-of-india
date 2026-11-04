@@ -3,6 +3,7 @@ import { M, mat, mesh, box, cyl, at, hemi, finial, inst, unitBox, surface, ellip
 import { elephant } from '../details/animals.js';
 import { fortGate } from '../details/forts.js';
 import { addDetails } from '../details/gwalior-fort.js';
+import { heightField, rough, smooth } from '../details/terrain.js';
 
 const SAND = mat('#c9b08a', 0.9);
 const SAND_DARK = mat('#a68d68', 0.9);
@@ -34,9 +35,14 @@ export function buildGwaliorFort() {
   g.add(f);
   // The sandstone plateau (Gopachal) the fort sits on
   const H = 36;
-  const mesa = mesh(new THREE.CylinderGeometry(1, 1.12, 1, 10).translate(0, 0.5, 0), CLIFF);
-  mesa.scale.set(150, H, 70);
-  g.add(mesa, box(260, 0.2, 200, M.grass, 0, 0, 40));
+  // Gopachal: a long, narrow tableland of sandstone, its sides sheer cliffs in level beds, a talus
+  // of fallen blocks below; it runs on well past the fort's walls at either end.
+  g.add(heightField(620, 240, 230, (x, z) => {
+    const e = Math.pow(Math.abs(x / 262) ** 2.5 + Math.abs((z - 1.5 * Math.sin(x * 0.012)) / 71) ** 5, 1 / 2.5) + rough(x, z, 0.025, 1.3);
+    const top = H + rough(x, z, 0.6, 1), cliff = smooth(1.06, 1.0, e), ledge = 3 * Math.floor(cliff * 9) / 9;
+    const talus = 10 * smooth(1.45, 1.06, e) + rough(x, z, 1.4, 1.1);
+    return Math.max(talus * (1 - cliff) + (top - ledge * (1 - cliff)) * cliff, 0) - 0.2;
+  }, { rock: ['#a68b68', '#94795a', '#b39672'], cover: '#7f8a55', steep: 0.75, band: 4.5 }), box(700, 0.2, 260, M.grass, 0, -0.05, 0));
   // Man Mandir palace along the cliff edge: round towers, domed cupolas and bands of glazed tiles
   const p = new THREE.Group();
   f.add(p);

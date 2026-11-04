@@ -22,11 +22,6 @@ function architecture(f) {
     cm.add(at(railingRing(r1 * 1.66, 0.9, STONE), 0, y, 0));
   });
   d.add(cm);
-  // The rings of wall up the hill: merlons along their outer edge.
-  for (const [r, y] of [[60, 24], [38, 24 + 70 * (22 / 60)], [18, 24 + 70 * (42 / 60)]]) {
-    const n = Math.round((2 * Math.PI * r) / 2.4);
-    for (let k = 0; k < n; k++) d.add(onFace(box(1.1, 1.1, 0.6, STONE, 0, y + 4, 0), (k / n) * Math.PI * 2, r + 0.55));
-  }
   // The gate's towers (r = 3.8, seg 16), in the gate's frame.
   const ga = 1.2, gate = new THREE.Group();
   gate.position.set(Math.cos(ga) * 130, 0, Math.sin(ga) * 130);

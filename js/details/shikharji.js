@@ -1,13 +1,10 @@
-import { trees } from './realism.js';
+import { trees, scatter } from './realism.js';
+import { ridgeY, PEAKS } from '../monuments/shikharji.js';
 
-// Shikharji in the Parasnath hills: the forest that covers the hills up to the summit shrines.
+// Shikharji in the Parasnath hills: the forest that covers the ridge up to just below the summits.
 export function addDetails(f, g) {
-  const H = 90;
-  // The forest on the ridge: the hill narrows from 160 × 96 at its foot to 100 × 60 at the top.
-  const slope = [];
-  for (let i = 0; i < 110; i++) {
-    const t = 0.1 + ((i * 37) % 100) / 115, a = (i * 2.399) % (Math.PI * 2), rx = 160 - 60 * t, rz = 96 - 36 * t;
-    slope.push([Math.cos(a) * rx * 0.98, Math.sin(a) * rz * 0.98, null, t * H - 0.5]);
-  }
-  g.add(trees(slope, { kind: 'mango', seed: 5, h: 10 }));
+  const spots = scatter(150, [-200, 200, -110, 110], { seed: 5, gap: 9 })
+    .filter(([x, z]) => { const y = ridgeY(x, z); return y > 4 && !PEAKS.some(([px, pz]) => Math.hypot(x - px, z - pz) < 9); })
+    .map(([x, z]) => [x, z, null, ridgeY(x, z) - 0.4]);
+  g.add(trees(spots, { kind: 'mango', seed: 5, h: 10 }));
 }

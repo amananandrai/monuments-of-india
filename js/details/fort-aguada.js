@@ -56,6 +56,6 @@ export function addDetails(f, g) {
   for (const [x, z, ry] of [[-44, -30, Math.PI + 0.3], [30, -36, Math.PI], [54, -6, Math.PI / 2], [-54, 4, -Math.PI / 2]]) f.add(at(cannon(), x, H + 7, z).rotateY(ry));
   const head = scatter(60, [-140, 140, -95, 95], { seed: 3, gap: 9 }).filter(([x, z]) => { const r = Math.hypot(x / 125, z / 85); return r < 0.9 && !(x > -66 && x < 66 && z > -46 && z < 46); });
   g.add(trees(head, { kind: 'palm', seed: 3, y: H }));
-  g.add(boats([[30, 150, 0.4], [80, 160, -0.3], [-60, 190, 1.2], [140, 210, 0.8], [-200, -40, 2.4], [210, -60, 1.9]], { y: 0.3, size: 1.8 }));
+  g.add(boats([[30, 150, 0.4], [80, 160, -0.3], [-60, 190, 1.2], [140, 210, 0.8], [-200, -40, 2.4], [-120, -150, 1.9]], { y: 0.3, size: 1.8 }));
   g.add(asiBoard('Fort Aguada', 52, 34, 0.2, { y: H }));
 }

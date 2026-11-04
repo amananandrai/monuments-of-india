@@ -67,5 +67,6 @@ export function buildGolconda() {
   for (const a of [0, Math.PI]) for (let k = -1; k <= 1; k++) f.add(onFace(at(archPanel(4, 6, true, M.recess, 0.25), 0, H - 2.4, 0), a, 6, k * 6));
   for (const x of [-7, 7]) f.add(at(hemi(2.4, mat('#d9d1c0', 0.85), 16), x, H + 6, 0), at(finial(2), x, H + 8.4, 0));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.45, 0.35, 1.2] };
+  // Framed on the monument itself, closer than its grounds would set.
+  return { group: g, focus: f, view: [0.45, 0.35, 1.2], zoom: 0.68 };
 }

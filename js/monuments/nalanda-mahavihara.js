@@ -55,5 +55,6 @@ export function buildNalanda() {
   // Votive stupas round the temple
   for (let i = 0; i < 10; i++) f.add(box(3.4, 1.5 + R() * 3, 3.4, BRICK, 20 + (R() - 0.5) * 70, 0, -30 + R() * 16));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.85, 0.5, 1.15] };
+  // Framed on the monument itself, closer than its grounds would set.
+  return { group: g, focus: f, view: [0.85, 0.5, 1.15], zoom: 0.65 };
 }

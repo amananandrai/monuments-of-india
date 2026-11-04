@@ -40,5 +40,6 @@ export function buildLaxmiVilas() {
   f.add(at(porch(14, 7, 7, { m: OCHRE, trim: CREAM, colM: CREAM, cols: 4, r: 0.45, top: 'balustrade', door, stepsDown: 0.6 }), 0, 0.6, 29));
   f.add(box(16, 0.6, 7, CREAM, 0, 0, 32.5));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.45, 0.25, 1.25] };
+  // Framed on the monument itself, closer than its grounds would set.
+  return { group: g, focus: f, view: [0.45, 0.25, 1.25], zoom: 0.68 };
 }

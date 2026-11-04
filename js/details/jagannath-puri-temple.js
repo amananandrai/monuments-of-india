@@ -45,9 +45,9 @@ function halls(f) {
   for (const [w, h, z, door] of [[22, 13, -5, false], [18, 9, 15, true], [15, 8, 31, false]]) {
     const t = at(new THREE.Group(), 0, B, z), arm = w * 0.6;
     for (const a of [Math.PI / 2, -Math.PI / 2]) {
-      t.add(onFace(at(figureFrieze(arm - 0.6, 1.0, m, { pitch: 0.8, kinds: ['standing', 'dancer', 'musician'] }), 0, 0.9, 0), a, (w + 4) / 2));
-      t.add(onFace(at(pilasters(arm - 0.4, 4, 0.5, h - 2.8, 0.14, m), 0, 2.2, 0), a, (w + 4) / 2));
-      for (const l of door ? [-0.36, 0.36] : [-0.22, 0.22]) t.add(onFace(at(templeNiche(1.3, 2.8, m, { figure: figure(2.5, m, 'standing') }), 0, 2.6, 0), a, (w + 4) / 2, l * arm));
+      t.add(onFace(at(figureFrieze(arm - 0.6, 1.0, m, { pitch: 0.8, kinds: ['standing', 'dancer', 'musician'] }), 0, 0.9, 0), a, (w + 4) / 2 + 0.03));
+      t.add(onFace(at(pilasters(arm - 0.4, 4, 0.5, h - 2.8, 0.14, m), 0, 2.2, 0), a, (w + 4) / 2 + 0.012));
+      for (const l of door ? [-0.36, 0.36] : [-0.22, 0.22]) t.add(onFace(at(templeNiche(1.3, 2.8, m, { figure: figure(2.5, m, 'standing') }), 0, 2.6, 0), a, (w + 4) / 2 + 0.024, l * arm));
     }
     d.add(t);
   }

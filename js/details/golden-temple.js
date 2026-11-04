@@ -32,7 +32,7 @@ function architecture(f) {
 // the lower two of white marble opening in arcades, the upper ones gilded with a row of bay windows
 // on each and a deep eave between, under a fluted golden dome on a drum with a kiosk at each corner.
 export function akalTakht() {
-  const g = new THREE.Group(), W = M.marble, G = M.gild, w = 30, d = 16, dp = 1;
+  const g = new THREE.Group(), W = M.marble, G = GILT_BRIGHT, w = 30, d = 16, dp = 1;
   g.add(box(w + 2, 1, d + 2, W));
   g.add(box(w, 10, d - dp, W, 0, 1, -dp / 2), onFace(at(arcadeSkin(w, 10, [...cellRow(5, 5.6, 0, 3.6, 4.4), ...cellRow(5, 5.6, 5.2, 3.2, 4)], dp, W, { trim: G, fill: 'room' }), 0, 1, 0), 0, d / 2 - dp));
   let y = 11;
@@ -52,6 +52,8 @@ export function akalTakht() {
 // Harmandir Sahib: the two Nishan Sahibs, tall saffron-clad poles with their saffron pennants and
 // the khanda, by the Akal Takht; the old ber trees at the water's edge; and the golden lanterns
 // along the marble parikrama.
+// The Akal Takht's gilding, lit warmly so it reads as gold and not as dark bronze in its own shade.
+const GILT_BRIGHT = mat('#e3b54a', 0.35, 0.6, { emissive: '#4a3306' });
 const SAFFRON = mat('#f08a1c', 0.8, 0, { side: 2 }), GOLD = mat('#e3b54a', 0.3, 0.85);
 export function addDetails(f, g) {
   architecture(f);
