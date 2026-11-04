@@ -1,6 +1,6 @@
-import { mouldings, templeNiche, idol, pilasters, mergeByMaterial } from './components.js';
 import * as THREE from 'three';
 import { mat, mesh, at, onFace } from '../helpers.js';
+import { mouldings, templeNiche, idol, pilasters, mergeByMaterial } from './components.js';
 import { scatter } from './realism.js';
 import { horse } from './animals.js';
 

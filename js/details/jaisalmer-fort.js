@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, cyl, at, onFace, FACES } from '../helpers.js';
+import { mat, cyl, at } from '../helpers.js';
 import { jharokha, merlonGeo, placeAll, aroundCircle, beltCourse, mergeByMaterial } from './components.js';
 import { towerDetail } from './forts.js';
 import { trees, scatter } from './realism.js';

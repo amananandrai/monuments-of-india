@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, curvedBand } from '../helpers.js';
+import { M, mat, box, at, onFace, curvedBand } from '../helpers.js';
 import { archRing, archSlab, panel, frieze, jali, merlons, chhajja, rosette, windowFrame, mergeByMaterial } from './components.js';
 import { towerDetail } from './forts.js';
 import { trees, shrubs, lampPosts, asiBoard, fountains, along } from './realism.js';

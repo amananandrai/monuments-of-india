@@ -1,7 +1,7 @@
 import * as THREE from 'three';
+import { M, box, at, tricolour } from '../helpers.js';
 import { windowFrame, jali, frieze, mergeByMaterial } from './components.js';
 import { trees, shrubs, lampPosts, around } from './realism.js';
-import { M, box, at, tricolour } from '../helpers.js';
 
 // The new Parliament House, finer detail. From photographs: the red sandstone base storey is pierced
 // by rows of tall jali windows along each long face, and a carved band runs along the buff upper

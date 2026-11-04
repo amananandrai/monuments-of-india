@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, at, cyl, onFace, FACES } from '../helpers.js';
-import { star, rosette, petalRing, jharokha, merlons, mergeByMaterial } from './components.js';
+import { star, petalRing, jharokha, merlons, mergeByMaterial } from './components.js';
 import { iwan } from './mughal.js';
 import { trees, asiBoard, fountains, scatter, along } from './realism.js';
 

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { dentils, windowFrame, mergeByMaterial } from './components.js';
 import { mat, mesh, box, cyl, at, onFace } from '../helpers.js';
+import { dentils, windowFrame, mergeByMaterial } from './components.js';
 import { trees, shrubs, lampPosts, asiBoard, scatter, along } from './realism.js';
 
 // The Basilica of Bom Jesus, finer detail. From photographs: the basalt pilasters of the facade

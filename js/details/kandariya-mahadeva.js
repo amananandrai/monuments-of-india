@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, at, onFace, FACES } from '../helpers.js';
+import { M, mesh, box, cyl, at } from '../helpers.js';
 import { mouldings, frieze, mergeByMaterial } from './components.js';
 import { trees, shrubs, asiBoard, scatter, along } from './realism.js';
 

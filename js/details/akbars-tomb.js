@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { star, panel, frieze, jali, archRing, archSlab, mergeByMaterial } from './components.js';
 import { M, box, at, onFace, FACES } from '../helpers.js';
+import { star, panel, frieze, jali, archRing, archSlab, mergeByMaterial } from './components.js';
 import { trees, asiBoard, fountains, scatter, along } from './realism.js';
 import { deer } from './animals.js';
 

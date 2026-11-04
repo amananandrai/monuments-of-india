@@ -1,6 +1,6 @@
-import { bracketGeo, placeAll, aroundCircle, mergeByMaterial, windowFrame } from './components.js';
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, surface } from '../helpers.js';
+import { bracketGeo, placeAll, aroundCircle, mergeByMaterial, windowFrame } from './components.js';
 import { trees, asiBoard, scatter, along } from './realism.js';
 
 // The Qutub Minar, finer detail. From photographs and descriptions: under every balcony is a ring

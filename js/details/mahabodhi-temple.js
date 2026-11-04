@@ -1,9 +1,8 @@
 import * as THREE from 'three';
-import { M, mesh } from '../helpers.js';
-import { templeNiche, idol, rosette, mergeByMaterial } from './components.js';
+import { M, mesh, at } from '../helpers.js';
+import { templeNiche, idol, medallion, mergeByMaterial } from './components.js';
 import { prayerFlags } from './realism.js';
 import { lamp } from './doorways.js';
-import { at } from '../helpers.js';
 
 // The Mahabodhi Temple, finer detail. From photographs: the faces of the great tower are covered in
 // rows of niches, each under a horseshoe (chaitya) arch and holding a seated Buddha; and the posts of
@@ -24,8 +23,8 @@ function architecture(f) {
   }
   // Medallions on the railing posts, outward.
   for (let k = -18; k <= 18; k += 1.5) for (const s of [-18, 18]) {
-    if (!(s > 0 && Math.abs(k) < 2.5)) { const o = rosette(0.16, S, 8); o.position.set(k, 1.25, s + Math.sign(s) * 0.21); o.rotation.y = s > 0 ? 0 : Math.PI; d.add(o); }
-    const o = rosette(0.16, S, 8); o.position.set(s + Math.sign(s) * 0.21, 1.25, k); o.rotation.y = Math.sign(s) * Math.PI / 2; d.add(o);
+    if (!(s > 0 && Math.abs(k) < 2.5)) { const o = medallion(0.17, S); o.position.set(k, 1.25, s + Math.sign(s) * 0.21); o.rotation.y = s > 0 ? 0 : Math.PI; d.add(o); }
+    const o = medallion(0.17, S); o.position.set(s + Math.sign(s) * 0.21, 1.25, k); o.rotation.y = Math.sign(s) * Math.PI / 2; d.add(o);
   }
   mergeByMaterial(d);
   f.add(d);

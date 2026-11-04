@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { panel, frieze, jharokha, rosette, mergeByMaterial } from './components.js';
 import { M, mat, box, cyl, at, onFace, FACES } from '../helpers.js';
+import { panel, frieze, jharokha, rosette, mergeByMaterial } from './components.js';
 import { trees, lampPosts } from './realism.js';
 
 // The Harmandir Sahib, finer detail. From photographs: the marble lower storey is inlaid with floral

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { M, box, at, onFace, FACES } from '../helpers.js';
-import { archRing, archSlab, panel, frieze, jali, rosette, windowFrame, arcadeScreen, mergeByMaterial } from './components.js';
+import { M, box, at, onFace } from '../helpers.js';
+import { archRing, archSlab, panel, frieze, rosette, windowFrame, arcadeScreen, mergeByMaterial } from './components.js';
 import { towerDetail, slitRow } from './forts.js';
 import { trees, lampPosts, asiBoard, along } from './realism.js';
 

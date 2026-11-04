@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { frieze, idol, windowFrame, jali, bracketGeo, placeAll, mergeByMaterial } from './components.js';
 import { mat, box, cyl, at, onFace, FACES, starPrism } from '../helpers.js';
+import { frieze, idol, windowFrame, jali, bracketGeo, placeAll, mergeByMaterial } from './components.js';
 import { trees, garland, asiBoard, along } from './realism.js';
 import { lamp } from './doorways.js';
 

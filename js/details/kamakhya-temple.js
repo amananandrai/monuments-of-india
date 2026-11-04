@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { mouldings, frieze, templeNiche, idol, mergeByMaterial } from './components.js';
 import { at, onFace, FACES, flag, mat } from '../helpers.js';
+import { mouldings, frieze, templeNiche, idol, mergeByMaterial } from './components.js';
 import { trees, scatter } from './realism.js';
 
 // Kamakhya, finer detail. From photographs: the cross-shaped base of the sanctum is banded with

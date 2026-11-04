@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { chhajja, bracketGeo, placeAll, alongFace, windowFrame, railing, jali, aroundCircle, mergeByMaterial } from './components.js';
 import { M, box, cyl, at, onFace, FACES, tricolour } from '../helpers.js';
+import { chhajja, bracketGeo, placeAll, alongFace, windowFrame, railing, jali, aroundCircle, mergeByMaterial } from './components.js';
 import { trees, lampPosts, along } from './realism.js';
 
 // Rashtrapati Bhavan, finer detail. From photographs and descriptions of Lutyens' design:

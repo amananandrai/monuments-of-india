@@ -225,10 +225,15 @@ download.
   round the neck, a tiger-skin cloth, and the trishul with its damaru
   (`js/details/nageshwar-temple.js`). See
   [`docs/realistic-statues-research.md`](docs/realistic-statues-research.md).
-- **Fine detail:** India Gate, Charminar, the Taj Mahal, the Gateway of India and the Old Parliament
-  House carry a second layer of carving from `js/details/`: roundels and lettering, nested arches and
-  half-domes, bracketed balconies, jalis, eaves, merlons, lotus-petal domes and finials. The parts are
-  shared (`js/details/components.js`) and merged into a few meshes per monument. See
+- **Fine detail:** every monument carries a second layer of architectural detail from
+  `js/details/`. India Gate, Charminar, the Taj Mahal, the Gateway of India and the Old Parliament
+  House have the most: roundels and lettering, nested arches and half-domes, bracketed balconies,
+  jalis, eaves, merlons, lotus-petal domes and finials. The rest have the carving of their own
+  tradition: base mouldings, image niches and amalakas on the temples, banded and slit bastions and
+  jharokhas on the forts, stacked iwans and inlaid stars on the Mughal tombs, capitals, balustrades
+  and eaves on the colonial buildings, and the Dharma wheel and victory banners on the monasteries.
+  The parts are shared (`js/details/components.js`, `forts.js`, `temples.js`, `tibetan.js`) and
+  merged into a few meshes per monument. See
   [`docs/monument-details.md`](docs/monument-details.md), and
   [`docs/doorways-and-reuse-plan.md`](docs/doorways-and-reuse-plan.md) for how every monument got
   real entrances and how these parts are reused across each architectural family.

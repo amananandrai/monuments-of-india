@@ -1,7 +1,6 @@
 import * as THREE from 'three';
-import { M, box, cyl, at } from '../helpers.js';
+import { M, box, cyl, at, rng } from '../helpers.js';
 import { mergeByMaterial } from './components.js';
-import { rng } from '../helpers.js';
 import { lampPosts, boats } from './realism.js';
 
 // Howrah Bridge, finer detail. The cantilever trusses are riveted together at every joint through

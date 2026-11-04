@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { windowFrame, mergeByMaterial } from './components.js';
 import { mat, box, cyl, at, onFace, tricolour } from '../helpers.js';
+import { windowFrame, mergeByMaterial } from './components.js';
 import { trees, shrubs, lampPosts, scatter, around } from './realism.js';
 
 // The Cellular Jail, finer detail. From photographs: white string courses mark the floors along the

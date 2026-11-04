@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, box, at, onFace, FACES, aroundRect, inst, unitBox } from '../helpers.js';
+import { M, at, onFace, FACES, aroundRect, inst, unitBox } from '../helpers.js';
 import { mouldings, frieze, petalRing, bracketGeo, placeAll, templeNiche, idol, mergeByMaterial } from './components.js';
 import { trees, shrubs, lampPosts, fountains, garland, scatter, along } from './realism.js';
 

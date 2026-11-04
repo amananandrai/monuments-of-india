@@ -1,7 +1,7 @@
 import * as THREE from 'three';
+import { M, mat, mesh, box, cyl, at, onFace, kalingaProfile } from '../helpers.js';
 import { mouldings, frieze, templeNiche, idol, mergeByMaterial } from './components.js';
 import { lion } from './animals.js';
-import { M, mat, mesh, box, cyl, at, onFace, kalingaProfile } from '../helpers.js';
 import { garland } from './realism.js';
 
 // Jagannath, Puri, finer detail. From photographs and descriptions of the Kalinga rekha deula: the

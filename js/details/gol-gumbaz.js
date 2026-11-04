@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { bracketGeo, placeAll, alongFace, windowFrame, merlonGeo, petalRing, mergeByMaterial } from './components.js';
 import { M, box, at, onFace, FACES } from '../helpers.js';
+import { bracketGeo, placeAll, alongFace, windowFrame, merlonGeo, petalRing, mergeByMaterial } from './components.js';
 import { trees, shrubs, asiBoard, along } from './realism.js';
 
 // Gol Gumbaz, finer detail. From photographs: the great cornice near the top of the walls projects

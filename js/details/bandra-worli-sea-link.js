@@ -1,7 +1,6 @@
 import * as THREE from 'three';
-import { mesh, cyl, at } from '../helpers.js';
+import { mesh, cyl, at, M, box, mat, rng } from '../helpers.js';
 import { mergeByMaterial } from './components.js';
-import { M, box, mat, rng } from '../helpers.js';
 import { lampPosts, boats } from './realism.js';
 
 // The Bandra–Worli Sea Link, finer detail. The pylon's legs are tied by a cross-beam under the

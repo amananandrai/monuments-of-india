@@ -685,3 +685,13 @@ export function fishPair(len, m) {
   }
   return g;
 }
+
+// A plain carved medallion of radius R facing +z on a wall at z = 0: a disc in a moulded rim. A
+// cheap stand-in for the rosette where there are hundreds of them (railing posts).
+export function medallion(R, m) {
+  const g = new THREE.Group();
+  g.add(at(mesh(new THREE.CylinderGeometry(R * 0.86, R * 0.86, 0.04, 12).rotateX(Math.PI / 2), m), 0, 0, 0.02));
+  g.add(at(mesh(new THREE.TorusGeometry(R * 0.9, R * 0.12, 4, 12), m), 0, 0, 0.03));
+  g.add(at(mesh(new THREE.SphereGeometry(R * 0.3, 8, 4, 0, Math.PI * 2, 0, Math.PI / 2).rotateX(Math.PI / 2), m), 0, 0, 0.04));
+  return g;
+}

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { mouldings, frieze, templeNiche, idol, bracketGeo, placeAll, mergeByMaterial } from './components.js';
 import { M, mesh, box, at, onFace, flag, mat, nagaraProfile } from '../helpers.js';
+import { mouldings, frieze, templeNiche, idol, bracketGeo, placeAll, mergeByMaterial } from './components.js';
 import { trees, lampPosts, garland, along } from './realism.js';
 
 // The Ram Mandir, finer detail. From photographs and the published design (Nagara style, in pink

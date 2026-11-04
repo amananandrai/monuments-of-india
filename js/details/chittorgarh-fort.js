@@ -1,7 +1,7 @@
 import * as THREE from 'three';
+import { mat, box, at, chhatri, onFace, FACES } from '../helpers.js';
 import { frieze, beltCourse, pilasters, jharokha, windowFrame, chhajja, mergeByMaterial } from './components.js';
 import { towerDetail } from './forts.js';
-import { mat, box, at, chhatri, onFace, FACES } from '../helpers.js';
 import { trees, shrubs, asiBoard, scatter } from './realism.js';
 
 // Chittorgarh, finer detail. From photographs of the Vijay Stambh: every storey is carved all

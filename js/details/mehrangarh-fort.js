@@ -1,7 +1,7 @@
 import * as THREE from 'three';
+import { box, at, flag, mat, rng } from '../helpers.js';
 import { jharokha, bracketGeo, placeAll, alongFace, chhajja, beltCourse, mergeByMaterial } from './components.js';
 import { towerDetail, slitRow } from './forts.js';
-import { box, at, flag, mat, rng } from '../helpers.js';
 import { shrubs } from './realism.js';
 
 // Mehrangarh, finer detail. The bastions rising from the rock are banded and slit, and the wall

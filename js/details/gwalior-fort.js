@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { mat, box, at, onFace, barrelVault } from '../helpers.js';
-import { jharokha, bracketGeo, placeAll, aroundCircle, railingRing, templeNiche, mergeByMaterial } from './components.js';
+import { mat, box, at, barrelVault } from '../helpers.js';
+import { jharokha, bracketGeo, placeAll, aroundCircle, railingRing, mergeByMaterial } from './components.js';
 import { towerDetail } from './forts.js';
 import { trees, shrubs, asiBoard, scatter } from './realism.js';
 

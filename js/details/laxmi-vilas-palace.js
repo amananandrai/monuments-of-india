@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, box, at, onFace, FACES } from '../helpers.js';
+import { mat, at, onFace, FACES } from '../helpers.js';
 import { clockFace, rosette, merlons, petalRing, jharokha, windowFrame, mergeByMaterial } from './components.js';
 import { trees, shrubs, lampPosts, fountains, scatter, along } from './realism.js';
 

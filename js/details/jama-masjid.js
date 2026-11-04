@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, onFace, surface } from '../helpers.js';
+import { M, mat, at, surface } from '../helpers.js';
 import { panel, archRing, archSlab, merlons, star, bracketGeo, placeAll, aroundCircle, mergeByMaterial } from './components.js';
 import { stalls, along } from './realism.js';
 

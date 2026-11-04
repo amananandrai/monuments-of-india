@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { mouldings, frieze, pilasters, templeNiche, idol, mergeByMaterial } from './components.js';
 import { M, mat, mesh, at, onFace, FACES } from '../helpers.js';
+import { mouldings, frieze, pilasters, templeNiche, idol, mergeByMaterial } from './components.js';
 import { trees, garland, asiBoard, along } from './realism.js';
 import { rideElephant } from './animals.js';
 import { lamp } from './doorways.js';

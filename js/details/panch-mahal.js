@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, box, at, onFace, FACES, inst, unitBox } from '../helpers.js';
+import { M, at, onFace, FACES, inst, unitBox } from '../helpers.js';
 import { chhajja, railing, bracketGeo, placeAll, mergeByMaterial } from './components.js';
 import { trees, asiBoard, scatter } from './realism.js';
 

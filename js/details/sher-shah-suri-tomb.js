@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, FACES } from '../helpers.js';
-import { merlonGeo, placeAll, aroundCircle, alongFace, archRing, archSlab, frieze, petalRing, bracketGeo, mergeByMaterial } from './components.js';
+import { merlonGeo, placeAll, alongFace, archRing, archSlab, frieze, petalRing, bracketGeo, mergeByMaterial } from './components.js';
 import { trees, boats, asiBoard, scatter } from './realism.js';
 
 // Sher Shah Suri's Tomb, finer detail. From photographs: a carved frieze runs under the cornice of
