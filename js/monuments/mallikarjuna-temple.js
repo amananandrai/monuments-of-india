@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, rng, gopuram, pidaRoof, hemi, kalash, inst, unitBox, aroundRect } from '../helpers.js';
+import { M, mat, mesh, box, at, rng, pidaRoof, hemi, kalash, inst, unitBox, aroundRect } from '../helpers.js';
+import { gopuram, wallWithGaps } from '../details/temples.js';
 
 const CREAM = ['#efe7d6', '#e2d3b7', '#d6c5a4', '#f4efe4'];
 const WALL = mat('#b9a586', 0.9);
@@ -16,7 +17,7 @@ export function buildMallikarjuna() {
   g.add(box(220, 0.2, 220, M.path));
   // High enclosure walls carved with friezes, and a gopuram on each side
   const W = 100, D = 120, frieze = [];
-  for (const s of [-1, 1]) f.add(box(W, 9, 3, WALL, 0, 0, s * D / 2), box(3, 9, D, WALL, s * W / 2, 0, 0));
+  for (const s of [-1, 1]) f.add(wallWithGaps('x', W, 9, 3, WALL, [[0, s > 0 ? 21 : 17]], 0, s * D / 2), wallWithGaps('z', D, 9, 3, WALL, [[0, 17]], s * W / 2, 0));
   for (const y of [2, 5]) aroundRect(W + 3.2, D + 3.2, 1.8).forEach(([x, z, ry]) => frieze.push([x, y, z, 1.2, 1.6, 0.3, ry]));
   f.add(inst(unitBox(), frieze, mat('#8f7c60', 0.9)));
   f.add(at(gopuram(22, 12, 34, 9, 5, CREAM), 0, 0, D / 2), at(gopuram(18, 10, 26, 7, 6, CREAM), 0, 0, -D / 2));

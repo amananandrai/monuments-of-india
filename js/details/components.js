@@ -482,7 +482,8 @@ export function mergeByMaterial(root) {
   root.traverse((o) => {
     if (!o.isMesh || o.isInstancedMesh) return;
     let geo = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone();
-    for (const k of Object.keys(geo.attributes)) if (k !== 'position' && k !== 'normal') geo.deleteAttribute(k);
+    const keep = o.material.vertexColors ? ['position', 'normal', 'color'] : ['position', 'normal'];
+    for (const k of Object.keys(geo.attributes)) if (!keep.includes(k)) geo.deleteAttribute(k);
     m4.multiplyMatrices(inv, o.matrixWorld);
     geo.applyMatrix4(m4);
     // A mirrored placement turns the triangles inside out; turn them back.

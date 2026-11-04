@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, box, at, nagaraTemple, inst, unitCyl, aroundRect } from '../helpers.js';
+import { M, mat, box, at, inst, unitCyl, aroundRect } from '../helpers.js';
+import { nagaraTemple } from '../details/temples.js';
 
 const STONE = mat('#e2c79a', 0.85);
 const SHADE = mat('#b98f5f', 0.9);

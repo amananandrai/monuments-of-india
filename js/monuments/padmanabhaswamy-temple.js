@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, gopuram, hipRoof, inst, unitCyl, aroundRect, kalash } from '../helpers.js';
+import { M, mat, box, cyl, at, hipRoof, inst, unitCyl, aroundRect, kalash } from '../helpers.js';
+import { gopuram, wallWithGaps } from '../details/temples.js';
 
 const STONE = ['#d9d2c2', '#bdb4a2', '#e6dece', '#a99f8c'];
 const COPPER = mat('#b0773f', 0.45, 0.4);
@@ -12,7 +13,7 @@ export function buildPadmanabhaswamy() {
   g.add(box(56, 1, 46, M.granite, 0, 0, 92), box(48, 1.1, 38, M.water, 0, 0, 92));
   for (const s of [-1, 1]) g.add(box(56, 0.6, 3, M.graniteDark, 0, 1, 92 + s * 21.5));
   f.add(box(100, 0.3, 130, M.path));
-  for (const s of [-1, 1]) f.add(box(100, 7, 2.5, LIME, 0, 0, s * 64), box(2.5, 7, 130, LIME, s * 50, 0, 0));
+  for (const s of [-1, 1]) f.add(wallWithGaps('x', 100, 7, 2.5, LIME, s > 0 ? [[0, 27]] : [], 0, s * 64), box(2.5, 7, 130, LIME, s * 50, 0, 0));
   // Seven-tier eastern gopuram, in unpainted stone
   f.add(at(gopuram(28, 15, 31, 7, 3, STONE), 0, 0, 64));
   // The pillared corridor (sheeveli pura) round the inner shrine

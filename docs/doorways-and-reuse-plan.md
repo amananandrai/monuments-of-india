@@ -8,9 +8,18 @@ Two problems, one plan:
    Parliament's colonnade, eaves and jalis, and the rest of `js/details/` should be reused by every
    building of the same family.
 
-Done already: the Taj Mahal is now white throughout. Its calligraphy frame and spandrel flowers
-are white relief, the black inlay lines on the minarets, drum and alcoves are gone. Only the
-doorways and the window behind the pishtaq screen stay dark.
+## Status
+
+- **Taj Mahal, done:** white throughout. Its calligraphy frame and spandrel flowers are white
+  relief, and the black inlay lines on the minarets, drum and alcoves are gone. Only the doorways
+  and the window behind the pishtaq screen stay dark.
+- **Phase 1, done:** the temple builders now have real entrances (see section 4). They have moved
+  from `helpers.js` to `js/details/temples.js`, because they use the doorway kit and `helpers.js`
+  cannot import it without an import cycle.
+- **Doorway kit, started:** `js/details/doorways.js` has the parts Phase 1 needed. These are
+  `doorFrame`, `templeDoorway`, `templePorch`, `doorLeaves`, `interior`, `lamp`, `guardian` and
+  `steps`. `mughalDoorway`, `gateway`, `classicalDoor` and the general `porch` come with the phases
+  that need them.
 
 ## 1. What the site does today
 
@@ -62,12 +71,15 @@ New, shared parts, built from the existing components:
 
 | Part | What it is | Built from |
 | --- | --- | --- |
+| `doorFrame(w, h, { bands, bw, depth, d0 })` (built) | Nested post-and-lintel bands, each standing further out than the one inside it, so the frame steps in to the door | boxes, `frieze` |
 | `reveal(shape, depth, m)` | Jambs and soffit for any opening shape (rectangle, round, pointed, trefoil), seen from inside | `archCurve` and an extrusion of the outline |
-| `doorLeaves(w, h, { ajar, studs, panels, m })` | Two timber leaves with raised panels, optional brass studs (instanced) and a chosen opening angle | boxes, `inst` |
-| `interior(w, h, d)` | A short dim room behind an opening: floor, back wall and ceiling in a darkening stone, so an open door shows space instead of black | boxes with a darker variant of the body stone |
+| `doorLeaves(w, h, { open, studs, m })` (built) | Two timber leaves with raised panels, optional brass studs (instanced) and a chosen opening angle | boxes, `inst` |
+| `interior(w, h)` and `lamp()` (built) | The dim room behind an open door, painted on an unlit panel: a floor lit by daylight fading inward, side walls lighter than the far wall, and the warm glow of an oil lamp (a real lamp stands in front of it, and its flame glows at night) | a vertex-coloured plane, `MeshBasicMaterial` |
 | `threshold(w, kind)` | A sill, a raised *udumbara* step, or a half-moon stone | box, lathe |
-| `steps(w, rise, n)` | A flight of steps up a plinth, optionally with side walls | boxes |
-| `templeDoorway(w, h, { shakhas, lintelFigure, guardians })` | A post-and-lintel temple door: stepped jamb bands, a lintel with a central figure, river goddesses or guardian figures at the foot, a threshold | `reveal`, `rosette`, the statue helpers (`capsule`, `face`) |
+| `steps(w, rise, n)` (built) | A flight of steps down from a plinth | boxes |
+| `guardian(h, m)` (built) | A door guardian carved at the foot of a doorframe | `capsule`, spheres |
+| `templePorch(pw, pd, ph)` (built) | An open porch: two columns and two pilasters with bracket capitals, beams, a slab with eaves on three sides, and a small stepped roof with bell and kalash | boxes, `bracketGeo`, `chhajja`, `pidaRoof` |
+| `templeDoorway(w, h, { bands, guardians, hood, open })` (built) | A post-and-lintel temple door: `doorFrame`, a figure block and rosette in the middle of the lintel, a hood, timber leaves standing open onto the lit `interior` and a lamp, a raised threshold, a half-moon stone, and guardians at the foot | `doorFrame`, `rosette`, `chhajja`, `guardian` |
 | `mughalDoorway(w, h, { jaliTransom, hood })` | A pointed-arch door in an iwan: rings, a screened transom, timber leaves | `niche`, `archRing`, `jali` |
 | `gateway(w, h, depth, { doors, spikes })` | A fort or city gate: a passage with reveals, huge studded leaves (with the elephant spikes of Rajput and Mughal forts), and guard niches | `reveal`, `doorLeaves`, `niche` |
 | `classicalDoor(w, h, { architrave, pediment, steps })` | A Lutyens or colonial door: architrave, a cornice or pediment, panelled leaves, steps | boxes, `dentils`, `keystone` |
@@ -78,14 +90,26 @@ reveal and something at the back. Each part merges with `mergeByMaterial`.
 
 ## 4. Fixing entrances, family by family
 
-**Phase 1: the shared helpers (about 20 monuments at once).**
-- `nagaraTemple()`: give the front hall an open porch (an *ardhamandapa* of four or six columns
-  with a small stepped roof), a `templeDoorway` at the back of the porch on the hall's axis, and
-  `steps` up the plinth to it. Halls become pillared rooms with a low parapet seat
-  (*kakshasana*) instead of cubes. This fixes the 13 temples listed above.
-- `gopuram()`: replace the dark box with a real passage (method B) through the granite base. It
-  gets jambs, a coffered ceiling and two tall studded doors standing open. This fixes 5 temples.
-- `mandap()` (Ram Mandir): a `templeDoorway` on each open side.
+**Phase 1: the shared helpers (19 monuments). Done.**
+- `nagaraTemple()`:
+  - The front hall opens through an open porch (`templePorch`) onto a `templeDoorway` on its
+    axis, with steps (`steps`) the width of the porch.
+  - The first hall has a smaller doorway on each side, with steps down from the plinth, wherever
+    the plinth leaves room.
+  - A shrine with no hall has its doorway in the sanctum.
+  - This covers the 13 temples listed above, including Baidyanath's small shrines.
+  - Not done: halls as pillared rooms with a parapet seat (*kakshasana*). The halls keep their
+    walls; their entrances were the problem.
+- `gopuram()`:
+  - The granite base is split either side of a real passage (method B), with stepped frames at
+    both ends, beams across the ceiling, and two great studded doors standing open at its middle.
+  - The compound walls of all five temples now open where their gopurams stand
+    (`wallWithGaps`), so each passage leads through into the courtyard.
+- `mandap(w, h, roofs, m, shade, doors)`: takes the faces that open. Each gets a `templeDoorway`
+  in the core, with the columns in front of it left out. Ram Mandir opens:
+  - the front hall's front and sides;
+  - the middle hall's sides;
+  - the outer face of each side hall.
 
 **Phase 2: Mughal, Indo-Islamic, Nawabi, Qutb Shahi and Deccan (about 20 monuments).**
 Replace each `archPanel(…, M.recess)` door with `mughalDoorway` inside an `iwan` (the Taj's

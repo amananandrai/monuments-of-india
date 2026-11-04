@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, box, at, onFace, archPanel, nagaraTemple, guldasta, sheet } from '../helpers.js';
+import { M, mat, box, at, onFace, archPanel, guldasta, sheet } from '../helpers.js';
+import { nagaraTemple } from '../details/temples.js';
 
 const CHUNAR = mat('#d9b48f', 0.85);
 const SHADE = mat('#b8906a', 0.9);

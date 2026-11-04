@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, box, at, nagaraTemple, inst, unitBox, aroundRect } from '../helpers.js';
+import { M, box, at, inst, unitBox, aroundRect } from '../helpers.js';
+import { nagaraTemple } from '../details/temples.js';
 
 export function buildParshvanath() {
   const S = M.khaj, Sd = M.khajShade, g = new THREE.Group(), f = new THREE.Group();

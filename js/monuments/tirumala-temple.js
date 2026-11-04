@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, gopuram, pidaRoof, hemi, kalash, ribbed, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, rng, pidaRoof, hemi, kalash, ribbed, inst, unitBox } from '../helpers.js';
+import { gopuram, wallWithGaps } from '../details/temples.js';
 
 const WHITE = ['#f2ede2', '#e9e1cf', '#f6f2ea', '#dcd3c0'];
 const LIME = mat('#efe9dd', 0.85);
@@ -23,9 +24,9 @@ export function buildTirumala() {
   // Swami Pushkarini tank beside the temple
   g.add(box(36, 1, 30, M.granite, -62, 0, -4), box(30, 1.1, 24, M.water, -62, 0, -4));
   // Walled complex with the white Mahadwara gopuram at the entrance
-  for (const s of [-1, 1]) f.add(box(80, 8, 2.5, LIME, 0, 0, s * 52), box(2.5, 8, 104, LIME, s * 40, 0, 0));
+  for (const s of [-1, 1]) f.add(wallWithGaps('x', 80, 8, 2.5, LIME, s > 0 ? [[0, 21]] : [], 0, s * 52), box(2.5, 8, 104, LIME, s * 40, 0, 0));
   f.add(at(gopuram(22, 12, 30, 7, 2, WHITE), 0, 0, 52), at(gopuram(14, 9, 18, 5, 4, WHITE), 0, 0, 22));
-  for (const s of [-1, 1]) f.add(box(52, 6, 2, LIME, 0, 0, s * 22), box(2, 6, 44, LIME, s * 26, 0, 0));
+  for (const s of [-1, 1]) f.add(wallWithGaps('x', 52, 6, 2, LIME, s > 0 ? [[0, 13]] : [], 0, s * 22), box(2, 6, 44, LIME, s * 26, 0, 0));
   // Ananda Nilayam: the gold-covered vimana over the sanctum, and the gold flagstaff
   f.add(box(12, 7, 12, M.gild, 0, 0, 0));
   const r = pidaRoof(12, 6, 3, 1.1, M.gild, M.gildDeep);
