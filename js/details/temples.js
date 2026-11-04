@@ -192,7 +192,7 @@ export function wallWithGaps(axis, len, h, t, m, gaps = [], x = 0, z = 0) {
 // doorframes, its great doors standing open, then tapering storeys of painted stucco figures and
 // a barrel-vault crown.
 const paletteMats = new Map();
-export function gopuram(w, d, h, tiers, seed, palette = PAINT) {
+export function gopuram(w, d, h, tiers, seed, palette = PAINT, { pitch = 2.1, kuduEvery = 3 } = {}) {
   if (!paletteMats.has(palette)) paletteMats.set(palette, palette.map((c) => mat(c, 0.75)));
   const pm = paletteMats.get(palette);
   const g = new THREE.Group(), R = rng(seed), figs = [], pilas = [], kudus = [], kutas = [];
@@ -233,7 +233,7 @@ export function gopuram(w, d, h, tiers, seed, palette = PAINT) {
     g.add(box(tw + 0.6, th * 0.26, td + 0.6, pm[(i + seed) % pm.length], 0, y + th * 0.74));
     // Each face of the storey: a figure in each bay between pilasters, a kudu over every third bay
     // along the cornice, and a kuta on each corner of the ledge above.
-    const nx = Math.max(2, Math.floor(tw / 2.1)), nz = Math.max(1, Math.floor(td / 2.1));
+    const nx = Math.max(2, Math.floor(tw / pitch)), nz = Math.max(1, Math.floor(td / pitch));
     for (const [n, len, dist, axis] of [[nx, tw, td / 2, 'x'], [nz, td, tw / 2, 'z']]) for (const s of [-1, 1]) {
       const ry = axis === 'x' ? (s > 0 ? 0 : Math.PI) : (s > 0 ? Math.PI / 2 : -Math.PI / 2);
       const put = (lat, off) => (axis === 'x' ? [lat, s * (dist + off)] : [s * (dist + off), lat]);
@@ -242,7 +242,7 @@ export function gopuram(w, d, h, tiers, seed, palette = PAINT) {
         figs.push([fx, y + th * 0.06, fz, 0.8, th * (0.5 + R() * 0.16), 0.45, ry]);
         const [px, pz] = put(-len / 2 + k * (len / n), 0.06);
         if (k) pilas.push([px, y, pz, axis === 'x' ? 0.22 : 0.12, th * 0.74, axis === 'x' ? 0.12 : 0.22]);
-        if (k % 3 === 1) { const [kx, kz] = put(lat, 0.33); kudus.push([kx, y + th * 0.8, kz, 1, 1, 1, ry]); }
+        if (k % kuduEvery === kuduEvery >> 1) { const [kx, kz] = put(lat, 0.33); kudus.push([kx, y + th * 0.8, kz, 1, 1, 1, ry]); }
       }
     }
     if (i < tiers - 1) for (const sx of [-1, 1]) for (const sz of [-1, 1]) kutas.push([sx * (tw / 2 - 0.3), y + th, sz * (td / 2 - 0.3), Math.min(1.4, th * 0.42), Math.min(1.4, th * 0.42) * 1.3, Math.min(1.4, th * 0.42), 0]);

@@ -1,9 +1,8 @@
 import * as THREE from 'three';
-import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, bell, pidaRoof, rng, wheel } from '../helpers.js';
-import { horse } from '../details/animals.js';
+import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, bell, pidaRoof, rng } from '../helpers.js';
 import { templeDoorway } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
-import { figure } from '../details/sculpture.js';
+import { figure, instances, carvedWheelGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/konark-sun-temple.js';
 
 export function buildKonark() {
@@ -13,21 +12,14 @@ export function buildKonark() {
   // The chariot: a 6 m plinth carried on 24 carved wheels
   const L = 76, zc = -6, B = 6, zf = zc + L / 2;
   f.add(box(32, 4.6, L, Kd, 0, 0, zc), box(29, 1.4, L - 4, K, 0, 4.6, zc));
+  // Twelve carved sundial wheels a side, standing just proud of the plinth.
+  const wl = [];
   for (let i = 0; i < 12; i++) {
     const z = zc - L / 2 + 4 + i * ((L - 8) / 11);
-    for (const s of [-1, 1]) {
-      const w = wheel(1.55, Kd);
-      w.position.set(s * 16.2, 2.2, z);
-      w.rotation.y = Math.PI / 2;
-      f.add(w);
-    }
+    for (const s of [-1, 1]) wl.push([s * 16.14, 2.4, z, 1, 1, 1, s * Math.PI / 2]);
   }
+  f.add(instances(carvedWheelGeo(1.95), wl, Kd));
   for (let k = 0; k < 4; k++) f.add(box(10, B - k * 1.5, 2, K, 0, 0, zf + 1 + k * 2));
-  for (const x of [-15.5, -12.5, -9.5, 8, 11, 14, 17]) {
-    const h = horse(Kd);
-    h.position.set(x, 0.8, zf + 4);
-    f.add(box(2, 0.8, 4.5, K, x, 0, zf + 4), h);
-  }
   // Jagamohana (the surviving porch) with three tiers of pida roof
   const jz = zf - 16;
   f.add(box(26, 12, 26, K, 0, B, jz), box(30, 12, 16, K, 0, B, jz), box(16, 12, 30, K, 0, B, jz));
@@ -63,5 +55,5 @@ export function buildKonark() {
   f.add(box(24, 4, 24, Kd, 0, 0, nz), box(22, 1, 22, K, 0, 4, nz));
   for (const x of [-7.5, -2.5, 2.5, 7.5]) for (const z of [-7.5, -2.5, 2.5, 7.5]) f.add(cyl(0.6, 0.7, 2 + R() * 3, K, x, 5, nz + z, 8));
   addDetails(f, g);
-  return { group: g, focus: f, view: [1.1, 0.38, 0.9] };
+  return { group: g, focus: f, view: [1.1, 0.38, 0.9], budget: 500000 };
 }

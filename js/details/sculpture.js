@@ -245,11 +245,46 @@ export function haraRow(len, s, m) {
   return g;
 }
 
+/* ---------- chariot wheels ---------- */
+
+// A carved stone chariot wheel, as at Konark (where the 24 wheels are sundials) and Hampi: a rim with a beaded tyre band, eight broad spokes each
+// carrying a round medallion of carving at its middle, eight thin spokes between them with a bead
+// each, and a hub of petals round a projecting axle cap. One geometry of radius r facing +z, its
+// back at z = 0.
+export function carvedWheelGeo(r) {
+  const p = [], add = (geo, x = 0, y = 0, z = 0, rz = 0) => { geo = geo.index ? geo.toNonIndexed() : geo; geo.deleteAttribute('uv'); p.push(geo.rotateZ(rz).translate(x, y, z)); };
+  const d = r * 0.3;
+  add(new THREE.CylinderGeometry(r, r, d, 48, 1, true).rotateX(Math.PI / 2), 0, 0, d / 2);
+  add(new THREE.TorusGeometry(r * 0.95, r * 0.07, 6, 48), 0, 0, d);
+  add(new THREE.TorusGeometry(r * 0.8, r * 0.05, 6, 48), 0, 0, d * 0.9);
+  for (let k = 0; k < 32; k++) { const a = (k / 32) * Math.PI * 2; add(new THREE.SphereGeometry(r * 0.035, 6, 4), Math.cos(a) * r * 0.875, Math.sin(a) * r * 0.875, d * 0.95); }
+  for (let k = 0; k < 16; k++) {
+    const a = (k / 16) * Math.PI * 2, c = Math.cos(a), sn = Math.sin(a), mid = r * 0.52;
+    if (k % 2 === 0) {
+      add(new THREE.BoxGeometry(r * 0.15, r * 0.6, d * 0.7), c * mid, sn * mid, d * 0.5, a - Math.PI / 2);
+      add(new THREE.CylinderGeometry(r * 0.14, r * 0.14, d * 0.3, 16).rotateX(Math.PI / 2), c * mid, sn * mid, d * 0.95);
+      add(new THREE.TorusGeometry(r * 0.14, r * 0.025, 4, 16), c * mid, sn * mid, d * 1.1);
+      add(new THREE.SphereGeometry(r * 0.06, 8, 5), c * mid, sn * mid, d * 1.1);
+    } else {
+      add(new THREE.BoxGeometry(r * 0.05, r * 0.6, d * 0.45), c * mid, sn * mid, d * 0.5, a - Math.PI / 2);
+      add(new THREE.SphereGeometry(r * 0.05, 8, 5), c * mid, sn * mid, d * 0.75);
+    }
+  }
+  add(new THREE.CylinderGeometry(r * 0.22, r * 0.24, d * 1.2, 20).rotateX(Math.PI / 2), 0, 0, d * 0.6);
+  for (let k = 0; k < 10; k++) { const a = (k / 10) * Math.PI * 2, q = new THREE.SphereGeometry(r * 0.07, 6, 4).scale(1, 0.55, 0.5); add(q, Math.cos(a) * r * 0.16, Math.sin(a) * r * 0.16, d * 1.2, a - Math.PI / 2); }
+  add(new THREE.CylinderGeometry(r * 0.08, r * 0.1, d * 0.8, 12).rotateX(Math.PI / 2), 0, 0, d * 1.5);
+  const g = mergeGeometries(p);
+  g.computeVertexNormals();
+  return g;
+}
+
 /* ---------- Vijayanagara pillars ---------- */
 
 // A yali pillar h tall, facing +z: a square granite shaft carved with a rearing yali (a beast with a
 // lion's body and an elephant's trunk) standing on a carved block, and a rider on its back; banded with carved blocks and capped by a flower-bud bracket (pushpa-potika) each way.
-export function yaliPillar(h, m) {
+// With `rich`, the beast stands on a small elephant rather than a block and its rider is a full
+// carved figure.
+export function yaliPillar(h, m, { rich = false } = {}) {
   const g = new THREE.Group(), w = h * 0.12;
   g.add(box(w * 1.5, h * 0.08, w * 1.5, m), box(w, h * 0.86, w, m, 0, h * 0.08));
   for (const t of [0.3, 0.62]) g.add(box(w * 1.25, h * 0.06, w * 1.25, frieze(m), 0, h * t));
@@ -257,7 +292,11 @@ export function yaliPillar(h, m) {
   g.add(placeAll(bracketGeo(h * 0.08, w * 1.1, w * 0.7), [0, Math.PI / 2, Math.PI, -Math.PI / 2].map((a) => [Math.sin(a) * w * 0.5, h, Math.cos(a) * w * 0.5, a]), m));
   // The beast, against the front face of the shaft.
   const b = new THREE.Group(), z0 = w * 0.5, u = h / 10;
-  b.add(box(w * 1.1, u * 1.3, u * 1.1, frieze(m), 0, h * 0.08, z0 + u * 0.5));
+  if (rich) {
+    const e = mesh(elephantGeo(), m, 0, h * 0.08, z0 + u * 0.75);
+    e.scale.set(u * 1.0, u * 1.3, u * 1.5);
+    b.add(e);
+  } else b.add(box(w * 1.1, u * 1.3, u * 1.1, frieze(m), 0, h * 0.08, z0 + u * 0.5));
   const body = mesh(new THREE.SphereGeometry(1, 10, 8), m, 0, h * 0.45, z0 + u * 0.55);
   body.scale.set(u * 0.75, u * 1.7, u * 0.55);
   body.rotation.x = 0.25;
@@ -274,7 +313,7 @@ export function yaliPillar(h, m) {
   snout.rotation.x = 1.2;
   b.add(head, snout);
   for (const s of [-1, 1]) b.add(mesh(new THREE.ConeGeometry(u * 0.18, u * 0.6, 5), m, s * u * 0.35, h * 0.74, z0 + u * 0.8));
-  const rider = mesh(figureGeo('stucco'), m, 0, h * 0.72, z0 + u * 0.1);
+  const rider = mesh(figureGeo(rich ? 'standing' : 'stucco'), m, 0, h * 0.72, z0 + u * 0.1);
   rider.scale.set(u * 0.8, u * 2.2, u * 0.5);
   b.add(rider);
   g.add(b);

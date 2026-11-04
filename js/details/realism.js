@@ -430,3 +430,41 @@ export function stalls(spots, { y = 0, awnings = ['#c2512a', '#2f5d9a', '#e3b23c
   const p = spots.map(([x, z, ry = 0]) => [x, y, z, 1, ry]);
   return new THREE.Group().add(copies(stallGeos.counter, TIMBER, p), copies(stallGeos.heap, TINTED, p, goods), copies(stallGeos.poles, TIMBER, p), copies(stallGeos.awning, TINTED, p, awnings));
 }
+
+// Town houses, as in the old streets round a temple: spots are [x, z, w, d, storeys, ry], each a
+// painted block w × d of 3.2 m storeys with its front (+z before ry) on the street. Dark windows run
+// in bays on every storey, front and back, with a door in the middle of the front; a balcony slab
+// sits under each upper storey, and the flat roof has a parapet and, often, a black water tank.
+const HOUSE_PAINT = ['#e9d9b8', '#d98c5f', '#9fc3c9', '#e7b9b0', '#c9d6a3', '#f1e6cf', '#d6b06a', '#b9a7cf'];
+let houseGeos = null;
+export function townHouses(spots, { seed = 1, y = 0, paint = HOUSE_PAINT } = {}) {
+  if (!houseGeos) houseGeos = {
+    body: new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0),
+    win: new THREE.BoxGeometry(1.1, 1.5, 0.1).translate(0, 0.75, 0),
+    tank: new THREE.CylinderGeometry(0.7, 0.7, 1.4, 10).translate(0, 0.7, 0),
+  };
+  const R = rng(seed), bodies = [], tints = [], trims = [], wins = [], tanks = [];
+  for (const [x, z, w, d, n, ry = 0] of spots) {
+    const h = n * 3.2, c = Math.cos(ry), s = Math.sin(ry);
+    const P = (lx, lz) => [x + lx * c + lz * s, z - lx * s + lz * c];
+    bodies.push([x, y, z, [w, h, d], ry]);
+    tints.push(paint[Math.floor(R() * paint.length)]);
+    trims.push([x, y + h, z, [w + 0.2, 0.9, d + 0.2], ry]);
+    const bays = Math.max(1, Math.floor(w / 2.6));
+    for (let k = 0; k < n; k++) {
+      for (const side of [1, -1]) for (let b = 0; b < bays; b++) {
+        if (!k && side > 0 && b === bays >> 1) continue;
+        const [wx, wz] = P(-w / 2 + (b + 0.5) * (w / bays), side * (d / 2 + 0.02));
+        wins.push([wx, y + k * 3.2 + 0.9, wz, 1, ry + (side > 0 ? 0 : Math.PI)]);
+      }
+      if (k) { const [bx, bz] = P(0, d / 2 + 0.55); trims.push([bx, y + k * 3.2 - 0.15, bz, [w * 0.8, 0.15, 1.1], ry]); }
+    }
+    if (R() < 0.7) { const [tx, tz] = P((R() - 0.5) * w * 0.5, -d * 0.2); tanks.push([tx, y + h, tz, 1, 0]); }
+  }
+  return new THREE.Group().add(
+    copies(houseGeos.body, TINTED, bodies, tints),
+    copies(houseGeos.body, plain('#efe9dc', 0.9), trims),
+    copies(houseGeos.win, plain('#2b2a2c', 0.6), wins),
+    copies(houseGeos.tank, plain('#222222', 0.7), tanks),
+  );
+}
