@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, box, group, at, onFace, FACES, shikhara, flag, nagaraProfile, inst, unitCyl, unitHemi, unitSpire, aroundRect } from '../helpers.js';
+import { M, box, group, at, onFace, FACES, shikhara, flag, nagaraProfile, inst, unitCyl, unitHemi, aroundRect } from '../helpers.js';
 import { templeDoorway, templePorch } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { miniSpireGeo } from '../details/sculpture.js';

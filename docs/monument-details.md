@@ -236,12 +236,36 @@ The rules above still apply.
 Later: the interiors (the forest of pillars at Ranakpur, the Dilwara ceilings); figure sculpture in
 place of the simple `idol`; the roofscape of Jaisalmer's havelis.
 
+### Sculpture (second pass)
+
+[`fine-detail-plan.md`](fine-detail-plan.md) lists the places where blocks still stood in for
+sculpture, and what replaced them. The parts are in `js/details/sculpture.js`:
+
+- `figureGeo(pose)` and `figure()`: carved figures (standing, dancing, seated, musician) and a cheap
+  stucco figure. `elephantGeo()` and `horseGeo()` are animals. All are unit-sized, so they replace
+  `unitBox()` in an instanced row. `figureRow()` and `figureFrieze()` build rows and sunk friezes.
+- `kuta`, `shala` and `haraRow`: the miniature shrines along Dravidian storeys. `kutaGeo()` and
+  `kuduGeo()` are instanced versions for the gopurams.
+- `yaliPillar` and `clusterPillar`: the carved pillars of Vijayanagara.
+- `miniSpireGeo()`: small curved spires for rows of shrine cells.
+- The classical kit: `corinthianCapital`, `entablature`, `statue`, `urn`, `pinnacle` and
+  `gothicPinnacle`. In `colonial.js`, `column` and `porch` take `order: 'corinthian'`.
+
+These now replace the blocks. Figures stand in the wall bands at Kandariya, Parshvanath and
+Grishneshwar, and in Ramappa's brackets. Elephants carry Akshardham's and Kailasa's plinths, and
+musicians stand on Konark's roof. Painted figures, pilasters, kudus and kutas cover the gopurams,
+and kutas and shalas sit on the vimanas. Every Nagara sanctum and hall has a figure frieze, and
+the Ram Mandir's halls have carved pillars. Vittala at Hampi has clustered and yali pillars,
+plinth friezes, shrine parapets and a carved sanctum, chariot and gopuram. The colonial buildings
+have Corinthian orders, entablatures, statues, dome ribs, the lion and tiger at CSMT, the IHS at
+Bom Jesus and the Gajalakshmi at Mysore.
+
 ## Checking a change
 
 There is no build step. To see a detail module's effect, serve the folder (`npx serve .`) and open
 the monument's hash, for example `#taj-mahal`. A quick check of cost is the number of meshes and
 triangles in the built group, which should stay within the budget above. Every monument builds
-within it: the largest is Konark at about 270,000 triangles.
+within it: the largest are Meenakshi and Vittala, at just under 300,000 triangles each.
 
 ## Sources
 

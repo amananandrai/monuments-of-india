@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, box, cyl, lathe, group, at, kalash, shikhara, nagaraProfile, ribbed, inst, unitBox, unitCyl, unitHemi, aroundRect } from '../helpers.js';
+import { M, box, cyl, lathe, group, at, kalash, shikhara, nagaraProfile, ribbed, inst, unitCyl, unitHemi, aroundRect } from '../helpers.js';
 import { templeDoorway } from '../details/doorways.js';
 import { instances, elephantGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/akshardham.js';

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, group, starPrism, pidaRoof, kalash, inst, unitCyl, unitBox, aroundRect, surface } from '../helpers.js';
+import { M, mat, box, at, group, starPrism, pidaRoof, kalash, inst, unitCyl, aroundRect, surface } from '../helpers.js';
 import { templeDoorway, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { nandi } from '../details/animals.js';

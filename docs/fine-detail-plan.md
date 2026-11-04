@@ -75,6 +75,17 @@ sculpture. This plan names those places and says what replaces each one.
 - **Mahakaleshwar, Somnath, Trimbakeshwar** (through `nagaraTemple`): bands of figures on the
   sanctum walls between the mouldings.
 
+## Status
+
+All of the above is built. A few items were adjusted while building:
+
+- The yali pillars stand on a carved block rather than a small elephant, and their riders are the
+  cheap stucco figure, to keep Hampi within the triangle budget.
+- The gopurams' figures are a cheap figure of a few blocks (about 60 triangles), spaced about 2 m
+  apart: Meenakshi alone carries some 2,000 of them.
+- Bom Jesus has no statues on its facade, so it gets pinnacles, carved panels and the IHS emblem.
+- The Nagara temples got bands of figures on their halls as well as their sanctums.
+
 ## 6. Order of work and checks
 
 1. Build `sculpture.js`, and swap the block stand-ins for its parts in the builders (section 1).

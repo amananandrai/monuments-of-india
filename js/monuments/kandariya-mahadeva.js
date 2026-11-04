@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, at, onFace, FACES, kalash, bell, shikhara, pidaRoof, inst, unitBox, aroundRect } from '../helpers.js';
+import { M, mesh, box, cyl, at, onFace, FACES, kalash, bell, shikhara, pidaRoof, aroundRect } from '../helpers.js';
 import { templeDoorway, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { figureRow } from '../details/sculpture.js';

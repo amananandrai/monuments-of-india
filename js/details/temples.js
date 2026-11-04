@@ -3,7 +3,7 @@ import { M, mat, mesh, box, cyl, at, onFace, rng, shikhara, pidaRoof, bell, kala
 import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol } from './components.js';
 import { templeDoorway, templePorch, steps, doorFrame, doorLeaves, guardian } from './doorways.js';
 import { lion } from './animals.js';
-import { figureGeo, kutaGeo, kuduGeo, instances } from './sculpture.js';
+import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze } from './sculpture.js';
 
 // The shared temple builders, with real entrances: a Nagara temple's front porch, doorway and
 // side doors, a mandapa's doors, and a passage through the base of a gopuram. Moved here from
@@ -89,6 +89,17 @@ export function nagaraTemple({
   e.add(at(steps(stairW, plinth, Math.max(3, Math.ceil(plinth / 0.42)), shade, 0.45), 0, 0, z + 6));
   g.add(mergeByMaterial(e));
   if (placed.length) g.add(sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM));
+  // A band of carved figures along each side of every hall, parted round the side doors.
+  placed.forEach(({ hw, hh, zc }, i) => {
+    const fh = Math.min(1.2, hh * 0.16), gapW = i === 0 && half - hw / 2 >= 1.4 ? Math.max(3, doorSize(hh * 0.85).w * 2.4) : 0;
+    for (const s of [-1, 1]) for (const [z0, z1] of gapW ? [[zc - hw / 2 + 0.3, zc - gapW / 2], [zc + gapW / 2, zc + hw / 2 - 0.3]] : [[zc - hw / 2 + 0.3, zc + hw / 2 - 0.3]]) {
+      if (z1 - z0 < 1.5) continue;
+      const fr = figureFrieze(z1 - z0, fh, hallM, { pitch: fh * 0.75, kinds: ['standing', 'dancer'] });
+      fr.position.set(s * hw / 2, plinth + hh * 0.62, (z0 + z1) / 2);
+      fr.rotation.y = (s * Math.PI) / 2;
+      g.add(fr);
+    }
+  });
   g.userData.length = z;
   return g;
 }
@@ -102,6 +113,9 @@ function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM) {
   const d = new THREE.Group(), wh = w * 0.7, u = Math.max(0.12, w * 0.018);
   d.add(at(mouldings(sw, sw, [[0, 2 * u, 2 * u, shade], [2 * u, 1.5 * u, 1.4 * u], [3.5 * u, u, 0.9 * u, shade], [wh * 0.8, u, 0.7 * u], [wh - 1.6 * u, 1.6 * u, 2 * u, shade]], m), 0, plinth, 0));
   const nw = sw * 0.17, nh = wh * 0.42, ny = plinth + wh * 0.24;
+  // A band of carved figures round the foot of the wall, under the niches.
+  const fh = Math.min(1.1, wh * 0.2 - 4.6 * u);
+  if (fh > 0.45) for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) d.add(onFace(at(figureFrieze(sw - 0.6, fh, m, { pitch: fh * 0.75, kinds: ['standing', 'dancer', 'standing', 'musician'] }), 0, plinth + 4.6 * u, 0), a, sw / 2));
   for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) {
     d.add(onFace(at(templeNiche(nw, nh, m, { figure: guardian(nh * 0.88, m) }), 0, ny, 0), a, sw / 2));
     if (sw > 10) for (const s of [-1, 1]) d.add(onFace(at(templeNiche(nw * 0.6, nh * 0.62, m), 0, ny + nh * 0.12, 0), a, sw / 2, s * sw * 0.32));
@@ -118,6 +132,16 @@ function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM) {
   return mergeByMaterial(d);
 }
 
+// A carved temple pillar h tall: a square base block, an octagonal shaft girdled by two carved
+// bands, a cushion and a square capital.
+function carvedPillar(h, m) {
+  const g = new THREE.Group();
+  g.add(box(0.95, h * 0.12, 0.95, m), cyl(0.38, 0.42, h * 0.76, m, 0, h * 0.12, 0, 8));
+  for (const t of [0.34, 0.6]) g.add(cyl(0.47, 0.47, h * 0.07, frieze(m), 0, h * t, 0, 8));
+  g.add(cyl(0.5, 0.36, h * 0.06, m, 0, h * 0.88, 0, 8), box(0.95, h * 0.06, 0.95, m, 0, h * 0.94));
+  return g;
+}
+
 // A pillared hall: a solid core inside a ring of columns, a slab and a stepped roof with a bell and
 // kalash. doors: the faces (0 = +z, as onFace) that open, each with a doorway in the core and a gap
 // in the columns in front of it.
@@ -126,14 +150,15 @@ export function mandap(w, h, roofCount, m, shade, doors = []) {
   g.add(box(w - 3, h, w - 3, shade));
   const ds = doorSize(h), probe = templeDoorway(ds.w, ds.h, { m, guardians: false });
   const gap = probe.userData.outerW / 2 + 0.3;
-  const n = Math.max(3, Math.round(w / 2.6));
+  const n = Math.max(3, Math.round(w / 2.6)), cols = new THREE.Group();
   for (let i = 0; i <= n; i++) {
     const t = -w / 2 + 0.6 + (i / n) * (w - 1.2);
     for (const [x, z, a] of [[t, w / 2 - 0.6, 0], [t, -w / 2 + 0.6, Math.PI], [w / 2 - 0.6, t, Math.PI / 2], [-w / 2 + 0.6, t, -Math.PI / 2]]) {
       if (doors.some((d) => Math.abs(Math.atan2(Math.sin(d - a), Math.cos(d - a))) < 0.01) && Math.abs(t) < gap) continue;
-      g.add(cyl(0.38, 0.42, h, m, x, 0, z, 8));
+      cols.add(at(carvedPillar(h, m), x, 0, z));
     }
   }
+  g.add(mergeByMaterial(cols));
   if (doors.length) {
     const e = new THREE.Group();
     for (const a of doors) e.add(onFace(templeDoorway(ds.w, ds.h, { m, guardians: false }), a, (w - 3) / 2));

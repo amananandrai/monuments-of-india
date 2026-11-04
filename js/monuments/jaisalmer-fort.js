@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, mesh, box, at, rng, inst, unitBox, unitCyl, unitSpire, chhatri } from '../helpers.js';
+import { mat, mesh, box, at, rng, inst, unitBox, unitCyl, chhatri } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
 import { miniSpireGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/jaisalmer-fort.js';

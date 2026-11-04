@@ -232,8 +232,11 @@ download.
   tradition: base mouldings, image niches and amalakas on the temples, banded and slit bastions and
   jharokhas on the forts, stacked iwans and inlaid stars on the Mughal tombs, capitals, balustrades
   and eaves on the colonial buildings, and the Dharma wheel and victory banners on the monasteries.
-  The parts are shared (`js/details/components.js`, `forts.js`, `temples.js`, `tibetan.js`) and
-  merged into a few meshes per monument. See
+  Sculpture is modelled rather than blocked in: carved figures and elephants in the temple friezes
+  and on the gopurams, kutas and shalas on the vimanas, yali pillars at Hampi, and Corinthian
+  orders and statues on the colonial buildings (`js/details/sculpture.js`). The parts are shared
+  (`js/details/components.js`, `forts.js`, `temples.js`, `tibetan.js`, `sculpture.js`) and merged
+  or instanced into a few meshes per monument. See
   [`docs/monument-details.md`](docs/monument-details.md), and
   [`docs/doorways-and-reuse-plan.md`](docs/doorways-and-reuse-plan.md) for how every monument got
   real entrances and how these parts are reused across each architectural family.

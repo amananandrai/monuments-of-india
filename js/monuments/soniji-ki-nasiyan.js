@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, rng, onFace, archPanel, guldasta, inst, unitBox, unitSpire } from '../helpers.js';
+import { M, mat, box, cyl, at, rng, onFace, archPanel, guldasta, inst, unitBox } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
 import { miniSpireGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/soniji-ki-nasiyan.js';

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, rng, inst, unitBox, unitSpire, ellipseWall } from '../helpers.js';
+import { mat, mesh, box, at, rng, inst, unitBox, ellipseWall } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
 import { miniSpireGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/palitana-temples.js';

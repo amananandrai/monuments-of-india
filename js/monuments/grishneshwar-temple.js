@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, inst, unitBox, aroundRect } from '../helpers.js';
+import { M, mat, box, at, aroundRect } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
 import { figureRow } from '../details/sculpture.js';
 import { addDetails } from '../details/grishneshwar-temple.js';

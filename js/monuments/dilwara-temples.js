@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, V, box, cyl, lathe, group, at, kalash, bell, shikhara, pidaRoof, nagaraProfile, ribbed, inst, unitBox, unitCyl, unitSpire, aroundRect, hoopArch } from '../helpers.js';
+import { M, V, box, cyl, lathe, group, at, kalash, bell, shikhara, pidaRoof, nagaraProfile, ribbed, inst, unitBox, unitCyl, aroundRect, hoopArch } from '../helpers.js';
 import { trabeateGate, wallWithGaps } from '../details/temples.js';
 import { templeDoorway } from '../details/doorways.js';
 import { miniSpireGeo } from '../details/sculpture.js';

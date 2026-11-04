@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, rng, pidaRoof, wheel, surface } from '../helpers.js';
+import { mat, mesh, box, at, rng, pidaRoof, wheel, surface } from '../helpers.js';
 import { elephant } from '../details/animals.js';
 import { trabeateGate, wallWithGaps } from '../details/temples.js';
 import { templeDoorway } from '../details/doorways.js';
