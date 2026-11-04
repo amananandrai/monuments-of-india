@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, box, at, inst, unitBox, aroundRect } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
+import { addDetails } from '../details/parshvanath-temple-khajuraho.js';
 
 export function buildParshvanath() {
   const S = M.khaj, Sd = M.khajShade, g = new THREE.Group(), f = new THREE.Group();
@@ -12,5 +13,6 @@ export function buildParshvanath() {
   const figs = [];
   for (const y of [5.2, 7.4]) aroundRect(13, 13, 1.2).forEach(([x, z, ry]) => figs.push([x, y, z - 8, 0.6, 1.6, 0.3, ry]));
   f.add(inst(unitBox(), figs, Sd));
+  addDetails(f, g);
   return { group: g, focus: f, view: [1.0, 0.35, 0.9] };
 }

@@ -108,26 +108,27 @@ const trunkGeo = new THREE.CylinderGeometry(0.11, 0.2, 1, 7).translate(0, 0.5, 0
 // 'mango' (dense and dark), 'palm' (a coconut palm), 'deodar' (a Himalayan cedar) or 'cypress'.
 export function trees(spots, { kind = 'neem', seed = 1, y = 0, h = null } = {}) {
   const g = new THREE.Group(), R = rng(seed + 11);
-  const items = spots.map(([x, z, hh]) => ({ x, z, s: (hh || h || { neem: 9, banyan: 11, ashoka: 12, mango: 8, palm: 13, deodar: 18, cypress: 10 }[kind]) * (0.85 + R() * 0.3), ry: R() * 6.28 }));
-  if (kind === 'palm') return palms(items, y);
+  // Spots are [x, z, height?, ground?]: the tree's own height, and the ground it stands on (on a hill).
+  const items = spots.map(([x, z, hh, gy]) => ({ x, z, gy: (gy ?? 0) + y, s: (hh || h || { neem: 9, banyan: 11, ashoka: 12, mango: 8, palm: 13, deodar: 18, cypress: 10 }[kind]) * (0.85 + R() * 0.3), ry: R() * 6.28 }));
+  if (kind === 'palm') return palms(items);
   if (kind === 'deodar' || kind === 'cypress') {
     const tiers = kind === 'deodar' ? [[0.42, 0.36, 0.2], [0.33, 0.32, 0.42], [0.22, 0.28, 0.62], [0.12, 0.22, 0.8]] : [[0.18, 0.92, 0.1]];
     const c = mergeGeometries(tiers.map(([r, hh, at0]) => new THREE.ConeGeometry(r, hh, 9, 1).translate(0, at0 + hh / 2, 0)));
-    g.add(copies(trunkGeo, BARK, items.map((t) => [t.x, y, t.z, [t.s * 0.12, t.s * 0.3, t.s * 0.12], t.ry])));
-    g.add(copies(c, FOLIAGE_DARK, items.map((t) => [t.x, y, t.z, t.s, t.ry])));
+    g.add(copies(trunkGeo, BARK, items.map((t) => [t.x, t.gy, t.z, [t.s * 0.12, t.s * 0.3, t.s * 0.12], t.ry])));
+    g.add(copies(c, FOLIAGE_DARK, items.map((t) => [t.x, t.gy, t.z, t.s, t.ry])));
     return g;
   }
   // Crown size and height as fractions of the tree's height: [radius, height, trunk]
   const [cr, ch, tr] = { neem: [0.42, 0.36, 0.55], banyan: [0.62, 0.3, 0.45], ashoka: [0.17, 0.62, 0.3], mango: [0.4, 0.38, 0.45] }[kind];
   const leaf = kind === 'mango' || kind === 'ashoka' ? FOLIAGE_DARK : FOLIAGE;
   // The trunk runs up into the crown, whose underside is flattened.
-  g.add(copies(trunkGeo, BARK, items.map((t) => [t.x, y, t.z, [t.s * 0.17, t.s * (tr + ch * 0.3), t.s * 0.17], t.ry])));
-  g.add(copies(crownGeo(7, seed), leaf, items.map((t) => [t.x, y + t.s * (tr + ch * 0.4), t.z, [t.s * cr, t.s * ch * 0.6, t.s * cr], t.ry])));
+  g.add(copies(trunkGeo, BARK, items.map((t) => [t.x, t.gy, t.z, [t.s * 0.17, t.s * (tr + ch * 0.3), t.s * 0.17], t.ry])));
+  g.add(copies(crownGeo(7, seed), leaf, items.map((t) => [t.x, t.gy + t.s * (tr + ch * 0.4), t.z, [t.s * cr, t.s * ch * 0.6, t.s * cr], t.ry])));
   return g;
 }
 // Coconut palms: a leaning, slightly curved ringed trunk, a crown of arching fronds and coconuts.
 let palmGeos = null;
-function palms(items, y) {
+function palms(items) {
   if (!palmGeos) {
     const trunk = new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0.04, 0.35, 0), new THREE.Vector3(0.12, 0.7, 0), new THREE.Vector3(0.2, 1, 0)]), 10, 0.022, 6, false);
     const fronds = [];
@@ -149,7 +150,7 @@ function palms(items, y) {
     const nuts = mergeGeometries([0, 2.1, 4.2].map((a) => new THREE.SphereGeometry(0.018, 6, 4).translate(0.2 + Math.cos(a) * 0.025, 0.975, Math.sin(a) * 0.025)));
     palmGeos = { trunk, f, nuts };
   }
-  const g = new THREE.Group(), place = (t) => [t.x, y, t.z, t.s, t.ry];
+  const g = new THREE.Group(), place = (t) => [t.x, t.gy, t.z, t.s, t.ry];
   g.add(copies(palmGeos.trunk, PALM_BARK, items.map(place)), copies(palmGeos.f, FROND, items.map(place)), copies(palmGeos.nuts, plain('#5a4a2a', 0.8), items.map(place)));
   return g;
 }

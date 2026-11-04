@@ -3,6 +3,7 @@ import { M, mat, box, at, group, starPrism, pidaRoof, kalash, inst, unitCyl, uni
 import { templeDoorway, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { nandi } from '../details/animals.js';
+import { addDetails } from '../details/ramappa-temple.js';
 
 const DOLERITE = mat('#4d4a47', 0.8);
 const SAND = mat('#b49a7c', 0.9);
@@ -32,5 +33,6 @@ export function buildRamappa() {
   f.add(at(tower, 0, B + 7.6, -10), at(kalash(2.2, SAND), 0, B + 7.6 + tower.userData.top, -10));
   // Nandi pavilion facing the shrine
   f.add(box(8, 1.2, 8, DOLERITE, 0, 0, 30), at(nandi(mat('#2f2d2b', 0.55), 0.95), 0, 1.2, 30).rotateY(Math.PI));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.95, 0.45, 1.15] };
 }

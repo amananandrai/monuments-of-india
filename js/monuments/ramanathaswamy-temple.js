@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, at, pidaRoof, hemi, kalash, inst, unitCyl, aroundRect, sheet } from '../helpers.js';
 import { gopuram, wallWithGaps } from '../details/temples.js';
+import { addDetails } from '../details/ramanathaswamy-temple.js';
 
 const STONE = ['#cfc6b3', '#b9ae97', '#ddd5c4', '#a89c83'];
 const GRANITE = mat('#a89c83', 0.9);
@@ -28,5 +29,6 @@ export function buildRamanathaswamy() {
     const r = pidaRoof(w, w * 0.45, 4, 1, GRANITE, mat('#8d826b', 0.9));
     f.add(box(w * 1.1, 8, w * 1.1, LIME, x, 0, -14), at(r, x, 8, -14), at(hemi(w * 0.24, GRANITE, 20), x, 8 + r.userData.top, -14), at(kalash(w * 0.15), x, 8 + r.userData.top + w * 0.24, -14));
   }
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.7, 0.42, 1.2] };
 }

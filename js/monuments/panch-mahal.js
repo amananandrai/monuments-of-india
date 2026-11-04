@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, box, at, chhatri, inst, unitCyl } from '../helpers.js';
+import { addDetails } from '../details/panch-mahal.js';
 
 export function buildPanchMahal() {
   const Rd = M.red, Rl = M.redLight, g = new THREE.Group(), f = new THREE.Group();
@@ -17,5 +18,6 @@ export function buildPanchMahal() {
     y += h + 1;
   }
   f.add(at(chhatri(2.6, 7, Rd), 0, y, 0));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.95, 0.4, 1.1] };
 }
