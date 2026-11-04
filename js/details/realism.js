@@ -152,12 +152,13 @@ function palms(items, y) {
   return g;
 }
 // Low clipped shrubs or hedges: [x, z] or [x, z, size].
-// flowers: a colour for flowering bushes (bougainvillea, marigold beds, saffron).
+// Spots are [x, z, size?, y?]. flowers: a colour for flowering bushes (bougainvillea, marigold
+// beds, saffron).
 const flowerMats = new Map();
 export function shrubs(spots, { seed = 2, y = 0, size = 1.2, dry = false, flowers = null } = {}) {
   const R = rng(seed);
   if (flowers && !flowerMats.has(flowers)) flowerMats.set(flowers, surface(mat(flowers, 0.9), 'foliage'));
-  return copies(crownGeo(5, seed + 4), flowers ? flowerMats.get(flowers) : dry ? FOLIAGE_DRY : FOLIAGE, spots.map(([x, z, s]) => { const k = (s || size) * (0.8 + R() * 0.4); return [x, y + k * 0.35, z, [k, k * 0.6, k], R() * 6.28]; }));
+  return copies(crownGeo(5, seed + 4), flowers ? flowerMats.get(flowers) : dry ? FOLIAGE_DRY : FOLIAGE, spots.map(([x, z, s, yy]) => { const k = (s || size) * (0.8 + R() * 0.4); return [x, (yy ?? y) + k * 0.35, z, [k, k * 0.6, k], R() * 6.28]; }));
 }
 
 /* ---------- people ---------- */
@@ -178,6 +179,7 @@ const CLOTHES = ['#f4f1ea', '#d9342b', '#f0a12b', '#2f5d9a', '#e26a9c', '#3c8a5a
 // Visitors at the places ([x, z]), each turned a different way; y is the ground height there.
 // palette: clothing colours to draw from (saffron for pilgrims, white at a gurdwara...).
 export const PILGRIMS = ['#f08a1c', '#e86a12', '#f4f1ea', '#f5b335', '#d9342b', '#f08a1c'];
+export const MONKS = ['#7a1f24', '#8a2a24', '#d97a1a', '#7a1f24', '#c9611a'];
 export function people(spots, { seed = 5, y = 0, face = null, palette = CLOTHES } = {}) {
   const R = rng(seed), g = new THREE.Group(), men = [], women = [], heads = [], mc = [], wc = [], hc = [];
   spots.forEach(([x, z, yy]) => {
@@ -302,15 +304,16 @@ export function fountains(spots, { y = 0, h = 2.2 } = {}) {
   return g;
 }
 // Prayer flags on a line from a to b ([x, y, z]): small squares in the five colours.
+const FLAG_MATS = ['#2f5fb3', '#f2f2f2', '#c8322b', '#2f8a4a', '#f2c21c'].map((c) => plain(c, 0.9, 0, { side: THREE.DoubleSide }));
 export function prayerFlags(a, b, { sag = 0.6, size = 0.3 } = {}) {
-  const cols = ['#2f5fb3', '#f2f2f2', '#c8322b', '#2f8a4a', '#f2c21c'], spots = [[], [], [], [], []];
+  const spots = [[], [], [], [], []];
   const n = Math.max(5, Math.round(Math.hypot(b[0] - a[0], b[2] - a[2]) / (size * 1.3)));
   for (let k = 0; k <= n; k++) {
     const t = k / n, ry = Math.atan2(b[0] - a[0], b[2] - a[2]) + Math.PI / 2;
     spots[k % 5].push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t - Math.sin(t * Math.PI) * sag, a[2] + (b[2] - a[2]) * t, size, ry]);
   }
   const geo = new THREE.PlaneGeometry(1, 1).translate(0, -0.5, 0), g = new THREE.Group();
-  cols.forEach((c, i) => { if (spots[i].length) { const f = copies(geo, plain(c, 0.9, 0, { side: THREE.DoubleSide }), spots[i]); f.castShadow = false; g.add(f); } });
+  FLAG_MATS.forEach((m, i) => { if (spots[i].length) { const f = copies(geo, m, spots[i]); f.castShadow = false; g.add(f); } });
   const line = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(Array.from({ length: 9 }, (_, k) => { const t = k / 8; return new THREE.Vector3(a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t - Math.sin(t * Math.PI) * sag, a[2] + (b[2] - a[2]) * t); })), 16, 0.01, 4, false);
   g.add(mesh(line, IRON));
   return g;
@@ -319,16 +322,16 @@ export function prayerFlags(a, b, { sag = 0.6, size = 0.3 } = {}) {
 // Cars and buses on a road: places are [x, y, z, ry]; one in eight is a bus.
 let carGeos = null;
 const PAINTS = ['#f2f2f2', '#c8c8c8', '#2b2b2b', '#b3262e', '#2f5d9a', '#e8e2d2', '#5a5f66', '#f2d23a'];
-export function vehicles(places, { seed = 9 } = {}) {
+export function vehicles(places, { seed = 9, paints = PAINTS, busPaints = ['#c2512a', '#2f5d9a', '#e8e2d2'], busShare = 0.12 } = {}) {
   if (!carGeos) carGeos = {
     car: mergeGeometries([new THREE.BoxGeometry(1.8, 0.7, 4.3).translate(0, 0.55, 0), new THREE.BoxGeometry(1.6, 0.55, 2.2).translate(0, 1.15, -0.2)]),
     glass: new THREE.BoxGeometry(1.62, 0.4, 2.0).translate(0, 1.18, -0.2),
     bus: new THREE.BoxGeometry(2.5, 2.9, 11).translate(0, 1.75, 0),
   };
   const R = rng(seed), cars = [], buses = [], cc = [];
-  places.forEach(([x, y, z, ry]) => (R() < 0.12 ? buses.push([x, y, z, 1, ry]) : (cars.push([x, y, z, 1, ry]), cc.push(PAINTS[Math.floor(R() * PAINTS.length)]))));
+  places.forEach(([x, y, z, ry]) => (R() < busShare ? buses.push([x, y, z, 1, ry]) : (cars.push([x, y, z, 1, ry]), cc.push(paints[Math.floor(R() * paints.length)]))));
   const g = new THREE.Group();
   if (cars.length) g.add(copies(carGeos.car, plain('#ffffff', 0.35, 0.4), cars, cc), copies(carGeos.glass, plain('#1d2833', 0.15, 0.6), cars));
-  if (buses.length) g.add(copies(carGeos.bus, plain('#ffffff', 0.5, 0.2), buses, ['#c2512a', '#2f5d9a', '#e8e2d2']));
+  if (buses.length) g.add(copies(carGeos.bus, plain('#ffffff', 0.5, 0.2), buses, busPaints));
   return g;
 }

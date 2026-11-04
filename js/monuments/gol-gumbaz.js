@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, box, cyl, at, onFace, FACES, archPanel, onionDome, hemi, finial } from '../helpers.js';
 import { iwan, arcadeSkin, cellRow } from '../details/mughal.js';
+import { addDetails } from '../details/gol-gumbaz.js';
 
 export function buildGolGumbaz() {
   const D = M.deccan, Dl = M.deccanLight, g = new THREE.Group(), f = new THREE.Group();
@@ -30,5 +31,6 @@ export function buildGolGumbaz() {
   for (let k = 0; k < 40; k++) f.add(onFace(at(archPanel(3.4, 4.4, true, Dl, 0.5), 0, b + H + 1.6, 0), (k / 40) * Math.PI * 2, 21.8));
   f.add(at(hemi(22, Dl, 64), 0, b + H + 2.6, 0));
   f.add(at(finial(4), 0, b + H + 2.6 + 21.9, 0));
+  addDetails(f, g);
   return { group: g, focus: f };
 }

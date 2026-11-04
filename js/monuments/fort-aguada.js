@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
+import { addDetails } from '../details/fort-aguada.js';
 
 const LATERITE = mat('#9b5b3f', 0.95);
 const LATERITE_DARK = mat('#7d4530', 0.95);
@@ -32,5 +33,6 @@ export function buildFortAguada() {
   f.add(box(40, 0.6, 30, LATERITE_DARK, -4, H, 0), box(26, 3, 18, LATERITE, -4, H, 0));
   // The four-storey lighthouse of 1864
   f.add(cyl(3.2, 4, 14, WHITE, 18, H, 10, 20), cyl(4.6, 4.6, 0.6, LATERITE_DARK, 18, H + 14, 10, 20), cyl(2.4, 2.4, 3, mat('#9fc6d8', 0.2, 0.2), 18, H + 14.6, 10, 16), cyl(0, 2.8, 2, mat('#c3463a', 0.7), 18, H + 17.6, 10, 16));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.35, 1.2] };
 }

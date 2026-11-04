@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, box, cyl, lathe, at, ribbed, inst, unitBox, surface } from '../helpers.js';
 import { arcadeSkin } from '../details/mughal.js';
 import { classicalDoor, porch } from '../details/colonial.js';
+import { addDetails } from '../details/cooch-behar-palace.js';
 
 const BRICK = surface(mat('#a9583f', 0.85), 'brick');
 const WHITE = mat('#ece6da', 0.8);
@@ -30,5 +31,6 @@ export function buildCoochBehar() {
   f.add(cyl(9, 9, 8, WHITE, 0, H + 1.2, 0, 32), cyl(9.6, 9.6, 0.8, BRICK, 0, H + 9.2, 0, 32));
   f.add(at(ribbed(lathe([[9, 0], [8.8, 4], [7.6, 9], [5, 13], [2, 15.4], [0, 16]], METAL, 32), 16, 0.04), 0, H + 10, 0));
   f.add(cyl(1.4, 1.8, 3, WHITE, 0, H + 25.6, 0, 12), cyl(0, 0.8, 2.4, METAL, 0, H + 28.6, 0, 8));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.55, 0.28, 1.25] };
 }

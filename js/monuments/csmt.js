@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, lathe, at, onFace, ribbed, hipRoof } from '../helpers.js';
 import { mergeByMaterial } from '../details/components.js';
 import { gothicDoor, gothicWindow, oculus } from '../details/colonial.js';
+import { addDetails } from '../details/csmt.js';
 
 const SLATE = mat('#5b6067', 0.8);
 const BAND = mat('#7e7c78', 0.9);
@@ -63,5 +64,6 @@ export function buildCsmt() {
     // A rose window in each gable
     f.add(gm, onFace(at(oculus(1.8, { m: M.cream, trim: BAND, frame: 0.5 }), 0, 22, 0), 0, 30, s * 52));
   }
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.35, 0.3, 1.2] };
 }

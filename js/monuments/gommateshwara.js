@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { surface } from '../surface.js';
 import { mat, mesh, box, at, chhatri, inst, unitBox, aroundRect, ellipsoid, tube, face } from '../helpers.js';
 import { bahubaliBody } from '../details/figures.js';
+import { addDetails } from '../details/gommateshwara.js';
 
 const GRANITE = mat('#c9c3b6', 0.8);
 // The statue is one smooth monolith, so it gets plain stone rather than coursed masonry.
@@ -53,5 +54,6 @@ export function buildGommateshwara() {
   for (const x of [-14, 14]) f.add(at(chhatri(2.2, 6, GRANITE), x, H + 5, 18));
   // The 17.4 m monolith of Bahubali
   f.add(at(bahubali(), 0, H + 0.5, -4));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.4, 0.2, 1.25] };
 }
