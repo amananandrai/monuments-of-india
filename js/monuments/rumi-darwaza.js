@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, at, archWall, chhatri, guldasta, inst } from '../helpers.js';
 import { jali, archSlab, archRing } from '../details/components.js';
 import { arcadeSkin } from '../details/mughal.js';
+import { addDetails } from '../details/rumi-darwaza.js';
 
 const LIME = mat('#e6d8b8', 0.85);
 const LIME_DARK = mat('#cbb994', 0.85);
@@ -45,5 +46,6 @@ export function buildRumiDarwaza() {
     f.add(at(arcadeSkin(26, 7, cells, 1, LIME, { trim: LIME_DARK }), s * 21, 0, 1.5));
     for (const x of [s * 9, s * 34]) f.add(at(guldasta(7, 0.7, LIME), x, 7.6, 0));
   }
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.55, 0.22, 1.25] };
 }

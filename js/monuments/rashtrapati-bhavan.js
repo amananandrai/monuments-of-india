@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, group, at, hemi, finial, chhatri } from '../helpers.js';
+import { addDetails } from '../details/rashtrapati-bhavan.js';
 
 export function buildRashtrapatiBhavan() {
   const Rd = M.red, Cr = M.cream, g = new THREE.Group(), f = new THREE.Group();
@@ -21,5 +22,6 @@ export function buildRashtrapatiBhavan() {
   f.add(at(hemi(14.5, Cr, 48), 0, 29, 0), cyl(1.4, 2, 2.4, Cr, 0, 43.2, 0, 16));
   const col = group(box(7, 6, 7, Rd), cyl(1.3, 1.7, 30, Cr, 0, 6, 0, 16), at(mesh(new THREE.SphereGeometry(1.6, 16, 12), M.bronze), 0, 37.2, 0), at(finial(4), 0, 38.6, 0));
   g.add(at(col, 0, 0, 120));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.5, 0.26, 1.2] };
 }

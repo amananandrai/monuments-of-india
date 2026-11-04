@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, ring, at, ribbed, hemi, lathe } from '../helpers.js';
+import { addDetails } from '../details/shaheed-minar.js';
 
 const STONE = mat('#e6dcc8', 0.85);
 const SHADE = mat('#c8bba1', 0.9);
@@ -13,5 +14,6 @@ export function buildShaheedMinar() {
   f.add(at(ribbed(cyl(2.4, 3, 30, STONE, 0, 0, 0, 32), 16, 0.06), 0, 9.2 + 15, 0));
   for (const y of [39, 43]) f.add(cyl(3.6, 2.6, 0.8, SHADE, 0, y, 0, 24), ring(3.6, 0.9, STONE, y + 0.8, 24));
   f.add(cyl(2.2, 2.4, 3, STONE, 0, 44.6, 0, 16), at(hemi(2.4, STONE, 20), 0, 47.6, 0), cyl(0.1, 0.25, 2, SHADE, 0, 49.8, 0, 8));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.18, 1.25] };
 }

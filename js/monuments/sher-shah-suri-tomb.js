@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, chhatri, hemi, finial, onFace, sheet } from '../helpers.js';
 import { iwan } from '../details/mughal.js';
+import { addDetails } from '../details/sher-shah-suri-tomb.js';
 
 const STONE = mat('#c39a6e', 0.88);
 const SHADE = mat('#a27b52', 0.9);
@@ -35,5 +36,6 @@ export function buildSherShahSuri() {
   // The octagonal tomb in three tiers under its broad dome
   f.add(at(octStorey(22, 13, STONE, 2.6), 0, 8, 0), at(octStorey(17, 7, STONE, 2), 0, 21, 0), cyl(14, 14, 3, STONE, 0, 28, 0, 32));
   f.add(at(hemi(14, STONE, 40), 0, 31, 0), cyl(1.6, 2.4, 2.4, STONE, 0, 44.6, 0, 12), at(finial(4), 0, 46.8, 0));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.55, 0.3, 1.25] };
 }

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, ring, inst, unitBox, unitCyl } from '../helpers.js';
+import { addDetails } from '../details/rani-ki-vav.js';
 
 const SAND = mat('#c8a57c', 0.9);
 const SAND_DARK = mat('#a3825d', 0.9);
@@ -36,5 +37,6 @@ export function buildRaniKiVav() {
   const shaft = ring(5.5, D, SAND, 0, 32);
   shaft.position.z = z1 + 6;
   f.add(box(W, 0.6, 12, SAND_DARK, 0, 0, z1 + 6), shaft, cyl(5.4, 5.4, 0.8, M.water, 0, 0.2, z1 + 6, 32));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.55, 0.95, 1.0] };
 }
