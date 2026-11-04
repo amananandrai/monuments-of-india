@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, FACES, surface, hemi, ribbed, kalash, finial } from '../helpers.js';
 import { D, archRing, keystone, sunburst, rosette, lettering, dentils, chhajja, petalRing, mergeByMaterial } from './components.js';
-import { trees, people, lampPosts, stalls, scatter, along } from './realism.js';
+import { trees, lampPosts, stalls, along } from './realism.js';
 
 // India Gate, finer detail (Lutyens, 1921–31). From photographs and descriptions of the arch:
 // - two large sunburst roundels, one each side of the main arch on both long faces, and a smaller
@@ -120,11 +120,10 @@ export function addCanopyDetails(c) {
   c.add(d, at(finial(3.5), 0, 17.35, 0));
 }
 
-// The life of Kartavya Path round the gate: the long canals either side of the lawns, crowds of
-// families on the grass and the walks, ice-cream carts, lamps, and the jamun trees along the avenue.
+// Kartavya Path round the gate: the long canals either side of the lawns, ice-cream carts, lamps,
+// and the jamun trees along the avenue.
 export function addDetails(f, g) {
   for (const x of [-15, 15]) g.add(box(5, 0.3, 200, M.water, x, 0.02, 90));
-  g.add(people([...scatter(60, [-55, 55, 14, 185], { seed: 3, gap: 1.2, avoid: [[-17.5, 17.5, 0, 200]] }), ...scatter(30, [-8, 8, 16, 185], { seed: 4 }), ...scatter(18, [-14, 14, -12, 12], { seed: 5, avoid: [[-12.5, 12.5, -6.5, 6.5]] })], { seed: 3 }));
   g.add(stalls([[-20, 30, Math.PI / 2], [20, 46, -Math.PI / 2], [-20, 70, Math.PI / 2], [20, 96, -Math.PI / 2]], { awnings: ['#f2f2f2'], goods: ['#e26a9c', '#f2d23a', '#7a3f8f'] }));
   g.add(lampPosts([...along(10, [-9.5, 14], [-9.5, 185]), ...along(10, [9.5, 14], [9.5, 185])]));
   g.add(trees([...along(12, [-58, 14], [-58, 185]), ...along(12, [58, 14], [58, 185])], { kind: 'mango', seed: 6 }));

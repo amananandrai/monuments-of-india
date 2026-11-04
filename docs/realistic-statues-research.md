@@ -9,8 +9,8 @@ ends with a recommendation and a plan.
 ## Status
 
 Phases 1 to 4 of the plan (section 4) are built: every statue and temple animal on the site is now
-sculpted as one skin. Phase 5, scanned models, has not been started; it waits on your decision
-about model files.
+sculpted as one skin. Phase 5, scanned models, was decided against: the site keeps building
+everything in code and ships no model files.
 
 - **`js/sdf.js`** is the kit:
   - ellipsoids, tapered capsules, chains, rounded boxes, tori, and lathes with folds for robes and
@@ -34,7 +34,8 @@ about model files.
 **Checks:**
 
 - **Builds:** all 101 monuments build, and every sculpted mesh is watertight.
-- **Triangle budget:** no monument is over 170,000 triangles.
+- **Triangle budget:** the budget is now 300,000 triangles per monument. The largest is Nageshwar,
+  at about 225,000 with its full Shiva (see `js/details/nageshwar-temple.js`).
 - **First selection:** a monument with figures takes 0.4–0.7 s, the time to mesh them; after that
   they are cached.
 - **The meshing tear:** a part that skips work far from itself must switch over further out than
@@ -64,7 +65,7 @@ about model files.
   paid once, not every frame.
 - **Scanned museum models** were also weighed. They are free to use (CC0) or need a credit
   (CC-BY). They would look better still for a few pieces, but they mean shipping model files, which
-  the README says the site does not do. So that is your decision; see [Option B](#b-scanned-models-cc0-or-cc-by).
+  the README says the site does not do. It was decided not to use them; see [Option B](#b-scanned-models-cc0-or-cc-by).
   There is no free scan of the Statue of Unity, and none of the Konark horses.
 - **AI-generated models** (Meshy, for example) produce model files too, and get iconography wrong:
   mudras, attributes, the number of arms. They are worth considering only for anonymous animals, if
@@ -149,7 +150,7 @@ shaped triangles than marching cubes. The prototype also does two cheap things:
   - the elephant took 0.67 s at a 5 cm grid (60,000 triangles), but only 0.2–0.3 s at 8 cm
     (23,000), which looks the same at the site's viewing distances;
   - a 25 m Shiva needs only a 20 cm grid.
-- **Budget.** The 200,000-triangle budget per monument holds:
+- **Budget.** The triangle budget per monument (200,000 when this was written, 300,000 now) holds:
   - the heaviest case, Kailasa with two elephants at 1.4 scale, adds about 20,000 triangles over
     today's figures;
   - two copies of the same animal share one geometry, so a figure is meshed once.
@@ -259,9 +260,9 @@ no-model-files rule for a short, named list.
 figures look like toys: the seams, the lack of landmarks and the boxes. It does so without
 changing what the site is. The prototype shows it fits the time and triangle budgets.
 
-Option B is the only way to get beyond "well-sculpted" to "that exact statue". Whether that is worth
-shipping files is your decision, not a technical one. If you want it, start with the Nandi. That is
-where good scans with a clear licence exist and the gain is largest, and you can judge from there.
+Option B is the only way to get beyond "well-sculpted" to "that exact statue". It was not taken:
+the site keeps to models built in code, and realism comes from more carved detail on the
+monuments themselves.
 
 **Per figure:**
 
@@ -299,13 +300,13 @@ on its own.
 4. **Human figures (`js/details/figures.js`).** A body builder with pose parameters: seated in
    padmasana or standing, and arm angles. Then rebuild Shiva, Bahubali, Thiruvalluvar and Patel on
    it, with `face()` kept for heads, and the dvarapalas.
-5. **Optional, needs your decision:** scanned glTF for a named list of pieces, with
-   `gltf-transform` compression, the loaders and a credits section in the README.
+5. **Not pursued:** scanned glTF for a named list of pieces, with `gltf-transform` compression,
+   the loaders and a credits section in the README. The site stays free of model files.
 
 **Budgets and checks for every phase:**
 
 - the 101-monument build passes;
-- each changed monument stays under 200,000 triangles;
+- each changed monument stays under 300,000 triangles;
 - meshing stays under 0.5 s per monument on first selection;
 - renders are compared before and after from the home view and close up, by day and by night;
 - figures are checked against reference photographs for proportion and iconography.

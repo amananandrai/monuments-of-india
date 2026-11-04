@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at } from '../helpers.js';
-import { trees, people, asiBoard, scatter, along } from './realism.js';
+import { trees, asiBoard, scatter, along } from './realism.js';
 
 // The Qutub complex at Mehrauli: the lawns and paths round the minar, the Iron Pillar of the 4th
-// century (7.2 m, and still unrusted) in the court of the Quwwat-ul-Islam mosque with the stumps
-// of its colonnades, the great unfinished core of the Alai Minar, visitors, and the ASI board.
+// century (7.2 m, and still unrusted) in the court of the Quwwat-ul-Islam mosque with the stumps of
+// its colonnades, the great unfinished core of the Alai Minar, and the ASI board.
 const IRON = mat('#3a332e', 0.45, 0.6), RUIN = mat('#9a6a4e', 0.95);
 export function addDetails(f, g) {
   g.add(box(240, 0.15, 220, M.grass, 0, -0.15, 30), box(10, 0.1, 110, M.path, 0, 0, 70), box(110, 0.1, 8, M.path, -40, 0, 18));
@@ -20,6 +20,5 @@ export function addDetails(f, g) {
   // The Alai Minar: Alauddin Khalji's tower, abandoned at its first storey
   g.add(cyl(13, 14.5, 25, RUIN, -60, 0, -60, 40), box(30, 2, 30, RUIN, -60, 0, -60));
   g.add(trees([...along(6, [-12, 40], [-12, 120]), ...along(6, [12, 40], [12, 120]), ...scatter(14, [-110, 110, 60, 135], { seed: 3, gap: 16, avoid: [[-16, 16, 30, 140]] })], { kind: 'neem', seed: 3 }));
-  g.add(people([...scatter(20, [-14, 14, -14, 14], { seed: 4 }).filter(([x, z]) => Math.max(Math.abs(x), Math.abs(z)) > 11), ...scatter(18, [-4, 4, 20, 120], { seed: 5 }), ...scatter(16, [24, 68, -54, -18], { seed: 6, avoid: [[42, 50, -40, -32]] })], { seed: 4, y: 0 }));
   g.add(asiBoard('Qutb Minar and its Monuments', 8, 122, 0, { line2: 'WORLD HERITAGE SITE' }));
 }

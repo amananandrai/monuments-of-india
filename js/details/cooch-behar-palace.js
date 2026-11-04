@@ -1,8 +1,7 @@
-import { mat } from '../helpers.js';
-import { trees, shrubs, people, lampPosts, asiBoard, scatter, along } from './realism.js';
+import { trees, shrubs, lampPosts, asiBoard, scatter, along } from './realism.js';
 
-// The Cooch Behar Palace: lotus leaves on the pond, palms and flowering shrubs in the gardens,
-// lamps along the drive, and visitors.
+// The Cooch Behar Palace: lotus leaves on the pond, palms and flowering shrubs in the gardens, and
+// lamps along the drive.
 export function addDetails(f, g) {
   const pads = scatter(26, [-96, -44, 68, 92], { seed: 3, gap: 1.6 });
   g.add(shrubs(pads.map(([x, z]) => [x, z, 1.4]), { y: 0.4, flowers: '#4f8a3a', seed: 3 }));
@@ -10,6 +9,5 @@ export function addDetails(f, g) {
   g.add(trees([...along(6, [-12, 50], [-12, 135]), ...along(6, [12, 50], [12, 135])], { kind: 'ashoka', seed: 5 }));
   g.add(shrubs(scatter(20, [-60, 60, 34, 60], { seed: 6, gap: 5, avoid: [[-16, 16, 30, 70]] }).map(([x, z]) => [x, z, 1.6]), { flowers: '#d0306f', seed: 6 }));
   g.add(lampPosts([...along(6, [-6, 35], [-6, 135]), ...along(6, [6, 35], [6, 135])]));
-  g.add(people(scatter(22, [-4, 4, 36, 130], { seed: 7 }), { seed: 7 }));
   g.add(asiBoard('Cooch Behar Palace', 9, 138, 0));
 }

@@ -4,7 +4,7 @@ import {
   jali, frieze, niche, archSlab, archRing, rosette, bracketGeo, placeAll, aroundCircle, alongFace,
   railingRing, merlons, lotusDome, petalRing, crescentFinial, mughalChhatri, mergeByMaterial,
 } from './components.js';
-import { trees, people, asiBoard, fountains, scatter, along } from './realism.js';
+import { trees, asiBoard, fountains, scatter, along } from './realism.js';
 
 // Taj Mahal, finer detail (1632–1653). From photographs and descriptions (tajmahal.gov.in,
 // Archnet, the Taj Mahal articles of Wikipedia and Britannica):
@@ -159,13 +159,10 @@ export function tajMinaret(out) {
 }
 
 // The Taj Mahal's garden: the rows of cypress either side of the long water channel, its line of
-// fountains, shade trees in the four quarters, crowds on the platform and along the channel, and
-// the ASI board at the forecourt.
+// fountains, shade trees in the four quarters, and the ASI board at the forecourt.
 export function addDetails(f, g) {
   g.add(fountains(along(14, [0, 64], [0, 206]).filter(([, z]) => Math.abs(z - 135) > 10), { y: 0.35, h: 1.6 }));
   for (const x of [-9, 9]) g.add(trees(along(16, [x, 62], [x, 208]).filter(([, z]) => Math.abs(z - 135) > 11), { kind: 'cypress', seed: x > 0 ? 3 : 4, h: 9 }));
   g.add(trees(scatter(16, [-40, 40, 64, 206], { seed: 5, gap: 14, avoid: [[-12, 12, 0, 220]] }), { kind: 'neem', seed: 5 }));
-  g.add(people([...scatter(40, [-5.5, 5.5, 62, 208], { seed: 6, avoid: [[-4, 4, 0, 220]] }), ...scatter(30, [-40, 40, 52, 62], { seed: 7 })], { seed: 6 }));
-  f.add(people(scatter(40, [-46, 46, -46, 46], { seed: 8, avoid: [[-30, 30, -30, 30]] }).map(([x, z]) => [x, z, 7]), { seed: 8 }));
   g.add(asiBoard('Taj Mahal', 14, 212, 0, { line2: 'WORLD HERITAGE SITE' }));
 }

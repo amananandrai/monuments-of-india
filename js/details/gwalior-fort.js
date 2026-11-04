@@ -1,10 +1,9 @@
 import * as THREE from 'three';
 import { mat, box, at, barrelVault } from '../helpers.js';
-import { trees, shrubs, people, asiBoard, scatter } from './realism.js';
+import { trees, shrubs, asiBoard, scatter } from './realism.js';
 
 // Gwalior Fort: the Teli ka Mandir, the tall 8th-century temple with a wagon-vaulted roof, on the
-// plateau behind the Man Mandir; neem and scrub over the plateau; visitors along the palace front
-// and at the Hathi Pol, where the stone elephants stand.
+// plateau behind the Man Mandir; neem and scrub over the plateau; and the ASI board.
 const SAND = mat('#c9b08a', 0.9), SAND_DARK = mat('#a68d68', 0.9);
 export function addDetails(p, g) {
   const H = 36, t = new THREE.Group();
@@ -14,6 +13,5 @@ export function addDetails(p, g) {
   g.add(at(t, -70, H, -18));
   const top = scatter(50, [-140, 140, -62, 62], { seed: 3, gap: 9 }).filter(([x, z]) => (x / 140) ** 2 + (z / 62) ** 2 < 0.85 && !(Math.abs(x) < 70 && z > 45) && Math.hypot(x + 70, z + 18) > 16);
   g.add(trees(top.slice(0, 22), { kind: 'neem', seed: 4, y: H }), shrubs(top.slice(22).map(([x, z]) => [x, z, 2.4]), { y: H, dry: true, seed: 5 }));
-  p.add(people(scatter(26, [-58, 58, 64, 72], { seed: 6 }).map(([x, z]) => [x, z, H]), { seed: 6 }));
   g.add(asiBoard('Gwalior Fort', 70, 72, 0.6, { y: H }));
 }

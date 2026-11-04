@@ -1,13 +1,12 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { mat, mesh, box, cyl, surface, rng, nightState } from '../helpers.js';
-import { ellipsoid as E, cone, chain, blend, mirrorX, flatBase, sculpt } from '../sdf.js';
 
-// The life round a monument, shared by every file in js/details: trees and shrubs, visitors,
-// heritage lamp posts, benches, the blue board of the Archaeological Survey of India, marigold
-// garlands, boats, bollards with chains, and fountain jets. Everything here is instanced, so a
-// garden of fifty trees or a crowd of forty people costs a few draw calls and a few thousand
-// triangles. Places are lists of [x, z] (or [x, y, z] where it says so); `seed` makes the
+// The setting round a monument, shared by every file in js/details: trees and shrubs, heritage
+// lamp posts, benches, the blue board of the Archaeological Survey of India, marigold garlands,
+// prayer flags, boats, bollards with chains, stalls, and fountain jets. There are no people or
+// motor vehicles. Everything here is instanced, so a garden of fifty trees costs a few draw calls
+// and a few thousand triangles. Places are lists of [x, z] (or [x, y, z] where it says so); `seed` makes the
 // variation repeatable.
 
 const plain = (c, r = 0.85, m = 0, extra = {}) => surface(mat(c, r, m, extra), 'none');
@@ -20,11 +19,9 @@ const FROND = plain('#5d8a37', 0.85, 0, { side: THREE.DoubleSide });
 const IRON = plain('#2b2d2f', 0.5, 0.6);
 const LAMP_GLASS = plain('#fff1c8', 0.3, 0, { emissive: '#ffd27a', emissiveIntensity: 0.35 });
 const GLOW = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 1.6, 0.8) });
-const CLOTH = plain('#ffffff', 0.9);
-const SKIN = plain('#ffffff', 0.7);
 const TIMBER = plain('#6e4f33', 0.8);
 const STONE = mat('#b9b2a6', 0.9);
-// White, for parts tinted per copy (cars, boats, awnings).
+// White, for parts tinted per copy (boats, awnings).
 const TINTED = plain('#ffffff', 0.85);
 
 /* ---------- instancing ---------- */
@@ -164,40 +161,6 @@ export function shrubs(spots, { seed = 2, y = 0, size = 1.2, dry = false, flower
   return copies(crownGeo(5, seed + 4), flowers ? flowerMats.get(flowers) : dry ? FOLIAGE_DRY : FOLIAGE, spots.map(([x, z, s, yy]) => { const k = (s || size) * (0.8 + R() * 0.4); return [x, (yy ?? y) + k * 0.35, z, [k, k * 0.6, k], R() * 6.28]; }));
 }
 
-/* ---------- people ---------- */
-
-// A standing visitor about 1.65 m tall, in two cuts: in trousers or a dhoti, or in a sari or salwar.
-function personField(skirt) {
-  const legs = skirt ? cone([0, 0.98, 0], [0, 0.02, 0.02], 0.17, 0.25) : mirrorX(cone([0.09, 0.03, 0.02], [0.1, 0.9, 0], 0.065, 0.1));
-  const f = blend([
-    [legs, 0],
-    [chain([[0, 0.88, 0, 0.16], [0, 1.15, 0, 0.15], [0, 1.37, 0, 0.18]], 0.08), 0.08],
-    [mirrorX(cone([0.21, 1.38, 0], [0.25, 0.86, 0.04], 0.055, 0.042)), 0.05],
-    [cone([0, 1.4, 0], [0, 1.52, 0], 0.05, 0.05), 0.03],
-  ]);
-  return { f: flatBase(f), lo: [-0.36, -0.03, -0.3], hi: [0.36, 1.56, 0.3] };
-}
-const SKINS = ['#8d5a3b', '#a56b46', '#c48a62', '#7a4b31', '#b07850', '#6b4028'];
-const CLOTHES = ['#f4f1ea', '#d9342b', '#f0a12b', '#2f5d9a', '#e26a9c', '#3c8a5a', '#f2d23a', '#7a3f8f', '#e8e2d2', '#1f2d3d', '#c2512a', '#f7f7f7'];
-// Visitors at the places ([x, z]), each turned a different way; y is the ground height there.
-// palette: clothing colours to draw from (saffron for pilgrims, white at a gurdwara...).
-export const PILGRIMS = ['#f08a1c', '#e86a12', '#f4f1ea', '#f5b335', '#d9342b', '#f08a1c'];
-export const MONKS = ['#7a1f24', '#8a2a24', '#d97a1a', '#7a1f24', '#c9611a'];
-export function people(spots, { seed = 5, y = 0, face = null, palette = CLOTHES } = {}) {
-  const R = rng(seed), g = new THREE.Group(), men = [], women = [], heads = [], mc = [], wc = [], hc = [];
-  spots.forEach(([x, z, yy]) => {
-    const ry = face === null ? R() * 6.28 : face + (R() - 0.5) * 0.8, s = 0.92 + R() * 0.14, gy = yy ?? y;
-    (R() < 0.5 ? (men.push([x, gy, z, s, ry]), mc) : (women.push([x, gy, z, s, ry]), wc)).push(palette[Math.floor(R() * palette.length)]);
-    heads.push([x, gy + 1.6 * s, z, s, ry]);
-    hc.push(SKINS[Math.floor(R() * SKINS.length)]);
-  });
-  const head = new THREE.SphereGeometry(0.105, 8, 6).scale(0.9, 1.05, 1);
-  if (men.length) g.add(copies(sculpt('person', () => personField(false), { h: 0.1, reach: 0 }), CLOTH, men, mc));
-  if (women.length) g.add(copies(sculpt('person-sari', () => personField(true), { h: 0.1, reach: 0 }), CLOTH, women, wc));
-  if (heads.length) g.add(copies(head, SKIN, heads, hc));
-  return g;
-}
-
 /* ---------- street furniture ---------- */
 
 // Heritage lamp posts, h tall: a fluted iron post on a base, a scrolled arm and a glass lantern,
@@ -322,33 +285,6 @@ export function prayerFlags(a, b, { sag = 0.6, size = 0.3 } = {}) {
   return g;
 }
 
-// Cars and buses on a road: places are [x, y, z, ry]; one in eight is a bus.
-let carGeos = null;
-const PAINTS = ['#f2f2f2', '#c8c8c8', '#2b2b2b', '#b3262e', '#2f5d9a', '#e8e2d2', '#5a5f66', '#f2d23a'];
-export function vehicles(places, { seed = 9, paints = PAINTS, busPaints = ['#c2512a', '#2f5d9a', '#e8e2d2'], busShare = 0.12 } = {}) {
-  if (!carGeos) carGeos = {
-    car: mergeGeometries([new THREE.BoxGeometry(1.8, 0.7, 4.3).translate(0, 0.55, 0), new THREE.BoxGeometry(1.6, 0.55, 2.2).translate(0, 1.15, -0.2)]),
-    glass: new THREE.BoxGeometry(1.62, 0.4, 2.0).translate(0, 1.18, -0.2),
-    bus: new THREE.BoxGeometry(2.5, 2.9, 11).translate(0, 1.75, 0),
-  };
-  const R = rng(seed), cars = [], buses = [], cc = [];
-  places.forEach(([x, y, z, ry]) => (R() < busShare ? buses.push([x, y, z, 1, ry]) : (cars.push([x, y, z, 1, ry]), cc.push(paints[Math.floor(R() * paints.length)]))));
-  const g = new THREE.Group();
-  if (cars.length) g.add(copies(carGeos.car, plain('#ffffff', 0.35, 0.4), cars, cc), copies(carGeos.glass, plain('#1d2833', 0.15, 0.6), cars));
-  if (buses.length) g.add(copies(carGeos.bus, plain('#ffffff', 0.5, 0.2), buses, busPaints));
-  return g;
-}
-
-// Auto-rickshaws at [x, y, z, ry]: the three-wheeled taxis, green and yellow, with black hoods.
-let autoGeos = null;
-export function autos(places) {
-  if (!autoGeos) autoGeos = {
-    body: mergeGeometries([new THREE.BoxGeometry(1.3, 0.75, 2.1).translate(0, 0.6, -0.15), new THREE.BoxGeometry(0.9, 0.9, 0.5).translate(0, 0.75, 1.05)]),
-    hood: new THREE.CylinderGeometry(0.7, 0.7, 1.6, 10, 1, false, -Math.PI / 2, Math.PI).rotateX(Math.PI / 2).scale(1, 0.75, 1).translate(0, 1.0, 0),
-  };
-  const p = places.map(([x, y, z, ry]) => [x, y, z, 1, ry]);
-  return new THREE.Group().add(copies(autoGeos.body, plain('#ffffff', 0.45, 0.2), p, ['#2f7a3f', '#2f7a3f', '#e3b23c']), copies(autoGeos.hood, plain('#1d1d1d', 0.6), p));
-}
 // Kashmiri houseboats moored at [x, z, ry]: a long cedar hull, a carved cabin with windows, and a
 // pitched roof.
 let hbGeos = null;

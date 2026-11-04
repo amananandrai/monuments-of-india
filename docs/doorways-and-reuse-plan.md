@@ -192,7 +192,8 @@ Applied to:
   rings moved to the new faces).
 
 Cost: each of these monuments now has 8,000–70,000 more triangles than before. Qutb Shahi is the
-largest at about 140,000, for its seven tombs, so every one is within the 200,000 budget.
+largest at about 140,000, for its seven tombs, so every one is within the budget (200,000 then,
+300,000 now).
 
 **Phase 3: forts and gates (11 forts). Done.**
 `fortGate(w, h, d, aw, ah, opts)` in `js/details/forts.js` is a gatehouse with a real arched
@@ -395,7 +396,7 @@ Each phase is done when:
 - each changed monument is rendered from the default view, a close view of its entrance and a
   street-level view, and compared with the render from before the change;
 - there is no flicker, since every detail stands 1–3 cm off the surface it decorates;
-- each monument stays under about 200,000 triangles and a few dozen draw calls after merging;
+- each monument stays under about 300,000 triangles and a few dozen draw calls after merging;
 - night mode shows nothing broken.
 
 The headless render script used for this work can live in `tools/` so these checks can be

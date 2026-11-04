@@ -38,7 +38,7 @@ Rules the detail modules follow:
    (the Parliament's 144 column bases and capitals) are instanced instead.
 2. **No flicker:** merged meshes are not seen by `coplanar.js`, so every detail stands at least
    1–3 cm off the surface it decorates, and no two detail faces share a plane where they overlap.
-3. **Budget:** under about 200,000 triangles per monument. Small domes, petals, rosettes and arch
+3. **Budget:** under about 300,000 triangles per monument. Small domes, petals, rosettes and arch
    curves use fewer segments the smaller they are.
 4. **Materials:** reuse the shared stones from `helpers.M`, so the photo textures and weathering
    still apply; a carved variant is a shade lighter so it reads against the wall.

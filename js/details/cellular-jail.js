@@ -1,9 +1,9 @@
 import { at, tricolour } from '../helpers.js';
-import { trees, shrubs, people, lampPosts, scatter, around } from './realism.js';
+import { trees, shrubs, lampPosts, scatter, around } from './realism.js';
 
 // The Cellular Jail at Port Blair, now a National Memorial: the tricolour flying over the central
-// watchtower, coconut palms and flowering shrubs in the memorial gardens between the wings, lamps
-// round the tower, and visitors in the courts.
+// watchtower, coconut palms and flowering shrubs in the memorial gardens between the wings, and
+// lamps round the tower.
 export function addDetails(f, g) {
   f.add(at(tricolour(9), 0, 27.6, 0));
   const lawn = scatter(36, [-150, 150, -140, 140], { seed: 3, gap: 9 }).filter(([x, z]) => {
@@ -12,5 +12,4 @@ export function addDetails(f, g) {
   });
   g.add(trees(lawn, { kind: 'palm', seed: 3, y: 0.7 }), shrubs(lawn.map(([x, z]) => [x + 3, z + 2, 1.4]), { y: 0.7, flowers: '#d63c6a', seed: 4 }));
   g.add(lampPosts(around(8, 18), { y: 0.7 }));
-  g.add(people(scatter(30, [-60, 60, -60, 60], { seed: 5 }).filter(([x, z]) => Math.hypot(x, z) > 14), { seed: 5, y: 0.7 }));
 }

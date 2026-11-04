@@ -1,8 +1,8 @@
 import { at, flag, mat, rng } from '../helpers.js';
-import { trees, shrubs, people, scatter } from './realism.js';
+import { shrubs } from './realism.js';
 
-// Mehrangarh above Jodhpur: the rhyolite scrub of the Rao Jodha desert park on the hill, visitors
-// along the ramparts and at the Loha Pol, and the five-coloured flag of Marwar over the palace.
+// Mehrangarh above Jodhpur: the rhyolite scrub of the Rao Jodha desert park on the hill, and the
+// five-coloured flag of Marwar over the palace.
 const FLAG = mat('#d9342b', 0.8, 0, { side: 2 });
 export function addDetails(f, g) {
   const H = 45, R = rng(4), slope = [];
@@ -12,7 +12,5 @@ export function addDetails(f, g) {
     slope.push([x, z, 2.2, t * H - 0.4]);
   }
   g.add(shrubs(slope, { dry: true, seed: 5 }));
-  f.add(people(scatter(26, [-62, 62, 22, 25], { seed: 6 }).map(([x, z]) => [x, z, H + 24]), { seed: 6 }));
-  f.add(people(scatter(12, [8, 22, 30, 40], { seed: 7 }).map(([x, z]) => [x, z, H]), { seed: 7 }));
   f.add(at(flag(9, FLAG), 0, H + 38, 0));
 }

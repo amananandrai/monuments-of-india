@@ -142,7 +142,7 @@ function horseField() {
   ]);
   return { f: flatBase(body), lo: [-0.9, -0.05, -2.4], hi: [0.9, 4.35, 2.8] };
 }
-// coarse: a lighter mesh for small or distant horses (carriage teams, mounted guards, ponies).
+// coarse: a lighter mesh for small or distant horses, such as the ponies on a pilgrim path.
 export function horse(m, { coarse = false } = {}) {
   const g = new THREE.Group();
   g.add(figure(sculpt(coarse ? 'horse-coarse' : 'horse', horseField, { h: coarse ? 0.13 : 0.065, reach: 0.4 }), m));
@@ -233,7 +233,7 @@ const sharedMats = new Map();
 const shared = (c, r, m) => { const k = c + r + m; if (!sharedMats.has(k)) sharedMats.set(k, surface(mat(c, r, m), 'none')); return sharedMats.get(k); };
 
 // An elephant dressed for a procession or the ride up to a fort: a painted forehead, a long
-// embroidered cloth over its back and a canopied howdah, with a mahout on its neck.
+// embroidered cloth over its back and a canopied howdah.
 export function rideElephant(m, s = 1, { cloth = '#b3262e', trim = '#e3b54a', howdah = true } = {}) {
   const g = elephant(m, 1), C = shared(cloth, 0.8, 0), T = shared(trim, 0.35, 0.8);
   g.add(box(2.3, 0.12, 2.6, C, 0, 3.3, 0), box(0.1, 1.5, 2.4, C, 1.18, 2.0, 0), box(0.1, 1.5, 2.4, C, -1.18, 2.0, 0));
@@ -244,10 +244,8 @@ export function rideElephant(m, s = 1, { cloth = '#b3262e', trim = '#e3b54a', ho
     for (const x of [-0.7, 0.7]) for (const z of [-0.8, 0.6]) g.add(cyl(0.035, 0.035, 1.2, T, x, 3.92, z, 6));
     g.add(at(mesh(new THREE.ConeGeometry(1.15, 0.6, 4).rotateY(Math.PI / 4), C), 0, 5.4, -0.1));
   }
-  // The painted forehead and a mahout astride the neck
+  // The painted forehead
   g.add(at(mesh(new THREE.CircleGeometry(0.42, 16), shared('#f2c21c', 0.8, 0)), 0, 3.0, 2.68).rotateX(-0.45));
-  g.add(cyl(0.16, 0.2, 0.6, shared('#f4f1ea', 0.9, 0), 0, 3.55, 1.25, 8), mesh(new THREE.SphereGeometry(0.13, 8, 6), shared('#8d5a3b', 0.7, 0), 0, 4.3, 1.25));
-  g.add(mesh(new THREE.SphereGeometry(0.15, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), shared('#d9342b', 0.8, 0), 0, 4.36, 1.25));
   g.scale.setScalar(s);
   return g;
 }
@@ -303,13 +301,12 @@ function camelField() {
   return { f: flatBase(f), lo: [-0.6, -0.03, -1.2], hi: [0.6, 2.75, 2.25] };
 }
 const CAMEL = surface(mat('#b88a5a', 0.85), 'none');
-// Camels at [x, z, ry], each with a saddle cloth and, on some, a rider.
+// Camels at [x, z, ry], each with a saddle cloth.
 export function camels(spots, { y = 0, cloths = ['#b3262e', '#2f5d9a', '#e3b23c', '#2f7a3f'] } = {}) {
   const g = new THREE.Group();
-  spots.forEach(([x, z, ry = 0, rider = false], i) => {
+  spots.forEach(([x, z, ry = 0], i) => {
     const c = new THREE.Group(), C = shared(cloths[i % cloths.length], 0.8, 0);
     c.add(mesh(sculpt('camel', camelField, { h: 0.045, reach: 0.2 }), statueMaterial(CAMEL)), box(0.75, 0.08, 1.1, C, 0, 2.48, -0.05), box(0.05, 0.6, 1.0, C, 0.37, 1.95, -0.05), box(0.05, 0.6, 1.0, C, -0.37, 1.95, -0.05));
-    if (rider) c.add(cyl(0.17, 0.2, 0.62, surface(mat('#f4f1ea', 0.9), 'none'), 0, 2.56, -0.05, 8), mesh(new THREE.SphereGeometry(0.13, 8, 6), surface(mat('#8d5a3b', 0.7), 'none'), 0, 3.32, -0.05), mesh(new THREE.SphereGeometry(0.17, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), surface(mat('#e86a12', 0.8), 'none'), 0, 3.36, -0.05));
     c.position.set(x, y, z);
     c.rotation.y = ry;
     g.add(c);

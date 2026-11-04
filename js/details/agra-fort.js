@@ -1,10 +1,9 @@
 import { M, mat, box, at, curvedBand } from '../helpers.js';
-import { trees, shrubs, people, lampPosts, asiBoard, fountains, scatter, along } from './realism.js';
+import { trees, shrubs, lampPosts, asiBoard, fountains, along } from './realism.js';
 
 // Agra Fort: the moat that still rings the land walls (dry and grassed, with a little water in its
 // bed), the causeway over it to the Amar Singh Gate and the road up to it, lit by heritage lamps,
-// the Anguri Bagh, the formal garden of square beds and fountains below the Khas Mahal, and
-// visitors in the courts and at the gate.
+// and the Anguri Bagh, the formal garden of square beds and fountains below the Khas Mahal.
 const MOAT = mat('#5f7a45', 0.95);
 export function addDetails(f, g) {
   const R = 125, arc = [];
@@ -15,13 +14,11 @@ export function addDetails(f, g) {
   g.add(at(box(9, 0.6, 30, M.path), c * 148, 0, s * 148).rotateY(ry));
   f.add(lampPosts(along(6, [c * 140 - s * 6, s * 140 + c * 6], [c * 175 - s * 6, s * 175 + c * 6]).concat(along(6, [c * 140 + s * 6, s * 140 - c * 6], [c * 175 + s * 6, s * 175 - c * 6]))));
   f.add(asiBoard('Agra Fort', c * 160 + s * 9, s * 160 - c * 9, ry + Math.PI));
-  f.add(people(scatter(14, [-8, 8, 0, 30], { seed: 3 }).map(([u, v]) => [c * (140 + v) - s * u, s * (140 + v) + c * u]), { seed: 3 }));
   // Anguri Bagh: four lawns with clipped hedges round a marble fountain, below the Khas Mahal
   for (const x of [-1, 1]) for (const z of [-1, 1]) g.add(box(14, 0.3, 10, M.grass, -10 + x * 8.5, 0, 33 + z * 6.5));
   f.add(box(3, 0.5, 3, M.marble, -10, 0, 33), fountains([[-10, 33], [-10, 22], [-10, 44]], { y: 0.5, h: 1.6 }));
   f.add(shrubs([...along(10, [-27, 25], [-27, 41]), ...along(10, [7, 25], [7, 41])].map(([x, z]) => [x, z, 0.9]), { y: 0.3 }));
-  // Shade trees in the inner courts, and visitors round the Diwan-i-Am
+  // Shade trees in the inner courts
   f.add(trees([[-60, 40], [-75, 70], [60, 40], [72, 72], [-40, 95], [40, 95], [-90, 45], [90, 45]], { kind: 'neem', seed: 4 }));
   f.add(trees(along(6, [-30, 82], [30, 82]), { kind: 'ashoka', seed: 5 }));
-  f.add(people(scatter(26, [-40, 40, 40, 100], { seed: 6, avoid: [[-27, 27, 46, 74]] }), { seed: 6 }));
 }

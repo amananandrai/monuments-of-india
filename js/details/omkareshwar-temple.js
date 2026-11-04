@@ -1,10 +1,9 @@
 import * as THREE from 'three';
 import { mat, mesh, box, rng, strut, V } from '../helpers.js';
-import { trees, people, PILGRIMS, boats, scatter } from './realism.js';
+import { trees, boats, scatter } from './realism.js';
 
-// Omkareshwar on its island in the Narmada: the suspension footbridge that pilgrims cross from
-// the south bank, the bank itself with the town and its trees, boats ferrying pilgrims, and
-// pilgrims bathing and sitting on the ghat steps below the temple.
+// Omkareshwar on its island in the Narmada: the suspension footbridge from the south bank, the bank
+// itself with the town and its trees, and boats on the river below the ghat steps.
 const CABLE = mat('#d8d5ce', 0.5, 0.3), DECK = mat('#8a8780', 0.8);
 export function addDetails(f, g) {
   const R = rng(9);
@@ -19,10 +18,6 @@ export function addDetails(f, g) {
     g.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 48, 0.14, 6, false), CABLE));
     for (let k = 1; k < 24; k++) g.add(strut(new THREE.Vector3(pts[k].x, deckY + 0.3, pts[k].z), pts[k], 0.05, CABLE));
   }
-  g.add(people(scatter(16, [x - 1.5, x + 1.5, z0 + 4, z1 - 4], { seed: 4 }).map(([px, pz]) => [px, pz, deckY + 0.5]), { seed: 4, palette: PILGRIMS }));
-  const ghat = [];
-  for (let k = 0; k < 8; k++) for (let i = 0; i < 5; i++) ghat.push([-36 + R() * 72, 22 - k * 2.4 + (R() - 0.5), 1 + k * 0.9]);
-  f.add(people(ghat, { seed: 5, palette: PILGRIMS, face: 0 }));
   const fleet = [];
   for (let i = 0; i < 14; i++) fleet.push([-200 + R() * 400, 40 + R() * 100, R() * 6.28]);
   g.add(boats(fleet, { y: 0.3, size: 1.6, colours: ['#2f5d9a', '#f2d23a', '#c2512a', '#3c8a5a'] }));
