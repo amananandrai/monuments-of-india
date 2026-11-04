@@ -188,10 +188,10 @@ function greatGate() {
   for (const a of [0, Math.PI]) {
     g.add(onFace(iwan(10, 17, { m: R, trim: W, shade: M.redLight, depth: 2.4, frame: 1.6, top: 2.2, fill: 'room' }), a, (d - 2.4) / 2));
     for (const lat of [-12.5, 12.5]) for (const y of [0.8, 10.2]) g.add(onFace(at(niche(4.4, 7.2, true, 0.9, R, { frame: 0.6, top: 0.6, back: M.redLight }), 0, y, 0), a, (d - 2.4) / 2, lat));
-    for (let k = 0; k < 11; k++) { const z = Math.cos(a) * ((d - 2.4) / 2 - 1), x = -15 + k * 3; kp.push([x, h, z, 1.6, 1.6, 1.6]); kd.push([x, h + 1.6, z, 1.9, 1.5, 1.9]); }
+    for (let k = 0; k < 11; k++) { const z = Math.cos(a) * ((d - 2.4) / 2 - 1), x = -15 + k * 3; kp.push([x, h + 0.8, z, 1.6, 1.6, 1.6]); kd.push([x, h + 2.4, z, 1.9, 1.5, 1.9]); }
   }
   g.add(inst(unitCyl(8), kp, W), inst(unitHemi(10), kd, W));
-  g.add(box(w + 0.6, 0.8, d - 1.8, W, 0, h - 0.8));
+  g.add(box(w + 0.6, 0.8, d - 1.8, W, 0, h));
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(cyl(2.4, 2.6, h + 3, R, sx * (w / 2), 0, sz * (d / 2 - 2.4), 8), at(mughalChhatri(2.4, 6.5, R, { domeM: W }), sx * (w / 2), h + 3, sz * (d / 2 - 2.4)));
   return mergeByMaterial(g);
 }

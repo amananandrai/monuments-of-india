@@ -156,7 +156,8 @@ function tajHotel() {
 }
 
 export function addDetails(f, g) {
-  g.add(at(tajHotel(), -100, 0, -70).rotateY(0.35));
+  // Far enough off that the camera, orbiting the Gateway, never enters it.
+  g.add(at(tajHotel(), -165, 0, -105).rotateY(0.35));
   const ped = new THREE.Group(), rider = new THREE.Group();
   ped.add(box(5, 4, 8, M.basalt), box(5.6, 0.5, 8.6, M.plaster, 0, 4));
   const h = horse(M.bronze);
