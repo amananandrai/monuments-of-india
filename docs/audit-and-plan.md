@@ -259,5 +259,26 @@ New shared parts from this pass: `townHouses` (realism.js), `carvedWheelGeo` and
 `leader`, `enthroned`, `mirror`, `thorn` and `chauri` (sculpture.js), `bhumijaRows` (temples.js),
 and options on `gopuram` (`pitch`, `kuduEvery`), `yaliPillar` (`rich`) and `nagaraTemple` (`apron`).
 
-Still open: the Statue of Unity (left as it is); the distance between the Capitol's Assembly and
-High Court, which is shorter than the real esplanade.
+Statue of Unity, afterwards: Patel now takes a step forward, the dhoti gathered round each leg
+below the knee, with the kasta pleats between them and sandals. The bandi has its placket and
+buttons, the viewing gallery's windows cross the chest, the shawl's end falls in folds, and the
+sleeves have cuffs and thumbs. The head is broader, with a heavy brow, heavy lids, folds from nose
+to mouth, a set mouth and ears. The pedestal is faced in stone fins, with a lotus plinth and steps.
+The island of Sadhu Bet is rocky, with a causeway to the bank and hills round the reservoir, and the
+Sardar Sarovar Dam stands 3 km downstream.
+
+A later review named five monuments as still only close; each was then changed:
+
+| Monument | Change |
+| --- | --- |
+| Statue of Unity | A broader jaw (the full face of his later years), sunk folds from nose to mouth; the dam drawn at 1.9 km so it shows through the haze. |
+| Capitol Complex | The High Court moved to the far end of the esplanade, 330 m from the Assembly, as built; it now stands outside the framed group, so the home view is of the Assembly and Secretariat. |
+| Parshvanath | The rear shrine with its own spire, which only Parshvanath has at Khajuraho; figure bands along the halls' sides and round the rear shrine, in nine poses; the Jain flag in five colours. |
+| Cooch Behar Palace | A pedimented portico on paired Corinthian columns; coupled columns round the dome's drum; end pavilions with pediments, quoins and round-headed windows. |
+| Kirti Mandir | Gandhi's birthplace as a three-storey haveli: whitewashed walls, a timber front of shuttered windows, carved balconies on brackets; the home view now looks at the house first. |
+
+Also: `pediment()` sets its tympanum 2 cm inside the raking cornices, which flickered on every
+pedimented porch.
+
+Still open: a true portrait likeness of Patel is beyond what the shared face shape can carve; the
+features are suggested, not modelled.

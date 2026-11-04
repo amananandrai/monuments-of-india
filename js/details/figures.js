@@ -98,7 +98,9 @@ export const shivaSurface = () => (shivaF ||= shivaField().f);
 // showing through it, the kurta, the shawl over the shoulders with its end thrown across the chest,
 // arms hanging in loose sleeves, and the neck. The head and fingers are meshes.
 function patelField() {
-  const dhoti = lathe([[17.8, 3], [19.6, 8], [18.6, 26], [17.2, 50], [16.2, 74], [15.4, 90], [0.1, 90]], { sz: 0.62, folds: 22, amp: 0.06, from: 3, to: 75 });
+  // The dhoti wraps the hips and thighs as one skirt; below the knee it is gathered round each leg,
+  // the left a stride forward, as he walks.
+  const dhoti = lathe([[16.6, 30], [18.2, 38], [17.2, 52], [16.2, 74], [15.4, 90], [0.1, 90]], { sz: 0.62, folds: 22, amp: 0.06, from: 30, to: 75 });
   const torso = lathe([[15.4, 86], [16.6, 100], [18.4, 118], [19.8, 131], [17.4, 140], [8, 145], [0.1, 145.5]], { sz: 0.62 });
   const shawl = lathe([[19.6, 104], [21.6, 114], [22.4, 128], [21.4, 137], [17.6, 143], [8.6, 146.4], [0.1, 146.8]], { sz: 0.7, folds: 16, amp: 0.05, from: 104, to: 136 });
   const b = blend([
@@ -106,7 +108,10 @@ function patelField() {
     [torso, 2],
     [shawl, 1.5],
     [chain([[16, 140, 6, 3], [6, 130, 13, 3], [-6, 118, 12.5, 3], [-14, 108, 9, 3]], 1), 1],
-    [mirrorX(E([7.5, 2.2, 4.5], [5, 2.4, 8.5])), 1.5],
+    [cone([7.2, 3, 2.6], [6.4, 42, 1.0], 8.8, 9.8), 3],
+    [cone([-7.2, 3, -0.8], [-6.4, 42, 0.2], 8.8, 9.8), 3],
+    [E([7.8, 2.2, 6.4], [5, 2.4, 8.5]), 1.5],
+    [E([-7.8, 2.2, 3.0], [5, 2.4, 8.5]), 1.5],
     [mirrorX(E([20.5, 136, 0.5], [6.6, 6.2, 5.6])), 2],
     [mirrorX(cone([20.5, 136, 0.5], [23.6, 111, 2], 6.2, 5.4)), 2],
     [mirrorX(cone([23.6, 111, 2], [22.4, 89, 3.5], 5.4, 4.3)), 1.5],

@@ -68,11 +68,16 @@ function openHand() {
   return g;
 }
 
+export const HC = 330;
+
 export function buildCapitolComplex() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(480, 0.3, 380, CONCRETE_DARK, 0, 0, 40), box(500, 0.15, 400, M.grass, 0, -0.1, 40));
-  f.add(at(secretariat(), -105, 0, -125), at(palaceOfAssembly(), 0, 0, 0), at(highCourt().rotateY(Math.PI), 60, 0, 180));
+  g.add(box(480, 0.3, 560, CONCRETE_DARK, 0, 0, 130), box(500, 0.15, 580, M.grass, 0, -0.1, 130));
+  // The High Court faces the Assembly from the far end of the esplanade, some 330 m off; it stands
+  // outside the framed group, so the home view is of the Assembly and the Secretariat.
+  f.add(at(secretariat(), -105, 0, -125), at(palaceOfAssembly(), 0, 0, 0));
+  g.add(at(highCourt().rotateY(Math.PI), 60, 0, HC));
   g.add(at(openHand(), -150, 0, 120));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.9, 0.42, 1.1], zoom: 0.72 };
