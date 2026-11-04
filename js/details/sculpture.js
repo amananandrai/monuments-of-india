@@ -63,6 +63,20 @@ function ball(r, x, y, z, sx = 1, sy = 1, sz = 1, w = 6, h = 4) {
 // from a lifted foot) and 'chauri' (an attendant with a fly-whisk over the shoulder).
 function figureParts(pose) {
   const g = new THREE.Group(), add = (...o) => o.forEach((x) => g.add(x));
+  if (pose === 'enthroned') {
+    // A sovereign seated on a throne: thighs forward, shins down, upright, sceptre and orb in hand,
+    // a small crown; the throne's high back behind.
+    for (const sx of [-0.55, 0.55]) add(seg(V(sx, 4.0, 0), V(sx, 4.0, 2.2), 0.6, 0.5), seg(V(sx, 4.0, 2.2), V(sx, 0.2, 2.3), 0.45, 0.35));
+    add(ball(1.4, 0, 3.6, 1.6, 1.1, 0.5, 1.2, 10, 6));                      // the lap and skirts
+    add(seg(V(0, 0.2, 2.0), V(0, 3.8, 2.3), 1.3, 1.1, 8));                 // the skirts falling to the floor
+    add(seg(V(0, 4.1, 0.2), V(0, 6.9, 0.2), 1.05, 0.85, 8), ball(0.95, 0, 6.6, 0.35, 1.2, 0.8, 0.8));
+    for (const s of [-1, 1]) add(ball(0.42, s * 1.05, 7.1, 0.2), seg(V(s * 1.1, 7.0, 0.2), V(s * 1.3, 5.2, 1.1), 0.3, 0.26), seg(V(s * 1.3, 5.2, 1.1), V(s * 0.9, 4.7, 2.2), 0.26, 0.22));
+    add(seg(V(0.9, 3.6, 2.3), V(0.9, 7.4, 2.4), 0.09, 0.09, 4), ball(0.32, -0.9, 4.9, 2.3));    // sceptre and orb
+    add(seg(V(0, 7.3, 0.2), V(0, 7.8, 0.2), 0.3, 0.3), ball(0.72, 0, 8.4, 0.3, 1, 1.12, 1), seg(V(0, 8.95, 0.3), V(0, 9.4, 0.3), 0.45, 0.5, 8));
+    const back = new THREE.Mesh(new THREE.BoxGeometry(2.8, 9.6, 0.5)); back.position.set(0, 4.8, -0.9); add(back);
+    const seatB = new THREE.Mesh(new THREE.BoxGeometry(2.8, 4.0, 2.6)); seatB.position.set(0, 2.0, 0.6); add(seatB);
+    return g;
+  }
   if (pose === 'seated') {
     add(ball(2.6, 0, 1.0, 0.4, 1, 0.42, 0.7, 10, 6));                    // crossed legs
     add(seg(V(0, 1.2, 0), V(0, 4.6, -0.1), 1.25, 1.0, 8));               // torso
@@ -139,7 +153,7 @@ export function figureGeo(pose = 'standing') {
 // A single figure about h tall as a mesh facing +z on y = 0 (its width and depth follow h).
 export function figure(h, m, pose = 'standing') {
   const o = mesh(figureGeo(pose), m);
-  o.scale.set(h * (pose === 'seated' ? 0.52 : 0.36), h, h * 0.24);
+  o.scale.set(h * (pose === 'seated' ? 0.52 : pose === 'enthroned' ? 0.4 : 0.36), h, h * (pose === 'enthroned' ? 0.4 : 0.24));
   return o;
 }
 

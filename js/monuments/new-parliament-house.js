@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, group, at, onFace, FACES, inst, unitBox } from '../helpers.js';
+import { M, mesh, box, cyl, group, at, onFace, FACES, inst, unitBox, wheel } from '../helpers.js';
+import { lion } from '../details/animals.js';
 import { mergeByMaterial } from '../details/components.js';
 import { interior, doorLeaves, steps } from '../details/doorways.js';
 import { cutSlab, headRing } from '../details/colonial.js';
@@ -53,7 +54,13 @@ export function buildNewParliament() {
   const hall = cyl(20, 20, 5, Bf, 0, 23.7, 0, 3);
   hall.rotation.y = Math.PI / 6;
   f.add(hall, box(4, 2, 4, Bf, 0, 28.7, 0), cyl(2.4, 3, 1.4, M.bronze, 0, 30.7, 0, 16), cyl(2.7, 2.7, 0.9, M.bronze, 0, 32.1, 0, 16));
-  for (const a of FACES) f.add(onFace(group(box(1.4, 2.4, 2.4, M.bronze, 0, 33), at(mesh(new THREE.SphereGeometry(0.9, 12, 10), M.bronze), 0, 35.6, 0.3)), a, 1.1));
+  // The emblem itself, the Lion Capital of Ashoka in bronze: four lions seated back to back on the
+  // round abacus, which carries a wheel (the Dharma Chakra) on each of four sides.
+  for (const a of FACES) {
+    f.add(onFace(at(lion(1.25, M.bronze), 0, 33, 0), a, 0.85));
+    const w = wheel(0.42, M.bronze);
+    f.add(onFace(at(w, 0, 32.55, 0), a + Math.PI / 4, 2.72));
+  }
   addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.4, 1.2] };
 }
