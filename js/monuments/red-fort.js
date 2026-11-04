@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, box, cyl, group, at, onFace, archPanel, chhatri, flag, instBoxes, tricolour } from '../helpers.js';
+import { M, box, cyl, at, chhatri, instBoxes, tricolour } from '../helpers.js';
+import { fortGate } from '../details/forts.js';
 
 export function buildRedFort() {
   const Rd = M.red, Rl = M.redLight, g = new THREE.Group(), f = new THREE.Group();
@@ -22,10 +23,10 @@ export function buildRedFort() {
     bastion(s * 140, false);
   }
   g.add(instBoxes(merlons, Rd));
-  // Lahori Gate: arched gatehouse between octagonal towers, a row of chhatris, and the national flag
-  f.add(box(32, 23, 18, Rd, 0, 0, 2), box(32.6, 1, 18.6, Rl, 0, 23, 2));
-  f.add(onFace(at(archPanel(13, 20, true, Rl, 0.4), 0, 0.5, 0), 0, 11));
-  f.add(onFace(at(archPanel(9, 15, true, M.recess, 0.3), 0, 0.5, 0), 0, 11.42));
+  // Lahori Gate: a deep iwan under a half-dome, at whose back the gate passage runs through the
+  // gatehouse, with guard niches and spiked doors; octagonal towers, a row of chhatris, the flag
+  f.add(at(fortGate(32, 23, 18, 6.5, 11, { m: Rd, trim: M.marble, iwan: { w: 13, h: 22, depth: 4 }, crest: false }), 0, 0, 2));
+  f.add(box(32.6, 1, 18.6, Rl, 0, 23, 2));
   for (const x of [-17.5, 17.5]) {
     f.add(cyl(4, 4.3, 26, Rd, x, 0, 9, 8));
     for (const y of [8, 16, 23]) f.add(cyl(4.6, 4.6, 0.5, Rl, x, y, 9, 8));

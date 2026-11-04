@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, hemi, finial, inst, unitBox, surface, ellipseWall } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, hemi, finial, inst, unitBox, surface, ellipseWall, elephant } from '../helpers.js';
+import { fortGate } from '../details/forts.js';
 
 const SAND = mat('#c9b08a', 0.9);
 const SAND_DARK = mat('#a68d68', 0.9);
@@ -34,6 +35,13 @@ export function buildGwaliorFort() {
   [0, 1, 2].forEach((row) => p.add(inst(unitBox(), tiles.filter((t) => t[6] === row).map((t) => t.slice(0, 6)), TILES[row])));
   // Ramparts round the rest of the plateau's edge
   // The ring of walls round the plateau, one continuous wall, open where the palace front stands
-  f.add(ellipseWall(147, 67, 2.054, 7.37, 2.6, H - 1, H + 5, SAND));
+  // It stops at the Hathi Pol, the elephant gate at the east end of the palace front.
+  f.add(ellipseWall(147, 67, 2.054, 0.998 + Math.PI * 2, 2.6, H - 1, H + 5, SAND));
+  const ga = 1.04, hp = new THREE.Group();
+  hp.add(fortGate(13, 18, 8, 4.5, 8.5, { m: SAND, trim: SAND_DARK, towers: { r: 3.6, h: 22, cap: 'dome', seg: 20 } }));
+  for (const x of [-8.6, 8.6]) hp.add(at(elephant(SAND_DARK, 0.9), x, 0, 6.5));
+  hp.position.set(147 * Math.cos(ga) * 0.985, H, 67 * Math.sin(ga) * 0.985);
+  hp.rotation.y = Math.atan2(Math.cos(ga) / 147, Math.sin(ga) / 67);
+  f.add(hp);
   return { group: g, focus: p, view: [0.45, 0.2, 1.25] };
 }

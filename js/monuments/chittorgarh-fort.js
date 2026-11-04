@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, chhatri, onFace, FACES, archPanel, hemi, finial, inst, unitBox, ellipseWall } from '../helpers.js';
+import { fortGate } from '../details/forts.js';
 
 const STONE = mat('#c8b28c', 0.9);
 const RUIN = mat('#a8916d', 0.95);
@@ -29,8 +30,10 @@ export function buildChittorgarh() {
   const mesa = mesh(new THREE.CylinderGeometry(1, 1.3, 1, 14).translate(0, 0.5, 0), CLIFF);
   mesa.scale.set(L / 2, H, W / 2);
   g.add(mesa);
-  // The ring of walls round the top of the mesa, as one continuous wall
-  g.add(ellipseWall(L / 2 - 3, W / 2 - 3, 0, Math.PI * 2, 2, H, H + 5, STONE));
+  // The ring of walls round the top of the mesa, as one continuous wall, open at the Ram Pol gate
+  const ga = 7 / (L / 2 - 3);
+  g.add(ellipseWall(L / 2 - 3, W / 2 - 3, Math.PI / 2 + ga, Math.PI / 2 - ga + Math.PI * 2, 2, H, H + 5, STONE));
+  g.add(at(fortGate(16, 11, 7, 4.5, 7.5, { m: STONE, trim: RUIN, towers: { r: 3, h: 12, cap: 'dome', seg: 16 } }), 0, H, W / 2 - 3));
   // Vijay Stambh, Rana Kumbha's palace ruins, and Padmini's palace in its pool
   f.add(at(vijayStambh(), 20, H, 0));
   const ruins = [];

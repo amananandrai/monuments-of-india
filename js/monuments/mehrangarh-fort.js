@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, chhatri, inst, unitBox, surface } from '../helpers.js';
+import { fortGate } from '../details/forts.js';
 
 const SAND = mat('#b9774f', 0.9);
 const SAND_LIGHT = mat('#cf9a6e', 0.85);
@@ -24,6 +25,8 @@ export function buildMehrangarh() {
   // Sheer walls rising straight from the rock, bastions, and the palaces on the summit
   f.add(box(130, 30, 44, SAND, 0, H - 6, 0));
   for (const x of [-60, -30, 0, 30, 60]) f.add(cyl(8, 9, 32, SAND, x, H - 6, 20, 16));
+  // A gatehouse (pol) between two bastions, its passage ending at the inner door in the wall
+  f.add(at(fortGate(11, 14, 8, 4.4, 7.5, { m: SAND, trim: SAND_LIGHT, through: false }), 15, H, 26));
   f.add(box(70, 14, 28, SAND_LIGHT, -10, H + 24, -2), box(40, 10, 20, SAND_LIGHT, 34, H + 24, 4));
   const jali = [];
   for (let k = 0; k < 22; k++) jali.push([-42 + k * 3, H + 28, 12.2, 2, 4, 0.4]);

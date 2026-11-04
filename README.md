@@ -226,7 +226,9 @@ real-world proportions: there are no model files to download.
   doorways with depth from `js/details/doorways.js`. They have stepped frames, timber doors
   standing open onto a lamp-lit sanctum, thresholds, guardians, porches and steps, and real
   passages through the gopurams. The Mughal, Nawabi, Qutb Shahi and Deccan buildings have iwans
-  with half-domes and doors, and arcades of real arched cells, from `js/details/mughal.js`.
+  with half-domes and doors, and arcades of real arched cells, from `js/details/mughal.js`. The
+  forts' gates are passages through their gatehouses, with guard niches and doors spiked against
+  elephants, from `js/details/forts.js`.
 - **No flicker:** faces that share a plane get depth offsets (`js/coplanar.js`), and curved walls and
   cliffs are built as single continuous bands, so surfaces don't shimmer as the camera moves.
 - **Phones:** ambient occlusion and reflections are skipped to keep the frame rate up.

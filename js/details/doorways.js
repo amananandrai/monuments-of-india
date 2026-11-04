@@ -50,8 +50,10 @@ export function lamp(s = 1) {
 }
 
 // Two timber leaves filling an opening w × h, hinged at its sides and swung `open` radians towards
-// +z (0 = shut). Raised panels and rows of brass bosses on their faces.
-export function doorLeaves(w, h, { open = 0, studs = true, m = TIMBER } = {}) {
+// +z (0 = shut), or towards -z if `inward`. Raised panels and rows of brass bosses on their outer
+// faces, and with `spikes` the iron spikes of a fort gate, set against war elephants.
+const IRON = mat('#3b3734', 0.5, 0.6);
+export function doorLeaves(w, h, { open = 0, studs = true, m = TIMBER, inward = false, spikes = false } = {}) {
   const g = new THREE.Group(), lw = w / 2 - 0.015, t = Math.max(0.06, w * 0.03);
   for (const s of [-1, 1]) {
     const pivot = new THREE.Group(), leaf = new THREE.Group();
@@ -61,10 +63,15 @@ export function doorLeaves(w, h, { open = 0, studs = true, m = TIMBER } = {}) {
       const sg = new THREE.SphereGeometry(Math.max(0.025, w * 0.014), 6, 4);
       for (let r = 0; r < 7; r++) for (const c of [-0.32, 0.32]) leaf.add(mesh(sg, D.brass, c * lw, h * (0.06 + r * 0.145), t + 0.02));
     }
+    if (spikes) {
+      const sp = new THREE.ConeGeometry(Math.max(0.05, w * 0.012), Math.max(0.3, w * 0.07), 6).rotateX(Math.PI / 2);
+      const len = Math.max(0.3, w * 0.07);
+      for (let r = 0; r < 4; r++) for (const c of [-0.3, 0, 0.3]) leaf.add(mesh(sp, IRON, c * lw, h * (0.3 + r * 0.1), t + 0.03 + len / 2));
+    }
     leaf.position.x = -s * lw / 2;
     pivot.add(leaf);
     pivot.position.x = s * w / 2;
-    pivot.rotation.y = s * open;
+    pivot.rotation.y = (inward ? -s : s) * open;
     g.add(pivot);
   }
   return g;

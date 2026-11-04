@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, at, onFace, archPanel, chhatri, hemi, finial, inst, unitBox, unitCyl, aroundRect, sheet, curvedBand } from '../helpers.js';
+import { fortGate } from '../details/forts.js';
 
 // The curved, gilded "bangaldar" roof of the Khas Mahal pavilions.
 function bangaldar(w, d, h, m) {
@@ -16,13 +17,15 @@ export function buildAgraFort() {
   g.add(sheet(700, 260, M.river, 0, 0.3, -150), box(320, 0.2, 200, M.path, 0, 0, 60));
   // Crescent of red sandstone walls along the river, with round bastions
   // The wall is one curved band, running a little past each end to meet the river wall.
-  const R = 125, wall = [], merlons = [];
+  // It stops either side of the Amar Singh Gate (at k = 43.2), both ends inside the gatehouse.
+  const R = 125, walls = [[], []], merlons = [];
   for (let k = -1; k <= 61; k++) {
     const t = (k / 60) * Math.PI, c = Math.cos(t), s = Math.sin(t);
-    wall.push([c * R, s * R, c, s]);
-    if (k >= 0 && k <= 60) merlons.push([c * R * 1.025, 20, s * R * 1.025, 1.4, 1.6, 1, -(t + Math.PI / 2)]);
+    if (k <= 42) walls[0].push([c * R, s * R, c, s]);
+    if (k >= 44) walls[1].push([c * R, s * R, c, s]);
+    if (k >= 0 && k <= 60 && (k < 42 || k > 45)) merlons.push([c * R * 1.025, 20, s * R * 1.025, 1.4, 1.6, 1, -(t + Math.PI / 2)]);
   }
-  f.add(curvedBand(wall, -3, 3, 0, 20, Rd), inst(unitBox(), merlons, Rd));
+  f.add(curvedBand(walls[0], -3, 3, 0, 20, Rd), curvedBand(walls[1], -3, 3, 0, 20, Rd), inst(unitBox(), merlons, Rd));
   for (let k = 1; k < 6; k++) {
     const t = (k / 6) * Math.PI, x = Math.cos(t) * (R + 2), z = Math.sin(t) * (R + 2);
     f.add(cyl(7, 8, 22, Rd, x, 0, z, 20), cyl(7.4, 7.4, 0.7, Rl, x, 21.32, z, 20), at(chhatri(3.4, 8, Rd, Mb), x, 22, z));
@@ -30,7 +33,7 @@ export function buildAgraFort() {
   f.add(box(2 * R, 12, 6, Rd, 0, 0, 0));
   // Amar Singh Gate in the south-west
   const ta = Math.PI * 0.72, gate = new THREE.Group();
-  gate.add(box(26, 24, 16, Rd), box(26.6, 1, 16.6, Rl, 0, 24), onFace(at(archPanel(9, 15, true, M.recess, 0.4), 0, 0.3, 0), 0, 8.1));
+  gate.add(fortGate(26, 24, 16, 6, 10, { m: Rd, trim: Mb, iwan: { w: 10, h: 19, depth: 3 }, crest: false }), box(26.6, 1, 16.6, Rl, 0, 24));
   for (const x of [-15, 15]) gate.add(cyl(4.6, 5, 28, Rd, x, 0, 4, 8), at(chhatri(3.4, 8, Rd, Mb), x, 28, 4));
   gate.position.set(Math.cos(ta) * (R + 4), 0, Math.sin(ta) * (R + 4));
   gate.rotation.y = Math.PI / 2 - ta;

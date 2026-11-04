@@ -18,12 +18,15 @@ Two problems, one plan:
   cannot import it without an import cycle.
 - **Phase 2, done:** the Mughal-family buildings have real doorways and arcades from
   `js/details/mughal.js` (see section 4).
+- **Phase 3, done:** eleven forts have gates with real passages from `js/details/forts.js`
+  (see section 4).
 - **Doorway kit:**
   - `js/details/doorways.js` holds the temple parts: `doorFrame`, `templeDoorway`, `templePorch`,
     `doorLeaves`, `interior`, `lamp`, `guardian` and `steps`.
   - `js/details/mughal.js` holds the Mughal parts: `pierced`, `mughalDoorway`, `iwan`,
     `arcadeSkin` and `cellRow`.
-  - `gateway` and `classicalDoor` come with Phases 3 and 5.
+  - `js/details/forts.js` holds `fortGate`, the plan's `gateway`.
+  - `classicalDoor` comes with Phase 5.
 
 ## 1. What the site does today
 
@@ -176,10 +179,45 @@ Applied to:
 Cost: each of these monuments now has 8,000–70,000 more triangles than before. Qutb Shahi is the
 largest at about 140,000, for its seven tombs, so every one is within the 200,000 budget.
 
-**Phase 3: forts and gates.** Red Fort (Lahori Gate), Agra Fort (Amar Singh Gate), Golconda,
-Amber, Chittorgarh, Mehrangarh, Gwalior, Jaisalmer, Daulatabad, Bekal, Fort Aguada: a `gateway`
-through the wall between the bastions, with studded and spiked leaves, guard niches and a
-ramp or steps.
+**Phase 3: forts and gates (11 forts). Done.**
+`fortGate(w, h, d, aw, ah, opts)` in `js/details/forts.js` is a gatehouse with a real arched
+passage through it:
+
+- **Passage:**
+  - its arch is cut through the block (method B), and it has a paved floor;
+  - a guard niche is cut into each side wall, in front of and behind the doors;
+  - the great timber leaves at its middle carry rows of iron spikes against war elephants, and
+    stand open inward so their spiked faces show;
+  - mouldings ring both mouths.
+- **Options:**
+  - `iwan` puts a deep recess with a half-dome at the front, opening onto the passage at its back;
+  - `through: false` ends the passage at a dim inner doorway;
+  - `towers` adds a round or polygonal tower at each front corner, domed or crenellated;
+  - `crest` adds merlons; `ramp` adds a slope up to the sill.
+- `doorLeaves` gained `inward` and `spikes`.
+
+Each fort's own wall is opened where its gate stands:
+
+- **Red Fort:** the Lahori Gate's passage runs through the gatehouse behind a 4 m iwan, between
+  its octagonal towers.
+- **Agra Fort:** the Amar Singh Gate gets an iwan and a passage; the curved wall is built in two
+  pieces either side of it.
+- **Golconda:** the Fateh Darwaza, with towers, moves into a stretch of outer town wall on the
+  plain below the hill. The old arch stood on the hill's slope, where the hill and the inner ring
+  wall filled it.
+- **Amber:** the Ganesh Pol leads from the Jaleb Chowk through to the palace court.
+- **Chittorgarh:** a Ram Pol with domed towers in the ring wall round the mesa.
+- **Mehrangarh:** a gatehouse against the walls between two bastions, its passage ending at the
+  inner door.
+- **Gwalior:** the Hathi Pol at the east end of Man Mandir, with domed towers and a stone elephant
+  either side.
+- **Jaisalmer:** the Akhey Pol takes the place of three walls and bastions in the ring.
+- **Daulatabad:** a towered gate in the outer walls.
+- **Bekal:** a towered gate at the neck, joined to the neck walls, with a baffle wall inside that
+  makes the way in a zigzag.
+- **Fort Aguada:** a round-arched Portuguese gate in the landward wall.
+
+Not done: zigzag ramps climbing the hills to the hill forts' gates.
 
 **Phase 4: hand-built temples, one at a time.** Each needs its own porch and door:
 - **Kandariya Mahadeva:** the `box(10, 6, 6)` porch becomes an open porch with a *makara* arch.

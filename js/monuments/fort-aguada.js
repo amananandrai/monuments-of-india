@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet } from '../helpers.js';
+import { fortGate } from '../details/forts.js';
 
 const LATERITE = mat('#9b5b3f', 0.95);
 const LATERITE_DARK = mat('#7d4530', 0.95);
@@ -17,8 +18,14 @@ export function buildFortAguada() {
   // Low, thick laterite walls with angled bastions
   const pts = [[-50, -34], [40, -40], [60, -4], [44, 34], [-30, 40], [-60, 6]], wall = [];
   pts.forEach(([x0, z0], i) => {
-    const [x1, z1] = pts[(i + 1) % pts.length], len = Math.hypot(x1 - x0, z1 - z0);
-    wall.push([(x0 + x1) / 2, H, (z0 + z1) / 2, len, 7, 5, Math.atan2(-(z1 - z0), x1 - x0)]);
+    const [x1, z1] = pts[(i + 1) % pts.length], len = Math.hypot(x1 - x0, z1 - z0), ry = Math.atan2(-(z1 - z0), x1 - x0);
+    // The front wall (i = 3) is split round the gate at its middle.
+    const parts = i === 3 ? [[0, 0.5 - 6 / len], [0.5 + 6 / len, 1]] : [[0, 1]];
+    for (const [t0, t1] of parts) {
+      const tm = (t0 + t1) / 2;
+      wall.push([x0 + (x1 - x0) * tm, H, z0 + (z1 - z0) * tm, len * (t1 - t0), 7, 5, ry]);
+    }
+    if (i === 3) f.add(at(fortGate(12, 9, 7, 4, 6.5, { m: LATERITE, trim: LATERITE_DARK, pointed: false, crest: false }), (x0 + x1) / 2, H, (z0 + z1) / 2).rotateY(ry + Math.PI));
     f.add(box(10, 8, 10, LATERITE_DARK, x0, H, z0).rotateY(Math.PI / 4));
   });
   f.add(inst(unitBox(), wall, LATERITE));
