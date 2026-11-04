@@ -482,7 +482,11 @@ export function mergeByMaterial(root) {
   root.traverse((o) => {
     if (!o.isMesh || o.isInstancedMesh) return;
     let geo = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone();
-    const keep = o.material.vertexColors ? ['position', 'normal', 'color'] : ['position', 'normal'];
+    // Textured materials (a map or a bump map) keep their texture coordinates; a part without any
+    // gets zeros, so every geometry merged into one material has the same attributes.
+    const textured = !!(o.material.map || o.material.bumpMap);
+    const keep = ['position', 'normal', ...(o.material.vertexColors ? ['color'] : []), ...(textured ? ['uv'] : [])];
+    if (textured && !geo.attributes.uv) geo.setAttribute('uv', new THREE.Float32BufferAttribute(new Float32Array(geo.attributes.position.count * 2), 2));
     for (const k of Object.keys(geo.attributes)) if (!keep.includes(k)) geo.deleteAttribute(k);
     m4.multiplyMatrices(inv, o.matrixWorld);
     geo.applyMatrix4(m4);

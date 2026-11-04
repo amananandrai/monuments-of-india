@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mesh } from '../helpers.js';
-import { ellipsoid as E, cone, chain, blend, carve, mirrorX, flatBase, roundBox, lathe, sculpt, statueMaterial } from '../sdf.js';
+import { ellipsoid as E, cone, chain, blend, carve, mirrorX, flatBase, roundBox, lathe, snap, sculpt, statueMaterial } from '../sdf.js';
 
 // Human figures in stone and bronze, each body sculpted as one skin from a signed distance field
 // (see js/sdf.js), so arms grow out of shoulders and legs out of hips as in a carving or a casting,
@@ -77,10 +77,21 @@ function shivaField() {
     [cone([-6.4, 12.2, 1.4], [-6.2, 8.4, 3.6], 0.95, 0.75), 0.4],
     [E([-6.1, 7.7, 4.2], [1.05, 0.65, 1.6]), 0.4],
   ]);
+  // The anatomy of a yogi's body, laid on that skin: the abdominal muscles in three pairs, the
+  // collarbones, and the line down the middle of the belly.
+  const on = (p, depth) => snap(b, p, -depth);
+  const abs = [];
+  for (const [y, s] of [[12.9, 1], [11.85, 0.95], [10.85, 0.9]]) for (const x of [-0.72, 0.72]) abs.push([E(on([x, y, 4], 0.26), [0.85 * s, 0.55 * s, 0.4]), 0.35]);
+  const clav = [-1, 1].map((s) => [cone(on([s * 0.6, 16.7, 3], 0.14), on([s * 3.6, 16.95, 2], 0.14), 0.3, 0.26), 0.35]);
+  const anatomy = blend([[b, 0], ...abs, ...clav]);
+  const line = E(on([0, 11.9, 4], 0), [0.12, 1.25, 0.16]);
   const navel = E([0, 10.2, 2.95], [0.25, 0.3, 0.3]);
-  return { f: flatBase(carve(b, navel, 0.15), 3.6, 0.2), lo: [-9.5, 3.4, -4.5], hi: [9.5, 21.4, 7.6] };
+  return { f: flatBase(carve(carve(anatomy, line, 0.15), navel, 0.15), 3.6, 0.2), lo: [-9.5, 3.4, -4.5], hi: [9.5, 21.4, 7.6] };
 }
 export const shivaBody = (m) => body('shiva', shivaField, 0.24, m);
+// The Shiva's skin as a field, for laying ornaments on it.
+let shivaF = null;
+export const shivaSurface = () => (shivaF ||= shivaField().f);
 
 // Sardar Patel at the Statue of Unity, in the coordinates of patel() in statue-of-unity.js (177 units
 // tall before it is scaled): the dhoti hanging in deep folds to the sandalled feet, with the legs

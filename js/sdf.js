@@ -114,6 +114,25 @@ export function lathe(pts, { c = [0, 0], sz = 1, folds = 0, amp = 0, from = 0, t
   };
 }
 
+// Move the point p onto the surface of field f, or to `offset` outside it (negative: inside), along
+// the field's gradient: to lay malas, threads and bands on a sculpted body.
+export function snap(f, p, offset = 0, iters = 8) {
+  let [x, y, z] = p;
+  const e = 1e-3;
+  for (let i = 0; i < iters; i++) {
+    const d = f(x, y, z) - offset;
+    let gx = f(x + e, y, z) - f(x - e, y, z), gy = f(x, y + e, z) - f(x, y - e, z), gz = f(x, y, z + e) - f(x, y, z - e);
+    const gl = len(gx, gy, gz) || 1;
+    x -= (gx / gl) * d; y -= (gy / gl) * d; z -= (gz / gl) * d;
+  }
+  return [x, y, z];
+}
+// The outward direction of field f at p.
+export function normalAt(f, [x, y, z]) {
+  const e = 1e-3, gx = f(x + e, y, z) - f(x - e, y, z), gy = f(x, y + e, z) - f(x, y - e, z), gz = f(x, y, z + e) - f(x, y, z - e), gl = len(gx, gy, gz) || 1;
+  return [gx / gl, gy / gl, gz / gl];
+}
+
 /* ---------- meshing ---------- */
 
 // Surface nets over the box lo..hi with cells h wide. Space is first sampled every B cells, and
