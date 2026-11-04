@@ -39,7 +39,7 @@ function patel(B) {
   }
   // Head: the bare crown, heavy brow and broad jaw of the 1949 portrait, clean-shaven.
   const rx = 10.2, ry = 11.8, rz = 10.8, head = new THREE.Group();
-  head.add(face(rx, ry, rz, B, { jaw: 0.12 }));
+  head.add(face(rx, ry, rz, B, { jaw: 0.2 }));
   // Features laid on the face's surface: z at (x, y) on the head's ellipsoid, plus a lift.
   const Z = (x, y, lift = 0) => rz * Math.sqrt(Math.max(0, 1 - (x / rx) ** 2 - (y / ry) ** 2)) + lift;
   const P = (pts, lift) => pts.map(([x, y]) => [x, y, Z(x, y, lift)]);
@@ -51,7 +51,8 @@ function patel(B) {
     head.add(tube([[side * (rx - 0.3), 2.6, -0.2], [side * (rx + 0.35), 0.2, -1.4], [side * (rx - 0.2), -3.2, -0.2]], 0.5, B, 16, 6), ellipsoid(1.4, 3.4, 2.4, B, side * (rx - 0.4), -0.5, -0.4));  // ears
   }
   head.add(tube(P([[-3.1, -4.9], [-1.2, -4.5], [0, -4.6], [1.2, -4.5], [3.1, -4.9]], 0.05), 0.5, B, 24, 6));      // the set, downturned mouth
-  s.add(at(head, 0, 164.4, 0.8));
+  // The full, broad jaw of his later years comes from the face itself (jaw: 0.2).
+  s.add(at(head, 0, 163.6, 1.0));
   s.scale.setScalar(182 / 177.4);
   return s;
 }
@@ -59,7 +60,7 @@ function patel(B) {
 // The pedestal, 58 m: a broad hall (the museum) to 22, a stage to 42, and the top tier to 55.6,
 // faced with grey stone in vertical fins, under a round lotus plinth at the statue's feet; steps up
 // the front. Then Sadhu Bet, the rocky island in the Narmada it stands on, a causeway to the bank,
-// the hills of the Satpura and Vindhya round the reservoir, and downstream the Sardar Sarovar Dam.
+// the hills of the Satpura and Vindhya round the reservoir, and the Sardar Sarovar Dam.
 const STONE = mat('#8e8a83', 0.9), STONE_DARK = mat('#6f6b65', 0.9), ROCK = mat('#5f574d', 0.95, 0, { flatShading: true });
 export function buildStatue() {
   const g = new THREE.Group(), f = new THREE.Group();
@@ -90,9 +91,9 @@ export function buildStatue() {
     h.rotation.y = -a;
     g.add(h);
   }
-  // The Sardar Sarovar Dam, 3.2 km downstream: a long concrete wall 160 m high with its spillway
+  // The Sardar Sarovar Dam (3.2 km downstream; drawn nearer, at 1.9 km, so it shows through the haze): a long concrete wall 160 m high with its spillway
   // piers along the crest, across the valley behind the statue.
-  const dz = -3000, dam = new THREE.Group();
+  const dz = -1900, dam = new THREE.Group();
   dam.add(box(1300, 150, 40, STONE, 0, 0, dz), box(1300, 8, 52, M.concrete, 0, 150, dz - 4));
   for (let x = -280; x <= 280; x += 24) dam.add(box(6, 22, 52, M.concrete, x, 128, dz + 6));
   g.add(dam);

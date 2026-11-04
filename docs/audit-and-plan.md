@@ -267,5 +267,18 @@ to mouth, a set mouth and ears. The pedestal is faced in stone fins, with a lotu
 The island of Sadhu Bet is rocky, with a causeway to the bank and hills round the reservoir, and the
 Sardar Sarovar Dam stands 3 km downstream.
 
-Still open: the distance between the Capitol's Assembly and High Court, which is shorter than the
-real esplanade.
+A later review named five monuments as still only close; each was then changed:
+
+| Monument | Change |
+| --- | --- |
+| Statue of Unity | A broader jaw (the full face of his later years), sunk folds from nose to mouth; the dam drawn at 1.9 km so it shows through the haze. |
+| Capitol Complex | The High Court moved to the far end of the esplanade, 330 m from the Assembly, as built; it now stands outside the framed group, so the home view is of the Assembly and Secretariat. |
+| Parshvanath | The rear shrine with its own spire, which only Parshvanath has at Khajuraho; figure bands along the halls' sides and round the rear shrine, in nine poses; the Jain flag in five colours. |
+| Cooch Behar Palace | A pedimented portico on paired Corinthian columns; coupled columns round the dome's drum; end pavilions with pediments, quoins and round-headed windows. |
+| Kirti Mandir | Gandhi's birthplace as a three-storey haveli: whitewashed walls, a timber front of shuttered windows, carved balconies on brackets; the home view now looks at the house first. |
+
+Also: `pediment()` sets its tympanum 2 cm inside the raking cornices, which flickered on every
+pedimented porch.
+
+Still open: a true portrait likeness of Patel is beyond what the shared face shape can carve; the
+features are suggested, not modelled.

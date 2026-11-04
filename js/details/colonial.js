@@ -133,7 +133,8 @@ export function balustrade(len, h, m, { t = Math.min(0.4, h * 0.3) } = {}) {
 export function pediment(w, h, depth, m, trim = m) {
   const g = new THREE.Group(), sh = new THREE.Shape(), c = Math.min(0.5, h * 0.18);
   sh.moveTo(-w / 2, 0); sh.lineTo(w / 2, 0); sh.lineTo(0, h); sh.closePath();
-  g.add(mesh(new THREE.ExtrudeGeometry(sh, { depth: depth - 0.12, bevelEnabled: false }), m));
+  // The tympanum stands 2 cm inside the back of the raking cornices, so the two never share a face.
+  g.add(mesh(new THREE.ExtrudeGeometry(sh, { depth: depth - 0.14, bevelEnabled: false }).translate(0, 0, 0.02), m));
   const len = Math.hypot(w / 2, h), a = Math.atan2(h, w / 2);
   for (const s of [-1, 1]) {
     const r = box(len + c, c, depth + 0.05, trim, 0, -c / 2, 0);
