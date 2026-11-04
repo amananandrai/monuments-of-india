@@ -3,6 +3,7 @@ import { mat, mesh, box, cyl, at, flat, kalash, inst, unitBox, aroundRect } from
 import { elephant } from '../details/animals.js';
 import { trabeateGate } from '../details/temples.js';
 import { templeDoorway } from '../details/doorways.js';
+import { addDetails } from '../details/kailasa-temple.js';
 
 const ROCK = mat('#6f675e', 0.95);
 const ROCK_DARK = mat('#57514a', 0.95);
@@ -48,5 +49,6 @@ export function buildKailasa() {
     f.add(box(3, 2, 3, ROCK_DARK, x, 0, 30), cyl(0.9, 1.1, 15, ROCK, x, 2, 30, 8), box(2.6, 1.6, 2.6, ROCK_DARK, x, 17, 30));
     f.add(at(elephant(ROCK, 1.4), x, 0, 16));
   }
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.45, 0.85, 1.05] };
 }

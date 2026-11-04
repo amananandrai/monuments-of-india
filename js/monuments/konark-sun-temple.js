@@ -3,6 +3,7 @@ import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, bell, pidaRo
 import { horse } from '../details/animals.js';
 import { templeDoorway } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
+import { addDetails } from '../details/konark-sun-temple.js';
 
 export function buildKonark() {
   const K = M.khond, Kd = M.khondDark, g = new THREE.Group(), f = new THREE.Group();
@@ -59,5 +60,6 @@ export function buildKonark() {
   const nz = zf + 26, R = rng(7);
   f.add(box(24, 4, 24, Kd, 0, 0, nz), box(22, 1, 22, K, 0, 4, nz));
   for (const x of [-7.5, -2.5, 2.5, 7.5]) for (const z of [-7.5, -2.5, 2.5, 7.5]) f.add(cyl(0.6, 0.7, 2 + R() * 3, K, x, 5, nz + z, 8));
+  addDetails(f, g);
   return { group: g, focus: f, view: [1.1, 0.38, 0.9] };
 }

@@ -3,6 +3,7 @@ import { M, mat, mesh, box, at, group, rng, shikhara, hipRoof, kalash, flag, ins
 import { templeDoorway, templePorch } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { nandi } from '../details/animals.js';
+import { addDetails } from '../details/kedarnath-temple.js';
 
 const STONE = mat('#8e8a82', 0.9);
 const STONE_DARK = mat('#6f6b64', 0.9);
@@ -36,5 +37,6 @@ export function buildKedarnath() {
   const boulder = mesh(new THREE.IcosahedronGeometry(5, 1), ROCK, 0, 3.6, -24);
   boulder.scale.set(1.5, 0.75, 1);
   f.add(boulder);
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.3, 1.25] };
 }

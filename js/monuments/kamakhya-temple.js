@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, lathe, at, ribbed, kalash, hipRoof, FACES, onFace } from '../helpers.js';
 import { templeDoorway } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
+import { addDetails } from '../details/kamakhya-temple.js';
 
 const STONE = mat('#a08766', 0.9);
 const STONE_DARK = mat('#7c6a52', 0.9);
@@ -54,5 +55,6 @@ export function buildKamakhya() {
     const a = Math.PI * 0.15 + (k / 6) * Math.PI * 1.7, x = Math.cos(a) * 30, z = Math.sin(a) * 33;
     f.add(at(beehive(2.6, STONE), x, T, z));
   }
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.45, 1.15] };
 }

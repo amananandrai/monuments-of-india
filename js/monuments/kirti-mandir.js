@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, box, at, shikhara, nagaraProfile, hemi, chhatri, finial } from '../helpers.js';
 import { arcadeSkin } from '../details/mughal.js';
 import { steps } from '../details/doorways.js';
+import { addDetails } from '../details/kirti-mandir.js';
 
 const CREAM = mat('#ecd9bd', 0.85);
 const SHADE = mat('#c9ad87', 0.9);
@@ -23,5 +24,6 @@ export function buildKirtiMandir() {
   f.add(box(9, 6, 9, CREAM, 0, 10.8, -2), at(shikhara(8, 7, CREAM, nagaraProfile, 10), 0, 16.8, -2));
   // Gandhi's birthplace house next door
   f.add(box(16, 8, 14, mat('#e6dccb', 0.9), -32, 0, -4), box(16.6, 0.6, 14.6, mat('#9c6b4a', 0.85), -32, 8, -4));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.55, 0.3, 1.25] };
 }

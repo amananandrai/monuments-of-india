@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, box, cyl, at, onionDome, hemi, finial, chhatri, guldasta } from '../helpers.js';
 import { arcadeSkin } from '../details/mughal.js';
 import { classicalDoor, porch } from '../details/colonial.js';
+import { addDetails } from '../details/laxmi-vilas-palace.js';
 
 const OCHRE = mat('#c2774f', 0.85);
 const CREAM = mat('#eadfc6', 0.85);
@@ -38,5 +39,6 @@ export function buildLaxmiVilas() {
   const door = classicalDoor(3, 5, { m: OCHRE, trim: CREAM, shape: 'pointed', top: null, depth: 0.45 });
   f.add(at(porch(14, 7, 7, { m: OCHRE, trim: CREAM, colM: CREAM, cols: 4, r: 0.45, top: 'balustrade', door, stepsDown: 0.6 }), 0, 0.6, 29));
   f.add(box(16, 0.6, 7, CREAM, 0, 0, 32.5));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.45, 0.25, 1.25] };
 }

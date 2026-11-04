@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, at, onFace, archPanel, guldasta, sheet } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
+import { addDetails } from '../details/kashi-vishwanath-temple.js';
 
 const CHUNAR = mat('#d9b48f', 0.85);
 const SHADE = mat('#b8906a', 0.9);
@@ -21,5 +22,6 @@ export function buildKashiVishwanath() {
   f.add(box(40, 12, 8, CHUNAR, 0, 9, 78), onFace(at(archPanel(10, 10, true, M.recess, 0.3), 0, 9.4, 0), 0, 82));
   // The shrine: its gold-covered spire and gold dome
   f.add(at(nagaraTemple({ w: 9, h: 15, m: M.marble, shade: M.marbleShade, spireM: M.gild, plinth: 1.2, urus: 4, halls: [[11, 6, 0, 'dome']] }), 0, 9, -26));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.55, 0.45, 1.2] };
 }

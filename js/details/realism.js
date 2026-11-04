@@ -359,3 +359,11 @@ export function houseboats(spots, { y = 0 } = {}) {
   const p = spots.map(([x, z, ry = 0]) => [x, y, z, 1, ry]);
   return new THREE.Group().add(copies(hbGeos.hull, TIMBER, p), copies(hbGeos.cabin, plain('#8a5a36', 0.75), p), copies(hbGeos.roof, plain('#6d6a62', 0.8), p), copies(hbGeos.windows, plain('#2b2d33', 0.3, 0.3), p));
 }
+
+// Cane and cloth umbrellas on bamboo poles at [x, z], as the priests of the ghats sit under.
+let umbGeos = null;
+export function umbrellas(spots, { y = 0 } = {}) {
+  if (!umbGeos) umbGeos = { pole: new THREE.CylinderGeometry(0.04, 0.05, 2.6, 6).translate(0, 1.3, 0), top: new THREE.ConeGeometry(1.5, 0.55, 12, 1, true).translate(0, 2.75, 0) };
+  const p = spots.map(([x, z]) => [x, y, z, 1, 0]);
+  return new THREE.Group().add(copies(umbGeos.pole, TIMBER, p), copies(umbGeos.top, plain('#c9a66a', 0.95, 0, { side: THREE.DoubleSide }), p));
+}
