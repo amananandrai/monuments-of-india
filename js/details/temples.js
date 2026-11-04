@@ -1,8 +1,9 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, rng, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, rng, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox } from '../helpers.js';
 import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol } from './components.js';
 import { templeDoorway, templePorch, steps, doorFrame, doorLeaves, guardian } from './doorways.js';
 import { lion } from './animals.js';
+import { figureGeo, kutaGeo, kuduGeo, instances } from './sculpture.js';
 
 // The shared temple builders, with real entrances: a Nagara temple's front porch, doorway and
 // side doors, a mandapa's doors, and a passage through the base of a gopuram. Moved here from
@@ -169,7 +170,7 @@ const paletteMats = new Map();
 export function gopuram(w, d, h, tiers, seed, palette = PAINT) {
   if (!paletteMats.has(palette)) paletteMats.set(palette, palette.map((c) => mat(c, 0.75)));
   const pm = paletteMats.get(palette);
-  const g = new THREE.Group(), R = rng(seed), figs = [];
+  const g = new THREE.Group(), R = rng(seed), figs = [], pilas = [], kudus = [], kutas = [];
   const bh = h * 0.2, pw = Math.max(2.6, w * 0.2), ph = bh * 0.85;
   // The base in two courses, split either side of the passage, and the block over it.
   const lw = (w - pw) / 2, uw = (w * 0.96 - pw) / 2;
@@ -205,9 +206,21 @@ export function gopuram(w, d, h, tiers, seed, palette = PAINT) {
     tw = w * (1 - 0.55 * t); td = d * (1 - 0.5 * t);
     g.add(box(tw, th * 0.74, td, M.stucco, 0, y));
     g.add(box(tw + 0.6, th * 0.26, td + 0.6, pm[(i + seed) % pm.length], 0, y + th * 0.74));
-    const nx = Math.max(2, Math.floor(tw / 1.3)), nz = Math.max(1, Math.floor(td / 1.3));
-    for (let k = 0; k < nx; k++) for (const s of [-1, 1]) figs.push([-tw / 2 + (k + 0.5) * (tw / nx), y + th * 0.08, s * (td / 2 + 0.22), 0.75, th * (0.45 + R() * 0.2), 0.45]);
-    for (let k = 0; k < nz; k++) for (const s of [-1, 1]) figs.push([s * (tw / 2 + 0.22), y + th * 0.08, -td / 2 + (k + 0.5) * (td / nz), 0.45, th * (0.45 + R() * 0.2), 0.75]);
+    // Each face of the storey: a figure in each bay between pilasters, a kudu over every third bay
+    // along the cornice, and a kuta on each corner of the ledge above.
+    const nx = Math.max(2, Math.floor(tw / 2.1)), nz = Math.max(1, Math.floor(td / 2.1));
+    for (const [n, len, dist, axis] of [[nx, tw, td / 2, 'x'], [nz, td, tw / 2, 'z']]) for (const s of [-1, 1]) {
+      const ry = axis === 'x' ? (s > 0 ? 0 : Math.PI) : (s > 0 ? Math.PI / 2 : -Math.PI / 2);
+      const put = (lat, off) => (axis === 'x' ? [lat, s * (dist + off)] : [s * (dist + off), lat]);
+      for (let k = 0; k < n; k++) {
+        const lat = -len / 2 + (k + 0.5) * (len / n), [fx, fz] = put(lat, 0.24);
+        figs.push([fx, y + th * 0.06, fz, 0.8, th * (0.5 + R() * 0.16), 0.45, ry]);
+        const [px, pz] = put(-len / 2 + k * (len / n), 0.06);
+        if (k) pilas.push([px, y, pz, axis === 'x' ? 0.22 : 0.12, th * 0.74, axis === 'x' ? 0.12 : 0.22]);
+        if (k % 3 === 1) { const [kx, kz] = put(lat, 0.33); kudus.push([kx, y + th * 0.8, kz, 1, 1, 1, ry]); }
+      }
+    }
+    if (i < tiers - 1) for (const sx of [-1, 1]) for (const sz of [-1, 1]) kutas.push([sx * (tw / 2 - 0.3), y + th, sz * (td / 2 - 0.3), Math.min(1.4, th * 0.42), Math.min(1.4, th * 0.42) * 1.3, Math.min(1.4, th * 0.42), 0]);
     y += th;
   }
   const sr = td * 0.32, sl = tw * 0.92;
@@ -231,18 +244,14 @@ export function gopuram(w, d, h, tiers, seed, palette = PAINT) {
   g.add(mergeByMaterial(kd));
   const nk = Math.max(3, Math.round(sl / 2.6) | 1);
   for (let k = 0; k < nk; k++) g.add(at(kalash(Math.min(2.2, sr * 0.9), M.gild), -sl / 2 + (k + 0.5) * (sl / nk), y + sr * 1.45, 0));
-  const im = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), mat('#ffffff', 0.75), figs.length);
-  const o = new THREE.Object3D(), c = new THREE.Color();
-  figs.forEach(([x, fy, z, sx, sy, sz], i) => {
-    o.position.set(x, fy + sy / 2, z);
-    o.scale.set(sx, sy, sz);
-    o.updateMatrix();
-    im.setMatrixAt(i, o.matrix);
-    im.setColorAt(i, c.set(palette[Math.floor(R() * palette.length)]));
-  });
-  im.castShadow = true;
-  im.receiveShadow = true;
-  g.add(im);
+  // The painted stucco figures, in two poses, each in a colour of the palette.
+  const c = new THREE.Color();
+  for (const [pose, part] of [['stucco', 0], ['stuccoArm', 1]]) {
+    const mine = figs.filter((_, k) => k % 2 === part), im = instances(figureGeo(pose), mine, mat('#ffffff', 0.75));
+    mine.forEach((_, k) => im.setColorAt(k, c.set(palette[Math.floor(R() * palette.length)])));
+    g.add(im);
+  }
+  g.add(instances(unitBox(), pilas, M.stucco), instances(kuduGeo(), kudus, M.stucco), instances(kutaGeo(), kutas, M.stucco));
   return g;
 }
 

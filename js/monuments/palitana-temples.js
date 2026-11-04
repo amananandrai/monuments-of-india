@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, at, rng, inst, unitBox, unitSpire, ellipseWall } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
+import { miniSpireGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/palitana-temples.js';
 
 const MARBLE = mat('#f1ede4', 0.6);
@@ -43,7 +44,7 @@ export function buildPalitana() {
     // The temple platform stands 0.4 m proud of the hilltop, its base clear of the top steps' bases.
     f.add(box(r0 * 2.1, 0.6, r0 * 1.5, SHADE, cx, H - 0.2, 0));
   }
-  f.add(inst(unitBox(), bodies, MARBLE), inst(unitSpire(), spires, MARBLE));
+  f.add(inst(unitBox(), bodies, MARBLE), inst(miniSpireGeo(), spires, MARBLE));
   // The principal temple of Adinath on the higher summit
   f.add(at(nagaraTemple({ w: 9, h: 15, m: MARBLE, shade: SHADE, plinth: 1.2, urus: 8, halls: [[11, 6, 4]] }), -40, H, -6));
   addDetails(f, g);

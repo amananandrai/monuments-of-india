@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, box, cyl, lathe, group, at, kalash, shikhara, nagaraProfile, ribbed, inst, unitBox, unitCyl, unitHemi, aroundRect } from '../helpers.js';
 import { templeDoorway } from '../details/doorways.js';
+import { instances, elephantGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/akshardham.js';
 
 export function buildAkshardham() {
@@ -17,7 +18,7 @@ export function buildAkshardham() {
   f.add(box(100, 5, 116, Ps));
   const eles = [];
   aroundRect(100.8, 116.8, 2.6).forEach(([x, z, ry]) => eles.push([x, 0.8, z, 2.2, 2.4, 1.1, ry]));
-  f.add(inst(unitBox(), eles, M.stoneDark));
+  f.add(instances(elephantGeo(), eles.map(([x, y, z, sx, sy, sz, ry]) => [x, y, z, sx, sy, sz, ry + Math.PI]), M.stoneDark));
   f.add(box(88, 4, 102, P, 0, 5, 0));
   for (let k = 0; k < 5; k++) f.add(box(24, 9 - k * 1.8, 3, P, 0, 0, 52.5 + k * 3));
   // The mandir: pillared body, a broad eave, nine domes and four corner spires

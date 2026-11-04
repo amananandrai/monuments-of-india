@@ -3,6 +3,7 @@ import { M, mat, box, at, group, starPrism, pidaRoof, kalash, inst, unitCyl, uni
 import { templeDoorway, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { nandi } from '../details/animals.js';
+import { figureRow } from '../details/sculpture.js';
 import { addDetails } from '../details/ramappa-temple.js';
 
 const DOLERITE = mat('#4d4a47', 0.8);
@@ -24,7 +25,7 @@ export function buildRamappa() {
   f.add(box(22, 0.7, 22, DOLERITE, 0, B + 5, 6), box(18, 1.2, 18, SAND, 0, B + 5.7, 6));
   const figs = [];
   aroundRect(19, 19, 4.6).forEach(([x, z, ry]) => figs.push([x, B + 2.6, z + 6, 0.5, 2.2, 0.4, ry]));
-  f.add(inst(unitBox(), figs, mat('#2f2d2b', 0.6)));
+  f.add(figureRow(figs, mat('#2f2d2b', 0.5), { poses: ['dancer', 'musician'] }));
   // The sanctum's doorway with its door guardians, and steps up to the hall
   f.add(mergeByMaterial(group(at(templeDoorway(1.7, 3.6, { m: DOLERITE, bands: 4 }), 0, B, -4), at(steps(5, B, 7, SAND), 0, 0, 15))));
   // Sanctum on its dark base, under the light-brick tower

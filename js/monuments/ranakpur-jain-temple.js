@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, box, group, at, onFace, FACES, shikhara, flag, nagaraProfile, inst, unitCyl, unitHemi, unitSpire, aroundRect } from '../helpers.js';
 import { templeDoorway, templePorch } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
+import { miniSpireGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/ranakpur-jain-temple.js';
 
 export function buildRanakpur() {
@@ -27,7 +28,7 @@ export function buildRanakpur() {
     drums.push([x, 12.6, z, r * 2.1, 1.3, r * 2.1]);
     domes.push([x, 13.9, z, r * 2, r * 1.7, r * 2]);
   }
-  f.add(inst(unitCyl(10), pil, Mb), inst(unitCyl(16), drums, Mb), inst(unitHemi(20), domes, Mb), inst(unitSpire(), spires, Mb));
+  f.add(inst(unitCyl(10), pil, Mb), inst(unitCyl(16), drums, Mb), inst(unitHemi(20), domes, Mb), inst(miniSpireGeo(), spires, Mb));
   f.add(box(22, 5, 22, Mb, 0, 12.6, 0));
   const main = shikhara(15, 19, Mb, nagaraProfile, 16);
   f.add(at(main, 0, 17.6, 0), at(flag(6, M.flagRed), 0, 17.6 + main.userData.top - 1, 0));

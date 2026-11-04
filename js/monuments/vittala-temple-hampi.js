@@ -1,8 +1,10 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, rng, pidaRoof, wheel, inst, unitCyl, surface } from '../helpers.js';
+import { mat, mesh, box, cyl, at, rng, pidaRoof, wheel, surface } from '../helpers.js';
 import { elephant } from '../details/animals.js';
 import { trabeateGate, wallWithGaps } from '../details/temples.js';
 import { templeDoorway } from '../details/doorways.js';
+import { mergeByMaterial } from '../details/components.js';
+import { clusterPillar, yaliPillar } from '../details/sculpture.js';
 import { addDetails } from '../details/vittala-temple-hampi.js';
 
 const GRANITE = mat('#a58d6e', 0.9);
@@ -10,19 +12,30 @@ const GRANITE_DARK = mat('#7d6a53', 0.9);
 const BRICK = surface(mat('#a86b4b', 0.9), 'brick');
 const BOULDER = mat('#9c7b5c', 0.95, 0, { flatShading: true });
 
-// clear: the pillars left out at the middle of the back row, before a doorway.
-function pillaredHall(w, d, h, step, clear = 0) {
-  const g = new THREE.Group(), cols = [];
+// A pillared hall w × d on a plinth 2.6 high, its pillars h tall and `step` apart. clear: the pillars
+// left out at the middle of the back row, before a doorway. The pillars are carved: each a square
+// shaft ringed by colonnettes (the "musical pillars"); with `yali`, those of the outer rows are
+// yali pillars, a rearing beast and its rider carved against the shaft, facing out of the hall.
+function pillaredHall(w, d, h, step, clear = 0, { yali = false } = {}) {
+  const g = new THREE.Group(), p = new THREE.Group();
   g.add(box(w, 2.6, d, GRANITE_DARK));
-  for (let x = -w / 2 + 1.5; x <= w / 2 - 1.4; x += step) for (let z = -d / 2 + 1.5; z <= d / 2 - 1.4; z += step) {
-    if (Math.abs(x) < clear && z < -d / 2 + 3) continue;
-    cols.push([x, 2.6, z, 1.3, h, 1.3]);
-  }
-  g.add(inst(unitCyl(10), cols, GRANITE));
+  const xs = [], zs = [];
+  for (let x = -w / 2 + 1.5; x <= w / 2 - 1.4; x += step) xs.push(x);
+  for (let z = -d / 2 + 1.5; z <= d / 2 - 1.4; z += step) zs.push(z);
+  const plain = clusterPillar(h, GRANITE), carved = yali ? yaliPillar(h, GRANITE) : null;
+  xs.forEach((x, i) => zs.forEach((z, j) => {
+    if (Math.abs(x) < clear && z < -d / 2 + 3) return;
+    const edgeX = i === 0 || i === xs.length - 1, edgeZ = j === 0 || j === zs.length - 1;
+    const o = (carved && (edgeX || edgeZ) ? carved : plain).clone();
+    o.position.set(x, 2.6, z);
+    // Face out of the hall: across the nearer edge (front and back rows win at the corners).
+    o.rotation.y = edgeZ ? (j === 0 ? Math.PI : 0) : edgeX ? (i === 0 ? -Math.PI / 2 : Math.PI / 2) : 0;
+    p.add(o);
+  }));
+  g.add(mergeByMaterial(p));
   g.add(box(w + 1.6, 0.9, d + 1.6, GRANITE_DARK, 0, 2.6 + h), box(w, 0.8, d, GRANITE, 0, 3.5 + h));
   return g;
 }
-
 export function buildVittala() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(21);
   g.add(f);
@@ -39,10 +52,10 @@ export function buildVittala() {
   f.add(at(trabeateGate(18, 9, 12, 4, 6, { m: GRANITE, trim: GRANITE_DARK, guardians: true }), 0, 0, 76));
   f.add(box(15, 4, 10, BRICK, 0, 9, 76), box(12, 3.5, 8, BRICK, -0.6, 13, 76), box(7, 2.4, 6, BRICK, 1.2, 16.5, 76));
   // The shrine and its pillared halls
-  f.add(at(pillaredHall(34, 28, 6, 3.2, 3.8), 0, 0, -6));
+  f.add(at(pillaredHall(34, 28, 6, 3.2, 3.8, { yali: true }), 0, 0, -6));
   f.add(box(16, 9, 16, GRANITE, 0, 0, -28), at(pidaRoof(15, 6, 4, 0.9, GRANITE, GRANITE_DARK), 0, 9, -28));
   f.add(at(templeDoorway(1.8, 3.6, { m: GRANITE, open: 0.9 }), 0, 2.6, -20));
-  f.add(at(pillaredHall(20, 20, 5, 3.4), -30, 0, 28), at(pillaredHall(18, 18, 5, 3.4), 30, 0, -40));
+  f.add(at(pillaredHall(20, 20, 5, 3.4, 0, { yali: true }), -30, 0, 28), at(pillaredHall(18, 18, 5, 3.4), 30, 0, -40));
   // The stone chariot (Garuda shrine) with its wheels, drawn by two elephants
   const ch = new THREE.Group();
   ch.add(box(6, 3.6, 9, GRANITE), box(6.6, 0.6, 9.6, GRANITE_DARK, 0, 3.6));
