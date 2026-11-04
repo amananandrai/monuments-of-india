@@ -171,3 +171,31 @@ visible coincident faces); notes.
    well's galleries), the Hawa Mahal (cusped arches, curved and domed roofs, pilasters, finials),
    Sanchi (the toranas' carved architraves and capitals, the harmika and umbrellas, the berm railing
    and stair), Ajanta (pillared cave fronts, doorways and sculpted facades).
+
+## Status
+
+All six parts of the plan are built, and the checks were run again on every monument.
+
+- **Framing**: the home view frames the monument as built (`js/framing.js`): lawns, plazas, paths,
+  water and other ground-level things under 2.5 m, and the trees and lamps (marked as dressing),
+  no longer set the distance, and the camera stands back 10% more so tall monuments are not
+  clipped. Qutub Minar and Akbar's Tomb frame the monument rather than their outbuildings. A
+  monument can ask for a closer view (`zoom`): the Hawa Mahal's flat facade, and Rani ki Vav, now
+  seen down the trench from the top of the steps.
+- **Scenery**: the hills, peaks and forests named above were moved out of the orbit, and the zoom-out
+  stops short of any scenery that remains (`sceneryReach` in `js/main.js`). The camera now enters
+  scenery in none of the 192 test views of any monument (it did at 14 monuments). Rani ki Vav and
+  Kailasa, in a trench and a pit, keep the camera above a minimum elevation (`minElevation`). The
+  views still counted as blocked are low views of monuments in pits or behind cliffs and hills
+  (Kailasa, Rani ki Vav, Ajanta, Amber, Golconda, Daulatabad, Gwalior, Omkareshwar), where the
+  ground itself hides them, as it does in reality.
+- **Flicker**: the visible coincident faces fell from about 890 m² (and the whole beach at
+  Vivekananda Rock) to 92 m² over all 101 monuments, none above 10 m².
+- **Flags**: every flag is cloth (`clothGeometry` in `js/helpers.js`).
+- **Trees**: `upgradeTrees` gives 75 monuments fuller trees; the rest keep the plain ones to stay
+  within budget. Hidimba, Bhimashankar, the National War Memorial and Tipu Sultan's Gumbaz now plant
+  the shared trees too.
+- **Detail**: Rani ki Vav, the Hawa Mahal, the Sanchi gateways and the Ajanta cave fronts were carved
+  as planned.
+
+Every monument still builds within 300,000 triangles.
