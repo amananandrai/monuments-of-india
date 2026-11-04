@@ -57,7 +57,8 @@ function ball(r, x, y, z, sx = 1, sy = 1, sz = 1, w = 6, h = 4) {
 // Figures in units of a tenth of their height, facing +z. pose: 'standing' (a deity with a tall
 // crown, arms at the sides holding attributes), 'dancer' (the tribhanga, a sway at the hips, one
 // arm raised and the other across the body), 'seated' (cross-legged, hands in the lap: a Buddha or
-// a Jina) or 'musician' (standing with a drum held before the body, as on the roof of Konark).
+// a Jina), 'musician' (standing with a drum held before the body, as on the roof of Konark) or
+// 'leader' (a modern statue: standing, arms at the sides, in a long coat and a cap).
 function figureParts(pose) {
   const g = new THREE.Group(), add = (...o) => o.forEach((x) => g.add(x));
   if (pose === 'seated') {
@@ -91,10 +92,11 @@ function figureParts(pose) {
     add(drum);
   } else {
     for (const s of [-1, 1]) add(seg(V(sh.x + s * 1.15, 7.0, 0), V(s * 1.45, 5.3, 0.2), 0.32, 0.27), seg(V(s * 1.45, 5.3, 0.2), V(s * 1.55, 3.8, 0.6), 0.27, 0.22));
-    add(seg(V(1.55, 3.4, 0.6), V(1.6, 6.2, 0.7), 0.1, 0.1, 5), ball(0.35, 1.6, 6.4, 0.7));   // a mace or lotus
+    if (pose !== 'leader') add(seg(V(1.55, 3.4, 0.6), V(1.6, 6.2, 0.7), 0.1, 0.1, 5), ball(0.35, 1.6, 6.4, 0.7));   // a mace or lotus
   }
   add(seg(V(sh.x, 7.3, 0), V(sh.x, 7.9, 0), 0.32, 0.32));                // neck
   add(ball(0.75, sh.x, 8.5, 0.1, 1, 1.12, 1));                           // head
+  if (pose === 'leader') { add(seg(V(sh.x, 8.95, 0), V(sh.x, 9.5, 0), 0.74, 0.7, 10)); return g; } // a cap
   add(seg(V(sh.x, 9.0, 0), V(sh.x, 10.0, 0), 0.72, 0.28, 8));            // crown or hair knot
   for (const s of [-1, 1]) add(ball(0.18, sh.x + s * 0.72, 8.2, 0.1, 1, 2, 1, 6, 4)); // ear ornaments
   return g;

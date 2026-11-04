@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, FACES, clothGeometry } from '../helpers.js';
-import { panel, frieze, jharokha, rosette, mergeByMaterial } from './components.js';
+import { M, mat, box, cyl, at, onFace, FACES, clothGeometry, onionDome, ribbed, kalash, chhatri } from '../helpers.js';
+import { panel, frieze, jharokha, rosette, mergeByMaterial, chhajja } from './components.js';
+import { arcadeSkin, cellRow } from './mughal.js';
 import { trees, lampPosts } from './realism.js';
 
 // The Harmandir Sahib, finer detail. From photographs: the marble lower storey is inlaid with floral
@@ -27,12 +28,34 @@ function architecture(f) {
   f.add(d);
 }
 
+// The Akal Takht, across the plaza from the Darshani Deori and facing the shrine (+x): five storeys,
+// the lower two of white marble opening in arcades, the upper ones gilded with a row of bay windows
+// on each and a deep eave between, under a fluted golden dome on a drum with a kiosk at each corner.
+export function akalTakht() {
+  const g = new THREE.Group(), W = M.marble, G = M.gild, w = 30, d = 16, dp = 1;
+  g.add(box(w + 2, 1, d + 2, W));
+  g.add(box(w, 10, d - dp, W, 0, 1, -dp / 2), onFace(at(arcadeSkin(w, 10, [...cellRow(5, 5.6, 0, 3.6, 4.4), ...cellRow(5, 5.6, 5.2, 3.2, 4)], dp, W, { trim: G, fill: 'room' }), 0, 1, 0), 0, d / 2 - dp));
+  let y = 11;
+  for (const [h, m, n] of [[5, G, 7], [4.6, G, 7], [4.2, G, 5]]) {
+    const ww = w - (y - 11) * 0.5;
+    g.add(box(ww, h, d - 1, m, 0, y, -0.5));
+    for (let k = 0; k < n; k++) g.add(onFace(at(jharokha(2, 2.6, G, { d: 0.9 }), 0, y + 1.2, 0), 0, d / 2 - 1, (k - (n - 1) / 2) * (ww / n)));
+    g.add(onFace(at(chhajja(ww + 0.4, 1.2, 0.5, 0.18, G), 0, y + h, 0), 0, d / 2 - 1));
+    y += h;
+  }
+  g.add(box(16, 0.6, 12, G, 0, y, -0.5), cyl(4.6, 4.6, 2.4, G, 0, y + 0.6, -0.5, 32));
+  g.add(at(ribbed(onionDome(5, G), 16, 0.06), 0, y + 3, -0.5), at(kalash(2.2, G), 0, y + 3 + 9.2, -0.5));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(at(chhatri(1.1, 4, G), sx * 6.6, y + 0.6, -0.5 + sz * 4.6));
+  return mergeByMaterial(g);
+}
+
 // Harmandir Sahib: the two Nishan Sahibs, tall saffron-clad poles with their saffron pennants and
 // the khanda, by the Akal Takht; the old ber trees at the water's edge; and the golden lanterns
 // along the marble parikrama.
 const SAFFRON = mat('#f08a1c', 0.8, 0, { side: 2 }), GOLD = mat('#e3b54a', 0.3, 0.85);
 export function addDetails(f, g) {
   architecture(f);
+  g.add(at(akalTakht(), -113, 0.8, 0).rotateY(Math.PI / 2));
   // The Nishan Sahibs
   for (const z of [-6, 6]) {
     g.add(cyl(0.35, 0.45, 32, SAFFRON, -96, 0.8, z, 10), at(cyl(0.25, 0, 1.6, GOLD, 0, 0, 0, 10), -96, 32.8, z));

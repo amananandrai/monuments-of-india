@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, FACES, surface, hemi, ribbed, kalash, finial } from '../helpers.js';
 import { D, archRing, keystone, sunburst, rosette, lettering, dentils, chhajja, petalRing, mergeByMaterial } from './components.js';
 import { trees, lampPosts, stalls, along } from './realism.js';
+import { statue } from './sculpture.js';
 
 // India Gate, finer detail (Lutyens, 1921–31). From photographs and descriptions of the arch:
 // - two large sunburst roundels, one each side of the main arch on both long faces, and a smaller
@@ -100,7 +101,8 @@ export function addIndiaGateDetails(f, { b, top }) {
 }
 
 // The canopy east of the arch (group c, in its own coordinates): stepped base, column caps and
-// bases, a sloping eave on each side, pinnacles at the corners, a drum and a ribbed dome.
+// bases, a sloping eave on each side, pinnacles at the corners, a drum and a ribbed dome; and the
+// statue under it.
 export function addCanopyDetails(c) {
   const m = M.buff, d = new THREE.Group();
   for (let k = 0; k < 3; k++) d.add(box(15 - k * 1.1, 0.33, 15 - k * 1.1, M.red, 0, k * 0.33, 0));
@@ -118,6 +120,9 @@ export function addCanopyDetails(c) {
   d.add(at(petalRing(0.5, 12, 0.9, 0.42, Math.PI - 0.75, STONE), 0, 17.45, 0));
   mergeByMaterial(d);
   c.add(d, at(finial(3.5), 0, 17.35, 0));
+  // The black granite statue of Netaji Subhas Chandra Bose, standing under the canopy and facing
+  // the arch.
+  c.add(at(statue(8, mat('#2e2e33', 0.3), 'leader', STONE), 0, 1, 0).rotateY(Math.PI));
 }
 
 // Kartavya Path round the gate: the long canals either side of the lawns, ice-cream carts, lamps,

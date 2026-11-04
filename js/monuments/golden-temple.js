@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, lathe, at, onFace, FACES, archPanel, onionDome, hemi, finial, kalash, chhatri, ribbed, sheet } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
+import { wallWithGaps } from '../details/temples.js';
 import { mughalDoorway } from '../details/mughal.js';
 import { addDetails } from '../details/golden-temple.js';
 
@@ -12,7 +13,10 @@ export function buildGoldenTemple() {
   // Parikrama walkway around the Amrit Sarovar, with the complex's buildings beyond it
   for (const s of [-1, 1]) {
     g.add(box(200, 0.8, 25, W, 0, 0, s * 87.5), box(25, 0.8, 150, W, s * 87.5, 0, 0));
-    g.add(box(220, 9, 10, M.lime, 0, 0, s * 105), box(10, 9, 200, M.lime, s * 105, 0, 0));
+    g.add(box(220, 9, 10, M.lime, 0, 0, s * 105));
+    // The west range parts for the plaza before the Akal Takht.
+    if (s > 0) g.add(box(10, 9, 200, M.lime, 105, 0, 0));
+    else g.add(wallWithGaps('z', 200, 9, 10, M.lime, [[0, 34]], -105, 0));
   }
   g.add(sheet(150, 150, M.lake, 0, 0.3, 0));
   const b = 1.6;

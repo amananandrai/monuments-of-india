@@ -17,11 +17,12 @@ function doorSize(wallH) {
 
 // A North Indian (Nagara) temple along the z axis: the sanctum and its curved spire at z = 0,
 // with halls (mandapas) stepping out towards +z. halls: [[width, wallHeight, roofTiers, 'pida' | 'dome']].
+// The plinth is `apron` wider than the sanctum, so a broad hall can stand on it with room for side doors.
 // The front hall opens through a porch and a stepped doorway at the head of the stairs; the first
 // hall has doors on both sides; a temple with no hall has its doorway in the sanctum.
 export function nagaraTemple({
   w = 12, h = 22, m, shade = m, spireM = m, plinth = 2, urus = 4, uruScale = 0.5,
-  halls = [[14, 8, 4]], prof = nagaraProfile, flagM = M.saffron, hallM = m, crown = null,
+  halls = [[14, 8, 4]], prof = nagaraProfile, flagM = M.saffron, hallM = m, crown = null, apron = 8,
 } = {}) {
   const g = new THREE.Group();
   const sw = w * 1.15;
@@ -52,9 +53,9 @@ export function nagaraTemple({
     }
     z += hw / 2;
   }
-  g.add(box(sw + 8, plinth, z + sw / 2 + 6, shade, 0, 0, (z - sw / 2) / 2 + 3));
+  g.add(box(sw + apron, plinth, z + sw / 2 + 6, shade, 0, 0, (z - sw / 2) / 2 + 3));
 
-  const e = new THREE.Group(), half = (sw + 8) / 2;
+  const e = new THREE.Group(), half = (sw + apron) / 2;
   let stairW = 6;
   if (placed.length) {
     // The main entrance: a porch in front of the front hall, with the doorway at its back.

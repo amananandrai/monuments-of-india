@@ -199,3 +199,38 @@ All six parts of the plan are built, and the checks were run again on every monu
   as planned.
 
 Every monument still builds within 300,000 triangles.
+
+## Second pass: the photo fidelity review
+
+A second review set each monument beside photographs: 75 read as the place, 24 come close, and 2
+were stand-ins. The four richest temples also got a larger triangle budget. A builder may return
+`budget` (the default is 300,000), which `main.js` passes to `upgradeTrees`.
+
+Done in this pass:
+
+| Monument | Change |
+| --- | --- |
+| Meenakshi (budget 500k) | 14 gopurams, not 8: the shrines of Sundareswarar and Meenakshi each get an enclosure with three small gopurams. The outer gopurams carry a figure every 1.6 m and a kudu over every bay; the inner ones carry a figure every 1.8 m (`gopuram(…, { pitch, kuduEvery })`). |
+| Konark (budget 500k) | The 24 wheels are carved sundials: eight broad spokes with medallions, eight thin spokes, a beaded rim and a petalled hub (`carvedWheelGeo` in `sculpture.js`). The seven horses stand larger on pedestals either side of the stairs, with breast straps. |
+| Vittala, Hampi (budget 500k) | The yali pillars stand on elephants and carry full carved riders (`yaliPillar(…, { rich })`). The chariot has carved wheels. The friezes are denser and the parapet's shrines finer. The Kalyana Mandapa's pillars carry dancers. |
+| Nageshwar (budget 500k) | Two rings of minor spires, a domed hall before the sanctum, neem trees and palms. |
+| Bandra–Worli Sea Link (stand-in) | The second, smaller inverted-Y pylon over the Worli channel, with its own cable fans. The home view is closer. |
+| Mahakaleshwar (stand-in) | A Bhumija spire: rows of miniature spires between the central bands, in pale stone under a gilded kalash. The old town hems it in: houses of two to four storeys with balconies and water tanks, from the new `townHouses` helper. |
+| Safdarjung | Weathered buff and brownish-red stone. The dome is a more bulbous profile of buff marble. |
+| Somnath | A broad sabha mandap under a great stepped roof, and a taller spire. `nagaraTemple` takes an `apron`, so a broad hall fits on its plinth. |
+| Red Fort | Inside the walls: the Naubat Khana, the Diwan-i-Aam, and along the river wall the white marble Diwan-i-Khas (four gilded kiosks), Rang Mahal, Khas Mahal with the Musamman Burj, Mumtaz Mahal, and the Moti Masjid's three domes. |
+| Golden Temple | The Akal Takht, across the plaza from the Darshani Deori: marble arcades below, gilded storeys with bay windows, and a fluted golden dome. |
+| India Gate | Netaji's statue under the canopy (a new `leader` pose for `figure`). |
+
+Still to do from the review: the Statue of Unity's face and the dam; a mandapa with a lotus ceiling
+at Dilwara; a pillar-forest cutaway at Ranakpur; bracket figures and the floating-brick tower at
+Ramappa; a ruined Nalanda; the Capitol Complex's spacing and brise-soleil; the Bara Imambara's
+maze; carved walls and paired shrines at Mallikarjuna; the Om-shaped island at Omkareshwar; a
+forest and bell frame at Bhimashankar; the Kushavarta tank at Trimbakeshwar; an open corridor at
+Ramanathaswamy; the Ellora cliff beside Grishneshwar; a gilded roof that marks Rumtek; varied poses
+at Parshvanath; an open hall at Soniji; an irregular ruin at Golconda; tile pictures at Gwalior;
+the Hawa Mahal's curved plan; the Taj's mosque, jawab and river; Charminar's top-floor mosque and
+slimmer minarets; chaitya arches at Mahabodhi; pools and free-standing petals at the Lotus Temple;
+domed towers at Gol Gumbaz; Queen Victoria's statue; the Progress statue and stone animals at
+CSMT; the lion capital at the new Parliament; the barren valley at Key; and the vines and anthill
+at Gommateshwara.

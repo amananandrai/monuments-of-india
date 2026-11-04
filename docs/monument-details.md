@@ -265,7 +265,8 @@ Bom Jesus and the Gajalakshmi at Mysore.
 There is no build step. To see a detail module's effect, serve the folder (`npx serve .`) and open
 the monument's hash, for example `#taj-mahal`. A quick check of cost is the number of meshes and
 triangles in the built group, which should stay within the budget above. Every monument builds
-within it: the largest are Meenakshi and Vittala, at just under 300,000 triangles each.
+within it. Meenakshi, Vittala, Nageshwar and Konark have a budget of 500,000 (they return
+`budget: 500000`); Meenakshi, the largest, is just under it.
 
 ## Sources
 
