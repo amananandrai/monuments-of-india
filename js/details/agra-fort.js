@@ -76,7 +76,7 @@ export function addDetails(f, g) {
   architecture(f);
   const R = 125, arc = [];
   for (let k = 0; k <= 60; k++) { const t = (k / 60) * Math.PI; arc.push([Math.cos(t) * R, Math.sin(t) * R, Math.cos(t), Math.sin(t)]); }
-  g.add(curvedBand(arc, 12, 26, 0.02, 0.3, MOAT), curvedBand(arc, 17, 21, 0.04, 0.34, M.river));
+  g.add(curvedBand(arc, 12, 26, 0.02, 0.33, MOAT), curvedBand(arc, 17, 21, 0.04, 0.37, M.river));
   // The causeway across the moat to the gate, and the road beyond
   const ta = Math.PI * 0.72, c = Math.cos(ta), s = Math.sin(ta), ry = Math.PI / 2 - ta;
   g.add(at(box(9, 0.6, 30, M.path), c * 148, 0, s * 148).rotateY(ry));

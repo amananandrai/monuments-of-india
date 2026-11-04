@@ -26,7 +26,7 @@ function tomb(s) {
 export function buildQutbShahiTombs() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(260, 0.15, 220, M.grass));
+  g.add(box(260, 0.06, 220, M.grass));
   for (const [x, z, s] of [[0, 0, 1.3], [-60, -20, 1], [56, -24, 1.05], [-40, 50, 0.85], [40, 54, 0.9], [-90, 40, 0.7], [90, 20, 0.75]]) f.add(at(tomb(s), x, 0, z));
   // The great mosque, with its two minarets
   f.add(box(40, 12, 13, PLASTER, 0, 0, -70.5));

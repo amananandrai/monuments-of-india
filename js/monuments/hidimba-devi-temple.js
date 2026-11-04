@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, hipRoof, finial, inst, unitCyl } from '../helpers.js';
+import { mat, box, cyl, at, rng, hipRoof, finial } from '../helpers.js';
 import { templeDoorway, steps } from '../details/doorways.js';
+import { trees as plantTrees } from '../details/realism.js';
 import { addDetails } from '../details/hidimba-devi-temple.js';
 
 const STONE = mat('#8d8a85', 0.95);
 const WOOD = mat('#6d5034', 0.85);
 const SHINGLE = mat('#5e5246', 0.9);
 const BRASS = mat('#b98b3c', 0.35, 0.7);
-const DEODAR = mat('#2f4a2e', 0.95, 0, { flatShading: true });
 
 export function buildHidimba() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(31);
@@ -19,10 +19,9 @@ export function buildHidimba() {
     const a = R() * Math.PI * 2, d = 82 + R() * 80, h = 22 + R() * 18, x = Math.cos(a) * d, z = Math.sin(a) * d;
     const off = Math.abs(((a - va + Math.PI * 3) % (Math.PI * 2)) - Math.PI);
     if (off < 0.6 && d < 110) continue;
-    trunks.push([x, 0, z, 1.2, h * 0.35, 1.2]);
-    crowns.push([x, h * 0.2, z, h * 0.42, h * 0.85, h * 0.42]);
+    trunks.push([x, z, h]);
   }
-  g.add(inst(unitCyl(6), trunks, M.wood), inst(new THREE.ConeGeometry(0.5, 1, 7).translate(0, 0.5, 0), crowns, DEODAR));
+  g.add(plantTrees(trunks, { kind: 'deodar', seed: 31 }));
   // Stone base, carved timber walls and three square shingle roofs under a brass cone
   f.add(box(16, 1.2, 18, STONE, 0, 0, 0), box(11, 6, 11, STONE, 0, 1.2, 0), box(11.4, 0.6, 11.4, WOOD, 0, 7.2, 0));
   // The carved timber doorway, and steps up from the ground

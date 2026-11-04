@@ -108,13 +108,13 @@ export function trees(spots, { kind = 'neem', seed = 1, y = 0, h = null } = {}) 
   const g = new THREE.Group(), R = rng(seed + 11);
   // Spots are [x, z, height?, ground?]: the tree's own height, and the ground it stands on (on a hill).
   const items = spots.map(([x, z, hh, gy]) => ({ x, z, gy: (gy ?? 0) + y, s: (hh || h || { neem: 9, banyan: 11, ashoka: 12, mango: 8, palm: 13, deodar: 18, cypress: 10 }[kind]) * (0.85 + R() * 0.3), ry: R() * 6.28 }));
-  if (kind === 'palm') return palms(items);
+  if (kind === 'palm') return tag(palms(items), items, kind, seed);
   if (kind === 'deodar' || kind === 'cypress') {
     const tiers = kind === 'deodar' ? [[0.42, 0.36, 0.2], [0.33, 0.32, 0.42], [0.22, 0.28, 0.62], [0.12, 0.22, 0.8]] : [[0.18, 0.92, 0.1]];
     const c = mergeGeometries(tiers.map(([r, hh, at0]) => new THREE.ConeGeometry(r, hh, 9, 1).translate(0, at0 + hh / 2, 0)));
     g.add(copies(trunkGeo, BARK, items.map((t) => [t.x, t.gy, t.z, [t.s * 0.12, t.s * 0.3, t.s * 0.12], t.ry])));
     g.add(copies(c, FOLIAGE_DARK, items.map((t) => [t.x, t.gy, t.z, t.s, t.ry])));
-    return g;
+    return tag(g, items, kind, seed);
   }
   // Crown size and height as fractions of the tree's height: [radius, height, trunk]
   const [cr, ch, tr] = { neem: [0.42, 0.36, 0.55], banyan: [0.62, 0.3, 0.45], ashoka: [0.17, 0.62, 0.3], mango: [0.4, 0.38, 0.45] }[kind];
@@ -122,7 +122,116 @@ export function trees(spots, { kind = 'neem', seed = 1, y = 0, h = null } = {}) 
   // The trunk runs up into the crown, whose underside is flattened.
   g.add(copies(trunkGeo, BARK, items.map((t) => [t.x, t.gy, t.z, [t.s * 0.17, t.s * (tr + ch * 0.3), t.s * 0.17], t.ry])));
   g.add(copies(crownGeo(7, seed), leaf, items.map((t) => [t.x, t.gy + t.s * (tr + ch * 0.4), t.z, [t.s * cr, t.s * ch * 0.6, t.s * cr], t.ry])));
+  return tag(g, items, kind, seed);
+}
+// Remember what was planted, so upgradeTrees can replant it in more detail.
+function tag(g, items, kind, seed) { g.userData.trees = { items, kind, seed }; return g; }
+
+/* ---------- fuller trees, where a monument has triangles to spare ---------- */
+
+// Each kind as two geometries of unit height (bark and leaves), instanced at every tree with its
+// own height and turn. Broadleaf trees: a trunk that leans and bends, three to five limbs, and a
+// crown of separate leaf clumps at the limbs' ends (the banyan also drops aerial roots); the palm:
+// a ringed trunk and arching fronds with leaflets; the deodar and cypress: drooping tiers.
+const fullGeos = new Map();
+function limbGeo(a, b, r1, r2, n = 6) {
+  const g = new THREE.CylinderGeometry(r2, r1, a.distanceTo(b), n, 1, true);
+  const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
+  g.applyQuaternion(q);
+  g.translate((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2);
+  return g.toNonIndexed();
+}
+const plainGeo = (g) => { const n = g.index ? g.toNonIndexed() : g; for (const k of Object.keys(n.attributes)) if (k !== 'position' && k !== 'normal') n.deleteAttribute(k); return n; };
+function fullGeo(kind, seed) {
+  const key = kind + ':' + seed;
+  if (fullGeos.has(key)) return fullGeos.get(key);
+  const R = rng(seed * 7 + 3), V3 = (x, y, z) => new THREE.Vector3(x, y, z), bark = [], leaf = [];
+  if (kind === 'palm') {
+    const pts = [V3(0, 0, 0), V3(0.05, 0.35, 0), V3(0.13, 0.7, 0), V3(0.2, 1, 0)], curve = new THREE.CatmullRomCurve3(pts);
+    for (let k = 0; k < 14; k++) {
+      const t0 = k / 14, t1 = (k + 1) / 14, p0 = curve.getPoint(t0), p1 = curve.getPoint(t1);
+      bark.push(limbGeo(p0, p1, 0.026 - t0 * 0.006, 0.024 - t1 * 0.006, 7), limbGeo(p0, p0.clone().lerp(p1, 0.12), 0.03 - t0 * 0.006, 0.03 - t0 * 0.006, 7));
+    }
+    for (let f = 0; f < 15; f++) {
+      const a = (f / 15) * Math.PI * 2 + R() * 0.3, lift = f % 2 ? 0.12 : 0.02, pos = [];
+      const P = (t) => V3(0.2 + Math.cos(a) * t * 0.4, 1 + Math.sin(t * 2.4) * lift - t * t * 0.25, Math.sin(a) * t * 0.4);
+      const side = V3(-Math.sin(a), 0, Math.cos(a));
+      for (let i = 0; i < 12; i++) {
+        const t = (i + 0.5) / 12, c = P(t), w = 0.012 + Math.sin(t * Math.PI) * 0.09;
+        for (const s of [-1, 1]) {
+          const tip = c.clone().addScaledVector(side, s * w).add(V3(0, -w * 0.5, 0)), along = P(t + 0.05);
+          pos.push(...c.toArray(), ...along.toArray(), ...tip.toArray());
+        }
+        if (i < 11) { const n1 = P((i + 1.5) / 12); pos.push(...c.toArray(), ...n1.toArray(), ...c.clone().add(V3(0, 0.006, 0)).toArray()); }
+      }
+      const fg = new THREE.BufferGeometry();
+      fg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+      fg.computeVertexNormals();
+      leaf.push(fg);
+    }
+    for (const a of [0, 2.1, 4.2]) leaf.push(plainGeo(new THREE.SphereGeometry(0.02, 6, 4).translate(0.2 + Math.cos(a) * 0.03, 0.975, Math.sin(a) * 0.03)));
+  } else if (kind === 'deodar' || kind === 'cypress') {
+    bark.push(limbGeo(V3(0, 0, 0), V3(0, 0.95, 0), 0.025, 0.006, 7));
+    const tiers = kind === 'deodar' ? 7 : 4;
+    for (let t = 0; t < tiers; t++) {
+      const y = 0.18 + (t / tiers) * 0.72, r = (kind === 'deodar' ? 0.42 : 0.16) * (1 - t / (tiers + 1)), n = kind === 'deodar' ? 9 : 6;
+      for (let k = 0; k < n; k++) {
+        const a = (k / n) * Math.PI * 2 + t * 0.4, g = new THREE.ConeGeometry(r * 0.32, r * 1.05, 5, 1);
+        g.rotateZ(-Math.PI / 2 - 0.35).scale(1, 0.55, 1).translate(r * 0.5, y + 0.02, 0).rotateY(a);
+        leaf.push(plainGeo(g));
+      }
+      leaf.push(plainGeo(new THREE.ConeGeometry(r * 0.45, 0.14, 7).translate(0, y + 0.06, 0)));
+    }
+  } else {
+    const [cr, tr, limbs, droop] = { neem: [0.42, 0.5, 4, 0], banyan: [0.6, 0.42, 5, 1], ashoka: [0.16, 0.25, 3, 0], mango: [0.4, 0.45, 4, 0] }[kind] || [0.4, 0.5, 4, 0];
+    const lean = V3((R() - 0.5) * 0.06, tr, (R() - 0.5) * 0.06), mid = V3(lean.x * 0.4, tr * 0.5, lean.z * 0.4);
+    bark.push(limbGeo(V3(0, 0, 0), mid, 0.055, 0.045, 7), limbGeo(mid, lean, 0.045, 0.035, 7));
+    const ends = [];
+    for (let k = 0; k < limbs; k++) {
+      const a = (k / limbs) * Math.PI * 2 + R() * 0.6, out = cr * (0.55 + R() * 0.3), up = kind === 'ashoka' ? 0.5 : 0.18 + R() * 0.12;
+      const e = V3(lean.x + Math.cos(a) * out, tr + up, lean.z + Math.sin(a) * out);
+      bark.push(limbGeo(lean, e, 0.03, 0.012, 5));
+      ends.push(e);
+    }
+    ends.push(V3(lean.x, tr + (kind === 'ashoka' ? 0.62 : 0.34), lean.z));
+    const base = crownGeo(6, seed);
+    ends.forEach((e, k) => {
+      const s = (k === ends.length - 1 ? 1.15 : 0.85 + R() * 0.3) * (kind === 'ashoka' ? 0.12 : cr * 0.62);
+      leaf.push(plainGeo(base.clone().scale(s, s * (kind === 'ashoka' ? 2.6 : 0.72), s).translate(e.x, e.y + s * 0.15, e.z)));
+    });
+    if (droop) for (let k = 0; k < 7; k++) {
+      const a = R() * Math.PI * 2, d = cr * (0.4 + R() * 0.5), x = Math.cos(a) * d, z = Math.sin(a) * d;
+      bark.push(limbGeo(V3(x, tr + 0.12, z), V3(x, 0, z), 0.008, 0.012, 4));
+    }
+  }
+  const out = { bark: mergeGeometries(bark.map(plainGeo)), leaf: mergeGeometries(leaf.map(plainGeo)) };
+  out.bark.computeVertexNormals();
+  fullGeos.set(key, out);
+  return out;
+}
+function fullTrees({ items, kind, seed }) {
+  const g = new THREE.Group(), geo = fullGeo(kind, seed % 4), place = items.map((t) => [t.x, t.gy, t.z, t.s, t.ry]);
+  const leafM = kind === 'palm' ? FROND : kind === 'mango' || kind === 'ashoka' || kind === 'deodar' || kind === 'cypress' ? FOLIAGE_DARK : FOLIAGE;
+  g.add(copies(geo.bark, kind === 'palm' ? PALM_BARK : BARK, place), copies(geo.leaf, leafM, place));
   return g;
+}
+const trisOf = (o) => { let t = 0; o.traverse((m) => { if (m.isMesh) { const g = m.geometry; t += ((g.index ? g.index.count : g.attributes.position.count) / 3) * (m.isInstancedMesh ? m.count : 1); } }); return t; };
+
+// Replant the trees under root in more detail wherever the monument stays within `budget`
+// triangles: the smallest plantings first, so a few specimen trees are upgraded before a forest.
+// Called once a monument is built (main.js); the plain trees stay where triangles are short.
+export function upgradeTrees(root, budget = 300000) {
+  const groups = [];
+  root.traverse((o) => { if (o.userData.trees) groups.push(o); });
+  let total = trisOf(root);
+  for (const g of groups.sort((a, b) => a.userData.trees.items.length - b.userData.trees.items.length)) {
+    const full = fullTrees(g.userData.trees), extra = trisOf(full) - trisOf(g);
+    if (total + extra > budget) continue;
+    g.clear();
+    g.add(...full.children);
+    total += extra;
+  }
+  return total;
 }
 // Coconut palms: a leaning, slightly curved ringed trunk, a crown of arching fronds and coconuts.
 let palmGeos = null;

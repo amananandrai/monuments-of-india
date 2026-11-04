@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, bell, inst } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, rng, bell } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
+import { trees as plantTrees } from '../details/realism.js';
 import { addDetails } from '../details/bhimashankar-temple.js';
 
 const BASALT = mat('#4f4a45', 0.85);
@@ -19,9 +20,9 @@ export function buildBhimashankar() {
   const trees = [];
   for (let i = 0; i < 80; i++) {
     const a = R() * Math.PI * 2, d = 75 + R() * 90;
-    trees.push([Math.cos(a) * d, 0, Math.sin(a) * d, 6 + R() * 4, 8 + R() * 6, 6 + R() * 4]);
+    trees.push([Math.cos(a) * d, Math.sin(a) * d, 10 + R() * 6]);
   }
-  g.add(inst(new THREE.IcosahedronGeometry(0.5, 0).translate(0, 0.5, 0), trees, FOREST));
+  g.add(plantTrees(trees, { kind: 'mango', seed: 15 }));
   // The dark basalt temple, and the great bell hung in its own frame
   f.add(box(40, 0.4, 44, M.path), at(nagaraTemple({ w: 8, h: 13, m: BASALT, shade: SHADE, plinth: 1.5, urus: 4, halls: [[11, 6, 4]] }), 0, 0, -8));
   f.add(cyl(0.3, 0.3, 6, M.wood, -12, 0, 8, 8), cyl(0.3, 0.3, 6, M.wood, -8, 0, 8, 8), box(5, 0.4, 0.6, M.wood, -10, 6, 8));

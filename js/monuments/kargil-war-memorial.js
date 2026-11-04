@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, inst, unitBox, ellipseWall, tricolour } from '../helpers.js';
+import { mat, mesh, box, cyl, at, rng, ellipseWall, tricolour } from '../helpers.js';
 import { addDetails } from '../details/kargil-war-memorial.js';
 
 const PINK = mat('#c8917a', 0.85);

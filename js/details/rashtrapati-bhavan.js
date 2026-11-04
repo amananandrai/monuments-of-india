@@ -18,7 +18,7 @@ function architecture(f) {
   const d = new THREE.Group(), Rd = M.red, Cr = M.cream, Bf = M.buff;
   for (let k = 0; k < 12; k++) {
     const x = -27.5 + k * 5;
-    d.add(box(3, 0.6, 3, Cr, x, 10, 38), cyl(1.6, 1.35, 1.0, Bf, x, 21.4, 38, 16), box(3.0, 0.6, 3.0, Bf, x, 22.4, 38));
+    d.add(box(3, 0.6, 3, Cr, x, 10, 38), cyl(1.6, 1.35, 1.0, Bf, x, 21.38, 38, 16), box(3.0, 0.6, 3.0, Bf, x, 22.38, 38));
     for (const [bx, bz] of [[-1.25, -1.25], [1.25, -1.25], [-1.25, 1.25], [1.25, 1.25]]) d.add(cyl(0.12, 0.35, 0.8, Bf, x + bx, 21.6, 38 + bz, 8));
   }
   for (const a of FACES) {

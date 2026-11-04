@@ -10,6 +10,7 @@ import { attachSurface, surface, waterTime, landColor, reflection } from './surf
 import { blendIntoLand } from './landscape.js';
 import { separateCoplanar } from './coplanar.js';
 import { frameBox } from './framing.js';
+import { upgradeTrees } from './details/realism.js';
 import { naturalize } from './naturalize.js';
 import { loadPhotoTextures } from './textures.js';
 import { MONUMENTS } from './data.js';
@@ -185,6 +186,8 @@ function getBuilt(i) {
   if (!built.has(i)) {
     const r = MONUMENTS[i].build();
     r.focus = r.focus || r.group;
+    // Fuller trees wherever the monument has triangles to spare.
+    upgradeTrees(r.group);
     naturalize(r.group);
     // Faces that share a plane get different depth offsets, so they don't flicker.
     separateCoplanar(r.group, 0.005);
