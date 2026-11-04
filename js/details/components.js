@@ -634,10 +634,10 @@ export function templeNiche(w, h, m, { depth = Math.max(0.15, w * 0.18), figure 
 }
 
 // A sunk panel w × h on a wall at z = 0: a frame of four bars `band` wide round a field carved or
-// inlaid with `field` (a frieze, a jali, a dark stone), from y = 0.
+// inlaid with `field` (a frieze, a jali, a dark stone; null for a bare frame), from y = 0.
 export function panel(w, h, band, m, field = frieze(m), depth = 0.06) {
   const g = new THREE.Group();
-  g.add(box(w - 2 * band + 0.02, h - 2 * band + 0.02, 0.025, field, 0, band - 0.01, 0.0125));
+  if (field) g.add(box(w - 2 * band + 0.02, h - 2 * band + 0.02, 0.025, field, 0, band - 0.01, 0.0125));
   for (const s of [-1, 1]) g.add(box(band, h, depth, m, s * (w - band) / 2, 0, depth / 2));
   for (const y of [0, h - band]) g.add(box(w - 2 * band, band, depth, m, 0, y, depth / 2));
   return g;
@@ -655,5 +655,33 @@ export function idol(h, m) {
   g.add(at(mesh(new THREE.SphereGeometry(u * 0.75, 10, 8), m), 0, u * 7.5, 0));
   g.add(cyl(u * 0.25, u * 0.6, u * 1.6, m, 0, u * 8.1, 0, 8));
   g.add(at(mesh(new THREE.TorusGeometry(u * 1.3, u * 0.12, 4, 16, Math.PI), m), 0, u * 7.4, -u * 0.3));
+  return g;
+}
+
+// A flat star of n points, R across its points, `depth` proud of a wall at z = 0: the inlaid stars
+// of white marble on the red sandstone of Mughal spandrels.
+export function star(n, R, m, depth = 0.05, inner = 0.58) {
+  const sh = new THREE.Shape();
+  for (let i = 0; i < n * 2; i++) {
+    const a = Math.PI / 2 + (i / (n * 2)) * Math.PI * 2, r = i % 2 ? R * inner : R;
+    if (i === 0) sh.moveTo(Math.cos(a) * r, Math.sin(a) * r); else sh.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+  }
+  sh.closePath();
+  return mesh(new THREE.ExtrudeGeometry(sh, { depth, bevelEnabled: false }), m);
+}
+
+// A pair of fish facing each other, the emblem of the Nawabs of Awadh carved over the arches of
+// Lucknow: two bodies and their tails, about `len` across, facing +z on a wall at z = 0.
+export function fishPair(len, m) {
+  const g = new THREE.Group(), u = len / 2;
+  for (const s of [-1, 1]) {
+    const body = mesh(new THREE.SphereGeometry(1, 14, 8), m, s * u * 0.5, 0, u * 0.08);
+    body.scale.set(u * 0.42, u * 0.17, u * 0.07);
+    body.rotation.z = s * 0.35;
+    const tail = mesh(new THREE.ConeGeometry(u * 0.16, u * 0.3, 3).rotateZ(-s * Math.PI / 2), m, s * u * 0.98, -s * u * 0.16 * 0.9, u * 0.06);
+    tail.rotation.z += s * 0.35;
+    tail.scale.z = 0.4;
+    g.add(body, tail);
+  }
   return g;
 }
