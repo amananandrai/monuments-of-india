@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, lathe, at, inst, unitBox, unitCyl } from '../helpers.js';
+import { addDetails } from '../details/capitol-complex.js';
 
 const CONCRETE = mat('#b3aea4', 0.95);
 const CONCRETE_DARK = mat('#8f8a80', 0.95);
@@ -54,5 +55,6 @@ export function buildCapitolComplex() {
   g.add(box(480, 0.3, 380, CONCRETE_DARK, 0, 0, 40), box(500, 0.15, 400, M.grass, 0, -0.1, 40));
   f.add(at(secretariat(), -60, 0, -90), at(palaceOfAssembly(), 0, 0, 0), at(highCourt().rotateY(Math.PI), 60, 0, 180));
   g.add(at(openHand(), -150, 0, 120));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.9, 0.42, 1.1] };
 }

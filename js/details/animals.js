@@ -229,14 +229,16 @@ export function deer(spots, { y = 0 } = {}) {
 
 // An elephant dressed for a procession or the ride up to a fort: a painted forehead, a long
 // embroidered cloth over its back and a canopied howdah, with a mahout on its neck.
-export function rideElephant(m, s = 1, { cloth = '#b3262e', trim = '#e3b54a' } = {}) {
+export function rideElephant(m, s = 1, { cloth = '#b3262e', trim = '#e3b54a', howdah = true } = {}) {
   const g = elephant(m, 1), C = surface(mat(cloth, 0.8), 'none'), T = surface(mat(trim, 0.35, 0.8), 'none');
   g.add(box(2.3, 0.12, 2.6, C, 0, 3.3, 0), box(0.1, 1.5, 2.4, C, 1.18, 2.0, 0), box(0.1, 1.5, 2.4, C, -1.18, 2.0, 0));
   g.add(box(2.4, 0.08, 2.7, T, 0, 3.22, 0));
-  // The howdah: a railed seat with a canopy on four posts
-  g.add(box(1.6, 0.5, 1.7, T, 0, 3.42, -0.1), box(1.4, 0.06, 1.5, C, 0, 3.92, -0.1));
-  for (const x of [-0.7, 0.7]) for (const z of [-0.8, 0.6]) g.add(cyl(0.035, 0.035, 1.2, T, x, 3.92, z, 6));
-  g.add(at(mesh(new THREE.ConeGeometry(1.15, 0.6, 4).rotateY(Math.PI / 4), C), 0, 5.4, -0.1));
+  // The howdah: a railed seat with a canopy on four posts (a temple elephant goes without)
+  if (howdah) {
+    g.add(box(1.6, 0.5, 1.7, T, 0, 3.42, -0.1), box(1.4, 0.06, 1.5, C, 0, 3.92, -0.1));
+    for (const x of [-0.7, 0.7]) for (const z of [-0.8, 0.6]) g.add(cyl(0.035, 0.035, 1.2, T, x, 3.92, z, 6));
+    g.add(at(mesh(new THREE.ConeGeometry(1.15, 0.6, 4).rotateY(Math.PI / 4), C), 0, 5.4, -0.1));
+  }
   // The painted forehead and a mahout astride the neck
   g.add(at(mesh(new THREE.CircleGeometry(0.42, 16), surface(mat('#f2c21c', 0.8), 'none')), 0, 3.0, 2.68).rotateX(-0.45));
   g.add(cyl(0.16, 0.2, 0.6, surface(mat('#f4f1ea', 0.9), 'none'), 0, 3.55, 1.25, 8), mesh(new THREE.SphereGeometry(0.13, 8, 6), surface(mat('#8d5a3b', 0.7), 'none'), 0, 4.3, 1.25));

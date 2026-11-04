@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, hipRoof } from '../helpers.js';
 import { mergeByMaterial } from '../details/components.js';
 import { classicalDoor, oculus } from '../details/colonial.js';
+import { addDetails } from '../details/bom-jesus.js';
 
 const LATERITE = mat('#9b5b3f', 0.95);
 const BASALT = mat('#8a847a', 0.85);
@@ -53,5 +54,6 @@ export function buildBomJesus() {
   const pw = classicalDoor(1.4, 2.6, { m: LATERITE, trim: BASALT, shape: 'flat', fill: 'glass', depth: 0.2, frame: 0.25 }), ph = new THREE.Group();
   for (let z = -38; z <= 2; z += 5) for (const y of [1.5, 6.5]) ph.add(at(pw.clone(), 26, y, z).rotateY(Math.PI / 2));
   f.add(mergeByMaterial(ph));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.75, 0.32, 1.2] };
 }
