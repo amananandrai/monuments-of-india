@@ -1,12 +1,13 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, chhatri, inst, unitBox, surface } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
+import { heightField, rough, smooth } from '../details/terrain.js';
+import { townHouses } from '../details/realism.js';
 import { addDetails } from '../details/mehrangarh-fort.js';
 
 const SAND = mat('#b9774f', 0.9);
 const SAND_LIGHT = mat('#cf9a6e', 0.85);
 const ROCK = mat('#8b6a4e', 0.95, 0, { flatShading: true });
-const BLUE = mat('#6f9fd0', 0.85);
 
 export function buildMehrangarh() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(83);
@@ -14,15 +15,21 @@ export function buildMehrangarh() {
   g.add(box(600, 0.2, 500, mat('#c9b48c', 0.95)));
   // The rocky hill, about 120 m above Jodhpur (scaled to fit), with the blue city at its foot
   const H = 45;
-  const hill = mesh(new THREE.CylinderGeometry(70, 130, H, 9, 2).translate(0, H / 2, 0), ROCK);
-  hill.scale.z = 0.5;
-  g.add(hill);
+  // Bhakurcheeta, the rocky ridge: a long outcrop with sheer, broken faces where the fort's walls
+  // rise straight from the rock, falling in scree and boulders to the plain and the blue city.
+  g.add(heightField(380, 220, 190, (x, z) => {
+    const ex = Math.abs(x) / 74, ez = Math.abs(z) / 27, e = Math.pow(ex ** 4 + ez ** 4, 0.25) + rough(x, z, 0.06, 1.6);
+    const top = H + rough(x, z, 1.5, 1.2), cliff = smooth(1.3, 1.0, e), foot = 16 * smooth(2.6, 1.2, e) + rough(x, z, 3, 0.8);
+    return Math.max(0, Math.max(top * cliff, foot * (1 - cliff)) + rough(x * 2, z * 2, 1.2 * cliff, 1.3)) - 0.2;
+  }, { rock: ['#8b6a4e', '#7a5c43', '#9a7556'], cover: '#a98a65', steep: 0.75, band: 7 }));
+  // The old city at its foot, its houses washed blue.
   const houses = [];
-  for (let i = 0; i < 160; i++) {
-    const x = (R() - 0.5) * 360, z = 80 + R() * 120;
-    houses.push([x, 0, z, 6 + R() * 6, 4 + R() * 6, 6 + R() * 6, R()]);
+  for (let i = 0; i < 150; i++) {
+    const x = (R() - 0.5) * 360, z = 62 + R() * 90, w = 5 + R() * 4;
+    if (Math.abs(x) < 90 && z < 75) continue;
+    houses.push([x, z, w, 5 + R() * 3, 1 + Math.floor(R() * 3), (Math.floor(R() * 4) * Math.PI) / 2]);
   }
-  g.add(inst(unitBox(), houses, BLUE));
+  g.add(townHouses(houses, { seed: 83, paint: ['#6f9fd0', '#7fb0dc', '#5d8fc4', '#8dbbe2', '#6f9fd0', '#e8dcc0'] }));
   // Sheer walls rising straight from the rock, bastions, and the palaces on the summit
   f.add(box(130, 30, 44, SAND, 0, H - 6, 0));
   for (const x of [-60, -30, 0, 30, 60]) f.add(cyl(8, 9, 32, SAND, x, H - 6, 20, 16));

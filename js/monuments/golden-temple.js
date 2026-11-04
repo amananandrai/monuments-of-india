@@ -6,9 +6,11 @@ import { mughalDoorway } from '../details/mughal.js';
 import { addDetails } from '../details/golden-temple.js';
 
 const SILVER = mat('#cfd3d8', 0.3, 0.85);
+// The gilded copper, lit warmly so it reads as gold and not as dark bronze on the shaded faces.
+const GILT = mat('#e3b54a', 0.35, 0.6, { emissive: '#4a3306' });
 
 export function buildGoldenTemple() {
-  const G = M.gild, Gd = M.gildDeep, W = M.marble, g = new THREE.Group(), f = new THREE.Group();
+  const G = GILT, Gd = M.gildDeep, W = M.marble, g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // Parikrama walkway around the Amrit Sarovar, with the complex's buildings beyond it
   for (const s of [-1, 1]) {
@@ -57,5 +59,6 @@ export function buildGoldenTemple() {
   f.add(at(kalash(2.6, G), 0, top + 2.6 + 7.3, 0));
   f.add(at(finial(3), 0, top + 2.6 + 10, 0));
   addDetails(f, g);
-  return { group: g, focus: f, view: [-1.1, 0.36, 0.75] };
+  // Seen across the pool from the south-east, the Harmandir Sahib in front and the Akal Takht behind.
+  return { group: g, focus: f, view: [0.85, 0.34, 1.0], zoom: 0.8 };
 }

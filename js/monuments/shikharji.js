@@ -1,34 +1,48 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, rng, hemi, kalash, inst, unitBox, unitHemi } from '../helpers.js';
+import { mat, box, at, inst, unitBox, unitHemi } from '../helpers.js';
+import { heightField, rough, smooth } from '../details/terrain.js';
 import { nagaraTemple } from '../details/temples.js';
 import { addDetails } from '../details/shikharji.js';
 
 const WHITE = mat('#f2eee6', 0.7);
 const SHADE = mat('#d8d1c2', 0.85);
-const HILL = mat('#47693a', 0.95, 0, { flatShading: true });
 
-// Parasnath Hill, with a tonk (small shrine) for each Tirthankara strung along the ridge.
+// Parasnath Hill: a long forested ridge in the Jharkhand plain, whose crest breaks into a chain of
+// small rocky summits, each crowned by a tonk, a white shrine to one of the Tirthankaras who attained
+// liberation here; Parshvanath's, the highest, at the eastern end. A pilgrim path climbs to it.
+const H = 90, L = 260;
+// The summits along the crest, [x, z, height], and the height of the ridge at (x, z).
+export const PEAKS = Array.from({ length: 20 }, (_, i) => { const x = -L / 2 + 20 + (i / 19) * (L - 40); return [x, 10 * Math.sin(i * 0.9), H + 4 + 5 * Math.sin(i * 1.7) + (i === 17 ? 9 : 0)]; });
+export function ridgeY(x, z) {
+  const along = smooth(L / 2 + 70, L / 2 - 10, Math.abs(x)), cz = 6 * Math.sin(x * 0.02);
+  let y = H * along * Math.exp(-(((z - cz) / 62) ** 2) * 1.6) + rough(x, z, 3, 0.7);
+  for (const [px, pz, ph] of PEAKS) { const d = Math.hypot(x - px, z - pz); y = Math.max(y, ph - (d / 6.5) ** 2 * 2.2 - (ph - H) * smooth(5, 9, d)); }
+  return y;
+}
 export function buildShikharji() {
-  const g = new THREE.Group(), f = new THREE.Group(), R = rng(73);
+  const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(600, 0.2, 600, mat('#5b7a43', 0.95)));
-  const H = 90, L = 200;
-  const ridge = mesh(new THREE.CylinderGeometry(1, 1.6, 1, 14, 3).translate(0, 0.5, 0), HILL);
-  ridge.scale.set(L / 2, H, 60);
-  g.add(ridge);
-  // Tonks along the crest: square shrines with domed roofs and footprint shrines inside
-  const bodies = [], domes = [];
-  for (let i = 0; i < 20; i++) {
-    const x = -L / 2 + 12 + (i / 19) * (L - 24), z = Math.sin(i * 0.9) * 8, y = H + Math.cos(i * 1.3) * 0.2;
-    bodies.push([x, y, z, 4, 3.6, 4]);
-    domes.push([x, y + 3.6, z, 4, 3, 4]);
-  }
-  f.add(box(L * 0.9, 1, 30, SHADE, 0, H - 0.6, 0), inst(unitBox(), bodies, WHITE), inst(unitHemi(16), domes, WHITE));
-  // The tonk of Parshvanath on the highest point, and the Jal Mandir temple
-  f.add(box(9, 7, 9, WHITE, 40, H, -4), at(hemi(4.5, WHITE, 20), 40, H + 7, -4), at(kalash(2.2), 40, H + 11.4, -4));
-  f.add(at(nagaraTemple({ w: 8, h: 12, m: WHITE, shade: SHADE, plinth: 1, urus: 4, halls: [[10, 5, 0, 'dome']] }), -30, H, 0));
-  // Pilgrim path climbing the forested slope
-  for (let k = 0; k < 40; k++) g.add(box(3, 0.6, 3, SHADE, 90 - k * 2 + Math.sin(k * 0.4) * 15, k * (H / 40), 90 - k * 2));
+  g.add(box(700, 0.2, 500, mat('#5b7a43', 0.95)));
+  g.add(heightField(440, 240, 180, (x, z) => ridgeY(x, z) - 0.3, { rock: ['#7d7462', '#8b8170'], cover: '#47693a', steep: 0.55, band: 12 }));
+  // A tonk on each summit: a square shrine under a dome, footprints of the Tirthankara inside;
+  // Parshvanath's tonk, larger, with a spire.
+  const bodies = [], domes = [], plinths = [];
+  PEAKS.forEach(([x, z, h], i) => {
+    if (i === 17) return;
+    plinths.push([x, h - 0.6, z, 6, 1, 6]);
+    bodies.push([x, h + 0.4, z, 3.6, 3.4, 3.6]);
+    domes.push([x, h + 3.8, z, 3.6, 2.8, 3.6]);
+  });
+  f.add(inst(unitBox(), plinths, SHADE), inst(unitBox(), bodies, WHITE), inst(unitHemi(16), domes, WHITE));
+  const [px, pz, ph] = PEAKS[17];
+  f.add(box(14, 1.2, 14, SHADE, px, ph - 0.8, pz), at(nagaraTemple({ w: 7, h: 11, m: WHITE, shade: SHADE, plinth: 0.6, urus: 4, halls: [[8, 4.5, 0, 'dome']] }), px, ph + 0.4, pz - 3));
+  // The Jal Mandir, a larger temple in a saddle of the ridge.
+  const jx = -40, jy = ridgeY(jx, 0);
+  f.add(box(20, 1, 26, SHADE, jx, jy - 0.6, 0), at(nagaraTemple({ w: 8, h: 12, m: WHITE, shade: SHADE, plinth: 1, urus: 4, halls: [[10, 5, 0, 'dome']] }), jx, jy + 0.4, -4));
+  // The pilgrim path, zig-zagging up the southern slope.
+  const steps = [];
+  for (let k = 0; k < 60; k++) { const z = 120 - k * 1.9, x = 70 + 22 * Math.sin(k * 0.35); steps.push([x, ridgeY(x, z) - 0.2, z, 2.6, 0.5, 2.6]); }
+  g.add(inst(unitBox(), steps, SHADE));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.4, 0.42, 1.25] };
+  return { group: g, focus: f, view: [0.35, 0.36, 1.2] };
 }
