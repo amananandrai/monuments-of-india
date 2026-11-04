@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mesh, box, cyl, at, archWall, rise, hemi, finial } from '../helpers.js';
+import { M, mesh, box, cyl, at, onFace, archWall, rise, hemi, finial } from '../helpers.js';
 import { archRing, hood, merlons, mergeByMaterial } from './components.js';
 import { doorLeaves, interior } from './doorways.js';
 import { pierced } from './mughal.js';
@@ -81,4 +81,32 @@ export function fortGate(w, h, d, aw, ah, {
     g.add(mesh(geo, trim));
   }
   return mergeByMaterial(g);
+}
+
+// The finer detail of a round tower or bastion, rb in radius at its foot and rt at its top, h tall
+// (on y = 0, centred on its own axis): a battered plinth course, moulded string courses, and arrow
+// slits in rings of n between them, staggered from one ring to the next.
+export function towerDetail(rb, rt, h, m, trim = m, { n = 8, seg = 24, courses = [0.34, 0.68], slits = [0.2, 0.5, 0.82] } = {}) {
+  const g = new THREE.Group(), r = (y) => rb + ((rt - rb) * y) / h;
+  g.add(cyl(rb * 1.04, rb * 1.08, Math.min(1.2, h * 0.05), trim, 0, 0, 0, seg));
+  for (const t of courses) { const y = t * h, rr = r(y) + Math.max(0.08, rb * 0.025); g.add(cyl(rr, rr, Math.min(0.5, h * 0.025), trim, 0, y, 0, seg)); }
+  // On a polygonal tower (seg of 12 or fewer sides) the slits sit at the middle of its faces.
+  const poly = seg <= 12, ap = poly ? Math.cos(Math.PI / seg) : 1;
+  if (poly) n = seg;
+  const sw = Math.min(0.35, rb * 0.08), sh = Math.min(1.4, h * 0.07);
+  slits.forEach((t, i) => {
+    const y = t * h;
+    for (let k = 0; k < n; k++) {
+      const a = ((k + (poly ? 0.5 : (i % 2) * 0.5)) / n) * Math.PI * 2, rr = r(y + sh / 2) * ap + 0.012;
+      g.add(onFace(box(sw, sh, 0.05, M.recess, 0, y, 0), a, rr));
+    }
+  });
+  return mergeByMaterial(g);
+}
+
+// A row of arrow slits along x on a wall face at z = 0: n slits w × h over len, from height y.
+export function slitRow(len, n, y, w, h) {
+  const g = new THREE.Group();
+  for (let k = 0; k < n; k++) g.add(box(w, h, 0.05, M.recess, -len / 2 + ((k + 0.5) / n) * len, y, 0.02));
+  return g;
 }

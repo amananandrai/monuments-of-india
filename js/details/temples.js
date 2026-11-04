@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, rng, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT } from '../helpers.js';
-import { frieze, mergeByMaterial } from './components.js';
+import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol } from './components.js';
 import { templeDoorway, templePorch, steps, doorFrame, doorLeaves, guardian } from './doorways.js';
 import { lion } from './animals.js';
 
@@ -87,8 +87,34 @@ export function nagaraTemple({
   }
   e.add(at(steps(stairW, plinth, Math.max(3, Math.ceil(plinth / 0.42)), shade, 0.45), 0, 0, z + 6));
   g.add(mergeByMaterial(e));
+  if (placed.length) g.add(sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM));
   g.userData.length = z;
   return g;
+}
+
+// The finer detail of a Nagara sanctum (its front face hidden by the first hall): the mouldings of
+// its base (khura, kumbha and kalasha, stepping in as they rise), a band across the wall and a
+// cornice under the spire; a niche on each outer face with an image in it, and smaller empty niches
+// either side on a large temple; and the ribbed amalaka stones (bhumi-amalakas) on the corners of
+// the spire, one at each of its storeys.
+function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM) {
+  const d = new THREE.Group(), wh = w * 0.7, u = Math.max(0.12, w * 0.018);
+  d.add(at(mouldings(sw, sw, [[0, 2 * u, 2 * u, shade], [2 * u, 1.5 * u, 1.4 * u], [3.5 * u, u, 0.9 * u, shade], [wh * 0.8, u, 0.7 * u], [wh - 1.6 * u, 1.6 * u, 2 * u, shade]], m), 0, plinth, 0));
+  const nw = sw * 0.17, nh = wh * 0.42, ny = plinth + wh * 0.24;
+  for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) {
+    d.add(onFace(at(templeNiche(nw, nh, m, { figure: guardian(nh * 0.88, m) }), 0, ny, 0), a, sw / 2));
+    if (sw > 10) for (const s of [-1, 1]) d.add(onFace(at(templeNiche(nw * 0.6, nh * 0.62, m), 0, ny + nh * 0.12, 0), a, sw / 2, s * sw * 0.32));
+  }
+  const sy = plinth + wh, am = new THREE.SphereGeometry(1, 16, 6);
+  for (let k = 1; k <= 4; k++) {
+    const t = k / 5, wt = w * prof(t), y = sy + t * h, r = wt * 0.085;
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+      const o = mesh(am, spireM, sx * wt * 0.42, y, sz * wt * 0.42);
+      o.scale.set(r, r * 0.42, r);
+      d.add(o);
+    }
+  }
+  return mergeByMaterial(d);
 }
 
 // A pillared hall: a solid core inside a ring of columns, a slab and a stepped roof with a bell and
@@ -153,6 +179,17 @@ export function gopuram(w, d, h, tiers, seed, palette = PAINT) {
   }
   g.add(box(pw + 0.4, bh - ph, d * 0.96, M.granite, 0, ph));
   g.add(box(w * 1.02, bh * 0.08, d * 1.02, M.graniteDark, 0, bh));
+  // The base's finer detail, on both faces: mouldings along the plinth course, and on the upper
+  // course a niche with an image either side of the passage, between pilasters.
+  const bd = new THREE.Group(), nw = Math.min(uw * 0.3, 2.2), nh = bh * 0.7 * 0.52;
+  for (const a of [0, Math.PI]) for (const sx of [-1, 1]) {
+    const lo = sx * (pw / 2 + lw / 2), up = sx * (pw / 2 + uw / 2);
+    for (const [y, t] of [[bh * 0.04, 0.1], [bh * 0.16, 0.06]]) bd.add(onFace(box(lw - 0.1, bh * 0.05, t, M.granite, 0, y, t / 2), a, d / 2 - 0.01, lo));
+    bd.add(onFace(at(templeNiche(nw, nh, M.granite, { figure: idol(nh * 0.86, M.granite), crown: false }), 0, bh * 0.3 + bh * 0.7 * 0.2, 0), a, d * 0.48, up));
+    bd.add(onFace(at(pilasters(uw * 0.84, 2, Math.min(0.5, uw * 0.06), bh * 0.66, 0.1, M.granite), 0, bh * 0.31, 0), a, d * 0.48, up));
+    bd.add(onFace(box(uw - 0.1, bh * 0.04, 0.16, M.granite, 0, bh * 0.94, 0.08), a, d * 0.48, up));
+  }
+  g.add(mergeByMaterial(bd));
   // The passage: stepped frames at both ends, beams across its ceiling, the doors at its middle.
   const p = new THREE.Group(), bw = Math.min(0.45, Math.max(0.18, (bh * 1.08 - ph) / 3.4));
   for (const a of [0, Math.PI]) p.add(onFace(doorFrame(pw, ph, { bands: 3, bw, depth: 0.95, d0: 0.5, m: M.granite, carve: frieze(M.granite) }), a, d * 0.48));
@@ -177,6 +214,21 @@ export function gopuram(w, d, h, tiers, seed, palette = PAINT) {
   const shala = mesh(new THREE.CylinderGeometry(sr, sr, sl, 18), M.stucco, 0, y + sr * 0.5, 0);
   shala.rotation.z = Math.PI / 2;
   g.add(shala);
+  // The crowning vault's gable ends, each a horseshoe arch (kudu) round a mask, and a great kudu
+  // window on its front and back.
+  const cy = y + sr * 0.5, kd = new THREE.Group();
+  for (const sx of [-1, 1]) {
+    const k = mesh(new THREE.TorusGeometry(sr * 1.06, sr * 0.13, 6, 20, Math.PI * 1.3).rotateZ(-Math.PI * 0.15), M.stucco, sx * (sl / 2 + 0.05), cy, 0);
+    k.rotation.y = Math.PI / 2;
+    const mask = mesh(new THREE.SphereGeometry(sr * 0.35, 12, 8), pm[(seed + 2) % pm.length], sx * (sl / 2 + 0.02), cy + sr * 0.1, 0);
+    mask.scale.x = 0.4;
+    kd.add(k, mask);
+  }
+  for (const sz of [-1, 1]) {
+    const k = mesh(new THREE.TorusGeometry(sr * 0.5, sr * 0.1, 6, 16, Math.PI * 1.3).rotateZ(-Math.PI * 0.15), M.stucco, 0, cy + sr * 0.05, sz * sr * 0.93);
+    kd.add(k, mesh(new THREE.CircleGeometry(sr * 0.42, 16), M.recess, 0, cy + sr * 0.05, sz * (sr * 0.96 + 0.02)).rotateY(sz < 0 ? Math.PI : 0));
+  }
+  g.add(mergeByMaterial(kd));
   const nk = Math.max(3, Math.round(sl / 2.6) | 1);
   for (let k = 0; k < nk; k++) g.add(at(kalash(Math.min(2.2, sr * 0.9), M.gild), -sl / 2 + (k + 0.5) * (sl / nk), y + sr * 1.45, 0));
   const im = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), mat('#ffffff', 0.75), figs.length);

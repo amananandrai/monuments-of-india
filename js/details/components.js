@@ -519,3 +519,141 @@ export function mergeByMaterial(root) {
   empty.forEach((o) => o.parent && o.parent.remove(o));
   return root;
 }
+
+/* ---------- walls: courses, pilasters, windows, balconies, niches ---------- */
+
+// A moulded course round a rectangular block w × d centred on x = z = 0: a band h tall from height
+// y, standing `proud` out from all four faces (sunk a centimetre into the wall, so it shares no
+// face with it). The long strips on the ±z faces run over the corners; the ±x strips stop at them.
+export function beltCourse(w, d, y, h, proud, m) {
+  const g = new THREE.Group(), e = 0.01;
+  for (const s of [-1, 1]) {
+    g.add(box(w + 2 * proud, h, proud + e, m, 0, y, s * (d / 2 + (proud - e) / 2)));
+    g.add(box(proud + e, h * 0.999, d - 0.02, m, s * (w / 2 + (proud - e) / 2), y, 0));
+  }
+  return g;
+}
+
+// A stack of courses round a block w × d: [[y, h, proud], ...], as the mouldings of a temple's base
+// (adhishthana) or a plinth.
+export function mouldings(w, d, courses, m) {
+  const g = new THREE.Group();
+  for (const [y, h, proud, cm = m] of courses) g.add(beltCourse(w, d, y, h, proud, cm));
+  return g;
+}
+
+// n flat pilasters spread over len along x, each w wide, h tall and `proud` out from a wall at
+// z = 0, with a base block and a capital; facing +z.
+export function pilasters(len, n, w, h, proud, m) {
+  const g = new THREE.Group();
+  for (let k = 0; k < n; k++) {
+    const x = n === 1 ? 0 : -len / 2 + (k / (n - 1)) * len;
+    g.add(box(w, h - 0.02, proud, m, x, 0.01, proud / 2));
+    g.add(box(w * 1.3, Math.min(0.5, h * 0.06), proud * 1.5, m, x, 0, proud * 0.75));
+    g.add(box(w * 1.35, Math.min(0.45, h * 0.05), proud * 1.6, m, x, h - Math.min(0.45, h * 0.05), proud * 0.8));
+  }
+  return g;
+}
+
+// A window on a wall at z = 0, w × h from its sill at y = 0: a dark recess, a moulded frame and a
+// projecting sill, with a pierced screen in it if `screen` is a material. shape: 'pointed', 'round'
+// or 'flat'.
+export function windowFrame(w, h, m, { shape = 'pointed', screen = null, frame = Math.min(0.3, w * 0.12), back = M.recess } = {}) {
+  const g = new THREE.Group();
+  if (shape === 'flat') {
+    g.add(box(w, h, 0.03, back, 0, 0, 0.015));
+    if (screen) g.add(box(w * 0.98, h * 0.98, 0.03, screen, 0, h * 0.01, 0.05));
+    for (const x of [-1, 1]) g.add(box(frame, h + frame, 0.1, m, x * (w + frame) / 2, 0, 0.05));
+    g.add(box(w + 2 * frame, frame, 0.12, m, 0, h, 0.06));
+  } else {
+    const pointed = shape === 'pointed';
+    g.add(at(archSlab(w, h, pointed, back, 0.03), 0, 0, 0));
+    if (screen) g.add(at(archSlab(w * 0.98, h * 0.98, pointed, screen, 0.03), 0, 0, 0.035));
+    g.add(at(archRing(w, h, pointed, frame, 0.1, m), 0, 0, 0));
+  }
+  g.add(box(w + 2.4 * frame, Math.max(0.08, frame * 0.6), 0.22, m, 0, -Math.max(0.08, frame * 0.6), 0.11));
+  return g;
+}
+
+// A curved (bangla) roof w long along x and d deep, rising rh: a vault whose section is half a
+// sine, as on the jharokhas and pavilions of Rajput and late Mughal buildings. Its eaves are at
+// y = 0 from z = 0 to z = d.
+export function banglaRoof(w, d, rh, m) {
+  const sh = new THREE.Shape(), n = 12;
+  sh.moveTo(0, 0);
+  for (let k = 0; k <= n; k++) { const u = k / n; sh.lineTo(-u * d, Math.sin(u * Math.PI) * rh); }
+  sh.lineTo(-d, -rh * 0.12); sh.lineTo(0, -rh * 0.12); sh.closePath();
+  const geo = new THREE.ExtrudeGeometry(sh, { depth: w, bevelEnabled: false });
+  geo.translate(0, 0, -w / 2);
+  geo.rotateY(Math.PI / 2);
+  return mesh(geo, m);
+}
+
+// A jharokha: an oriel window w wide and h high (sill to eave) projecting d from a wall at z = 0,
+// its sill at y = 0. A corbelled base on brackets, a pierced panel on three sides, four posts, a
+// dark opening behind, an eave and a roof: 'bangla' (curved), 'dome' (a small ribbed dome) or 'flat'.
+export function jharokha(w, h, m, { d = w * 0.5, roof = 'bangla', roofM = m, trim = m, screen = jali(m) } = {}) {
+  const g = new THREE.Group(), t = Math.max(0.1, h * 0.05), ph = h * 0.32;
+  g.add(box(w, t, d, trim, 0, -t, d / 2));
+  g.add(box(w * 0.8, t, d * 0.72, m, 0, -2 * t, d * 0.36), box(w * 0.55, t, d * 0.45, m, 0, -3 * t, d * 0.225));
+  g.add(placeAll(bracketGeo(h * 0.32, d * 0.85, Math.max(0.08, w * 0.07)), [[-w * 0.36, -t, 0], [w * 0.36, -t, 0]], trim));
+  g.add(box(w - 0.04, ph, 0.08, screen, 0, 0, d - 0.06));
+  for (const s of [-1, 1]) g.add(box(0.08, ph, d - 0.14, screen, s * (w / 2 - 0.06), 0, d / 2 - 0.03));
+  g.add(box(w * 0.86, h * 0.62, 0.03, M.recess, 0, 0.02, 0.016));
+  const pr = Math.max(0.04, w * 0.03);
+  for (const x of [-1, 1]) for (const z of [0.08, d - 0.08]) g.add(cyl(pr, pr * 1.2, h - ph - t * 0.5, m, x * (w / 2 - 0.08), ph, z, 8));
+  g.add(box(w + 0.16, t, d + 0.12, trim, 0, h - t * 0.5, d / 2));
+  const top = h + t * 0.5;
+  if (roof === 'bangla') g.add(at(banglaRoof(w + 0.3, d + 0.24, Math.min(w, d) * 0.45, roofM), 0, top + 0.02, -0.04));
+  else if (roof === 'dome') {
+    const r = Math.min(w, d * 2) * 0.42;
+    g.add(at(ribbed(mesh(new THREE.SphereGeometry(r, 20, 8, 0, Math.PI * 2, 0, Math.PI / 2), roofM), 12, 0.04), 0, top, d / 2));
+    g.add(at(finial(r * 1.2), 0, top + r * 0.95, d / 2));
+  } else g.add(box(w + 0.3, t * 0.8, d + 0.3, trim, 0, top, d / 2));
+  return g;
+}
+
+// A niche on a temple wall (devakoshtha) at z = 0: a recess w × h with an image in it, pilasters
+// either side, a sill and a lintel, and over it a small stepped pediment with an amalaka. Faces +z,
+// sill at y = 0. figure: a group to stand in the niche (scaled to fit), or null for an empty niche.
+export function templeNiche(w, h, m, { depth = Math.max(0.15, w * 0.18), figure = null, crown = true } = {}) {
+  const g = new THREE.Group(), pw = w * 0.16;
+  g.add(box(w, h, 0.03, M.recess, 0, 0, 0.015));
+  for (const s of [-1, 1]) g.add(box(pw, h, depth, m, s * (w / 2 + pw / 2), 0, depth / 2));
+  g.add(box(w + 2.6 * pw, pw * 0.7, depth * 1.25, m, 0, -pw * 0.7, depth * 0.62));
+  g.add(box(w + 2.6 * pw, pw * 0.8, depth * 1.3, m, 0, h, depth * 0.65));
+  if (crown) {
+    let y = h + pw * 0.8, cw = w + 1.6 * pw;
+    for (let k = 0; k < 3; k++) { g.add(box(cw, pw * 0.6, depth, m, 0, y, depth / 2)); y += pw * 0.6; cw *= 0.72; }
+    const a = mesh(new THREE.SphereGeometry(cw * 0.55, 12, 6), m, 0, y + cw * 0.2, depth / 2);
+    a.scale.y = 0.45;
+    g.add(a);
+  }
+  if (figure) g.add(at(figure, 0, 0.02, 0.08));
+  return g;
+}
+
+// A sunk panel w × h on a wall at z = 0: a frame of four bars `band` wide round a field carved or
+// inlaid with `field` (a frieze, a jali, a dark stone), from y = 0.
+export function panel(w, h, band, m, field = frieze(m), depth = 0.06) {
+  const g = new THREE.Group();
+  g.add(box(w - 2 * band + 0.02, h - 2 * band + 0.02, 0.025, field, 0, band - 0.01, 0.0125));
+  for (const s of [-1, 1]) g.add(box(band, h, depth, m, s * (w - band) / 2, 0, depth / 2));
+  for (const y of [0, h - band]) g.add(box(w - 2 * band, band, depth, m, 0, y, depth / 2));
+  return g;
+}
+
+// A small standing image in relief, about h tall, facing +z on y = 0: a pedestal, legs and robe, a
+// torso, arms at the sides, a head and a tall crown. Cheap enough to fill rows of niches where the
+// sculpted guardian (figures.js) would cost too much.
+export function idol(h, m) {
+  const g = new THREE.Group(), u = h / 10;
+  g.add(box(u * 3, u * 0.7, u * 1.6, m));
+  g.add(cyl(u * 1.0, u * 1.35, u * 3.6, m, 0, u * 0.7, 0, 10));
+  g.add(cyl(u * 1.15, u * 0.95, u * 2.4, m, 0, u * 4.3, 0, 10));
+  for (const s of [-1, 1]) g.add(cyl(u * 0.32, u * 0.38, u * 2.6, m, s * u * 1.35, u * 4.0, 0, 6));
+  g.add(at(mesh(new THREE.SphereGeometry(u * 0.75, 10, 8), m), 0, u * 7.5, 0));
+  g.add(cyl(u * 0.25, u * 0.6, u * 1.6, m, 0, u * 8.1, 0, 8));
+  g.add(at(mesh(new THREE.TorusGeometry(u * 1.3, u * 0.12, 4, 16, Math.PI), m), 0, u * 7.4, -u * 0.3));
+  return g;
+}

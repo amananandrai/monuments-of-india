@@ -1,6 +1,45 @@
+import { railingRing, windowFrame, mergeByMaterial } from './components.js';
 import * as THREE from 'three';
-import { mat, mesh, cyl, at } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace } from '../helpers.js';
 import { trees, boats, asiBoard, scatter } from './realism.js';
+
+// Fort Aguada, finer detail. The Portuguese laterite walls carry a rounded cordon a little below
+// the parapet, with embrasures for the guns along it; the lighthouse of 1864 has a gallery railing
+// round its lantern, a door and small windows up its shaft. Dimensions follow js/monuments/fort-aguada.js.
+const LAT_DARK = mat('#7d4530', 0.95), WHITE_ = mat('#eeeae2', 0.8);
+function architecture(f) {
+  const d = new THREE.Group(), H = 24;
+  const pts = [[-50, -34], [40, -40], [60, -4], [44, 34], [-30, 40], [-60, 6]];
+  pts.forEach(([x0, z0], i) => {
+    const [x1, z1] = pts[(i + 1) % pts.length], len = Math.hypot(x1 - x0, z1 - z0), ry = Math.atan2(-(z1 - z0), x1 - x0);
+    const parts = i === 3 ? [[0, 0.5 - 6 / len], [0.5 + 6 / len, 1]] : [[0.07, 0.93]];
+    for (const [t0, t1] of parts) {
+      const tm = (t0 + t1) / 2, l = len * (t1 - t0) - 0.1;
+      const c = box(l, 0.45, 5.5, LAT_DARK, x0 + (x1 - x0) * tm, H + 5, z0 + (z1 - z0) * tm);
+      c.rotation.y = ry;
+      d.add(c);
+      // Embrasures: dark notches cut across the top of the parapet.
+      const n = Math.floor(l / 9);
+      for (let k = 0; k < n; k++) {
+        const t = t0 + ((k + 0.5) / n) * (t1 - t0), e = box(1.2, 1.2, 5.06, M.recess, x0 + (x1 - x0) * t, H + 5.85, z0 + (z1 - z0) * t);
+        e.rotation.y = ry;
+        d.add(e);
+      }
+    }
+  });
+  // The lighthouse at (18, H, 10): a gallery railing, a door and windows on four sides.
+  d.add(at(railingRing(4.5, 1.1, LAT_DARK, LAT_DARK), 18, H + 14.6, 10));
+  for (let k = 0; k < 4; k++) {
+    const a = (k / 4) * Math.PI * 2 + 0.6, t = at(new THREE.Group(), 18, H, 10);
+    for (const y of [4.5, 9]) t.add(onFace(at(windowFrame(0.7, 1.4, WHITE_, { shape: 'round', frame: 0.12 }), 0, y, 0), a, 4 - (y + 0.7) / 14 * 0.8 + 0.02));
+    d.add(t);
+  }
+  const door = at(new THREE.Group(), 18, H, 10);
+  door.add(onFace(at(windowFrame(1.2, 2.4, LAT_DARK, { shape: 'round', frame: 0.18 }), 0, 0.15, 0), Math.PI * 0.75, 3.95));
+  d.add(door);
+  mergeByMaterial(d);
+  f.add(d);
+}
 
 // Fort Aguada: iron cannon on the ramparts looking out to sea, coconut palms and cashew scrub on
 // the headland, and fishing boats in the Mandovi's mouth.
@@ -12,6 +51,7 @@ function cannon() {
   return g;
 }
 export function addDetails(f, g) {
+  architecture(f);
   const H = 24;
   for (const [x, z, ry] of [[-44, -30, Math.PI + 0.3], [30, -36, Math.PI], [54, -6, Math.PI / 2], [-54, 4, -Math.PI / 2]]) f.add(at(cannon(), x, H + 7, z).rotateY(ry));
   const head = scatter(60, [-140, 140, -95, 95], { seed: 3, gap: 9 }).filter(([x, z]) => { const r = Math.hypot(x / 125, z / 85); return r < 0.9 && !(x > -66 && x < 66 && z > -46 && z < 46); });
