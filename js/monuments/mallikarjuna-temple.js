@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, at, rng, pidaRoof, hemi, kalash, inst, unitBox, aroundRect } from '../helpers.js';
 import { gopuram, wallWithGaps } from '../details/temples.js';
+import { addDetails } from '../details/mallikarjuna-temple.js';
 
 const CREAM = ['#efe7d6', '#e2d3b7', '#d6c5a4', '#f4efe4'];
 const WALL = mat('#b9a586', 0.9);
@@ -28,5 +29,6 @@ export function buildMallikarjuna() {
     f.add(box(w * 1.1, 8 * sc, w * 1.1, mat('#e9e0cc', 0.85), 0, 0, z), at(r, 0, 8 * sc, z), at(hemi(w * 0.24, M.gild, 20), 0, 8 * sc + r.userData.top, z), at(kalash(w * 0.15), 0, 8 * sc + r.userData.top + w * 0.24, z));
   }
   f.add(box(22, 6, 18, mat('#e9e0cc', 0.85), 0, 0, 20));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.75, 0.38, 1.2] };
 }

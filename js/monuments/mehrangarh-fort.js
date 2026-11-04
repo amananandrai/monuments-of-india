@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, chhatri, inst, unitBox, surface } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
+import { addDetails } from '../details/mehrangarh-fort.js';
 
 const SAND = mat('#b9774f', 0.9);
 const SAND_LIGHT = mat('#cf9a6e', 0.85);
@@ -32,5 +33,6 @@ export function buildMehrangarh() {
   for (let k = 0; k < 22; k++) jali.push([-42 + k * 3, H + 28, 12.2, 2, 4, 0.4]);
   f.add(inst(unitBox(), jali, surface(mat('#c48a62', 0.85), 'lattice')));
   for (const x of [-38, -18, 2, 20, 46]) f.add(at(chhatri(2.6, 7, SAND_LIGHT), x, H + 38, 8));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.35, 0.22, 1.25] };
 }

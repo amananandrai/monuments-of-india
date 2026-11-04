@@ -227,10 +227,14 @@ export function deer(spots, { y = 0 } = {}) {
 
 /* ---------- caparisoned elephant ---------- */
 
+// Materials by colour, shared by every elephant, camel and saddle that uses the same one.
+const sharedMats = new Map();
+const shared = (c, r, m) => { const k = c + r + m; if (!sharedMats.has(k)) sharedMats.set(k, surface(mat(c, r, m), 'none')); return sharedMats.get(k); };
+
 // An elephant dressed for a procession or the ride up to a fort: a painted forehead, a long
 // embroidered cloth over its back and a canopied howdah, with a mahout on its neck.
 export function rideElephant(m, s = 1, { cloth = '#b3262e', trim = '#e3b54a', howdah = true } = {}) {
-  const g = elephant(m, 1), C = surface(mat(cloth, 0.8), 'none'), T = surface(mat(trim, 0.35, 0.8), 'none');
+  const g = elephant(m, 1), C = shared(cloth, 0.8, 0), T = shared(trim, 0.35, 0.8);
   g.add(box(2.3, 0.12, 2.6, C, 0, 3.3, 0), box(0.1, 1.5, 2.4, C, 1.18, 2.0, 0), box(0.1, 1.5, 2.4, C, -1.18, 2.0, 0));
   g.add(box(2.4, 0.08, 2.7, T, 0, 3.22, 0));
   // The howdah: a railed seat with a canopy on four posts (a temple elephant goes without)
@@ -240,9 +244,9 @@ export function rideElephant(m, s = 1, { cloth = '#b3262e', trim = '#e3b54a', ho
     g.add(at(mesh(new THREE.ConeGeometry(1.15, 0.6, 4).rotateY(Math.PI / 4), C), 0, 5.4, -0.1));
   }
   // The painted forehead and a mahout astride the neck
-  g.add(at(mesh(new THREE.CircleGeometry(0.42, 16), surface(mat('#f2c21c', 0.8), 'none')), 0, 3.0, 2.68).rotateX(-0.45));
-  g.add(cyl(0.16, 0.2, 0.6, surface(mat('#f4f1ea', 0.9), 'none'), 0, 3.55, 1.25, 8), mesh(new THREE.SphereGeometry(0.13, 8, 6), surface(mat('#8d5a3b', 0.7), 'none'), 0, 4.3, 1.25));
-  g.add(mesh(new THREE.SphereGeometry(0.15, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), surface(mat('#d9342b', 0.8), 'none'), 0, 4.36, 1.25));
+  g.add(at(mesh(new THREE.CircleGeometry(0.42, 16), shared('#f2c21c', 0.8, 0)), 0, 3.0, 2.68).rotateX(-0.45));
+  g.add(cyl(0.16, 0.2, 0.6, shared('#f4f1ea', 0.9, 0), 0, 3.55, 1.25, 8), mesh(new THREE.SphereGeometry(0.13, 8, 6), shared('#8d5a3b', 0.7, 0), 0, 4.3, 1.25));
+  g.add(mesh(new THREE.SphereGeometry(0.15, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), shared('#d9342b', 0.8, 0), 0, 4.36, 1.25));
   g.scale.setScalar(s);
   return g;
 }
@@ -302,7 +306,7 @@ const CAMEL = surface(mat('#b88a5a', 0.85), 'none');
 export function camels(spots, { y = 0, cloths = ['#b3262e', '#2f5d9a', '#e3b23c', '#2f7a3f'] } = {}) {
   const g = new THREE.Group();
   spots.forEach(([x, z, ry = 0, rider = false], i) => {
-    const c = new THREE.Group(), C = surface(mat(cloths[i % cloths.length], 0.8), 'none');
+    const c = new THREE.Group(), C = shared(cloths[i % cloths.length], 0.8, 0);
     c.add(mesh(sculpt('camel', camelField, { h: 0.045, reach: 0.2 }), statueMaterial(CAMEL)), box(0.75, 0.08, 1.1, C, 0, 2.48, -0.05), box(0.05, 0.6, 1.0, C, 0.37, 1.95, -0.05), box(0.05, 0.6, 1.0, C, -0.37, 1.95, -0.05));
     if (rider) c.add(cyl(0.17, 0.2, 0.62, surface(mat('#f4f1ea', 0.9), 'none'), 0, 2.56, -0.05, 8), mesh(new THREE.SphereGeometry(0.13, 8, 6), surface(mat('#8d5a3b', 0.7), 'none'), 0, 3.32, -0.05), mesh(new THREE.SphereGeometry(0.17, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), surface(mat('#e86a12', 0.8), 'none'), 0, 3.36, -0.05));
     c.position.set(x, y, z);

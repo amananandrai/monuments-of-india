@@ -3,6 +3,7 @@ import { M, V, box, cyl, group, at, onFace, archTop, rise, ONION, onionDome, fin
 import { mergeByMaterial } from '../details/components.js';
 import { arcadeSkin, mughalDoorway } from '../details/mughal.js';
 import { classicalDoor } from '../details/colonial.js';
+import { addDetails } from '../details/mysore-palace.js';
 
 export function buildMysorePalace() {
   const S = M.mysore, Rz = M.mysoreRose, g = new THREE.Group(), f = new THREE.Group();
@@ -82,5 +83,6 @@ export function buildMysorePalace() {
   }
   for (const x of [-22, -12, 12, 22]) f.add(at(chhatri(2.2, 6.5, S, Rz), x, b + 16.8, 20.5));
   f.add(bulbPoints(bulbs));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.55, 0.3, 1.2] };
 }

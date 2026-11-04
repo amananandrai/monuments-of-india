@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, at, inst, unitCyl, aroundRect } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
+import { addDetails } from '../details/mahakaleshwar-temple.js';
 
 const STONE = mat('#e2c79a', 0.85);
 const SHADE = mat('#b98f5f', 0.9);
@@ -18,5 +19,6 @@ export function buildMahakaleshwar() {
   f.add(box(26, 1, 22, SHADE, -28, 0, -14), box(22, 1.1, 18, M.water, -28, 0, -14));
   // Three-level temple under a tall spire ringed with smaller spires
   f.add(at(nagaraTemple({ w: 12, h: 24, m: STONE, shade: SHADE, spireM: SPIRE, plinth: 2, urus: 8, halls: [[14, 8, 5], [12, 7, 4]] }), 10, 0, -20));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.42, 1.15] };
 }

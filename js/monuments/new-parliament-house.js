@@ -3,6 +3,7 @@ import { M, mesh, box, cyl, group, at, onFace, FACES, inst, unitBox } from '../h
 import { mergeByMaterial } from '../details/components.js';
 import { interior, doorLeaves, steps } from '../details/doorways.js';
 import { cutSlab, headRing } from '../details/colonial.js';
+import { addDetails } from '../details/new-parliament-house.js';
 
 export function buildNewParliament() {
   const Rd = M.red, Bf = M.buff, g = new THREE.Group(), f = new THREE.Group();
@@ -53,5 +54,6 @@ export function buildNewParliament() {
   hall.rotation.y = Math.PI / 6;
   f.add(hall, box(4, 2, 4, Bf, 0, 28.7, 0), cyl(2.4, 3, 1.4, M.bronze, 0, 30.7, 0, 16), cyl(2.7, 2.7, 0.9, M.bronze, 0, 32.1, 0, 16));
   for (const a of FACES) f.add(onFace(group(box(1.4, 2.4, 2.4, M.bronze, 0, 33), at(mesh(new THREE.SphereGeometry(0.9, 12, 10), M.bronze), 0, 35.6, 0.3)), a, 1.1));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.4, 1.2] };
 }

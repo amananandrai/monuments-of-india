@@ -24,6 +24,8 @@ const CLOTH = plain('#ffffff', 0.9);
 const SKIN = plain('#ffffff', 0.7);
 const TIMBER = plain('#6e4f33', 0.8);
 const STONE = mat('#b9b2a6', 0.9);
+// White, for parts tinted per copy (cars, boats, awnings).
+const TINTED = plain('#ffffff', 0.85);
 
 /* ---------- instancing ---------- */
 
@@ -366,4 +368,18 @@ export function umbrellas(spots, { y = 0 } = {}) {
   if (!umbGeos) umbGeos = { pole: new THREE.CylinderGeometry(0.04, 0.05, 2.6, 6).translate(0, 1.3, 0), top: new THREE.ConeGeometry(1.5, 0.55, 12, 1, true).translate(0, 2.75, 0) };
   const p = spots.map(([x, z]) => [x, y, z, 1, 0]);
   return new THREE.Group().add(copies(umbGeos.pole, TIMBER, p), copies(umbGeos.top, plain('#c9a66a', 0.95, 0, { side: THREE.DoubleSide }), p));
+}
+
+// Market stalls at [x, z, ry]: a counter heaped with flowers or goods under a striped awning on
+// four poles, as the flower and pooja stalls outside a temple gate.
+let stallGeos = null;
+export function stalls(spots, { y = 0, awnings = ['#c2512a', '#2f5d9a', '#e3b23c', '#3c8a5a', '#b3262e'], goods = ['#f28a1a', '#f6c21c', '#d63c6a', '#f4f1ea'] } = {}) {
+  if (!stallGeos) stallGeos = {
+    counter: new THREE.BoxGeometry(2.4, 0.9, 1.2).translate(0, 0.45, 0),
+    heap: new THREE.SphereGeometry(0.5, 8, 5, 0, Math.PI * 2, 0, Math.PI / 2).scale(2, 0.5, 0.9).translate(0, 0.9, 0),
+    poles: mergeGeometries([[-1.15, -0.55], [1.15, -0.55], [-1.15, 0.55], [1.15, 0.55]].map(([x, z]) => new THREE.CylinderGeometry(0.03, 0.03, 2.2, 5).translate(x, 1.1, z))),
+    awning: new THREE.BoxGeometry(2.8, 0.08, 1.8).translate(0, 2.2, 0.2),
+  };
+  const p = spots.map(([x, z, ry = 0]) => [x, y, z, 1, ry]);
+  return new THREE.Group().add(copies(stallGeos.counter, TIMBER, p), copies(stallGeos.heap, TINTED, p, goods), copies(stallGeos.poles, TIMBER, p), copies(stallGeos.awning, TINTED, p, awnings));
 }

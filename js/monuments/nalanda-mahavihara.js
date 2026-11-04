@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, at, rng, inst, unitBox, aroundRect, surface } from '../helpers.js';
+import { addDetails } from '../details/nalanda-mahavihara.js';
 
 const BRICK = surface(mat('#a5553b', 0.95), 'brick');
 const BRICK_DARK = surface(mat('#844230', 0.95), 'brick');
@@ -34,5 +35,6 @@ export function buildNalanda() {
   f.add(at(t, 20, 0, 10));
   // Votive stupas round the temple
   for (let i = 0; i < 10; i++) f.add(box(3.4, 1.5 + R() * 3, 3.4, BRICK, 20 + (R() - 0.5) * 70, 0, -30 + R() * 16));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.5, 1.15] };
 }

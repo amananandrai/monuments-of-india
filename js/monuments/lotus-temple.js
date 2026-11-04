@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, box, cyl, group, petal } from '../helpers.js';
+import { addDetails } from '../details/lotus-temple.js';
 
 export function buildLotusTemple() {
   const g = new THREE.Group(), f = new THREE.Group(), deg = Math.PI / 180;
@@ -17,5 +18,6 @@ export function buildLotusTemple() {
     f.add(pool.rotateY(t2));
   }
   for (let k = 0; k < 9; k++) g.add(group(box(5, 0.3, 40, M.path, 0, 0.2, 60)).rotateY(k * 40 * deg));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.9, 0.3, 1.25] };
 }
