@@ -4,6 +4,7 @@ import {
   jali, archSlab, archRing, bracketGeo, placeAll, aroundCircle, chhajjaRing, railingRing, chhajja,
   arcadeScreen, mergeByMaterial,
 } from './components.js';
+import { trees, shrubs, people, lampPosts, vehicles, around } from './realism.js';
 
 // Old Parliament House (Samvidhan Sadan), finer detail (Lutyens and Baker, 1921–27). From
 // photographs and descriptions (Wikipedia, the Lok Sabha's Parliament House Estate booklet):
@@ -102,4 +103,13 @@ function porch() {
   g.add(at(chhajja(21, 1.6, 0.7, 0.18, CREAM), 0, 15, z));
   g.add(at(arcadeScreen(20, 1.3, 14, 0.85, 0.85, 0.25, M.red), 0, 16, z - 0.4));
   return g;
+}
+
+// Samvidhan Sadan, the old Parliament House: the lawns round the circular colonnade with their
+// hedges and trees, lamps, the white cars of members at the gates, and visitors.
+export function addDetails(f, g) {
+  g.add(trees(around(28, 122, 0, 0, 0.07), { kind: 'neem', seed: 3 }), shrubs(around(60, 96).map(([x, z]) => [x, z, 1.4]), { seed: 4 }));
+  g.add(lampPosts(around(16, 104, 0, 0, 0.2)));
+  g.add(vehicles(around(8, 112, 0, 0, 0.6).map(([x, z]) => [x, 0, z, Math.atan2(x, z) + Math.PI / 2]), { paints: ['#f2f2f2', '#f2f2f2', '#1d1d1d'], busShare: 0, seed: 5 }));
+  g.add(people(around(40, 92, 0, 0, 0.03).map(([x, z], i) => [x * (1 + (i % 3) * 0.03), z * (1 + (i % 3) * 0.03)]), { seed: 6 }));
 }

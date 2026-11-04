@@ -11,7 +11,7 @@ export function addDetails(f, g) {
   f.add(people(scatter(40, [-12, 12, -2, 34], { seed: 3, avoid: [[-8, 8, -2, 17], [-2.5, 2.5, 14, 22]] }).map(([x, z]) => [x, z, z < 17 ? 2 : 0]), { seed: 3, palette: ['#b3262e', '#f08a1c', '#2f5d9a', '#1f2d3d', '#e26a9c', '#6b5a48', '#f4f1ea'] }));
   g.add(people(scatter(30, [-8, 8, 36, 100], { seed: 4 }), { seed: 4, palette: ['#b3262e', '#f08a1c', '#2f5d9a', '#1f2d3d', '#3c8a5a'] }));
   for (const [x, z, ry] of [[10, 44, 0.2], [12, 50, 0.4], [-11, 58, -0.3], [9, 66, 3.0], [-12, 74, 2.8]]) {
-    const p = horse(PONY);
+    const p = horse(PONY, { coarse: true });
     p.scale.setScalar(0.4);
     p.position.set(x, 0, z);
     p.rotation.y = ry;

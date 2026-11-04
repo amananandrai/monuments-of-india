@@ -4,6 +4,8 @@ import {
   archRing, archSlab, rosette, clockFace, bracketGeo, placeAll, aroundCircle, alongFace, chhajjaRing,
   railingRing, arcadeScreen, merlons, lotusDome, petalRing, mergeByMaterial,
 } from './components.js';
+import { rng } from '../helpers.js';
+import { people, vehicles, autos, stalls, scatter, along } from './realism.js';
 
 // Charminar, finer detail (Muhammad Quli Qutb Shah, 1591). From photographs and descriptions:
 // - four minarets, each a fluted shaft rising through the building and on above the roof in two
@@ -96,4 +98,20 @@ export function addCharminarDetails(g, { b }) {
   }
   mergeByMaterial(d);
   g.add(d);
+}
+
+// Charminar in the middle of Hyderabad's old city: the road that runs round it and the four
+// streets that leave it, busy with auto-rickshaws and cars; the bangle shops of the Laad Bazaar
+// along the western street; and crowds of shoppers and visitors.
+export function addDetails(f, g) {
+  g.add(box(220, 0.1, 220, M.asphalt, 0, -0.06, 0));
+  const R = rng(9), cars = [], three = [];
+  for (let k = 0; k < 40; k++) { const a = (k / 40) * Math.PI * 2, r = 23 + (k % 2) * 4; (R() < 0.6 ? three : cars).push([Math.cos(a) * r, 0, Math.sin(a) * r, -a]); }
+  for (const s of [-1, 1]) for (let d = 34; d < 100; d += 9 + R() * 8) {
+    (R() < 0.6 ? three : cars).push([s * d, 0, s * 2.5, (s * Math.PI) / 2]);
+    (R() < 0.6 ? three : cars).push([s * 2.5, 0, s * d, s > 0 ? Math.PI : 0]);
+  }
+  g.add(vehicles(cars, { seed: 10, busShare: 0.08 }), autos(three));
+  g.add(stalls([...along(8, [-40, -9], [-100, -9]).map(([x, z]) => [x, z, 0]), ...along(8, [-40, 9], [-100, 9]).map(([x, z]) => [x, z, Math.PI])], { goods: ['#d9342b', '#2f7a3f', '#e3b54a', '#7a3f8f', '#2f5d9a'] }));
+  g.add(people([...scatter(60, [-100, -32, -12, 12], { seed: 11, avoid: [[-100, -32, -5, 5]] }), ...scatter(30, [-17, 17, -17, 17], { seed: 12, avoid: [[-10, 10, -10, 10]] })], { seed: 11 }));
 }

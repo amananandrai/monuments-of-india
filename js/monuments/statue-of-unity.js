@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, V, box, at, ellipsoid, sheet, face, fingers } from '../helpers.js';
 import { patelBody } from '../details/figures.js';
+import { addDetails } from '../details/statue-of-unity.js';
 
 // Sardar Patel, standing in dhoti, kurta and a shawl over the shoulders, arms at his sides.
 function patel(B) {
@@ -28,5 +29,6 @@ export function buildStatue() {
   f.add(at(patel(M.bronze), 0, 58, 0));
   g.add(box(160, 0.3, 160, M.grass));
   g.add(sheet(2400, 2400, M.river, 0, 0.08, 0));
+  addDetails(f, g);
   return { group: g, focus: f };
 }

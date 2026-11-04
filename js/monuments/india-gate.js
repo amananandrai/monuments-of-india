@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, surface, box, cyl, lathe, group, at, archWall, barrelVault } from '../helpers.js';
 import { addIndiaGateDetails, addCanopyDetails } from '../details/india-gate.js';
+import { addDetails } from '../details/india-gate.js';
 
 const NAMES = surface(mat('#d4bd98', 0.8), 'script');
 const BAND = surface(mat('#c9ad85', 0.9), 'frieze');
@@ -55,5 +56,6 @@ export function buildIndiaGate() {
   g.add(at(c, 0, 0, 70));
   g.add(box(18, 0.2, 260, M.path, 0, 0, 60));
   for (const x of [-34, 34]) g.add(box(48, 0.15, 260, M.grass, x, 0, 60));
+  addDetails(f, g);
   return { group: g, focus: f };
 }

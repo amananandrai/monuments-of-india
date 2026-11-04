@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, group, rng, inst, unitBox, hipRoof, onFace } from '../helpers.js';
 import { tibetanPortico, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
+import { addDetails } from '../details/tawang-monastery.js';
 
 const WHITE = mat('#efece4', 0.85);
 const MAROON = mat('#6b2a22', 0.85);
@@ -59,5 +60,6 @@ export function buildTawang() {
     f.add(cyl(0.12, 0.12, 10, WINDOW, x, T, 20, 6));
     for (let k = 0; k < 8; k++) f.add(box(0.8, 0.6, 0.05, [M.flagRed, M.saffron, M.flagGreen, M.navy, M.flagWhite][k % 5], x - Math.sign(x) * (1 + k * 1.6), T + 9.4 - k * 0.6, 20));
   }
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.38, 1.25] };
 }

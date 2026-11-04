@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, sheet } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
+import { addDetails } from '../details/somnath-temple.js';
 
 const STONE = mat('#d8b07a', 0.85);
 const SHADE = mat('#b8905c', 0.9);
@@ -14,5 +15,6 @@ export function buildSomnath() {
   f.add(cyl(0.8, 1, 9, STONE, 30, 3, -38, 10), cyl(0, 0.9, 2.4, M.gild, 30, 12, -38, 8));
   // The temple in Chalukya (Maru-Gurjara) style: tall spire with two rings of minor spires, and two halls
   f.add(at(nagaraTemple({ w: 14, h: 26, m: STONE, shade: SHADE, plinth: 3, urus: 8, halls: [[18, 9, 6], [16, 8, 5]] }), 0, 0, -20));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.32, 1.15] };
 }

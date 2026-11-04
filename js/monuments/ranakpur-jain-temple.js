@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, box, group, at, onFace, FACES, shikhara, flag, nagaraProfile, inst, unitCyl, unitHemi, unitSpire, aroundRect } from '../helpers.js';
 import { templeDoorway, templePorch } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
+import { addDetails } from '../details/ranakpur-jain-temple.js';
 
 export function buildRanakpur() {
   const Mb = M.ranak, Sh = M.marbleShade, g = new THREE.Group(), f = new THREE.Group();
@@ -32,5 +33,6 @@ export function buildRanakpur() {
   f.add(at(main, 0, 17.6, 0), at(flag(6, M.flagRed), 0, 17.6 + main.userData.top - 1, 0));
   for (const a of FACES) f.add(onFace(at(shikhara(7.5, 11, Mb, nagaraProfile, 10), 0, 17.6, 0), a, 8.5));
   for (const x of [-24, 24]) for (const z of [-24, 24]) f.add(at(shikhara(7, 10, Mb, nagaraProfile, 10), x, 12.6, z));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.95, 0.5, 1.1] };
 }

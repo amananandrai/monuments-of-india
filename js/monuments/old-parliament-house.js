@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, box, cyl, group, at, hemi, inst, unitBox, unitCyl } from '../helpers.js';
 import { addOldParliamentDetails } from '../details/old-parliament-house.js';
+import { addDetails } from '../details/old-parliament-house.js';
 
 export function buildOldParliament() {
   const Rd = M.red, Bf = M.buff, g = new THREE.Group(), f = new THREE.Group();
@@ -32,5 +33,6 @@ export function buildOldParliament() {
   // Column bases and capitals, the eave, jalis, windows, porches, the Central Hall's drum and dome,
   // and the estate railing: see js/details/old-parliament-house.js.
   addOldParliamentDetails(f, g);
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.8, 0.42, 1.2] };
 }

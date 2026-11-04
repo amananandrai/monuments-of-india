@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, box, cyl, at, onionDome, finial, chhatri, minaret, domeBands } from '../helpers.js';
 import { iwan, arcadeSkin } from '../details/mughal.js';
+import { addDetails } from '../details/jama-masjid.js';
 
 export function buildJamaMasjid() {
   const Rd = M.red, Mb = M.marble, g = new THREE.Group(), f = new THREE.Group();
@@ -37,5 +38,6 @@ export function buildJamaMasjid() {
   for (const s of [-1, 1]) f.add(at(minaret(34, 2.2, Rd, { capM: Mb }), s * 40, P, hz + 12));
   f.add(box(16, 0.6, 12, Mb, 0, P, 8), box(14, 0.7, 10, M.water, 0, P, 8));
   for (const x of [-51, 51]) f.add(at(chhatri(3, 8, Rd, Mb), x, P + 7.5, 51));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.65, 0.42, 1.2] };
 }

@@ -3,6 +3,7 @@ import { M, mat, mesh, box, cyl, lathe, at, onFace, FACES, hemi, group } from '.
 import { mergeByMaterial } from '../details/components.js';
 import { steps } from '../details/doorways.js';
 import { classicalDoor, porch } from '../details/colonial.js';
+import { addDetails } from '../details/victoria-memorial.js';
 
 export function buildVictoriaMemorial() {
   const Mb = M.marble, Sh = M.marbleShade, g = new THREE.Group(), f = new THREE.Group();
@@ -54,5 +55,6 @@ export function buildVictoriaMemorial() {
     cyl(0.06, 0.2, 2, M.bronze, 0.6, 2.4, 0.5, 6).rotateX(-0.9),
   );
   f.add(at(angel, 0, lt + 7, 0));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.55, 0.3, 1.2] };
 }

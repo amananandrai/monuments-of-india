@@ -9,7 +9,7 @@ const BAY = mat('#5a3a26', 0.85);
 export function addDetails(f, g) {
   f.add(at(tricolour(10), 0, 45.6, 0));
   for (let k = 0; k < 8; k++) {
-    const x = -28 + k * 8, h = horse(BAY);
+    const x = -28 + k * 8, h = horse(BAY, { coarse: true });
     h.scale.setScalar(0.42);
     h.position.set(x, 0, 64);
     g.add(h);

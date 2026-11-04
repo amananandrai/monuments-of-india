@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, ring, inst, unitBox, surface } from '../helpers.js';
+import { addDetails } from '../details/jallianwala-bagh.js';
 
 const RED = mat('#a5473a', 0.85);
 const BRICK = surface(mat('#8c5a45', 0.95), 'brick');
@@ -41,5 +42,6 @@ export function buildJallianwala() {
   well.position.z = 20;
   f.add(cyl(3.2, 3.2, 0.4, M.recess, -36, 0, 20, 20), well);
   f.add(box(16, 4, 1.2, BRICK, 40, 0, 26));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.32, 1.2] };
 }

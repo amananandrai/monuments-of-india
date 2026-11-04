@@ -142,9 +142,10 @@ function horseField() {
   ]);
   return { f: flatBase(body), lo: [-0.9, -0.05, -2.4], hi: [0.9, 4.35, 2.8] };
 }
-export function horse(m) {
+// coarse: a lighter mesh for small or distant horses (carriage teams, mounted guards, ponies).
+export function horse(m, { coarse = false } = {}) {
   const g = new THREE.Group();
-  g.add(figure(sculpt('horse', horseField, { h: 0.065, reach: 0.4 }), m));
+  g.add(figure(sculpt(coarse ? 'horse-coarse' : 'horse', horseField, { h: coarse ? 0.13 : 0.065, reach: 0.4 }), m));
   return g;
 }
 

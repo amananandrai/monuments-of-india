@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { surface } from '../surface.js';
 import { M, mat, mesh, box, cyl, at, V, pidaRoof, kalash, hemi, inst, unitCyl, aroundRect, ellipsoid, capsule, smoothLathe, drape, sheet, face } from '../helpers.js';
 import { thiruvalluvarBody } from '../details/figures.js';
+import { addDetails } from '../details/vivekananda-rock-memorial.js';
 
 const STONE = mat('#c9a98a', 0.85);
 const SHADE = mat('#9c7e62', 0.9);
@@ -57,5 +58,6 @@ export function buildVivekanandaRock() {
   f.add(box(12, 6, 10, STONE, 0, T + 1.4, -16), at(pidaRoof(12, 6, 3, 0.8, STONE, SHADE), 0, T + 7.4, -16));
   // The Thiruvalluvar statue on the neighbouring rock
   f.add(at(thiruvalluvar(), -75, 4.6, 18));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.7, 0.3, 1.2] };
 }

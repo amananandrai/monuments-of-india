@@ -3,6 +3,7 @@ import { M, mat, mesh, box, at, rng, flat, kalash, inst, aroundRect, sheet, onFa
 import { templeDoorway } from '../details/doorways.js';
 import { nandiGeometry } from '../details/animals.js';
 import { statueMaterial } from '../sdf.js';
+import { addDetails } from '../details/shore-temple.js';
 
 const GRANITE = mat('#8f8577', 0.95);
 const GRANITE_DARK = mat('#6d655a', 0.95);
@@ -52,5 +53,6 @@ export function buildShoreTemple() {
   big.position.z -= 10;
   small.position.z += 9;
   f.add(big, small);
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.95, 0.35, 1.0] };
 }

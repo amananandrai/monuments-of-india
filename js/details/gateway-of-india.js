@@ -4,6 +4,8 @@ import {
   jali, archCurve, archRing, archSlab, tympanum, bracketGeo, placeAll, alongFace, chhajja, railingRing,
   arcadeScreen, mughalChhatri, mergeByMaterial,
 } from './components.js';
+import { people, lampPosts, boats, scatter, along } from './realism.js';
+import { horse } from './animals.js';
 
 // Gateway of India, finer detail (George Wittet, 1913–24). From photographs and descriptions
 // (Britannica, Victorian Web, the CyArk scan on Google Arts & Culture): a Roman triumphal arch
@@ -127,4 +129,23 @@ export function addGatewayDetails(f, { p, b }) {
   // The four turrets of the central hall.
   for (const x of [-8.6, 8.6]) for (const z of [-6.6, 6.6]) d.add(at(gatewayTurret(1.45, b + 21.4 - p, m), x, p, z));
   f.add(mergeByMaterial(d));
+}
+
+// Apollo Bunder round the Gateway: the bronze equestrian statue of Chhatrapati Shivaji on its
+// pedestal facing the Gateway, crowds on the promenade, the ferries to Elephanta tied up at the
+// jetties and boats out in the harbour, and lamps along the sea wall.
+export function addDetails(f, g) {
+  const ped = new THREE.Group(), rider = new THREE.Group();
+  ped.add(box(5, 4, 8, M.basalt), box(5.6, 0.5, 8.6, M.plaster, 0, 4));
+  const h = horse(M.bronze);
+  h.scale.setScalar(0.85);
+  rider.add(h, cyl(0.38, 0.45, 1.4, M.bronze, 0, 2.6 * 0.85 + 0.2, 0.4, 10), mesh(new THREE.SphereGeometry(0.3, 12, 10), M.bronze, 0, 2.6 * 0.85 + 1.9, 0.45));
+  rider.add(cyl(0.03, 0.03, 2.2, M.bronze, 0.5, 2.6, 1.4, 6).rotateX(0.5));
+  ped.add(at(rider, 0, 4.5, 0));
+  ped.rotation.y = 0;
+  g.add(at(ped, 0, 0, -48));
+  g.add(people([...scatter(80, [-34, 34, -26, 2], { seed: 3, avoid: [[-10, 10, -12, 12]] }), ...scatter(30, [-30, 30, -60, -30], { seed: 4, avoid: [[-4, 4, -53, -43]] })], { seed: 3 }));
+  g.add(boats([[-30, 22, Math.PI / 2], [-22, 22, Math.PI / 2], [26, 22, Math.PI / 2], [34, 22, Math.PI / 2]], { y: 0.1, size: 3.4, canopy: true, colours: ['#f4f1ea', '#2f5d9a', '#f4f1ea', '#c2512a'] }));
+  g.add(boats([[-80, 90, 1.1], [60, 120, 2.3], [140, 70, 0.4], [-150, 140, 2.9], [10, 180, 1.7]], { y: 0.1, size: 2 }));
+  g.add(lampPosts(along(10, [-34, 2.5], [34, 2.5])));
 }

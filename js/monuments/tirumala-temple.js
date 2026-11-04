@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, pidaRoof, hemi, kalash, ribbed, inst, unitBox } from '../helpers.js';
 import { gopuram, wallWithGaps } from '../details/temples.js';
+import { addDetails } from '../details/tirumala-temple.js';
 
 const WHITE = ['#f2ede2', '#e9e1cf', '#f6f2ea', '#dcd3c0'];
 const LIME = mat('#efe9dd', 0.85);
@@ -32,5 +33,6 @@ export function buildTirumala() {
   const r = pidaRoof(12, 6, 3, 1.1, M.gild, M.gildDeep);
   f.add(at(r, 0, 7, 0), at(ribbed(hemi(3.6, M.gild, 24), 12, 0.06), 0, 7 + r.userData.top, 0), at(kalash(2.4), 0, 10.6 + r.userData.top, 0));
   f.add(box(2.4, 1.6, 2.4, M.granite, 0, 0, 14), cyl(0.4, 0.6, 15, M.gild, 0, 1.6, 14, 10), cyl(1, 0.3, 1, M.gild, 0, 16.6, 14, 10));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.7, 0.42, 1.2] };
 }

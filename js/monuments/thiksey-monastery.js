@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, at, rng, hipRoof, tibetanBlock, TIBETAN, inst, unitBox } from '../helpers.js';
 import { tibetanDoor } from '../details/doorways.js';
+import { addDetails } from '../details/thiksey-monastery.js';
 
 const ROCK = mat('#a08b6d', 0.95, 0, { flatShading: true });
 const PEAK = mat('#8e8172', 0.95, 0, { flatShading: true });
@@ -30,5 +31,6 @@ export function buildThiksey() {
   // Summit: the main assembly hall and the red Maitreya temple
   f.add(at(tibetanBlock(18, 9, 14, 2, OCHRE), -4, H - 6, 0), at(hipRoof(20, 16, 3, M.gild), -4, H + 3, 0));
   f.add(at(tibetanBlock(12, 7, 10, 2), 10, H - 8, 6), at(tibetanDoor(1.4, 2.6), 12, H - 8, 11));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.25, 0.3, 1.25] };
 }
