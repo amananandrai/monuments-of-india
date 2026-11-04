@@ -1,7 +1,9 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, rng, pidaRoof, wheel, elephant, inst, unitCyl, surface } from '../helpers.js';
+import { mat, mesh, box, cyl, at, rng, pidaRoof, wheel, inst, unitCyl, surface } from '../helpers.js';
+import { elephant } from '../details/animals.js';
 import { trabeateGate, wallWithGaps } from '../details/temples.js';
 import { templeDoorway } from '../details/doorways.js';
+import { addDetails } from '../details/vittala-temple-hampi.js';
 
 const GRANITE = mat('#a58d6e', 0.9);
 const GRANITE_DARK = mat('#7d6a53', 0.9);
@@ -53,5 +55,6 @@ export function buildVittala() {
   ch.add(box(4.6, 4.2, 6, GRANITE, 0, 4.2), at(pidaRoof(5.2, 2.6, 3, 0.6, GRANITE, GRANITE_DARK), 0, 8.4, 0));
   for (const x of [-1.8, 1.8]) ch.add(at(elephant(GRANITE, 0.75), x, 0, 7));
   f.add(at(ch, 0, 0, 30));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.95, 0.45, 1.1] };
 }

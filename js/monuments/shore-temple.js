@@ -1,6 +1,9 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, rng, flat, kalash, inst, unitBox, aroundRect, sheet, onFace } from '../helpers.js';
+import { M, mat, mesh, box, at, rng, flat, kalash, inst, aroundRect, sheet, onFace } from '../helpers.js';
 import { templeDoorway } from '../details/doorways.js';
+import { nandiGeometry } from '../details/animals.js';
+import { statueMaterial } from '../sdf.js';
+import { addDetails } from '../details/shore-temple.js';
 
 const GRANITE = mat('#8f8577', 0.95);
 const GRANITE_DARK = mat('#6d655a', 0.95);
@@ -38,8 +41,8 @@ export function buildShoreTemple() {
   // Compound wall lined with Nandi figures
   const W = 46, D = 54, nandis = [];
   for (const s of [-1, 1]) f.add(box(W, 2.4, 1.4, GRANITE, 0, 0, s * D / 2), box(1.4, 2.4, D, GRANITE, s * W / 2, 0, 0));
-  aroundRect(W, D, 2.8).forEach(([x, z, ry]) => nandis.push([x, 2.4, z, 1, 1.2, 1.8, ry + Math.PI / 2]));
-  f.add(inst(unitBox(), nandis, GRANITE_DARK));
+  aroundRect(W, D, 2.8).forEach(([x, z, ry]) => nandis.push([x, 2.4, z, 0.28, 0.28, 0.28, ry]));
+  f.add(inst(nandiGeometry(false), nandis, statueMaterial(GRANITE_DARK)));
   // Two Shiva shrines (the larger facing the sea) and the small Vishnu shrine between them
   f.add(box(26, 1.4, 40, GRANITE_DARK, 0, 0, 0));
   f.add(box(9, 6, 9, GRANITE, 0, 1.4, -10), at(vimana(9, 5, 2.8, GRANITE, GRANITE_DARK), 0, 7.4, -10));
@@ -50,5 +53,6 @@ export function buildShoreTemple() {
   big.position.z -= 10;
   small.position.z += 9;
   f.add(big, small);
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.95, 0.35, 1.0] };
 }

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, at, rng, inst, unitBox, sheet } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
+import { addDetails } from '../details/omkareshwar-temple.js';
 
 const WHITE = mat('#efe9de', 0.85);
 const SHADE = mat('#cdbfa6', 0.9);
@@ -21,5 +22,6 @@ export function buildOmkareshwar() {
   for (let i = 0; i < 26; i++) houses.push([(R() - 0.5) * 120, 8 + R() * 14, -40 - R() * 30, 6 + R() * 5, 4 + R() * 4, 6 + R() * 4, R()]);
   g.add(inst(unitBox(), houses, mat('#e7d9bd', 0.9)));
   f.add(at(nagaraTemple({ w: 11, h: 20, m: WHITE, shade: SHADE, plinth: 2, urus: 4, halls: [[13, 7, 4]] }), 0, 8, -18));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.3, 1.25] };
 }

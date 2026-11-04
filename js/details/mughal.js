@@ -109,18 +109,19 @@ export function iwan(w, h, {
 // each cell shows at its back, `fill` (or a fifth entry on the cell): 'door', a small framed door
 // in the back wall, which stands in shade under the arch; 'room', an opening onto a dim gallery;
 // 'jali', a pierced screen as a window; 'none', the bare back wall. cells: [[cx, sill, aw, ah, fill?]].
-export function arcadeSkin(len, h, cells, depth, m, { trim = m, ring = true, fill = 'door' } = {}) {
+// pointed: false gives round arches, for the colonial and Indo-Saracenic arcades.
+export function arcadeSkin(len, h, cells, depth, m, { trim = m, ring = true, fill = 'door', pointed = true } = {}) {
   const g = new THREE.Group();
-  g.add(pierced(len, h, cells, depth, m));
+  g.add(pierced(len, h, cells, depth, m, pointed));
   for (const [cx, sill, aw, ah, own] of cells) {
     const kind = own || fill;
-    if (ring) g.add(at(archRing(aw, ah, true, Math.min(0.22, aw * 0.06), 0.05, trim), cx, sill, depth));
+    if (ring) g.add(at(archRing(aw, ah, pointed, Math.min(0.22, aw * 0.06), 0.05, trim), cx, sill, depth));
     // A sill slab whose top stands just above the opening's floor, so the two never share a plane.
     if (sill > 0.01) g.add(box(aw, 0.14, depth, trim, cx, sill - 0.12, depth / 2));
     if (kind === 'room') g.add(at(interior(aw * 0.999, ah, 0.2, 0), cx, sill, 0.012));
-    if (kind === 'jali') g.add(at(archSlab(aw * 0.999, ah * 0.999, true, M.recess, 0.03), cx, sill, 0.012), at(archSlab(aw * 0.998, ah * 0.998, true, jali(trim), 0.05), cx, sill, 0.05));
+    if (kind === 'jali') g.add(at(archSlab(aw * 0.999, ah * 0.999, pointed, M.recess, 0.03), cx, sill, 0.012), at(archSlab(aw * 0.998, ah * 0.998, pointed, jali(trim), 0.05), cx, sill, 0.05));
     if (kind === 'door') {
-      const s = ah - rise(aw / 2, true), dw = Math.min(aw * 0.46, 1.5), dh = Math.min(s * 0.92, dw * 2.1), f = Math.max(0.1, dw * 0.1);
+      const s = ah - rise(aw / 2, pointed), dw = Math.min(aw * 0.46, 1.5), dh = Math.min(s * 0.92, dw * 2.1), f = Math.max(0.1, dw * 0.1);
       g.add(at(interior(dw, dh, 0.15, 0.05), cx, sill, 0.012));
       for (const x of [-1, 1]) g.add(box(f, dh + f, 0.1, trim, cx + x * (dw + f) / 2, sill, 0.05));
       g.add(box(dw + 2 * f, f, 0.1, trim, cx, sill + dh, 0.05));

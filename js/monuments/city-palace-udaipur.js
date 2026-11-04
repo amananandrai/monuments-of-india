@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, rng, chhatri, onFace, archPanel, hemi, finial, inst, unitBox, sheet } from '../helpers.js';
+import { addDetails } from '../details/city-palace-udaipur.js';
 
 const CREAM = mat('#efe6d2', 0.8);
 const SHADE = mat('#d3c6a8', 0.85);
@@ -21,5 +22,6 @@ export function buildCityPalaceUdaipur() {
     f.add(at(chhatri(2.2, 6, CREAM), x - w / 4, 14.8 + h, 4), at(chhatri(2.2, 6, CREAM), x + w / 4, 14.8 + h, 4));
   }
   for (const x of [-72, -40, 20, 50, 80]) f.add(cyl(4, 4.4, 50, CREAM, x, 0, 8, 8), at(hemi(4.2, CREAM, 16), x, 50, 8), at(finial(2.4), x, 54, 8));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.25, 0.2, 1.25] };
 }

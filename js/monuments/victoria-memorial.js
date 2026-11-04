@@ -1,5 +1,9 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, lathe, at, onFace, FACES, archPanel, hemi, group } from '../helpers.js';
+import { M, mat, mesh, box, cyl, lathe, at, onFace, FACES, hemi, group } from '../helpers.js';
+import { mergeByMaterial } from '../details/components.js';
+import { steps } from '../details/doorways.js';
+import { classicalDoor, porch } from '../details/colonial.js';
+import { addDetails } from '../details/victoria-memorial.js';
 
 export function buildVictoriaMemorial() {
   const Mb = M.marble, Sh = M.marbleShade, g = new THREE.Group(), f = new THREE.Group();
@@ -11,22 +15,28 @@ export function buildVictoriaMemorial() {
   f.add(box(110, 2.5, 80, Sh), box(104, 1, 74, Mb, 0, 2.5, 0));
   const b = 3.5;
   f.add(box(84, 18, 56, Mb, 0, b, 0), box(86, 1.2, 58, Sh, 0, b + 18, 0));
+  // Tall arched windows with keystones below, and corniced ones above, in their marble surrounds
+  const low = classicalDoor(3.4, 7.4, { m: Mb, trim: Sh, fill: 'glass', top: null, depth: 0.35, frame: 0.4 });
+  const high = classicalDoor(2.6, 3.6, { m: Mb, trim: Sh, shape: 'flat', fill: 'glass', depth: 0.3, frame: 0.35 });
+  const wins = new THREE.Group();
   for (const a of FACES) {
     const half = a === 0 || a === Math.PI ? 28 : 42;
     for (let k = -3; k <= 3; k++) {
       if (k === 0) continue;
-      f.add(onFace(at(archPanel(4, 8, false, M.recess, 0.3), 0, b + 2, 0), a, half, k * (half > 30 ? 6 : 9)));
-      f.add(onFace(at(archPanel(3, 4.5, false, M.recess, 0.3), 0, b + 12, 0), a, half, k * (half > 30 ? 6 : 9)));
+      const lat = k * (half > 30 ? 6 : 9);
+      wins.add(onFace(at(low.clone(), 0, b + 2.2, 0), a, half, lat), onFace(at(high.clone(), 0, b + 12, 0), a, half, lat));
     }
   }
+  f.add(mergeByMaterial(wins));
   for (const x of [-38, 38]) for (const z of [-24, 24]) {
     f.add(box(14, 22, 14, Mb, x, b, z), box(15, 1, 15, Sh, x, b + 22, z));
     f.add(cyl(4.6, 4.6, 3, Mb, x, b + 23, z, 24), at(hemi(4.6, Mb, 24), x, b + 26, z), cyl(0.6, 0.9, 2.4, Mb, x, b + 30.4, z, 10));
   }
-  // Entrance porch with paired columns
-  f.add(box(26, 2.5, 10, Sh, 0, 0, 33));
-  for (let k = 0; k < 6; k++) f.add(cyl(0.9, 1, 14, Mb, -10 + k * 4, b, 32, 14));
-  f.add(box(26, 3, 9, Mb, 0, b + 14, 32), box(27, 0.8, 10, Sh, 0, b + 17, 32));
+  // Entrance porch with paired columns and a balustrade, over the arched main door; steps up the
+  // two terraces to it
+  const door = classicalDoor(4.4, 8.4, { m: Mb, trim: Sh, depth: 0.6, frame: 0.8 });
+  f.add(at(porch(26, 9, 14, { m: Mb, trim: Sh, colM: Mb, cols: 6, paired: true, r: 0.85, top: 'balustrade', door }), 0, b, 28));
+  f.add(at(steps(20, 2.5, 7, Sh, 0.36), 0, 0, 40), at(steps(20, 1, 3, Sh, 0.36), 0, 2.5, 37));
   // Drum, Renaissance dome, lantern and the bronze Angel of Victory
   const top = b + 19.2;
   f.add(cyl(15, 15, 9, Mb, 0, top, 0, 48), cyl(15.8, 15.8, 1, Sh, 0, top + 9, 0, 48));
@@ -45,5 +55,6 @@ export function buildVictoriaMemorial() {
     cyl(0.06, 0.2, 2, M.bronze, 0.6, 2.4, 0.5, 6).rotateX(-0.9),
   );
   f.add(at(angel, 0, lt + 7, 0));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.55, 0.3, 1.2] };
 }

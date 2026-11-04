@@ -4,6 +4,7 @@ import {
   archRing, archSlab, rosette, clockFace, bracketGeo, placeAll, aroundCircle, alongFace, chhajjaRing,
   railingRing, arcadeScreen, merlons, lotusDome, petalRing, mergeByMaterial,
 } from './components.js';
+import { stalls, along } from './realism.js';
 
 // Charminar, finer detail (Muhammad Quli Qutb Shah, 1591). From photographs and descriptions:
 // - four minarets, each a fluted shaft rising through the building and on above the roof in two
@@ -96,4 +97,11 @@ export function addCharminarDetails(g, { b }) {
   }
   mergeByMaterial(d);
   g.add(d);
+}
+
+// Charminar in the middle of Hyderabad's old city: the road that runs round it and the four streets
+// that leave it, and the bangle shops of the Laad Bazaar along the western street.
+export function addDetails(f, g) {
+  g.add(box(220, 0.1, 220, M.asphalt, 0, -0.06, 0));
+  g.add(stalls([...along(8, [-40, -9], [-100, -9]).map(([x, z]) => [x, z, 0]), ...along(8, [-40, 9], [-100, 9]).map(([x, z]) => [x, z, Math.PI])], { goods: ['#d9342b', '#2f7a3f', '#e3b54a', '#7a3f8f', '#2f5d9a'] }));
 }

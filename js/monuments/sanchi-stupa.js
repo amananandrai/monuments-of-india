@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, ring, group, onFace, FACES, instBoxes, torana } from '../helpers.js';
+import { addDetails } from '../details/sanchi-stupa.js';
 
 export function buildSanchi() {
   const S = M.sanchi, g = new THREE.Group(), f = new THREE.Group();
@@ -22,5 +23,6 @@ export function buildSanchi() {
   for (const y of [0.9, 1.7, 2.5]) f.add(ring(22, 0.35, S, y, 120));
   f.add(ring(22, 0.45, S, 3, 120));
   for (const a of FACES) f.add(onFace(torana(S), a, 23.4));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.9, 0.32, 1.25] };
 }

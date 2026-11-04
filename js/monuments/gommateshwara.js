@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { surface } from '../surface.js';
-import { mat, mesh, box, at, V, chhatri, inst, unitBox, aroundRect, ellipsoid, capsule, tube, smoothLathe } from '../helpers.js';
+import { mat, mesh, box, at, chhatri, inst, unitBox, aroundRect, ellipsoid, tube, face } from '../helpers.js';
+import { bahubaliBody } from '../details/figures.js';
+import { addDetails } from '../details/gommateshwara.js';
 
 const GRANITE = mat('#c9c3b6', 0.8);
 // The statue is one smooth monolith, so it gets plain stone rather than coursed masonry.
@@ -12,11 +14,9 @@ const VINE = mat('#5c7a44', 0.9);
 // up his legs and arms, curled hair and long ears, all as carved from the one block of granite.
 function bahubali() {
   const g = new THREE.Group(), G = STATUE;
+  // The body as one carved skin, from the feet to the neck
+  g.add(bahubaliBody(G));
   for (const s of [-1, 1]) {
-    g.add(ellipsoid(0.9, 0.45, 1.6, G, s * 1.25, 0.4, 0.5));
-    g.add(capsule(V(s * 1.25, 0.7, 0), V(s * 1.35, 4.6, 0), 0.62, G, 0.85), capsule(V(s * 1.35, 4.6, 0), V(s * 1.45, 8.6, 0), 0.85, G, 1.25));
-    g.add(capsule(V(s * 3.35, 15.1, 0), V(s * 3.6, 11.5, 0.1), 0.85, G, 0.72), capsule(V(s * 3.6, 11.5, 0.1), V(s * 3.5, 7.8, 0.2), 0.72, G, 0.58));
-    g.add(ellipsoid(0.55, 1.1, 0.42, G, s * 3.5, 7.2, 0.25));
     // Creepers spiralling up the legs and the arms
     for (const [x0, y0, y1, r] of [[s * 1.3, 0.8, 8.4, 1.1], [s * 3.5, 7.6, 14.6, 0.95]]) {
       const pts = [];
@@ -24,13 +24,8 @@ function bahubali() {
       g.add(tube(pts, 0.12, VINE, 120, 6));
     }
   }
-  const torso = smoothLathe([[2.4, 0], [2.7, 1.4], [2.9, 3.6], [3.5, 5.6], [3.6, 6.6], [2.6, 7.4], [1.0, 7.8], [0.1, 7.9]], G);
-  torso.position.y = 8.2;
-  torso.scale.z = 0.66;
-  g.add(torso);
-  for (const s of [-1, 1]) g.add(ellipsoid(1.1, 1.0, 1.0, G, s * 3.25, 15.1, 0));
-  g.add(capsule(V(0, 15.6, 0), V(0, 16.4, 0.1), 0.75, G, 0.75));
-  g.add(ellipsoid(1.32, 1.65, 1.4, G, 0, 17.4, 0.1), ellipsoid(0.24, 0.42, 0.3, G, 0, 17.2, 1.42));
+  // The serene face, and the long ears
+  g.add(at(face(1.32, 1.65, 1.4, G), 0, 17.4, 0.1));
   for (const s of [-1, 1]) g.add(ellipsoid(0.22, 0.95, 0.4, G, s * 1.32, 17.0, 0));
   // Tight curls of hair over the crown
   const curls = [];
@@ -59,5 +54,6 @@ export function buildGommateshwara() {
   for (const x of [-14, 14]) f.add(at(chhatri(2.2, 6, GRANITE), x, H + 5, 18));
   // The 17.4 m monolith of Bahubali
   f.add(at(bahubali(), 0, H + 0.5, -4));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.4, 0.2, 1.25] };
 }

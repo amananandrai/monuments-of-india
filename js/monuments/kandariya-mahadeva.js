@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mesh, box, cyl, at, onFace, FACES, kalash, bell, shikhara, pidaRoof, inst, unitBox, aroundRect } from '../helpers.js';
 import { templeDoorway, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
+import { addDetails } from '../details/kandariya-mahadeva.js';
 
 export function buildKandariya() {
   const S = M.khaj, Sd = M.khajShade, g = new THREE.Group(), f = new THREE.Group();
@@ -57,5 +58,6 @@ export function buildKandariya() {
     u.position.z += tz;
     f.add(u);
   }
+  addDetails(f, g);
   return { group: g, focus: f, view: [1.1, 0.32, 0.85] };
 }

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, at, rng, inst, unitBox, unitSpire, ellipseWall } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
+import { addDetails } from '../details/palitana-temples.js';
 
 const MARBLE = mat('#f1ede4', 0.6);
 const SHADE = mat('#d6cebd', 0.8);
@@ -45,5 +46,6 @@ export function buildPalitana() {
   f.add(inst(unitBox(), bodies, MARBLE), inst(unitSpire(), spires, MARBLE));
   // The principal temple of Adinath on the higher summit
   f.add(at(nagaraTemple({ w: 9, h: 15, m: MARBLE, shade: SHADE, plinth: 1.2, urus: 8, halls: [[11, 6, 4]] }), -40, H, -6));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.55, 0.45, 1.2] };
 }

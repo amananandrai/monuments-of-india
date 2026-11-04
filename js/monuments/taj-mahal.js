@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, at, onionDome } from '../helpers.js';
 import { addTajDetails } from '../details/taj-mahal.js';
+import { addDetails } from '../details/taj-mahal.js';
 
 export function buildTaj() {
   const g = new THREE.Group(), f = new THREE.Group();
@@ -28,5 +29,6 @@ export function buildTaj() {
   for (const x of [-24, 24]) g.add(box(34, 0.2, 150, M.grass, x, 0, 135));
   g.add(box(16, 0.8, 16, M.marble, 0, 0, 135));
   g.add(box(12, 0.9, 12, M.water, 0, 0, 135));
+  addDetails(f, g);
   return { group: g, focus: f };
 }

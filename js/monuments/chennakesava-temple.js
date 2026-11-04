@@ -3,6 +3,7 @@ import { M, box, group, at, pidaRoof, inst, unitCyl, aroundRect, starPrism, stel
 import { trabeateGate } from '../details/temples.js';
 import { templeDoorway, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
+import { addDetails } from '../details/chennakesava-temple.js';
 
 export function buildChennakesava() {
   const m = M.soap, md = M.soapDark, g = new THREE.Group(), f = new THREE.Group();
@@ -23,5 +24,6 @@ export function buildChennakesava() {
     for (const y of [0.5, 1.6, 2.7]) f.add(at(starPrism(16, 6.25, 5.2, 0.6, md), x, B + y, z));
     f.add(at(stellateTower(5.6, 9, m, md), x, B + 7, z));
   }
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.55, 1.15] };
 }

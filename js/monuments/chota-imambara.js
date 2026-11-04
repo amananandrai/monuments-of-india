@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, onionDome, finial, ribbed, guldasta } from '../helpers.js';
 import { iwan, arcadeSkin, cellRow } from '../details/mughal.js';
+import { addDetails } from '../details/chota-imambara.js';
 
 const WHITE = mat('#f1ede6', 0.8);
 const SHADE = mat('#d9d2c6', 0.85);
@@ -32,5 +33,6 @@ export function buildChotaImambara() {
   for (let x = -18; x <= 18; x += 6) f.add(at(guldasta(3, 0.35, WHITE), x, 13.8, -8.6));
   // The two small replicas of the Taj Mahal in the garden
   for (const x of [-32, 32]) f.add(at(tajReplica(WHITE), x, 0, 18));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.32, 1.25] };
 }

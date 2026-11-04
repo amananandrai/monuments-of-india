@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, chhatri, onFace, FACES, archPanel, hemi, finial, inst, unitBox, ellipseWall } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
+import { addDetails } from '../details/chittorgarh-fort.js';
 
 const STONE = mat('#c8b28c', 0.9);
 const RUIN = mat('#a8916d', 0.95);
@@ -40,5 +41,6 @@ export function buildChittorgarh() {
   for (const [x, z, w, d, h] of [[-30, -10, 30, 18, 10], [-46, 8, 14, 12, 7], [-20, 14, 10, 8, 5], [-60, -14, 8, 8, 12]]) ruins.push([x, H, z, w, h, d]);
   f.add(inst(unitBox(), ruins, RUIN));
   f.add(box(30, 0.6, 22, M.water, 70, H, 8), box(10, 6, 8, mat('#efe7d6', 0.85), 70, H + 0.6, 8), at(hemi(3, mat('#efe7d6', 0.85), 16), 70, H + 6.6, 8));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.5, 0.3, 1.2] };
 }

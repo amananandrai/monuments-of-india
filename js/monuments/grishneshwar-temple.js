@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, at, inst, unitBox, aroundRect } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
+import { addDetails } from '../details/grishneshwar-temple.js';
 
 const RED = mat('#8c4a3a', 0.85);
 const SHADE = mat('#6e392d', 0.9);
@@ -17,5 +18,6 @@ export function buildGrishneshwar() {
   const figs = [];
   aroundRect(16.3, 16.3, 1.4).forEach(([x, z, ry]) => figs.push([x, 4, z - 12 + 6.3 + 8, 0.7, 2.6, 0.3, ry]));
   f.add(inst(unitBox(), figs, SHADE));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.36, 1.15] };
 }

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, hipRoof, TIBETAN, inst, unitBox } from '../helpers.js';
 import { tibetanDoor } from '../details/doorways.js';
+import { addDetails } from '../details/key-monastery.js';
 
 const SCREE = mat('#9d8b78', 0.95, 0, { flatShading: true });
 const PEAK = mat('#86796d', 0.95, 0, { flatShading: true });
@@ -29,5 +30,6 @@ export function buildKeyMonastery() {
   f.add(inst(unitBox(), blocks, TIBETAN.white), inst(unitBox(), blocks.map(([x, y, z, w, h, d, ry]) => [x, y + h, z, w + 0.3, 0.6, d + 0.3, ry]), TIBETAN.maroon));
   f.add(at(tibetanDoor(1.4, 2.4), 0, H - 4, 5));
   f.add(box(10, 6, 10, TIBETAN.white, 0, H - 4, 0), box(10.3, 0.7, 10.3, TIBETAN.maroon, 0, H + 2, 0), at(hipRoof(11, 11, 3, M.gild), 0, H + 2.7, 0), cyl(0.3, 0.7, 2, M.gild, 0, H + 5.6, 0, 8));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.32, 1.25] };
 }

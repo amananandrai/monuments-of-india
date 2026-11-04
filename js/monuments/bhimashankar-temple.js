@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, bell, inst } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
+import { addDetails } from '../details/bhimashankar-temple.js';
 
 const BASALT = mat('#4f4a45', 0.85);
 const SHADE = mat('#3b3734', 0.9);
@@ -25,5 +26,6 @@ export function buildBhimashankar() {
   f.add(box(40, 0.4, 44, M.path), at(nagaraTemple({ w: 8, h: 13, m: BASALT, shade: SHADE, plinth: 1.5, urus: 4, halls: [[11, 6, 4]] }), 0, 0, -8));
   f.add(cyl(0.3, 0.3, 6, M.wood, -12, 0, 8, 8), cyl(0.3, 0.3, 6, M.wood, -8, 0, 8, 8), box(5, 0.4, 0.6, M.wood, -10, 6, 8));
   f.add(at(bell(1.3, M.bronze).rotateX(Math.PI), -10, 6, 8));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.36, 1.15] };
 }

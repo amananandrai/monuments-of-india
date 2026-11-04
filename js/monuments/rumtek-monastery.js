@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, hipRoof, tibetanBlock, TIBETAN, inst, unitBox } from '../helpers.js';
 import { tibetanPortico } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
+import { addDetails } from '../details/rumtek-monastery.js';
 
 const HILL = mat('#4e6e3c', 0.95, 0, { flatShading: true });
 const YELLOW = mat('#e6b94a', 0.8);
@@ -26,5 +27,6 @@ export function buildRumtek() {
   for (const x of [-12, 12]) f.add(cyl(0.6, 0.9, 3, M.gild, x, 14, -1, 8));
   // The pillared portico before the hall's door, under its gilded roof
   f.add(mergeByMaterial(at(tibetanPortico(12, 6, 6, [1.8, 3.4]), 0, 0, -1)), at(hipRoof(14, 8, 2.4, M.gild), 0, 6.85, 2));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.4, 1.25] };
 }

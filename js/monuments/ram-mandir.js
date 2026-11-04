@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, box, group, at, onFace, FACES, shikhara, flag, nagaraProfile } from '../helpers.js';
 import { mandap } from '../details/temples.js';
+import { addDetails } from '../details/ram-mandir.js';
 
 export function buildRamMandir() {
   const m = M.pink, sh = M.pinkShade, g = new THREE.Group();
@@ -28,5 +29,6 @@ export function buildRamMandir() {
   g.add(at(mandap(18, 9, 7, m, sh, side), 0, P, 17));
   g.add(at(mandap(14, 8, 6, m, sh, [0, ...side]), 0, P, 33));
   for (const x of [-17, 17]) g.add(at(mandap(10, 8, 5, m, sh, [Math.sign(x) * Math.PI / 2]), x, P, -3));
+  addDetails(g, g);
   return { group: g, view: [0.95, 0.38, 1.15] };
 }

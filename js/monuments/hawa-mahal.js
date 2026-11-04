@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, at, hemi, finial, surface, inst, unitBox, unitHemi } from '../helpers.js';
+import { addDetails } from '../details/hawa-mahal.js';
 
 // The jali in each window. Its holes are cut in the shader, so it stays opaque (a transparent
 // material would lose its surface) and casts no shadow; the stone screen around it does.
@@ -62,5 +63,6 @@ export function buildHawaMahal() {
   f.add(inst(unitHemi(10), domes, L), inst(unitBox(), posts, P));
   f.add(box(3.4, 1.4, 2.1, P, 0, y, -D / 2), at(hemi(1.1, L, 16), 0, y + 1.4, -D / 2), at(finial(2), 0, y + 2.5, -D / 2));
   for (const x of [-3.8, 3.8]) f.add(box(2, 0.9, 2, P, x, y, -D / 2), at(hemi(0.9, L, 12), x, y + 0.9, -D / 2), at(finial(1.3), x, y + 1.75, -D / 2));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.4, 0.2, 1.2] };
 }

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mat, mesh, box, cyl, at, rng, hemi, kalash, inst, unitBox, unitHemi } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
+import { addDetails } from '../details/shikharji.js';
 
 const WHITE = mat('#f2eee6', 0.7);
 const SHADE = mat('#d8d1c2', 0.85);
@@ -28,5 +29,6 @@ export function buildShikharji() {
   f.add(at(nagaraTemple({ w: 8, h: 12, m: WHITE, shade: SHADE, plinth: 1, urus: 4, halls: [[10, 5, 0, 'dome']] }), -30, H, 0));
   // Pilgrim path climbing the forested slope
   for (let k = 0; k < 40; k++) g.add(box(3, 0.6, 3, SHADE, 90 - k * 2 + Math.sin(k * 0.4) * 15, k * (H / 40), 90 - k * 2));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.4, 0.42, 1.25] };
 }

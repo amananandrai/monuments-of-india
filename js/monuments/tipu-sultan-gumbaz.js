@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, at, rng, onionDome, finial, guldasta, inst, unitCyl, aroundRect } from '../helpers.js';
+import { addDetails } from '../details/tipu-sultan-gumbaz.js';
 
 const WHITE = mat('#efebe2', 0.8);
 const GRANITE = mat('#3e3b39', 0.7);
@@ -20,5 +21,6 @@ export function buildTipuGumbaz() {
   f.add(inst(unitCyl(10), cols, GRANITE), box(20, 10, 20, WHITE, 0, 2));
   for (const x of [-14, 14]) for (const z of [-14, 14]) f.add(at(guldasta(6, 0.7, WHITE), x, 12.8, z));
   f.add(at(onionDome(9, WHITE), 0, 12.8, 0), at(finial(4), 0, 12.8 + 16, 0));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.3, 1.25] };
 }

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, hipRoof, finial, inst, unitCyl } from '../helpers.js';
 import { templeDoorway, steps } from '../details/doorways.js';
+import { addDetails } from '../details/hidimba-devi-temple.js';
 
 const STONE = mat('#8d8a85', 0.95);
 const WOOD = mat('#6d5034', 0.85);
@@ -34,5 +35,6 @@ export function buildHidimba() {
     if (ww) { f.add(box(ww, wh, ww, WOOD, 0, y, 0)); y += wh; }
   });
   f.add(cyl(0.2, 3.2, 4.6, BRASS, 0, y + 0.6, 0, 20), at(finial(2.6, BRASS), 0, y + 5.2, 0));
+  addDetails(f, g);
   return { group: g, focus: f, view };
 }

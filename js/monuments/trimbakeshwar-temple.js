@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, at } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
+import { addDetails } from '../details/trimbakeshwar-temple.js';
 
 const BASALT = mat('#3d3a37', 0.8);
 const SHADE = mat('#2c2a28', 0.85);
@@ -17,5 +18,6 @@ export function buildTrimbakeshwar() {
   for (const s of [-1, 1]) f.add(box(80, 6, 2, mat('#5d5853', 0.9), 0, 0, s * 45), box(2, 6, 90, mat('#5d5853', 0.9), s * 40, 0, 0));
   f.add(box(20, 9, 8, BASALT, 0, 0, 45));
   f.add(at(nagaraTemple({ w: 13, h: 26, m: BASALT, shade: SHADE, plinth: 2.4, urus: 8, halls: [[15, 8, 5], [11, 6, 4]] }), 0, 0, -24));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.36, 1.15] };
 }

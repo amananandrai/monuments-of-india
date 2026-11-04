@@ -22,6 +22,10 @@ Two problems, one plan:
   (see section 4).
 - **Phase 4, done:** the 21 temples, the Golden Temple and the monasteries built one by one have
   their own porches, doorways and gate passages (see section 4).
+- **Phase 5, done:** the colonial, Gothic Revival, Baroque and Indo-Saracenic buildings have real
+  doors, porches, arcades and windows from `js/details/colonial.js` (see section 4). So do New
+  Parliament House and Kirti Mandir, the last two buildings that still had flat dark arches for
+  doors.
 - **Doorway kit:**
   - `js/details/doorways.js` holds the temple parts: `doorFrame`, `templeDoorway`, `templePorch`,
     `doorLeaves`, `interior`, `lamp`, `guardian` and `steps`.
@@ -30,7 +34,14 @@ Two problems, one plan:
   - `js/details/forts.js` holds `fortGate`, the plan's `gateway`.
   - Phase 4 added `trabeateGate` and `lion` to `js/details/temples.js`, and `tibetanDoor` and
     `tibetanPortico` to `js/details/doorways.js`.
-  - `classicalDoor` comes with Phase 5.
+  - Phase 5 added `js/details/colonial.js`:
+    - `classicalDoor`, a door or window in a surround, with round, flat, segmental or pointed
+      heads, and fanlights, sashes, keystones, pilasters, columns and pediments;
+    - `porch`, `column`, `balustrade` and `pediment`;
+    - `gothicDoor`, `gothicWindow` and `oculus`;
+    - `cutSlab`, `headSlab` and `headRing`, for openings of any of those shapes.
+
+    `arcadeSkin` in `mughal.js` takes `pointed: false` for round-arched arcades.
 
 ## 1. What the site does today
 
@@ -181,7 +192,8 @@ Applied to:
   rings moved to the new faces).
 
 Cost: each of these monuments now has 8,000–70,000 more triangles than before. Qutb Shahi is the
-largest at about 140,000, for its seven tombs, so every one is within the 200,000 budget.
+largest at about 140,000, for its seven tombs, so every one is within the budget (200,000 then,
+300,000 now).
 
 **Phase 3: forts and gates (11 forts). Done.**
 `fortGate(w, h, d, aw, ah, opts)` in `js/details/forts.js` is a gatehouse with a real arched
@@ -275,9 +287,36 @@ Applied:
 - **Key:** a door in the top hall, one block of the monks' quarters taken away to clear the way.
 - **Thiksey:** a door on the Maitreya temple.
 
-**Phase 5: colonial and Indo-Saracenic.** Victoria Memorial, CSMT, Mysore Palace, Laxmi Vilas,
-Cooch Behar Palace, Bom Jesus, Cellular Jail: `classicalDoor` and `porch`. CSMT gets a Gothic
-pointed door with tracery. Bom Jesus gets its Baroque portal.
+**Phase 5: colonial and Indo-Saracenic. Done.** The parts are in `js/details/colonial.js`.
+- **Victoria Memorial:**
+  - a porch of paired columns with a balustrade, over an arched door with a fanlight;
+  - steps up both terraces;
+  - arched sash windows with keystones on the ground floor, corniced ones above.
+- **CSMT:**
+  - the main entrance is a Gothic portal of three receding orders, with colonnettes, a studded
+    door, a quatrefoil tympanum, a crocketed gable and pinnacles;
+  - two-light pointed windows in stone surrounds on every range and round the dome's drum;
+  - a rose window in each gable.
+- **Bom Jesus:**
+  - the main portal between basalt columns under a broken pediment with an urn;
+  - the side doors between pilasters;
+  - windows with segmental pediments, and glazed round windows in the top tier;
+  - glazed windows down the nave and on the Professed House.
+- **Mysore Palace:**
+  - the front is an open arcade 2.4 m deep, onto a verandah and a gallery;
+  - the tower's foot has a doorway with a screened arch head;
+  - open arches onto the porch, and open arched windows up the tower;
+  - the strings of lights follow the new openings.
+- **Laxmi Vilas:** the wings are two storeys of arcades 1.6 m deep, and a porch with a
+  balustrade stands at the foot of the clock tower.
+- **Cooch Behar:** two storeys of round-arched arcades between the white pilasters, and an open
+  portico of five columns over the main door.
+- **Cellular Jail:** each wing's corridor is a brick arcade 1.8 m deep, one arch to each cell, with
+  the cell's grilled door at the back.
+- **New Parliament House:** the three ceremonial entrances are portals 6 m deep, framed in red
+  sandstone, with bronze doors standing open and steps up.
+- **Kirti Mandir:** the hall's front is an arcade of seven pointed arches, the middle one the door,
+  with steps.
 
 ## 5. Reusing the detail parts
 
@@ -357,7 +396,7 @@ Each phase is done when:
 - each changed monument is rendered from the default view, a close view of its entrance and a
   street-level view, and compared with the render from before the change;
 - there is no flicker, since every detail stands 1–3 cm off the surface it decorates;
-- each monument stays under about 200,000 triangles and a few dozen draw calls after merging;
+- each monument stays under about 300,000 triangles and a few dozen draw calls after merging;
 - night mode shows nothing broken.
 
 The headless render script used for this work can live in `tools/` so these checks can be

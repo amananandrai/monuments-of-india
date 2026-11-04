@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, box, cyl, at, chhatri, instBoxes, tricolour } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
+import { addDetails } from '../details/red-fort.js';
 
 export function buildRedFort() {
   const Rd = M.red, Rl = M.redLight, g = new THREE.Group(), f = new THREE.Group();
@@ -34,5 +35,6 @@ export function buildRedFort() {
   }
   for (let k = -3; k <= 3; k++) f.add(at(chhatri(1.25, 4.5, Rd, M.marble), k * 3.5, 24, 9.5));
   f.add(at(tricolour(14), 0, 24, -2));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.5, 0.28, 1.2] };
 }

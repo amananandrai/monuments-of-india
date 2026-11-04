@@ -3,8 +3,9 @@
 **Live site: https://monuments-of-india-nu.vercel.app**
 
 101 Indian landmarks across 26 states and union territories, modelled in interactive 3D with
-[three.js](https://threejs.org/). Every model is built in code from simple shapes at roughly
-real-world proportions: there are no model files to download.
+[three.js](https://threejs.org/). Every model is built in code at roughly real-world proportions,
+from simple shapes, carved detail and sculpted figures: there are no model files or scans to
+download.
 
 ## Using the site
 
@@ -214,14 +215,23 @@ real-world proportions: there are no model files to download.
 - **Water:** seas, rivers, lakes and pools have their own colours and moving ripples, and on desktop
   they reflect the monument.
 - **Nature and figures:** rocks, hills, mountains and trees are sculpted with noise
-  (`js/naturalize.js`); the statues have sculpted faces and hands.
+  (`js/naturalize.js`). The statues and temple animals are each sculpted as one continuous skin
+  from a signed distance field and meshed in the browser (`js/sdf.js`, `js/details/animals.js`,
+  `js/details/figures.js`), so limbs grow out of bodies as in a carving. Examples are Patel in his
+  dhoti and shawl, the Nageshwar Shiva, Bahubali, Thiruvalluvar, the Nandis, elephants, Konark's
+  horses, temple lions and door guardians. Their crevices are darkened, dark stone is polished,
+  and faces and hands are sculpted. The 25 m Shiva at Nageshwar is the most detailed: matted
+  locks with the crescent moon and the Ganga, the third eye, rudraksha malas, the serpent Vasuki
+  round the neck, a tiger-skin cloth, and the trishul with its damaru
+  (`js/details/nageshwar-temple.js`). See
+  [`docs/realistic-statues-research.md`](docs/realistic-statues-research.md).
 - **Fine detail:** India Gate, Charminar, the Taj Mahal, the Gateway of India and the Old Parliament
   House carry a second layer of carving from `js/details/`: roundels and lettering, nested arches and
   half-domes, bracketed balconies, jalis, eaves, merlons, lotus-petal domes and finials. The parts are
   shared (`js/details/components.js`) and merged into a few meshes per monument. See
   [`docs/monument-details.md`](docs/monument-details.md), and
-  [`docs/doorways-and-reuse-plan.md`](docs/doorways-and-reuse-plan.md) for the plan to give every
-  monument real entrances and to reuse these parts across each architectural family.
+  [`docs/doorways-and-reuse-plan.md`](docs/doorways-and-reuse-plan.md) for how every monument got
+  real entrances and how these parts are reused across each architectural family.
 - **Entrances:** the Nagara temples, Ram Mandir's halls and the South Indian gopurams have
   doorways with depth from `js/details/doorways.js`. They have stepped frames, timber doors
   standing open onto a lamp-lit sanctum, thresholds, guardians, porches and steps, and real
@@ -230,7 +240,27 @@ real-world proportions: there are no model files to download.
   forts' gates are passages through their gatehouses, with guard niches and doors spiked against
   elephants, from `js/details/forts.js`. The other temples have their own porches and doorways,
   gates on post-and-lintel lines (one with its two lions), and the monasteries have painted
-  Tibetan doors and pillared porticoes.
+  Tibetan doors and pillared porticoes. The colonial, Gothic Revival, Baroque and Indo-Saracenic
+  buildings have their doors from `js/details/colonial.js`: porches of paired columns, arched doors
+  with fanlights, a Gothic portal with a crocketed gable, a Baroque portal, sash and two-light
+  windows in stone surrounds, and arcades with real depth.
+- **Setting:** every monument has its own file in `js/details/` (named after it, as in
+  `js/details/taj-mahal.js`) that adds what stands round it, built from a shared kit
+  (`js/details/realism.js`):
+  - the trees and shrubs of its region: neem, banyan, mango, ashoka, coconut palms, deodars and
+    cypress avenues;
+  - flags and garlands: the tricolour, the Nishan Sahibs, saffron temple flags, Tibetan prayer flags
+    and marigold strings;
+  - heritage lamp posts (lit at night), fountains and the blue boards of the Archaeological Survey
+    of India;
+  - boats, shikaras and houseboats on the water, and stalls outside the temple gates;
+  - animals: temple elephants, the deer at Sarnath and Sikandra, yaks, camels and ponies.
+
+  There are no people or motor vehicles, so the monument itself stays the subject. Everything is
+  instanced, so a garden of fifty trees costs a few draw calls.
+- **Budget:** each monument stays under 300,000 triangles. The largest is Nageshwar, at about
+  225,000 with its Shiva. Repeated parts are instanced, carved parts are merged by material, and a
+  monument is built only when first opened, then cached.
 - **No flicker:** faces that share a plane get depth offsets (`js/coplanar.js`), and curved walls and
   cliffs are built as single continuous bands, so surfaces don't shimmer as the camera moves.
 - **Phones:** ambient occlusion and reflections are skipped to keep the frame rate up.
@@ -244,7 +274,8 @@ monuments, five seconds each, as an 8 min 25 s film at 1920×1080, using the sit
 ## Run locally
 
 It's a static site with no build step: `index.html`, `css/style.css` and ES modules in `js/`, one file
-per monument in `js/monuments/`, with three.js loaded from a CDN. Serve the folder with any static
+per monument in `js/monuments/` and one for its setting and finer detail in `js/details/`, with
+three.js loaded from a CDN. Serve the folder with any static
 server:
 
 ```bash

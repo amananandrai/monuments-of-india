@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, box, cyl, at, archWall, hemi, finial, sheet } from '../helpers.js';
 import { addGatewayDetails } from '../details/gateway-of-india.js';
+import { addDetails } from '../details/gateway-of-india.js';
 
 export function buildGateway() {
   const m = M.basalt, g = new THREE.Group(), f = new THREE.Group();
@@ -30,5 +31,6 @@ export function buildGateway() {
   addGatewayDetails(f, { p, b });
   g.add(box(70, 0.25, 30, M.path, 0, 0, -12));
   g.add(sheet(600, 300, M.sea, 0, 0.1, 160));
+  addDetails(f, g);
   return { group: g, focus: f, view: [-0.9, 0.32, 1.25] };
 }

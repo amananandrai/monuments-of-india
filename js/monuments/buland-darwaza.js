@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, box, cyl, at, chhatri, onionDome } from '../helpers.js';
 import { iwan } from '../details/mughal.js';
+import { addDetails } from '../details/buland-darwaza.js';
 
 export function buildBulandDarwaza() {
   const Rd = M.red, Rl = M.redLight, Mb = M.marble, g = new THREE.Group(), f = new THREE.Group();
@@ -29,5 +30,6 @@ export function buildBulandDarwaza() {
   for (const x of [-13, 0, 13]) f.add(at(chhatri(3, 8, Rd, Mb), x, P + 39, -5));
   // Courtyard wall of the Jama Masjid behind
   f.add(box(130, 10, 3, Rd, 0, P, -14));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.5, 0.25, 1.25] };
 }

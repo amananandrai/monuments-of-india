@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, onFace, archPanel, hemi, finial, ellipseWall } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
+import { addDetails } from '../details/golconda-fort.js';
 
 const GRANITE = mat('#9a917f', 0.9);
 const BOULDER = mat('#8c8270', 0.95, 0, { flatShading: true });
@@ -34,5 +35,6 @@ export function buildGolconda() {
   f.add(box(20, 9, 12, mat('#d9d1c0', 0.85), 0, H - 3, 0));
   for (const a of [0, Math.PI]) for (let k = -1; k <= 1; k++) f.add(onFace(at(archPanel(4, 6, true, M.recess, 0.25), 0, H - 2.4, 0), a, 6, k * 6));
   for (const x of [-7, 7]) f.add(at(hemi(2.4, mat('#d9d1c0', 0.85), 16), x, H + 6, 0), at(finial(2), x, H + 8.4, 0));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.45, 0.35, 1.2] };
 }

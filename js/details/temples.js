@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, rng, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, ellipsoid, capsule, V } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, rng, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT } from '../helpers.js';
 import { frieze, mergeByMaterial } from './components.js';
 import { templeDoorway, templePorch, steps, doorFrame, doorLeaves, guardian } from './doorways.js';
+import { lion } from './animals.js';
 
 // The shared temple builders, with real entrances: a Nagara temple's front porch, doorway and
 // side doors, a mandapa's doors, and a passage through the base of a gopuram. Moved here from
@@ -190,16 +191,6 @@ export function gopuram(w, d, h, tiers, seed, palette = PAINT) {
   im.castShadow = true;
   im.receiveShadow = true;
   g.add(im);
-  return g;
-}
-
-// A seated lion facing +z, about 2.3·s high, on its own plinth: the guardians of temple gates.
-export function lion(s, m) {
-  const g = new THREE.Group();
-  g.add(box(1.3 * s, 0.45 * s, 2 * s, m));
-  g.add(ellipsoid(0.55 * s, 0.5 * s, 0.75 * s, m, 0, 0.95 * s, -0.3 * s), ellipsoid(0.5 * s, 0.72 * s, 0.48 * s, m, 0, 1.4 * s, 0.3 * s));
-  g.add(ellipsoid(0.62 * s, 0.62 * s, 0.48 * s, m, 0, 2.0 * s, 0.42 * s), ellipsoid(0.36 * s, 0.38 * s, 0.42 * s, m, 0, 2.02 * s, 0.75 * s));
-  for (const x of [-0.24, 0.24]) g.add(capsule(V(x * s, 1.25 * s, 0.6 * s), V(x * s, 0.5 * s, 0.72 * s), 0.12 * s, m));
   return g;
 }
 

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, FACES, onionDome, finial, guldasta, minaret } from '../helpers.js';
 import { arcadeSkin, cellRow } from '../details/mughal.js';
+import { addDetails } from '../details/qutb-shahi-tombs.js';
 
 const STONE = mat('#a59a86', 0.9);
 const PLASTER = mat('#cfc4ae', 0.85);
@@ -31,5 +32,6 @@ export function buildQutbShahiTombs() {
   f.add(box(40, 12, 13, PLASTER, 0, 0, -70.5));
   f.add(at(arcadeSkin(40, 12, cellRow(7, 5.4, 0.4, 3.6, 8).map((c) => [...c, c[0] === 0 ? 'door' : 'room']), 1, PLASTER), 0, 0, -64));
   for (const x of [-20, 20]) f.add(at(minaret(28, 1.6, PLASTER, { cap: 'onion' }), x, 0, -63));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.38, 1.2] };
 }

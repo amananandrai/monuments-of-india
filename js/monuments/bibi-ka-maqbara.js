@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, FACES, onionDome, finial, chhatri, minaret, chamferPrism } from '../helpers.js';
 import { iwan } from '../details/mughal.js';
+import { addDetails } from '../details/bibi-ka-maqbara.js';
 
 const PLASTER = mat('#ebe4d6', 0.8);
 
@@ -19,5 +20,6 @@ export function buildBibiKaMaqbara() {
   for (const a of FACES) f.add(onFace(at(iwan(9, 15, { m: PLASTER, trim: Mb, shade: M.marbleShade, depth: 2.2, frame: 2, top: 5, crest: true }), 0, P, 0), a, s));
   for (const x of [-s + 2.5, s - 2.5]) for (const z of [-s + 2.5, s - 2.5]) f.add(at(chhatri(2.4, 7, PLASTER, Mb), x, P + H, z));
   f.add(cyl(8.4, 8.4, 4.4, Mb, 0, P + H, 0, 40), at(onionDome(8.8, Mb), 0, P + H + 4.4, 0), at(finial(5), 0, P + H + 4.4 + 15.6, 0));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.32, 1.25] };
 }

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, box, cyl, at, onFace, FACES, onionDome, finial, chhatri } from '../helpers.js';
 import { iwan, arcadeSkin, cellRow } from '../details/mughal.js';
+import { addDetails } from '../details/safdarjung-tomb.js';
 
 export function buildSafdarjung() {
   const Rd = M.red, Bf = M.buff, Mb = M.marble, g = new THREE.Group(), f = new THREE.Group();
@@ -21,5 +22,6 @@ export function buildSafdarjung() {
   for (const a of FACES) f.add(onFace(at(iwan(8, 12.5, { m: Bf, trim: Mb, shade: M.redLight, depth: 1.8, frame: 2, top: 2.5 }), 0, P, 0), a, 14));
   for (const x of [-14, 14]) for (const z of [-14, 14]) f.add(cyl(2.4, 2.4, 18, Rd, x, P, z, 8), cyl(2.8, 2.8, 0.5, Bf, x, P + 14, z, 8), at(chhatri(2.2, 6, Bf, Mb), x, P + 18, z));
   f.add(cyl(9, 9, 4, Mb, 0, P + 14.8, 0, 40), at(onionDome(9.4, Mb), 0, P + 18.8, 0), at(finial(5), 0, P + 18.8 + 16.7, 0));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.7, 0.34, 1.25] };
 }

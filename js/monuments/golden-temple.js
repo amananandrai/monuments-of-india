@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, lathe, at, onFace, FACES, archPanel, onionDome, hemi, finial, kalash, chhatri, ribbed, sheet } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
 import { mughalDoorway } from '../details/mughal.js';
+import { addDetails } from '../details/golden-temple.js';
 
 const SILVER = mat('#cfd3d8', 0.3, 0.85);
 
@@ -51,5 +52,6 @@ export function buildGoldenTemple() {
   f.add(at(ribbed(onionDome(4, G), 16, 0.06), 0, top + 2.6, 0));
   f.add(at(kalash(2.6, G), 0, top + 2.6 + 7.3, 0));
   f.add(at(finial(3), 0, top + 2.6 + 10, 0));
+  addDetails(f, g);
   return { group: g, focus: f, view: [-1.1, 0.36, 0.75] };
 }

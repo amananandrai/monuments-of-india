@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, hemi, inst, unitBox, unitCyl, archWall, barrelVault, surface, curvedBand } from '../helpers.js';
+import { addDetails } from '../details/ajanta-caves.js';
 
 const ROCK = mat('#7a6c5c', 0.95);
 const ROCK_LIGHT = mat('#968672', 0.95);
@@ -117,5 +118,6 @@ export function buildAjanta() {
     f.add(at(box(10, 0.8, 4, ROCK_LIGHT), x + ux * 2, y - 0.8, z + uz * 2).rotateY(ry));
   }
   f.add(inst(unitBox(), caves, DARK), inst(unitCyl(8), porch, ROCK_LIGHT));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.15, 0.28, 1.2] };
 }

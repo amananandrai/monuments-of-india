@@ -1,5 +1,9 @@
 import * as THREE from 'three';
-import { M, V, box, cyl, group, at, onFace, archTop, rise, archPanel, ONION, onionDome, finial, chhatri, bulbPoints } from '../helpers.js';
+import { M, V, box, cyl, group, at, onFace, archTop, rise, ONION, onionDome, finial, chhatri, bulbPoints } from '../helpers.js';
+import { mergeByMaterial } from '../details/components.js';
+import { arcadeSkin, mughalDoorway } from '../details/mughal.js';
+import { classicalDoor } from '../details/colonial.js';
+import { addDetails } from '../details/mysore-palace.js';
 
 export function buildMysorePalace() {
   const S = M.mysore, Rz = M.mysoreRose, g = new THREE.Group(), f = new THREE.Group();
@@ -31,29 +35,38 @@ export function buildMysorePalace() {
   g.add(box(170, 0.15, 90, M.grass, 0, 0, 72), box(12, 0.2, 90, M.path, 0, 0, 72));
   const b = 1;
   f.add(box(84, b, 54, S));
-  f.add(box(76, 16, 46, S, 0, b, 0), box(77, 0.8, 47, M.lime, 0, b + 16, 0));
+  // The front is an open arcade 2.4 m deep: tall arches onto the verandah below, a gallery above
+  const cells = [];
+  for (let k = -3; k <= 3; k++) if (k) cells.push([k * 10, 0.5, 7, 11, 'room'], [k * 10, 11.5, 4.5, 4, 'room']);
+  f.add(box(76, 16, 43.6, S, 0, b, -1.2), at(arcadeSkin(76, 16, cells, 2.4, S, { trim: M.lime }), 0, b, 20.6));
+  f.add(box(77, 0.8, 47, M.lime, 0, b + 16, 0));
   rect(-38.5, 38.5, b + 16.9, -23.5, 23.5);
   verticals(-38, 38, -23, 23, b, b + 16);
   for (let k = -3; k <= 3; k++) {
     if (k === 0) continue;
-    f.add(onFace(at(archPanel(7, 11, true, M.recess, 0.3), 0, b + 0.5, 0), 0, 23, k * 10));
-    f.add(onFace(at(archPanel(4.5, 4, true, M.recess, 0.3), 0, b + 11.5, 0), 0, 23, k * 10));
     arch(7, 11, k * 10, b + 0.5, 23.4);
     arch(4.5, 4, k * 10, b + 11.5, 23.4);
   }
-  // Five-storey central tower with the gilded dome
-  const tz = 18, th = 31;
+  // Five-storey central tower with the gilded dome: the entrance in its foot, an arched opening
+  // onto the porch on each side of it, and open arched windows on the storeys above
+  const tz = 18, th = 31, tw = new THREE.Group();
   f.add(box(17, th, 16, S, 0, b, tz));
+  const win = classicalDoor(3.4, 3.9, { m: S, trim: M.lime, shape: 'pointed', fill: 'room', top: null, depth: 0.35, frame: 0.4 });
+  const side = classicalDoor(5.6, 5.2, { m: S, trim: M.lime, shape: 'pointed', fill: 'room', top: null, depth: 0.6, frame: 0.5, sill: false });
   for (let i = 0; i < 5; i++) {
     const y = b + i * 6.2, big = i === 0;
     f.add(box(17.6, 0.5, 16.6, M.lime, 0, y + 6.2 - 0.5, tz));
     for (const a of [0, Math.PI / 2, -Math.PI / 2]) {
-      const o = onFace(at(archPanel(big ? 8 : 4.2, big ? 5.6 : 4.4, true, M.recess, 0.3), 0, y + 0.3, 0), a, a ? 8.5 : 8);
+      let o;
+      if (big && !a) o = mughalDoorway(5, 5.1, { m: S, trim: M.lime, depth: 1, frame: 0.9, top: 0.5 });
+      else o = big ? side.clone() : win.clone();
+      onFace(at(o, 0, big ? y : y + 0.5, 0), a, a ? 8.5 : 8);
       o.position.z += tz;
-      f.add(o);
+      tw.add(o);
     }
-    arch(big ? 8 : 4.2, big ? 5.6 : 4.4, 0, y + 0.3, tz + 8.4);
+    arch(big ? 6.8 : 4.6, big ? 5.7 : 4.8, 0, y + (big ? 0 : 0.3), tz + (big ? 9.1 : 8.5));
   }
+  f.add(mergeByMaterial(tw));
   verticals(-8.5, 8.5, tz - 8, tz + 8, b, b + th);
   rect(-8.6, 8.6, b + th, tz - 8.1, tz + 8.1);
   for (const x of [-7, 7]) for (const z of [-6.5, 6.5]) f.add(at(chhatri(1.6, 5, S, Rz), x, b + th, tz + z));
@@ -70,5 +83,6 @@ export function buildMysorePalace() {
   }
   for (const x of [-22, -12, 12, 22]) f.add(at(chhatri(2.2, 6.5, S, Rz), x, b + 16.8, 20.5));
   f.add(bulbPoints(bulbs));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.55, 0.3, 1.2] };
 }

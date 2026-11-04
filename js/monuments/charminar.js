@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, box, at, onFace, FACES, archWall } from '../helpers.js';
 import { arcadeSkin, cellRow } from '../details/mughal.js';
 import { charminarMinaret, addCharminarDetails } from '../details/charminar.js';
+import { addDetails } from '../details/charminar.js';
 
 export function buildCharminar() {
   const m = M.plaster, g = new THREE.Group();
@@ -24,5 +25,6 @@ export function buildCharminar() {
   // parapet of the faces: see js/details/charminar.js.
   for (const x of [-10, 10]) for (const z of [-10, 10]) g.add(at(charminarMinaret(m, Math.atan2(x, z)), x, b, z));
   addCharminarDetails(g, { b });
+  addDetails(g, g);
   return { group: g };
 }

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mesh, box, cyl, at, hemi, shikhara, rng, instBoxes, torana } from '../helpers.js';
 import { mughalDoorway } from '../details/mughal.js';
 import { steps } from '../details/doorways.js';
+import { addDetails } from '../details/mahabodhi-temple.js';
 
 export function buildMahabodhi() {
   const S = M.bodh, g = new THREE.Group(), f = new THREE.Group(), R = rng(11);
@@ -35,5 +36,6 @@ export function buildMahabodhi() {
     const x = (R() < 0.5 ? -1 : 1) * (22 + R() * 12), z = (R() - 0.5) * 60;
     f.add(cyl(1.3, 1.5, 1, S, x, 0, z, 16), at(hemi(1.3, S, 16), x, 1, z), cyl(0.1, 0.1, 1.2, S, x, 2.2, z, 6));
   }
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.95, 0.35, 1.15] };
 }

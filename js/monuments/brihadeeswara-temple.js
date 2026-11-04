@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, pidaRoof } from '../helpers.js';
 import { templeDoorway, doorFrame, guardian } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
+import { nandi } from '../details/animals.js';
+import { addDetails } from '../details/brihadeeswara-temple.js';
 
 export function buildBrihadeeswara() {
   const m = M.granite, d = M.graniteDark, g = new THREE.Group();
@@ -49,9 +51,9 @@ export function buildBrihadeeswara() {
   for (const z of [-2, 2]) for (const x of [-6, 6]) n.add(cyl(0.45, 0.5, 7, m, x, 1.5, z, 8));
   n.add(box(16, 1.2, 16, d, 0, 8.5));
   n.add(at(pidaRoof(13, 6, 3, 1, m, d), 0, 9.7, 0));
-  n.add(box(2.6, 2.4, 5.4, M.stoneDark, 0, 1.5, 0.4));
-  n.add(box(1.6, 2, 1.6, M.stoneDark, 0, 3, -2.6));
-  n.add(box(1.6, 1, 1.2, M.stoneDark, 0, 3.9, -1.2));
+  // The great monolithic Nandi, polished dark, facing the shrine
+  n.add(at(nandi(M.stoneDark, 1.08), 0, 1.5, 0.2).rotateY(Math.PI));
   g.add(at(n, 0, 0, 96));
+  addDetails(g, g);
   return { group: g, view: [1.0, 0.42, 1.0] };
 }

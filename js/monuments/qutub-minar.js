@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, ring, group, at, chhatri } from '../helpers.js';
+import { addDetails } from '../details/qutub-minar.js';
 
 export function buildQutub() {
   const g = new THREE.Group();
@@ -31,5 +32,6 @@ export function buildQutub() {
     }
   }
   g.add(at(chhatri(2.1, 5, M.red, M.marble), 0, y, 0));
+  addDetails(g, g);
   return { group: g };
 }

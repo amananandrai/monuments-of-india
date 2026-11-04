@@ -1,6 +1,9 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, surface, capsule, V, pidaRoof, bell, kalash } from '../helpers.js';
+import { mat, mesh, box, cyl, at, surface, pidaRoof, bell, kalash } from '../helpers.js';
 import { D, frieze, rosette, bracketGeo, chhajja } from './components.js';
+import { guardian } from './figures.js';
+
+export { guardian };
 
 // Doorways with depth. A door that reads needs a reveal running back from the wall, frames stepped
 // one inside another, something at the back (door leaves, a dim room), a threshold and a way up,
@@ -74,19 +77,6 @@ export function doorLeaves(w, h, { open = 0, studs = true, m = TIMBER, inward = 
     pivot.rotation.y = (inward ? -s : s) * open;
     g.add(pivot);
   }
-  return g;
-}
-
-// A door guardian (dvarapala) or river goddess carved at the foot of a doorframe, about h tall.
-export function guardian(h, m) {
-  const g = new THREE.Group(), s = h / 1.7;
-  g.add(box(0.62 * s, 0.28 * s, 0.5 * s, m));
-  g.add(capsule(V(0, 0.38 * s, 0), V(0, 1.18 * s, 0), 0.2 * s, m, 0.16 * s));
-  g.add(capsule(V(0.15 * s, 1.1 * s, 0), V(0.32 * s, 0.7 * s, 0.08 * s), 0.06 * s, m));
-  g.add(capsule(V(-0.15 * s, 1.1 * s, 0), V(-0.3 * s, 1.45 * s, 0.05 * s), 0.06 * s, m));
-  g.add(cyl(0.025 * s, 0.03 * s, 0.9 * s, m, -0.31 * s, 0.75 * s, 0.05 * s, 6));
-  g.add(at(mesh(new THREE.SphereGeometry(0.14 * s, 12, 8), m), 0, 1.42 * s, 0.02 * s));
-  g.add(cyl(0.04 * s, 0.11 * s, 0.22 * s, m, 0, 1.52 * s, 0.02 * s, 8));
   return g;
 }
 

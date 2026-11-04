@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, box, cyl, group, at, onionDome, hemi, kalash, pidaRoof } from '../helpers.js';
 import { gopuram, wallWithGaps } from '../details/temples.js';
+import { addDetails } from '../details/meenakshi-temple.js';
 
 export function buildMeenakshi() {
   const S = M.stucco, Gr = M.granite, g = new THREE.Group();
@@ -37,5 +38,6 @@ export function buildMeenakshi() {
   for (const s of [-1, 1]) g.add(box(44, 4.5, 3, S, -86, 0, 10 + s * 24.5), box(3, 4.5, 52, S, -86 + s * 22, 0, 10));
   g.add(cyl(0.15, 0.15, 3, M.gild, -86, 0.9, 10, 6), at(onionDome(1, M.gild), -86, 3.9, 10));
   g.add(box(40, 7, 40, Gr, 82, 0, 84));
+  addDetails(g, g);
   return { group: g, view: [0.75, 0.42, 1.2] };
 }

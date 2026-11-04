@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, inst, unitBox, ellipseWall } from '../helpers.js';
+import { addDetails } from '../details/kargil-war-memorial.js';
 
 const PINK = mat('#c8917a', 0.85);
 const PEAK = mat('#8f8578', 0.95, 0, { flatShading: true });
@@ -29,5 +30,6 @@ export function buildKargilMemorial() {
   f.add(box(4, 3, 4, PINK, 0, 0.6, -6), cyl(0.6, 0.8, 2, mat('#ff8c2e', 0.4, 0, { emissive: '#ff6a00', emissiveIntensity: 2.4 }), 0, 3.6, -6, 10));
   f.add(at(bigFlag(40), -30, 0.6, 20));
   for (let k = 0; k < 6; k++) f.add(box(2, 1.6, 1, mat('#4d5a3a', 0.8), -20 + k * 8, 0.6, 26));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.25, 0.3, 1.25] };
 }

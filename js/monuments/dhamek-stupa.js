@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, inst, unitBox, onFace, surface } from '../helpers.js';
+import { addDetails } from '../details/dhamek-stupa.js';
 
 const STONE = mat('#b8a88e', 0.9);
 const BRICK = surface(mat('#9c6a4f', 0.95), 'brick');
@@ -31,5 +32,6 @@ export function buildDhamek() {
   for (let i = 0; i < p.count; i++) if (p.getY(i) > 15) p.setY(i, 15 + Math.sin(p.getX(i) * 0.6) * 1.2 + Math.cos(p.getZ(i) * 0.5));
   top.geometry.computeVertexNormals();
   f.add(top);
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.8, 0.3, 1.2] };
 }

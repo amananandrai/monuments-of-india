@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, box, cyl, lathe, at, onFace, FACES, chhatri, finial, inst, unitBox, sheet } from '../helpers.js';
 import { jali } from '../details/components.js';
 import { iwan } from '../details/mughal.js';
+import { addDetails } from '../details/itmad-ud-daulah.js';
 
 // Pietra dura: inlaid panels of coloured stone set into the white marble.
 const INLAY = [mat('#8a5a3c', 0.5), mat('#c9a24a', 0.45), mat('#4f6b4a', 0.5), mat('#2f2b2a', 0.5)];
@@ -34,5 +35,6 @@ export function buildItmadUdDaulah() {
   f.add(at(lathe([[6.6, 0], [6.4, 0.6], [5.2, 1.6], [3, 2.4], [0.4, 2.7], [0, 2.7]], Mb, 4).rotateY(Math.PI / 4), 0, B + 13.1, 0));
   f.add(at(finial(2.6), 0, B + 15.7, 0));
   for (const x of [-4.6, 4.6]) for (const z of [-4.6, 4.6]) f.add(at(finial(1.6), x, B + 13.4, z));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.42, 1.2] };
 }
