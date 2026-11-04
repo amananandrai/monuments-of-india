@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { mesh, box } from '../helpers.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { mat, mesh, box, cyl, at, surface } from '../helpers.js';
 import { ellipsoid as E, cone, chain, blend, bounded, carve, mirrorX, flatBase, roundBox, sculpt, statueMaterial } from '../sdf.js';
 
 // The temple animals, each sculpted as one skin from a signed distance field (see js/sdf.js): the
@@ -180,3 +181,66 @@ export function lion(s, m) {
   return g;
 }
 
+
+/* ---------- deer ---------- */
+
+// A chital (spotted deer) stag about 1 m at the shoulder, grazing or with its head up: slender
+// legs, a short tail and branching antlers (as tubes).
+function deerField(grazing) {
+  const head = grazing ? [[0, 0.95, 0.55, 0.12], [0, 0.45, 0.85, 0.09], [0, 0.18, 0.95, 0.06]] : [[0, 0.95, 0.55, 0.12], [0, 1.35, 0.72, 0.09], [0, 1.42, 0.92, 0.06]];
+  const f = blend([
+    [E([0, 0.9, 0], [0.24, 0.27, 0.55]), 0],
+    [E([0, 0.95, 0.4], [0.21, 0.27, 0.22]), 0.12],
+    [chain(head, 0.06), 0.1],
+    [mirrorX(cone([0.12, 0.8, 0.38], [0.12, 0.03, 0.42], 0.06, 0.025)), 0.06],
+    [mirrorX(cone([0.13, 0.85, -0.38], [0.12, 0.45, -0.48], 0.09, 0.04)), 0.08],
+    [mirrorX(cone([0.12, 0.45, -0.48], [0.12, 0.03, -0.42], 0.035, 0.025)), 0.03],
+    [cone([0, 1.0, -0.52], [0, 0.85, -0.6], 0.05, 0.03), 0.04],
+  ]);
+  return { f: flatBase(f), lo: [-0.4, -0.03, -0.75], hi: [0.4, 1.6, 1.1] };
+}
+const ANTLER = surface(mat('#d9cbb0', 0.7), 'none');
+const DEER = surface(mat('#b8763e', 0.8), 'none');
+// Deer at [x, z, ry]; every third grazes. Instanced: one draw for each kind of part.
+let antlerGeo = null;
+export function deer(spots, { y = 0 } = {}) {
+  const g = new THREE.Group(), up = [], down = [];
+  spots.forEach(([x, z, ry = 0], i) => (i % 3 === 1 ? down : up).push([x, y, z, ry]));
+  if (!antlerGeo) {
+    const parts = [];
+    for (const s of [-1, 1]) {
+      const pts = [[s * 0.04, 1.5, 0.68], [s * 0.14, 1.75, 0.6], [s * 0.18, 1.95, 0.66]].map((p) => new THREE.Vector3(...p));
+      parts.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 8, 0.018, 5, false), new THREE.TubeGeometry(new THREE.CatmullRomCurve3([pts[1], new THREE.Vector3(s * 0.12, 1.82, 0.76)]), 4, 0.014, 5, false));
+    }
+    antlerGeo = mergeGeometries(parts.map((p) => { p.deleteAttribute('uv'); return p; }));
+  }
+  const inst = (geo, m, list) => {
+    const im = new THREE.InstancedMesh(geo, m, list.length), o = new THREE.Object3D();
+    list.forEach(([x, yy, z, ry], i) => { o.position.set(x, yy, z); o.rotation.set(0, ry, 0); o.updateMatrix(); im.setMatrixAt(i, o.matrix); });
+    im.castShadow = im.receiveShadow = true;
+    return im;
+  };
+  if (up.length) g.add(inst(sculpt('deer', () => deerField(false), { h: 0.045, reach: 0.15 }), statueMaterial(DEER), up), inst(antlerGeo, ANTLER, up));
+  if (down.length) g.add(inst(sculpt('deer-grazing', () => deerField(true), { h: 0.045, reach: 0.15 }), statueMaterial(DEER), down));
+  return g;
+}
+
+/* ---------- caparisoned elephant ---------- */
+
+// An elephant dressed for a procession or the ride up to a fort: a painted forehead, a long
+// embroidered cloth over its back and a canopied howdah, with a mahout on its neck.
+export function rideElephant(m, s = 1, { cloth = '#b3262e', trim = '#e3b54a' } = {}) {
+  const g = elephant(m, 1), C = surface(mat(cloth, 0.8), 'none'), T = surface(mat(trim, 0.35, 0.8), 'none');
+  g.add(box(2.3, 0.12, 2.6, C, 0, 3.3, 0), box(0.1, 1.5, 2.4, C, 1.18, 2.0, 0), box(0.1, 1.5, 2.4, C, -1.18, 2.0, 0));
+  g.add(box(2.4, 0.08, 2.7, T, 0, 3.22, 0));
+  // The howdah: a railed seat with a canopy on four posts
+  g.add(box(1.6, 0.5, 1.7, T, 0, 3.42, -0.1), box(1.4, 0.06, 1.5, C, 0, 3.92, -0.1));
+  for (const x of [-0.7, 0.7]) for (const z of [-0.8, 0.6]) g.add(cyl(0.035, 0.035, 1.2, T, x, 3.92, z, 6));
+  g.add(at(mesh(new THREE.ConeGeometry(1.15, 0.6, 4).rotateY(Math.PI / 4), C), 0, 5.4, -0.1));
+  // The painted forehead and a mahout astride the neck
+  g.add(at(mesh(new THREE.CircleGeometry(0.42, 16), surface(mat('#f2c21c', 0.8), 'none')), 0, 3.0, 2.68).rotateX(-0.45));
+  g.add(cyl(0.16, 0.2, 0.6, surface(mat('#f4f1ea', 0.9), 'none'), 0, 3.55, 1.25, 8), mesh(new THREE.SphereGeometry(0.13, 8, 6), surface(mat('#8d5a3b', 0.7), 'none'), 0, 4.3, 1.25));
+  g.add(mesh(new THREE.SphereGeometry(0.15, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), surface(mat('#d9342b', 0.8), 'none'), 0, 4.36, 1.25));
+  g.scale.setScalar(s);
+  return g;
+}

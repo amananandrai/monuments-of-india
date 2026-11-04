@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, at, onFace, archPanel, chhatri, hemi, finial, inst, unitBox, unitCyl, aroundRect, sheet, curvedBand } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
+import { addDetails } from '../details/agra-fort.js';
 
 // The curved, gilded "bangaldar" roof of the Khas Mahal pavilions.
 function bangaldar(w, d, h, m) {
@@ -49,5 +50,6 @@ export function buildAgraFort() {
   const cols = [];
   aroundRect(50, 24, 4).forEach(([x, z]) => cols.push([x, 1, z + 60, 1.4, 8, 1.4]));
   f.add(box(54, 1, 28, Rd, 0, 0, 60), inst(unitCyl(12), cols, M.lime), box(54, 1.6, 28, M.lime, 0, 9, 60));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.4, 0.42, 1.2] };
 }

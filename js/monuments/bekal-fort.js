@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet, ellipseWall } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
+import { addDetails } from '../details/bekal-fort.js';
 
 const LATERITE = mat('#8f4e36', 0.95);
 const LATERITE_DARK = mat('#6e3a27', 0.95);
@@ -31,5 +32,6 @@ export function buildBekal() {
   for (const s of [-1, 1]) f.add(box(9.5, 6.9, 3, LATERITE, s * 11.5, H, 120));
   f.add(box(16, 7, 3, LATERITE_DARK, -4, H, 106));
   f.add(cyl(7, 8, 18, LATERITE, 0, H, 0, 20), cyl(8, 8, 1, LATERITE_DARK, 0, H + 18, 0, 20), box(10, 1.2, 1.2, LATERITE_DARK, 0, H + 6, 9));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.5, 0.5, 1.15] };
 }

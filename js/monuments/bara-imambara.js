@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, at, onFace, onionDome, finial, hemi, minaret, guldasta } from '../helpers.js';
 import { iwan, arcadeSkin } from '../details/mughal.js';
+import { addDetails } from '../details/bara-imambara.js';
 
 const LIME = mat('#e6d8b8', 0.85);
 const LIME_DARK = mat('#cbb994', 0.85);
@@ -43,5 +44,6 @@ export function buildBaraImambara() {
   m.rotation.y = Math.PI / 2;
   m.position.set(-78, 0, 24);
   f.add(m);
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.35, 1.25] };
 }

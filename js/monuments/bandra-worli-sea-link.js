@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, at, rng, V, strut, inst, unitBox, sheet } from '../helpers.js';
+import { addDetails } from '../details/bandra-worli-sea-link.js';
 
 const CONCRETE = mat('#c9c6bf', 0.85);
 const CABLE = mat('#e8e6e1', 0.5, 0.3);
@@ -33,5 +34,6 @@ export function buildBandraWorli() {
   const city = [];
   for (let i = 0; i < 70; i++) city.push([-900 + i * 26 + R() * 10, 0, -700 - R() * 160, 18 + R() * 14, 30 + R() * 140, 18 + R() * 14]);
   g.add(inst(unitBox(), city, mat('#a9adb4', 0.9)));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.35, 0.25, 1.2] };
 }

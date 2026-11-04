@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
+import { addDetails } from '../details/baidyanath-temple.js';
 
 const WHITE = mat('#f0e9de', 0.85);
 const SHADE = mat('#d8c9b0', 0.9);
@@ -27,5 +28,6 @@ export function buildBaidyanath() {
   // The smaller temples of the complex grouped around it
   const spots = [[-32, -30], [-32, -8], [-32, 14], [32, -30], [32, -8], [32, 14], [-16, -38], [16, -38], [-20, 30], [20, 30]];
   for (const [x, z] of spots) f.add(at(nagaraTemple({ w: 5, h: 9, m: WHITE, shade: SHADE, plinth: 0.8, urus: 0, halls: [] }), x, 0, z));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.42, 1.15] };
 }

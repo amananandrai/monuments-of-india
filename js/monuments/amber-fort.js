@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, chhatri, onFace, archPanel, inst, unitBox, aroundRect, paintMats } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
+import { addDetails } from '../details/amber-fort.js';
 
 const SAND = mat('#d9b77e', 0.9);
 const SAND_DARK = mat('#b8925a', 0.9);
@@ -44,5 +45,6 @@ export function buildAmberFort() {
   const cols = [];
   aroundRect(24, 14, 3).forEach(([x, z]) => cols.push([x + 22, 23, z - 26, 1, 6, 1]));
   f.add(inst(unitBox(), cols, mat('#c98a7a', 0.85)), box(26, 1, 16, M.marble, 22, 29, -26));
+  addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.35, 1.25] };
 }
