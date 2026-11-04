@@ -219,7 +219,9 @@ real-world proportions: there are no model files to download.
   House carry a second layer of carving from `js/details/`: roundels and lettering, nested arches and
   half-domes, bracketed balconies, jalis, eaves, merlons, lotus-petal domes and finials. The parts are
   shared (`js/details/components.js`) and merged into a few meshes per monument. See
-  [`docs/monument-details.md`](docs/monument-details.md).
+  [`docs/monument-details.md`](docs/monument-details.md), and
+  [`docs/doorways-and-reuse-plan.md`](docs/doorways-and-reuse-plan.md) for the plan to give every
+  monument real entrances and to reuse these parts across each architectural family.
 - **No flicker:** faces that share a plane get depth offsets (`js/coplanar.js`), and curved walls and
   cliffs are built as single continuous bands, so surfaces don't shimmer as the camera moves.
 - **Phones:** ambient occlusion and reflections are skipped to keep the frame rate up.

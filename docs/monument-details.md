@@ -103,17 +103,18 @@ Built:
 - Pishtaqs cut 2.6 m deep with a half-dome hood, so the face reads as curves inside curves: the
   outer pointed arch, its ring, a blind arch on the back wall, the door and a screened window above
   it, each in its own ring.
-- Calligraphy as a black band and fine line round each pishtaq; inlaid carnelian and jade flowers
-  in the spandrels; a carved band and merlons along the top; guldastas at both edges.
-- Two storeys of alcoves either side and on every chamfer, as niches with hoods, jali screens,
-  inner rings and fine black frames.
+- The calligraphy frame as a raised white band and bead round each pishtaq; carved white flowers
+  in the spandrels; a carved band and merlons along the top; guldastas at both edges. The Taj is
+  kept white throughout: no black inlay lines.
+- Two storeys of alcoves either side and on every chamfer, as niches with hoods, jali screens and
+  inner rings.
 - A carved dado, a chamfered parapet (the old square band overhung the chamfers) with merlons, and
   guldastas where each face meets a chamfer.
-- The drum ringed by a blind arcade between two inlaid lines; a moulded ring at the foot of the dome;
+- The drum ringed by a blind arcade between two moulded rings; a moulded ring at the foot of the dome;
   an inverted lotus at its crown; a gilded finial of stacked bulbs ending in a crescent.
 - Chhatris with eight columns, pointed arches, an eave, a ribbed dome in a lotus cup and a crescent.
-- Minarets (`tajMinaret`): square and octagonal base, three tapering stages with 16 black inlay lines
-  each and moulded rings (the ridges up the towers), three balconies with stepped corbelling,
+- Minarets (`tajMinaret`): square and octagonal base, three tapering stages with moulded rings
+  (the ridges up the towers), three balconies with stepped corbelling,
   brackets and pierced railings, a door onto each, and a chhatri on top.
 - A blind arcade of 88 arches round the plinth and a carved edge along its top.
 

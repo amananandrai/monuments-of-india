@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, at, onFace, FACES, chamferPrism, finial } from '../helpers.js';
 import {
-  D, jali, frieze, niche, archSlab, archRing, rosette, bracketGeo, placeAll, aroundCircle, alongFace,
+  jali, frieze, niche, archSlab, archRing, rosette, bracketGeo, placeAll, aroundCircle, alongFace,
   railingRing, merlons, lotusDome, petalRing, crescentFinial, mughalChhatri, mergeByMaterial,
 } from './components.js';
 
@@ -61,14 +61,14 @@ function pishtaq(depth) {
   g.add(at(archSlab(4.4, 4.0, true, M.recess, 0.06), 0, 9.8, 0.06), at(archSlab(4.4, 4.0, true, jali(MB), 0.06), 0, 9.8, 0.12));
   g.add(at(archRing(4.4, 4.0, true, 0.26, 0.12, MB), 0, 9.8, 0.1));
   g.add(box(6.0, 0.45, 0.18, MB, 0, 9.15, 0.1));
-  // Calligraphy: a black band round the arch on the face of the frame, with a fine line inside it.
+  // The calligraphy frame round the arch, as a raised white band with a fine bead inside it.
   const z = depth;
-  for (const [w, h, x, y] of [[0.5, 26.3, -8.3, 0], [0.5, 26.3, 8.3, 0], [17.1, 0.5, 0, 26.3]]) g.add(box(w, h, 0.03, D.ink, x, y, z));
-  for (const [w, h, x, y] of [[0.12, 25.4, -7.75, 0], [0.12, 25.4, 7.75, 0], [15.62, 0.12, 0, 25.4]]) g.add(box(w, h, 0.03, D.ink, x, y, z));
-  // Inlaid flowers in the spandrels.
+  for (const [w, h, x, y] of [[0.5, 26.3, -8.3, 0], [0.5, 26.3, 8.3, 0], [17.1, 0.5, 0, 26.3]]) g.add(box(w, h, 0.07, MB, x, y, z));
+  for (const [w, h, x, y] of [[0.12, 25.4, -7.75, 0], [0.12, 25.4, 7.75, 0], [15.62, 0.12, 0, 25.4]]) g.add(box(w, h, 0.05, MB, x, y, z));
+  // Carved flowers in the spandrels, white on white.
   for (const x of [-5.6, 5.6]) {
-    g.add(at(rosette(0.95, D.carnelian, 8), x, 23.2, z + 0.02));
-    for (const dx of [-1.25, 1.25]) g.add(at(rosette(0.42, D.jade, 6), x + dx, 22.4, z + 0.02));
+    g.add(at(rosette(0.95, SH, 8), x, 23.2, z + 0.02));
+    for (const dx of [-1.25, 1.25]) g.add(at(rosette(0.42, SH, 6), x + dx, 22.4, z + 0.02));
   }
   // A carved band along the top of the frame, and merlons above it.
   g.add(box(19.6, 1.3, 0.06, frieze(SH), 0, 29.4, z));
@@ -81,14 +81,10 @@ function pishtaq(depth) {
 // Two storeys of alcoves: niches with a pierced screen, at (dist, lat) on the face at `a`.
 function alcoves(a, dist, lat, aw, P, d) {
   for (const y of [1.5, 15.5]) {
-    const n = niche(aw, 11, true, 0.9, MB, { frame: 0.5, top: 1.3, back: M.recess, inner: false });
+    const n = niche(aw, 11, true, 0.9, MB, { frame: 0.5, top: 1.3, back: SH, inner: false });
     n.add(at(archSlab(aw * 0.98, 10.9, true, jali(MB), 0.05), 0, 0, 0.08));
     n.add(at(archRing(aw * 0.62, 8.4, true, 0.14, 0.05, MB), 0, 0, 0.13));
     d.add(onFace(at(n, 0, P + y, 0), a, dist, lat));
-    // A fine black frame round each alcove.
-    for (const [w, h, x, yy] of [[0.1, 12.15, -aw / 2 - 0.38, 0], [0.1, 12.15, aw / 2 + 0.38, 0], [aw + 0.86, 0.1, 0, 12.05]]) {
-      d.add(onFace(box(w, h, 0.03, D.ink, 0, P + y + yy, 0), a, dist + 0.9, lat + x));
-    }
   }
 }
 
@@ -106,14 +102,14 @@ export function addTajDetails(f, { P, s, c, H }) {
     // Guldastas where each face meets a chamfer.
     for (const lat of [-(s - c), s - c]) d.add(onFace(at(guldasta(H + 3.6, 0.5), 0, P, 0), a, s - 0.15, lat));
   }
-  // The drum: a blind arcade between two inlaid lines.
+  // The drum: a blind arcade between two moulded rings.
   for (const [x, y, z, ry] of aroundCircle(13.95, 24, top + 1.0)) {
     const o = archSlab(2.5, 4.4, true, SH, 0.12);
     o.position.set(x, y, z);
     o.rotation.y = ry;
     d.add(o);
   }
-  for (const y of [top + 0.55, top + 5.75]) d.add(cyl(14.03, 14.03, 0.14, D.ink, 0, y, 0, 64));
+  for (const y of [top + 0.55, top + 5.75]) d.add(cyl(14.1, 14.1, 0.18, MB, 0, y, 0, 64));
   // The dome: a moulded ring at its foot and an inverted lotus at its crown.
   const dy = top + 7, R = 14.5;
   d.add(at(mesh(new THREE.TorusGeometry(R * 0.86 + 0.1, 0.28, 8, 72), MB), 0, dy + 0.25, 0).rotateX(Math.PI / 2));
@@ -141,14 +137,6 @@ export function tajMinaret(out) {
   for (const [r0, r1, y0, y1] of secs) {
     const h = y1 - y0;
     t.add(cyl(r1, r0, h, MB, 0, y0, 0, 48));
-    // Black inlay lines up the shaft, leaning in with its taper.
-    const lean = Math.atan2(r0 - r1, h);
-    for (let k = 0; k < 16; k++) {
-      const a = (k / 16) * Math.PI * 2, rm = (r0 + r1) / 2 + 0.01;
-      const o = mesh(new THREE.BoxGeometry(0.07, h - 0.5, 0.04), D.ink, Math.sin(a) * rm, y0 + h / 2, Math.cos(a) * rm);
-      o.quaternion.setFromEuler(new THREE.Euler(-lean, a, 0, 'YXZ'));
-      t.add(o);
-    }
     // Moulded rings (the ridges up the tower) at a third and two thirds of each section.
     for (const k of [1 / 3, 2 / 3]) {
       const r = r0 + (r1 - r0) * k + 0.06;
