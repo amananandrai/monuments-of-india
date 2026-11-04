@@ -58,7 +58,9 @@ function ball(r, x, y, z, sx = 1, sy = 1, sz = 1, w = 6, h = 4) {
 // crown, arms at the sides holding attributes), 'dancer' (the tribhanga, a sway at the hips, one
 // arm raised and the other across the body), 'seated' (cross-legged, hands in the lap: a Buddha or
 // a Jina), 'musician' (standing with a drum held before the body, as on the roof of Konark) or
-// 'leader' (a modern statue: standing, arms at the sides, in a long coat and a cap).
+// 'leader' (a modern statue: standing, arms at the sides, in a long coat and a cap); and the
+// surasundaris of Khajuraho's walls: 'mirror' (looking into a hand mirror), 'thorn' (drawing a thorn
+// from a lifted foot) and 'chauri' (an attendant with a fly-whisk over the shoulder).
 function figureParts(pose) {
   const g = new THREE.Group(), add = (...o) => o.forEach((x) => g.add(x));
   if (pose === 'seated') {
@@ -70,11 +72,13 @@ function figureParts(pose) {
     add(ball(0.9, 0, 0.35, 0.6, 1.4, 0.35, 0.9));                         // lap
     return g;
   }
-  const sway = pose === 'dancer' ? 0.45 : 0;
-  // Legs: the weight on the left in the dancer, the right knee bent.
+  const sway = { dancer: 0.45, mirror: -0.4, thorn: 0.3, chauri: 0.25 }[pose] || 0;
+  // Legs: the weight on the left in the dancer, the right knee bent; in 'thorn' the right foot is
+  // lifted behind, to be reached for.
   add(seg(V(-0.5, 0, 0.2), V(-0.45 + sway * 0.3, 2.4, 0), 0.35, 0.5), seg(V(-0.45 + sway * 0.3, 2.4, 0), V(-0.4 + sway, 4.6, 0), 0.5, 0.75));
   if (pose === 'dancer') add(seg(V(0.9, 0.3, 0.3), V(0.85, 2.5, 0.5), 0.35, 0.5), seg(V(0.85, 2.5, 0.5), V(0.5 + sway, 4.6, 0), 0.5, 0.75));
-  else add(seg(V(0.5, 0, 0.2), V(0.45, 2.4, 0), 0.35, 0.5), seg(V(0.45, 2.4, 0), V(0.4, 4.6, 0), 0.5, 0.75));
+  else if (pose === 'thorn') add(seg(V(0.5 + sway, 4.6, 0), V(0.7, 2.9, -0.6), 0.75, 0.5), seg(V(0.7, 2.9, -0.6), V(1.0, 3.6, -2.0), 0.5, 0.33));
+  else add(seg(V(0.5, 0, 0.2), V(0.45 + sway * 0.3, 2.4, 0), 0.35, 0.5), seg(V(0.45 + sway * 0.3, 2.4, 0), V(0.4 + sway, 4.6, 0), 0.5, 0.75));
   add(seg(V(sway, 3.0, 0), V(sway, 4.9, 0), 1.25, 0.95, 8));             // the dhoti or skirt
   add(ball(1.05, sway, 4.8, 0, 1.15, 0.6, 0.85));                        // hips
   add(seg(V(sway, 4.9, 0), V(sway * 0.4, 6.4, 0), 0.75, 0.95, 8));       // waist to chest
@@ -84,6 +88,20 @@ function figureParts(pose) {
   if (pose === 'dancer') {
     add(seg(V(sh.x - 1.15, 7.0, 0), V(sh.x - 1.8, 8.6, 0.2), 0.3, 0.26), seg(V(sh.x - 1.8, 8.6, 0.2), V(sh.x - 0.9, 9.6, 0.3), 0.26, 0.22));
     add(seg(V(sh.x + 1.15, 7.0, 0), V(sh.x + 1.2, 5.6, 0.6), 0.3, 0.26), seg(V(sh.x + 1.2, 5.6, 0.6), V(sh.x - 0.5, 5.2, 0.9), 0.26, 0.22));
+  } else if (pose === 'mirror') {
+    // One hand holds a mirror up before the face, the other rests on the hip.
+    add(seg(V(sh.x - 1.15, 7.0, 0), V(sh.x - 1.3, 5.9, 0.9), 0.3, 0.26), seg(V(sh.x - 1.3, 5.9, 0.9), V(sh.x - 0.5, 8.0, 1.3), 0.26, 0.22));
+    add(seg(V(sh.x + 0.5, 8.3, 1.4), V(sh.x - 0.5, 8.0, 1.3), 0.08, 0.08, 4), ball(0.42, sh.x + 0.5, 8.6, 1.35, 1, 1.1, 0.25));
+    add(seg(V(sh.x + 1.15, 7.0, 0), V(sh.x + 1.8, 5.6, 0.1), 0.3, 0.26), seg(V(sh.x + 1.8, 5.6, 0.1), V(sh.x + 1.0, 4.8, 0.3), 0.26, 0.22));
+  } else if (pose === 'thorn') {
+    // Bending to draw a thorn from the lifted foot, the other arm raised for balance.
+    add(seg(V(sh.x + 1.15, 7.0, 0), V(sh.x + 1.2, 5.4, -0.6), 0.3, 0.26), seg(V(sh.x + 1.2, 5.4, -0.6), V(1.0, 3.8, -1.8), 0.26, 0.22));
+    add(seg(V(sh.x - 1.15, 7.0, 0), V(sh.x - 1.9, 8.5, 0.1), 0.3, 0.26), seg(V(sh.x - 1.9, 8.5, 0.1), V(sh.x - 1.3, 9.9, 0.2), 0.26, 0.22));
+  } else if (pose === 'chauri') {
+    // An attendant with a fly-whisk held up over the shoulder, the other hand at the side.
+    add(seg(V(sh.x + 1.15, 7.0, 0), V(sh.x + 1.5, 5.8, 0.6), 0.3, 0.26), seg(V(sh.x + 1.5, 5.8, 0.6), V(sh.x + 1.2, 7.4, 0.9), 0.26, 0.22));
+    add(seg(V(sh.x + 1.2, 7.3, 0.9), V(sh.x + 1.0, 9.6, 0.5), 0.07, 0.07, 4), seg(V(sh.x + 1.0, 9.6, 0.5), V(sh.x + 0.4, 10.8, 0.2), 0.3, 0.08, 5));
+    add(seg(V(sh.x - 1.15, 7.0, 0), V(sh.x - 1.45, 5.3, 0.2), 0.32, 0.27), seg(V(sh.x - 1.45, 5.3, 0.2), V(sh.x - 1.5, 3.9, 0.5), 0.27, 0.22));
   } else if (pose === 'musician') {
     for (const s of [-1, 1]) add(seg(V(sh.x + s * 1.15, 7.0, 0), V(s * 1.3, 5.6, 0.7), 0.3, 0.26), seg(V(s * 1.3, 5.6, 0.7), V(s * 0.9, 5.0, 1.4), 0.26, 0.22));
     const drum = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.75, 2.4, 10));

@@ -1,11 +1,13 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, rng, onFace, archPanel, guldasta, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, hemi, rng, onFace, archPanel, guldasta, inst, unitBox } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
-import { miniSpireGeo } from '../details/sculpture.js';
+import { miniSpireGeo, instances, elephantGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/soniji-ki-nasiyan.js';
 
 const RED = mat('#a94a3c', 0.85);
 const RED_LIGHT = mat('#c26a5a', 0.85);
+// The model city's gilt, lit by the hall's lamps: warmer and less mirror-like than open-air gold.
+const GILT = mat('#e0b043', 0.45, 0.25, { emissive: '#4a3208' });
 
 export function buildSonijiKiNasiyan() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(79);
@@ -25,8 +27,19 @@ export function buildSonijiKiNasiyan() {
     town.push([x, 8.2, z, w, h, w]);
     tops.push([x, 8.2 + h, z, w, w * 1.4, w]);
   }
-  f.add(inst(unitBox(), town, M.gild), inst(miniSpireGeo(), tops, M.gild), cyl(1.4, 2.6, 4.6, M.gild, 20, 8.2, 0, 16));
+  f.add(inst(unitBox(), town, GILT), inst(miniSpireGeo(), tops, GILT), cyl(1.4, 2.6, 4.6, GILT, 20, 8.2, 0, 16));
+  // The gallery is closed behind and at the ends, painted red, so the gilded city is seen against it
+  // through the open front; above the city hang the golden airships (vimanas) of the gods, on wires
+  // from the ceiling, and a procession of gilded elephants crosses its square.
+  f.add(box(40, 7, 0.6, RED, 20, 7.6, -11.7), box(0.6, 7, 22.8, RED, 0.3, 7.6, 0), box(0.6, 7, 22.8, RED, 39.7, 7.6, 0));
+  for (let k = 0; k < 7; k++) {
+    const x = 5 + k * 5, z = -6 + (k % 3) * 5, y = 11.6 + (k % 2) * 0.8;
+    const ship = mesh(new THREE.SphereGeometry(1, 14, 8), GILT, x, y, z);
+    ship.scale.set(1.5, 0.45, 0.7);
+    f.add(ship, at(hemi(0.5, GILT, 10), x, y + 0.4, z), cyl(0.02, 0.02, 14.6 - y - 0.4, M.steel, x, y + 0.4, z, 4));
+  }
+  f.add(instances(elephantGeo(), Array.from({ length: 8 }, (_, k) => [8 + k * 2.2, 8.2, 6.5, 0.6, 0.9, 1.2, Math.PI / 2]), GILT));
   for (const x of [0, 40]) for (const z of [-12, 12]) f.add(at(guldasta(5, 0.5, RED), x, 15.6, z));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.45, 0.16, 1.25] };
+  return { group: g, focus: f, view: [0.45, 0.26, 1.25] };
 }
