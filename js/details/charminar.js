@@ -83,13 +83,13 @@ export function addCharminarDetails(g, { b }) {
     // moulded frames round the arched openings behind.
     d.add(placeAll(bracketGeo(1.1, 0.78, 0.4), alongFace(a, 10, 12.4, 8, b + 21), STUCCO));
     d.add(onFace(at(arcadeScreen(12.4, 1.05, 9, 0.85, 0.75, 0.16, STUCCO), 0, b + 21.9, 0), a, 10.6));
-    for (let k = -2; k <= 2; k++) d.add(onFace(at(archRing(1.8, 3.2, true, 0.16, 0.08, STUCCO), 0, b + 22.4, 0), a, 10.0, k * 3.2));
+    for (let k = -2; k <= 2; k++) d.add(onFace(at(archRing(1.8, 3.2, true, 0.16, 0.08, STUCCO), 0, b + 22.4, 0), a, 9.8, k * 3.2));
     for (let k = -1; k <= 2; k++) d.add(onFace(box(0.32, 3.9, 0.1, STUCCO, 0, b + 22.7, 0), a, 9.85, (k - 0.5) * 3.2));
     // Second cornice: brackets, and a lower balustrade.
     d.add(placeAll(bracketGeo(0.75, 0.62, 0.32), alongFace(a, 9.8, 14.4, 10, b + 26.5), STUCCO));
     d.add(onFace(at(arcadeScreen(14.8, 0.85, 13, 0.7, 0.6, 0.14, STUCCO), 0, b + 27.2, 0), a, 10.32));
     // Top-floor arcade frames.
-    for (let k = -3; k <= 3; k++) d.add(onFace(at(archRing(1.5, 2.6, true, 0.13, 0.08, STUCCO), 0, b + 27.6, 0), a, 9.5, k * 2.4));
+    for (let k = -3; k <= 3; k++) d.add(onFace(at(archRing(1.5, 2.6, true, 0.13, 0.08, STUCCO), 0, b + 27.6, 0), a, 9.3, k * 2.4));
     // The crowning parapet: small arches with merlons above.
     d.add(onFace(at(arcadeScreen(12.6, 1.25, 12, 0.62, 0.85, 0.24, STUCCO), 0, b + 31.8, 0), a, 9.45));
     d.add(onFace(at(merlons(12.4, 0.5, 0.7, 0.2, STUCCO, 0.45), 0, b + 33.05, 0), a, 9.45));

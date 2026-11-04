@@ -16,10 +16,14 @@ Two problems, one plan:
 - **Phase 1, done:** the temple builders now have real entrances (see section 4). They have moved
   from `helpers.js` to `js/details/temples.js`, because they use the doorway kit and `helpers.js`
   cannot import it without an import cycle.
-- **Doorway kit, started:** `js/details/doorways.js` has the parts Phase 1 needed. These are
-  `doorFrame`, `templeDoorway`, `templePorch`, `doorLeaves`, `interior`, `lamp`, `guardian` and
-  `steps`. `mughalDoorway`, `gateway`, `classicalDoor` and the general `porch` come with the phases
-  that need them.
+- **Phase 2, done:** the Mughal-family buildings have real doorways and arcades from
+  `js/details/mughal.js` (see section 4).
+- **Doorway kit:**
+  - `js/details/doorways.js` holds the temple parts: `doorFrame`, `templeDoorway`, `templePorch`,
+    `doorLeaves`, `interior`, `lamp`, `guardian` and `steps`.
+  - `js/details/mughal.js` holds the Mughal parts: `pierced`, `mughalDoorway`, `iwan`,
+    `arcadeSkin` and `cellRow`.
+  - `gateway` and `classicalDoor` come with Phases 3 and 5.
 
 ## 1. What the site does today
 
@@ -111,16 +115,66 @@ reveal and something at the back. Each part merges with `mergeByMaterial`.
   - the middle hall's sides;
   - the outer face of each side hall.
 
-**Phase 2: Mughal, Indo-Islamic, Nawabi, Qutb Shahi and Deccan (about 20 monuments).**
-Replace each `archPanel(…, M.recess)` door with `mughalDoorway` inside an `iwan` (the Taj's
-`pishtaq`, made parametric). The main ones:
-- **Humayun's Tomb:** four iwans in red with white frames; real cells in the arcaded plinth
-  (`niche` rows); stairs.
-- **Safdarjung, Bibi ka Maqbara, Itmad-ud-Daulah, Akbar's Tomb, Sher Shah Suri:** iwans and
-  doors; jali in the alcoves.
-- **Jama Masjid, Buland Darwaza:** gate iwans over their great stairs (`steps`).
-- **Bara Imambara, Chota Imambara, Rumi Darwaza, Qutb Shahi tombs, Gol Gumbaz, Hazratbal:** iwans
-  or niches and doors.
+**Phase 2: Mughal, Indo-Islamic, Nawabi, Qutb Shahi and Deccan (15 monuments). Done.**
+Every flat `archPanel(…, M.recess)` door and arcade in these buildings is replaced by parts from
+`js/details/mughal.js`:
+
+- `pierced(len, h, holes, depth, m)`: a slab with pointed arched openings cut through it, so each
+  opening has real jambs and a soffit (the reveal).
+- `mughalDoorway(w, h)`:
+  - an arch in two orders, the inner one a step narrower and set back;
+  - a door up to the springing under a lintel, with a pierced screen in the arch head;
+  - studded leaves standing open onto a dim room, and a threshold.
+- `iwan(w, h, { m, trim, shade, depth, frame, top, fill, door })`: the Taj's pishtaq made
+  general. It has a niche with a half-dome, a ring and a flat band in the trim stone (the white
+  marble lines on red sandstone), and a blind arch on the back wall. `fill` puts a
+  `mughalDoorway` at the back (with a screened window above it where there is room), a jali, or
+  nothing. Options add merlons, spandrel rosettes and steps.
+- `arcadeSkin(len, h, cells, depth, m, { trim, fill })` and `cellRow`: a row of arched cells
+  built as the outer `depth` of a block (method B: the block is built that much shallower and the
+  skin set in front, so the footprint does not change). Each cell's back is a small framed door,
+  a dim gallery (`'room'`), a jali window, or the bare wall, set per cell.
+
+Applied to:
+
+- **Humayun's Tomb:**
+  - 56 plinth cells 1.4 m deep, each with a door at its back;
+  - four red-and-white iwans with doors and merlons;
+  - smaller iwans on the chamfers (a door below, a screen above).
+- **Safdarjung's Tomb:** the gate iwan, the plinth cells and the four buff iwans.
+- **Bibi ka Maqbara:** the gate iwan and the four tomb iwans (with merlons).
+- **Itmad-ud-Daulah:**
+  - three arches a side: a door in the middle, screens either side;
+  - the upper pavilion's front as a framed jali.
+- **Akbar's Tomb:**
+  - the ground-storey cells and a tall iwan in the middle of each side;
+  - the white marble iwan of the south gate.
+- **Sher Shah Suri:** a screened iwan on every face of both octagonal storeys.
+- **Jama Masjid:**
+  - iwans on the three gates;
+  - the prayer hall's marble iwan;
+  - five open arches either side of it, onto the dim hall.
+- **Buland Darwaza:** the great iwan cut 6 m into the gate's mass under its half-dome, with the
+  doorway and a screened window at its back; screened iwans on the wings.
+- **Bara Imambara:**
+  - the ranges' two tiers of cells: open arcades below, screened windows above;
+  - the gateway iwan, with the string course stopping either side of it.
+- **Chota Imambara:** the gate iwan, and the hall's seven arches (the middle one the door, the
+  rest screened).
+- **Rumi Darwaza:** a jali in a moulded ring under the hood, and cells with doors in the wings.
+- **Qutb Shahi tombs:** low cells round each terrace, the chamber's arcade opening on its gallery,
+  and the mosque's arcade.
+- **Gol Gumbaz:**
+  - the great blind arch on each face with a doorway and a screened window at its foot;
+  - screened arches either side;
+  - the gallery of small arches along the top.
+- **Hazratbal:** screened arched windows all round the hall, and the door in the middle of the
+  front.
+- **Charminar:** both galleries now open onto the dim galleries behind them (the detail module's
+  rings moved to the new faces).
+
+Cost: each of these monuments now has 8,000–70,000 more triangles than before. Qutb Shahi is the
+largest at about 140,000, for its seven tombs, so every one is within the 200,000 budget.
 
 **Phase 3: forts and gates.** Red Fort (Lahori Gate), Agra Fort (Amar Singh Gate), Golconda,
 Amber, Chittorgarh, Mehrangarh, Gwalior, Jaisalmer, Daulatabad, Bekal, Fort Aguada: a `gateway`

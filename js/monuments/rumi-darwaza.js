@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, onFace, archWall, archPanel, chhatri, guldasta, inst } from '../helpers.js';
+import { M, mat, mesh, box, at, archWall, chhatri, guldasta, inst } from '../helpers.js';
+import { jali, archSlab, archRing } from '../details/components.js';
+import { arcadeSkin } from '../details/mughal.js';
 
 const LIME = mat('#e6d8b8', 0.85);
 const LIME_DARK = mat('#cbb994', 0.85);
@@ -25,7 +27,9 @@ export function buildRumiDarwaza() {
   const H = 10;
   f.add(archWall(16, H, 9, 8, 9.4, true, LIME));
   f.add(at(hood(7.4, 2.4, LIME), 0, H, 2.1), at(hood(7.4, 4.6, LIME_DARK), 0, H, -2.5));
-  f.add(at(archPanel(9, 6.4, true, M.recess, 0.3), 0, H + 0.4, 4.6));
+  // Under the hood, a pierced screen over the dark space behind it, in a moulded ring.
+  f.add(at(archSlab(9, 6.4, true, M.recess, 0.04), 0, H + 0.4, 4.5), at(archSlab(8.98, 6.38, true, jali(LIME), 0.06), 0, H + 0.4, 4.56));
+  f.add(at(archRing(9, 6.4, true, 0.3, 0.12, LIME_DARK), 0, H + 0.4, 4.5));
   const buds = [];
   for (let i = 0; i <= 18; i++) {
     const a = Math.PI - (i / 18) * Math.PI;
@@ -35,8 +39,10 @@ export function buildRumiDarwaza() {
   f.add(at(chhatri(1.5, 4.6, LIME), 0, H + 7.6, 0.5));
   // Arcaded wings stepping down to either side
   for (const s of [-1, 1]) {
-    f.add(box(26, 7, 5, LIME, s * 21, 0, 0), box(26.4, 0.6, 5.4, LIME_DARK, s * 21, 7, 0));
-    for (let k = 0; k < 4; k++) f.add(onFace(at(archPanel(3.4, 5, true, M.recess, 0.25), 0, 0.4, 0), 0, 2.5, s * (11 + k * 6)));
+    // Each wing: four arched cells 1 m deep, each with a door at its back.
+    f.add(box(26, 7, 4, LIME, s * 21, 0, -0.5), box(26.4, 0.6, 5.4, LIME_DARK, s * 21, 7, 0));
+    const cells = [0, 1, 2, 3].map((k) => [s * (6 * k - 10), 0.4, 3.4, 5]);
+    f.add(at(arcadeSkin(26, 7, cells, 1, LIME, { trim: LIME_DARK }), s * 21, 0, 1.5));
     for (const x of [s * 9, s * 34]) f.add(at(guldasta(7, 0.7, LIME), x, 7.6, 0));
   }
   return { group: g, focus: f, view: [0.55, 0.22, 1.25] };

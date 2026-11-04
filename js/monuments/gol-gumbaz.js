@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, box, cyl, group, at, onFace, FACES, archPanel, onionDome, hemi, finial } from '../helpers.js';
+import { M, box, cyl, at, onFace, FACES, archPanel, onionDome, hemi, finial } from '../helpers.js';
+import { iwan, arcadeSkin, cellRow } from '../details/mughal.js';
 
 export function buildGolGumbaz() {
   const D = M.deccan, Dl = M.deccanLight, g = new THREE.Group(), f = new THREE.Group();
@@ -9,11 +10,12 @@ export function buildGolGumbaz() {
   const b = 1.5, H = 27, s = 23.75;
   f.add(box(47.5, H, 47.5, D, 0, b, 0));
   f.add(box(50.5, 1.2, 50.5, Dl, 0, b + H - 5.2));
+  // Each face: the great blind arch with a doorway and a screened window at its foot, two tiers of
+  // smaller screened arches either side, and a gallery of small open arches along the top.
   for (const a of FACES) {
-    f.add(onFace(at(archPanel(15, 22, true, Dl, 0.4), 0, b + 0.5, 0), a, s));
-    f.add(onFace(at(archPanel(4, 6, true, M.recess, 0.3), 0, b + 0.5, 0), a, s + 0.42));
-    for (const lat of [-13.5, 13.5]) for (const y of [1, 11.5]) f.add(onFace(at(archPanel(7, 9, true, Dl, 0.4), 0, b + y, 0), a, s, lat));
-    for (let k = -7; k <= 7; k++) f.add(onFace(at(archPanel(1.6, 2.6, true, M.recess, 0.2), 0, b + H - 3.6, 0), a, s, k * 2.6));
+    f.add(onFace(at(iwan(15, 22, { m: D, trim: Dl, shade: Dl, depth: 1.2, frame: 1, top: 1, door: [4, 6], band: false }), 0, b + 0.5, 0), a, s));
+    for (const lat of [-13.5, 13.5]) for (const y of [1, 11.5]) f.add(onFace(at(iwan(7, 9, { m: D, trim: Dl, shade: Dl, depth: 0.7, frame: 0.4, top: 0.4, fill: 'jali', band: false }), 0, b + y, 0), a, s, lat));
+    f.add(onFace(at(arcadeSkin(39, 3.4, cellRow(15, 2.6, 0.3, 1.6, 2.6), 0.6, D, { trim: Dl, fill: 'room' }), 0, b + H - 3.9, 0), a, s));
   }
   // Seven-storey octagonal towers at the corners
   for (const x of [-s, s]) for (const z of [-s, s]) {

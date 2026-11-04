@@ -17,18 +17,19 @@ const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a
 
 // The dim room seen through an open door, painted on a panel w × h: a floor lit by the daylight
 // coming in and fading into the room, side walls a little lighter than the far wall, and the warm
-// glow of a lamp low in the middle (at lampV of the height).
-export function interior(w, h, lampV = 0.12) {
-  const geo = new THREE.PlaneGeometry(w, h, 18, 24).translate(0, h / 2, 0);
+// glow of a lamp low in the middle (at lampV of the height, as bright as `glow`; 0 for none).
+export function interior(w, h, lampV = 0.12, glow = 0.16) {
+  const seg = (v, lo, hi) => Math.max(lo, Math.min(hi, Math.round(v * 2.5)));
+  const geo = new THREE.PlaneGeometry(w, h, seg(w, 6, 12), seg(h, 8, 16)).translate(0, h / 2, 0);
   const p = geo.attributes.position, col = new Float32Array(p.count * 3);
   for (let i = 0; i < p.count; i++) {
     const u = p.getX(i) / (w / 2), v = p.getY(i) / h, au = Math.abs(u);
     // The far wall is the middle of the panel; the floor and side walls run out to its edges.
     const floor = smooth(0.32, 0, v + 0.25 * (1 - au)) * 0.11;
     const walls = smooth(0.45, 1, au) * 0.045;
-    const glow = Math.exp(-((u / 0.38) ** 2 + ((v - lampV) / 0.16) ** 2)) * 0.16;
-    const c = 0.012 + floor + walls + glow;
-    col.set([c + glow * 0.25, c * 0.85 + glow * 0.05, c * 0.68], i * 3);
+    const lit = Math.exp(-((u / 0.38) ** 2 + ((v - lampV) / 0.16) ** 2)) * glow;
+    const c = 0.012 + floor + walls + lit;
+    col.set([c + lit * 0.25, c * 0.85 + lit * 0.05, c * 0.68], i * 3);
   }
   geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
   const o = mesh(geo, GLOOM);
