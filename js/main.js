@@ -206,7 +206,8 @@ function computeHome(r) {
   const radius = size.length() / 2;
   const vfov = THREE.MathUtils.degToRad(camera.fov);
   const hfov = 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect);
-  const dist = (radius / Math.sin(Math.min(vfov, hfov) / 2)) * 1.1;
+  // A builder can ask for a closer home view (zoom < 1) where the whole site need not fit.
+  const dist = (radius / Math.sin(Math.min(vfov, hfov) / 2)) * 1.1 * (r.zoom || 1);
   const dir = V(...(r.view || [0.9, 0.34, 1.25])).normalize();
   const target = V(center.x, center.y * 0.95, center.z);
   return { target, pos: target.clone().addScaledVector(dir, dist), dist, radius, reach: sceneryReach(r, target, dir) };
