@@ -44,7 +44,7 @@ export function fortGate(w, h, d, aw, ah, {
     g.add(at(interior(W, AH, 0.12, 0.08), 0, 0, -d / 2 + 0.03));
   }
   // A paved floor through the passage, its top just above the ground.
-  g.add(box(W, 0.3, d, trim, 0, -0.28, 0));
+  g.add(box(W - 0.02, 0.3, d - 0.02, trim, 0, -0.28, 0));
   // The spiked leaves, a little in front of the middle of the passage, and the threshold under them.
   const dz = pz + pd * 0.12;
   g.add(at(doorLeaves(aw * 0.996, s * 0.97, { open, inward: true, spikes, ...(leafM ? { m: leafM } : {}) }), 0, 0.12, dz));
@@ -61,7 +61,7 @@ export function fortGate(w, h, d, aw, ah, {
     for (const sx of [-1, 1]) {
       const x = sx * (w / 2 + r * 0.45), z = d / 2 - r * 0.6;
       g.add(cyl(r, r * 1.08, th, m, x, 0, z, seg), cyl(r * 1.12, r * 1.12, 0.35, trim, x, th * 0.55, z, seg));
-      g.add(cyl(r * 1.15, r * 1.15, 0.45, trim, x, th - 0.45, z, seg));
+      g.add(cyl(r * 1.15, r * 1.15, 0.45, trim, x, th - 0.47, z, seg));
       if (cap === 'dome') g.add(at(hemi(r * 0.9, m, 20), x, th, z), at(finial(r * 0.9), x, th + r * 0.88, z));
       else {
         const n = Math.max(6, Math.round(r * 2.6));

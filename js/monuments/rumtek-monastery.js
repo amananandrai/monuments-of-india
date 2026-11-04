@@ -13,8 +13,8 @@ export function buildRumtek() {
   // Forested Sikkim hills
   g.add(box(300, 0.2, 300, mat('#58783f', 0.95)));
   for (let i = 0; i < 9; i++) {
-    const a = (i / 9) * Math.PI * 2, d = 220 + R() * 80, h = 90 + R() * 80;
-    g.add(mesh(new THREE.ConeGeometry(h * 1.2, h, 8).translate(0, h / 2, 0), HILL, Math.cos(a) * d, 0, Math.sin(a) * d));
+    const a = (i / 9) * Math.PI * 2, d = 430 + R() * 100, h = 100 + R() * 90;
+    g.add(mesh(new THREE.ConeGeometry(h * 1.1, h, 8).translate(0, h / 2, 0), HILL, Math.cos(a) * d, 0, Math.sin(a) * d));
   }
   // Courtyard ringed by monks' quarters
   f.add(box(70, 0.4, 70, M.path));

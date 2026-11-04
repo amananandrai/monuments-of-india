@@ -393,7 +393,7 @@ export function gothicWindow(w, h, { m, trim = m, depth = Math.max(0.2, w * 0.14
   g.add(at(headSlab(w * 0.999, h * 0.999, 'pointed', GLASS, 0.03), 0, 0, 0.012));
   const mw = Math.max(0.06, w * 0.06), wl = (w - mw) / 2, hl = sp + 1.4 * wl / 2;
   g.add(box(mw, sp, 0.1, trim, 0, 0, 0.06));
-  for (const s of [-1, 1]) g.add(at(headRing(wl, hl, 'pointed', mw * 0.5, 0.08, trim), s * (wl + mw) / 2, 0, 0.04));
+  for (const s of [-1, 1]) g.add(at(headRing(wl, hl, 'pointed', mw * 0.42, 0.08, trim), s * (wl + mw) / 2, 0, 0.04));
   const R = Math.min(wl * 0.42, (h - hl) * 0.44);
   if (R > 0.08) g.add(at(mesh(new THREE.TorusGeometry(R, Math.max(0.03, mw * 0.4), 6, 20), trim), 0, hl + (h - hl) * 0.45, 0.07));
   if (sill) g.add(box(W + 0.16, 0.14, depth + 0.14, trim, 0, -0.14, (depth + 0.14) / 2));

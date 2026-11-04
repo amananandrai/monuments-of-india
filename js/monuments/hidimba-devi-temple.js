@@ -16,7 +16,7 @@ export function buildHidimba() {
   // Dhungiri forest of deodar cedars, kept clear of the opening camera view
   const trunks = [], crowns = [], view = [0.85, 0.3, 1.15], va = Math.atan2(view[2], view[0]);
   for (let i = 0; i < 110; i++) {
-    const a = R() * Math.PI * 2, d = 24 + R() * 100, h = 22 + R() * 18, x = Math.cos(a) * d, z = Math.sin(a) * d;
+    const a = R() * Math.PI * 2, d = 82 + R() * 80, h = 22 + R() * 18, x = Math.cos(a) * d, z = Math.sin(a) * d;
     const off = Math.abs(((a - va + Math.PI * 3) % (Math.PI * 2)) - Math.PI);
     if (off < 0.6 && d < 110) continue;
     trunks.push([x, 0, z, 1.2, h * 0.35, 1.2]);

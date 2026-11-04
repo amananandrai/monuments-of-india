@@ -29,7 +29,7 @@ export function buildAkbarsTomb() {
   const gw = new THREE.Group();
   gw.add(box(40, 22, 16, Rd), box(41, 1, 17, Mb, 0, 22), onFace(iwan(14, 18, { m: Mb, trim: Rl, shade: M.marbleShade, depth: 2.5, frame: 3, top: 2 }), 0, 8));
   for (const x of [-18, 18]) for (const z of [-6.5, 6.5]) gw.add(at(minaret(20, 1.3, Mb, { balconies: 2 }), x, 23, z));
-  f.add(at(gw, 0, 0, 140));
+  g.add(at(gw, 0, 0, 140));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.7, 0.34, 1.2] };
 }

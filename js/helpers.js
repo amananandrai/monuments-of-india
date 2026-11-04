@@ -343,12 +343,38 @@ export function pidaRoof(w0, w1, count, u, m, mRecess) {
   return g;
 }
 
+// The cloth of a flag w long (along +x from the staff at x = 0) and h deep, its top at y = 0: a
+// grid that ripples in a travelling wave growing from the hoist to the fly and droops a little at
+// the fly; with taper it narrows to a point, as a temple pennant. clothZ gives its z offset at any
+// point, so emblems can be set on the cloth.
+export function clothZ(w, h, x, y) {
+  const u = x / w;
+  return u * h * 0.16 * Math.sin(u * 7.5 + (y * 0.6) / h) + u * u * h * 0.05;
+}
+export function clothGeometry(w, h, { taper = 0, y0 = 0, y1 = h, nx = 20, ny = 8 } = {}) {
+  const pos = [], idx = [];
+  for (let i = 0; i <= nx; i++) for (let j = 0; j <= ny; j++) {
+    const u = i / nx, x = u * w, k = 1 - taper * u, mid = -h / 2;
+    let y = -(y0 + (y1 - y0) * (j / ny));
+    y = mid + (y - mid) * k - u * u * h * 0.08;
+    pos.push(x, y, clothZ(w, h, x, y));
+  }
+  for (let i = 0; i < nx; i++) for (let j = 0; j < ny; j++) {
+    const p = i * (ny + 1) + j, q = p + ny + 1;
+    idx.push(p, q, p + 1, q, q + 1, p + 1);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  return g;
+}
+
+// A temple pennant on a staff h tall: a tapering cloth flying from its top, double-sided.
 export function flag(h, m, poleM = M.wood) {
   const g = new THREE.Group();
-  g.add(cyl(h * 0.012, h * 0.016, h, poleM, 0, 0, 0, 6));
-  const s = new THREE.Shape();
-  s.moveTo(0, h); s.lineTo(h * 0.55, h * 0.88); s.lineTo(0, h * 0.74); s.closePath();
-  g.add(mesh(new THREE.ShapeGeometry(s), m));
+  g.add(cyl(h * 0.012, h * 0.018, h, poleM, 0, 0, 0, 6), at(mesh(new THREE.SphereGeometry(h * 0.025, 8, 6), M.gold), 0, h, 0));
+  g.add(at(mesh(clothGeometry(h * 0.6, h * 0.3, { taper: 0.92 }), doubleSided(m)), 0, h * 0.98, 0));
   return g;
 }
 
@@ -554,12 +580,20 @@ export function torana(m) {
   return g;
 }
 
-export function tricolour(h) {
-  const g = new THREE.Group();
-  g.add(cyl(0.12, 0.16, h, M.flagWhite, 0, 0, 0, 8));
-  const w = 6, s = 4 / 3;
-  [M.flagSaffron, M.flagWhite, M.flagGreen].forEach((m, i) => g.add(box(w, s, 0.1, m, w / 2 + 0.15, h - s * (i + 1), 0)));
-  g.add(at(mesh(new THREE.TorusGeometry(0.55, 0.07, 6, 24), M.navy), w / 2 + 0.15, h - s * 1.5, 0));
+// The national flag on a white staff h tall: a cloth w long in the proportions 3:2, in bands of
+// saffron, white and green, with the 24-spoked Ashoka Chakra in navy on both faces.
+export function tricolour(h, w = 6) {
+  const g = new THREE.Group(), fh = (w * 2) / 3, top = h - 0.05;
+  g.add(cyl(w * 0.02, w * 0.028, h, M.flagWhite, 0, 0, 0, 10), at(mesh(new THREE.SphereGeometry(w * 0.04, 10, 8), M.gold), 0, h, 0));
+  [M.flagSaffron, M.flagWhite, M.flagGreen].forEach((m, i) => {
+    g.add(at(mesh(clothGeometry(w, fh, { y0: (fh / 3) * i, y1: (fh / 3) * (i + 1) }), doubleSided(m)), 0.04, top, 0));
+  });
+  // The chakra at the middle of the white band, set on the cloth's ripple there.
+  const r = (fh / 3) * 0.42, ch = new THREE.Group(), y = -fh / 2 - 0.25 * fh * 0.08;
+  ch.add(mesh(new THREE.TorusGeometry(r, r * 0.08, 6, 32), M.navy));
+  for (let k = 0; k < 12; k++) { const sp = mesh(new THREE.BoxGeometry(r * 0.04, r * 2, r * 0.06), M.navy); sp.rotation.z = (k / 12) * Math.PI; ch.add(sp); }
+  ch.position.set(w / 2 + 0.04, top + y, clothZ(w, fh, w / 2, y));
+  g.add(ch);
   return g;
 }
 

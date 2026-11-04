@@ -12,8 +12,8 @@ export function buildMallikarjuna() {
   g.add(f);
   // Srisailam hill in the Nallamala forest
   for (let i = 0; i < 8; i++) {
-    const a = (i / 8) * Math.PI * 2, d = 230 + R() * 60, h = 50 + R() * 50;
-    g.add(mesh(new THREE.ConeGeometry(h * 2, h, 9).translate(0, h / 2, 0), HILL, Math.cos(a) * d, 0, Math.sin(a) * d));
+    const a = (i / 8) * Math.PI * 2, d = 480 + R() * 80, h = 60 + R() * 60;
+    g.add(mesh(new THREE.ConeGeometry(h * 1.2, h, 9).translate(0, h / 2, 0), HILL, Math.cos(a) * d, 0, Math.sin(a) * d));
   }
   g.add(box(220, 0.2, 220, M.path));
   // High enclosure walls carved with friezes, and a gopuram on each side

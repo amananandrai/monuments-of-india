@@ -525,13 +525,14 @@ export function mergeByMaterial(root) {
 /* ---------- walls: courses, pilasters, windows, balconies, niches ---------- */
 
 // A moulded course round a rectangular block w × d centred on x = z = 0: a band h tall from height
-// y, standing `proud` out from all four faces (sunk a centimetre into the wall, so it shares no
-// face with it). The long strips on the ±z faces run over the corners; the ±x strips stop at them.
+// y, standing `proud` out from all four faces. It stands 2 mm clear of the wall rather than sinking
+// into it, so its top and bottom never share a plane with the top of the wall or a ledge flush
+// with it. The long strips on the ±z faces run over the corners; the ±x strips butt against them.
 export function beltCourse(w, d, y, h, proud, m) {
-  const g = new THREE.Group(), e = 0.01;
+  const g = new THREE.Group(), e = 0.002;
   for (const s of [-1, 1]) {
-    g.add(box(w + 2 * proud, h, proud + e, m, 0, y, s * (d / 2 + (proud - e) / 2)));
-    g.add(box(proud + e, h * 0.999, d - 0.02, m, s * (w / 2 + (proud - e) / 2), y, 0));
+    g.add(box(w + 2 * proud, h, proud - e, m, 0, y, s * (d / 2 + (proud + e) / 2)));
+    g.add(box(proud - e, h * 0.999, d + 2 * e, m, s * (w / 2 + (proud + e) / 2), y, 0));
   }
   return g;
 }

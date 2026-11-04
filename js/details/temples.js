@@ -218,7 +218,7 @@ export function gopuram(w, d, h, tiers, seed, palette = PAINT) {
   g.add(mergeByMaterial(bd));
   // The passage: stepped frames at both ends, beams across its ceiling, the doors at its middle.
   const p = new THREE.Group(), bw = Math.min(0.45, Math.max(0.18, (bh * 1.08 - ph) / 3.4));
-  for (const a of [0, Math.PI]) p.add(onFace(doorFrame(pw, ph, { bands: 3, bw, depth: 0.95, d0: 0.5, m: M.granite, carve: frieze(M.granite) }), a, d * 0.48));
+  for (const a of [0, Math.PI]) p.add(onFace(doorFrame(pw - 0.04, ph - 0.02, { bands: 3, bw, depth: 0.95, d0: 0.5, m: M.granite, carve: frieze(M.granite) }), a, d * 0.48));
   const nb = Math.max(2, Math.floor(d / 2.2));
   for (let k = 1; k < nb; k++) p.add(box(pw, 0.32, 0.4, M.graniteDark, 0, ph - 0.32, -d * 0.48 + (k / nb) * d * 0.96));
   p.add(doorLeaves(pw, ph * 0.93, { open: 1.42 }));

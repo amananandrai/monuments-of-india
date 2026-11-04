@@ -12,7 +12,7 @@ import { deer } from './animals.js';
 // - the southern gateway is covered in bold geometric inlay: framed panels either side of its
 //   iwan, each with a great star, and a band of inlay round the iwan.
 // Dimensions follow js/monuments/akbars-tomb.js.
-function architecture(f) {
+function architecture(f, g) {
   const d = new THREE.Group(), Rd = M.red, Rl = M.redLight, Mb = M.marble;
   for (const a of FACES) for (const x of [-4.4, 4.4]) d.add(onFace(at(star(6, 0.75, Mb), 0, 13.6, 0), a, 52.62, x));
   let y = 9;
@@ -37,7 +37,7 @@ function architecture(f) {
   }
   for (const x of [-10.6, 10.6]) gw.add(box(0.7, 21, 0.08, Mb, x, 0.5, 8.03));
   gw.add(box(21.9, 0.7, 0.08, Mb, 0, 21, 8.03));
-  d.add(gw);
+  g.add(mergeByMaterial(gw));
   mergeByMaterial(d);
   f.add(d);
 }
@@ -45,7 +45,7 @@ function architecture(f) {
 // Akbar's Tomb at Sikandra: the deer park in its great garden (herds of chital graze the lawns),
 // the water channel and fountains down the causeway from the gate, and the trees lining it.
 export function addDetails(f, g) {
-  architecture(f);
+  architecture(f, g);
   g.add(box(1.6, 0.27, 84, M.water, 0, 0, 94), fountains(along(6, [0, 60], [0, 128]), { y: 0.27, h: 1.8 }));
   for (const x of [-8.5, 8.5]) f.add(trees(along(8, [x, 60], [x, 130]), { kind: 'ashoka', seed: x > 0 ? 3 : 4 }));
   f.add(trees(scatter(18, [-105, 105, -100, 185], { seed: 5, gap: 14, avoid: [[-60, 60, -60, 60], [-12, 12, 50, 160], [-30, 30, 125, 160]] }), { kind: 'neem', seed: 5 }));

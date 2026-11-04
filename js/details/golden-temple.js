@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, FACES } from '../helpers.js';
+import { M, mat, box, cyl, at, onFace, FACES, clothGeometry } from '../helpers.js';
 import { panel, frieze, jharokha, rosette, mergeByMaterial } from './components.js';
 import { trees, lampPosts } from './realism.js';
 
@@ -36,9 +36,11 @@ export function addDetails(f, g) {
   // The Nishan Sahibs
   for (const z of [-6, 6]) {
     g.add(cyl(0.35, 0.45, 32, SAFFRON, -96, 0.8, z, 10), at(cyl(0.25, 0, 1.6, GOLD, 0, 0, 0, 10), -96, 32.8, z));
-    const p = box(0.06, 3, 7, SAFFRON, 0, 0, 0);
-    p.position.set(-96, 29.5, z + 3.6);
-    g.add(p, box(0.1, 1, 1, GOLD, -96, 30.2, z + 1.2));
+    // The saffron cloth, tapering to a point, flying from the top of the staff, and the gilt khanda.
+    const cl = new THREE.Mesh(clothGeometry(7, 3.2, { taper: 0.85 }), SAFFRON);
+    cl.position.set(-96, 32.4, z + 0.3);
+    cl.rotation.y = -Math.PI / 2;
+    g.add(cl, box(0.1, 1, 1, GOLD, -96, 34.4, z));
   }
   g.add(trees([[60, -72], [-70, 70], [72, 68]], { kind: 'mango', seed: 8, h: 9, y: 0.8 }));
   const lamps = [];

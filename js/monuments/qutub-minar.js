@@ -32,6 +32,10 @@ export function buildQutub() {
     }
   }
   g.add(at(chhatri(2.1, 5, M.red, M.marble), 0, y, 0));
-  addDetails(g, g);
-  return { group: g };
+  // The minar is what the camera frames; the court, the ruins and the lawns are its setting.
+  const f = new THREE.Group();
+  f.add(...g.children);
+  g.add(f);
+  addDetails(f, g);
+  return { group: g, focus: f, view: [0.9, 0.3, 1.25] };
 }

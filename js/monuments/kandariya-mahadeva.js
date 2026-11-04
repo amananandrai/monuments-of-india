@@ -26,7 +26,7 @@ export function buildKandariya() {
   // The entrance porch: open between four pillars, with a garland arch (torana) across its front,
   // the doorway into the hall at its back, and steps down to the platform.
   const porch = new THREE.Group();
-  porch.add(box(11, 2, 9, Sd, 0, 3, 20.5), box(10, 0.4, 9, S, 0, 11.1, 20.5));
+  porch.add(box(11, 1.98, 9, Sd, 0, 3, 20.5), box(10, 0.4, 9, S, 0, 11.1, 20.5));
   for (const x of [-4.3, 4.3]) for (const z of [16.6, 24.4]) {
     porch.add(box(0.9, 0.5, 0.9, Sd, x, 5, z), cyl(0.3, 0.34, 4.7, S, x, 5.5, z, 8), box(0.9, 0.4, 0.9, Sd, x, 10.2, z));
   }

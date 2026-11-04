@@ -13,12 +13,12 @@ export function buildBhimashankar() {
   // A forested valley in the Sahyadri hills
   g.add(box(260, 0.2, 260, mat('#5a7242', 0.95)));
   for (let i = 0; i < 8; i++) {
-    const a = (i / 8) * Math.PI * 2 + 0.3, d = 140 + R() * 40, h = 40 + R() * 40;
+    const a = (i / 8) * Math.PI * 2 + 0.3, d = 320 + R() * 60, h = 50 + R() * 50;
     g.add(mesh(new THREE.CylinderGeometry(h * 0.5, h * 1.6, h, 9).translate(0, h / 2, 0), FOREST, Math.cos(a) * d, 0, Math.sin(a) * d));
   }
   const trees = [];
   for (let i = 0; i < 80; i++) {
-    const a = R() * Math.PI * 2, d = 40 + R() * 80;
+    const a = R() * Math.PI * 2, d = 75 + R() * 90;
     trees.push([Math.cos(a) * d, 0, Math.sin(a) * d, 6 + R() * 4, 8 + R() * 6, 6 + R() * 4]);
   }
   g.add(inst(new THREE.IcosahedronGeometry(0.5, 0).translate(0, 0.5, 0), trees, FOREST));

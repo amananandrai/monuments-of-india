@@ -40,6 +40,7 @@ export function copies(geo, m, places, colours = null) {
   });
   im.castShadow = true;
   im.receiveShadow = true;
+  im.userData.dressing = true;
   return im;
 }
 // A part made of several pieces of the same material, as one geometry: pieces are meshes.

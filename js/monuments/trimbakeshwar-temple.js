@@ -11,7 +11,7 @@ export function buildTrimbakeshwar() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // The flat-topped Brahmagiri hills behind, where the Godavari rises
-  const hill = mesh(new THREE.CylinderGeometry(120, 170, 70, 10).translate(0, 35, 0), HILL, -40, 0, -260);
+  const hill = mesh(new THREE.CylinderGeometry(120, 170, 70, 10).translate(0, 35, 0), HILL, -60, 0, -420);
   hill.scale.z = 0.6;
   g.add(hill, box(200, 0.2, 200, M.path));
   // Walled courtyard round the black basalt temple

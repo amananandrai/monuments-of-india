@@ -13,7 +13,7 @@ export function buildHazratbal() {
   g.add(box(600, 0.4, 300, M.lake, 0, 0, 200), box(220, 0.3, 110, M.grass, 0, 0, -10));
   for (let i = 0; i < 5; i++) {
     const h = 70 + R() * 50, x = -260 + i * 130 + R() * 40;
-    g.add(mesh(new THREE.ConeGeometry(h * 1.6, h, 8).translate(0, h / 2, 0), HILL, x, 0, 420 + R() * 60));
+    g.add(mesh(new THREE.ConeGeometry(h * 1.6, h, 8).translate(0, h / 2, 0), HILL, x * 1.4, 0, 600 + R() * 60));
   }
   for (let i = 0; i < 9; i++) {
     const x = (R() < 0.5 ? -1 : 1) * (45 + R() * 50), z = -50 + R() * 70;

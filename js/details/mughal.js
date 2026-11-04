@@ -117,7 +117,7 @@ export function arcadeSkin(len, h, cells, depth, m, { trim = m, ring = true, fil
     const kind = own || fill;
     if (ring) g.add(at(archRing(aw, ah, pointed, Math.min(0.22, aw * 0.06), 0.05, trim), cx, sill, depth));
     // A sill slab whose top stands just above the opening's floor, so the two never share a plane.
-    if (sill > 0.01) g.add(box(aw, 0.14, depth, trim, cx, sill - 0.12, depth / 2));
+    if (sill > 0.01) g.add(box(aw - 0.02, 0.14, depth - 0.02, trim, cx, sill - 0.12, depth / 2 + 0.01));
     if (kind === 'room') g.add(at(interior(aw * 0.999, ah, 0.2, 0), cx, sill, 0.012));
     if (kind === 'jali') g.add(at(archSlab(aw * 0.999, ah * 0.999, pointed, M.recess, 0.03), cx, sill, 0.012), at(archSlab(aw * 0.998, ah * 0.998, pointed, jali(trim), 0.05), cx, sill, 0.05));
     if (kind === 'door') {
