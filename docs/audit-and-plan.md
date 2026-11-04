@@ -259,5 +259,13 @@ New shared parts from this pass: `townHouses` (realism.js), `carvedWheelGeo` and
 `leader`, `enthroned`, `mirror`, `thorn` and `chauri` (sculpture.js), `bhumijaRows` (temples.js),
 and options on `gopuram` (`pitch`, `kuduEvery`), `yaliPillar` (`rich`) and `nagaraTemple` (`apron`).
 
-Still open: the Statue of Unity (left as it is); the distance between the Capitol's Assembly and
-High Court, which is shorter than the real esplanade.
+Statue of Unity, afterwards: Patel now takes a step forward, the dhoti gathered round each leg
+below the knee, with the kasta pleats between them and sandals. The bandi has its placket and
+buttons, the viewing gallery's windows cross the chest, the shawl's end falls in folds, and the
+sleeves have cuffs and thumbs. The head is broader, with a heavy brow, heavy lids, folds from nose
+to mouth, a set mouth and ears. The pedestal is faced in stone fins, with a lotus plinth and steps.
+The island of Sadhu Bet is rocky, with a causeway to the bank and hills round the reservoir, and the
+Sardar Sarovar Dam stands 3 km downstream.
+
+Still open: the distance between the Capitol's Assembly and High Court, which is shorter than the
+real esplanade.
