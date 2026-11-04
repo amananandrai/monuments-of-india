@@ -2,21 +2,20 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, lathe, doubleSided } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
 import { trees as plantTrees } from '../details/realism.js';
+import { mountainRing } from '../details/terrain.js';
 import { addDetails } from '../details/bhimashankar-temple.js';
 
 const BASALT = mat('#4f4a45', 0.85);
 const SHADE = mat('#3b3734', 0.9);
-const FOREST = mat('#3f5e34', 0.95, 0, { flatShading: true });
 
 export function buildBhimashankar() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(43);
   g.add(f);
   // A forested valley in the Sahyadri hills
   g.add(box(260, 0.2, 260, mat('#5a7242', 0.95)));
-  for (let i = 0; i < 8; i++) {
-    const a = (i / 8) * Math.PI * 2 + 0.3, d = 320 + R() * 60, h = 50 + R() * 50;
-    g.add(mesh(new THREE.CylinderGeometry(h * 0.5, h * 1.6, h, 9).translate(0, h / 2, 0), FOREST, Math.cos(a) * d, 0, Math.sin(a) * d));
-  }
+  // The forested crests of the Sahyadri (js/details/terrain.js).
+  g.add(mountainRing({ inner: 300, outer: 560, h: 95, vary: 30, rock: ['#4f5a3a', '#5d6644'], cover: '#3f5e34', steep: 0.6 }));
+
   const trees = [];
   // The temple lies in a hollow of the forest, the trees crowding down close round its court.
   for (let i = 0; i < 170; i++) {

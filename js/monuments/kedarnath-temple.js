@@ -3,23 +3,22 @@ import { M, mat, mesh, box, at, group, rng, shikhara, hipRoof, kalash, flag, ins
 import { templeDoorway, templePorch } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { nandi } from '../details/animals.js';
+import { mountainRing } from '../details/terrain.js';
 import { addDetails } from '../details/kedarnath-temple.js';
 
 const STONE = mat('#8e8a82', 0.9);
 const STONE_DARK = mat('#6f6b64', 0.9);
 const SLOPE = mat('#6b7356', 0.95, 0, { flatShading: true });
 const ROCK = mat('#7d7a74', 0.95, 0, { flatShading: true });
-const SNOW = mat('#f4f6f8', 0.8, 0, { flatShading: true });
 
 export function buildKedarnath() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(9);
   g.add(f);
   // The glacial valley: Mandakini river, meadow and the Kedarnath massif behind
   g.add(box(240, 0.2, 240, SLOPE), box(14, 0.4, 260, M.river, 70, 0, 0));
-  for (let i = 0; i < 7; i++) {
-    const a = -Math.PI / 2 + (i - 3) * 0.32, d = 520 + R() * 100, h = 300 + R() * 180, x = Math.cos(a) * d, z = Math.sin(a) * d;
-    g.add(mesh(new THREE.ConeGeometry(h * 0.6, h, 7).translate(0, h / 2, 0), ROCK, x, 0, z), mesh(new THREE.ConeGeometry(h * 0.27, h * 0.45, 7).translate(0, h * 0.775, 0), SNOW, x, 0, z));
-  }
+  // The Kedar peaks: a ring of rock walls under snow (js/details/terrain.js).
+  g.add(mountainRing({ inner: 420, outer: 760, h: 250, vary: 70, snow: 165, rock: ['#7d7a74', '#6e6b66', '#8a867f'], cover: '#6f7550', steep: 0.82, aspect: 1.2 }));
+
   // Pilgrim lodges along the approach
   const lodges = [];
   for (let i = 0; i < 18; i++) lodges.push([(R() < 0.5 ? -1 : 1) * (18 + R() * 25), 0, 20 + R() * 70, 6 + R() * 4, 4 + R() * 4, 5 + R() * 3, R()]);
@@ -38,5 +37,6 @@ export function buildKedarnath() {
   boulder.scale.set(1.5, 0.75, 1);
   f.add(boulder);
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.6, 0.3, 1.25] };
+  // Clear mountain air: the peaks stay sharp behind the temple.
+  return { group: g, focus: f, view: [0.6, 0.3, 1.25], fog: 14 };
 }

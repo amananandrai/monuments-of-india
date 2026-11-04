@@ -28,7 +28,7 @@ export function buildKashiVishwanath() {
   };
   f.add(at(range(CW, 9, 7), 0, ch, cz - CD / 2 + 3.5));
   for (const s of [-1, 1]) {
-    f.add(at(range(CD - 7, 9, 7).rotateY(-s * Math.PI / 2), s * (CW / 2 - 3.5), ch, cz + 3.5));
+    f.add(at(range(CD - 7.4, 9, 7).rotateY(-s * Math.PI / 2), s * (CW / 2 - 3.5), ch, cz + 3.7));
     for (const z of [cz - CD / 2 + 3.5, cz + CD / 2 - 3.5]) f.add(at(chhatri(2.2, 6, CHUNAR), s * (CW / 2 - 3.5), ch + 9.6, z));
   }
   // The shrine: its tall spire and the dome of its hall sheathed in gold (the gift of Maharaja

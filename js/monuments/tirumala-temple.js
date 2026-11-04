@@ -1,27 +1,27 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, pidaRoof, hemi, kalash, ribbed, inst, unitBox } from '../helpers.js';
 import { gopuram, wallWithGaps } from '../details/temples.js';
+import { mountainRing } from '../details/terrain.js';
+import { townHouses } from '../details/realism.js';
 import { addDetails } from '../details/tirumala-temple.js';
 
 const WHITE = ['#f2ede2', '#e9e1cf', '#f6f2ea', '#dcd3c0'];
 const LIME = mat('#efe9dd', 0.85);
-const HILL = mat('#55703f', 0.95, 0, { flatShading: true });
 
 export function buildTirumala() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(29);
   g.add(f);
-  // The Seshachalam hills around the temple town, far enough out that the camera never enters them
-  for (let i = 0; i < 9; i++) {
-    const a = (i / 9) * Math.PI * 2, d = 480 + R() * 120, h = 60 + R() * 70;
-    g.add(mesh(new THREE.ConeGeometry(h * 1.5, h, 9).translate(0, h / 2, 0), HILL, Math.cos(a) * d, 0, Math.sin(a) * d));
-  }
+  // The seven hills of the Seshachalam, rocky and wooded (js/details/terrain.js).
+  g.add(mountainRing({ inner: 440, outer: 760, h: 130, vary: 45, rock: ['#8a7b66', '#766a58'], cover: '#5b7445', steep: 0.72 }));
+
   g.add(box(220, 0.2, 220, M.path));
   const town = [];
   for (let i = 0; i < 30; i++) {
     const a = R() * Math.PI * 2, d = 80 + R() * 25;
-    town.push([Math.cos(a) * d, 0, Math.sin(a) * d, 8 + R() * 8, 4 + R() * 8, 8 + R() * 6, a]);
+    town.push([Math.cos(a) * d, Math.sin(a) * d, 8 + R() * 8, 7 + R() * 5, 1 + Math.floor(R() * 3), Math.PI / 2 - a + Math.PI]);
   }
-  g.add(inst(unitBox(), town, mat('#e2d8c4', 0.9)));
+  // The temple town: pilgrim lodges and shops, whitewashed and pastel, facing the temple.
+  g.add(townHouses(town, { seed: 47, paint: ['#f1ece0', '#e8dcc0', '#f3e3c8', '#dfe8e2', '#f1ece0', '#efd9c9'] }));
   // Swami Pushkarini tank beside the temple
   g.add(box(36, 1, 30, M.granite, -62, 0, -4), box(30, 1.1, 24, M.water, -62, 0, -4));
   // Walled complex with the white Mahadwara gopuram at the entrance

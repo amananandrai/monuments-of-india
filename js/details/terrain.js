@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, mesh } from '../helpers.js';
+import { mat, mesh, surface } from '../helpers.js';
 
 // Terrain as one heightfield mesh, coloured by height and slope: the shared part for hills,
 // ridges, cliffs and mountain ranges, in place of cones and domes.
@@ -10,7 +10,8 @@ import { mat, mesh } from '../helpers.js';
 // `cover` colour (grass, forest, sand); above `snow` (a height), snow. Flat shaded, so rock reads
 // as facets.
 
-const TERRAIN = mat('#ffffff', 0.95, 0, { flatShading: true, vertexColors: true });
+// Plain material: the colour comes from the vertices, not from a photo texture.
+const TERRAIN = surface(mat('#ffffff', 0.95, 0, { flatShading: true, vertexColors: true }), 'none');
 
 export function heightField(w, d, n, fn, {
   cx = 0, cz = 0, rock = ['#8c7a66', '#9a8670', '#7f7366'], band = 18, cover = '#5b7a43', steep = 0.8,
@@ -46,7 +47,7 @@ export function smooth(a, b, t) { const k = Math.min(1, Math.max(0, (t - a) / (b
 // A ring of mountains round a valley: the ground is flat (and below 0) within `inner` of the
 // centre, rises steeply to ridges between `inner` and `outer`, and stays high beyond. The ridges
 // rise to `h` give or take `vary`, with peaks and gullies. aspect stretches the ring along z.
-export function mountainRing({ inner = 400, outer = 700, h = 260, vary = 90, size = 2600, n = 200, aspect = 1, cx = 0, cz = 0, ...opts } = {}) {
+export function mountainRing({ inner = 400, outer = 700, h = 260, vary = 90, size = 2600, n = 120, aspect = 1, cx = 0, cz = 0, ...opts } = {}) {
   return heightField(size, size, n, (x, z) => {
     const dx = x - cx, dz = (z - cz) / aspect, r = Math.hypot(dx, dz), a = Math.atan2(dz, dx);
     const t = smooth(inner, outer, r);

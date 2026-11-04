@@ -38,8 +38,16 @@ export function buildBandraWorli() {
   }
   // The Mumbai skyline across the bay
   const city = [];
-  for (let i = 0; i < 70; i++) city.push([-900 + i * 26 + R() * 10, 0, -700 - R() * 160, 18 + R() * 14, 30 + R() * 140, 18 + R() * 14]);
-  g.add(inst(unitBox(), city, mat('#a9adb4', 0.9)));
+  // Towers along the Worli and Bandra shores, each a body of light concrete banded with glazing
+  // floor by floor, some crowned with a lift room.
+  const bands = [], tops = [];
+  for (let i = 0; i < 70; i++) {
+    const x = -900 + i * 26 + R() * 10, z = -700 - R() * 160, w = 18 + R() * 14, h = 30 + R() * 140, d = 18 + R() * 14;
+    city.push([x, 0, z, w, h, d]);
+    for (let y = 4; y < h - 2; y += 3.4) bands.push([x, y, z, w + 0.2, 1.3, d + 0.2]);
+    if (R() < 0.5) tops.push([x, h, z, w * 0.3, 4, d * 0.3]);
+  }
+  g.add(inst(unitBox(), city, mat('#c9c6bf', 0.9)), inst(unitBox(), bands, mat('#5a6a78', 0.35, 0.3)), inst(unitBox(), tops, mat('#c9c6bf', 0.9)));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.35, 0.22, 1.2], zoom: 0.55 };
 }

@@ -2,20 +2,18 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, at, onFace, rng, pidaRoof, hemi, kalash } from '../helpers.js';
 import { figureFrieze } from '../details/sculpture.js';
 import { gopuram, wallWithGaps } from '../details/temples.js';
+import { mountainRing } from '../details/terrain.js';
 import { addDetails } from '../details/mallikarjuna-temple.js';
 
 const CREAM = ['#efe7d6', '#e2d3b7', '#d6c5a4', '#f4efe4'];
 const WALL = mat('#b9a586', 0.9);
-const HILL = mat('#557040', 0.95, 0, { flatShading: true });
 
 export function buildMallikarjuna() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(47);
   g.add(f);
-  // Srisailam hill in the Nallamala forest
-  for (let i = 0; i < 8; i++) {
-    const a = (i / 8) * Math.PI * 2, d = 480 + R() * 80, h = 60 + R() * 60;
-    g.add(mesh(new THREE.ConeGeometry(h * 1.2, h, 9).translate(0, h / 2, 0), HILL, Math.cos(a) * d, 0, Math.sin(a) * d));
-  }
+  // The Nallamala hills, forest over rock (js/details/terrain.js).
+  g.add(mountainRing({ inner: 430, outer: 720, h: 120, vary: 40, rock: ['#7c705a', '#6a6150'], cover: '#557040', steep: 0.7 }));
+
   g.add(box(220, 0.2, 220, M.path));
   // High enclosure walls carved with friezes, and a gopuram on each side
   const W = 100, D = 120;

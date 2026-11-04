@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, ring, inst, unitBox, surface } from '../helpers.js';
+import { townHouses } from '../details/realism.js';
 import { addDetails } from '../details/jallianwala-bagh.js';
 
 const RED = mat('#a5473a', 0.85);
@@ -31,9 +32,10 @@ export function buildJallianwala() {
   const houses = [];
   for (let i = 0; i < 40; i++) {
     const a = (i / 40) * Math.PI * 2, x = Math.cos(a) * (W / 2 + 12), z = Math.sin(a) * (D / 2 + 12);
-    houses.push([x, 0, z, 10 + R() * 6, 8 + R() * 8, 10 + R() * 6]);
+    houses.push([x, z, 10 + R() * 6, 10 + R() * 6, 2 + Math.floor(R() * 3), Math.atan2(-x, -z)]);
   }
-  g.add(inst(unitBox(), houses, mat('#b8a58a', 0.9)));
+  // The old houses of Amritsar that close the garden in, their backs to it.
+  g.add(townHouses(houses, { seed: 31, paint: ['#b8a58a', '#c9a77e', '#a98f72', '#d2b48c', '#e0cfb0'] }));
   f.add(box(110, 0.2, 80, M.grass), box(5, 0.3, 30, M.path, 0, 0, 52));
   // The memorial with its reflecting pool, the Martyrs' Well, and a bullet-marked wall
   f.add(box(28, 0.6, 28, mat('#d9cbb2', 0.85), 0, 0.2, -6), box(24, 0.7, 24, M.water, 0, 0.2, -6), box(10, 1.6, 10, RED, 0, 0.8, -6), at(flame(30, RED), 0, 2.4, -6));
