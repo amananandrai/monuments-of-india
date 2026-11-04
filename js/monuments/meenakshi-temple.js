@@ -56,5 +56,6 @@ export function buildMeenakshi() {
   g.add(cyl(0.15, 0.15, 3, M.gild, -86, 0.9, 10, 6), at(onionDome(1, M.gild), -86, 3.9, 10));
   g.add(box(40, 7, 40, Gr, 82, 0, 84));
   addDetails(g, g);
-  return { group: g, view: [0.75, 0.42, 1.2], budget: 500000 };
+  // Framed on the monument itself, closer than its grounds would set.
+  return { group: g, view: [0.75, 0.42, 1.2], zoom: 0.62, budget: 500000 };
 }

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, FACES, chamferPrism, finial, onionDome, sheet } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, FACES, chamferPrism, finial, onionDome, sheet, inst, unitCyl, unitHemi } from '../helpers.js';
 import { iwan, arcadeSkin, cellRow } from './mughal.js';
 import {
   jali, frieze, niche, archSlab, archRing, rosette, bracketGeo, placeAll, aroundCircle, alongFace,
@@ -178,7 +178,26 @@ function mosque() {
   return mergeByMaterial(g);
 }
 
+// The great gate (Darwaza-i-Rauza) at the south end of the garden, facing the tomb across it: red
+// sandstone outlined in white marble, a deep iwan through its middle, smaller iwans either side on
+// two storeys, octagonal towers at its corners under kiosks, and a row of eleven small domed kiosks
+// along the top of each front. Its north face (+z towards the tomb is -z here) looks up the garden.
+function greatGate() {
+  const g = new THREE.Group(), R = M.red, W = M.marble, w = 41, h = 23, d = 30, kp = [], kd = [];
+  g.add(box(w, h, d - 2.4, R, 0, 0, 0));
+  for (const a of [0, Math.PI]) {
+    g.add(onFace(iwan(10, 17, { m: R, trim: W, shade: M.redLight, depth: 2.4, frame: 1.6, top: 2.2, fill: 'room' }), a, (d - 2.4) / 2));
+    for (const lat of [-12.5, 12.5]) for (const y of [0.8, 10.2]) g.add(onFace(at(niche(4.4, 7.2, true, 0.9, R, { frame: 0.6, top: 0.6, back: M.redLight }), 0, y, 0), a, (d - 2.4) / 2, lat));
+    for (let k = 0; k < 11; k++) { const z = Math.cos(a) * ((d - 2.4) / 2 - 1), x = -15 + k * 3; kp.push([x, h, z, 1.6, 1.6, 1.6]); kd.push([x, h + 1.6, z, 1.9, 1.5, 1.9]); }
+  }
+  g.add(inst(unitCyl(8), kp, W), inst(unitHemi(10), kd, W));
+  g.add(box(w + 0.6, 0.8, d - 1.8, W, 0, h - 0.8));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(cyl(2.4, 2.6, h + 3, R, sx * (w / 2), 0, sz * (d / 2 - 2.4), 8), at(mughalChhatri(2.4, 6.5, R, { domeM: W }), sx * (w / 2), h + 3, sz * (d / 2 - 2.4)));
+  return mergeByMaterial(g);
+}
+
 export function addDetails(f, g) {
+  g.add(at(greatGate(), 0, 0, 228));
   // The red sandstone terrace runs on either side of the tomb's platform to the mosque and the
   // jawab; the Yamuna flows behind, below a sandy bank.
   for (const s of [-1, 1]) {

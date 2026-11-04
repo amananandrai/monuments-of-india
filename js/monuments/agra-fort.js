@@ -51,5 +51,6 @@ export function buildAgraFort() {
   aroundRect(50, 24, 4).forEach(([x, z]) => cols.push([x, 1, z + 60, 1.4, 8, 1.4]));
   f.add(box(54, 1, 28, Rd, 0, 0, 60), inst(unitCyl(12), cols, M.lime), box(54, 1.6, 28, M.lime, 0, 9, 60));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.4, 0.42, 1.2] };
+  // Framed on the monument itself, closer than its grounds would set.
+  return { group: g, focus: f, view: [0.4, 0.42, 1.2], zoom: 0.6 };
 }

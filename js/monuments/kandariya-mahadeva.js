@@ -17,7 +17,7 @@ export function buildKandariya() {
   const figs = [];
   // The sculpted figures run round the walls, leaving the doorway clear.
   for (const y of [5.4, 7.4]) aroundRect(22.4, 40.4, 1.2).forEach(([x, z, ry]) => { if (!(z > 20 && Math.abs(x) < 2.6)) figs.push([x, y, z - 4, 0.7, 1.5, 0.35, ry]); });
-  f.add(figureRow(figs, Sd, { poses: ['standing', 'dancer', 'standing', 'musician'] }), box(23, 0.5, 41, Sd, 0, 11, -4));
+  f.add(figureRow(figs, Sd, { poses: ['standing', 'dancer', 'standing', 'musician'] }), box(23, 0.46, 41, Sd, 0, 11, -4));
   // Roofs rising in steps from the entrance porch to the main tower
   [[22, 9, 4, 3], [12, 13, 5, 4], [1, 17, 6, 5]].forEach(([z, w0, n, br]) => {
     const r = pidaRoof(w0, w0 * 0.42, n, 0.85, S, Sd);

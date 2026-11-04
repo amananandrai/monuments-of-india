@@ -91,12 +91,27 @@ export function buildStatue() {
     h.rotation.y = -a;
     g.add(h);
   }
-  // The Sardar Sarovar Dam (3.2 km downstream; drawn nearer, at 1.9 km, so it shows through the haze): a long concrete wall 160 m high with its spillway
-  // piers along the crest, across the valley behind the statue.
+  // The Sardar Sarovar Dam, 3.2 km upstream (drawn nearer, at 1.9 km, so it shows through the
+  // haze): a concrete gravity dam 150 m high across the valley behind the statue.
   const dz = -1900, dam = new THREE.Group();
-  dam.add(box(1300, 150, 40, STONE, 0, 0, dz), box(1300, 8, 52, M.concrete, 0, 150, dz - 4));
-  for (let x = -280; x <= 280; x += 24) dam.add(box(6, 22, 52, M.concrete, x, 128, dz + 6));
+  // The face towards the statue is the downstream one: a sloping concrete face stepping out to the
+  // foot, its middle third the spillway, where piers carry the radial gates between them and the
+  // overflow runs white down the face into a stilling basin; the river below runs on to the statue.
+  const CONC = mat('#bdb6aa', 0.85), H = 150, L = 1300;
+  const prof = new THREE.Shape([[0, 0], [70, 0], [16, H], [-6, H], [-6, 0]].map(([z, y]) => new THREE.Vector2(z, y)));
+  const body = new THREE.ExtrudeGeometry(prof, { depth: L, bevelEnabled: false }).rotateY(-Math.PI / 2).translate(L / 2, 0, 0);
+  dam.add(at(mesh(body, CONC), 0, 0, dz));
+  dam.add(box(L, 4, 24, M.concrete, 0, H, dz + 4));
+  // The face's distance out at height y; the spillway's piers stand out from the crest, the radial
+  // gates between them, and the overflow runs down the face as a white sheet.
+  const face = (y) => 16 + 54 * (1 - y / H), piers = [], gates = [];
+  for (let x = -270; x <= 270; x += 18) piers.push([x, H - 30, dz + face(H - 30) / 2 + 8, 5, 34, face(H - 30) + 6]);
+  for (let x = -261; x < 270; x += 18) gates.push([x, H - 24, dz + face(H - 24) + 3, 12.4, 18, 1.2]);
+  dam.add(inst(unitBox(), piers, CONC), inst(unitBox(), gates, mat('#4f5a63', 0.5, 0.4)));
+  const fall = new THREE.Shape([[face(H - 26) + 0.6, H - 26], [face(0) + 0.6, 0], [face(0) + 5, 0], [face(H - 26) + 1.6, H - 26]].map(([z, y]) => new THREE.Vector2(z, y)));
+  dam.add(at(mesh(new THREE.ExtrudeGeometry(fall, { depth: 540, bevelEnabled: false }).rotateY(-Math.PI / 2).translate(270, 0, 0), mat('#f2f5f6', 0.3)), 0, 0, dz));
+  dam.add(box(600, 3, 60, M.concrete, 0, 0, dz + 100));
   g.add(dam);
   addDetails(f, g);
-  return { group: g, focus: f };
+  return { group: g, focus: f, fog: 11 };
 }

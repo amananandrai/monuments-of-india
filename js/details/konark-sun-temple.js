@@ -16,7 +16,7 @@ function architecture(f) {
   const j = at(new THREE.Group(), 0, B, jz);
   j.add(mouldings(30, 16, [[0, 0.6, 0.3, Kd], [0.6, 0.6, 0.1, frieze(K)], [10.6, 0.6, 0.1, frieze(K)]], K));
   j.add(mouldings(16, 30, [[0.01, 0.6, 0.3, Kd], [0.61, 0.6, 0.1, frieze(K)], [10.61, 0.6, 0.1, frieze(K)]], K));
-  for (const a of [0, Math.PI / 2, -Math.PI / 2, Math.PI]) for (const lat of [-5.2, 5.2]) j.add(onFace(at(templeNiche(1.8, 3.6, K, { figure: idol(3.1, K) }), 0, 2.4, 0), a, 15, lat));
+  for (const a of [0, Math.PI / 2, -Math.PI / 2, Math.PI]) for (const lat of [-5.2, 5.2]) j.add(onFace(at(templeNiche(1.8, 3.6, K, { figure: idol(3.1, K) }), 0, 2.4, 0), a, 15.03, lat));
   d.add(j);
   mergeByMaterial(d);
   f.add(d);

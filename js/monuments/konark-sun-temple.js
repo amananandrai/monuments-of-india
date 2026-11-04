@@ -25,7 +25,7 @@ export function buildKonark() {
   f.add(box(26, 12, 26, K, 0, B, jz), box(30, 12, 16, K, 0, B, jz), box(16, 12, 30, K, 0, B, jz));
   // Its three doorways, east (in front) and on the north and south arms
   const doors = new THREE.Group();
-  for (const a of [0, Math.PI / 2, -Math.PI / 2]) doors.add(onFace(at(templeDoorway(2.2, 4.4, { m: K, bands: 4 }), 0, B, 0), a, 15));
+  for (const a of [0, Math.PI / 2, -Math.PI / 2]) doors.add(onFace(at(templeDoorway(2.2, 4.4, { m: K, bands: 4 }), 0, B, 0), a, 15.02));
   f.add(at(mergeByMaterial(doors), 0, 0, jz));
   let y = B + 12;
   [[29, 22], [20, 14], [13, 8]].forEach(([w0, w1], i) => {
@@ -55,5 +55,6 @@ export function buildKonark() {
   f.add(box(24, 4, 24, Kd, 0, 0, nz), box(22, 1, 22, K, 0, 4, nz));
   for (const x of [-7.5, -2.5, 2.5, 7.5]) for (const z of [-7.5, -2.5, 2.5, 7.5]) f.add(cyl(0.6, 0.7, 2 + R() * 3, K, x, 5, nz + z, 8));
   addDetails(f, g);
-  return { group: g, focus: f, view: [1.1, 0.38, 0.9], budget: 500000 };
+  // Framed on the monument itself, closer than its grounds would set.
+  return { group: g, focus: f, view: [1.1, 0.38, 0.9], zoom: 0.68, budget: 500000 };
 }

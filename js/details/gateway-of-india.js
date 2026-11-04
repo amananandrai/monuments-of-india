@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, kalash } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, kalash, hemi, finial, inst, unitBox } from '../helpers.js';
 import {
   jali, archCurve, archRing, archSlab, tympanum, bracketGeo, placeAll, alongFace, chhajja, railingRing,
   arcadeScreen, mughalChhatri, mergeByMaterial,
@@ -134,7 +134,29 @@ export function addGatewayDetails(f, { p, b }) {
 // Apollo Bunder round the Gateway: the bronze equestrian statue of Chhatrapati Shivaji on its
 // pedestal facing the Gateway, the ferries to Elephanta tied up at the jetties and boats out in the
 // harbour, and lamps along the sea wall.
+// The Taj Mahal Palace hotel (1903) beside the Gateway, facing the harbour: a long range of grey
+// basalt and cream stone, six storeys of arched windows banded in white, wings ending in turrets,
+// and at its middle the great red-tiled dome on its drum, with smaller domes at the corners.
+function tajHotel() {
+  const g = new THREE.Group(), STONE = mat('#9a948a', 0.85), TRIM = mat('#ece6d8', 0.8), RED = mat('#b4452f', 0.6), L = 120, D = 26, H = 30;
+  g.add(box(L, H, D, STONE));
+  const win = [], bands = [];
+  for (let fl = 0; fl < 6; fl++) {
+    bands.push([0, fl * 5 + 0.2, D / 2 + 0.15, L + 0.4, 0.5, 0.3]);
+    for (let x = -L / 2 + 2.5; x < L / 2 - 2; x += 3.6) win.push([x, fl * 5 + 1.4, D / 2 + 0.05, 1.6, 2.8, 0.15]);
+  }
+  g.add(inst(unitBox(), win, M.recess), inst(unitBox(), bands, TRIM), box(L + 1, 1, D + 1, TRIM, 0, H));
+  for (const sx of [-1, 1]) {
+    g.add(box(16, H + 6, D + 4, STONE, sx * (L / 2 - 6), 0, 0), box(17, 1, D + 5, TRIM, sx * (L / 2 - 6), H + 6));
+    for (const sz of [-1, 1]) g.add(cyl(2.4, 2.4, 6, TRIM, sx * (L / 2 - 6) + sz * 6, H + 7, D / 2, 12), at(hemi(2.6, RED, 14), sx * (L / 2 - 6) + sz * 6, H + 13, D / 2));
+  }
+  g.add(box(26, 8, 26, STONE, 0, H, -2), cyl(9, 9, 6, TRIM, 0, H + 8, -2, 24));
+  g.add(at(mesh(new THREE.LatheGeometry([[9.2, 0], [9.6, 3], [8.6, 7], [6, 10.6], [2.6, 12.6], [0, 13.2]].map(([r, y]) => new THREE.Vector2(r, y)), 24), RED), 0, H + 14, -2), at(finial(3), 0, H + 27, -2));
+  return mergeByMaterial(g);
+}
+
 export function addDetails(f, g) {
+  g.add(at(tajHotel(), -100, 0, -70).rotateY(0.35));
   const ped = new THREE.Group(), rider = new THREE.Group();
   ped.add(box(5, 4, 8, M.basalt), box(5.6, 0.5, 8.6, M.plaster, 0, 4));
   const h = horse(M.bronze);

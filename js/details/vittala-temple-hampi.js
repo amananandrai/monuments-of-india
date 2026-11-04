@@ -54,7 +54,7 @@ function architecture(f) {
   const ch = at(new THREE.Group(), 0, 0, 30);
   for (const a of FACES) {
     const long = Math.abs(Math.sin(a)) > 0.5, len = long ? 9 : 6, dist = long ? 3 : 4.5;
-    ch.add(onFace(at(figureFrieze(len - 0.4, 0.8, GRANITE, { pitch: 0.95, kinds: ['horse', 'dancer', 'elephant', 'standing'] }), 0, 0.25, 0), a, dist));
+    ch.add(onFace(at(figureFrieze(len - 0.4, 0.8, GRANITE, { pitch: 0.95, kinds: ['horse', 'dancer', 'elephant', 'standing'] }), 0, 0.32, 0), a, dist));
     ch.add(onFace(at(figureFrieze(len - 0.4, 0.6, GRANITE, { pitch: 0.7, kinds: ['standing', 'dancer'] }), 0, 2.5, 0), a, dist));
     const sl = long ? 6 : 4.6, sd = long ? 2.3 : 3;
     ch.add(onFace(at(pilasters(sl - 0.5, 4, 0.35, 3.8, 0.12, GRANITE), 0, 4.25, 0), a, sd));

@@ -40,5 +40,6 @@ export function buildRamanathaswamy() {
     f.add(box(w * 1.1, 8, w * 1.1, LIME, x, 0, -14), at(r, x, 8, -14), at(hemi(w * 0.24, GRANITE, 20), x, 8 + r.userData.top, -14), at(kalash(w * 0.15), x, 8 + r.userData.top + w * 0.24, -14));
   }
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.7, 0.42, 1.2] };
+  // Framed on the monument itself, closer than its grounds would set.
+  return { group: g, focus: f, view: [0.7, 0.42, 1.2], zoom: 0.62 };
 }

@@ -60,7 +60,7 @@ export function buildMysorePalace() {
       let o;
       if (big && !a) o = mughalDoorway(5, 5.1, { m: S, trim: M.lime, depth: 1, frame: 0.9, top: 0.5 });
       else o = big ? side.clone() : win.clone();
-      onFace(at(o, 0, big ? y : y + 0.5, 0), a, a ? 8.5 : 8);
+      onFace(at(o, 0, big ? y : y + 0.5, 0), a, a ? 8.5 : big ? 8.02 : 8);
       o.position.z += tz;
       tw.add(o);
     }

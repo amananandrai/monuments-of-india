@@ -4,11 +4,12 @@ import { templeDoorway, doorFrame, guardian } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { nandi } from '../details/animals.js';
 import { kuta, shala } from '../details/sculpture.js';
+import { gopuram, wallWithGaps } from '../details/temples.js';
 import { addDetails } from '../details/brihadeeswara-temple.js';
 
 export function buildBrihadeeswara() {
   const m = M.granite, d = M.graniteDark, g = new THREE.Group();
-  g.add(box(70, 0.4, 150, M.path, 0, 0, 30));
+  g.add(box(70, 0.4, 150, M.path, 0, 0, 30), box(100, 0.3, 200, M.grass, 0, -0.1, 70));
   g.add(box(31, 4, 31, d));
   g.add(box(29, 12, 29, m, 0, 4));
   for (const a of FACES) {
@@ -58,6 +59,15 @@ export function buildBrihadeeswara() {
   // The great monolithic Nandi, polished dark, facing the shrine
   n.add(at(nandi(M.stoneDark, 1.08), 0, 1.5, 0.2).rotateY(Math.PI));
   g.add(at(n, 0, 0, 96));
+  // The enclosure and its two gateways on the east: the Rajarajan gopuram in the inner wall and,
+  // beyond it, the larger Keralantakan gopuram in the outer; both of bare granite, their storeys
+  // lined with small shrines and figures.
+  const STONE = ['#a08d70', '#8f7d62', '#b09c7e', '#9a8669'];
+  g.add(box(90, 0.4, 70, M.path, 0, 0, 140));
+  for (const s of [-1, 1]) g.add(box(2, 6, 158, d, s * 46, 0, 40));
+  g.add(box(94, 6, 2, d, 0, 0, -40), wallWithGaps('x', 94, 6, 2, d, [[0, 22]], 0, 120));
+  g.add(at(gopuram(24, 13, 30, 5, 3, STONE), 0, 0, 120), at(gopuram(30, 16, 36, 5, 4, STONE), 0, 0, 168));
   addDetails(g, g);
-  return { group: g, view: [1.0, 0.42, 1.0] };
+  // Framed on the monument itself, closer than its grounds would set.
+  return { group: g, view: [1.0, 0.42, 1.0], zoom: 0.65 };
 }

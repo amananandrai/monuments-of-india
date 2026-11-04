@@ -282,3 +282,42 @@ pedimented porch.
 
 Still open: a true portrait likeness of Patel is beyond what the shared face shape can carve; the
 features are suggested, not modelled.
+
+## Third pass: every monument checked again
+
+Every monument was rendered from its home view and the full audit was run again. What still
+needed work, and what was done:
+
+**Shapes and views.** The Golden Temple is seen across the pool, the Harmandir Sahib in front, its
+gilding brighter. India Gate is framed wider, so its top is never cut. Kashi Vishwanath is rebuilt
+as the Dham: the gilded shrine alone in the Mandir Chowk, arcaded ranges round it, steps down to
+the corridor and the gate onto the ghats. Shikharji is the Parasnath ridge, its crest broken into
+summits, a tonk on each. Mehrangarh stands on a sheer rock outcrop above the blue city.
+Daulatabad's hill is uneven above its scarp, its ring walls following the ground. Gwalior's
+plateau is long and narrow with bedded cliffs. Fort Aguada stands on a headland, not an island.
+
+**Mountains and towns.** A shared terrain kit (`js/details/terrain.js`: `heightField`,
+`mountainRing`, `rough`, `smooth`) colours ground by slope and height, rock bands on steep faces,
+snow above a line. It replaces the cone mountains at Tawang, Kedarnath, Thiksey, Rumtek,
+Bhimashankar, Mallikarjuna and Tirumala, and Trimbakeshwar's Brahmagiri. A monument may ask for
+clearer air (`fog`, in home distances; Kedarnath, Tawang, Thiksey, the Statue of Unity). The towns
+at Tirumala, Jallianwala Bagh, Mehrangarh, Omkareshwar and Howrah are painted houses
+(`townHouses`); the Mumbai towers behind the Sea Link have glazing bands.
+
+**Framing.** Fifteen monuments seen from too far now frame the monument itself (`zoom`):
+Meenakshi, Vittala, Howrah Bridge, Konark, Brihadeeswara, the Old Parliament, Agra Fort, the
+Cellular Jail, Golconda, the Qutb Shahi tombs, Ramanathaswamy, Nalanda, the Chota Imambara, Laxmi
+Vilas and Hazratbal. Sanchi is seen through its north gateway.
+
+**Missing pieces.** The Taj Mahal Palace hotel stands beside the Gateway of India; the Taj's great
+gate closes the garden's south end; Brihadeeswara has its two gopurams and enclosure; Howrah Bridge
+spans between two city banks, the Howrah station on the west; the Sardar Sarovar Dam has its
+sloped face, spillway piers, gates and white overflow.
+
+**Flicker.** The coplanar faces at Akshardham, Mallikarjuna, Jagannath, Vittala, Tirumala, Mysore,
+Konark, Akbar's Tomb, Kandariya and Meenakshi are fixed, most of them in shared parts (the
+gopuram's passage block, which also served Ramanathaswamy and Padmanabhaswamy).
+
+**As in reality.** Rani ki Vav, Ajanta, Kailasa and Amber stand in a pit or against a cliff, and
+the ground hides them from some low views. The Statue of Unity's face suggests Patel's features
+but is not a sculpted portrait.
