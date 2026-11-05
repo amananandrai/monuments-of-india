@@ -27,9 +27,9 @@ function architecture(f) {
 export function addDetails(f, g) {
   architecture(f);
   const deckY = 20.3, R = rng(21);
-  for (const s of [-1, 1]) g.add(box(1600, 1.1, 0.4, mat('#d8d5ce', 0.8), 0, deckY, s * 11.6), box(1600, 0.2, 0.6, M.steel, 0, deckY + 1.1, s * 11.6));
+  for (const s of [-1, 1]) g.add(box(2100, 1.1, 0.4, mat('#d8d5ce', 0.8), 0, deckY, s * 11.6), box(2100, 0.2, 0.6, M.steel, 0, deckY + 1.1, s * 11.6));
   const lamps = [];
-  for (let x = -780; x <= 780; x += 40) if (Math.abs(x) > 12) lamps.push([x, -11.9], [x, 11.9]);
+  for (let x = -1020; x <= 1020; x += 40) if (Math.abs(x) > 12) lamps.push([x, -11.9], [x, 11.9]);
   g.add(lampPosts(lamps, { h: 10, y: deckY }));
   const fleet = [];
   for (let i = 0; i < 18; i++) fleet.push([-500 + R() * 1000, (R() < 0.5 ? -1 : 1) * (90 + R() * 300), R() * 6.28]);

@@ -117,10 +117,11 @@ const ground = new THREE.Mesh(new THREE.CircleGeometry(1, 96), groundMat);
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
 // The ground sits behind everything in depth, so river sheets and lawns a few centimetres above it
-// always win, even kilometres away where the depth buffer is coarse.
+// always win, even kilometres away where the depth buffer is coarse: the offset is in steps of the
+// depth buffer, so it holds at any distance (4 steps were too few for a sea seen 5 km off).
 groundMat.polygonOffset = true;
-groundMat.polygonOffsetFactor = 1;
-groundMat.polygonOffsetUnits = 4;
+groundMat.polygonOffsetFactor = 2;
+groundMat.polygonOffsetUnits = 32;
 scene.add(ground);
 
 scene.fog = new THREE.Fog(0xffffff, 100, 1000);
