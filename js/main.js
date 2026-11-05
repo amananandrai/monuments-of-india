@@ -10,11 +10,13 @@ import { attachSurface, surface, waterTime, landColor, reflection } from './surf
 import { blendIntoLand } from './landscape.js';
 import { separateCoplanar } from './coplanar.js';
 import { frameBox } from './framing.js';
+import { batchStatic } from './batch.js';
 import { upgradeTrees } from './details/realism.js';
 import { naturalize } from './naturalize.js';
 import { loadPhotoTextures } from './textures.js';
 import { MONUMENTS } from './data.js';
 import { createMap } from './map.js';
+import { warmSculpts } from './warmup.js';
 
 /* ---------- scene ---------- */
 const stage = document.getElementById('stage');
@@ -24,7 +26,9 @@ const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let renderer;
 try {
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  // No multisampling on the canvas: the scene is drawn into the composer's own render target, so the
+  // canvas only ever receives the finished image, a single full-screen quad.
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
 } catch (e) {
   statusEl.textContent = 'Your browser could not start WebGL, which this page needs to draw the 3D models.';
   throw e;
@@ -34,6 +38,10 @@ const fancy = !matchMedia('(max-width: 760px)').matches;
 renderer.setPixelRatio(Math.min(devicePixelRatio, fancy ? 1.5 : 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+// The shadows are drawn once per monument, not every frame: the sun and the shadow box are fixed to
+// the monument and nothing in the scene moves, so orbiting the camera never changes them.
+// setEnvironment() asks for a new shadow map when a monument is shown.
+renderer.shadowMap.autoUpdate = false;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
 loadPhotoTextures(renderer);
@@ -161,6 +169,8 @@ function applyTheme() {
   scene.fog.color.copy(col('--sky-horizon'));
   nightState.on = night;
   nightState.objects.forEach((o) => { o.visible = night; });
+  // Lamps and lanterns shown or hidden: their shadows change with them.
+  renderer.shadowMap.needsUpdate = true;
   envGroundMat.color.copy(col('--ground')).multiplyScalar(0.8);
   bloom.enabled = night;
   if (night) {
@@ -182,9 +192,13 @@ new MutationObserver(applyTheme).observe(document.documentElement, { attributes:
 const built = new Map();
 let current = -1, home = null, tween = null;
 
+// A monument is built the first time it is opened: its module is fetched, the model built and
+// finished (fuller trees, natural colour, depth offsets, the land round it), then kept. The promise
+// is kept too, so asking twice while it loads builds it once.
+const loading = new Map();
 function getBuilt(i) {
-  if (!built.has(i)) {
-    const r = MONUMENTS[i].build();
+  if (built.has(i)) return Promise.resolve(built.get(i));
+  if (!loading.has(i)) loading.set(i, MONUMENTS[i].build().then((r) => {
     r.focus = r.focus || r.group;
     // Fuller trees wherever the monument has triangles to spare.
     upgradeTrees(r.group, r.budget || 300000);
@@ -192,15 +206,25 @@ function getBuilt(i) {
     // Faces that share a plane get different depth offsets, so they don't flicker.
     separateCoplanar(r.group, 0.005);
     blendIntoLand(r);
+    // The box the home view frames, measured on the separate parts, before any are merged.
+    r.frame = frameBox(r.focus);
+    // Monuments of many separate parts are merged into a few draw calls (js/batch.js).
+    if (r.batch) { batchStatic(r.focus); if (r.focus !== r.group) batchStatic(r.group, r.focus); }
     r.mirror = findMirror(r.group);
+    r.group.visible = false;
     scene.add(r.group);
     built.set(i, r);
-  }
-  return built.get(i);
+    loading.delete(i);
+    return r;
+  }));
+  return loading.get(i);
 }
+// Fetch a monument's code ahead of a likely click (hover, or the next and previous in the list),
+// without building it.
+const prefetch = (i) => { if (i !== undefined && !built.has(i)) MONUMENTS[i].load().catch(() => {}); };
 
 function computeHome(r) {
-  const box = frameBox(r.focus);
+  const box = r.frame || frameBox(r.focus);
   const size = box.getSize(new THREE.Vector3());
   const center = box.getCenter(new THREE.Vector3());
   const radius = size.length() / 2;
@@ -261,6 +285,7 @@ function setEnvironment(h) {
   sc.updateProjectionMatrix();
   sun.shadow.bias = -0.0004;
   sun.shadow.normalBias = radius * 0.0012;
+  renderer.shadowMap.needsUpdate = true;
   // Scale the occlusion radius to the monument: a kiosk and a 700 m bridge need very different reaches.
   gtao.updateGtaoMaterial({ radius: THREE.MathUtils.clamp(radius * 0.04, 0.8, 24), thickness: 1, distanceExponent: 1, scale: 1.1 });
   flood.position.copy(target).addScaledVector(V(0.35, 0.3, 1).normalize(), radius * 3);
@@ -280,30 +305,50 @@ function flyTo(h, instant) {
 controls.addEventListener('start', () => { tween = null; });
 
 
-function select(i, instant = false) {
-  if (i !== current) {
-    const r = getBuilt(i);
-    built.forEach((b, k) => { b.group.visible = k === i; });
-    const first = current === -1;
-    current = i;
-    // Switching between very different scales: start the flight from the same angle, scaled to the new size.
-    if (!first && !instant) {
-      const prevDist = camera.position.distanceTo(controls.target);
-      home = computeHome(r);
-      const off = camera.position.clone().sub(controls.target).normalize().multiplyScalar(Math.max(prevDist, home.dist * 1.6));
-      controls.target.copy(home.target);
-      camera.position.copy(home.target).add(off);
-    } else {
-      home = computeHome(r);
-    }
-    setEnvironment(home);
-    flyTo(home, first || instant);
-    renderInfo(MONUMENTS[i]);
-    mirror = fancy ? r.mirror : null;
-    reflection.on.value = mirror ? 1 : 0;
-  }
+let wanted = -1;
+async function select(i, instant = false) {
+  wanted = i;
   items.forEach((el, k) => el.setAttribute('aria-current', String(k === i)));
   items[i].scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
+  if (i === current) return;
+  // While a monument loads for the first time, say so; the one before stays in view.
+  const slow = !built.has(i) && setTimeout(() => { if (wanted !== i) return; statusEl.textContent = `Loading ${MONUMENTS[i].name}…`; statusEl.hidden = false; }, 120);
+  let r;
+  try {
+    r = await getBuilt(i);
+  } catch (e) {
+    clearTimeout(slow);
+    if (wanted === i) { statusEl.textContent = `${MONUMENTS[i].name} could not be loaded. Check the connection and try again.`; statusEl.hidden = false; }
+    loading.delete(i);
+    console.error(e);
+    return;
+  }
+  clearTimeout(slow);
+  // The visitor moved on while this one loaded: leave it built, show nothing.
+  if (wanted !== i) return;
+  statusEl.hidden = true;
+  built.forEach((b, k) => { b.group.visible = k === i; });
+  const first = current === -1;
+  current = i;
+  // Switching between very different scales: start the flight from the same angle, scaled to the new size.
+  if (!first && !instant) {
+    const prevDist = camera.position.distanceTo(controls.target);
+    home = computeHome(r);
+    const off = camera.position.clone().sub(controls.target).normalize().multiplyScalar(Math.max(prevDist, home.dist * 1.6));
+    controls.target.copy(home.target);
+    camera.position.copy(home.target).add(off);
+  } else {
+    home = computeHome(r);
+  }
+  setEnvironment(home);
+  flyTo(home, first || instant);
+  renderInfo(MONUMENTS[i]);
+  mirror = fancy ? r.mirror : null;
+  reflection.on.value = mirror ? 1 : 0;
+  // The neighbours in the list are the likeliest next clicks.
+  const pos = order.indexOf(i);
+  prefetch(order[(pos + 1) % order.length]);
+  prefetch(order[(pos - 1 + order.length) % order.length]);
 }
 
 /* ---------- sidebar: grouped by state, with search ---------- */
@@ -356,9 +401,9 @@ MONUMENTS.forEach((m, i) => { if (!groups.has(m.state)) groups.set(m.state, []);
     b.querySelector('.h').textContent = mo.stat[1];
     b.querySelector('.place').textContent = mo.place;
     b.addEventListener('click', () => showMonument(i, { push: mode === 'map' }));
-    b.addEventListener('pointerenter', () => map.highlight(mo.id));
+    b.addEventListener('pointerenter', () => { map.highlight(mo.id); prefetch(i); });
     b.addEventListener('pointerleave', () => map.highlight(null));
-    b.addEventListener('focus', () => map.highlight(mo.id));
+    b.addEventListener('focus', () => { map.highlight(mo.id); prefetch(i); });
     b.addEventListener('blur', () => map.highlight(null));
     items[i] = b;
     li.appendChild(b);
@@ -427,6 +472,9 @@ function showMonument(i, { push = false, instant = false } = {}) {
 }
 function showMap(push = false) {
   mode = 'map';
+  // A monument still loading is not shown when it arrives.
+  wanted = -1;
+  statusEl.hidden = true;
   stage.classList.add('is-map');
   items.forEach((el) => el.setAttribute('aria-current', 'false'));
   setUrl('', push);
@@ -496,14 +544,16 @@ function renderReflection() {
   waterLine.constant = -h;
   mirror.meshes.forEach((o) => { o.visible = false; });
   renderer.clippingPlanes = [waterLine];
-  renderer.shadowMap.autoUpdate = false;
+  // Keep a pending shadow update for the main render, so the shadow map is drawn without the clip.
+  const shadowDue = renderer.shadowMap.needsUpdate;
+  renderer.shadowMap.needsUpdate = false;
   sky.position.copy(mirrorCam.position);
   renderer.setRenderTarget(reflectRT);
   renderer.clear();
   renderer.render(scene, mirrorCam);
   renderer.setRenderTarget(null);
   renderer.clippingPlanes = [];
-  renderer.shadowMap.autoUpdate = true;
+  renderer.shadowMap.needsUpdate = shadowDue;
   sky.position.copy(camera.position);
   mirror.meshes.forEach((o) => { o.visible = true; });
 }
@@ -525,7 +575,7 @@ resize();
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 function loop(now) {
   requestAnimationFrame(loop);
-  if (mode !== 'monument') return;
+  if (mode !== 'monument' || current === -1) return;
   if (!reduceMotion) waterTime.value = skyMat.uniforms.time.value = now / 1000;
   if (tween) {
     const k = Math.min(1, (now - tween.t0) / tween.dur), e = ease(k);
@@ -542,3 +592,5 @@ function loop(now) {
 route();
 statusEl.hidden = true;
 requestAnimationFrame(loop);
+// On larger screens, mesh the slowest sculpted figures while the map sits idle (js/warmup.js).
+if (fancy) warmSculpts(() => mode === 'map' && loading.size === 0);

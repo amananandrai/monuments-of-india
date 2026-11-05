@@ -272,6 +272,13 @@ download.
   temples (Meenakshi, Vittala at Hampi, Nageshwar, Konark), which return `budget: 500000` from their
   builders and stay under 500,000. Repeated parts are instanced, carved parts are merged by
   material, and a monument is built only when first opened, then cached.
+- **Loading:** the map needs only the list of monuments (`js/data.js`); each monument's code is
+  fetched when it is first opened, and that of its neighbours in the list (and of whatever the
+  pointer rests on) just before. Monuments of very many parts (`batch: true`: Howrah Bridge,
+  Meenakshi, the Red Fort, the Golden Temple) have them merged into a few draw calls once built
+  (`js/batch.js`). On larger screens the slowest sculpted figures are meshed while the map sits
+  idle (`js/warmup.js`). Shadows are drawn once per monument, not every frame. See
+  [`docs/performance.md`](docs/performance.md).
 - **No flicker:** faces that share a plane get depth offsets (`js/coplanar.js`), and curved walls and
   cliffs are built as single continuous bands, so surfaces don't shimmer as the camera moves.
 - **Camera:** the home view frames the monument as built (`js/framing.js`), not the lawns, plazas
