@@ -17,6 +17,10 @@ import { loadPhotoTextures } from './textures.js';
 import { MONUMENTS } from './data.js';
 import { createMap } from './map.js';
 import { warmSculpts } from './warmup.js';
+import { detail, chooseDetail } from './detail.js';
+
+// Full models on desktops and laptops, lighter ones on phones (js/detail.js).
+detail.level = chooseDetail();
 
 /* ---------- scene ---------- */
 const stage = document.getElementById('stage');
@@ -200,8 +204,8 @@ function getBuilt(i) {
   if (built.has(i)) return Promise.resolve(built.get(i));
   if (!loading.has(i)) loading.set(i, MONUMENTS[i].build().then((r) => {
     r.focus = r.focus || r.group;
-    // Fuller trees wherever the monument has triangles to spare.
-    upgradeTrees(r.group, r.budget || 300000);
+    // Fuller trees wherever the monument has triangles to spare; plain ones on phones.
+    if (!detail.low) upgradeTrees(r.group, r.budget || 300000);
     naturalize(r.group);
     // Faces that share a plane get different depth offsets, so they don't flicker.
     separateCoplanar(r.group, 0.005);
@@ -593,4 +597,4 @@ route();
 statusEl.hidden = true;
 requestAnimationFrame(loop);
 // On larger screens, mesh the slowest sculpted figures while the map sits idle (js/warmup.js).
-if (fancy) warmSculpts(() => mode === 'map' && loading.size === 0);
+if (fancy && !detail.low) warmSculpts(() => mode === 'map' && loading.size === 0);

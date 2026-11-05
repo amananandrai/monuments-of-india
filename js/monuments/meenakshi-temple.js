@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, box, cyl, group, at, onionDome, hemi, kalash, pidaRoof } from '../helpers.js';
 import { gopuram, wallWithGaps } from '../details/temples.js';
 import { addDetails } from '../details/meenakshi-temple.js';
+import { detail } from '../detail.js';
 
 export function buildMeenakshi() {
   const S = M.stucco, Gr = M.granite, g = new THREE.Group();
@@ -13,13 +14,13 @@ export function buildMeenakshi() {
   // with figures, a kudu over every bay; four on the inner wall; and three on each shrine's own
   // enclosure.
   for (const [x, z, h, rot, seed] of [[0, 130, 52, 0, 1], [0, -130, 47, 0, 2], [120, 0, 49, Math.PI / 2, 3], [-120, 0, 48, Math.PI / 2, 4]]) {
-    const t = gopuram(30, 18, h, 11, seed, undefined, { pitch: 1.6, kuduEvery: 1 });
+    const t = gopuram(30, 18, h, 11, seed, undefined, detail.low ? { pitch: 2.4, kuduEvery: 3, cheap: true } : { pitch: 1.6, kuduEvery: 1 });
     t.position.set(x, 0, z);
     t.rotation.y = rot;
     g.add(t);
   }
   for (const [x, z, h, rot, seed] of [[0, 62, 30, 0, 5], [0, -62, 27, 0, 6], [55, 0, 32, Math.PI / 2, 7], [-55, 0, 26, Math.PI / 2, 8]]) {
-    const t = gopuram(18, 11, h, 7, seed, undefined, { pitch: 1.8, kuduEvery: 2 });
+    const t = gopuram(18, 11, h, 7, seed, undefined, detail.low ? { pitch: 2.6, kuduEvery: 4, cheap: true } : { pitch: 1.8, kuduEvery: 2 });
     t.position.set(x, 0, z);
     t.rotation.y = rot;
     g.add(t);
@@ -33,7 +34,7 @@ export function buildMeenakshi() {
       g.add(wallWithGaps('z', hw * 2 + 1, 5, 1.2, S, gz ? [[cz, 11]] : [], cx + s * hw, cz));
     }
     gates.forEach(([sx, sz, h], k) => {
-      const t = gopuram(12, 7, h, 5, 9 + k + (cx > 0 ? 0 : 3));
+      const t = gopuram(12, 7, h, 5, 9 + k + (cx > 0 ? 0 : 3), undefined, detail.low ? { pitch: 2.8, kuduEvery: 4, cheap: true } : undefined);
       t.position.set(cx + sx * hw, 0, cz + sz * hw);
       t.rotation.y = sx ? Math.PI / 2 : 0;
       g.add(t);

@@ -3,6 +3,7 @@ import { mat, cyl, at, onFace, FACES, pidaRoof } from '../helpers.js';
 import { chhajja, mouldings, templeNiche, pilasters, mergeByMaterial } from './components.js';
 import { figureFrieze, haraRow, kuta, figure, instances, kuduGeo } from './sculpture.js';
 import { trees, asiBoard, scatter } from './realism.js';
+import { detail } from '../detail.js';
 
 // Vittala, Hampi, finer detail. The halls' pillars are carved in the builder (clustered "musical"
 // pillars, and yali pillars along the outer rows of the main hall and the Kalyana Mandapa). From
@@ -27,9 +28,9 @@ function architecture(f) {
     hall.add(mouldings(w, dd, [[0, 0.35, 0.2, GRANITE], [2.2, 0.35, 0.2, GRANITE]], GRANITE));
     for (const a of FACES) {
       const long = Math.abs(Math.sin(a)) < 0.5, len = long ? w : dd, dist = (long ? dd : w) / 2;
-      hall.add(onFace(at(figureFrieze(len - 0.6, 1.2, GRANITE, { pitch: 1.5, kinds: ['horse', 'standing', 'elephant', 'dancer'] }), 0, 0.6, 0), a, dist));
+      hall.add(onFace(at(figureFrieze(len - 0.6, 1.2, GRANITE, { pitch: detail.low ? 3 : 1.5, kinds: ['horse', 'standing', 'elephant', 'dancer'] }), 0, 0.6, 0), a, dist));
       hall.add(onFace(at(chhajja(len + 2.4, 1.6, 0.9, 0.15, GRANITE_DARK), 0, 2.6 + h + 0.4, 0), a, dist + 0.8));
-      hall.add(onFace(at(haraRow(len - 0.6, 1.0, GRANITE), 0, 4.3 + h, 0), a, dist - 0.75));
+      hall.add(onFace(at(haraRow(len - 0.6, detail.low ? 1.4 : 1.0, GRANITE), 0, 4.3 + h, 0), a, dist - 0.75));
     }
     d.add(hall);
   }
@@ -54,8 +55,8 @@ function architecture(f) {
   const ch = at(new THREE.Group(), 0, 0, 30);
   for (const a of FACES) {
     const long = Math.abs(Math.sin(a)) > 0.5, len = long ? 9 : 6, dist = long ? 3 : 4.5;
-    ch.add(onFace(at(figureFrieze(len - 0.4, 0.8, GRANITE, { pitch: 0.95, kinds: ['horse', 'dancer', 'elephant', 'standing'] }), 0, 0.32, 0), a, dist));
-    ch.add(onFace(at(figureFrieze(len - 0.4, 0.6, GRANITE, { pitch: 0.7, kinds: ['standing', 'dancer'] }), 0, 2.5, 0), a, dist));
+    ch.add(onFace(at(figureFrieze(len - 0.4, 0.8, GRANITE, { pitch: detail.low ? 1.6 : 0.95, kinds: ['horse', 'dancer', 'elephant', 'standing'] }), 0, 0.32, 0), a, dist));
+    ch.add(onFace(at(figureFrieze(len - 0.4, 0.6, GRANITE, { pitch: detail.low ? 1.2 : 0.7, kinds: ['standing', 'dancer'] }), 0, 2.5, 0), a, dist));
     const sl = long ? 6 : 4.6, sd = long ? 2.3 : 3;
     ch.add(onFace(at(pilasters(sl - 0.5, 4, 0.35, 3.8, 0.12, GRANITE), 0, 4.25, 0), a, sd));
     ch.add(onFace(at(templeNiche(1, 2.3, GRANITE, { figure: figure(2, GRANITE, 'standing') }), 0, 5, 0), a, sd));

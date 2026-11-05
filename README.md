@@ -285,7 +285,9 @@ download.
   and water round it, and the zoom-out stops short of the hills and forests round a monument, so
   the camera never enters them. [`docs/audit-and-plan.md`](docs/audit-and-plan.md) records the
   check of every monument behind these.
-- **Phones:** ambient occlusion and reflections are skipped to keep the frame rate up.
+- **Phones:** ambient occlusion and reflections are skipped to keep the frame rate up, and the models
+  are built at a lower detail level: plain trees everywhere, and lighter carving and statues on the
+  heaviest temples (`js/detail.js`; `?detail=high` or `?detail=low` in the address to choose).
 
 ## Video
 

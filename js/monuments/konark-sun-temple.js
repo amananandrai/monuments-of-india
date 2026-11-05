@@ -4,6 +4,7 @@ import { templeDoorway } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { figure, instances, carvedWheelGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/konark-sun-temple.js';
+import { detail } from '../detail.js';
 
 export function buildKonark() {
   const K = M.khond, Kd = M.khondDark, g = new THREE.Group(), f = new THREE.Group();
@@ -18,7 +19,7 @@ export function buildKonark() {
     const z = zc - L / 2 + 4 + i * ((L - 8) / 11);
     for (const s of [-1, 1]) wl.push([s * 16.14, 2.4, z, 1, 1, 1, s * Math.PI / 2]);
   }
-  f.add(instances(carvedWheelGeo(1.95), wl, Kd));
+  f.add(instances(carvedWheelGeo(1.95, { low: detail.low }), wl, Kd));
   for (let k = 0; k < 4; k++) f.add(box(10, B - k * 1.5, 2, K, 0, 0, zf + 1 + k * 2));
   // Jagamohana (the surviving porch) with three tiers of pida roof
   const jz = zf - 16;

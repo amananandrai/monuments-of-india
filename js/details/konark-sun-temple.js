@@ -3,6 +3,7 @@ import { M, at, onFace, mesh, box } from '../helpers.js';
 import { mouldings, frieze, templeNiche, idol, mergeByMaterial } from './components.js';
 import { lion, elephant, horse } from './animals.js';
 import { trees, shrubs, asiBoard, scatter, along } from './realism.js';
+import { detail } from '../detail.js';
 
 // Konark, finer detail. From photographs and descriptions: the chariot's plinth is wrapped in
 // friezes above and below the wheels (elephants, scenes of daily life); the Jagamohana's walls stand
@@ -36,7 +37,8 @@ function horses(f, zf) {
   const K = M.khond, Kd = M.khondDark, g = new THREE.Group();
   [-22, -18.5, -15, -11.5, 9.5, 13, 16.5].forEach((x, k) => {
     const hz = zf + 7 + (k % 2) * 1.2, ry = Math.sign(x) * 0.12;
-    const h = horse(Kd);
+    // On phones the horses are meshed coarser (js/detail.js).
+    const h = horse(Kd, { coarse: detail.low });
     h.scale.setScalar(1.15);
     h.position.set(x, 1.4, hz);
     h.rotation.y = ry;
