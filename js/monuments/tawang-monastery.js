@@ -28,7 +28,7 @@ export function buildTawang() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(5);
   g.add(f);
   // The ridge it stands on, and snow peaks of the eastern Himalaya beyond
-  const ridge = mesh(new THREE.CylinderGeometry(70, 140, 24, 14, 2), RIDGE, 0, 12 - 0.6, 0);
+  const ridge = mesh(new THREE.CylinderGeometry(80, 150, 24, 14, 2), RIDGE, 0, 12 - 0.6, 0);
   g.add(ridge);
   // Himalayan ridges round the valley, rock to snow (js/details/terrain.js).
   g.add(mountainRing({ inner: 470, outer: 820, h: 230, vary: 70, snow: 190, rock: ['#7e8084', '#8a8c8f', '#74767a'], cover: '#5f7349', steep: 0.82 }));

@@ -211,7 +211,10 @@ download.
   tinted to each model's own colour (`js/textures.js`).
 - **Landscape:** a sky with haze, distant hills, the sun and drifting clouds, and land that runs out to
   the horizon. Each monument's lawns and pavements fade into the land at their open edges, and seas
-  and long rivers carry on to the horizon (`js/landscape.js`).
+  and long rivers carry on to the horizon (`js/landscape.js`). Where a site's outer ground is
+  natural (a lawn, a meadow, a forested or rocky hill), the open land round it takes that colour
+  (`siteLand`), so a green site does not end on a sandy plain; paved and sandy sites keep the sandy
+  land.
 - **Water:** seas, rivers, lakes and pools have their own colours and moving ripples, and on desktop
   they reflect the monument.
 - **Nature and figures:** rocks, hills, mountains and trees are sculpted with noise
@@ -285,7 +288,11 @@ download.
   and water round it, and the zoom-out stops short of the hills and forests round a monument, so
   the camera never enters them. [`docs/audit-and-plan.md`](docs/audit-and-plan.md) records the
   check of every monument behind these.
-- **Phones:** ambient occlusion and reflections are skipped to keep the frame rate up.
+- **Desktops:** antialiasing (SMAA) and a 4096 shadow map, and extra carving on the most complex
+  monuments, Konark and Ajanta so far (see [`docs/performance.md`](docs/performance.md)).
+- **Phones:** ambient occlusion and reflections are skipped to keep the frame rate up, and the models
+  are built at a lower detail level: plain trees everywhere, and lighter carving and statues on the
+  heaviest temples (`js/detail.js`; `?detail=high` or `?detail=low` in the address to choose).
 
 ## Video
 

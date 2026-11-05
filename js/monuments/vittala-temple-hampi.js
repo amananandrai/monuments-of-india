@@ -6,6 +6,7 @@ import { templeDoorway } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { clusterPillar, yaliPillar, carvedWheelGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/vittala-temple-hampi.js';
+import { detail } from '../detail.js';
 
 const GRANITE = mat('#a58d6e', 0.9);
 const GRANITE_DARK = mat('#7d6a53', 0.9);
@@ -23,7 +24,9 @@ function pillaredHall(w, d, h, step, clear = 0, { yali = false, figures = false 
   const xs = [], zs = [];
   for (let x = -w / 2 + 1.5; x <= w / 2 - 1.4; x += step) xs.push(x);
   for (let z = -d / 2 + 1.5; z <= d / 2 - 1.4; z += step) zs.push(z);
-  const plain = clusterPillar(h, GRANITE, { figures }), carved = yali ? yaliPillar(h, GRANITE, { rich: true }) : null;
+  // On phones (js/detail.js) the yali stands on its plain block and carries the simpler rider, and the
+  // pillars' carved blocks have no dancers and four colonnettes each.
+  const plain = clusterPillar(h, GRANITE, { figures: figures && !detail.low, low: detail.low }), carved = yali ? yaliPillar(h, GRANITE, { rich: !detail.low }) : null;
   xs.forEach((x, i) => zs.forEach((z, j) => {
     if (Math.abs(x) < clear && z < -d / 2 + 3) return;
     const edgeX = i === 0 || i === xs.length - 1, edgeZ = j === 0 || j === zs.length - 1;
@@ -61,12 +64,12 @@ export function buildVittala() {
   const ch = new THREE.Group();
   ch.add(box(6, 3.6, 9, GRANITE), box(6.6, 0.6, 9.6, GRANITE_DARK, 0, 3.6));
   for (const x of [-3, 3]) for (const z of [-2.8, 2.8]) {
-    const w = mesh(carvedWheelGeo(1.45), GRANITE_DARK, x, 1.5, z);
+    const w = mesh(carvedWheelGeo(1.45, { low: detail.low }), GRANITE_DARK, x, 1.5, z);
     w.rotation.y = Math.sign(x) * Math.PI / 2;
     ch.add(w);
   }
   ch.add(box(4.6, 4.2, 6, GRANITE, 0, 4.2), at(pidaRoof(5.2, 2.6, 3, 0.6, GRANITE, GRANITE_DARK), 0, 8.4, 0));
-  for (const x of [-1.8, 1.8]) ch.add(at(elephant(GRANITE, 0.75), x, 0, 7));
+  for (const x of [-1.8, 1.8]) ch.add(at(elephant(GRANITE, 0.75, { coarse: detail.low }), x, 0, 7));
   f.add(at(ch, 0, 0, 30));
   addDetails(f, g);
   // Framed on the monument itself, closer than its grounds would set.

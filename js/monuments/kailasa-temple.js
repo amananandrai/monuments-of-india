@@ -6,6 +6,7 @@ import { templeDoorway } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { instances, elephantGeo, kuta, shala } from '../details/sculpture.js';
 import { addDetails } from '../details/kailasa-temple.js';
+import { heightField, rough, smooth } from '../details/terrain.js';
 
 const ROCK = mat('#6f675e', 0.95);
 const ROCK_DARK = mat('#57514a', 0.95);
@@ -40,6 +41,17 @@ export function buildKailasa() {
   // The basalt cliff, cut away to leave a pit around the temple
   g.add(box(150, H, 34, ROCK, 0, 0, -67), box(47, H, 100, ROCK, -51.5, 0, 0), box(47, H, 100, ROCK, 51.5, 0, 0));
   g.add(box(150, H - 6, 40, ROCK, 0, 0, -104), box(60, 0.4, 150, ROCK_DARK, 0, 0, 0));
+  // The hill the cliff is cut into: its slopes fall from the cliff's top to the plain on the sides
+  // and behind, so the cut reads as a quarry in the hillside, not a square block on the plain. In
+  // front the scarp stays sheer, as it was cut. Inside the block the field sinks out of sight.
+  g.add(heightField(560, 560, 140, (x, z) => {
+    const ax = Math.abs(x);
+    if (ax < 75 && z > -124 && z < 50) return -6;
+    if (z >= 50 && ax < 75) return rough(x, z, 0.3, 2) - 0.2;
+    const d = Math.hypot(Math.max(0, ax - 75), Math.max(0, -124 - z, z - 50));
+    const top = (z < -84 ? H - 6 : H) - 0.4;
+    return top * (1 - smooth(0, 150 + 30 * Math.sin(x * 0.03 + z * 0.02), d)) + rough(x, z, 1.6, 0.5) * smooth(0, 30, d) * (1 - smooth(120, 180, d)) - 0.2;
+  }, { cz: -37, rock: ['#6f675e', '#655e55'], cover: '#857c5c', steep: 0.82, band: 6 }));
   // The entrance gateway cut through the rock screen, its doorway framed and guarded
   f.add(at(trabeateGate(56, 11, 8, 5, 6.5, { m: ROCK, trim: ROCK_DARK, guardians: true }), 0, 0, 46));
   // High plinth with a frieze of elephants carrying the temple

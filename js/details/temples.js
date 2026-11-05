@@ -34,11 +34,12 @@ export function bhumijaRows(w, h, prof, rows = 9) {
 // A North Indian (Nagara) temple along the z axis: the sanctum and its curved spire at z = 0,
 // with halls (mandapas) stepping out towards +z. halls: [[width, wallHeight, roofTiers, 'pida' | 'dome']].
 // The plinth is `apron` wider than the sanctum, so a broad hall can stand on it with room for side doors.
+// friezeSpacing widens the spacing of the carved figures in the friezes (2 for phones: half as many).
 // The front hall opens through a porch and a stepped doorway at the head of the stairs; the first
 // hall has doors on both sides; a temple with no hall has its doorway in the sanctum.
 export function nagaraTemple({
   w = 12, h = 22, m, shade = m, spireM = m, plinth = 2, urus = 4, uruScale = 0.5,
-  halls = [[14, 8, 4]], prof = nagaraProfile, flagM = M.saffron, hallM = m, crown = null, apron = 8,
+  halls = [[14, 8, 4]], prof = nagaraProfile, flagM = M.saffron, hallM = m, crown = null, apron = 8, friezeSpacing = 1,
 } = {}) {
   const g = new THREE.Group();
   const sw = w * 1.15;
@@ -105,13 +106,13 @@ export function nagaraTemple({
   }
   e.add(at(steps(stairW, plinth, Math.max(3, Math.ceil(plinth / 0.42)), shade, 0.45), 0, 0, z + 6));
   g.add(mergeByMaterial(e));
-  if (placed.length) g.add(sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM));
+  if (placed.length) g.add(sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing));
   // A band of carved figures along each side of every hall, parted round the side doors.
   placed.forEach(({ hw, hh, zc }, i) => {
     const fh = Math.min(1.2, hh * 0.16), gapW = i === 0 && half - hw / 2 >= 1.4 ? Math.max(3, doorSize(hh * 0.85).w * 2.4) : 0;
     for (const s of [-1, 1]) for (const [z0, z1] of gapW ? [[zc - hw / 2 + 0.3, zc - gapW / 2], [zc + gapW / 2, zc + hw / 2 - 0.3]] : [[zc - hw / 2 + 0.3, zc + hw / 2 - 0.3]]) {
       if (z1 - z0 < 1.5) continue;
-      const fr = figureFrieze(z1 - z0, fh, hallM, { pitch: fh * 0.75, kinds: ['standing', 'dancer'] });
+      const fr = figureFrieze(z1 - z0, fh, hallM, { pitch: fh * 0.75 * friezeSpacing, kinds: ['standing', 'dancer'] });
       fr.position.set(s * hw / 2, plinth + hh * 0.62, (z0 + z1) / 2);
       fr.rotation.y = (s * Math.PI) / 2;
       g.add(fr);
@@ -126,13 +127,13 @@ export function nagaraTemple({
 // cornice under the spire; a niche on each outer face with an image in it, and smaller empty niches
 // either side on a large temple; and the ribbed amalaka stones (bhumi-amalakas) on the corners of
 // the spire, one at each of its storeys.
-function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM) {
+function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing = 1) {
   const d = new THREE.Group(), wh = w * 0.7, u = Math.max(0.12, w * 0.018);
   d.add(at(mouldings(sw, sw, [[0, 2 * u, 2 * u, shade], [2 * u, 1.5 * u, 1.4 * u], [3.5 * u, u, 0.9 * u, shade], [wh * 0.8, u, 0.7 * u], [wh - 1.6 * u, 1.6 * u, 2 * u, shade]], m), 0, plinth, 0));
   const nw = sw * 0.17, nh = wh * 0.42, ny = plinth + wh * 0.24;
   // A band of carved figures round the foot of the wall, under the niches.
   const fh = Math.min(1.1, wh * 0.2 - 4.6 * u);
-  if (fh > 0.45) for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) d.add(onFace(at(figureFrieze(sw - 0.6, fh, m, { pitch: fh * 0.75, kinds: ['standing', 'dancer', 'standing', 'musician'] }), 0, plinth + 4.6 * u, 0), a, sw / 2));
+  if (fh > 0.45) for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) d.add(onFace(at(figureFrieze(sw - 0.6, fh, m, { pitch: fh * 0.75 * friezeSpacing, kinds: ['standing', 'dancer', 'standing', 'musician'] }), 0, plinth + 4.6 * u, 0), a, sw / 2));
   for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) {
     d.add(onFace(at(templeNiche(nw, nh, m, { figure: guardian(nh * 0.88, m) }), 0, ny, 0), a, sw / 2));
     if (sw > 10) for (const s of [-1, 1]) d.add(onFace(at(templeNiche(nw * 0.6, nh * 0.62, m), 0, ny + nh * 0.12, 0), a, sw / 2, s * sw * 0.32));
@@ -209,7 +210,8 @@ export function wallWithGaps(axis, len, h, t, m, gaps = [], x = 0, z = 0) {
 // doorframes, its great doors standing open, then tapering storeys of painted stucco figures and
 // a barrel-vault crown.
 const paletteMats = new Map();
-export function gopuram(w, d, h, tiers, seed, palette = PAINT, { pitch = 2.1, kuduEvery = 3 } = {}) {
+// cheap: the simplest stucco figure ('stuccoLow'), for phones (js/detail.js).
+export function gopuram(w, d, h, tiers, seed, palette = PAINT, { pitch = 2.1, kuduEvery = 3, cheap = false } = {}) {
   if (!paletteMats.has(palette)) paletteMats.set(palette, palette.map((c) => mat(c, 0.75)));
   const pm = paletteMats.get(palette);
   const g = new THREE.Group(), R = rng(seed), figs = [], pilas = [], kudus = [], kutas = [];
@@ -290,7 +292,7 @@ export function gopuram(w, d, h, tiers, seed, palette = PAINT, { pitch = 2.1, ku
   for (let k = 0; k < nk; k++) g.add(at(kalash(Math.min(2.2, sr * 0.9), M.gild), -sl / 2 + (k + 0.5) * (sl / nk), y + sr * 1.45, 0));
   // The painted stucco figures, in two poses, each in a colour of the palette.
   const c = new THREE.Color();
-  for (const [pose, part] of [['stucco', 0], ['stuccoArm', 1]]) {
+  for (const [pose, part] of cheap ? [['stuccoLow', 0], ['stuccoLow', 1]] : [['stucco', 0], ['stuccoArm', 1]]) {
     const mine = figs.filter((_, k) => k % 2 === part), im = instances(figureGeo(pose), mine, mat('#ffffff', 0.75));
     mine.forEach((_, k) => im.setColorAt(k, c.set(palette[Math.floor(R() * palette.length)])));
     g.add(im);

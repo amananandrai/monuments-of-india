@@ -135,8 +135,15 @@ function figureParts(pose) {
 }
 // A cheap figure of a few blocks, for the hundreds of painted stucco figures on a gopuram: legs,
 // a tapering body, arms (one raised in 'stuccoArm'), a head and a crown.
-function stuccoParts(raised) {
+// 'stuccoLow': the same figure as a body, a head and a crown (a third of the triangles), for the
+// gopurams on phones (js/detail.js), where each figure is a few pixels tall.
+function stuccoParts(raised, low = false) {
   const g = new THREE.Group(), B = (w, h, d, x, y, z, rz = 0) => { const o = new THREE.Mesh(new THREE.BoxGeometry(w, h, d)); o.position.set(x, y, z); o.rotation.z = rz; g.add(o); };
+  if (low) {
+    B(2.2, 7.4, 0.8, 0, 3.7, 0);
+    g.add(new THREE.Mesh(new THREE.OctahedronGeometry(0.8)).translateY(8.3), new THREE.Mesh(new THREE.ConeGeometry(0.55, 1.4, 4)).translateY(9.4));
+    return g;
+  }
   B(1.9, 4.6, 0.8, 0, 2.3, 0);
   g.add(new THREE.Mesh(new THREE.CylinderGeometry(1.15, 0.95, 3, 4).rotateY(Math.PI / 4)).translateY(6));
   B(0.55, 3.2, 0.55, -1.45, 5.9, 0.1, -0.12);
@@ -147,7 +154,7 @@ function stuccoParts(raised) {
 }
 const figCache = new Map();
 export function figureGeo(pose = 'standing') {
-  if (!figCache.has(pose)) figCache.set(pose, bake(pose.startsWith('stucco') ? stuccoParts(pose === 'stuccoArm') : figureParts(pose)));
+  if (!figCache.has(pose)) figCache.set(pose, bake(pose.startsWith('stucco') ? stuccoParts(pose === 'stuccoArm', pose === 'stuccoLow') : figureParts(pose)));
   return figCache.get(pose);
 }
 // A single figure about h tall as a mesh facing +z on y = 0 (its width and depth follow h).
@@ -285,28 +292,31 @@ export function haraRow(len, s, m) {
 // carrying a round medallion of carving at its middle, eight thin spokes between them with a bead
 // each, and a hub of petals round a projecting axle cap. One geometry of radius r facing +z, its
 // back at z = 0.
-export function carvedWheelGeo(r) {
+export function carvedWheelGeo(r, { low = false } = {}) {
+  // low: the same wheel with rounder parts cut coarser and the rim's beads halved (about a third
+  // of the triangles), for phones (js/detail.js).
+  const S = low ? 24 : 48, beads = low ? 16 : 32, rs = low ? 8 : 16, b0 = low ? 5 : 8, b1 = low ? 3 : 5;
   const p = [], add = (geo, x = 0, y = 0, z = 0, rz = 0) => { geo = geo.index ? geo.toNonIndexed() : geo; geo.deleteAttribute('uv'); p.push(geo.rotateZ(rz).translate(x, y, z)); };
   const d = r * 0.3;
-  add(new THREE.CylinderGeometry(r, r, d, 48, 1, true).rotateX(Math.PI / 2), 0, 0, d / 2);
-  add(new THREE.TorusGeometry(r * 0.95, r * 0.07, 6, 48), 0, 0, d);
-  add(new THREE.TorusGeometry(r * 0.8, r * 0.05, 6, 48), 0, 0, d * 0.9);
-  for (let k = 0; k < 32; k++) { const a = (k / 32) * Math.PI * 2; add(new THREE.SphereGeometry(r * 0.035, 6, 4), Math.cos(a) * r * 0.875, Math.sin(a) * r * 0.875, d * 0.95); }
+  add(new THREE.CylinderGeometry(r, r, d, S, 1, true).rotateX(Math.PI / 2), 0, 0, d / 2);
+  add(new THREE.TorusGeometry(r * 0.95, r * 0.07, low ? 4 : 6, S), 0, 0, d);
+  add(new THREE.TorusGeometry(r * 0.8, r * 0.05, low ? 4 : 6, S), 0, 0, d * 0.9);
+  for (let k = 0; k < beads; k++) { const a = (k / beads) * Math.PI * 2; add(new THREE.SphereGeometry(r * (low ? 0.045 : 0.035), low ? 4 : 6, low ? 3 : 4), Math.cos(a) * r * 0.875, Math.sin(a) * r * 0.875, d * 0.95); }
   for (let k = 0; k < 16; k++) {
     const a = (k / 16) * Math.PI * 2, c = Math.cos(a), sn = Math.sin(a), mid = r * 0.52;
     if (k % 2 === 0) {
       add(new THREE.BoxGeometry(r * 0.15, r * 0.6, d * 0.7), c * mid, sn * mid, d * 0.5, a - Math.PI / 2);
-      add(new THREE.CylinderGeometry(r * 0.14, r * 0.14, d * 0.3, 16).rotateX(Math.PI / 2), c * mid, sn * mid, d * 0.95);
-      add(new THREE.TorusGeometry(r * 0.14, r * 0.025, 4, 16), c * mid, sn * mid, d * 1.1);
-      add(new THREE.SphereGeometry(r * 0.06, 8, 5), c * mid, sn * mid, d * 1.1);
+      add(new THREE.CylinderGeometry(r * 0.14, r * 0.14, d * 0.3, rs).rotateX(Math.PI / 2), c * mid, sn * mid, d * 0.95);
+      add(new THREE.TorusGeometry(r * 0.14, r * 0.025, low ? 3 : 4, rs), c * mid, sn * mid, d * 1.1);
+      add(new THREE.SphereGeometry(r * 0.06, b0, b1), c * mid, sn * mid, d * 1.1);
     } else {
       add(new THREE.BoxGeometry(r * 0.05, r * 0.6, d * 0.45), c * mid, sn * mid, d * 0.5, a - Math.PI / 2);
-      add(new THREE.SphereGeometry(r * 0.05, 8, 5), c * mid, sn * mid, d * 0.75);
+      add(new THREE.SphereGeometry(r * 0.05, b0, b1), c * mid, sn * mid, d * 0.75);
     }
   }
-  add(new THREE.CylinderGeometry(r * 0.22, r * 0.24, d * 1.2, 20).rotateX(Math.PI / 2), 0, 0, d * 0.6);
-  for (let k = 0; k < 10; k++) { const a = (k / 10) * Math.PI * 2, q = new THREE.SphereGeometry(r * 0.07, 6, 4).scale(1, 0.55, 0.5); add(q, Math.cos(a) * r * 0.16, Math.sin(a) * r * 0.16, d * 1.2, a - Math.PI / 2); }
-  add(new THREE.CylinderGeometry(r * 0.08, r * 0.1, d * 0.8, 12).rotateX(Math.PI / 2), 0, 0, d * 1.5);
+  add(new THREE.CylinderGeometry(r * 0.22, r * 0.24, d * 1.2, low ? 10 : 20).rotateX(Math.PI / 2), 0, 0, d * 0.6);
+  for (let k = 0; k < 10; k++) { const a = (k / 10) * Math.PI * 2, q = new THREE.SphereGeometry(r * 0.07, low ? 4 : 6, low ? 3 : 4).scale(1, 0.55, 0.5); add(q, Math.cos(a) * r * 0.16, Math.sin(a) * r * 0.16, d * 1.2, a - Math.PI / 2); }
+  add(new THREE.CylinderGeometry(r * 0.08, r * 0.1, d * 0.8, low ? 6 : 12).rotateX(Math.PI / 2), 0, 0, d * 1.5);
   const g = mergeGeometries(p);
   g.computeVertexNormals();
   return g;
@@ -357,10 +367,11 @@ export function yaliPillar(h, m, { rich = false } = {}) {
 // A Vijayanagara composite pillar h tall: a square shaft ringed by slender colonnettes, with carved
 // blocks at two levels and a bracket capital; with `figures`, a small dancer carved on every face of
 // each block (heavier: keep it for the pillars seen up close).
-export function clusterPillar(h, m, { figures = false } = {}) {
-  const g = new THREE.Group(), w = h * 0.12;
+// low: four colonnettes instead of eight, for phones (js/detail.js).
+export function clusterPillar(h, m, { figures = false, low = false } = {}) {
+  const g = new THREE.Group(), w = h * 0.12, nc = low ? 4 : 8;
   g.add(box(w * 1.5, h * 0.07, w * 1.5, m), box(w, h * 0.88, w, m, 0, h * 0.06));
-  for (let k = 0; k < 8; k++) { const a = (k / 8) * Math.PI * 2; g.add(cyl(w * 0.12, w * 0.12, h * 0.86, m, Math.sin(a) * w * 0.66, h * 0.06, Math.cos(a) * w * 0.66, 5)); }
+  for (let k = 0; k < nc; k++) { const a = (k / nc) * Math.PI * 2 + (low ? Math.PI / 4 : 0); g.add(cyl(w * 0.12, w * 0.12, h * 0.86, m, Math.sin(a) * w * 0.66, h * 0.06, Math.cos(a) * w * 0.66, low ? 4 : 5)); }
   for (const t of [0.22, 0.58]) {
     g.add(box(w * 1.35, h * 0.11, w * 1.35, figures ? m : frieze(m), 0, h * t));
     if (figures) for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) {

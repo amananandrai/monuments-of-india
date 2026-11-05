@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, box, at, rng, V, strut, inst, unitBox, sheet } from '../helpers.js';
+import { M, mat, box, at, rng, V, strut, inst, unitBox, sheet, surface } from '../helpers.js';
 import { addDetails } from '../details/bandra-worli-sea-link.js';
+import { heightField, rough, smooth } from '../details/terrain.js';
 
 const CONCRETE = mat('#c9c6bf', 0.85);
 const CABLE = mat('#e8e6e1', 0.5, 0.3);
@@ -21,8 +22,27 @@ export function buildBandraWorli() {
   // Deck on piers out to the approach viaducts
   f.add(box(520, 2.4, W, CONCRETE, 0, deckY - 2.4, 0), box(520, 0.3, W - 2, M.asphalt, 0, deckY, 0));
   for (const s of [-1, 1]) g.add(box(540, 2.4, W, CONCRETE, s * 530, deckY - 2.4, 0), box(540, 0.3, W - 2, M.asphalt, s * 530, deckY, 0));
+  // Mahim Bay: the city's shore runs behind the bridge (Worli to the south, Bandra to the north)
+  // and each end of the bridge comes ashore on a headland, the bay between. The land is one piece
+  // of ground 1.6 m above the sea out past the haze, its coast wandering, with rocks along it.
+  const coast = (x) => {
+    const t = smooth(760, 980, Math.abs(x));
+    return -630 + t * 880 + 22 * Math.sin(x * 0.011) + 12 * Math.sin(x * 0.037 + 1.3) + (1 - t) * 10 * Math.sin(x * 0.05);
+  };
+  g.add(heightField(14000, 7000, 320, (x, z) => {
+    const d = coast(x) - z;
+    return d < -6 ? -3 : d < 6 ? -3 + 4.6 * smooth(-6, 6, d) + rough(x, z, 0.4, 3) : 1.6 + rough(x, z, 0.15, 0.5);
+  }, { cz: -2800, rock: ['#6f6a5f', '#7d776b'], cover: '#8d8977', steep: 0.6, band: 2 }));
+  for (const s of [-1, 1]) {
+    // The viaduct carries on 250 m over the headland, then the ramp comes down to the road.
+    g.add(box(250, 2.4, W, CONCRETE, s * 925, deckY - 2.4, 0), box(250, 0.3, W - 2, M.asphalt, s * 925, deckY, 0));
+    const ramp = box(300, 1.2, W - 2, CONCRETE, 0, -0.6, 0);
+    ramp.position.set(s * 1200, (deckY + 1.6) / 2, 0);
+    ramp.rotation.z = s * Math.atan2(deckY - 1.6, 300) * -1;
+    g.add(ramp);
+  }
   const piers = [];
-  for (let x = -790; x <= 790; x += 50) if (Math.abs(x) > 40 && Math.abs(x - 600) > 30) piers.push([x, 0, 0, 4, deckY - 2.4, W * 0.6]);
+  for (let x = -1040; x <= 1040; x += 50) if (Math.abs(x) > 40 && Math.abs(x - 600) > 30) piers.push([x, 0, 0, 4, deckY - 2.4, W * 0.6]);
   g.add(inst(unitBox(), piers, CONCRETE));
   // Two cable-stayed spans: over the Bandra channel the 128 m main pylon with 250 m to either
   // side, and over the Worli channel a second, smaller inverted-Y pylon with 150 m to either side.
@@ -38,16 +58,18 @@ export function buildBandraWorli() {
   }
   // The Mumbai skyline across the bay
   const city = [];
-  // Towers along the Worli and Bandra shores, each a body of light concrete banded with glazing
-  // floor by floor, some crowned with a lift room.
-  const bands = [], tops = [];
+  // Towers along the Worli and Bandra shores, each a body of light concrete with a band of glazing
+  // on every floor, some crowned with a lift room. The glazing is drawn by the wall's surface
+  // ('facade' in js/surface.js), not modelled: seen from one to five kilometres off, modelled
+  // bands were thinner than a pixel and shimmered, and fought the walls for depth.
+  const tops = [];
   for (let i = 0; i < 70; i++) {
     const x = -900 + i * 26 + R() * 10, z = -700 - R() * 160, w = 18 + R() * 14, h = 30 + R() * 140, d = 18 + R() * 14;
     city.push([x, 0, z, w, h, d]);
-    for (let y = 4; y < h - 2; y += 3.4) bands.push([x, y, z, w + 0.2, 1.3, d + 0.2]);
     if (R() < 0.5) tops.push([x, h, z, w * 0.3, 4, d * 0.3]);
   }
-  g.add(inst(unitBox(), city, mat('#c9c6bf', 0.9)), inst(unitBox(), bands, mat('#5a6a78', 0.35, 0.3)), inst(unitBox(), tops, mat('#c9c6bf', 0.9)));
+  const wall = surface(mat('#c9c6bf', 0.9), 'facade');
+  g.add(inst(unitBox(), city, wall), inst(unitBox(), tops, mat('#c9c6bf', 0.9)));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.35, 0.22, 1.2], zoom: 0.55 };
 }

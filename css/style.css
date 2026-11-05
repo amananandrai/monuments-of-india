@@ -5,6 +5,7 @@
   --muted: #5a5f77;
   --line: rgba(28, 31, 48, 0.12);
   --panel: rgba(248, 249, 252, 0.86);
+  --glass: rgba(248, 249, 252, 0.5);
   --active: rgba(208, 106, 18, 0.12);
   --accent: #b8590c;
   --sky-top: #86afd4;
@@ -30,6 +31,7 @@
     --muted: #a0a3ba;
     --line: rgba(235, 234, 242, 0.12);
     --panel: rgba(18, 20, 33, 0.8);
+    --glass: rgba(18, 20, 33, 0.5);
     --active: rgba(242, 160, 61, 0.14);
     --accent: #f2a03d;
     --sky-top: #060a1a;
@@ -54,6 +56,7 @@
   --muted: #a0a3ba;
   --line: rgba(235, 234, 242, 0.12);
   --panel: rgba(18, 20, 33, 0.8);
+  --glass: rgba(18, 20, 33, 0.5);
   --active: rgba(242, 160, 61, 0.14);
   --accent: #f2a03d;
   --sky-top: #060a1a;
@@ -208,9 +211,11 @@ body {
   padding: 16px 18px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: var(--panel);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  /* Glass: the monument shows through, blurred and brightened enough for the text to stay legible. */
+  background: var(--glass);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 .p-toggle { display: none; }
 .plaque .eyebrow {

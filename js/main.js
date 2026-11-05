@@ -5,9 +5,10 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { nightState, V, box } from './helpers.js';
 import { attachSurface, surface, waterTime, landColor, reflection } from './surface.js';
-import { blendIntoLand } from './landscape.js';
+import { blendIntoLand, siteLand } from './landscape.js';
 import { separateCoplanar } from './coplanar.js';
 import { frameBox } from './framing.js';
 import { batchStatic } from './batch.js';
@@ -17,6 +18,10 @@ import { loadPhotoTextures } from './textures.js';
 import { MONUMENTS } from './data.js';
 import { createMap } from './map.js';
 import { warmSculpts } from './warmup.js';
+import { detail, chooseDetail } from './detail.js';
+
+// Full models on desktops and laptops, lighter ones on phones (js/detail.js).
+detail.level = chooseDetail();
 
 /* ---------- scene ---------- */
 const stage = document.getElementById('stage');
@@ -112,10 +117,11 @@ const ground = new THREE.Mesh(new THREE.CircleGeometry(1, 96), groundMat);
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
 // The ground sits behind everything in depth, so river sheets and lawns a few centimetres above it
-// always win, even kilometres away where the depth buffer is coarse.
+// always win, even kilometres away where the depth buffer is coarse: the offset is in steps of the
+// depth buffer, so it holds at any distance (4 steps were too few for a sea seen 5 km off).
 groundMat.polygonOffset = true;
-groundMat.polygonOffsetFactor = 1;
-groundMat.polygonOffsetUnits = 4;
+groundMat.polygonOffsetFactor = 2;
+groundMat.polygonOffsetUnits = 32;
 scene.add(ground);
 
 scene.fog = new THREE.Fog(0xffffff, 100, 1000);
@@ -123,7 +129,11 @@ const hemiLight = new THREE.HemisphereLight(0xffffff, 0x888888, 1);
 scene.add(hemiLight);
 const sun = new THREE.DirectionalLight(0xffffff, 3);
 sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
+// Desktops at full detail get a shadow map four times the size: crisp shadows under cornices,
+// brackets and carved edges. It is drawn once per monument, so the size costs memory, not frames.
+const hd = fancy && !detail.low;
+const shadowSize = hd ? Math.min(4096, renderer.capabilities.maxTextureSize) : 2048;
+sun.shadow.mapSize.set(shadowSize, shadowSize);
 scene.add(sun, sun.target);
 const flood = new THREE.DirectionalLight(0xffb36b, 0);
 scene.add(flood, flood.target);
@@ -154,7 +164,29 @@ composer.addPass(gtao);
 const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.7, 0.5, 0.9);
 bloom.enabled = false;
 composer.addPass(bloom);
+// Antialiasing on desktops at full detail: SMAA smooths the stair-stepped edges of railings,
+// spires and cornices. The scene is drawn into the composer's own target, which is not
+// multisampled, so without this pass there is no antialiasing at all.
+const smaa = new SMAAPass(1, 1);
+smaa.enabled = hd;
+composer.addPass(smaa);
 composer.addPass(new OutputPass());
+
+// The open land: the theme's colour, or, where a monument's site is green or shaped terrain, that
+// colour (siteLand in js/landscape.js), so a meadow or a forested hill does not end on a sandy
+// plain. At night the site's colour darkens as the theme's own land does. The ground disc, the
+// fade at the edges of lawns and pavements, the land band under the sky and the environment's
+// ground all take it.
+const DAY_GROUND = new THREE.Color('#b7a684'), themeGround = new THREE.Color(), land = new THREE.Color();
+let siteGround = null;
+function paintLand() {
+  land.copy(themeGround);
+  if (siteGround) land.setRGB(siteGround.r * themeGround.r / DAY_GROUND.r, siteGround.g * themeGround.g / DAY_GROUND.g, siteGround.b * themeGround.b / DAY_GROUND.b);
+  skyMat.uniforms.land.value.copy(land);
+  groundMat.color.copy(land);
+  landColor.value.copy(land);
+  envGroundMat.color.copy(land).multiplyScalar(0.8);
+}
 
 function applyTheme() {
   const cs = getComputedStyle(document.documentElement);
@@ -162,16 +194,14 @@ function applyTheme() {
   const night = cs.getPropertyValue('--scene-mode').trim() === 'night';
   skyMat.uniforms.top.value.copy(col('--sky-top'));
   skyMat.uniforms.horizon.value.copy(col('--sky-horizon'));
-  skyMat.uniforms.land.value.copy(col('--ground'));
   skyMat.uniforms.night.value = night ? 1 : 0;
-  groundMat.color.copy(col('--ground'));
-  landColor.value.copy(groundMat.color);
+  themeGround.copy(col('--ground'));
+  paintLand();
   scene.fog.color.copy(col('--sky-horizon'));
   nightState.on = night;
   nightState.objects.forEach((o) => { o.visible = night; });
   // Lamps and lanterns shown or hidden: their shadows change with them.
   renderer.shadowMap.needsUpdate = true;
-  envGroundMat.color.copy(col('--ground')).multiplyScalar(0.8);
   bloom.enabled = night;
   if (night) {
     hemiLight.color.set('#8796c8'); hemiLight.groundColor.set('#2a2630'); hemiLight.intensity = 0.3;
@@ -200,8 +230,10 @@ function getBuilt(i) {
   if (built.has(i)) return Promise.resolve(built.get(i));
   if (!loading.has(i)) loading.set(i, MONUMENTS[i].build().then((r) => {
     r.focus = r.focus || r.group;
-    // Fuller trees wherever the monument has triangles to spare.
-    upgradeTrees(r.group, r.budget || 300000);
+    // The colour of the land round the site, read before the seas are extended over it.
+    r.land = siteLand(r);
+    // Fuller trees wherever the monument has triangles to spare; plain ones on phones.
+    if (!detail.low) upgradeTrees(r.group, r.budget || 300000);
     naturalize(r.group);
     // Faces that share a plane get different depth offsets, so they don't flicker.
     separateCoplanar(r.group, 0.005);
@@ -341,6 +373,11 @@ async function select(i, instant = false) {
     home = computeHome(r);
   }
   setEnvironment(home);
+  if (!(r.land ? siteGround && siteGround.equals(r.land) : !siteGround)) {
+    siteGround = r.land;
+    paintLand();
+    updateEnvironment();
+  }
   flyTo(home, first || instant);
   renderInfo(MONUMENTS[i]);
   mirror = fancy ? r.mirror : null;
@@ -593,4 +630,4 @@ route();
 statusEl.hidden = true;
 requestAnimationFrame(loop);
 // On larger screens, mesh the slowest sculpted figures while the map sits idle (js/warmup.js).
-if (fancy) warmSculpts(() => mode === 'map' && loading.size === 0);
+if (fancy && !detail.low) warmSculpts(() => mode === 'map' && loading.size === 0);

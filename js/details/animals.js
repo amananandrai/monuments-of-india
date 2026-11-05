@@ -91,9 +91,10 @@ function elephantField() {
   ]);
   return { f: flatBase(body), lo: [-1.6, -0.05, -2.4], hi: [1.6, 4.05, 3.4] };
 }
-export function elephant(m, s = 1) {
+// coarse: meshed on a cell twice the size (a quarter of the triangles), as the horse's.
+export function elephant(m, s = 1, { coarse = false } = {}) {
   const g = new THREE.Group();
-  g.add(figure(sculpt('elephant', elephantField, { h: 0.08, reach: 0.6 }), m));
+  g.add(figure(sculpt(coarse ? 'elephant-coarse' : 'elephant', elephantField, { h: coarse ? 0.16 : 0.08, reach: 0.6 }), m));
   g.scale.setScalar(s);
   return g;
 }

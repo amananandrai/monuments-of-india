@@ -6,7 +6,7 @@ import * as THREE from 'three';
 // from the same pattern, weathering (grime near the ground, faint rain streaks) and a small
 // per-object tint so that repeated pieces don't look cloned. Water is its own kind: moving ripples
 // that tilt the normal, so the sky reflects in a broken, shifting band instead of a flat sheen.
-export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12 };
+export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13 };
 
 // Seconds since the page opened, shared by every water material; main.js advances it each frame.
 export const waterTime = { value: 0 };
@@ -169,6 +169,15 @@ const PATTERN = /* glsl */ `
   float big = sFbm(sp * 0.35), fine = sNoise(sp * 9.0);
   sTint = 0.9 + 0.18 * big + 0.08 * (fine - 0.5);
   sH = fine * 0.35 + big * 0.25;
+#elif SURF_KIND == 13
+  // A tower's walls: a band of glazing on every floor (3.4 m), box-filtered over the pixel, so a
+  // floor smaller than a pixel blends into an even tone instead of shimmering in bands. Roofs plain.
+  #define S_FLOOR(t) (floor(t) * 0.38 + clamp(fract(t) - 0.3, 0.0, 0.38))
+  float fy = sp.y / 3.4, fw = max(fwidth(fy), 1e-3);
+  float glaze = (S_FLOOR(fy + fw * 0.5) - S_FLOOR(fy - fw * 0.5)) / fw;
+  glaze *= step(1.2, sp.y) * (1.0 - step(0.5, abs(sn.y)));
+  sTint = mix(1.0, 0.5, glaze);
+  sRough = -0.4 * glaze;
 #elif SURF_KIND == 9
   // Broad patches of slightly darker and lighter water, as wind and depth vary, and wind slicks:
   // rough and glassy streaks a few hundred metres long that break up the sky's reflection.
@@ -227,9 +236,11 @@ const WATER_REFLECT = /* glsl */ `
   if (sReflOn > 0.5) {
     vec4 rc = sReflMatrix * vec4(vSurfPos, 1.0);
     vec3 rN = (vec4(normal, 0.0) * viewMatrix).xyz;
-    vec3 refl = texture2D(sReflMap, rc.xy / rc.w + rN.xz * 0.06).rgb;
+    vec3 refl = texture2D(sReflMap, rc.xy / max(rc.w, 1e-4) + rN.xz * 0.06).rgb;
     float rF = 0.02 + 0.98 * pow(1.0 - clamp(dot(normalize(vViewPosition), normal), 0.0, 1.0), 5.0);
-    outgoingLight = mix(outgoingLight, refl, rF * sKeep * 0.85);
+    // A reflection pixel that comes out as not-a-number shows as a black square (one did on the
+    // sea at the Bandra-Worli Sea Link); the water keeps its own colour there instead.
+    if (!any(isnan(refl)) && !any(isinf(refl))) outgoingLight = mix(outgoingLight, refl, rF * sKeep * 0.85);
   }
 #endif`;
 
@@ -283,7 +294,7 @@ function patch(shader, kind, bump, photo, wave, edge, reflect) {
       : `  normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`));
 }
 
-const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5 };
+const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0 };
 
 // Choose a surface for a material from its look, unless one was set with surface().
 function guess(m) {

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, V, mat, mesh, cyl, at, ellipsoid, capsule, tube, surface, face, fingers } from '../helpers.js';
 import { shivaBody, shivaSurface } from './figures.js';
+import { detail } from '../detail.js';
 import { snap } from '../sdf.js';
 import { lamp } from './doorways.js';
 import { mergeByMaterial } from './components.js';
@@ -142,7 +143,7 @@ export function mahayogiShiva() {
   g.add(apron);
 
   // The body as one carved skin, in Neelkanth stone
-  g.add(shivaBody(S));
+  g.add(shivaBody(S, { coarse: detail.low }));
 
   // Tiger-skin loincloth (krittivasa) round the hips, under a gold waistband (kamarbandh)
   const cloth = ellipsoid(5.2, 1.85, 3.95, T.tiger, 0, 7.6, 0.35);

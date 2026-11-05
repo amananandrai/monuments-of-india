@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, bell, pidaRoof, rng } from '../helpers.js';
 import { templeDoorway } from '../details/doorways.js';
-import { mergeByMaterial } from '../details/components.js';
+import { mergeByMaterial, frieze } from '../details/components.js';
 import { figure, instances, carvedWheelGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/konark-sun-temple.js';
+import { detail } from '../detail.js';
 
 export function buildKonark() {
   const K = M.khond, Kd = M.khondDark, g = new THREE.Group(), f = new THREE.Group();
@@ -18,7 +19,7 @@ export function buildKonark() {
     const z = zc - L / 2 + 4 + i * ((L - 8) / 11);
     for (const s of [-1, 1]) wl.push([s * 16.14, 2.4, z, 1, 1, 1, s * Math.PI / 2]);
   }
-  f.add(instances(carvedWheelGeo(1.95), wl, Kd));
+  f.add(instances(carvedWheelGeo(1.95, { low: detail.low }), wl, Kd));
   for (let k = 0; k < 4; k++) f.add(box(10, B - k * 1.5, 2, K, 0, 0, zf + 1 + k * 2));
   // Jagamohana (the surviving porch) with three tiers of pida roof
   const jz = zf - 16;
@@ -35,9 +36,11 @@ export function buildKonark() {
     if (i < 2) {
       const tw = w1 - 2.5;
       f.add(box(tw, 2.6, tw, Kd, 0, y, jz));
-      for (const a of FACES) for (const k of [-1, 0, 1]) {
-        // The musicians and dancers who stand on the terraces of the roof, drum or cymbals in hand.
-        const s = onFace(at(figure(2.2, K, k ? 'musician' : 'dancer'), 0, y, 0), a, tw / 2 + 0.4, k * tw / 3.2);
+      // The musicians and dancers who stand on the terraces of the roof, drum or cymbals in hand:
+      // five to a side on desktops, three on phones (js/detail.js).
+      const ks = detail.low ? [-1, 0, 1] : [-2, -1, 0, 1, 2], gap = detail.low ? tw / 3.2 : tw / 5.6;
+      for (const a of FACES) for (const k of ks) {
+        const s = onFace(at(figure(2.2, K, k % 2 ? 'musician' : 'dancer'), 0, y, 0), a, tw / 2 + 0.4, k * gap);
         s.position.z += jz;
         f.add(s);
       }
@@ -53,7 +56,17 @@ export function buildKonark() {
   f.add(box(26, 7, 26, Kd, 0, B, dz), box(18, 3, 13, K, -2, B + 7, dz + 3), box(9, 2, 8, Kd, 5, B + 10, dz - 4));
   const nz = zf + 26, R = rng(7);
   f.add(box(24, 4, 24, Kd, 0, 0, nz), box(22, 1, 22, K, 0, 4, nz));
-  for (const x of [-7.5, -2.5, 2.5, 7.5]) for (const z of [-7.5, -2.5, 2.5, 7.5]) f.add(cyl(0.6, 0.7, 2 + R() * 3, K, x, 5, nz + z, 8));
+  // Its pillars, broken off at different heights: on desktops square and carved (a moulded base,
+  // bands of carving, a dancer on the front and the back), on phones plain stumps (js/detail.js).
+  const pil = new THREE.Group();
+  for (const x of [-7.5, -2.5, 2.5, 7.5]) for (const z of [-7.5, -2.5, 2.5, 7.5]) {
+    const ph = 2 + R() * 3;
+    if (detail.low) { f.add(cyl(0.6, 0.7, ph, K, x, 5, nz + z, 8)); continue; }
+    pil.add(box(1.5, 0.45, 1.5, Kd, x, 5, nz + z), box(1.05, ph - 0.45, 1.05, frieze(K), x, 5.45, nz + z));
+    for (const t of [0.35, 0.75]) if (t * ph < ph - 0.3) pil.add(box(1.2, 0.28, 1.2, K, x, 5.45 + t * (ph - 0.45), nz + z));
+    if (ph > 2.6) for (const s of [-1, 1]) { const o = figure(1.4, K, s > 0 ? 'dancer' : 'musician'); o.position.set(x, 5.75, nz + z + s * 0.56); o.rotation.y = s > 0 ? 0 : Math.PI; pil.add(o); }
+  }
+  f.add(mergeByMaterial(pil));
   addDetails(f, g);
   // Framed on the monument itself, closer than its grounds would set.
   return { group: g, focus: f, view: [1.1, 0.38, 0.9], zoom: 0.68, budget: 500000 };

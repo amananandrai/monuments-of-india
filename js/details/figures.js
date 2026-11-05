@@ -88,7 +88,9 @@ function shivaField() {
   const navel = E([0, 10.2, 2.95], [0.25, 0.3, 0.3]);
   return { f: flatBase(carve(carve(anatomy, line, 0.15), navel, 0.15), 3.6, 0.2), lo: [-9.5, 3.4, -4.5], hi: [9.5, 21.4, 7.6] };
 }
-export const shivaBody = (m) => body('shiva', shivaField, 0.24, m);
+// coarse: meshed on a cell half as large again (under half the triangles, under half the time), for
+// phones (js/detail.js); kept under its own key, so both can be cached.
+export const shivaBody = (m, { coarse = false } = {}) => body(coarse ? 'shiva-coarse' : 'shiva', shivaField, coarse ? 0.36 : 0.24, m);
 // The Shiva's skin as a field, for laying ornaments on it.
 let shivaF = null;
 export const shivaSurface = () => (shivaF ||= shivaField().f);

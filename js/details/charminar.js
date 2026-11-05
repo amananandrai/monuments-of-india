@@ -102,6 +102,9 @@ export function addCharminarDetails(g, { b }) {
 // Charminar in the middle of Hyderabad's old city: the road that runs round it and the four streets
 // that leave it, and the bangle shops of the Laad Bazaar along the western street.
 export function addDetails(f, g) {
-  g.add(box(220, 0.1, 220, M.asphalt, 0, -0.06, 0));
+  // The ring road round the monument and the four streets leaving it (each fades out into the land
+  // at its far end, js/landscape.js), not a square of asphalt.
+  g.add(cyl(30, 30, 0.1, M.asphalt, 0, -0.06, 0, 48));
+  g.add(box(360, 0.1, 18, M.asphalt, 0, -0.07, 0), box(18, 0.1, 360, M.asphalt, 0, -0.08, 0));
   g.add(stalls([...along(8, [-40, -9], [-100, -9]).map(([x, z]) => [x, z, 0]), ...along(8, [-40, 9], [-100, 9]).map(([x, z]) => [x, z, Math.PI])], { goods: ['#d9342b', '#2f7a3f', '#e3b54a', '#7a3f8f', '#2f5d9a'] }));
 }

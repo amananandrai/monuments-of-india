@@ -4,6 +4,7 @@ import { pilasters, templeNiche, idol, panel, frieze, windowFrame, mergeByMateri
 import { figure } from './sculpture.js';
 import { doorFrame } from './doorways.js';
 import { trees, shrubs, asiBoard, scatter } from './realism.js';
+import { detail } from '../detail.js';
 
 // Ajanta, finer detail. From photographs of the caves: the facades of the chaitya halls 19 and 26
 // are carved round the great horseshoe window, which is outlined by a projecting horseshoe arch,
@@ -23,6 +24,9 @@ function architecture(f) {
       const w = 9, h = 12, ar = (w * 0.7) / 2, sy = y + h * 0.9 - ar;
       o.add(mesh(new THREE.TorusGeometry(ar + 0.35, 0.3, 6, 24, Math.PI * 1.3).rotateZ(-Math.PI * 0.15), ROCK_LIGHT, 0, sy, 1.15));
       for (let k = -3; k <= 3; k++) o.add(mesh(kg, ROCK_LIGHT, k * 1.1, y + h + 0.3, 1.12));
+      // On desktops (js/detail.js), a row of seated Buddhas in niches above them, as on the faces
+      // of Caves 19 and 26.
+      if (!detail.low) for (let k = -3; k <= 3; k++) o.add(at(templeNiche(0.7, 1.1, ROCK_LIGHT, { figure: figure(0.95, ROCK_LIGHT, 'seated'), crown: false }), k * 1.1, y + h + 1.15, 1.12));
       for (const s of [-1, 1]) {
         o.add(at(pilasters(1.1, 2, 0.3, h * 0.65, 0.12, ROCK_LIGHT), s * (ar + 1.15), y, 1.1));
         o.add(at(templeNiche(0.6, 1.8, ROCK_LIGHT, { figure: idol(1.5, ROCK_LIGHT), crown: false }), s * (ar + 1.15), y + h * 0.35, 1.12));
