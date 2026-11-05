@@ -8,7 +8,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { nightState, V, box } from './helpers.js';
 import { attachSurface, surface, waterTime, landColor, reflection } from './surface.js';
-import { blendIntoLand } from './landscape.js';
+import { blendIntoLand, siteLand } from './landscape.js';
 import { separateCoplanar } from './coplanar.js';
 import { frameBox } from './framing.js';
 import { batchStatic } from './batch.js';
@@ -172,22 +172,36 @@ smaa.enabled = hd;
 composer.addPass(smaa);
 composer.addPass(new OutputPass());
 
+// The open land: the theme's colour, or, where a monument's site is green or shaped terrain, that
+// colour (siteLand in js/landscape.js), so a meadow or a forested hill does not end on a sandy
+// plain. At night the site's colour darkens as the theme's own land does. The ground disc, the
+// fade at the edges of lawns and pavements, the land band under the sky and the environment's
+// ground all take it.
+const DAY_GROUND = new THREE.Color('#b7a684'), themeGround = new THREE.Color(), land = new THREE.Color();
+let siteGround = null;
+function paintLand() {
+  land.copy(themeGround);
+  if (siteGround) land.setRGB(siteGround.r * themeGround.r / DAY_GROUND.r, siteGround.g * themeGround.g / DAY_GROUND.g, siteGround.b * themeGround.b / DAY_GROUND.b);
+  skyMat.uniforms.land.value.copy(land);
+  groundMat.color.copy(land);
+  landColor.value.copy(land);
+  envGroundMat.color.copy(land).multiplyScalar(0.8);
+}
+
 function applyTheme() {
   const cs = getComputedStyle(document.documentElement);
   const col = (n) => new THREE.Color(cs.getPropertyValue(n).trim() || '#888');
   const night = cs.getPropertyValue('--scene-mode').trim() === 'night';
   skyMat.uniforms.top.value.copy(col('--sky-top'));
   skyMat.uniforms.horizon.value.copy(col('--sky-horizon'));
-  skyMat.uniforms.land.value.copy(col('--ground'));
   skyMat.uniforms.night.value = night ? 1 : 0;
-  groundMat.color.copy(col('--ground'));
-  landColor.value.copy(groundMat.color);
+  themeGround.copy(col('--ground'));
+  paintLand();
   scene.fog.color.copy(col('--sky-horizon'));
   nightState.on = night;
   nightState.objects.forEach((o) => { o.visible = night; });
   // Lamps and lanterns shown or hidden: their shadows change with them.
   renderer.shadowMap.needsUpdate = true;
-  envGroundMat.color.copy(col('--ground')).multiplyScalar(0.8);
   bloom.enabled = night;
   if (night) {
     hemiLight.color.set('#8796c8'); hemiLight.groundColor.set('#2a2630'); hemiLight.intensity = 0.3;
@@ -216,6 +230,8 @@ function getBuilt(i) {
   if (built.has(i)) return Promise.resolve(built.get(i));
   if (!loading.has(i)) loading.set(i, MONUMENTS[i].build().then((r) => {
     r.focus = r.focus || r.group;
+    // The colour of the land round the site, read before the seas are extended over it.
+    r.land = siteLand(r);
     // Fuller trees wherever the monument has triangles to spare; plain ones on phones.
     if (!detail.low) upgradeTrees(r.group, r.budget || 300000);
     naturalize(r.group);
@@ -357,6 +373,11 @@ async function select(i, instant = false) {
     home = computeHome(r);
   }
   setEnvironment(home);
+  if (!(r.land ? siteGround && siteGround.equals(r.land) : !siteGround)) {
+    siteGround = r.land;
+    paintLand();
+    updateEnvironment();
+  }
   flyTo(home, first || instant);
   renderInfo(MONUMENTS[i]);
   mirror = fancy ? r.mirror : null;

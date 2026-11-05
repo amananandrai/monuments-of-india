@@ -211,7 +211,10 @@ download.
   tinted to each model's own colour (`js/textures.js`).
 - **Landscape:** a sky with haze, distant hills, the sun and drifting clouds, and land that runs out to
   the horizon. Each monument's lawns and pavements fade into the land at their open edges, and seas
-  and long rivers carry on to the horizon (`js/landscape.js`).
+  and long rivers carry on to the horizon (`js/landscape.js`). Where a site's outer ground is
+  natural (a lawn, a meadow, a forested or rocky hill), the open land round it takes that colour
+  (`siteLand`), so a green site does not end on a sandy plain; paved and sandy sites keep the sandy
+  land.
 - **Water:** seas, rivers, lakes and pools have their own colours and moving ripples, and on desktop
   they reflect the monument.
 - **Nature and figures:** rocks, hills, mountains and trees are sculpted with noise
