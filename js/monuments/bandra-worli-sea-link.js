@@ -58,18 +58,18 @@ export function buildBandraWorli() {
   }
   // The Mumbai skyline across the bay
   const city = [];
-  // Towers along the Worli and Bandra shores, each a body of light concrete banded with glazing
-  // floor by floor, some crowned with a lift room.
-  const bands = [], tops = [];
+  // Towers along the Worli and Bandra shores, each a body of light concrete with a band of glazing
+  // on every floor, some crowned with a lift room. The glazing is drawn by the wall's surface
+  // ('facade' in js/surface.js), not modelled: seen from one to five kilometres off, modelled
+  // bands were thinner than a pixel and shimmered, and fought the walls for depth.
+  const tops = [];
   for (let i = 0; i < 70; i++) {
     const x = -900 + i * 26 + R() * 10, z = -700 - R() * 160, w = 18 + R() * 14, h = 30 + R() * 140, d = 18 + R() * 14;
     city.push([x, 0, z, w, h, d]);
-    // The glazing bands stand 0.5 m proud of the walls: these towers are seen from one to five
-    // kilometres off, where the depth buffer cannot tell 0.1 m apart and thinner bands flickered.
-    for (let y = 4; y < h - 2; y += 3.4) bands.push([x, y, z, w + 1, 1.3, d + 1]);
     if (R() < 0.5) tops.push([x, h, z, w * 0.3, 4, d * 0.3]);
   }
-  g.add(inst(unitBox(), city, mat('#c9c6bf', 0.9)), inst(unitBox(), bands, mat('#5a6a78', 0.35, 0.3)), inst(unitBox(), tops, mat('#c9c6bf', 0.9)));
+  const wall = surface(mat('#c9c6bf', 0.9), 'facade');
+  g.add(inst(unitBox(), city, wall), inst(unitBox(), tops, mat('#c9c6bf', 0.9)));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.35, 0.22, 1.2], zoom: 0.55 };
 }

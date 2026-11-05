@@ -13,9 +13,9 @@ import { attachSurface } from './surface.js';
 const TILES = 60;
 const EDGES = [['x', 'min'], ['x', 'max'], ['z', 'min'], ['z', 'max']];
 
-// Is most of the strip just outside this edge covered by something else on the ground?
-function covered(b, axis, side, others) {
-  const out = side === 'min' ? b.min[axis] - 1.5 : b.max[axis] + 1.5;
+// Is most of the strip just outside this edge (at `gap` metres) covered by something else on the ground?
+function covered(b, axis, side, others, gap = 1.5) {
+  const out = side === 'min' ? b.min[axis] - gap : b.max[axis] + gap;
   const along = axis === 'x' ? 'z' : 'x';
   let hits = 0;
   for (let k = 1; k <= 9; k++) {
@@ -155,7 +155,11 @@ export function blendIntoLand(r) {
     // Fade margins for the edges left open, from the piece's own size across that edge: 15% for
     // ground, up to 400 m; 4% for water, so a shore stays close to the quay or the ghat beside it.
     const share = sheet ? 0.04 : 0.15;
-    const fade = EDGES.map(([a, s]) => (Math.abs(b[s][a]) >= FAR || size[a] < 8 || covered(b, a, s, others) ? 0 : Math.min(size[a] * share, 400)));
+    // A pavement or lawn edge counts as met only where what meets it runs on for a fair way (a tenth
+    // of the piece, up to 30 m): a plaza on a lawn just a little wider than itself would otherwise
+    // keep its hard edge while the thin rim of lawn fades into the land, a square left on the plain.
+    const met = (a, s) => covered(b, a, s, others) && (sheet || covered(b, a, s, others, Math.min(30, Math.max(1.5, size[a] * 0.1))));
+    const fade = EDGES.map(([a, s]) => (Math.abs(b[s][a]) >= FAR || size[a] < 8 || met(a, s) ? 0 : Math.min(size[a] * share, 400)));
     if (!fade.some(Boolean)) continue;
     const m = attachSurface(o.material.clone());
     m.userData.patch = { bounds: [b.min.x, b.min.z, b.max.x, b.max.z], fade };
