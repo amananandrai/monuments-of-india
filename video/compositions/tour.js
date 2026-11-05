@@ -13,6 +13,7 @@ import { naturalize } from '../site/js/naturalize.js';
 import { blendIntoLand } from '../site/js/landscape.js';
 import { loadPhotoTextures } from '../site/js/textures.js';
 import { MONUMENTS } from '../site/js/data.js';
+import { BUILDERS } from '../site/js/builders.js';
 
 const W = 1920, H = 1080, SEG = 5, SWEEP = THREE.MathUtils.degToRad(28);
 // The site's day palette (css/style.css).
@@ -114,7 +115,8 @@ composer.addPass(new OutputPass());
 const built = new Map();
 function getBuilt(i) {
   if (!built.has(i)) {
-    const r = MONUMENTS[i].build();
+    // Built at once from the builders imported up front (the site's build() loads them on demand).
+    const r = BUILDERS[MONUMENTS[i].fn]();
     r.focus = r.focus || r.group;
     naturalize(r.group);
     separateCoplanar(r.group, 0.005);

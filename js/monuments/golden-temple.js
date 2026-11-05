@@ -60,5 +60,6 @@ export function buildGoldenTemple() {
   f.add(at(finial(3), 0, top + 2.6 + 10, 0));
   addDetails(f, g);
   // Seen across the pool from the south-east, the Harmandir Sahib in front and the Akal Takht behind.
-  return { group: g, focus: f, view: [0.85, 0.34, 1.0], zoom: 0.8 };
+  // Hundreds of separate parts: merged into a few draw calls once built (js/batch.js).
+  return { group: g, focus: f, view: [0.85, 0.34, 1.0], zoom: 0.8, batch: true };
 }

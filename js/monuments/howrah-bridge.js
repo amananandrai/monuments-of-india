@@ -65,5 +65,6 @@ export function buildHowrah() {
   g.add(sheet(3600, 3600, M.river, 0, 0.1, 0));
   addDetails(t, g);
   // Framed on the monument itself, closer than its grounds would set.
-  return { group: g, focus: t, view: [0.45, 0.28, 1.2], zoom: 0.8 };
+  // Hundreds of separate parts: merged into a few draw calls once built (js/batch.js).
+  return { group: g, focus: t, view: [0.45, 0.28, 1.2], zoom: 0.8, batch: true };
 }

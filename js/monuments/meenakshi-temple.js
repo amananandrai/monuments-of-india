@@ -57,5 +57,6 @@ export function buildMeenakshi() {
   g.add(box(40, 7, 40, Gr, 82, 0, 84));
   addDetails(g, g);
   // Framed on the monument itself, closer than its grounds would set.
-  return { group: g, view: [0.75, 0.42, 1.2], zoom: 0.62, budget: 500000 };
+  // Hundreds of separate parts: merged into a few draw calls once built (js/batch.js).
+  return { group: g, view: [0.75, 0.42, 1.2], zoom: 0.62, budget: 500000, batch: true };
 }
