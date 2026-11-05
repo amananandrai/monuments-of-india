@@ -1,6 +1,8 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, hemi, inst, unitBox, unitCyl, archWall, barrelVault, surface, curvedBand } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, hemi, lathe, inst, unitBox, unitCyl, archWall, barrelVault, surface, curvedBand } from '../helpers.js';
 import { addDetails } from '../details/ajanta-caves.js';
+import { figure, figureFrieze } from '../details/sculpture.js';
+import { detail } from '../detail.js';
 
 const ROCK = mat('#7a6c5c', 0.95);
 const ROCK_LIGHT = mat('#968672', 0.95);
@@ -17,11 +19,38 @@ function chaitya(w, h, d) {
   g.add(at(archWall(w + 1.4, h, 1.1, w * 0.7, h * 0.9, false, ROCK_LIGHT), 0, 0, 0.55));
   g.add(box(w * 0.86, 0.35, d, ROCK, 0, 0, -d / 2));
   g.add(at(barrelVault(w * 0.42, d, ROCK_LIGHT), 0, h * 0.55, -d / 2));
+  const ph = h * 0.62, sz = -d + 2.6;
   for (const s of [-1, 1]) {
     g.add(box(0.45, h * 0.7, d, ROCK, s * w * 0.4, 0, -d / 2));
-    for (let k = 0; k < 6; k++) g.add(cyl(0.22, 0.26, h * 0.62, ROCK_LIGHT, s * w * 0.28, 0.35, -1.6 - k * (d / 7), 8));
+    for (let k = 0; k < 6; k++) {
+      const x = s * w * 0.28, z = -1.6 - k * (d / 7);
+      if (detail.low) { g.add(cyl(0.22, 0.26, ph, ROCK_LIGHT, x, 0.35, z, 8)); continue; }
+      // Carved pillars: a square base, a round shaft girdled by a band of carving, and a bulbous
+      // cushion capital (amalaka) under a square abacus.
+      g.add(box(0.62, 0.55, 0.62, ROCK_LIGHT, x, 0.35, z), cyl(0.22, 0.25, ph - 1.35, ROCK_LIGHT, x, 0.9, z, 14));
+      g.add(cyl(0.27, 0.27, 0.5, FRAME, x, 0.35 + ph * 0.45, z, 14));
+      g.add(at(lathe([[0.2, 0], [0.38, 0.18], [0.42, 0.34], [0.32, 0.5], [0.24, 0.56]], ROCK_LIGHT, 16), x, 0.35 + ph - 0.8, z), box(0.7, 0.24, 0.7, ROCK_LIGHT, x, 0.35 + ph - 0.24, z));
+    }
   }
-  g.add(cyl(1.5, 1.7, 3, ROCK_LIGHT, 0, 0.35, -d + 2.6, 20), at(hemi(1.5, ROCK_LIGHT, 20), 0, 3.35, -d + 2.6), box(0.9, 0.7, 0.9, ROCK_LIGHT, 0, 4.85, -d + 2.6));
+  g.add(cyl(1.5, 1.7, 3, ROCK_LIGHT, 0, 0.35, sz, 20), at(hemi(1.5, ROCK_LIGHT, 20), 0, 3.35, sz), box(0.9, 0.7, 0.9, ROCK_LIGHT, 0, 4.85, sz));
+  if (!detail.low) {
+    // On desktops (js/detail.js): the stone ribs of the vault, cut in imitation of timber; a band of
+    // seated Buddhas along each side over the colonnade (the triforium); and on the stupa, a seated
+    // Buddha in an arched niche on its front, as in Cave 26, and the stacked umbrellas over its
+    // harmika.
+    const vr = w * 0.42, vy = h * 0.55;
+    for (let z = -1.3; z > -d + 0.8; z -= 1.3) g.add(mesh(new THREE.TorusGeometry(vr - 0.08, 0.1, 4, 20, Math.PI), ROCK_LIGHT, 0, vy, z));
+    for (const s of [-1, 1]) {
+      const fr = at(figureFrieze(d - 4, 1.1, ROCK_LIGHT, { pitch: 0.95, kinds: ['seated'] }), s * (w * 0.4 - 0.235), 0.35 + ph + 0.25, -d / 2 - 0.6);
+      fr.rotation.y = -s * Math.PI / 2;
+      g.add(fr);
+    }
+    g.add(at(figure(1.9, ROCK_LIGHT, 'seated'), 0, 0.55, sz + 1.62), box(1.5, 0.2, 0.35, ROCK_LIGHT, 0, 0.35, sz + 1.6));
+    g.add(mesh(new THREE.TorusGeometry(0.85, 0.09, 4, 16, Math.PI), ROCK_LIGHT, 0, 2.0, sz + 1.72));
+    for (const sx of [-1, 1]) g.add(box(0.14, 1.65, 0.14, ROCK_LIGHT, sx * 0.85, 0.35, sz + 1.72));
+    g.add(cyl(0.07, 0.07, 2.2, ROCK_LIGHT, 0, 5.55, sz, 6));
+    [[1.05, 5.75], [0.8, 6.35], [0.55, 6.95]].forEach(([r, y]) => g.add(cyl(r, r * 0.9, 0.16, ROCK_LIGHT, 0, y, sz, 20)));
+  }
   // The carved beam between the doorway and the great window above it.
   g.add(box(w * 0.66, 0.5, 0.3, FRAME, 0, h * 0.42, 0.55));
   return g;
@@ -37,7 +66,10 @@ function vihara(w, W, h, d) {
   for (const k of [-1, 1]) g.add(cyl(0.3, 0.32, h, ROCK_LIGHT, k * W * 0.1, 0, -d / 2 - d * 0.3, 8), cyl(0.3, 0.32, h, ROCK_LIGHT, k * W * 0.1, 0, -d / 2 + d * 0.3, 8));
   for (const s of [-1, 1]) for (let k = 0; k < 4; k++) g.add(box(0.1, 2, 1.2, DARK, s * (W / 2 - 0.08), 0, -3.2 - k * (d - 5) / 3.5));
   for (const x of [-5, -2.8, 2.8, 5]) g.add(box(1.2, 2, 0.1, DARK, x, 0, -d + 0.08));
-  g.add(box(2.6, 3.4, 0.1, DARK, 0, 0, -d + 0.08), box(1.4, 1.3, 1, ROCK_LIGHT, 0, 0, -d + 0.9), at(hemi(0.55, ROCK_LIGHT, 12), 0, 1.3, -d + 0.9));
+  g.add(box(2.6, 3.4, 0.1, DARK, 0, 0, -d + 0.08));
+  // The shrine's Buddha, seated on a throne; on phones a simple block (js/detail.js).
+  if (detail.low) g.add(box(1.4, 1.3, 1, ROCK_LIGHT, 0, 0, -d + 0.9), at(hemi(0.55, ROCK_LIGHT, 12), 0, 1.3, -d + 0.9));
+  else g.add(box(1.8, 0.7, 1.1, ROCK_LIGHT, 0, 0, -d + 0.75), at(figure(2.3, ROCK_LIGHT, 'seated'), 0, 0.7, -d + 0.75));
   return g;
 }
 

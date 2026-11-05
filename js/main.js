@@ -5,6 +5,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { nightState, V, box } from './helpers.js';
 import { attachSurface, surface, waterTime, landColor, reflection } from './surface.js';
 import { blendIntoLand } from './landscape.js';
@@ -127,7 +128,11 @@ const hemiLight = new THREE.HemisphereLight(0xffffff, 0x888888, 1);
 scene.add(hemiLight);
 const sun = new THREE.DirectionalLight(0xffffff, 3);
 sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
+// Desktops at full detail get a shadow map four times the size: crisp shadows under cornices,
+// brackets and carved edges. It is drawn once per monument, so the size costs memory, not frames.
+const hd = fancy && !detail.low;
+const shadowSize = hd ? Math.min(4096, renderer.capabilities.maxTextureSize) : 2048;
+sun.shadow.mapSize.set(shadowSize, shadowSize);
 scene.add(sun, sun.target);
 const flood = new THREE.DirectionalLight(0xffb36b, 0);
 scene.add(flood, flood.target);
@@ -158,6 +163,12 @@ composer.addPass(gtao);
 const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.7, 0.5, 0.9);
 bloom.enabled = false;
 composer.addPass(bloom);
+// Antialiasing on desktops at full detail: SMAA smooths the stair-stepped edges of railings,
+// spires and cornices. The scene is drawn into the composer's own target, which is not
+// multisampled, so without this pass there is no antialiasing at all.
+const smaa = new SMAAPass(1, 1);
+smaa.enabled = hd;
+composer.addPass(smaa);
 composer.addPass(new OutputPass());
 
 function applyTheme() {

@@ -143,3 +143,32 @@ size; the plain trees are the plainest difference.
 - Nageshwar's low build is still 271k: the rest of the Shiva (locks, malas, the serpent, the
   trishul) could be cut coarser on low.
 - A setting in the page to switch level (it needs the models rebuilt, so a reload).
+
+# Desktop: antialiasing, sharper shadows, and more carving
+
+With phones on their own lighter build, desktops at full detail get more:
+
+- **Antialiasing.** An SMAA pass in the composer (`js/main.js`) smooths the stair-stepped edges of
+  railings, trusses, spires and cornices. The scene had no antialiasing at all before: it is drawn
+  into the composer's own target, which is not multisampled. The pass adds two or three draw calls
+  a frame. Phones skip it.
+- **Shadows.** The shadow map is 4096 square on desktops at full detail (2048 before, and still on
+  phones), for crisp shadows under cornices, brackets and carving. Since shadows are drawn once
+  per monument, the larger map costs memory, not frame time.
+- **Konark** (418k to 476k triangles, of 500k), on desktops only:
+  - the three Surya images of green chlorite in niches on the sanctum's south, west and north
+    walls, over the seven horses of his chariot;
+  - a band of carved figures (dancers, musicians, attendants) round the Jagamohana;
+  - the Natamandira's pillars square and carved (a moulded base, bands of carving, a dancer on
+    the front and the back) in place of plain stumps;
+  - five musicians and dancers to a side on each roof terrace, not three.
+- **Ajanta** (94k to 138k triangles for the caves themselves; 218k to 262k with the trees), on
+  desktops only:
+  - in the chaitya halls 19 and 26, the stone ribs of the vault, carved pillars with cushion
+    capitals, a band of seated Buddhas over each colonnade, and on the stupa a seated Buddha in an
+    arched niche and three umbrellas over the harmika;
+  - a row of seated Buddhas in niches across each chaitya's facade, above the kudu arches;
+  - in the vihara (Cave 11), the shrine's Buddha seated on its throne.
+
+Phones (low detail) build Konark and Ajanta exactly as before. Both pass the camera and flicker
+audit unchanged.

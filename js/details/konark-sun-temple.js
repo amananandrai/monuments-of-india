@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { M, at, onFace, mesh, box } from '../helpers.js';
+import { M, mat, at, onFace, mesh, box } from '../helpers.js';
 import { mouldings, frieze, templeNiche, idol, mergeByMaterial } from './components.js';
+import { figure, figureFrieze, instances, horseGeo } from './sculpture.js';
 import { lion, elephant, horse } from './animals.js';
 import { trees, shrubs, asiBoard, scatter, along } from './realism.js';
 import { detail } from '../detail.js';
@@ -21,6 +22,7 @@ function architecture(f) {
   d.add(j);
   mergeByMaterial(d);
   f.add(d);
+  if (!detail.low) carving(f);
   horses(f, zc + L / 2);
   const nz = zc + L / 2 + 26;
   for (const s of [-1, 1]) {
@@ -29,6 +31,27 @@ function architecture(f) {
     l.position.set(s * 6, 4.6 + 2.6, nz + 13.8);
     f.add(e, l);
   }
+}
+
+// On desktops (js/detail.js), the carving that fills Konark's walls:
+// - the three Surya images of green chlorite on the outer walls of the sanctum (now only its ruined
+//   base), on the south, west and north, each in a deep niche over the seven horses of his chariot;
+// - a band of figures (dancers, musicians, attendants) right round the Jagamohana's arms, between
+//   the niches and the cornice.
+const CHLORITE = mat('#3f4a44', 0.45);
+function carving(f) {
+  const K = M.khond, Kd = M.khondDark, L = 76, zc = -6, B = 6, jz = zc + L / 2 - 16, dz = zc - L / 2 + 16;
+  const s = at(new THREE.Group(), 0, B, dz);
+  for (const a of [Math.PI / 2, Math.PI, -Math.PI / 2]) {
+    s.add(onFace(at(templeNiche(2.6, 4.4, Kd, { depth: 0.9, figure: figure(3.8, CHLORITE, 'standing') }), 0, 1.0, 0), a, 13.02));
+    s.add(onFace(at(instances(horseGeo(), Array.from({ length: 7 }, (_, k) => [-1.5 + k * 0.5, 0, 0.35, 0.42, 0.55, 0.7, 0]), CHLORITE), 0, 0.25, 0), a, 13.02));
+  }
+  f.add(s);
+  const j = at(new THREE.Group(), 0, B, jz);
+  for (const a of [0, Math.PI / 2, -Math.PI / 2, Math.PI]) {
+    j.add(onFace(at(figureFrieze(15.2, 1.5, K, { pitch: 1.25, kinds: ['dancer', 'musician', 'standing', 'mirror', 'dancer', 'chauri'] }), 0, 7.6, 0), a, 15.03));
+  }
+  f.add(j);
 }
 
 // The seven horses that draw the chariot, four to the south of the stairs and three to the north,
