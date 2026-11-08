@@ -505,6 +505,66 @@ export function chamferPrism(s, c, h, m) {
   return mesh(geo, m);
 }
 
+// The plan of a building that steps in and out along its length, mirrored about x = 0, as [x, z]
+// points running anticlockwise in the x-z plane (up the +x side from back to front). profile: [[z, halfWidth],
+// ...] from back to front, each half-width holding until the next z; the last entry gives only
+// the front z. grow: the plan is grown by this much all round (each block grown, then joined).
+// cut: each outer corner is cut back in `notches` square steps of this size, the offsets
+// (rathas) of a temple's plinth; a corner whose edges are too short to take them is left square.
+export function steppedPlan(profile, { grow = 0, cut = 0, notches = 2 } = {}) {
+  const blocks = profile.slice(0, -1).map(([z, w], i) => [z - grow, profile[i + 1][0] + grow, w + grow]);
+  const zs = [...new Set(blocks.flatMap(([a, b]) => [a, b]))].sort((a, b) => a - b), runs = [];
+  for (let i = 0; i + 1 < zs.length; i++) {
+    const m = (zs[i] + zs[i + 1]) / 2, w = Math.max(...blocks.filter(([a, b]) => a <= m && m <= b).map((b) => b[2]));
+    if (runs.length && runs[runs.length - 1][2] === w) runs[runs.length - 1][1] = zs[i + 1];
+    else runs.push([zs[i], zs[i + 1], w]);
+  }
+  const pts = [];
+  for (const [a, b, w] of runs) pts.push([w, a], [w, b]);
+  for (let i = runs.length - 1; i >= 0; i--) pts.push([-runs[i][2], runs[i][1]], [-runs[i][2], runs[i][0]]);
+  if (!cut) return pts;
+  const n = pts.length, L = cut * notches, dir = (a, b) => { const l = Math.hypot(b[0] - a[0], b[1] - a[1]); return [(b[0] - a[0]) / l, (b[1] - a[1]) / l, l]; };
+  const convex = pts.map((p, i) => { const d1 = dir(pts[(i + n - 1) % n], p), d2 = dir(p, pts[(i + 1) % n]); return d1[0] * d2[1] - d1[1] * d2[0] > 0; });
+  const fits = (i, j) => dir(pts[i], pts[j])[2] >= L * (convex[i] + convex[j]) + 0.3;
+  const out = [];
+  pts.forEach((p, i) => {
+    const h = (i + n - 1) % n, j = (i + 1) % n;
+    if (!convex[i] || !fits(h, i) || !fits(i, j)) { out.push(p); return; }
+    const d1 = dir(pts[h], p), d2 = dir(p, pts[j]);
+    let x = p[0] - d1[0] * L, z = p[1] - d1[1] * L;
+    out.push([x, z]);
+    for (let k = 0; k < notches; k++) {
+      x += d2[0] * cut; z += d2[1] * cut; out.push([x, z]);
+      x += d1[0] * cut; z += d1[1] * cut; out.push([x, z]);
+    }
+  });
+  return out;
+}
+
+// A plan of right-angled corners ([x, z] points, the same way round as steppedPlan) moved out by d.
+export function offsetPlan(pts, d) {
+  const n = pts.length;
+  return pts.map((p, i) => {
+    const a = pts[(i + n - 1) % n], b = pts[(i + 1) % n];
+    const e1 = [p[0] - a[0], p[1] - a[1]], e2 = [b[0] - p[0], b[1] - p[1]], l1 = Math.hypot(...e1), l2 = Math.hypot(...e2);
+    return [p[0] + d * (e1[1] / l1 + e2[1] / l2), p[1] - d * (e1[0] / l1 + e2[0] / l2)];
+  });
+}
+
+const planShape = (pts) => new THREE.Shape(pts.map(([x, z]) => new THREE.Vector2(x, -z)));
+const extrudeUp = (sh, h) => new THREE.ExtrudeGeometry(sh, { depth: h, bevelEnabled: false }).rotateX(-Math.PI / 2);
+
+// A block standing on a plan ([x, z] points), from y to y + h.
+export function planPrism(pts, y, h, m) { return mesh(extrudeUp(planShape(pts), h), m, 0, y, 0); }
+
+// A moulded course h high at y, standing `proud` out from every face of a block on this plan, and
+// 2 mm clear of it, as beltCourse for a rectangle.
+export function planBand(pts, y, h, proud, m) {
+  const sh = planShape(offsetPlan(pts, proud));
+  sh.holes.push(new THREE.Path(offsetPlan(pts, 0.002).map(([x, z]) => new THREE.Vector2(x, -z))));
+  return mesh(extrudeUp(sh, h), m, 0, y, 0);
+}
+
 // A star-shaped prism (Hoysala stellate plan), base at y = 0.
 export function starPrism(n, rO, rI, h, m) {
   const sh = new THREE.Shape();
