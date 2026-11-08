@@ -45,11 +45,12 @@ export function bhumijaRows(w, h, prof, rows = 9) {
 // to a step, side walls; foot, mid, top for its guardians); null for plain steps.
 // sanctumStoreys: storeys of the sanctum's wall under the spire. Each one above the ground storey
 // (w * 0.42 high) has a balcony ledge with railings, a niche with an image on each face and an eave.
-// userData.sy is the height of the spire's foot.
+// userData.sy is the height of the spire's foot. spireBands: the spire is cut into this many
+// storeys by a moulded band at each (a Maha Meru spire's floors); 0 for none.
 export function nagaraTemple({
   w = 12, h = 22, m, shade = m, spireM = m, plinth = 2, urus = 4, uruScale = 0.5,
   halls = [[14, 8, 4]], prof = nagaraProfile, flagM = M.saffron, hallM = m, crown = null, apron = 8, friezeSpacing = 1,
-  base = { tiers: 2, cut: 0.8 }, stair = {}, sanctumStoreys = 1,
+  base = { tiers: 2, cut: 0.8 }, stair = {}, sanctumStoreys = 1, spireBands = 0,
 } = {}) {
   const g = new THREE.Group();
   const sw = w * 1.15;
@@ -58,6 +59,11 @@ export function nagaraTemple({
   const sy = plinth + wh;
   const spire = shikhara(w, h, spireM, prof, 16);
   g.add(at(spire, 0, sy, 0), at(crown || flag(Math.max(3, w * 0.45), flagM), 0, sy + spire.userData.top - 0.5, 0));
+  // Bands round the spire at each storey, following its cross-shaped plan.
+  for (let k = 1; k < spireBands; k++) {
+    const t = k / spireBands, wt = w * prof(t), y = sy + t * h, bh = Math.max(0.3, h * 0.014);
+    g.add(box(wt * 0.9, bh, wt * 0.9, spireM, 0, y, 0), box(wt * 1.05, bh, wt * 0.66, spireM, 0, y, 0), box(wt * 0.66, bh, wt * 1.05, spireM, 0, y, 0));
+  }
   const ring = (n, dist, scale, hs) => {
     for (let k = 0; k < n; k++) {
       const a = (k / n) * Math.PI * 2 + (n === 4 ? 0 : Math.PI / n);
@@ -133,6 +139,7 @@ export function nagaraTemple({
     const ds = doorSize(w * 0.7);
     e.add(at(templeDoorway(ds.w, ds.h, { m, guardians: w >= 7, hood: true }), 0, plinth, sw / 2));
   }
+  if (stair?.width) stairW = stair.width;
   if (stair) e.add(at(grandStair(plinth, stairW, shade, m, { cheek: Math.min(0.9, 0.25 + plinth * 0.25), ...stair }), 0, 0, z + 6));
   else e.add(at(steps(stairW, plinth, Math.max(3, Math.ceil(plinth / 0.42)), shade, 0.45), 0, 0, z + 6));
   g.add(mergeByMaterial(e));

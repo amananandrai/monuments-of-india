@@ -106,11 +106,49 @@ mosques, church, stupas and monasteries are not temples of this kind.
 ## Progress
 
 - Phase 0, steps 1 to 3: done. `sanctumStoreys` was added in Phase 1, with Mahakaleshwar.
-- Phase 1, Somnath: done. Three-tier plinth, and both halls in two storeys with an upper gallery of
-  balconies. The stair has no guardians: none could be confirmed from sources.
-- Phase 1, Mahakaleshwar: done. The sanctum is three storeys (`sanctumStoreys: 3`), each upper one
-  with a balcony, niches and an eave, under the Bhumija spire. Its halls stay single storey: no
-  source was found for upper floors on them.
+- Phase 1, Somnath: done. Three-tier plinth, both halls in two storeys with an upper gallery of
+  balconies, the spire banded into seven storeys (`spireBands: 7`, after Sompura's note of a Maha
+  Meru Prasad of seven floors) and a 12 m east stair (`stair.width`). No guardians on the stair:
+  none could be confirmed from sources.
+- Phase 1, Mahakaleshwar: done. Of its three levels the lowest is underground, so the model has two
+  storeys above ground (`sanctumStoreys: 2`), the upper one with a balcony, niches and an eave.
+  Its halls stay single storey.
+
+## From the review of all 42 sacred models
+
+A later review compared every sacred model with photographs and published sources. Its notes on
+the Ram Mandir describe the model before this work: the 32-step stair, the three-storey halls and
+the stepped plinth are now built. It changes this plan as follows.
+
+Dropped from the plan:
+- **Ranakpur:** the exterior massing already matches the chaumukha. The 1,444 pillars are an
+  interior, so no extra storey.
+- **Brihadeeswara:** its 13 talas already match the vimana, and visitors cross a courtyard, not a
+  temple stair.
+- **Omkareshwar:** on hold. The review reads the island photograph as a cluster of white spires
+  over the Narmada ghat, with one shrine standing in for the group, and does not support five
+  storeys.
+- **Small temples:** don't use a Ram-style plinth on them. The shared default keeps each temple's
+  plinth height and only divides it into tiers that follow the plan. Kashi Vishwanath (inside its
+  courtyard), Bhimashankar and Nageshwar can switch it off (`base: null`) if it reads as too much.
+
+Added to the plan:
+
+| Temple | Next change from the photographs |
+| --- | --- |
+| Ram Mandir | The Singh Dwar gate at the head of the stair, the parkota (enclosure wall) and its corner shrines to Surya, Bhagwati, Ganesh and Shiva |
+| Jagannath | The Baisi Pahacha: 22 steps, each about 21 m wide, 1.8 m deep and 0.2 m high. The tiger, elephant and horse gates and the outer Meghanada wall |
+| Kedarnath | Broad grey steps from the platform up to the door; the tower cut into horizontal stone courses |
+| Kailasa | The two stair flights beside the sabha-mandapa, up to the doorway 8 m above the court |
+| Vittala | Steps on the east of each hall, and up to the stone chariot |
+| Dilwara | A short flight up to the door, keeping the exterior plain |
+| Palitana, Gommateshwara | A longer zigzag pilgrim stair, so that the climb reads |
+| Baidyanath | Base mouldings and bhumi-amalakas on the ten satellite spires |
+| Tirumala | The gold Ananda Nilayam as a Dravidian vimana with a stupi |
+| Meenakshi | The Golden Lotus Tank stepped on all four sides |
+| Mallikarjuna | Dravidian talas on the two vimanas |
+| Parshvanath | The balcony rail (kakshasana) that Kandariya has |
+| Kashi Vishwanath, Grishneshwar | Bands on the gold spire; deeper ledges on the five tiers |
 
 ## Order of work
 
