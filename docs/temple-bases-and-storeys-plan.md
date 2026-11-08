@@ -103,6 +103,13 @@ mosques, church, stupas and monasteries are not temples of this kind.
   `docs/monument-details.md` (Checking a change): the default view, the front stair and one
   corner of the plinth. Count the triangles before committing.
 
+## Progress
+
+- Phase 0, steps 1 to 3: done, except `sanctumStoreys`. That option moves to Phase 1, together with
+  Mahakaleshwar and Omkareshwar, the only temples that need it.
+- Phase 1, Somnath: done. Three-tier plinth, and both halls in two storeys with an upper gallery of
+  balconies. The stair has no guardians: none could be confirmed from sources.
+
 ## Order of work
 
 1. Phase 0, steps 1 and 2: move the shared parts and add the options. The Ram Mandir must look
