@@ -152,7 +152,7 @@ function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing =
 
 // A carved temple pillar h tall: a square base block, an octagonal shaft girdled by two carved
 // bands, a cushion and a square capital.
-function carvedPillar(h, m) {
+export function carvedPillar(h, m) {
   const g = new THREE.Group();
   g.add(box(0.95, h * 0.12, 0.95, m), cyl(0.38, 0.42, h * 0.76, m, 0, h * 0.12, 0, 8));
   for (const t of [0.34, 0.6]) g.add(cyl(0.47, 0.47, h * 0.07, frieze(m), 0, h * t, 0, 8));

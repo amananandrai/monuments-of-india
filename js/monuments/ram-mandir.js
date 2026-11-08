@@ -1,10 +1,9 @@
 import * as THREE from 'three';
-import { M, mesh, box, at, onFace, FACES, shikhara, flag, nagaraProfile, planPrism } from '../helpers.js';
-import { mandap } from '../details/temples.js';
+import { M, mesh, box, at, planPrism } from '../helpers.js';
 import { mergeByMaterial } from '../details/components.js';
 import { statue } from '../details/sculpture.js';
 import { elephant, lion } from '../details/animals.js';
-import { addDetails, plinthPlan } from '../details/ram-mandir.js';
+import { addDetails, plinthPlan, hall, sanctum, porch, HALLS, SANCTUM, P } from '../details/ram-mandir.js';
 
 // The stair up the east face to the Singh Dwar: 32 steps rising P from the ground to the top of
 // the plinth at z0, in two flights of 16 with a landing between, walled at both sides. Elephants
@@ -35,28 +34,16 @@ function stair(P, z0, m, sh) {
 export function buildRamMandir() {
   const m = M.pink, sh = M.pinkShade, g = new THREE.Group();
   // The plinth in three tiers, each following the plan's offsets, and the stair at its front.
-  const P = 6.5;
   g.add(planPrism(plinthPlan(4), 0, 2, sh), planPrism(plinthPlan(2), 2, 2, m), planPrism(plinthPlan(0), 4, P - 4, sh));
   g.add(stair(P, 44, m, sh));
-  // Garbhagriha with the main shikhara and four attached minor spires
-  const gz = -26;
-  g.add(box(22, 12, 22, m, 0, P, gz));
-  g.add(box(24, 1.2, 24, sh, 0, P + 12, gz));
-  const main = shikhara(19, 30, m, nagaraProfile, 18);
-  g.add(at(main, 0, P + 13.2, gz));
-  g.add(at(flag(7, M.saffron), 0, P + 13.2 + main.userData.top - 1, gz));
-  for (const a of FACES) {
-    const u = onFace(at(shikhara(8, 14, m, nagaraProfile, 10), 0, P + 13.2, 0), a, 9.5);
-    u.position.z += gz;
-    g.add(u);
-  }
-  // The halls, with doorways on the faces that stand free: the front hall's front and sides, the
-  // middle hall's sides, and the outer face of each side hall.
-  const side = [Math.PI / 2, -Math.PI / 2];
-  g.add(at(mandap(24, 10, 8, m, sh), 0, P, -3));
-  g.add(at(mandap(18, 9, 7, m, sh, side), 0, P, 17));
-  g.add(at(mandap(14, 8, 6, m, sh, [0, ...side]), 0, P, 33));
-  for (const x of [-17, 17]) g.add(at(mandap(10, 8, 5, m, sh, [Math.sign(x) * Math.PI / 2]), x, P, -3));
+  // The sanctum and the five halls, three storeys each (js/details/ram-mandir.js), and the porch.
+  const [sx, sz, sw] = SANCTUM, foot = [[sx, sz, sw / 2], ...HALLS.map(([x, z, w]) => [x, z, w / 2])];
+  g.add(at(sanctum(m, sh), sx, P, sz));
+  HALLS.forEach(([x, z, w, roofs, doors], i) => {
+    const others = foot.filter((_, k) => k !== i + 1);
+    g.add(at(hall(w, roofs, m, sh, { doors, others, x0: x, z0: z }), x, P, z));
+  });
+  g.add(at(porch(m, sh), 0, P, 0));
   addDetails(g, g);
-  return { group: g, view: [0.95, 0.38, 1.15] };
+  return { group: g, view: [0.95, 0.38, 1.15], batch: true };
 }

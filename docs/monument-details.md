@@ -255,7 +255,8 @@ These now replace the blocks. Figures stand in the wall bands at Kandariya, Pars
 Grishneshwar, and in Ramappa's brackets. Elephants carry Akshardham's and Kailasa's plinths, and
 musicians stand on Konark's roof. Painted figures, pilasters, kudus and kutas cover the gopurams,
 and kutas and shalas sit on the vimanas. Every Nagara sanctum and hall has a figure frieze, and
-the Ram Mandir's halls have carved pillars. Vittala at Hampi has clustered and yali pillars,
+the Ram Mandir's halls rise three storeys of carved pillars with cusped arches, eaves and balcony
+railings, under stepped roofs set with small spires. Vittala at Hampi has clustered and yali pillars,
 plinth friezes, shrine parapets and a carved sanctum, chariot and gopuram. The colonial buildings
 have Corinthian orders, entablatures, statues, dome ribs, the lion and tiger at CSMT, the IHS at
 Bom Jesus and the Gajalakshmi at Mysore.
