@@ -1,9 +1,7 @@
 import * as THREE from 'three';
-import { M, mesh, box, at, onFace, flag, mat, FACES, nagaraProfile, steppedPlan, planBand, shikhara, pidaRoof, bell, kalash } from '../helpers.js';
-import { mouldings, frieze, templeNiche, idol, placeAll, mergeByMaterial, chhajja, railing } from './components.js';
-import { carvedPillar } from './temples.js';
-import { templeDoorway } from './doorways.js';
-import { miniSpireGeo } from './sculpture.js';
+import { M, mesh, box, at, onFace, flag, mat, FACES, nagaraProfile, steppedPlan, planBand, shikhara, pidaRoof, kalash } from '../helpers.js';
+import { mouldings, frieze, templeNiche, idol, mergeByMaterial, chhajja, cuspedArchGeo } from './components.js';
+import { carvedPillar, storeyedHall } from './temples.js';
 import { trees, lampPosts, garland, along } from './realism.js';
 
 // The Ram Mandir, from the published design and photographs and renderings of the finished
@@ -29,6 +27,8 @@ export const plinthPlan = (grow = 0) => steppedPlan(PLAN, { grow, cut: 1.2 });
 // Gudh (Sabha) mandap before the sanctum, the Kirtan and Prarthana mandaps at its sides, the Rang
 // mandap and the Nritya mandap at the entrance.
 const SIDE = [Math.PI / 2, -Math.PI / 2];
+// Each hall is three storeys of F (js/details/temples.js, storeyedHall).
+export const hall = (w, roofs, m, sh, opts) => storeyedHall(w, roofs, m, sh, { floors: 3, F, ...opts });
 export const HALLS = [
   [0, -3, 24, 6, []],
   [-17, -3, 10, 4, [-Math.PI / 2]],
@@ -36,83 +36,6 @@ export const HALLS = [
   [0, 17, 18, 5, SIDE],
   [0, 33, 14, 4, [0, ...SIDE]],
 ];
-
-// A cusped (five-lobed) arch between two pillars: a panel aw wide hanging h down from y = 0, the
-// opening cut in its lower edge, t thick and centred on z = 0. Shared by every bay of a width.
-const archCache = new Map();
-function cuspedArchGeo(aw, h, t = 0.3) {
-  const key = `${aw.toFixed(3)}:${h}`;
-  if (!archCache.has(key)) {
-    const r = aw / 2, rise = h * 0.72, N = 30, s = new THREE.Shape();
-    s.moveTo(-r, -h); s.lineTo(-r, 0); s.lineTo(r, 0); s.lineTo(r, -h);
-    // Round from the right springing over the crown to the left: the radius dips to a cusp at each
-    // fifth of the way and swells into a lobe between.
-    for (let i = 0; i <= N; i++) {
-      const a = (i / N) * Math.PI, q = r * (1 - 0.14 * (1 - Math.abs(Math.sin(5 * a))));
-      s.lineTo(q * Math.cos(a), -h + (q / r) * rise * Math.sin(a));
-    }
-    s.closePath();
-    archCache.set(key, new THREE.ExtrudeGeometry(s, { depth: t, bevelEnabled: false }).translate(0, 0, -t / 2));
-  }
-  return archCache.get(key);
-}
-
-// Small spires on the corners of each tier of a stepped roof made by pidaRoof(w0, w1, n, u).
-function tierSpires(w0, w1, n, u, y0, s = 0.75) {
-  const list = [];
-  for (let i = 0; i < n; i++) {
-    const w = w0 + (w1 - w0) * (i / Math.max(1, n - 1)), c = w / 2 - 0.4;
-    for (const [sx, sz] of [[-1, -1], [-1, 1], [1, -1], [1, 1]]) list.push([sx * c, y0 + i * u * 1.55 + u, sz * c, 0, s]);
-  }
-  return list;
-}
-
-// A hall of three storeys, w square, its foot at y = 0. On each floor a gallery of carved pillars
-// round a solid core, a cusped arch in each bay, the beam and floor above, and a chhajja round the
-// outside; a balustrade between the pillars of the upper floors. Doors open on the ground floor on
-// the faces in `doors`. Where the hall meets another (`others`: [x, z, half-width] in the frame
-// that x0, z0 place this hall in), it has no pillars, arches or balustrade. Roofed by a spire of
-// `roofs` stepped tiers with a bell stone and kalash.
-export function hall(w, roofs, m, sh, { doors = [], others = [], x0 = 0, z0 = 0 } = {}) {
-  const g = new THREE.Group(), carved = new THREE.Group(), arches = [];
-  const n = Math.max(3, Math.round(w / 2.6)), step = (w - 1.2) / n, e = w / 2 - 0.6, ph = F - 1;
-  const free = (x, z) => !others.some(([ox, oz, oh]) => Math.abs(x0 + x - ox) < oh + 1 && Math.abs(z0 + z - oz) < oh + 1);
-  const isDoor = (a) => doors.some((d) => Math.abs(Math.atan2(Math.sin(d - a), Math.cos(d - a))) < 0.01);
-  const dh = Math.min(4.4, Math.max(1.6, F * 0.55));
-  const gap = templeDoorway(dh * 0.5, dh, { m, guardians: false }).userData.outerW / 2 + 0.3;
-  const on = (a, t) => [Math.sin(a) * e + Math.cos(a) * t, Math.cos(a) * e - Math.sin(a) * t];
-  g.add(box(w - 3, 3 * F, w - 3, sh));
-  for (let f = 0; f < 3; f++) {
-    const y = f * F, seen = new Set();
-    for (const a of FACES) {
-      const door = f === 0 && isDoor(a);
-      for (let i = 0; i <= n; i++) {
-        const t = -e + i * step, [x, z] = on(a, t), key = `${x.toFixed(2)},${z.toFixed(2)}`;
-        if (!seen.has(key) && free(x, z) && !(door && Math.abs(t) < gap)) carved.add(at(carvedPillar(ph, m), x, y, z));
-        seen.add(key);
-        if (i === n) continue;
-        const tm = t + step / 2, [bx, bz] = on(a, tm);
-        if (!free(bx, bz) || (door && Math.abs(tm) < gap)) continue;
-        arches.push([bx, y + ph, bz, a]);
-        if (f) carved.add(onFace(at(railing(step - 0.95, 1, 0.2, m, 2), 0, y, 0), a, e, tm));
-      }
-    }
-    g.add(box(w - 0.2, 1, w - 0.2, m, 0, y + ph));
-    for (const a of FACES) carved.add(onFace(at(chhajja(w + 2.2, 1.1, 0.45, 0.14, m), 0, y + F - 0.2, 0), a, w / 2 - 0.1));
-  }
-  carved.add(placeAll(cuspedArchGeo(step - 0.9, 1.5), arches, m));
-  for (const a of doors) carved.add(onFace(templeDoorway(dh * 0.5, dh, { m, guardians: false }), a, (w - 3) / 2));
-  // The roof: a parapet course, the stepped spire with its corner spires, bell stone and kalash.
-  const y = 3 * F + 0.7, w0 = w * 0.9, w1 = w * 0.36, u = 0.85;
-  g.add(box(w + 0.4, 0.7, w + 0.4, sh, 0, 3 * F));
-  const roof = pidaRoof(w0, w1, roofs, u, m, sh);
-  g.add(at(roof, 0, y, 0));
-  carved.add(placeAll(miniSpireGeo(), tierSpires(w0, w1, roofs, u, y, 0.9 + w * 0.02), m));
-  const ry = y + roof.userData.top;
-  g.add(at(bell(w * 0.15, m), 0, ry, 0), at(kalash(w * 0.1), 0, ry + w * 0.15, 0));
-  g.add(mergeByMaterial(carved));
-  return g;
-}
 
 // The sanctum (garbhagriha), 22 square and three storeys, its foot at y = 0: moulded courses and a
 // chhajja at every floor, niches with images on the three faces that stand free, and the main

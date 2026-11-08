@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { mat, mesh, box, cyl, at, surface, pidaRoof, bell, kalash } from '../helpers.js';
 import { D, frieze, rosette, bracketGeo, chhajja } from './components.js';
 import { guardian } from './figures.js';
+import { elephant, lion } from './animals.js';
+import { statue } from './sculpture.js';
 
 export { guardian };
 
@@ -84,6 +86,42 @@ export function doorLeaves(w, h, { open = 0, studs = true, m = TIMBER, inward = 
 export function steps(width, rise, n, m, tread = 0.42) {
   const g = new THREE.Group();
   for (let k = 0; k < n; k++) g.add(box(width, (rise * (n - k)) / (n + 1), tread, m, 0, 0, tread * (k + 0.5)));
+  return g;
+}
+
+// A grand stair up to a plinth `rise` high whose front face is at z = 0, running out towards +z:
+// n steps (about 0.2 m each) `width` wide, treads `tread` deep, split by a landing `landing` deep
+// at half height (none when landing is 0), between side walls `cheek` above the line of the steps.
+// Guardians, each pair scaled by `guardScale`: elephants on pedestals beside the foot (foot:
+// 'elephant'), lions on the side walls at the landing (mid: 'lion') and standing figures on the
+// plinth either side of the head (top: true). Treads in m, side walls and pedestals in sh.
+// userData.run is the length of the stair along z.
+export function grandStair(rise, width, m, sh, {
+  n = Math.max(3, Math.round(rise / 0.2)), tread = 0.36, landing = rise > 3 ? 2.4 : 0, cheek = 1,
+  foot = null, mid = null, top = false, guardScale = 0.55,
+} = {}) {
+  const g = new THREE.Group(), W = width, h = rise / n, half = landing ? Math.round(n / 2) : 0;
+  let z = 0;
+  for (let k = 1; k < n; k++) {
+    const d = k === half ? landing : tread;
+    g.add(box(W, rise - k * h, d, m, 0, 0, z + d / 2));
+    z += d;
+  }
+  const zE = z, z1 = half ? (half - 1) * tread : 0, z2 = z1 + landing, yL = rise - half * h + cheek;
+  // The side walls, drawn in (z, y) and turned to run along z.
+  const prof = [[-0.01, 0], [-0.01, rise + cheek], ...(half ? [[z1, yL], [z2, yL]] : []), [zE, cheek], [zE, 0]];
+  const cg = new THREE.ExtrudeGeometry(new THREE.Shape(prof.map(([a, b]) => new THREE.Vector2(a, b))), { depth: 1.2, bevelEnabled: false }).rotateY(-Math.PI / 2);
+  const gs = guardScale;
+  for (const s of [-1, 1]) {
+    g.add(mesh(cg, sh, s > 0 ? W / 2 + 1.19 : -W / 2 + 0.01, 0, 0));
+    if (foot === 'elephant') {
+      const x = s * (W / 2 + 1.2 + 2.9 * gs), ez = zE - 3.45 * gs;
+      g.add(box(4.4 * gs, 1, 6.9 * gs, sh, x, 0, ez), at(elephant(m, gs), x, 1, ez));
+    }
+    if (mid === 'lion' && half) g.add(at(lion(gs, m), s * (W / 2 + 0.6), yL, (z1 + z2) / 2));
+    if (top) g.add(at(statue(4.4 * gs, m), s * (W / 2 + 1.2 + 2.55 * gs), rise, -2.5 * gs));
+  }
+  g.userData.run = zE;
   return g;
 }
 
