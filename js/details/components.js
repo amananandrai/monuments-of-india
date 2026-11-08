@@ -698,3 +698,23 @@ export function medallion(R, m) {
   g.add(at(mesh(new THREE.SphereGeometry(R * 0.3, 8, 4, 0, Math.PI * 2, 0, Math.PI / 2).rotateX(Math.PI / 2), m), 0, 0, 0.04));
   return g;
 }
+
+// A cusped (five-lobed) arch between two pillars: a panel aw wide hanging h down from y = 0, the
+// opening cut in its lower edge, t thick and centred on z = 0. Shared by every bay of a width.
+const archCache = new Map();
+export function cuspedArchGeo(aw, h, t = 0.3) {
+  const key = `${aw.toFixed(3)}:${h}`;
+  if (!archCache.has(key)) {
+    const r = aw / 2, rise = h * 0.72, N = 30, s = new THREE.Shape();
+    s.moveTo(-r, -h); s.lineTo(-r, 0); s.lineTo(r, 0); s.lineTo(r, -h);
+    // Round from the right springing over the crown to the left: the radius dips to a cusp at each
+    // fifth of the way and swells into a lobe between.
+    for (let i = 0; i <= N; i++) {
+      const a = (i / N) * Math.PI, q = r * (1 - 0.14 * (1 - Math.abs(Math.sin(5 * a))));
+      s.lineTo(q * Math.cos(a), -h + (q / r) * rise * Math.sin(a));
+    }
+    s.closePath();
+    archCache.set(key, new THREE.ExtrudeGeometry(s, { depth: t, bevelEnabled: false }).translate(0, 0, -t / 2));
+  }
+  return archCache.get(key);
+}

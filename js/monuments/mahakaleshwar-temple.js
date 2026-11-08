@@ -19,11 +19,15 @@ export function buildMahakaleshwar() {
   f.add(inst(unitCyl(8), cols, SHADE));
   for (const s of [-1, 1]) f.add(box(92, 0.8, 4, SHADE, 0, 5, s * 50), box(4, 0.8, 102, SHADE, s * 45, 5, 0));
   f.add(box(26, 1, 22, SHADE, -28, 0, -14), box(22, 1.1, 18, M.water, -28, 0, -14));
-  // The three-level temple under its tall Bhumija spire, crowned by a gilded kalash and the flag.
+  // The temple has three levels, one shrine above another: Mahakaleshwar in the lowest, which is
+  // below ground, Omkareshwar above it and Nagchandreshwar at the top. Above ground that is two
+  // storeys, the upper one with a balcony round it. Over them rises the tall Bhumija spire, crowned
+  // by a gilded kalash and the flag.
   const crown = new THREE.Group().add(kalash(2.6, M.gold), at(flag(4, M.saffron), 0, 2.6, 0));
   const prof = (t) => 1 - 0.6 * Math.pow(t, 1.45);
-  f.add(at(nagaraTemple({ w: 12, h: 26, m: STONE, shade: SHADE, spireM: SPIRE, plinth: 2, urus: 0, halls: [[14, 8, 5], [12, 7, 4]], crown, prof }), 10, 0, -20));
-  f.add(at(instances(miniSpireGeo(), bhumijaRows(12, 26, prof), SPIRE), 10, 2 + 12 * 0.7, -20));
+  const t = nagaraTemple({ w: 12, h: 26, m: STONE, shade: SHADE, spireM: SPIRE, plinth: 2, urus: 0, halls: [[14, 8, 5], [12, 7, 4]], crown, prof, sanctumStoreys: 2 });
+  f.add(at(t, 10, 0, -20));
+  f.add(at(instances(miniSpireGeo(), bhumijaRows(12, 26, prof), SPIRE), 10, t.userData.sy, -20));
   // The old town of Ujjain hems the temple in: houses three and four storeys high along the
   // streets outside the courtyard, an opening left for the approach.
   const R = rng(5), hs = [];

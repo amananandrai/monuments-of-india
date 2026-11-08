@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, rng, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox } from '../helpers.js';
-import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol } from './components.js';
-import { templeDoorway, templePorch, steps, doorFrame, doorLeaves, guardian } from './doorways.js';
+import { M, mat, mesh, box, cyl, at, onFace, FACES, rng, steppedPlan, planPrism, planBand, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox } from '../helpers.js';
+import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol, placeAll, chhajja, railing, cuspedArchGeo } from './components.js';
+import { templeDoorway, templePorch, steps, grandStair, doorFrame, doorLeaves, guardian } from './doorways.js';
 import { lion } from './animals.js';
-import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze } from './sculpture.js';
+import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze, miniSpireGeo } from './sculpture.js';
 
 // The shared temple builders, with real entrances: a Nagara temple's front porch, doorway and
 // side doors, a mandapa's doors, and a passage through the base of a gopuram. Moved here from
@@ -37,16 +37,33 @@ export function bhumijaRows(w, h, prof, rows = 9) {
 // friezeSpacing widens the spacing of the carved figures in the friezes (2 for phones: half as many).
 // The front hall opens through a porch and a stepped doorway at the head of the stairs; the first
 // hall has doors on both sides; a temple with no hall has its doorway in the sanctum.
+// halls: [width, height, roof tiers, 'pida' or 'dome', storeys]. A hall of more than one storey is
+// built by storeyedHall: floors of pillared galleries with cusped arches and balconies.
+// base: the plinth follows the plan, apron / 2 out from the sanctum and each hall, in `tiers` tiers
+// each standing further out, its outer corners cut back in two steps of `cut`, with carved bands;
+// null for a single rectangular block. stair: options for the grandStair up the front (about 0.2 m
+// to a step, side walls; foot, mid, top for its guardians); null for plain steps.
+// sanctumStoreys: storeys of the sanctum's wall under the spire. Each one above the ground storey
+// (w * 0.42 high) has a balcony ledge with railings, a niche with an image on each face and an eave.
+// userData.sy is the height of the spire's foot. spireBands: the spire is cut into this many
+// storeys by a moulded band at each (a Maha Meru spire's floors); 0 for none.
 export function nagaraTemple({
   w = 12, h = 22, m, shade = m, spireM = m, plinth = 2, urus = 4, uruScale = 0.5,
   halls = [[14, 8, 4]], prof = nagaraProfile, flagM = M.saffron, hallM = m, crown = null, apron = 8, friezeSpacing = 1,
+  base = { tiers: 2, cut: 0.8 }, stair = {}, sanctumStoreys = 1, spireBands = 0,
 } = {}) {
   const g = new THREE.Group();
   const sw = w * 1.15;
-  g.add(box(sw, w * 0.7, sw, m, 0, plinth, 0));
-  const sy = plinth + w * 0.7;
+  const wh = w * 0.7 + (sanctumStoreys - 1) * w * 0.42;
+  g.add(box(sw, wh, sw, m, 0, plinth, 0));
+  const sy = plinth + wh;
   const spire = shikhara(w, h, spireM, prof, 16);
   g.add(at(spire, 0, sy, 0), at(crown || flag(Math.max(3, w * 0.45), flagM), 0, sy + spire.userData.top - 0.5, 0));
+  // Bands round the spire at each storey, following its cross-shaped plan.
+  for (let k = 1; k < spireBands; k++) {
+    const t = k / spireBands, wt = w * prof(t), y = sy + t * h, bh = Math.max(0.3, h * 0.014);
+    g.add(box(wt * 0.9, bh, wt * 0.9, spireM, 0, y, 0), box(wt * 1.05, bh, wt * 0.66, spireM, 0, y, 0), box(wt * 0.66, bh, wt * 1.05, spireM, 0, y, 0));
+  }
   const ring = (n, dist, scale, hs) => {
     for (let k = 0; k < n; k++) {
       const a = (k / n) * Math.PI * 2 + (n === 4 ? 0 : Math.PI / n);
@@ -57,9 +74,10 @@ export function nagaraTemple({
   if (urus >= 8) ring(4, w * 0.72, uruScale * 0.62, 0.38);
   let z = sw / 2;
   const placed = [];
-  for (const [hw, hh, tiers, kind = 'pida'] of halls) {
+  for (const [hw, hh, tiers, kind = 'pida', storeys = 1] of halls) {
     z += hw / 2;
-    placed.push({ hw, hh, zc: z });
+    placed.push({ hw, hh, zc: z, tiers, storeys, F: Math.max(4, hh * 0.65) });
+    if (storeys > 1) { z += hw / 2; continue; }
     g.add(box(hw, hh, hw, hallM, 0, plinth, z), box(hw + 0.8, 0.6, hw + 0.8, shade, 0, plinth + hh, z));
     const ry = plinth + hh + 0.6;
     if (kind === 'dome') {
@@ -70,15 +88,27 @@ export function nagaraTemple({
     }
     z += hw / 2;
   }
-  g.add(box(sw + apron, plinth, z + sw / 2 + 6, shade, 0, 0, (z - sw / 2) / 2 + 3));
+  const a = apron / 2;
+  if (base) {
+    // The plan: the sanctum's block (barely clear of its back wall), then each hall's; the front
+    // hall's runs on 6 to the head of the stair.
+    const T = base.tiers ?? 2, step = Math.min(1.2, Math.max(0.3, plinth * 0.35)), th = plinth / T;
+    const profile = [[-sw / 2 - Math.min(a, 1.5), sw / 2 + a], ...placed.map(({ hw, zc }) => [zc - hw / 2, hw / 2 + a]), [z + 6]];
+    const plan = (grow) => steppedPlan(profile, { grow, cut: base.cut ?? 0.8 });
+    for (let k = 0; k < T; k++) {
+      const grow = (T - 1 - k) * step;
+      g.add(planPrism(plan(grow), k * th, th, shade));
+      if (th >= 0.6) g.add(planBand(plan(grow), k * th + th * 0.3, th * 0.35, 0.05, frieze(shade)));
+    }
+  } else g.add(box(sw + apron, plinth, z + sw / 2 + 6, shade, 0, 0, (z - sw / 2) / 2 + 3));
 
-  const e = new THREE.Group(), half = (sw + apron) / 2;
+  const e = new THREE.Group(), half = base && placed.length ? placed[0].hw / 2 + a : (sw + apron) / 2;
   let stairW = 6;
   if (placed.length) {
     // The main entrance: a porch in front of the front hall, with the doorway at its back.
-    const { hw, hh } = placed[placed.length - 1], ds = doorSize(hh);
+    const last = placed[placed.length - 1], { hw } = last, hh = last.storeys > 1 ? last.F : last.hh, ds = doorSize(hh);
     const door = templeDoorway(ds.w, ds.h, { m: hallM });
-    e.add(at(door, 0, plinth, z));
+    if (last.storeys === 1) e.add(at(door, 0, plinth, z));
     if (hw >= 9) {
       const pw = Math.min(hw - 1, Math.max(7.6, door.userData.outerW + 2.4));
       e.add(at(templePorch(pw, 4.2, Math.min(hh - 0.3, door.userData.outerH + 0.9), hallM, shade), 0, plinth, z));
@@ -88,7 +118,12 @@ export function nagaraTemple({
     const first = placed[0], room = half - first.hw / 2;
     if (room >= 1.4) {
       const sd = doorSize(first.hh * 0.85);
-      for (const s of [-1, 1]) {
+      for (const s of [-1, 1]) if (first.storeys > 1) {
+        const st = steps(4, plinth, Math.max(2, Math.ceil(plinth / 0.42)), shade);
+        st.position.set(s * half, 0, first.zc);
+        st.rotation.y = (s * Math.PI) / 2;
+        e.add(st);
+      } else {
         const side = templeDoorway(sd.w, sd.h, { m: hallM, guardians: false, depth: Math.min(1.1, room - 0.3) });
         side.position.set(s * first.hw / 2, plinth, first.zc);
         side.rotation.y = (s * Math.PI) / 2;
@@ -104,11 +139,22 @@ export function nagaraTemple({
     const ds = doorSize(w * 0.7);
     e.add(at(templeDoorway(ds.w, ds.h, { m, guardians: w >= 7, hood: true }), 0, plinth, sw / 2));
   }
-  e.add(at(steps(stairW, plinth, Math.max(3, Math.ceil(plinth / 0.42)), shade, 0.45), 0, 0, z + 6));
+  if (stair?.width) stairW = stair.width;
+  if (stair) e.add(at(grandStair(plinth, stairW, shade, m, { cheek: Math.min(0.9, 0.25 + plinth * 0.25), ...stair }), 0, 0, z + 6));
+  else e.add(at(steps(stairW, plinth, Math.max(3, Math.ceil(plinth / 0.42)), shade, 0.45), 0, 0, z + 6));
   g.add(mergeByMaterial(e));
-  if (placed.length) g.add(sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing));
+  if (placed.length) g.add(sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing, sanctumStoreys));
   // A band of carved figures along each side of every hall, parted round the side doors.
-  placed.forEach(({ hw, hh, zc }, i) => {
+  // Halls of more than one storey, with doors on the faces that open: the front of the front hall and
+  // the sides of the first, where it has side steps.
+  placed.forEach(({ hw, zc, tiers, storeys, F }, i) => {
+    if (storeys === 1) return;
+    const doors = [...(i === placed.length - 1 ? [0] : []), ...(i === 0 && half - hw / 2 >= 1.4 ? [Math.PI / 2, -Math.PI / 2] : [])];
+    const others = [[0, 0, sw / 2], ...placed.filter((_, k) => k !== i).map((p) => [0, p.zc, p.hw / 2])];
+    g.add(at(storeyedHall(hw, Math.max(3, tiers), hallM, shade, { floors: storeys, F, doors, others, z0: zc }), 0, plinth, zc));
+  });
+  placed.forEach(({ hw, hh, zc, storeys }, i) => {
+    if (storeys > 1) return;
     const fh = Math.min(1.2, hh * 0.16), gapW = i === 0 && half - hw / 2 >= 1.4 ? Math.max(3, doorSize(hh * 0.85).w * 2.4) : 0;
     for (const s of [-1, 1]) for (const [z0, z1] of gapW ? [[zc - hw / 2 + 0.3, zc - gapW / 2], [zc + gapW / 2, zc + hw / 2 - 0.3]] : [[zc - hw / 2 + 0.3, zc + hw / 2 - 0.3]]) {
       if (z1 - z0 < 1.5) continue;
@@ -119,6 +165,7 @@ export function nagaraTemple({
     }
   });
   g.userData.length = z;
+  g.userData.sy = sy;
   return g;
 }
 
@@ -127,12 +174,23 @@ export function nagaraTemple({
 // cornice under the spire; a niche on each outer face with an image in it, and smaller empty niches
 // either side on a large temple; and the ribbed amalaka stones (bhumi-amalakas) on the corners of
 // the spire, one at each of its storeys.
-function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing = 1) {
-  const d = new THREE.Group(), wh = w * 0.7, u = Math.max(0.12, w * 0.018);
-  d.add(at(mouldings(sw, sw, [[0, 2 * u, 2 * u, shade], [2 * u, 1.5 * u, 1.4 * u], [3.5 * u, u, 0.9 * u, shade], [wh * 0.8, u, 0.7 * u], [wh - 1.6 * u, 1.6 * u, 2 * u, shade]], m), 0, plinth, 0));
-  const nw = sw * 0.17, nh = wh * 0.42, ny = plinth + wh * 0.24;
+function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing = 1, storeys = 1) {
+  const d = new THREE.Group(), g0 = w * 0.7, fu = w * 0.42, wh = g0 + (storeys - 1) * fu, u = Math.max(0.12, w * 0.018);
+  d.add(at(mouldings(sw, sw, [[0, 2 * u, 2 * u, shade], [2 * u, 1.5 * u, 1.4 * u], [3.5 * u, u, 0.9 * u, shade], [g0 * 0.8, u, 0.7 * u], [wh - 1.6 * u, 1.6 * u, 2 * u, shade]], m), 0, plinth, 0));
+  // The upper storeys: a balcony ledge round the wall with railings on the three free faces, a niche
+  // with an image in the middle of every face, and an eave under the next floor.
+  for (let k = 1; k < storeys; k++) {
+    const y = plinth + g0 + (k - 1) * fu, b = Math.max(0.8, w * 0.08), nw = sw * 0.14, nh = fu * 0.55;
+    d.add(box(sw + 2 * b, 0.35, sw + 2 * b, shade, 0, y - 0.35, 0));
+    for (const a of FACES) {
+      if (a !== 0) d.add(onFace(at(railing(sw + 2 * b - 0.4, 0.9, 0.18, m), 0, y, 0), a, sw / 2 + b - 0.12));
+      d.add(onFace(at(templeNiche(nw, nh, m, { figure: idol(nh * 0.85, m) }), 0, y + fu * 0.18, 0), a, sw / 2));
+      d.add(onFace(at(chhajja(sw + 2 * b, b, b * 0.4, 0.12, shade), 0, y + fu - 0.25, 0), a, sw / 2));
+    }
+  }
+  const nw = sw * 0.17, nh = g0 * 0.42, ny = plinth + g0 * 0.24;
   // A band of carved figures round the foot of the wall, under the niches.
-  const fh = Math.min(1.1, wh * 0.2 - 4.6 * u);
+  const fh = Math.min(1.1, g0 * 0.2 - 4.6 * u);
   if (fh > 0.45) for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) d.add(onFace(at(figureFrieze(sw - 0.6, fh, m, { pitch: fh * 0.75 * friezeSpacing, kinds: ['standing', 'dancer', 'standing', 'musician'] }), 0, plinth + 4.6 * u, 0), a, sw / 2));
   for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) {
     d.add(onFace(at(templeNiche(nw, nh, m, { figure: guardian(nh * 0.88, m) }), 0, ny, 0), a, sw / 2));
@@ -188,6 +246,63 @@ export function mandap(w, h, roofCount, m, shade, doors = []) {
   const ry = h + 1 + roof.userData.top;
   g.add(at(bell(w * 0.2, m), 0, ry, 0));
   g.add(at(kalash(w * 0.12), 0, ry + w * 0.2, 0));
+  return g;
+}
+
+// Small spires on the corners of each tier of a stepped roof made by pidaRoof(w0, w1, n, u).
+export function tierSpires(w0, w1, n, u, y0, s = 0.75) {
+  const list = [];
+  for (let i = 0; i < n; i++) {
+    const w = w0 + (w1 - w0) * (i / Math.max(1, n - 1)), c = w / 2 - 0.4;
+    for (const [sx, sz] of [[-1, -1], [-1, 1], [1, -1], [1, 1]]) list.push([sx * c, y0 + i * u * 1.55 + u, sz * c, 0, s]);
+  }
+  return list;
+}
+
+// A hall of `floors` storeys, each F high, w square, its foot at y = 0. On each floor a gallery of carved pillars
+// round a solid core, a cusped arch in each bay, the beam and floor above, and a chhajja round the
+// outside; a balustrade between the pillars of the upper floors. Doors open on the ground floor on
+// the faces in `doors`. Where the hall meets another (`others`: [x, z, half-width] in the frame
+// that x0, z0 place this hall in), it has no pillars, arches or balustrade. Roofed by a spire of
+// `roofs` stepped tiers with a bell stone and kalash.
+export function storeyedHall(w, roofs, m, sh, { floors = 3, F = 5.5, doors = [], others = [], x0 = 0, z0 = 0 } = {}) {
+  const g = new THREE.Group(), carved = new THREE.Group(), arches = [];
+  const n = Math.max(3, Math.round(w / 2.6)), step = (w - 1.2) / n, e = w / 2 - 0.6, ph = F - 1;
+  const free = (x, z) => !others.some(([ox, oz, oh]) => Math.abs(x0 + x - ox) < oh + 1 && Math.abs(z0 + z - oz) < oh + 1);
+  const isDoor = (a) => doors.some((d) => Math.abs(Math.atan2(Math.sin(d - a), Math.cos(d - a))) < 0.01);
+  const dh = Math.min(4.4, Math.max(1.6, F * 0.55));
+  const gap = templeDoorway(dh * 0.5, dh, { m, guardians: false }).userData.outerW / 2 + 0.3;
+  const on = (a, t) => [Math.sin(a) * e + Math.cos(a) * t, Math.cos(a) * e - Math.sin(a) * t];
+  g.add(box(w - 3, floors * F, w - 3, sh));
+  for (let f = 0; f < floors; f++) {
+    const y = f * F, seen = new Set();
+    for (const a of FACES) {
+      const door = f === 0 && isDoor(a);
+      for (let i = 0; i <= n; i++) {
+        const t = -e + i * step, [x, z] = on(a, t), key = `${x.toFixed(2)},${z.toFixed(2)}`;
+        if (!seen.has(key) && free(x, z) && !(door && Math.abs(t) < gap)) carved.add(at(carvedPillar(ph, m), x, y, z));
+        seen.add(key);
+        if (i === n) continue;
+        const tm = t + step / 2, [bx, bz] = on(a, tm);
+        if (!free(bx, bz) || (door && Math.abs(tm) < gap)) continue;
+        arches.push([bx, y + ph, bz, a]);
+        if (f) carved.add(onFace(at(railing(step - 0.95, 1, 0.2, m, 2), 0, y, 0), a, e, tm));
+      }
+    }
+    g.add(box(w - 0.2, 1, w - 0.2, m, 0, y + ph));
+    for (const a of FACES) carved.add(onFace(at(chhajja(w + 2.2, 1.1, 0.45, 0.14, m), 0, y + F - 0.2, 0), a, w / 2 - 0.1));
+  }
+  carved.add(placeAll(cuspedArchGeo(step - 0.9, 1.5), arches, m));
+  for (const a of doors) carved.add(onFace(templeDoorway(dh * 0.5, dh, { m, guardians: false }), a, (w - 3) / 2));
+  // The roof: a parapet course, the stepped spire with its corner spires, bell stone and kalash.
+  const y = floors * F + 0.7, w0 = w * 0.9, w1 = w * 0.36, u = 0.85;
+  g.add(box(w + 0.4, 0.7, w + 0.4, sh, 0, floors * F));
+  const roof = pidaRoof(w0, w1, roofs, u, m, sh);
+  g.add(at(roof, 0, y, 0));
+  carved.add(placeAll(miniSpireGeo(), tierSpires(w0, w1, roofs, u, y, 0.9 + w * 0.02), m));
+  const ry = y + roof.userData.top;
+  g.add(at(bell(w * 0.15, m), 0, ry, 0), at(kalash(w * 0.1), 0, ry + w * 0.15, 0));
+  g.add(mergeByMaterial(carved));
   return g;
 }
 
