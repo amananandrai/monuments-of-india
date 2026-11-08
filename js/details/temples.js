@@ -43,15 +43,19 @@ export function bhumijaRows(w, h, prof, rows = 9) {
 // each standing further out, its outer corners cut back in two steps of `cut`, with carved bands;
 // null for a single rectangular block. stair: options for the grandStair up the front (about 0.2 m
 // to a step, side walls; foot, mid, top for its guardians); null for plain steps.
+// sanctumStoreys: storeys of the sanctum's wall under the spire. Each one above the ground storey
+// (w * 0.42 high) has a balcony ledge with railings, a niche with an image on each face and an eave.
+// userData.sy is the height of the spire's foot.
 export function nagaraTemple({
   w = 12, h = 22, m, shade = m, spireM = m, plinth = 2, urus = 4, uruScale = 0.5,
   halls = [[14, 8, 4]], prof = nagaraProfile, flagM = M.saffron, hallM = m, crown = null, apron = 8, friezeSpacing = 1,
-  base = { tiers: 2, cut: 0.8 }, stair = {},
+  base = { tiers: 2, cut: 0.8 }, stair = {}, sanctumStoreys = 1,
 } = {}) {
   const g = new THREE.Group();
   const sw = w * 1.15;
-  g.add(box(sw, w * 0.7, sw, m, 0, plinth, 0));
-  const sy = plinth + w * 0.7;
+  const wh = w * 0.7 + (sanctumStoreys - 1) * w * 0.42;
+  g.add(box(sw, wh, sw, m, 0, plinth, 0));
+  const sy = plinth + wh;
   const spire = shikhara(w, h, spireM, prof, 16);
   g.add(at(spire, 0, sy, 0), at(crown || flag(Math.max(3, w * 0.45), flagM), 0, sy + spire.userData.top - 0.5, 0));
   const ring = (n, dist, scale, hs) => {
@@ -132,7 +136,7 @@ export function nagaraTemple({
   if (stair) e.add(at(grandStair(plinth, stairW, shade, m, { cheek: Math.min(0.9, 0.25 + plinth * 0.25), ...stair }), 0, 0, z + 6));
   else e.add(at(steps(stairW, plinth, Math.max(3, Math.ceil(plinth / 0.42)), shade, 0.45), 0, 0, z + 6));
   g.add(mergeByMaterial(e));
-  if (placed.length) g.add(sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing));
+  if (placed.length) g.add(sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing, sanctumStoreys));
   // A band of carved figures along each side of every hall, parted round the side doors.
   // Halls of more than one storey, with doors on the faces that open: the front of the front hall and
   // the sides of the first, where it has side steps.
@@ -154,6 +158,7 @@ export function nagaraTemple({
     }
   });
   g.userData.length = z;
+  g.userData.sy = sy;
   return g;
 }
 
@@ -162,12 +167,23 @@ export function nagaraTemple({
 // cornice under the spire; a niche on each outer face with an image in it, and smaller empty niches
 // either side on a large temple; and the ribbed amalaka stones (bhumi-amalakas) on the corners of
 // the spire, one at each of its storeys.
-function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing = 1) {
-  const d = new THREE.Group(), wh = w * 0.7, u = Math.max(0.12, w * 0.018);
-  d.add(at(mouldings(sw, sw, [[0, 2 * u, 2 * u, shade], [2 * u, 1.5 * u, 1.4 * u], [3.5 * u, u, 0.9 * u, shade], [wh * 0.8, u, 0.7 * u], [wh - 1.6 * u, 1.6 * u, 2 * u, shade]], m), 0, plinth, 0));
-  const nw = sw * 0.17, nh = wh * 0.42, ny = plinth + wh * 0.24;
+function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing = 1, storeys = 1) {
+  const d = new THREE.Group(), g0 = w * 0.7, fu = w * 0.42, wh = g0 + (storeys - 1) * fu, u = Math.max(0.12, w * 0.018);
+  d.add(at(mouldings(sw, sw, [[0, 2 * u, 2 * u, shade], [2 * u, 1.5 * u, 1.4 * u], [3.5 * u, u, 0.9 * u, shade], [g0 * 0.8, u, 0.7 * u], [wh - 1.6 * u, 1.6 * u, 2 * u, shade]], m), 0, plinth, 0));
+  // The upper storeys: a balcony ledge round the wall with railings on the three free faces, a niche
+  // with an image in the middle of every face, and an eave under the next floor.
+  for (let k = 1; k < storeys; k++) {
+    const y = plinth + g0 + (k - 1) * fu, b = Math.max(0.8, w * 0.08), nw = sw * 0.14, nh = fu * 0.55;
+    d.add(box(sw + 2 * b, 0.35, sw + 2 * b, shade, 0, y - 0.35, 0));
+    for (const a of FACES) {
+      if (a !== 0) d.add(onFace(at(railing(sw + 2 * b - 0.4, 0.9, 0.18, m), 0, y, 0), a, sw / 2 + b - 0.12));
+      d.add(onFace(at(templeNiche(nw, nh, m, { figure: idol(nh * 0.85, m) }), 0, y + fu * 0.18, 0), a, sw / 2));
+      d.add(onFace(at(chhajja(sw + 2 * b, b, b * 0.4, 0.12, shade), 0, y + fu - 0.25, 0), a, sw / 2));
+    }
+  }
+  const nw = sw * 0.17, nh = g0 * 0.42, ny = plinth + g0 * 0.24;
   // A band of carved figures round the foot of the wall, under the niches.
-  const fh = Math.min(1.1, wh * 0.2 - 4.6 * u);
+  const fh = Math.min(1.1, g0 * 0.2 - 4.6 * u);
   if (fh > 0.45) for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) d.add(onFace(at(figureFrieze(sw - 0.6, fh, m, { pitch: fh * 0.75 * friezeSpacing, kinds: ['standing', 'dancer', 'standing', 'musician'] }), 0, plinth + 4.6 * u, 0), a, sw / 2));
   for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) {
     d.add(onFace(at(templeNiche(nw, nh, m, { figure: guardian(nh * 0.88, m) }), 0, ny, 0), a, sw / 2));

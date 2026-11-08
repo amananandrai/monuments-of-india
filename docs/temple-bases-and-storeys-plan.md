@@ -105,10 +105,12 @@ mosques, church, stupas and monasteries are not temples of this kind.
 
 ## Progress
 
-- Phase 0, steps 1 to 3: done, except `sanctumStoreys`. That option moves to Phase 1, together with
-  Mahakaleshwar and Omkareshwar, the only temples that need it.
+- Phase 0, steps 1 to 3: done. `sanctumStoreys` was added in Phase 1, with Mahakaleshwar.
 - Phase 1, Somnath: done. Three-tier plinth, and both halls in two storeys with an upper gallery of
   balconies. The stair has no guardians: none could be confirmed from sources.
+- Phase 1, Mahakaleshwar: done. The sanctum is three storeys (`sanctumStoreys: 3`), each upper one
+  with a balcony, niches and an eave, under the Bhumija spire. Its halls stay single storey: no
+  source was found for upper floors on them.
 
 ## Order of work
 
