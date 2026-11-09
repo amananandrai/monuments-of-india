@@ -106,6 +106,7 @@ function sculpt(g, kind, S, seed, snowColor, rockColor) {
     pos.setXYZ(i, v.x, v.y, v.z);
   }
   g.computeVertexNormals();
+  if (kind === 'hill' || kind === 'mountain') footNormals(g, bb.min.y, size.y);
   if (snowColor) {
     // Snow on the upper slopes, thinning on steep faces.
     const nrm = g.attributes.normal, col = new Float32Array(pos.count * 3), cc = new THREE.Color();
@@ -119,6 +120,29 @@ function sculpt(g, kind, S, seed, snowColor, rockColor) {
     g.setAttribute('color', new THREE.BufferAttribute(col, 3));
   }
   return g;
+}
+
+// A hill or mountain's foot shares its vertices with the bottom cap, so the averaged normals there
+// tilt down and the lowest band of the slope shades dark: a black rim round every hill where it
+// meets the ground. Give each foot vertex the normal of the slope vertex just above it, found by
+// its bearing from the axis (sculpting moves vertices only outward, so bearings are unchanged).
+function footNormals(g, y0, h) {
+  const pos = g.attributes.position, nrm = g.attributes.normal, eps = h * 1e-3, above = new Map();
+  g.computeBoundingBox();
+  const c = g.boundingBox.getCenter(new THREE.Vector3());
+  const key = (i) => Math.round(Math.atan2(pos.getZ(i) - c.z, pos.getX(i) - c.x) * 1000);
+  for (let i = 0; i < pos.count; i++) {
+    const y = pos.getY(i);
+    if (y <= y0 + eps || Math.hypot(pos.getX(i) - c.x, pos.getZ(i) - c.z) < 1e-3) continue;
+    const k = key(i), best = above.get(k);
+    if (best === undefined || y < pos.getY(best)) above.set(k, i);
+  }
+  for (let i = 0; i < pos.count; i++) {
+    if (pos.getY(i) > y0 + eps || Math.hypot(pos.getX(i) - c.x, pos.getZ(i) - c.z) < 1e-3) continue;
+    const j = above.get(key(i));
+    if (j !== undefined) nrm.setXYZ(i, nrm.getX(j), nrm.getY(j), nrm.getZ(j));
+  }
+  nrm.needsUpdate = true;
 }
 
 /* ---------- materials ---------- */
