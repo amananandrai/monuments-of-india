@@ -28,15 +28,15 @@ function architecture(f) {
   f.add(d);
 }
 
-// The Akal Takht, across the plaza from the Darshani Deori and facing the shrine (+x): five storeys,
-// the lower two of white marble opening in arcades, the upper ones gilded with a row of bay windows
-// on each and a deep eave between, under a fluted golden dome on a drum with a kiosk at each corner.
+// The Akal Takht, across the plaza from the Darshani Deori and facing the shrine (+x): five storeys
+// of white marble, the lower two opening in arcades, the upper ones with a row of gilded bay windows
+// on each and a gilded eave between, under a fluted golden dome on a drum with a kiosk at each corner.
 export function akalTakht() {
   const g = new THREE.Group(), W = M.marble, G = GILT_BRIGHT, w = 30, d = 16, dp = 1;
   g.add(box(w + 2, 1, d + 2, W));
   g.add(box(w, 10, d - dp, W, 0, 1, -dp / 2), onFace(at(arcadeSkin(w, 10, [...cellRow(5, 5.6, 0, 3.6, 4.4), ...cellRow(5, 5.6, 5.2, 3.2, 4)], dp, W, { trim: G, fill: 'room' }), 0, 1, 0), 0, d / 2 - dp));
   let y = 11;
-  for (const [h, m, n] of [[5, G, 7], [4.6, G, 7], [4.2, G, 5]]) {
+  for (const [h, m, n] of [[5, W, 7], [4.6, W, 7], [4.2, W, 5]]) {
     const ww = w - (y - 11) * 0.5;
     g.add(box(ww, h, d - 1, m, 0, y, -0.5));
     for (let k = 0; k < n; k++) g.add(onFace(at(jharokha(2, 2.6, G, { d: 0.9 }), 0, y + 1.2, 0), 0, d / 2 - 1, (k - (n - 1) / 2) * (ww / n)));
