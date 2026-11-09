@@ -9,6 +9,39 @@ const STONE = mat('#e6d6b8', 0.85);
 const SHADE = mat('#b98f5f', 0.9);
 const SPIRE = mat('#eadcc0', 0.8);
 
+// The old town of Ujjain further out, beyond the first ring of houses round the court (both
+// levels; js/details/realism.js, townHouses): rows two to four storeys high facing each other
+// across lanes, a few old houses under tiled roofs among them, the approach road on the axis to
+// the south kept open, and to the north the houses that look over the Rudra Sagar.
+function ujjain() {
+  const R = rng(19), flat = [], tiled = [];
+  const row = (axis, at, a, b, ry, d = 11, gap = null) => {
+    for (let t = a; t < b;) {
+      const w = 6 + R() * 5, c = t + w / 2, n = 2 + Math.floor(R() * 3);
+      if (c + w / 2 > b) break;
+      if (!(gap && Math.abs(c) < gap)) (R() < 0.22 ? tiled : flat).push(axis === 'x' ? [c, at + (R() - 0.5) * 0.6, w - 0.4, d, n, ry] : [at + (R() - 0.5) * 0.6, c, w - 0.4, d, n, ry]);
+      t += w + (R() < 0.1 ? 4 : 0);
+    }
+  };
+  const S = Math.PI, E = Math.PI / 2;
+  // South, either side of the approach road, and north beyond the Rudra Sagar (the lakeside row
+  // faces the water), between the columns of houses east and west.
+  row('x', 81, -72, 72, 0, 11, 9);
+  row('x', 97, -72, 72, S, 11, 9);
+  row('x', 111, -72, 72, 0, 10, 9);
+  row('x', -84, -72, 72, 0, 12);
+  row('x', -100, -72, 72, S, 11);
+  row('x', -114, -72, 72, 0, 10);
+  // East and west, the whole depth of the town.
+  for (const s of [-1, 1]) {
+    row('z', s * 80, -120, 118, s * E, 12);
+    row('z', s * 97, -120, 118, -s * E, 12);
+    row('z', s * 111, -120, 118, s * E, 10);
+  }
+  const paint = ['#e9d9b8', '#d98c5f', '#9fc3c9', '#e7b9b0', '#c9d6a3', '#f1e6cf', '#d6b06a', '#efe2c4'];
+  return new THREE.Group().add(townHouses(flat, { seed: 20, paint }), townHouses(tiled, { seed: 21, paint, roof: 'pitched', roofs: ['#9a4a32', '#a85a3a', '#8a4030'] }));
+}
+
 export function buildMahakaleshwar() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
@@ -36,6 +69,7 @@ export function buildMahakaleshwar() {
   row(18, 70, -67, 'x', 0, 12);
   for (const s of [-1, 1]) row(-50, 52, s * 63, 'z', -s * Math.PI / 2, 14);
   g.add(townHouses(hs, { seed: 5 }));
+  g.add(ujjain());
   addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.42, 1.15] };
 }
