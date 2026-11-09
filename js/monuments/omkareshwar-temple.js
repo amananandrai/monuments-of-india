@@ -53,7 +53,14 @@ export function buildOmkareshwar() {
     if (y > 6) houses.push([x, z, 5 + R() * 4, 5 + R() * 3, 1 + Math.floor(R() * 3), R() * 6.28, y - 1.2]);
   }
   g.add(townHouses(houses, { seed: 41 }));
+  // On the ghat, a cluster of white spires of different heights: the jyotirlinga's temple, full
+  // size with its hall, and smaller shrines round it, each a cell under its own shikhara.
   f.add(at(nagaraTemple({ w: 11, h: 20, m: WHITE, shade: SHADE, plinth: 2, urus: 4, halls: [[13, 7, 4]] }), 0, 8, -18));
+  for (const [x, z, w, h] of [[-17, -24, 6, 13], [16, -27, 5, 10], [-29, -15, 4.5, 8.5], [28, -13, 5.5, 12], [-39, -27, 4, 7], [39, -29, 4, 8], [-9, -33, 4, 7.5]]) {
+    f.add(at(nagaraTemple({ w, h, m: WHITE, shade: SHADE, plinth: 0.8, urus: w >= 5 ? 4 : 0, halls: [], apron: 2, base: null, stair: null }), x, 8, z));
+  }
+  // Across the river on the south bank, the smaller Mamleshwar temple, facing the island.
+  g.add(at(nagaraTemple({ w: 7, h: 12, m: WHITE, shade: SHADE, plinth: 1.2, urus: 0, halls: [[8, 5, 3]], apron: 4, base: { tiers: 1 } }), -36, 1.2, 182).rotateY(Math.PI));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.3, 1.25] };
 }
