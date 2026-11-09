@@ -535,6 +535,21 @@ export function stalls(spots, { y = 0, awnings = ['#c2512a', '#2f5d9a', '#e3b23c
   return g;
 }
 
+// A row of house plots for townHouses, from R (an rng): along x at z = at (axis 'x') or along z at
+// x = at, from a to b, every house facing ry. w, d and n are [min, max] for the frontage, the depth
+// and the storeys; skip(c) leaves out a plot centred at c along the row (a road, a gate); now and
+// then a lane opens between two houses. Returns [x, z, w, d, n, ry] spots.
+export function houseRow(R, axis, at, a, b, ry, { w = [6.5, 10.5], d = [9, 12], n = [2, 4], skip = null, lane = 0.12 } = {}) {
+  const out = [];
+  for (let t = a; t < b;) {
+    const ww = w[0] + R() * (w[1] - w[0]), dd = d[0] + R() * (d[1] - d[0]), nn = n[0] + Math.floor(R() * (n[1] - n[0] + 1)), c = t + ww / 2, off = (R() - 0.5) * 0.6;
+    if (c + ww / 2 > b) break;
+    if (!skip || !skip(c)) out.push(axis === 'x' ? [c, at + off, ww - 0.3, dd, nn, ry] : [at + off, c, ww - 0.3, dd, nn, ry]);
+    t += ww + (R() < lane ? 3.5 : 0);
+  }
+  return out;
+}
+
 // Town houses, as in the old streets round a temple: spots are [x, z, w, d, storeys, ry, y?], each a
 // painted block w × d of 3.2 m storeys with its front (+z before ry) on the street. Dark windows run
 // in bays on every storey, front and back, with a door in the middle of the front; a balcony slab
