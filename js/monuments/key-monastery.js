@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, hipRoof, TIBETAN, inst, unitBox } from '../helpers.js';
 import { tibetanDoor } from '../details/doorways.js';
+import { heightField, fbm, smooth } from '../details/terrain.js';
+import { detail } from '../detail.js';
 import { addDetails } from '../details/key-monastery.js';
 
-const SCREE = mat('#9d8b78', 0.95, 0, { flatShading: true });
 
 const VALLEY = mat('#ffffff', 0.95, 0, { flatShading: true, vertexColors: true });
 // The valley's walls as one heightfield 2400 m square: flat (and hidden under the ground) within
@@ -46,7 +47,13 @@ export function buildKeyMonastery() {
   // round the back, each standing on the slope at its outer, lowest edge and tall enough to reach
   // the slope at its inner edge.
   const H = HILL_H, RH = HILL_R;
-  f.add(mesh(new THREE.ConeGeometry(RH, H, 12).translate(0, H / 2, 0), SCREE));
+  // The hill as terrain: the even cone the blocks are fitted to, with ribs of rock and gullies of
+  // scree running down it (relief that only raises the slope, by up to 1.6 m), its foot sinking
+  // under the valley floor.
+  f.add(heightField(150, 150, detail.low ? 90 : 140, (x, z) => {
+    const r = Math.hypot(x, z), y = Math.max(0, H * (1 - r / RH)), a = Math.atan2(z, x);
+    return y + smooth(0.5, 5, y) * (1 - smooth(H - 3, H, y)) * 0.8 * (1 + Math.sin(a * 9 + fbm(x, z, { scale: 0.05, octaves: 2 }) * 3)) - 0.4 * (1 - smooth(0, 3, y));
+  }, { rock: ['#8f7f6c', '#9d8b78', '#857565'], cover: '#a8977f', steep: 0.75, band: 6 }));
   const slopeY = (r) => H * (1 - r / RH), blocks = [];
   for (let k = 0; k < 150; k++) {
     const a = R() * Math.PI * 2, south = 0.5 + 0.5 * Math.sin(a);

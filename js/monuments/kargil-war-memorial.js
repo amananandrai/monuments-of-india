@@ -1,10 +1,9 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, rng, ellipseWall, tricolour } from '../helpers.js';
+import { mat, box, cyl, at, rng, ellipseWall, tricolour } from '../helpers.js';
+import { mountainRing } from '../details/terrain.js';
 import { addDetails } from '../details/kargil-war-memorial.js';
 
 const PINK = mat('#c8917a', 0.85);
-const PEAK = mat('#8f8578', 0.95, 0, { flatShading: true });
-const SNOW = mat('#f4f6f8', 0.8, 0, { flatShading: true });
 
 // The tall memorial flag: a tricolour 18 m long on a 40 m staff.
 const bigFlag = (pole) => tricolour(pole, 18);
@@ -14,10 +13,9 @@ export function buildKargilMemorial() {
   g.add(f);
   g.add(box(600, 0.2, 600, mat('#9d8f78', 0.95)));
   // Tololing and the mountains around Dras
-  for (let i = 0; i < 8; i++) {
-    const a = -Math.PI / 2 + (i - 3.5) * 0.35, d = 500 + R() * 100, h = 200 + R() * 140, x = Math.cos(a) * d, z = Math.sin(a) * d;
-    g.add(mesh(new THREE.ConeGeometry(h * 0.7, h, 7).translate(0, h / 2, 0), PEAK, x, 0, z), mesh(new THREE.ConeGeometry(h * 0.26, h * 0.3, 7).translate(0, h * 0.85, 0), SNOW, x, 0, z));
-  }
+  // (js/details/terrain.js): bare brown-grey ridges ringing the Dras valley, highest behind the
+  // memorial, snow on their crests.
+  g.add(mountainRing({ inner: 420, outer: 720, h: 330, vary: 110, aspect: 1.1, cz: -60, snow: 300, rock: ['#7f766a', '#8f8578', '#766d62'], cover: '#9d8f78', steep: 0.82 }));
   // The plaza, the curved wall of names, the flame and the giant flag
   f.add(box(90, 0.6, 70, mat('#d8cbb3', 0.85)));
   // The curved wall of names behind the flame, as one continuous wall
