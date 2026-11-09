@@ -13,7 +13,7 @@ import { blendIntoLand, siteLand } from './landscape.js';
 import { separateCoplanar, separateMerged } from './coplanar.js';
 import { frameBox } from './framing.js';
 import { batchStatic } from './batch.js';
-import { upgradeTrees } from './details/realism.js';
+import { upgradeTrees, scatterGround } from './details/realism.js';
 import { naturalize } from './naturalize.js';
 import { loadPhotoTextures } from './textures.js';
 import { MONUMENTS } from './data.js';
@@ -254,9 +254,10 @@ function getBuilt(i) {
     r.focus = r.focus || r.group;
     // The colour of the land round the site, read before the seas are extended over it.
     r.land = siteLand(r);
-    // Fuller trees wherever the monument has triangles to spare under the desktop budget (js/detail.js);
-    // plain ones on phones.
-    if (!detail.low) upgradeTrees(r.group, detail.budget);
+    // On desktops, grass tufts and stones on the open ground round it (js/details/realism.js), then
+    // fuller trees, each while the monument has triangles to spare under the desktop budget
+    // (js/detail.js). Phones keep plain trees and bare ground.
+    if (!detail.low) { scatterGround(r, detail.budget); upgradeTrees(r.group, detail.budget); }
     naturalize(r.group);
     // Faces that share a plane get different depth offsets, so they don't flicker.
     separateCoplanar(r.group, 0.005);

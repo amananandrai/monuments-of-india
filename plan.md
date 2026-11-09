@@ -137,8 +137,8 @@ One commit each. Check the budget after each.
 
 ### T12. Vegetation and ground
 
-- [ ] Two or three shapes per tree species in `js/details/realism.js` (`trees`, `fullTrees`), chosen per tree, so a row of the same kind is not identical.
-- [ ] Ground scatter near the monuments on desktops: grass tufts and stones along path edges and lawn borders, instanced and inside the budget.
+- [x] Two or three shapes per tree species in `js/details/realism.js` (`trees`, `fullTrees`), chosen per tree, so a row of the same kind is not identical.
+- [x] Ground scatter near the monuments on desktops: grass tufts and stones along path edges and lawn borders, instanced and inside the budget.
 
 ### T13. Keeping it accurate
 
