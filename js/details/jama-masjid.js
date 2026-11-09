@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, at, surface } from '../helpers.js';
 import { panel, archRing, archSlab, merlons, star, bracketGeo, placeAll, aroundCircle, mergeByMaterial } from './components.js';
-import { stalls, along } from './realism.js';
+import { stalls, along, cityAround } from './realism.js';
 
 // The Jama Masjid, finer detail. From photographs: over each arch of the prayer hall's front is a
 // white marble panel lettered in black; a parapet of merlons runs along the top; the cloisters open
@@ -43,4 +43,9 @@ function architecture(f) {
 export function addDetails(f, g) {
   architecture(f);
   g.add(stalls([...along(8, [-80, 80], [-25, 80]).map(([x, z]) => [x, z, 0]), ...along(8, [25, 80], [80, 80]).map(([x, z]) => [x, z, 0])]));
+  // Old Delhi crowds in round the open ground at the mosque's foot: rows of houses and shops two to
+  // five storeys high along the lanes, leaving the bazaar before the east steps and the streets out
+  // from the north and south gates open.
+  g.add(cityAround([-62, 62, -58, 62], { rows: 4, gap: 26, seed: 61, paint: ['#d9b48f', '#c98a6a', '#e3cfa8', '#b98a6a', '#e8d8b8', '#cfa37a', '#d7b56d', '#c9b49a'],
+    keep: [[-90, 90, 62, 100], [-14, 14, 62, 400], [56, 400, -10, 10], [-400, -56, -10, 10]] }));
 }

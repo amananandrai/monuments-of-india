@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { mat, at, onFace, FACES } from '../helpers.js';
 import { chhajja, petalRing, rosette, templeNiche, mergeByMaterial } from './components.js';
-import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
+import { trees, shrubs, lampPosts, scatter, along, cityAround } from './realism.js';
 
 // Kirti Mandir, finer detail. From photographs: a sloping eave runs round the memorial hall above
 // its arcade; rosettes fill the spandrels; its domes rise from cups of lotus petals; and the central
@@ -32,4 +32,7 @@ export function addDetails(f, g) {
   g.add(shrubs(scatter(10, [-24, 24, 30, 52], { seed: 4, gap: 4, avoid: [[-6, 6, 14, 60]] }).map(([x, z]) => [x, z, 1.4]), { flowers: '#f08a1c', seed: 4 }));
   g.add(trees([...along(6, [-62, 58], [62, 58]), ...along(4, [-62, -50], [62, -50])], { kind: 'neem', seed: 5 }));
   g.add(lampPosts(along(4, [-4, 18], [-4, 54]).concat(along(4, [4, 18], [4, 54]))));
+  // Porbandar's old town round the memorial: houses two to four storeys high, with the street
+  // before it left open.
+  g.add(cityAround([-66, 66, -56, 64], { rows: 2, gap: 4, storeys: [2, 4], seed: 99, keep: [[-400, 400, 60, 400]], paint: ['#e9d9b8', '#d6c7a6', '#efe2c4', '#cfd8d4', '#e7b9b0', '#f1e6cf'] }));
 }
