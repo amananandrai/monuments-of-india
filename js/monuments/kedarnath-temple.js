@@ -6,7 +6,7 @@ import { mergeByMaterial } from '../details/components.js';
 import { nandi } from '../details/animals.js';
 import { mountainRing } from '../details/terrain.js';
 import { addDetails } from '../details/kedarnath-temple.js';
-import { townHouses } from '../details/realism.js';
+import { townHouses, houseRow } from '../details/realism.js';
 
 const STONE = mat('#8e8a82', 0.9);
 const STONE_DARK = mat('#6f6b64', 0.9);
@@ -40,14 +40,20 @@ export function buildKedarnath() {
   // The Kedar peaks: a ring of rock walls under snow (js/details/terrain.js).
   g.add(mountainRing({ inner: 420, outer: 760, h: 250, vary: 70, snow: 165, rock: ['#7d7a74', '#6e6b66', '#8a867f'], cover: '#6f7550', steep: 0.82, aspect: 1.2 }));
 
-  // Pilgrim lodges along the approach, facing the path, under pitched roofs of painted sheet iron
-  // (js/details/realism.js, townHouses).
-  const lodges = [];
-  for (let i = 0; i < 18; i++) {
-    const side = R() < 0.5 ? -1 : 1, x = side * (18 + R() * 25), z = 20 + R() * 70, w = 6 + R() * 4, h = 4 + R() * 4, d = 5 + R() * 3;
-    lodges.push([x, z, w, d, Math.max(1, Math.round(h / 3.2)), side * -Math.PI / 2 + (R() - 0.5) * 0.3]);
+  // The pilgrim town along the approach (js/details/realism.js): lodges, dharamshalas and shops
+  // packed close on both sides of the stone path that runs south from the Nandi, facing it, two
+  // and three storeys under pitched roofs of painted sheet iron, a few newer ones with flat roofs;
+  // behind them two more rows along lanes, on the meadow short of the Mandakini.
+  const lodges = [], flats = [], E = Math.PI / 2;
+  for (const s of [-1, 1]) {
+    for (const [x, ry, d] of [[19, -s * E, [9, 11]], [33, s * E, [9, 11]], [47, -s * E, [8, 10]]]) {
+      for (const p of houseRow(R, 'z', s * x, 33, 116, ry, { w: [6, 9.5], d, n: [2, 3] })) (R() < 0.2 ? flats : lodges).push(p);
+    }
   }
-  g.add(townHouses(lodges, { seed: 9, roof: 'pitched', paint: ['#c9b9a0', '#d8cdb8', '#b8ad9a', '#e6dccb', '#a9b6bf'] }));
+  const paint = ['#c9b9a0', '#d8cdb8', '#b8ad9a', '#e6dccb', '#a9b6bf', '#d9c3a3'];
+  g.add(townHouses(lodges, { seed: 9, roof: 'pitched', paint }), townHouses(flats, { seed: 10, paint }));
+  // The stone-paved path itself, from the Nandi to the edge of the town.
+  g.add(box(16, 0.06, 86, mat('#8a8780', 0.9), 0, 0.1, 73));
   // Temple: grey stone sanctum with its curved tower, and the hall in front under a sloping roof
   f.add(box(22, 2, 34, STONE_DARK, 0, 0, 0));
   f.add(box(12, 9, 12, STONE, 0, 2, -9), box(12.8, 0.6, 12.8, STONE_DARK, 0, 11, -9));

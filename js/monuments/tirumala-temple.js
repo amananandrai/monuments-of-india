@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { M, mat, box, at, rng } from '../helpers.js';
 import { gopuram, wallWithGaps, dravidaVimana, dwajasthambha } from '../details/temples.js';
 import { mountainRing } from '../details/terrain.js';
-import { townHouses } from '../details/realism.js';
+import { townHouses, houseRow } from '../details/realism.js';
 import { addDetails } from '../details/tirumala-temple.js';
 
 const WHITE = ['#f2ede2', '#e9e1cf', '#f6f2ea', '#dcd3c0'];
@@ -15,13 +15,22 @@ export function buildTirumala() {
   g.add(mountainRing({ inner: 440, outer: 760, h: 130, vary: 45, rock: ['#8a7b66', '#766a58'], cover: '#5b7445', steep: 0.72 }));
 
   g.add(box(220, 0.2, 220, M.path));
-  const town = [];
-  for (let i = 0; i < 30; i++) {
-    const a = R() * Math.PI * 2, d = 80 + R() * 25;
-    town.push([Math.cos(a) * d, Math.sin(a) * d, 8 + R() * 8, 7 + R() * 5, 1 + Math.floor(R() * 3), Math.PI / 2 - a + Math.PI]);
+  // The temple town (js/details/realism.js): round the temple's outer wall, beyond the broad Mada
+  // streets, rows of pilgrim lodges and shops face it on every side, with more rows behind along
+  // lanes. To the south they line the approach either side of the stalls, and the large choultries
+  // (rest houses for pilgrims, four and five storeys) stand at the corners. The rows stop short of
+  // the Swami Pushkarini on the west.
+  const town = [], big = [], E = Math.PI / 2, S = Math.PI;
+  const tank = (c) => c > -24 && c < 16;
+  town.push(...houseRow(R, 'x', -74, -66, 66, 0), ...houseRow(R, 'x', -89, -104, 104, S), ...houseRow(R, 'x', -103, -104, 104, 0, { d: [8, 10] }));
+  for (const s of [-1, 1]) {
+    town.push(...houseRow(R, 'z', s * 76, -66, 56, -s * E, { skip: s < 0 ? tank : null }), ...houseRow(R, 'z', s * 91, -80, 104, s * E), ...houseRow(R, 'z', s * 104, -80, 104, -s * E, { d: [7, 9] }));
+    // The approach: two rows a side behind the stalls, facing the street, and one behind them.
+    town.push(...houseRow(R, 'z', s * 25, 60, 106, -s * E, { d: [10, 12] }), ...houseRow(R, 'z', s * 40, 60, 106, s * E, { d: [10, 12] }));
+    big.push([s * 62, 66, 22, 14, 5, -s * E], [s * 62, 92, 22, 14, 4, -s * E]);
   }
-  // The temple town: pilgrim lodges and shops, whitewashed and pastel, facing the temple.
   g.add(townHouses(town, { seed: 47, paint: ['#f1ece0', '#e8dcc0', '#f3e3c8', '#dfe8e2', '#f1ece0', '#efd9c9'] }));
+  g.add(townHouses(big, { seed: 48, paint: ['#f4efe4', '#efe4cc'] }));
   // Swami Pushkarini tank beside the temple
   g.add(box(36, 1, 30, M.granite, -62, 0, -4), box(30, 1.1, 24, M.water, -62, 0, -4));
   // Walled complex with the white Mahadwara gopuram at the entrance

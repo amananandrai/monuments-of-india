@@ -223,6 +223,11 @@ What desktops get that phones do not:
   the Rudra Sagar (386k on desktops, 212k on phones). At Omkareshwar the island's houses stand in
   terraces up the slope behind the ghat, and a town lines the south bank round Mamleshwar (493k on
   desktops; phones build every other house of both, 258k).
+  Tirumala's town now rings the temple beyond the Mada streets, with rows along lanes behind,
+  the approach lined either side of its stalls and four large choultries (274k on desktops, 152k
+  on phones). Kedarnath's pilgrim town lines the stone path south of the Nandi in three rows a side
+  under sheet-iron roofs (124k on desktops, 103k on phones). `houseRow` in js/details/realism.js lays
+  out such rows of plots for `townHouses`.
 - **Dressed elephants** (`rideElephant` in `js/details/animals.js`): a fringe of tassels and
   embroidered roundels on the cloths, a rope of bells round the neck, anklets, tusk caps, and on a
   temple elephant the gold nettipattam over the forehead and trunk.

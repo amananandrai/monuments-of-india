@@ -40,7 +40,7 @@ export function addDetails(f, g) {
     p.rotation.y = ry;
     g.add(p);
   }
-  for (const [x, z, r] of scatter(16, [-110, 110, -110, 110], { seed: 5, gap: 14, avoid: [[-50, 50, -40, 110]] }).map(([x, z], i) => [x, z, 3 + (i % 4) * 2])) {
+  for (const [x, z, r] of scatter(16, [-110, 110, -110, 110], { seed: 5, gap: 14, avoid: [[-56, 56, -40, 120]] }).map(([x, z], i) => [x, z, 3 + (i % 4) * 2])) {
     const s = mesh(new THREE.SphereGeometry(1, 16, 6, 0, Math.PI * 2, 0, Math.PI / 2), SNOW, x, 0.05, z);
     s.scale.set(r, 0.25, r * 0.7);
     g.add(s);
