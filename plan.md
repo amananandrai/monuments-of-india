@@ -72,7 +72,7 @@ Use `heightField`, `rough` and `smooth` from `js/details/terrain.js` (as the Kai
 - [x] **Gommateshwara**: Vindhyagiri is a hemisphere. Make it a granite dome with sheet-rock slopes; rewrite `ground()` for the stair.
 - [x] **Key**: steeper, rockier cone; the Spiti river braided across the valley floor.
 - [ ] **Jaisalmer and Chittorgarh**: real hills under the forts (see T6 for their size).
-- [ ] **Statue of Unity**: the green hills read as blobs on the water and the dam as a pale panel in the haze. Rocky Satpura hills with real relief; a solid dam face that holds up in the fog.
+- [x] **Statue of Unity**: the green hills read as blobs on the water and the dam as a pale panel in the haze. Rocky Satpura hills with real relief; a solid dam face that holds up in the fog.
 - [x] **Kargil**: the mountains are a flat grey wall. Tololing and Tiger Hill as terrain with relief.
 - [x] **Ring mountains** (`mountainRing`: Mallikarjuna, Tirumala, Rumtek, Bhimashankar, Kedarnath, Tawang, Thiksey): finer relief and rock strata, so they stop reading as low-poly facets. One change in `js/details/terrain.js` reaches all seven.
 
