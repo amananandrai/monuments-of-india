@@ -41,17 +41,20 @@ export function buildKailasa() {
   // The basalt cliff, cut away to leave a pit around the temple
   g.add(box(150, H, 34, ROCK, 0, 0, -67), box(47, H, 100, ROCK, -51.5, 0, 0), box(47, H, 100, ROCK, 51.5, 0, 0));
   g.add(box(150, H - 6, 40, ROCK, 0, 0, -104), box(60, 0.4, 150, ROCK_DARK, 0, 0, 0));
-  // The hill the cliff is cut into: its slopes fall from the cliff's top to the plain on the sides
-  // and behind, so the cut reads as a quarry in the hillside, not a square block on the plain. In
-  // front the scarp stays sheer, as it was cut. Inside the block the field sinks out of sight.
-  g.add(heightField(560, 560, 140, (x, z) => {
+  // The Charanandri hills: Kailasa is cut into an escarpment that runs on for 2 km either side,
+  // with the other Ellora caves along its foot. The scarp stays sheer across the front, its line
+  // wandering a little away from the cut; the hill's top falls away gently behind. Inside the
+  // block the field sinks out of sight. The hilltop is bare basalt with scrub, the same stone as
+  // the cut block, so the block's top and the hill's run on as one surface.
+  g.add(heightField(1600, 900, 220, (x, z) => {
     const ax = Math.abs(x);
     if (ax < 75 && z > -124 && z < 50) return -6;
-    if (z >= 50 && ax < 75) return rough(x, z, 0.3, 2) - 0.2;
-    const d = Math.hypot(Math.max(0, ax - 75), Math.max(0, -124 - z, z - 50));
-    const top = (z < -84 ? H - 6 : H) - 0.4;
-    return top * (1 - smooth(0, 150 + 30 * Math.sin(x * 0.03 + z * 0.02), d)) + rough(x, z, 1.6, 0.5) * smooth(0, 30, d) * (1 - smooth(120, 180, d)) - 0.2;
-  }, { cz: -37, rock: ['#6f675e', '#655e55'], cover: '#857c5c', steep: 0.82, band: 6 }));
+    const front = 50 + smooth(75, 140, ax) * (10 * Math.sin(x * 0.012 + 0.7) + 5 * Math.sin(x * 0.037));
+    if (z >= front) return rough(x, z, 0.3, 2) - 0.2 - 3 * smooth(80, 260, z - front);
+    const top = (ax < 75 && z < -84 ? H - 6 : H) - 0.4, back = Math.max(0, -124 - z);
+    const lip = smooth(0, 7, front - z);
+    return top * lip * (1 - 0.55 * smooth(60, 380, back)) + rough(x, z, 1.8, 0.5) * smooth(4, 30, front - z) - 0.2;
+  }, { cz: -60, rock: ['#6f675e', '#655e55'], cover: '#6f675e', steep: 0.82, band: 6 }));
   // The entrance gateway cut through the rock screen, its doorway framed and guarded
   f.add(at(trabeateGate(56, 11, 8, 5, 6.5, { m: ROCK, trim: ROCK_DARK, guardians: true }), 0, 0, 46));
   // High plinth with a frieze of elephants carrying the temple
