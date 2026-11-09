@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, box, cyl, at, onionDome, finial, chhatri, minaret, domeBands } from '../helpers.js';
+import { M, box, cyl, at, onionDome, finial, chhatri, minaret, latheStripes, ONION } from '../helpers.js';
 import { iwan, arcadeSkin } from '../details/mughal.js';
 import { addDetails } from '../details/jama-masjid.js';
 
@@ -33,9 +33,13 @@ export function buildJamaMasjid() {
   }
   [[-18, 7], [0, 9.5], [18, 7]].forEach(([x, r]) => {
     f.add(cyl(r * 0.92, r * 0.92, 3, Mb, x, P + 14, hz - 2, 32));
-    f.add(at(onionDome(r, Mb), x, P + 17, hz - 2), domeBands(x, P + 17, hz - 2, r, M.stoneDark), at(finial(r * 0.6), x, P + 17 + r * 1.78, hz - 2));
+    // Black marble inlaid in vertical stripes from the base of each dome to its apex.
+    const stripes = latheStripes(ONION.map(([a, b]) => [a * r * 1.012, b * r]), 20, 0.16, M.stoneDark, 2);
+    f.add(at(onionDome(r, Mb), x, P + 17, hz - 2), at(stripes, x, P + 17, hz - 2), at(finial(r * 0.6), x, P + 17 + r * 1.78, hz - 2));
   });
-  for (const s of [-1, 1]) f.add(at(minaret(34, 2.2, Rd, { capM: Mb }), s * 40, P, hz + 12));
+  // The minarets are striped lengthwise with white marble over the red sandstone, one stripe on
+  // each of the shaft's 16 arrises.
+  for (const s of [-1, 1]) f.add(at(minaret(34, 2.2, Rd, { capM: Mb }), s * 40, P, hz + 12), at(latheStripes([[2.2 * 1.012, 34 * 0.04], [2.2 * 0.86 * 1.012, 34 * 0.8]], 16, 0.22, Mb, 1), s * 40, P, hz + 12));
   f.add(box(16, 0.6, 12, Mb, 0, P, 8), box(14, 0.7, 10, M.water, 0, P, 8));
   for (const x of [-51, 51]) f.add(at(chhatri(3, 8, Rd, Mb), x, P + 7.5, 51));
   addDetails(f, g);

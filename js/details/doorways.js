@@ -179,7 +179,8 @@ export function templeDoorway(w, h, {
 // An open porch (mukhamandapa) in front of a wall at z = 0: two free columns at the front and two
 // pilasters at the wall, beams, a slab with eaves on three sides, and a small stepped roof with a
 // bell and kalash. pw wide, pd deep, columns ph high, standing on y = 0.
-export function templePorch(pw, pd, ph, m, shade = m) {
+// finialM: the porch kalash's material (left undefined, kalash gilds it).
+export function templePorch(pw, pd, ph, m, shade = m, finialM = undefined) {
   const g = new THREE.Group(), cx = pw / 2 - 0.45;
   for (const s of [-1, 1]) {
     for (const [z, free] of [[pd - 0.45, true], [0.3, false]]) {
@@ -210,7 +211,7 @@ export function templePorch(pw, pd, ph, m, shade = m) {
   const ry = ph + 0.83;
   g.add(at(roof, 0, ry, pd / 2 + 0.15));
   g.add(at(bell(Math.min(pw, pd) * 0.14, m), 0, ry + roof.userData.top, pd / 2 + 0.15));
-  g.add(at(kalash(Math.min(pw, pd) * 0.1), 0, ry + roof.userData.top + Math.min(pw, pd) * 0.14, pd / 2 + 0.15));
+  g.add(at(kalash(Math.min(pw, pd) * 0.1, finialM), 0, ry + roof.userData.top + Math.min(pw, pd) * 0.14, pd / 2 + 0.15));
   return g;
 }
 

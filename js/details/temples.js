@@ -53,14 +53,14 @@ export function bhumijaRows(w, h, prof, rows = 9) {
 export function nagaraTemple({
   w = 12, h = 22, m, shade = m, spireM = m, plinth = 2, urus = 4, uruScale = 0.5,
   halls = [[14, 8, 4]], prof = nagaraProfile, flagM = M.saffron, hallM = m, crown = null, apron = 8, friezeSpacing = 1,
-  base = { tiers: 2, cut: 0.8 }, stair = {}, sanctumStoreys = 1, spireBands = 0, nicheFigure = null,
+  base = { tiers: 2, cut: 0.8 }, stair = {}, sanctumStoreys = 1, spireBands = 0, nicheFigure = null, finialM = M.gold,
 } = {}) {
   const g = new THREE.Group();
   const sw = w * 1.15;
   const wh = w * 0.7 + (sanctumStoreys - 1) * w * 0.42;
   g.add(box(sw, wh, sw, m, 0, plinth, 0));
   const sy = plinth + wh;
-  const spire = shikhara(w, h, spireM, prof, 16);
+  const spire = shikhara(w, h, spireM, prof, 16, finialM);
   g.add(at(spire, 0, sy, 0), at(crown || flag(Math.max(3, w * 0.45), flagM), 0, sy + spire.userData.top - 0.5, 0));
   // Bands round the spire at each storey, following its cross-shaped plan.
   for (let k = 1; k < spireBands; k++) {
@@ -70,7 +70,7 @@ export function nagaraTemple({
   const ring = (n, dist, scale, hs) => {
     for (let k = 0; k < n; k++) {
       const a = (k / n) * Math.PI * 2 + (n === 4 ? 0 : Math.PI / n);
-      g.add(onFace(at(shikhara(w * scale, h * hs, spireM, prof, 10), 0, sy, 0), a, dist));
+      g.add(onFace(at(shikhara(w * scale, h * hs, spireM, prof, 10, finialM), 0, sy, 0), a, dist));
     }
   };
   if (urus >= 4) ring(4, w * 0.5, uruScale, 0.62);
@@ -84,10 +84,10 @@ export function nagaraTemple({
     g.add(box(hw, hh, hw, hallM, 0, plinth, z), box(hw + 0.8, 0.6, hw + 0.8, shade, 0, plinth + hh, z));
     const ry = plinth + hh + 0.6;
     if (kind === 'dome') {
-      g.add(cyl(hw * 0.36, hw * 0.36, hw * 0.12, hallM, 0, ry, z, 24), at(onionDome(hw * 0.36, spireM), 0, ry + hw * 0.12, z), at(kalash(hw * 0.12), 0, ry + hw * 0.12 + hw * 0.65, z));
+      g.add(cyl(hw * 0.36, hw * 0.36, hw * 0.12, hallM, 0, ry, z, 24), at(onionDome(hw * 0.36, spireM), 0, ry + hw * 0.12, z), at(kalash(hw * 0.12, finialM), 0, ry + hw * 0.12 + hw * 0.65, z));
     } else {
       const r = pidaRoof(hw * 0.95, hw * 0.4, tiers, Math.max(0.6, hw * 0.06), hallM, shade);
-      g.add(at(r, 0, ry, z), at(bell(hw * 0.18, hallM), 0, ry + r.userData.top, z), at(kalash(hw * 0.12), 0, ry + r.userData.top + hw * 0.18, z));
+      g.add(at(r, 0, ry, z), at(bell(hw * 0.18, hallM), 0, ry + r.userData.top, z), at(kalash(hw * 0.12, finialM), 0, ry + r.userData.top + hw * 0.18, z));
     }
     z += hw / 2;
   }
@@ -115,7 +115,7 @@ export function nagaraTemple({
     if (last.storeys === 1) e.add(at(door, 0, plinth, z));
     if (hw >= 9) {
       const pw = Math.min(hw - 1, Math.max(7.6, door.userData.outerW + 2.4));
-      e.add(at(templePorch(pw, 4.2, Math.min(hh - 0.3, door.userData.outerH + 0.9), hallM, shade), 0, plinth, z));
+      e.add(at(templePorch(pw, 4.2, Math.min(hh - 0.3, door.userData.outerH + 0.9), hallM, shade, finialM), 0, plinth, z));
       stairW = Math.max(6, pw * 0.75);
     }
     // Side doors into the first hall, with steps down from the plinth, where there is room.

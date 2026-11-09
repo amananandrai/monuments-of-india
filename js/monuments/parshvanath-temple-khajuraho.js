@@ -15,10 +15,10 @@ export function buildParshvanath() {
   const crown = new THREE.Group(), jain = ['#d2302c', '#f2c21c', '#f5f2ea', '#2f8a4a', '#2f5d9a'];
   crown.add(cyl(0.05, 0.07, 5, M.wood, 0, 0, 0, 6));
   jain.forEach((c, k) => { const cl = new THREE.Mesh(clothGeometry(3.6, 2.5, { y0: k * 0.5, y1: (k + 1) * 0.5 }), mat(c, 0.8, 0, { side: THREE.DoubleSide })); cl.position.set(0, 4.9, 0); crown.add(cl); });
-  f.add(at(nagaraTemple({ w: 11, h: 15, m: S, shade: Sd, plinth: 1, urus: 4, uruScale: 0.55, crown, halls: [[12, 6, 4], [9, 5, 3]], prof: (t) => 1 - 0.66 * Math.pow(t, 1.3), nicheFigure: (h, m) => figure(h * 0.62, m, 'seated') }), 0, 3, -8));
+  f.add(at(nagaraTemple({ w: 11, h: 15, m: S, shade: Sd, plinth: 1, urus: 4, uruScale: 0.55, crown, halls: [[12, 6, 4], [9, 5, 3]], prof: (t) => 1 - 0.66 * Math.pow(t, 1.3), nicheFigure: (h, m) => figure(h * 0.62, m, 'seated'), finialM: S }), 0, 3, -8));
   // The shrine built on behind the sanctum, as Parshvanath alone of the Khajuraho temples has, with
   // its own small spire.
-  f.add(box(7, 7, 6, S, 0, 4, -8 - 6.3 - 3), box(7.6, 0.5, 6.6, Sd, 0, 11, -8 - 6.3 - 3), at(shikhara(6, 6.5, S, (t) => 1 - 0.66 * Math.pow(t, 1.3), 8), 0, 11.5, -8 - 6.3 - 3));
+  f.add(box(7, 7, 6, S, 0, 4, -8 - 6.3 - 3), box(7.6, 0.5, 6.6, Sd, 0, 11, -8 - 6.3 - 3), at(shikhara(6, 6.5, S, (t) => 1 - 0.66 * Math.pow(t, 1.3), 8, S), 0, 11.5, -8 - 6.3 - 3));
   // Its walls carry no balconies but are covered in bands of sculpture: round the sanctum and its
   // rear shrine, and along both sides of the halls.
   const figs = [];

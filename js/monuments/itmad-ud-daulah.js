@@ -1,11 +1,34 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, lathe, at, onFace, FACES, chhatri, finial, inst, unitBox, sheet } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, FACES, chhatri, finial, inst, unitBox, sheet } from '../helpers.js';
 import { jali } from '../details/components.js';
 import { iwan } from '../details/mughal.js';
 import { addDetails } from '../details/itmad-ud-daulah.js';
 
 // Pietra dura: inlaid panels of coloured stone set into the white marble.
 const INLAY = [mat('#8a5a3c', 0.5), mat('#c9a24a', 0.45), mat('#4f6b4a', 0.5), mat('#2f2b2a', 0.5)];
+
+// A canopy roof lofted from a square of half-width a at its eaves to a ridge of half-length r along
+// x at height h, its sides following an ogee: steep at the eaves, curving in, flattening at the top.
+function canopyRoof(a, r, h, m, steps = 14) {
+  const ring = (t) => {
+    const k = (1 - Math.cos(Math.PI * t)) / 2, hx = a - (a - r) * k, hz = a - (a - 0.05) * k, y = h * Math.sin((Math.PI / 2) * t);
+    return [[-hx, y, -hz], [hx, y, -hz], [hx, y, hz], [-hx, y, hz]];
+  };
+  const pos = [];
+  for (let i = 0; i < steps; i++) {
+    const A = ring(i / steps), C = ring((i + 1) / steps);
+    for (let j = 0; j < 4; j++) {
+      const j2 = (j + 1) % 4;
+      pos.push(...A[j], ...C[j2], ...A[j2], ...A[j], ...C[j], ...C[j2]);
+    }
+  }
+  const top = ring(1);
+  pos.push(...top[0], ...top[2], ...top[1], ...top[0], ...top[3], ...top[2]);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.computeVertexNormals();
+  return mesh(geo, m);
+}
 
 export function buildItmadUdDaulah() {
   const Mb = M.marble, g = new THREE.Group(), f = new THREE.Group();
@@ -32,9 +55,11 @@ export function buildItmadUdDaulah() {
   // The upper pavilion, its front a marble screen over the dark room behind.
   f.add(box(10, 4.5, 10, Mb, 0, B + 8.6), onFace(box(6, 3, 0.04, M.recess, 0, B + 9.3), 0, 5.02), onFace(box(5.96, 2.96, 0.06, jali(Mb), 0, B + 9.32), 0, 5.09));
   for (const [w, h, x, y] of [[6.5, 0.25, 0, B + 9.05], [6.5, 0.25, 0, B + 12.3], [0.25, 3.5, -3.12, B + 9.05], [0.25, 3.5, 3.12, B + 9.05]]) f.add(onFace(box(w, h, 0.16, M.marbleShade, 0, y, 0), 0, 5.08, x));
-  f.add(at(lathe([[6.6, 0], [6.4, 0.6], [5.2, 1.6], [3, 2.4], [0.4, 2.7], [0, 2.7]], Mb, 4).rotateY(Math.PI / 4), 0, B + 13.1, 0));
-  f.add(at(finial(2.6), 0, B + 15.7, 0));
-  for (const x of [-4.6, 4.6]) for (const z of [-4.6, 4.6]) f.add(at(finial(1.6), x, B + 13.4, z));
+  // The tomb has no dome. The pavilion is roofed by an ogee-curved canopy over a wide chhajja,
+  // drawn out along one axis to a short ridge carrying two finials.
+  f.add(box(13.2, 0.35, 13.2, Mb, 0, B + 13.1), box(11.6, 0.3, 11.6, M.marbleShade, 0, B + 12.8));
+  f.add(at(canopyRoof(5.3, 2.2, 3.4, Mb), 0, B + 13.45, 0));
+  for (const x of [-2.2, 2.2]) f.add(at(finial(1.8), x, B + 13.45 + 3.4, 0));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.42, 1.2] };
 }

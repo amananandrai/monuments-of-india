@@ -307,7 +307,8 @@ export function minaret(h, r, m, { balconies = 3, cap = 'chhatri', seg = 16, cap
 }
 
 // Curvilinear temple tower built from stacked cross-shaped slices; prof(t) gives width at height t∈[0,1].
-export function shikhara(baseW, h, m, prof, n = 16) {
+// kalashM: the crowning pot's material; gilded by default, stone where the temple's finials are stone.
+export function shikhara(baseW, h, m, prof, n = 16, kalashM = M.gold) {
   const g = new THREE.Group();
   const sh = h / n;
   for (let i = 0; i < n; i++) {
@@ -323,7 +324,7 @@ export function shikhara(baseW, h, m, prof, n = 16) {
   am.scale.y = 0.42;
   g.add(am);
   const ky = ay + ar * 0.84;
-  g.add(at(kalash(top * 0.65), 0, ky, 0));
+  g.add(at(kalash(top * 0.65, kalashM), 0, ky, 0));
   g.userData.top = ky + top * 0.65 * 1.12;
   g.userData.topW = top;
   return g;
@@ -600,6 +601,24 @@ export function domeBands(cx, cy, cz, r, m) {
     g.add(cyl(rr * 1.015, rr * 1.015, r * 0.06, m, cx, cy + yy - r * 0.03, cz, 48));
   }
   return g;
+}
+
+// Vertical inlay stripes on a dome or shaft: n thin gores following the lathe profile pts
+// ([r, y] pairs, already set a little proud of the surface), each frac of its share of the circle
+// wide, centred on the angles k·2π/n so they can sit on a faceted cylinder's vertices. One mesh.
+export function latheStripes(pts, n, frac, m, seg = 3) {
+  const v = pts.map(([r, y]) => new THREE.Vector2(r, y)), step = (Math.PI * 2) / n, w = step * frac, pos = [], idx = [];
+  for (let k = 0; k < n; k++) {
+    const g = new THREE.LatheGeometry(v, seg, k * step - w / 2, w), base = pos.length / 3;
+    pos.push(...g.attributes.position.array);
+    for (const i of g.index.array) idx.push(base + i);
+    g.dispose();
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setIndex(idx);
+  geo.computeVertexNormals();
+  return mesh(geo, m);
 }
 
 export function stellateTower(r, h, m, md, tiers = 7) {
