@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, V, mesh, doubleSided, box, cyl, lathe, group, at, kalash, bell, shikhara, pidaRoof, nagaraProfile, ribbed, inst, unitBox, unitCyl, aroundRect, hoopArch } from '../helpers.js';
 import { trabeateGate, wallWithGaps } from '../details/temples.js';
-import { templeDoorway } from '../details/doorways.js';
+import { templeDoorway, steps } from '../details/doorways.js';
 import { miniSpireGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/dilwara-temples.js';
 
@@ -34,6 +34,8 @@ export function buildDilwara() {
   const rz = 9, pc = [];
   for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) pc.push([-6 + i * 4, 2.5, rz - 6 + j * 4, 0.9, 6.5, 0.9]);
   f.add(box(17, 1, 17, Sh, 0, 1.5, rz), inst(unitCyl(12), pc, Mb));
+  // A short flight from the court up onto the mandapa's platform, the way to the doorway.
+  f.add(at(steps(6, 1, 4, Sh, 0.4), 0, 1.5, rz + 8.5));
   for (const j of [0, 3]) for (let i = 0; i < 3; i++) f.add(hoopArch(V(-6 + i * 4, 7.3, rz - 6 + j * 4), V(-2 + i * 4, 7.3, rz - 6 + j * 4), Mb));
   for (const i of [0, 3]) for (let j = 0; j < 3; j++) f.add(hoopArch(V(-6 + i * 4, 7.3, rz - 6 + j * 4), V(-6 + i * 4, 7.3, rz - 2 + j * 4), Mb));
   // The dome stands open to the hall below: an octagonal drum ring, and a shell seen from both sides,
