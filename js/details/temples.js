@@ -46,11 +46,13 @@ export function bhumijaRows(w, h, prof, rows = 9) {
 // sanctumStoreys: storeys of the sanctum's wall under the spire. Each one above the ground storey
 // (w * 0.42 high) has a balcony ledge with railings, a niche with an image on each face and an eave.
 // userData.sy is the height of the spire's foot. spireBands: the spire is cut into this many
-// storeys by a moulded band at each (a Maha Meru spire's floors); 0 for none.
+// storeys by a moulded band at each (a Maha Meru spire's floors); 0 for none. nicheFigure(h, m):
+// the image in the sanctum's outer niches (a guardian by default; a seated tirthankara on a Jain
+// temple).
 export function nagaraTemple({
   w = 12, h = 22, m, shade = m, spireM = m, plinth = 2, urus = 4, uruScale = 0.5,
   halls = [[14, 8, 4]], prof = nagaraProfile, flagM = M.saffron, hallM = m, crown = null, apron = 8, friezeSpacing = 1,
-  base = { tiers: 2, cut: 0.8 }, stair = {}, sanctumStoreys = 1, spireBands = 0,
+  base = { tiers: 2, cut: 0.8 }, stair = {}, sanctumStoreys = 1, spireBands = 0, nicheFigure = null,
 } = {}) {
   const g = new THREE.Group();
   const sw = w * 1.15;
@@ -145,7 +147,7 @@ export function nagaraTemple({
   if (stair) e.add(at(grandStair(plinth, stairW, shade, m, { cheek: Math.min(0.9, 0.25 + plinth * 0.25), ...stair }), 0, 0, z + 6));
   else e.add(at(steps(stairW, plinth, Math.max(3, Math.ceil(plinth / 0.42)), shade, 0.45), 0, 0, z + 6));
   g.add(mergeByMaterial(e));
-  g.add(sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing, sanctumStoreys, frontDoor));
+  g.add(sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing, sanctumStoreys, frontDoor, nicheFigure));
   // A band of carved figures along each side of every hall, parted round the side doors.
   // Halls of more than one storey, with doors on the faces that open: the front of the front hall and
   // the sides of the first, where it has side steps.
@@ -178,7 +180,7 @@ export function nagaraTemple({
 // amalaka stones (bhumi-amalakas) on the corners of the spire, one at each of its storeys.
 // doorW: the width of the doorway in the front face of a shrine with no hall, where the base
 // mouldings stop either side of it (0 when a hall covers the front).
-function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing = 1, storeys = 1, doorW = 0) {
+function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing = 1, storeys = 1, doorW = 0, nicheFigure = null) {
   const d = new THREE.Group(), g0 = w * 0.7, fu = w * 0.42, wh = g0 + (storeys - 1) * fu, u = Math.max(0.12, w * 0.018);
   // A small shrine (under 7 m), often one of many in a court: a plain image in each niche rather
   // than a sculpted guardian, and coarser amalakas, so a group of them stays light.
@@ -213,7 +215,7 @@ function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing =
   const fh = Math.min(1.1, g0 * 0.2 - 4.6 * u);
   if (fh > 0.45) for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) d.add(onFace(at(figureFrieze(sw - 0.6, fh, m, { pitch: fh * 0.75 * friezeSpacing, kinds: ['standing', 'dancer', 'standing', 'musician'] }), 0, plinth + 4.6 * u, 0), a, sw / 2));
   for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) {
-    d.add(onFace(at(templeNiche(nw, nh, m, { figure: small ? idol(nh * 0.85, m) : guardian(nh * 0.88, m) }), 0, ny, 0), a, sw / 2));
+    d.add(onFace(at(templeNiche(nw, nh, m, { figure: nicheFigure ? nicheFigure(nh * 0.85, m) : small ? idol(nh * 0.85, m) : guardian(nh * 0.88, m) }), 0, ny, 0), a, sw / 2));
     if (sw > 10) for (const s of [-1, 1]) d.add(onFace(at(templeNiche(nw * 0.6, nh * 0.62, m), 0, ny + nh * 0.12, 0), a, sw / 2, s * sw * 0.32));
   }
   const sy = plinth + wh, am = small ? new THREE.SphereGeometry(1, 10, 4) : new THREE.SphereGeometry(1, 16, 6);
