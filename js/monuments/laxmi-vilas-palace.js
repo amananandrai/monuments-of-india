@@ -1,16 +1,22 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, lathe, ribbed, finial, surface } from '../helpers.js';
+import { detail } from '../detail.js';
 import { arcadeSkin } from '../details/mughal.js';
 import { porch } from '../details/colonial.js';
-import { merlons, windowFrame, mughalChhatri, mergeByMaterial } from '../details/components.js';
+import { merlons, windowFrame, mughalChhatri, mergeByMaterial, archCurve, chhajja, bracketGeo, placeAll, jharokha } from '../details/components.js';
 import { addDetails } from '../details/laxmi-vilas-palace.js';
 
-// Pale buff sandstone throughout, its courses, frames and recesses a darker buff, with pinkish
-// panels and bands; the domes the same stone, a little greyer.
-export const STONE = mat('#d8c6a9', 0.88);
-export const DARK = mat('#b39a7b', 0.9);
-export const PINK = surface(mat('#c7a08c', 0.88), 'carved');
-export const DOME = mat('#cdbfa8', 0.85);
+// The stones, each its own material: the warm golden-beige sandstone of the walls; a darker buff
+// for courses, frames and the deep shade of the mouldings; the pinkish Agra sandstone of the carved
+// panels; red sandstone for the string courses under the parapets; the blue-grey trap stone of
+// the plinth and the course along the foot of the walls; and the domes, the same sandstone a
+// little greyer.
+export const STONE = surface(mat('#dcc6a2', 0.88), 'masonry');
+export const DARK = surface(mat('#b39a7b', 0.9), 'masonry');
+export const PINK = surface(mat('#c9a08a', 0.88), 'carved');
+export const RED = surface(mat('#a8634a', 0.88), 'masonry');
+export const TRAP = surface(mat('#5e6672', 0.86), 'masonry');
+export const DOME = surface(mat('#cdbfa8', 0.85), 'masonry');
 
 // The palace's domes: tall, a little swollen at the haunch and drawn up to a point, ribbed, of unit
 // radius at the base and 1.5 high.
@@ -70,11 +76,42 @@ function wing(w, h, d) {
   }
   g.add(box(w, h, d - 2 * dd, STONE), at(arcadeSkin(w, h, cells, dd, STONE, { trim: DARK }), 0, 0, d / 2 - dd), at(arcadeSkin(w, h, back, dd, STONE, { trim: DARK, fill: 'room' }), 0, 0, -d / 2 + dd).rotateY(Math.PI));
   for (const y of [6 * s, 11.8 * s]) g.add(box(w + 0.4, 0.6, d + 0.4, DARK, 0, y));
-  g.add(box(w + 0.6, 1.2, 3, DARK, 0, 11.8 * s - 0.6, d / 2), box(w + 0.8, 0.8, d + 0.8, DARK, 0, h), box(w + 0.4, 0.5, d + 0.4, PINK, 0, h - 1.4));
+  g.add(box(w + 0.6, 1.2, 3, DARK, 0, 11.8 * s - 0.6, d / 2), box(w + 0.8, 0.8, d + 0.8, DARK, 0, h), box(w + 0.4, 0.5, d + 0.4, RED, 0, h - 1.4));
+  // The trap-stone plinth along the foot of the walls.
+  g.add(box(w + 0.5, 0.5, d + 0.5, TRAP, 0, 0));
   fine.add(at(merlons(w - 0.6, 0.5, 0.8, 0.3, STONE, 0.5), 0, h + 0.8, d / 2 + 0.1));
+  if (!detail.low) ornament(fine, w, h, d, s, cells);
   g.add(mergeByMaterial(fine));
   g.userData.top = h + 0.8;
   return g;
+}
+
+// The front's carving, on desktops (js/detail.js): the ground arches multifoil, lobed round their
+// heads; a stone chhajja over the ground arcade and under the parapet, each on carved brackets; a
+// jharokha on brackets in every third bay of the middle storey; and slender chhatris along the
+// parapet, one to about every 13 m.
+function ornament(fine, w, h, d, s, cells) {
+  const z = d / 2, cusps = [], br = [];
+  for (const [cx, sill, aw, ah, kind] of cells) {
+    if (sill > 1) continue;
+    const r = aw / 2, sp = ah - 1.4 * r, pts = archCurve(r, sp, true, 12);
+    for (let k = 2; k < pts.length - 2; k += 2) {
+      const p = pts[k];
+      cusps.push([cx + p.x * 0.9, sill + sp + (p.y - sp) * 0.92, z + 0.04, Math.atan2(p.y - sp, p.x) - Math.PI / 2]);
+    }
+  }
+  const cuspM = new THREE.InstancedMesh(new THREE.TorusGeometry(0.16, 0.05, 4, 8, Math.PI), DARK, cusps.length), o = new THREE.Object3D();
+  cusps.forEach(([x, y, zz, a], i) => { o.position.set(x, y, zz); o.rotation.set(0, 0, a); o.updateMatrix(); cuspM.setMatrixAt(i, o.matrix); });
+  fine.add(cuspM);
+  for (const y of [5.8 * s, h - 0.1]) {
+    fine.add(at(chhajja(w, 1.1, 0.35, 0.12, DARK), 0, y, z));
+    for (let x = -w / 2 + 1; x <= w / 2 - 1; x += 2.2) br.push([x, y - 0.18, z]);
+  }
+  fine.add(placeAll(bracketGeo(0.9, 0.9, 0.22), br, DARK));
+  const n = Math.max(2, Math.round(w / 4.4));
+  for (let k = 1; k < n; k += 3) fine.add(at(jharokha(1.9, 2.6, STONE, { d: 0.9, trim: DARK, roof: 'bangla' }), -w / 2 + (k + 0.5) * (w / n), 7.4 * s, z + 0.02));
+  const m = Math.max(1, Math.round(w / 13));
+  for (let k = 0; k < m; k++) fine.add(at(mughalChhatri(0.85, 3.6, STONE, { domeM: DOME, finialM: DARK, crescent: false }), -w / 2 + (k + 0.5) * (w / m), h + 0.8, z - 1.4));
 }
 
 // Small round turret with a dome, r in radius, its shaft h high.
