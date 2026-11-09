@@ -18,7 +18,7 @@ function wing(len, h) {
   for (let fl = 0; fl < 3; fl++) for (let k = 0; k < Math.floor(len / 3); k++) {
     vents.push([4.55, 1.6 + fl * 4.2, 1.5 + k * 3, 0.1, 1, 0.6]);
     arches.push([-len / 2 + 1.5 + k * 3, 0.5 + fl * 4.2, 2.1, 3.2]);
-    doors.push([-4.5 + dd + 0.03, 0.55 + fl * 4.2, 1.5 + k * 3, 0.06, 2.2, 0.9]);
+    doors.push([-4.5 + dd - 0.03, 0.55 + fl * 4.2, 1.5 + k * 3, 0.06, 2.2, 0.9]);
   }
   const skin = arcadeSkin(len, h, arches, dd, BRICK, { trim: BRICK, ring: false, fill: 'none', pointed: false });
   skin.rotation.y = -Math.PI / 2;

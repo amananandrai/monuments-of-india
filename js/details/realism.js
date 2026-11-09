@@ -414,7 +414,8 @@ export function launches(spots, { y = 0, hulls = ['#f4f1ea', '#f4f1ea', '#2f5d9a
     rails.push(new THREE.BoxGeometry(4.5, 0.06, 0.06).translate(0, 4.1, -7.5));
     launchGeos = {
       hull: clean(prism(plan(2.5, -8, 4, 9.5), 1.9, -0.7)),
-      band: clean(prism(plan(2.53, -8.02, 4, 9.56), 0.35, 0.85)),
+      // The band stops 5 cm under the deck, so its top never shares the deck's plane (flicker).
+      band: clean(prism(plan(2.53, -8.02, 4, 9.56), 0.3, 0.85)),
       deck: mergeGeometries([new THREE.BoxGeometry(4.3, 2.0, 11).translate(0, 2.2, -2), new THREE.BoxGeometry(4.7, 0.14, 12).translate(0, 3.27, -2), new THREE.BoxGeometry(2.3, 1.6, 2).translate(0, 4.14, 3.2)].map(clean)),
       windows: mergeGeometries([new THREE.BoxGeometry(4.36, 0.62, 9.6).translate(0, 2.55, -2), new THREE.BoxGeometry(2.36, 0.6, 1.4).translate(0, 4.55, 3.4), new THREE.BoxGeometry(1.9, 0.6, 2.06).translate(0, 4.55, 3.2)].map(clean)),
       canopy: clean(new THREE.BoxGeometry(4.6, 0.1, 9.4).translate(0, 5.25, -2.6)),
@@ -623,8 +624,10 @@ export function townHouses(spots, { seed = 1, y: y0 = 0, paint = HOUSE_PAINT, tr
   };
   const R = rng(seed), bodies = [], tints = [], trims = [], wins = [], tanks = [], gables = [], gableTints = [];
   const frames = [], shades = [], doors = [], doorFrames = [], rails = [], shutters = [], awnings = [], awningTints = [], signs = [], signTints = [];
-  for (const [x, z, w, d, n, ry = 0, y = y0] of spots) {
-    const h = n * 3.2, c = Math.cos(ry), s = Math.sin(ry);
+  for (const [x, z, w, d, n, ry = 0, y1 = y0] of spots) {
+    // Each house sunk by its own few centimetres, so the floors, balconies and roofs of neighbours
+    // that overlap never lie in one plane (they would flicker).
+    const y = y1 - R() * 0.12, h = n * 3.2, c = Math.cos(ry), s = Math.sin(ry);
     const P = (lx, lz) => [x + lx * c + lz * s, z - lx * s + lz * c];
     bodies.push([x, y, z, [w, h, d], ry]);
     tints.push(paint[Math.floor(R() * paint.length)]);
@@ -641,7 +644,7 @@ export function townHouses(spots, { seed = 1, y: y0 = 0, paint = HOUSE_PAINT, tr
       if (k) {
         const [bx, bz] = P(0, d / 2 + 0.55);
         trims.push([bx, y + k * 3.2 - 0.15, bz, [w * 0.8, 0.15, 1.1], ry]);
-        if (fine) { const [rx, rz] = P(0, d / 2 + 1.06); trims.push([rx, y + k * 3.2, rz, [w * 0.8, 0.5, 0.08], ry]); rails.push([rx, y + k * 3.2 + 0.86, rz, [w * 0.8, 0.06, 0.1], ry]); for (const e of [-1, 1]) { const [px, pz] = P(e * w * 0.39, d / 2 + 1.06); rails.push([px, y + k * 3.2 + 0.5, pz, [0.06, 0.38, 0.06], ry]); } trims.push([x, y + k * 3.2 - 0.12, z, [w + 0.12, 0.12, d + 0.12], ry]); }
+        if (fine) { const [rx, rz] = P(0, d / 2 + 1.06); trims.push([rx, y + k * 3.2, rz, [w * 0.8, 0.5, 0.08], ry]); rails.push([rx, y + k * 3.2 + 0.86, rz, [w * 0.8, 0.06, 0.1], ry]); for (const e of [-1, 1]) { const [px, pz] = P(e * w * 0.39, d / 2 + 1.06); rails.push([px, y + k * 3.2 + 0.5, pz, [0.06, 0.38, 0.06], ry]); } trims.push([x, y + k * 3.2 - 0.17, z, [w + 0.12, 0.12, d + 0.12], ry]); }
       }
     }
     if (fine) {

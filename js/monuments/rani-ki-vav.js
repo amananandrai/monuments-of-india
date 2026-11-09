@@ -27,7 +27,7 @@ export function buildRaniKiVav() {
   for (let row = 0; row < 6; row++) for (let k = 0; k < 18; k++) {
     const z = z0 - 3 - k * 3.2, y = 3 + row * 4;
     if (y > D - 3) continue;
-    for (const s of [-1, 1]) niches.push([s * (W / 2 - 0.15), y, z, 0.3, 2.4, 1.4]);
+    for (const s of [-1, 1]) niches.push([s * (W / 2 - 0.16), y, z, 0.3, 2.4, 1.4]);
   }
   f.add(inst(unitBox(), niches, SAND_DARK));
   // Pillared pavilions spanning the trench at three landings

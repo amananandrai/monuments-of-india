@@ -34,7 +34,7 @@ export function buildPalitana() {
   const put = (x, z, w, d, ry) => {
     const c = Math.cos(ry), sn = Math.sin(ry), corners = [[-w / 2, -d / 2], [w / 2, -d / 2], [-w / 2, d / 2], [w / 2, d / 2]].map(([u, v]) => [x + u * c + v * sn, z - u * sn + v * c]);
     const lo = Math.min(...corners.map(([px, pz]) => ground(px, pz, 1))) - 0.3;
-    top = Math.min(TOP, Math.max(top, ...corners.map(([px, pz]) => ground(px, pz, 1.07) + 0.2)));
+    top = Math.min(TOP, Math.max(top, 0.26, ...corners.map(([px, pz]) => ground(px, pz, 1.07) + 0.2)));
     treads.push([x, lo, z, w, top - lo, d, ry]);
   };
   for (let k = 1; k < nodes.length; k++) {

@@ -194,7 +194,7 @@ function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing =
   // image in each niche rather than a sculpted guardian, and coarser amalakas, so a group of them
   // stays light. Desktops get the full carving.
   const small = w < 7 && detail.low;
-  const base = [[0, 2 * u, 2 * u, shade], [2 * u, 1.5 * u, 1.4 * u], [3.5 * u, u, 0.9 * u, shade]], upper = [[g0 * 0.8, u, 0.7 * u], [wh - 1.6 * u, 1.6 * u, 2 * u, shade]];
+  const base = [[0, 2 * u, 2 * u, shade], [2 * u, 1.5 * u, 1.4 * u], [3.5 * u, u, 0.9 * u, shade]], upper = [[g0 * 0.8, u, 0.7 * u], [wh - 1.6 * u - 0.02, 1.6 * u, 2 * u, shade]];
   if (!doorW) d.add(at(mouldings(sw, sw, [...base, ...upper], m), 0, plinth, 0));
   else {
     // Round three sides and either side of the doorway; the courses meet at the front corners.

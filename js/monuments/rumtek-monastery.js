@@ -18,7 +18,7 @@ export function buildRumtek() {
   g.add(mountainRing({ inner: 400, outer: 700, h: 170, vary: 60, rock: ['#4a5d3a', '#56693f'], cover: '#4e6e3c', steep: 0.6 }));
 
   // Courtyard ringed by monks' quarters
-  f.add(box(70, 0.4, 70, M.path));
+  f.add(box(69.8, 0.4, 69.8, M.path));
   const q = [];
   for (const s of [-1, 1]) q.push([0, 0, s * 32, 70, 7, 6], [s * 32, 0, 0, 6, 7, 58]);
   f.add(inst(unitBox(), q, YELLOW), inst(unitBox(), q.map(([x, y, z, w, h, d]) => [x, h, z, w + 0.4, 0.8, d + 0.4]), TIBETAN.maroon));

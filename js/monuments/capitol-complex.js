@@ -73,7 +73,7 @@ export const HC = 330;
 export function buildCapitolComplex() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(480, 0.3, 560, CONCRETE_DARK, 0, 0, 130), box(500, 0.15, 580, M.grass, 0, -0.1, 130));
+  g.add(box(480, 0.28, 560, CONCRETE_DARK, 0, 0, 130), box(500, 0.15, 580, M.grass, 0, -0.1, 130));
   // The High Court faces the Assembly from the far end of the esplanade, some 330 m off; it stands
   // outside the framed group, so the home view is of the Assembly and the Secretariat.
   f.add(at(secretariat(), -105, 0, -125), at(palaceOfAssembly(), 0, 0, 0));

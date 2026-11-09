@@ -106,7 +106,9 @@ export function grandStair(rise, width, m, sh, {
   let z = 0;
   for (let k = 1; k < n; k++) {
     const d = k === half ? landing : tread;
-    g.add(box(W, rise - k * h, d, m, 0, 0, z + d / 2));
+    // 3 cm proud of the line of the steps, so the lowest tread's top is never level with a 0.2 m
+    // pavement round it (they would flicker).
+    g.add(box(W, rise - k * h + 0.03, d, m, 0, 0, z + d / 2));
     z += d;
   }
   const zE = z, z1 = half ? (half - 1) * tread : 0, z2 = z1 + landing, yL = rise - half * h + cheek;

@@ -71,7 +71,7 @@ export function buildStatue() {
     for (const sd of [-1, 1]) fins.push([k, y, sd * (w / 2 + 0.5), 1.2, h, 1], [sd * (w / 2 + 0.5), y, k, 1, h, 1.2]);
   }
   f.add(inst(unitBox(), fins, STONE));
-  for (const sx of [-1, 1]) for (const sz of [-1, 1]) f.add(box(10, 21, 10, STONE_DARK, sx * 37, 0, sz * 37));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) f.add(box(10.4, 21, 10.4, STONE_DARK, sx * 37, 0, sz * 37));
   f.add(smoothLathe([[25.6, 55.6], [24.8, 56.6], [22.4, 57.3], [20.4, 58.0], [0.1, 58.0]], M.marbleShade, 64));
   for (let st = 0; st < 8; st++) f.add(box(30, 1.1, 2, M.marbleShade, 0, st * 1.1, 49 - st * 1.0));
   f.add(at(patel(M.bronze), 0, 58, 0));
@@ -105,7 +105,7 @@ export function buildStatue() {
   // The face's distance out at height y; the spillway's piers stand out from the crest, the radial
   // gates between them, and the overflow runs down the face as a white sheet.
   const face = (y) => 16 + 54 * (1 - y / H), piers = [], gates = [];
-  for (let x = -270; x <= 270; x += 18) piers.push([x, H - 30, dz + face(H - 30) / 2 + 8, 5, 34, face(H - 30) + 6]);
+  for (let x = -270; x <= 270; x += 18) piers.push([x, H - 30, dz + face(H - 30) / 2 + 8, 5, 33.9, face(H - 30) + 6]);
   for (let x = -261; x < 270; x += 18) gates.push([x, H - 24, dz + face(H - 24) + 3, 12.4, 18, 1.2]);
   dam.add(inst(unitBox(), piers, CONC), inst(unitBox(), gates, mat('#4f5a63', 0.5, 0.4)));
   const fall = new THREE.Shape([[face(H - 26) + 0.6, H - 26], [face(0) + 0.6, 0], [face(0) + 5, 0], [face(H - 26) + 1.6, H - 26]].map(([z, y]) => new THREE.Vector2(z, y)));
