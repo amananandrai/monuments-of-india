@@ -4,9 +4,10 @@ import { windowFrame, keystone, mergeByMaterial } from './components.js';
 import { trees, shrubs, lampPosts, scatter, around } from './realism.js';
 
 // The Cellular Jail, finer detail. From photographs: white string courses mark the floors along the
-// outer walls of the wings; the central watchtower has arched windows on every face of its two
-// stages, banded in white. Dimensions follow js/monuments/cellular-jail.js: wings 9 deep with their
-// outer wall at x = 4.5 in their own frame, storeys 4.2 high; the tower an octagon r = 9, 16 high.
+// outer walls of the wings; the central watchtower has arched windows on every face of its
+// three stages, banded in white. Dimensions follow js/monuments/cellular-jail.js: wings 9 deep with their
+// outer wall at x = 4.5 in their own frame, storeys 4.2 high; the tower an octagon r = 9, 22 high,
+// then an open lantern.
 const LIME = mat('#e9e3d6', 0.85);
 function architecture(f) {
   const d = new THREE.Group(), lens = [100, 100, 100, 14, 14, 14, 14];
@@ -19,10 +20,9 @@ function architecture(f) {
   }
   for (let k = 0; k < 8; k++) {
     const a = ((k + 0.5) / 8) * Math.PI * 2;
-    for (const y of [3, 9.5]) d.add(onFace(at(windowFrame(1.4, 3, LIME, { shape: 'round', frame: 0.2 }), 0, y, 0), a, 9 * Math.cos(Math.PI / 8) + 0.02));
-    d.add(onFace(at(windowFrame(1.2, 2.4, LIME, { shape: 'round', frame: 0.16 }), 0, 18.2, 0), a, 6 * Math.cos(Math.PI / 8) + 0.02));
+    for (const y of [3, 9.5, 16]) d.add(onFace(at(windowFrame(1.4, 3, LIME, { shape: 'round', frame: 0.2 }), 0, y, 0), a, 9 * Math.cos(Math.PI / 8) + 0.02));
   }
-  d.add(cyl(9.15, 9.15, 0.35, LIME, 0, 8, 0, 8));
+  d.add(cyl(9.15, 9.15, 0.35, LIME, 0, 8, 0, 8), cyl(9.15, 9.15, 0.35, LIME, 0, 14.5, 0, 8));
   mergeByMaterial(d);
   f.add(d);
 }
@@ -53,7 +53,7 @@ function sculpture(f) {
 export function addDetails(f, g) {
   architecture(f);
   sculpture(f);
-  f.add(at(tricolour(9), 0, 27.6, 0));
+  f.add(at(tricolour(9), 0, 33.2, 0));
   const lawn = scatter(36, [-150, 150, -140, 140], { seed: 3, gap: 9 }).filter(([x, z]) => {
     // Keep clear of the three long wings, which run out from the tower at these angles
     return [0, 1, 2].every((k) => { const a = (k / 7) * Math.PI * 2 + 0.4, u = x * Math.sin(a) + z * Math.cos(a), v = x * Math.cos(a) - z * Math.sin(a); return u < 0 || u > 112 || Math.abs(v) > 9; }) && Math.hypot(x, z) > 30;
