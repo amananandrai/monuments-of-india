@@ -14,6 +14,8 @@ npx playwright install chromium   # once, if Playwright has no browser yet
 | `node check-budgets.mjs [id ...] [--top N]` | Triangles at both detail levels against the budgets in `js/detail.js` (600k on desktops, 300k on phones), counted before the trees are filled in. Exits 1 if any monument is over. |
 | `node check-flicker.mjs [id ...] [--min m²] [--same]` | Faces that z-fight: two triangles of different materials in one plane, facing the same way, overlapping, with no depth offset, that can be seen. Lists each clash with its materials, the direction it faces and a point on it. Exits 1 if any is found. |
 
+| `node check-heights.mjs [id ...]` | Each model's height against the real figure in its `refs` (`js/data.js`): up to 15% over (spires and flags) and 5% under. A building on a hill gives `refs.base`; `refs.top: 'rock'` compares the hill's height (the module's exported `H`). Exits 1 if any is out. |
+
 With no ids, a check runs over all 101 monuments.
 
 Reading a flicker report: the site itself separates clashing faces at load (`separateCoplanar` and

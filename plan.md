@@ -32,7 +32,7 @@ The budget count and the flicker scan used so far live outside the repo. Put the
 
 - [x] `tools/check-budgets.mjs`: builds every monument headless at both levels (Playwright with the local three.js, as `video/` already depends on) and fails if any is over 600k / 300k. Prints the top ten of each level.
 - [x] `tools/check-flicker.mjs`: builds each monument as `js/main.js` does (`naturalize`, `separateCoplanar`, `blendIntoLand`), buckets triangles by plane, and reports overlapping same-facing faces of different materials without a depth offset, keeping only those a short ray off the face shows to be uncovered and not inside a solid. Takes monument ids, or all.
-- [ ] `tools/check-heights.mjs` (with T13): compares each model's height with its `refs`.
+- [x] `tools/check-heights.mjs` (with T13): compares each model's height with its `refs`.
 - [x] A short `tools/README.md`: how to run them, and that they need `npm i` in `tools/` (three, playwright).
 
 ### T2. Jama Masjid: open cloisters and the north and south stairs
@@ -142,13 +142,32 @@ One commit each. Check the budget after each.
 
 ### T13. Keeping it accurate
 
-- [ ] A `refs` field on each monument in `js/data.js`: its key real dimensions (height, length or area) and a source link.
-- [ ] `tools/check-heights.mjs`: builds each model and compares its bounding-box height (and, where given, its plan size) with `refs`, allowing for the plaque's `scaleNote`.
+- [x] A `refs` field in `js/data.js`: on the 33 monuments with a stated height (from each plaque's own figure, and the real figures the accuracy review checked, with its source links where it gave them): `height`, and optionally `of` (what is measured), `base` (for a building on a hill), `top: 'rock'` (the hill's height) and `source`. Still to add: the other 68, and source links for most.
+- [x] `tools/check-heights.mjs`: builds each model and compares its height with `refs` (up to 15% over for spires and flags, 5% under). Plan sizes are not checked yet.
 - [ ] One camera preset per monument matching its best-known photograph (`view` and `zoom` in the builder, or a `photo` preset beside them), to compare screenshots with reference photos.
+
+### T14. Heights out of tolerance
+
+`node tools/check-heights.mjs` finds eleven models more than 15% taller than their stated height. Some
+of the excess is a flag or finial over the measured top (Jagannath's flag adds about 9 m); measure
+each in the browser before rescaling, and keep the kalash or flag above the stated height.
+
+- [ ] Gateway of India: 33.2 m against 26 m.
+- [ ] Hawa Mahal: 20.1 m against 15 m.
+- [ ] Sher Shah Suri's tomb: 50.8 m against 37 m.
+- [ ] Rumi Darwaza: 23.9 m against 18 m.
+- [ ] Jagannath: 82.6 m against 65 m (with the Nila Chakra and flags).
+- [ ] Sanchi: 21 m against 16.5 m (with the umbrellas).
+- [ ] Kailasa: 38.1 m against 30 m.
+- [ ] Kandariya: 36.9 m against 31 m.
+- [ ] Konark (the Jagamohana): 46 m against 39 m.
+- [ ] Buland Darwaza: 63.9 m against 54 m.
+- [ ] Kirti Mandir: 28.3 m against 24 m.
 
 ## Checking a task
 
 1. `npx serve .`, open the hash, reset the view; look from the default view, the opposite side and close to the new part. Then `?detail=low`.
 2. `node tools/check-budgets.mjs` (or count the one monument): under 600k on desktops, 300k on phones.
 3. `node tools/check-flicker.mjs <id>`: no new visible clashes.
-4. Neighbours that share a helper you changed (a `townHouses`, `nagaraTemple` or `gopuram` change reaches many monuments) still look right.
+4. `node tools/check-heights.mjs <id>`, if the monument has `refs`.
+5. Neighbours that share a helper you changed (a `townHouses`, `nagaraTemple` or `gopuram` change reaches many monuments) still look right.
