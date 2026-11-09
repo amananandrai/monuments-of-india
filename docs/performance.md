@@ -210,6 +210,12 @@ What desktops get that phones do not:
   `townHouses` instead of plain boxes, and on desktops the ranges round the Golden Temple's pool have
   two storeys of arches and domed kiosks along their parapets. The largest increases are Howrah
   (157k to 341k) and Jaisalmer (169k to 316k; 216k on phones).
+- **Backdrops:** the old city of Varanasi now surrounds the Kashi corridor on both levels (the ghats
+  run on along the river, tall houses rise from them, and lanes of houses fill the blocks behind;
+  kiosks on the riverfront roofs on desktops): 511k on desktops, 252k on phones. Behind the
+  Bandra–Worli Sea Link, desktops get a fuller Mumbai skyline from its own random sequence (podiums,
+  setbacks, glass and round towers, spires, helipads, and mid-rise blocks along the shore): 167k;
+  phones keep the old skyline (136k).
 - **Dressed elephants** (`rideElephant` in `js/details/animals.js`): a fringe of tassels and
   embroidered roundels on the cloths, a rope of bells round the neck, anklets, tusk caps, and on a
   temple elephant the gold nettipattam over the forehead and trunk.

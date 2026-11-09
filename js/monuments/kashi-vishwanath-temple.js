@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, box, at, onFace, archPanel, guldasta, sheet, chhatri } from '../helpers.js';
+import { M, mat, box, at, rng, onFace, archPanel, guldasta, sheet, chhatri } from '../helpers.js';
+import { townHouses } from '../details/realism.js';
+import { detail } from '../detail.js';
 import { arcadeSkin } from '../details/mughal.js';
 import { nagaraTemple } from '../details/temples.js';
 import { addDetails } from '../details/kashi-vishwanath-temple.js';
@@ -8,12 +10,48 @@ const CHUNAR = mat('#d9b48f', 0.85);
 const SHADE = mat('#b8906a', 0.9);
 const GOLD = mat('#e8b64a', 0.3, 0.7, { emissive: '#3a2805' });
 
+// The old city of Varanasi round the corridor (js/details/realism.js, townHouses): along the river,
+// tall houses and palaces rising straight from the top of the ghats, many crowned with kiosks on
+// desktops (js/detail.js); behind them, rows of houses two to five storeys high along narrow lanes,
+// facing each other across them, clear of the corridor's ranges (|x| < 44) and the chowk, and two
+// rows behind the chowk.
+const OLD_PAINT = ['#e3c48f', '#d99a6c', '#e8d6b0', '#c98a5a', '#f0dfb8', '#d7b56d', '#e6b3a3', '#cfa0a0'];
+function oldCity() {
+  const g = new THREE.Group(), R = rng(23), front = [], lanes = [], kiosks = [];
+  for (const s of [-1, 1]) {
+    let x = 36;
+    while (x < 146) {
+      const w = 9 + R() * 7, d = 13 + R() * 3, n = 5 + Math.floor(R() * 3), cx = s * (x + w / 2);
+      front.push([cx, 88.4 - d / 2, w, d, n, 0]);
+      if (R() < 0.35) kiosks.push([cx + (R() - 0.5) * w * 0.4, n * 3.2 + 0.9, 88.4 - d * 0.3]);
+      x += w + 0.4;
+    }
+    for (let j = 0; j < 11; j++) {
+      const zr = -100 + j * 15.5, facing = j % 2 ? Math.PI : 0;
+      if (zr > 66) break;
+      let xx = 44;
+      while (xx < 146) {
+        const w = 7 + R() * 5;
+        lanes.push([s * (xx + w / 2), zr + (R() - 0.5) * 0.6, w, 10 + R() * 2, 2 + Math.floor(R() * 4), facing]);
+        xx += w + (R() < 0.15 ? 3.5 : 0.3);
+      }
+    }
+  }
+  for (const zr of [-104, -88]) for (let xx = -36; xx < 36;) { const w = 7 + R() * 4; lanes.push([xx + w / 2, zr, w, 10, 2 + Math.floor(R() * 3), zr < -95 ? 0 : Math.PI]); xx += w + 0.3; }
+  g.add(townHouses(front, { seed: 29, paint: OLD_PAINT }), townHouses(lanes, { seed: 31, paint: OLD_PAINT }));
+  if (!detail.low) for (const [x, y, z] of kiosks) g.add(at(chhatri(1.6, 4.2, CHUNAR), x, y, z));
+  return g;
+}
+
 export function buildKashiVishwanath() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // The Ganga and the ghats at the foot of the Kashi Vishwanath Corridor
   g.add(sheet(600, 200, M.river, 0, 0.3, 214), box(300, 0.2, 200, M.path, 0, 0, -10));
   for (let k = 0; k < 9; k++) g.add(box(120, 9 - k, 3, SHADE, 0, 0, 90 + k * 3));
+  // The ghats run on along the river either side, and the old city crowds down to them.
+  for (const s of [-1, 1]) for (let k = 0; k < 9; k++) g.add(box(90, 9 - k, 3, k % 3 ? SHADE : CHUNAR, s * 105, 0, 90 + k * 3));
+  g.add(oldCity());
   // The Kashi Vishwanath Dham. At the top, the Mandir Chowk: the shrine standing alone in an open
   // court paved in stone, ringed on three sides by two-storey arcaded ranges of pink Chunar sandstone
   // with kiosks at the corners. From its open front a broad flight of steps falls to the long plaza
