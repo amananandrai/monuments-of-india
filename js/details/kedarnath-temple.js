@@ -6,8 +6,9 @@ import { horse } from './animals.js';
 
 // Kedarnath, finer detail. From photographs: the grey stone sanctum stands on moulded courses, with
 // a niche and image in each of its outer faces; pilasters divide the walls of the hall; and amalaka
-// stones mark the corners of the spire's storeys. Dimensions follow js/monuments/kedarnath-temple.js:
-// the sanctum 12 square from y 2 to 11 at z = -9; the hall 14 square at z = 5.
+// stones mark the corners of the tower's storeys. Dimensions follow js/monuments/kedarnath-temple.js:
+// the sanctum 12 square from y 2 to 11 at z = -9; the hall 14 square at z = 5; the coursed tower
+// 11 wide and 13 high from y = 11.6, its width falling straight to half at the top.
 const STONE = mat('#8e8a82', 0.9), STONE_DARK = mat('#6f6b64', 0.9);
 function architecture(f) {
   const d = new THREE.Group(), s = at(new THREE.Group(), 0, 2, -9);
@@ -18,9 +19,9 @@ function architecture(f) {
   for (const a of [Math.PI / 2, -Math.PI / 2]) h.add(onFace(at(pilasters(13, 4, 0.7, 7.6, 0.15, STONE), 0, 0.1, 0), a, 7));
   h.add(mouldings(14, 14, [[0, 0.45, 0.2, STONE_DARK]], STONE));
   d.add(h);
-  const prof = (k) => 1 - 0.5 * Math.pow(k, 1.6), am = new THREE.SphereGeometry(1, 16, 6);
+  const prof = (k) => 1 - 0.5 * k, am = new THREE.SphereGeometry(1, 16, 6);
   for (let k = 1; k <= 3; k++) {
-    const t = k / 4, wt = 11 * prof(t), y = 11.6 + t * 13, r = wt * 0.085;
+    const t = k / 4, wt = 11 * prof(t), y = 11.6 + t * 13 + 0.2, r = wt * 0.085;
     for (const sx of [-1, 1]) for (const sz of [-1, 1]) { const o = mesh(am, STONE, sx * wt * 0.42, y, -9 + sz * wt * 0.42); o.scale.set(r, r * 0.42, r); d.add(o); }
   }
   mergeByMaterial(d);
