@@ -1,5 +1,6 @@
 import { mat } from '../helpers.js';
 import { trees, stalls, along, cityAround } from './realism.js';
+import { detail } from '../detail.js';
 import { rideElephant } from './animals.js';
 
 // The Meenakshi Amman temple at Madurai: the temple elephant, flower and pooja stalls outside the
@@ -16,6 +17,8 @@ export function addDetails(f, g) {
   // Madurai is laid out round the temple: the Chithirai streets run outside its walls, then rings of
   // houses along the Avani Moola and Masi streets, the four axial streets leading out from the
   // gopurams kept open.
-  g.add(cityAround([-122, 122, -132, 132], { rows: 4, gap: 24, seed: 91, paint: ['#efe2c4', '#e3c08f', '#d9a37a', '#cfe0d6', '#f1e6cf', '#e7b9b0', '#d6b06a'],
+  // The temple alone is close to the budget (js/detail.js): two rows of plain houses on desktops,
+  // and on phones one row with every other plot built.
+  g.add(cityAround([-122, 122, -132, 132], { rows: detail.low ? 1 : 2, every: detail.low ? 2 : 1, fine: false, gap: 24, seed: 91, paint: ['#efe2c4', '#e3c08f', '#d9a37a', '#cfe0d6', '#f1e6cf', '#e7b9b0', '#d6b06a'],
     keep: [[-16, 16, -400, 400], [-400, 400, -16, 16]] }));
 }
