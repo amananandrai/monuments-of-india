@@ -38,5 +38,6 @@ export function buildTaj() {
   for (const s of [-1, 1]) g.add(box(GW, 0.25, 5, M.path, 0, 0, G0 + 2.5 + (s > 0 ? GL - 5 : 0)), box(5, 0.25, GL, M.path, s * (GW / 2 - 2.5), 0, gc));
   g.add(box(30, 1.4, 30, M.marble, 0, 0, gc), box(24, 1.5, 24, M.water, 0, 0, gc));
   addDetails(f, g, { G0, GL, GW });
-  return { group: g, focus: f };
+  // The home view matches the best-known photograph: from the great gate, down the garden's long axis.
+  return { group: g, focus: f, view: [0, 0.1, 1], zoom: 0.8, target: [0, 30, 0] };
 }

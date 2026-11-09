@@ -144,7 +144,7 @@ One commit each. Check the budget after each.
 
 - [x] A `refs` field in `js/data.js`: on the 33 monuments with a stated height (from each plaque's own figure, and the real figures the accuracy review checked, with its source links where it gave them): `height`, and optionally `of` (what is measured), `base` (for a building on a hill), `top: 'rock'` (the hill's height) and `source`. Still to add: the other 68, and source links for most.
 - [x] `tools/check-heights.mjs`: builds each model and compares its height with `refs` (up to 15% over for spires and flags, 5% under). Plan sizes are not checked yet.
-- [ ] One camera preset per monument matching its best-known photograph (`view` and `zoom` in the builder, or a `photo` preset beside them), to compare screenshots with reference photos.
+- [x] One camera preset per monument matching its best-known photograph (`view` and `zoom` in the builder, or a `photo` preset beside them), to compare screenshots with reference photos. Done as `view`, `zoom` and a new `target` (the point the home view aims at) on the 15 whose old view was furthest from the photograph; `tools/shoot-views.mjs` renders every home view for comparison.
 
 ### T14. Heights out of tolerance
 

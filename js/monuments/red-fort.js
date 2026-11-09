@@ -52,5 +52,6 @@ export function buildRedFort() {
   f.add(at(tricolour(14), 0, 24, -2));
   addDetails(f, g);
   // Hundreds of separate parts: merged into a few draw calls once built (js/batch.js).
-  return { group: g, focus: f, view: [0.5, 0.28, 1.2], batch: true };
+  // The home view matches the best-known photograph: the Lahori Gate, from Netaji Subhash Marg.
+  return { group: g, focus: f, view: [0.15, 0.12, 1], zoom: 0.3, target: [0, 14, 10], batch: true };
 }

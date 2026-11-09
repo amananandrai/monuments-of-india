@@ -91,5 +91,6 @@ export function buildBandraWorli() {
     g.add(inst(unitCyl(16), spires.map(([x, y, z, a, b, c]) => [x, y, z, a, b, c]), mat('#9a9c9e', 0.4, 0.6)), inst(unitCyl(24), rounds, glassM), inst(unitBox(), mid, wall));
   }
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.35, 0.22, 1.2], zoom: 0.55 };
+  // The home view matches the best-known photograph: the main pylon and its cables from low over the bay.
+  return { group: g, focus: f, view: [0.5, 0.1, 1], zoom: 0.25, target: [0, 60, 0] };
 }

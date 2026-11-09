@@ -82,5 +82,6 @@ export function buildJamaMasjid() {
   f.add(box(16, 0.6, 12, Mb, 0, P, 8), box(14, 0.7, 10, M.water, 0, P, 8));
   for (const x of [-51, 51]) f.add(at(chhatri(3, 8, Rd, Mb), x, P + 7.5, 51));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.65, 0.42, 1.2] };
+  // The home view matches the best-known photograph: from above the east gate's steps, over the court to the domes.
+  return { group: g, focus: f, view: [0.2, 0.28, 1], zoom: 0.75, target: [0, 14, -10] };
 }

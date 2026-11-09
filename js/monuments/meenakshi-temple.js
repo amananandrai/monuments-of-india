@@ -89,5 +89,6 @@ export function buildMeenakshi() {
   addDetails(g, g);
   // Framed on the monument itself, closer than its grounds would set.
   // Hundreds of separate parts: merged into a few draw calls once built (js/batch.js).
-  return { group: g, view: [0.75, 0.42, 1.2], zoom: 0.62, batch: true };
+  // The home view matches the best-known photograph: the south gopuram towering over the street.
+  return { group: g, view: [0.35, 0.15, 1], zoom: 0.3, target: [0, 25, 130], batch: true };
 }

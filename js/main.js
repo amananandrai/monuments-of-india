@@ -291,7 +291,9 @@ function computeHome(r) {
   // A builder can ask for a closer home view (zoom < 1) where the whole site need not fit.
   const dist = (radius / Math.sin(Math.min(vfov, hfov) / 2)) * 1.1 * (r.zoom || 1);
   const dir = V(...(r.view || [0.9, 0.34, 1.25])).normalize();
-  const target = V(center.x, center.y * 0.95, center.z);
+  // A builder can aim the home view at a point of its own (target: [x, y, z]), to frame one
+  // building in a larger site as its best-known photograph does.
+  const target = r.target ? V(...r.target) : V(center.x, center.y * 0.95, center.z);
   // minElevation: for a monument in a pit or trench, how high the camera must stay to see in.
   return { target, pos: target.clone().addScaledVector(dir, dist), dist, radius, reach: sceneryReach(r, target, dir), minEl: r.minElevation || 0.01, fog: r.fog || 7, sun: r.sun ? V(...r.sun).normalize() : DEFAULT_SUN };
 }

@@ -33,5 +33,6 @@ export function buildCharminar() {
   for (const x of [-10, 10]) for (const z of [-10, 10]) g.add(at(charminarMinaret(m, Math.atan2(x, z)), x, b, z));
   addCharminarDetails(g, { b });
   addDetails(g, g);
-  return { group: g };
+  // The home view matches the best-known photograph: from the street to the south-east, the four minarets up close.
+  return { group: g, view: [0.5, 0.25, 1], zoom: 0.25, target: [0, 22, 0] };
 }

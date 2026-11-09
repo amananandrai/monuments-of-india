@@ -136,5 +136,6 @@ export function buildGommateshwara() {
   // The 17.4 m monolith of Bahubali
   f.add(at(bahubali(), 0, H + 0.5, -4));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.4, 0.2, 1.25] };
+  // The home view matches the best-known photograph: Bahubali face on, over the court.
+  return { group: g, focus: f, view: [0.15, 0.12, 1], zoom: 0.45, target: [0, 50, 0] };
 }

@@ -34,7 +34,8 @@ export function buildBulandDarwaza() {
   // white marble tomb and Islam Khan's red one.
   f.add(jamaMasjid(P));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.5, 0.25, 1.25] };
+  // The home view matches the best-known photograph: the gate up its great stair, from the town below.
+  return { group: g, focus: f, view: [0.15, 0.08, 1], zoom: 0.7 };
 }
 
 // The court is about 120 m square inside its cloisters (z from -18 to -138, x from -60 to 60);

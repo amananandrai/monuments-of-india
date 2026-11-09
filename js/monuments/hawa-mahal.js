@@ -154,5 +154,6 @@ export function buildHawaMahal() {
   f.add(court);
   addDetails(f, g);
   // A flat facade: framed closer than its bounding sphere would allow.
-  return { group: g, focus: f, view: [0.4, 0.2, 1.2], zoom: 0.72 };
+  // The home view matches the best-known photograph: its street front, straight on from across the road.
+  return { group: g, focus: f, view: [0.12, 0.06, 1], zoom: 0.36, target: [0, 9, 0] };
 }

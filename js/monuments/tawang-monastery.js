@@ -89,5 +89,6 @@ export function buildTawang() {
     for (let k = 0; k < 8; k++) f.add(box(0.8, 0.6, 0.05, [M.flagRed, M.saffron, M.flagGreen, M.navy, M.flagWhite][k % 5], x - Math.sign(x) * (1 + k * 1.6), T + 9.4 - k * 0.6, 20));
   }
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.6, 0.38, 1.25], fog: 10 };
+  // The home view matches the best-known photograph: the monastery on its spur.
+  return { group: g, focus: f, view: [0.6, 0.25, 1], zoom: 0.45, fog: 10 };
 }

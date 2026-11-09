@@ -66,5 +66,6 @@ export function buildHowrah() {
   addDetails(t, g);
   // Framed on the monument itself, closer than its grounds would set.
   // Hundreds of separate parts: merged into a few draw calls once built (js/batch.js).
-  return { group: g, focus: t, view: [0.45, 0.28, 1.2], zoom: 0.8, batch: true };
+  // The home view matches the best-known photograph: the span from low over the Hooghly.
+  return { group: g, focus: t, view: [0.6, 0.12, 1], zoom: 0.45, batch: true };
 }
