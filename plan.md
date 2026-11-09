@@ -104,7 +104,7 @@ One commit each. Check the budget after each.
 - [x] **Qutb Shahi Tombs**: globular grey domes on petalled drums, in place of the pointed white onions (`onionDome` in `js/monuments/qutb-shahi-tombs.js`), and the large raised terraces.
 - [x] **Golden Temple**: the Akal Takht with white marble lower storeys under its gilded top (`js/details/golden-temple.js`).
 - [ ] **Meenakshi**: roofed halls covering most of the court, and the Thousand Pillar Hall. Desktop budget: pay for it within Meenakshi (for example thinner gopuram figures or one row of town on desktops).
-- [ ] **Red Fort**: the irregular octagon plan in place of straight runs of wall; Chhatta Chowk, Naubat Khana.
+- [x] **Red Fort**: the irregular octagon plan in place of straight runs of wall; Chhatta Chowk, Naubat Khana.
 - [x] **Kamakhya**: a segmented beehive dome with sculpture bands; curved chala roofs on the halls.
 - [ ] **Gwalior**: a long narrow plateau; Teli ka Mandir with its wagon-vault top; the Sas-Bahu temples.
 - [x] **Akshardham**: the two-storey colonnaded parikrama with pavilions, in place of a solid wall.

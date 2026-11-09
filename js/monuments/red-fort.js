@@ -1,7 +1,11 @@
 import * as THREE from 'three';
-import { M, box, cyl, at, chhatri, instBoxes, tricolour } from '../helpers.js';
+import { M, box, cyl, at, chhatri, instBoxes, tricolour, inst, unitBox } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
 import { addDetails } from '../details/red-fort.js';
+
+// The fort's outline, [x, z] round from the east end of the focus walls by the Lahori Gate.
+export const RIVER = -540;
+export const OUTLINE = [[60, 0], [150, 0], [290, -30], [440, -175], [450, -400], [320, RIVER], [-320, RIVER], [-450, -400], [-440, -175], [-290, -30], [-150, 0], [-60, 0]];
 
 export function buildRedFort() {
   const Rd = M.red, Rl = M.redLight, g = new THREE.Group(), f = new THREE.Group();
@@ -19,10 +23,21 @@ export function buildRedFort() {
   };
   for (const s of [-1, 1]) {
     wall(s < 0 ? -60 : 16, s < 0 ? -16 : 60, true);
-    wall(s < 0 ? -140 : 60, s < 0 ? -60 : 140, false);
     bastion(s * 60, true);
-    bastion(s * 140, false);
   }
+  // The rest of the circuit: the fort is an irregular octagon about 900 m by 540 m, its west front
+  // (here the +z side, with the Lahori Gate) bending back at its ends, the river wall along the old
+  // bank of the Yamuna (z = RIVER). Wall runs between the corners of OUTLINE, a round bastion at
+  // each corner and every 120 m or so along the runs; the river wall is lower (built over the river).
+  const runs = [], bas = [];
+  for (let k = 1; k < OUTLINE.length; k++) {
+    const [x0, z0] = OUTLINE[k - 1], [x1, z1] = OUTLINE[k], len = Math.hypot(x1 - x0, z1 - z0), river = z0 === RIVER && z1 === RIVER;
+    runs.push([(x0 + x1) / 2, 0, (z0 + z1) / 2, len + 4, river ? 12 : 18, 10, Math.atan2(z0 - z1, x1 - x0)]);
+    for (let t = 0; t < len - 30; t += len / Math.max(1, Math.round(len / 120))) if (t > 0 || k > 1) bas.push([x0 + ((x1 - x0) * t) / len, z0 + ((z1 - z0) * t) / len, river]);
+    if (!river) for (let t = 1.3; t < len; t += 2.6) merlons.push([x0 + ((x1 - x0) * t) / len, 18, z0 + ((z1 - z0) * t) / len, 1.5, 1.8, 0.8]);
+  }
+  g.add(inst(unitBox(), runs, Rd), inst(unitBox(), runs.map(([x, y, z, l, h, d, ry]) => [x, h - 0.8, z, l, 0.8, d + 0.4, ry]), Rl));
+  for (const [x, z, river] of bas) g.add(cyl(8, 9, river ? 14 : 20, Rd, x, 0, z, 24), cyl(8.4, 8.4, 0.8, Rl, x, river ? 13.2 : 19.2, z, 24), at(chhatri(4.5, 10, Rd, M.marble), x, river ? 14 : 20, z));
   g.add(instBoxes(merlons, Rd));
   // Lahori Gate: a deep iwan under a half-dome, at whose back the gate passage runs through the
   // gatehouse, with guard niches and spiked doors; octagonal towers, a row of chhatris, the flag
