@@ -23,10 +23,10 @@ function architecture(f) {
       d.add(t);
     }
   }
-  // Kudus along the lower two cornices of the vimana (w = 19, 4 tiers of 3.4 from y = 16).
+  // Kudus along the lower two cornices of the vimana (w = 19, 3 tiers of 3.4 from y = 16).
   const tg = new THREE.TorusGeometry(0.45, 0.12, 4, 10, Math.PI * 1.3).rotateZ(-Math.PI * 0.15);
   for (let i = 0; i < 2; i++) {
-    const tw = 19 * (1 - (0.45 * i) / 4), n = Math.floor((tw * 0.7) / 1.5), y = 16 + i * 3.4 + 3.4 * 0.86;
+    const tw = 19 * (1 - (0.45 * i) / 3), n = Math.floor((tw * 0.7) / 1.5), y = 16 + i * 3.4 + 3.4 * 0.86;
     for (const a of FACES) for (let k = 0; k < n; k++) { const o = onFace(mesh(tg, ROCK, 0, y, 0), a, (tw + 0.8) / 2 + 0.07, -tw * 0.35 + (k + 0.5) * ((tw * 0.7) / n)); o.position.z += -26; d.add(o); }
   }
   for (const x of [-15, 15]) for (const y of [5, 8.5, 12]) d.add(cyl(1.13 - y * 0.012, 1.13 - y * 0.012, 0.8, frieze(ROCK), x, y, 30, 8));
