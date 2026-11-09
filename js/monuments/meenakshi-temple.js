@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { M, box, cyl, group, at, onionDome, hemi, kalash, pidaRoof } from '../helpers.js';
-import { gopuram, wallWithGaps } from '../details/temples.js';
+import { M, box, cyl, at, onionDome } from '../helpers.js';
+import { gopuram, wallWithGaps, dravidaVimana } from '../details/temples.js';
 import { addDetails } from '../details/meenakshi-temple.js';
 import { detail } from '../detail.js';
 
@@ -40,21 +40,33 @@ export function buildMeenakshi() {
       g.add(t);
     });
   }
-  // Gilded vimanas over the two main shrines
+  // Gilded vimanas over the two main shrines: square storeys with their miniature shrines, an
+  // octagonal cap and a kalash. The gopurams stay the tall masses; these are small and gold.
   for (const [x, z, s] of [[12, -20, 1], [-28, 28, 0.8]]) {
     const v = new THREE.Group();
-    v.add(box(12, 6, 12, S));
-    const r = pidaRoof(10, 4.5, 4, 0.9, M.gild, M.gildDeep);
-    v.add(at(r, 0, 6, 0), at(hemi(2.6, M.gild, 16), 0, 6 + r.userData.top, 0), at(kalash(1.6), 0, 8.4 + r.userData.top, 0));
+    v.add(box(12, 6, 12, S), box(12.6, 0.5, 12.6, M.gildDeep, 0, 6, 0));
+    v.add(at(dravidaVimana(10.5, 4, 2.3, M.gild, M.gildDeep, { kalashM: M.gild, kalashScale: 0.75, taper: 0.5 }), 0, 6.5, 0));
     v.position.set(x, 0, z);
     v.scale.setScalar(s);
     g.add(v);
   }
   g.add(box(44, 7, 32, Gr, 22, 0, 30), box(34, 7, 40, Gr, -22, 0, -28));
-  // Golden Lotus Tank with its cloister, and the Thousand Pillar Hall
-  g.add(box(40, 0.8, 46, Gr, -86, 0, 10), box(32, 0.9, 38, M.water, -86, 0, 10));
-  for (const s of [-1, 1]) g.add(box(44, 4.5, 3, S, -86, 0, 10 + s * 24.5), box(3, 4.5, 52, S, -86 + s * 22, 0, 10));
-  g.add(cyl(0.15, 0.15, 3, M.gild, -86, 0.9, 10, 6), at(onionDome(1, M.gild), -86, 3.9, 10));
+  // Golden Lotus Tank inside its cloister: a paved walk round the inside of the cloister wall, and
+  // from it flights of steps down to the water on all four sides, a ring of treads stepping in as
+  // they fall. The gilt lotus stands on its pillar in the middle of the water.
+  const TX = -86, TZ = 10, WALK = 2, WATER = 0.45, NS = 8, TR = 0.5, rise = (WALK - WATER - 0.15) / NS;
+  for (const s of [-1, 1]) g.add(box(44, 4.5 + WALK, 3, S, TX, 0, TZ + s * 24.5), box(3, 4.5 + WALK, 52, S, TX + s * 22, 0, TZ));
+  const ring = (ox, oz, ix, iz, h, m) => {
+    for (const s of [-1, 1]) g.add(box(ox, h, (oz - iz) / 2, m, TX, 0, TZ + s * (oz + iz) / 4), box((ox - ix) / 2, h, iz, m, TX + s * (ox + ix) / 4, 0, TZ));
+  };
+  let ox = 41, oz = 46, ix = 35, iz = 40;
+  ring(ox, oz, ix, iz, WALK, Gr);
+  for (let k = 1; k <= NS; k++) {
+    ox = ix; oz = iz; ix -= 2 * TR; iz -= 2 * TR;
+    ring(ox, oz, ix, iz, WALK - k * rise, Gr);
+  }
+  g.add(box(ix + 0.02, 0.15, iz + 0.02, Gr, TX, 0, TZ), box(ix, WATER - 0.15, iz, M.water, TX, 0.15, TZ));
+  g.add(cyl(0.15, 0.15, 3, M.gild, TX, WATER, TZ, 6), at(onionDome(1, M.gild), TX, WATER + 3, TZ));
   g.add(box(40, 7, 40, Gr, 82, 0, 84));
   addDetails(g, g);
   // Framed on the monument itself, closer than its grounds would set.
