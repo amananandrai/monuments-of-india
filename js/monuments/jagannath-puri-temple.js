@@ -38,17 +38,18 @@ export function buildJagannath() {
   const dz = -30;
   f.add(box(22, 16, 22, m, 0, B, dz), box(26, 16, 14, m, 0, B, dz), box(14, 16, 26, m, 0, B, dz));
   f.add(box(27, 1, 27, d, 0, B + 15, dz));
-  // The terrace raised the temple 3.3 m: the spire is that much shorter, so the top stays where it was.
-  const TH = 36 - (B - 1.2);
-  const tower = shikhara(24, TH, m, kalingaProfile, 20);
+  // The temple stands 65 m to the top of the Nila Chakra: the spire rises from the sanctum's walls
+  // to a small kalash under the wheel, 3.5 m across, with the flags on their mast above it.
+  const TH = 30;
+  const tower = shikhara(24, TH, m, kalingaProfile, 20, M.gold, 0.45);
   f.add(at(tower, 0, B + 16, dz));
   const ty = B + 16 + tower.userData.top;
   const chakra = new THREE.Group();
-  chakra.add(mesh(new THREE.TorusGeometry(2.4, 0.3, 8, 32), M.steel));
-  for (let i = 0; i < 4; i++) chakra.add(box(0.2, 4.6, 0.2, M.steel, 0, -2.3, 0).rotateZ((i / 4) * Math.PI));
-  f.add(at(chakra, 0, ty + 2.4, dz));
-  f.add(at(flag(9, M.flagRed), 0, ty + 2, dz + 0.6));
-  f.add(at(flag(7, M.saffron), 0.6, ty + 2, dz - 0.4).rotateY(Math.PI * 0.7));
+  chakra.add(mesh(new THREE.TorusGeometry(1.75, 0.25, 8, 32), M.steel));
+  for (let i = 0; i < 4; i++) chakra.add(box(0.18, 3.4, 0.18, M.steel, 0, -1.7, 0).rotateZ((i / 4) * Math.PI));
+  f.add(at(chakra, 0, ty + 1.8, dz));
+  f.add(at(flag(6, M.flagRed), 0, ty + 1.5, dz + 0.6));
+  f.add(at(flag(5, M.saffron), 0.6, ty + 1.5, dz - 0.4).rotateY(Math.PI * 0.7));
   // Jagamohana, Natamandapa and Bhogamandapa with stepped pida roofs
   const halls = [[22, 13, 11, 24, 9, -5], [18, 9, 7, 19, 8.5, 15], [15, 8, 6, 16, 7, 31]];
   // The main doorway, at the front of the Bhogamandapa, and doors on the sides of the Natamandapa

@@ -61,7 +61,7 @@ function halls(f, B) {
 // the gate. B: the height of the terrace the temple stands on; TH: the height of the spire;
 // gateZ: the Lion Gate's centre.
 const STONE = mat('#5a544c', 0.75);
-export function addDetails(f, g, { B = 4.5, TH = 32.7, gateZ = 104 } = {}) {
+export function addDetails(f, g, { B = 4.5, TH = 30, gateZ = 104 } = {}) {
   architecture(f, B, TH);
   halls(f, B);
   const az = gateZ + 15;

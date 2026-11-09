@@ -85,5 +85,6 @@ export function buildCsmt() {
     f.add(gm, onFace(at(oculus(1.8, { m: M.cream, trim: BAND, frame: 0.5 }), 0, 22, 0), 0, 30, s * 52));
   }
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.35, 0.3, 1.2] };
+  // The home view matches the best-known photograph: its front and dome from the street.
+  return { group: g, focus: f, view: [0.35, 0.18, 1], zoom: 0.5 };
 }

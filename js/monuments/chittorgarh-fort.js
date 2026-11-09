@@ -85,5 +85,6 @@ export function buildChittorgarh() {
   f.add(inst(unitBox(), ruins, RUIN));
   f.add(box(40, 0.6, 30, M.water, PP[0], H, PP[1]), box(10, 6, 8, mat('#efe7d6', 0.85), PP[0], H + 0.6, PP[1]), at(hemi(3, mat('#efe7d6', 0.85), 16), PP[0], H + 6.6, PP[1]));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.5, 0.3, 1.2], zoom: 0.8 };
+  // The home view matches the best-known photograph: the Vijay Stambh on the plateau.
+  return { group: g, focus: f, view: [0.35, 0.14, 1], zoom: 0.1, target: [-40, 108, 0] };
 }

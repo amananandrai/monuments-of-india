@@ -312,7 +312,8 @@ export function minaret(h, r, m, { balconies = 3, cap = 'chhatri', seg = 16, cap
 
 // Curvilinear temple tower built from stacked cross-shaped slices; prof(t) gives width at height t∈[0,1].
 // kalashM: the crowning pot's material; gilded by default, stone where the temple's finials are stone.
-export function shikhara(baseW, h, m, prof, n = 16, kalashM = M.gold) {
+// crown scales the kalash on top (1 = 0.65 of the tower's top width).
+export function shikhara(baseW, h, m, prof, n = 16, kalashM = M.gold, crown = 1) {
   const g = new THREE.Group();
   const sh = h / n;
   for (let i = 0; i < n; i++) {
@@ -328,8 +329,8 @@ export function shikhara(baseW, h, m, prof, n = 16, kalashM = M.gold) {
   am.scale.y = 0.42;
   g.add(am);
   const ky = ay + ar * 0.84;
-  g.add(at(kalash(top * 0.65, kalashM), 0, ky, 0));
-  g.userData.top = ky + top * 0.65 * 1.12;
+  g.add(at(kalash(top * 0.65 * crown, kalashM), 0, ky, 0));
+  g.userData.top = ky + top * 0.65 * crown * 1.12;
   g.userData.topW = top;
   return g;
 }

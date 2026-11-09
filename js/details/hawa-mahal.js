@@ -2,13 +2,14 @@ import * as THREE from 'three';
 import { M, box, at } from '../helpers.js';
 import { bracketGeo, placeAll, frieze, petalRing, mergeByMaterial } from './components.js';
 import { shrubs } from './realism.js';
+import { FLOORS, CROWN } from '../monuments/hawa-mahal.js';
 
 // The Hawa Mahal, finer detail. From photographs: each of the windows (jharokhas) of the screen
 // projects on a pair of small carved brackets under its sill; the white lime bands along the
 // storeys are carved; and a lotus crowns each of the domed kiosks at the top.
 // Dimensions follow js/monuments/hawa-mahal.js: storeys [width, height], the front at z = 0.275.
 function architecture(f) {
-  const d = new THREE.Group(), floors = [[46, 3.6], [46, 3.0], [30, 3.0], [20, 3.0], [11, 3.0]], br = [];
+  const d = new THREE.Group(), floors = FLOORS, br = [];
   let y = 0;
   for (const [w, h] of floors) {
     const n = Math.max(3, Math.round(w / 1.5));
@@ -20,7 +21,7 @@ function architecture(f) {
     y += h;
   }
   d.add(placeAll(bracketGeo(0.42, 0.3, 0.1), br, M.hawaLight));
-  for (const [x, r] of [[0, 1.1], [-3.8, 0.9], [3.8, 0.9]]) d.add(at(petalRing(r * 0.2, 8, r * 0.35, r * 0.2, Math.PI - 0.6, M.hawaLight), x, y + (x ? 0.9 + 0.88 : 1.4 + 1.08), -0.8));
+  for (const [x, r] of [[0, 1.1], [-3.8, 0.9], [3.8, 0.9]]) d.add(at(petalRing(r * 0.2, 8, r * 0.35, r * 0.2, Math.PI - 0.6, M.hawaLight), x, y + (x ? CROWN.side + 0.88 : CROWN.mid + 1.08), -0.8));
   mergeByMaterial(d);
   f.add(d);
 }

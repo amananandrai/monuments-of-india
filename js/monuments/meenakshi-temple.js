@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, box, cyl, at, onionDome } from '../helpers.js';
+import { M, box, cyl, at, onionDome, inst, unitBox } from '../helpers.js';
 import { gopuram, wallWithGaps, dravidaVimana } from '../details/temples.js';
 import { addDetails } from '../details/meenakshi-temple.js';
 import { detail } from '../detail.js';
@@ -20,7 +20,7 @@ export function buildMeenakshi() {
     g.add(t);
   }
   for (const [x, z, h, rot, seed] of [[0, 62, 30, 0, 5], [0, -62, 27, 0, 6], [55, 0, 32, Math.PI / 2, 7], [-55, 0, 26, Math.PI / 2, 8]]) {
-    const t = gopuram(18, 11, h, 7, seed, undefined, detail.low ? { pitch: 2.6, kuduEvery: 4, cheap: true } : { pitch: 1.8, kuduEvery: 2 });
+    const t = gopuram(18, 11, h, 7, seed, undefined, detail.low ? { pitch: 2.6, kuduEvery: 4, cheap: true } : { pitch: 2.0, kuduEvery: 2 });
     t.position.set(x, 0, z);
     t.rotation.y = rot;
     g.add(t);
@@ -67,9 +67,28 @@ export function buildMeenakshi() {
   }
   g.add(box(ix + 0.02, 0.15, iz + 0.02, Gr, TX, 0, TZ), box(ix, WATER - 0.15, iz, M.water, TX, 0.15, TZ));
   g.add(cyl(0.15, 0.15, 3, M.gild, TX, WATER, TZ, 6), at(onionDome(1, M.gild), TX, WATER + 3, TZ));
-  g.add(box(40, 7, 40, Gr, 82, 0, 84));
+  // The Thousand Pillar Hall: a forest of square granite pillars (a grid of them here, not all 985)
+  // under a flat roof on a low plinth, a solid back wall, its front open.
+  const pil = [];
+  for (let i = 0; i < 12; i++) for (let j = 0; j < 12; j++) pil.push([66.5 + i * 2.8, 1, 68.5 + j * 2.8, 0.7, 5.6, 0.7]);
+  g.add(box(42, 1, 42, Gr, 82, 0, 84), box(42, 0.8, 42, Gr, 82, 6.6, 84), box(42, 7.4, 1, Gr, 82, 0, 104.5), inst(unitBox(), pil, Gr));
+  // Roofed corridors (prakaram) round the inside of the outer wall, 10 m wide, open at the four
+  // gopurams: a flat granite roof on two rows of square pillars, the inner row on the court.
+  const cor = [], roofs = [];
+  for (const s of [-1, 1]) {
+    for (const [a, b] of [[-114, -16], [16, 114]]) {
+      roofs.push([(a + b) / 2, 7, s * 123, b - a, 0.7, 10]);
+      for (let x = a + 1; x < b; x += 4) cor.push([x, 0, s * 118.6, 0.8, 7, 0.8], [x, 0, s * 123.8, 0.8, 7, 0.8]);
+    }
+    for (const [a, b] of [[-118, -16], [16, 118]]) {
+      roofs.push([s * 113, 7, (a + b) / 2, 10, 0.7, b - a]);
+      for (let z = a + 1; z < b; z += 4) cor.push([s * 108.6, 0, z, 0.8, 7, 0.8], [s * 113.8, 0, z, 0.8, 7, 0.8]);
+    }
+  }
+  g.add(inst(unitBox(), cor, Gr), inst(unitBox(), roofs, Gr));
   addDetails(g, g);
   // Framed on the monument itself, closer than its grounds would set.
   // Hundreds of separate parts: merged into a few draw calls once built (js/batch.js).
-  return { group: g, view: [0.75, 0.42, 1.2], zoom: 0.62, batch: true };
+  // The home view matches the best-known photograph: the south gopuram towering over the street.
+  return { group: g, view: [0.35, 0.15, 1], zoom: 0.3, target: [0, 25, 130], batch: true };
 }

@@ -4,8 +4,9 @@ import { nagaraTemple } from '../details/temples.js';
 import { figureRow } from '../details/sculpture.js';
 import { addDetails } from '../details/grishneshwar-temple.js';
 
-const RED = mat('#8c4a3a', 0.85);
-const SHADE = mat('#6e392d', 0.9);
+// The local red basalt, darkened and dulled by weather: a brown-red, not a painted red.
+const RED = mat('#77503f', 0.88);
+const SHADE = mat('#5c3e33', 0.9);
 
 export function buildGrishneshwar() {
   const g = new THREE.Group(), f = new THREE.Group();

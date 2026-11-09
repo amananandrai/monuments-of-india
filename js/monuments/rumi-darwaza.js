@@ -27,17 +27,17 @@ export function buildRumiDarwaza() {
   // The gate itself and its crown, about 18 m tall
   const H = 10;
   f.add(archWall(16, H, 9, 8, 9.4, true, LIME));
-  f.add(at(hood(7.4, 2.4, LIME), 0, H, 2.1), at(hood(7.4, 4.6, LIME_DARK), 0, H, -2.5));
+  f.add(at(hood(6.0, 2.4, LIME), 0, H, 2.1), at(hood(6.0, 4.6, LIME_DARK), 0, H, -2.5));
   // Under the hood, a pierced screen over the dark space behind it, in a moulded ring.
-  f.add(at(archSlab(9, 6.4, true, M.recess, 0.04), 0, H + 0.4, 4.5), at(archSlab(8.98, 6.38, true, jali(LIME), 0.06), 0, H + 0.4, 4.56));
-  f.add(at(archRing(9, 6.4, true, 0.3, 0.12, LIME_DARK), 0, H + 0.4, 4.5));
+  f.add(at(archSlab(8, 5.4, true, M.recess, 0.04), 0, H + 0.4, 4.5), at(archSlab(7.98, 5.38, true, jali(LIME), 0.06), 0, H + 0.4, 4.56));
+  f.add(at(archRing(8, 5.4, true, 0.3, 0.12, LIME_DARK), 0, H + 0.4, 4.5));
   const buds = [];
   for (let i = 0; i <= 18; i++) {
     const a = Math.PI - (i / 18) * Math.PI;
-    buds.push([Math.cos(a) * 7.7, H + Math.sin(a) * 7.7, 3.3, 0.6, 1.4, 0.6]);
+    buds.push([Math.cos(a) * 6.3, H + Math.sin(a) * 6.3, 3.3, 0.6, 1.4, 0.6]);
   }
   f.add(inst(new THREE.ConeGeometry(0.5, 1, 6).translate(0, 0.5, 0), buds, LIME));
-  f.add(at(chhatri(1.5, 4.6, LIME), 0, H + 7.6, 0.5));
+  f.add(at(chhatri(1.1, 2.6, LIME), 0, H + 6.2, 0.5));
   // Arcaded wings stepping down to either side
   for (const s of [-1, 1]) {
     // Each wing: four arched cells 1 m deep, each with a door at its back.

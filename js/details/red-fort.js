@@ -1,9 +1,10 @@
 import * as THREE from 'three';
-import { M, box, cyl, at, onFace, FACES, hemi, onionDome, finial, mat } from '../helpers.js';
+import { M, mesh, box, cyl, at, onFace, FACES, hemi, onionDome, finial, mat } from '../helpers.js';
 import { archRing, archSlab, panel, frieze, rosette, windowFrame, arcadeScreen, mergeByMaterial, mughalChhatri, chhajja, merlons } from './components.js';
 import { iwan, arcadeSkin, cellRow } from './mughal.js';
 import { towerDetail, slitRow } from './forts.js';
 import { trees, lampPosts, asiBoard, along } from './realism.js';
+import { RIVER, OUTLINE } from '../monuments/red-fort.js';
 
 // The Red Fort, finer detail. From photographs of the Lahori Gate and the walls:
 // - the walls have a string course half-way up and a row of loopholes under the merlons, and the
@@ -58,39 +59,54 @@ function pavilion(w, d, h, m, { arch = 3.4, kiosks = true, trim = Mb, plinth = 1
 // the inner gate; the red sandstone Diwan-i-Aam, its throne alcove of white marble at the back; then
 // along the old river wall, the white marble palaces: the Diwan-i-Khas with its four gilded kiosks,
 // the Rang Mahal, the Khas Mahal with the octagonal Musamman Burj leaning out over the wall, the
-// Mumtaz Mahal, and in the north-west the three bulbous domes of the Moti Masjid. Lawns between,
-// the fort's flank walls, and the Yamuna's old bed beyond (now a green belt and the ring road).
+// Mumtaz Mahal, and in the north the Hayat Bakhsh Bagh and the three bulbous domes of the Moti
+// Masjid; the Chhatta Chowk bazaar just inside the gate. Lawns between, and the Yamuna's old bed
+// beyond (now a green belt and the ring road).
 function insideWalls(g) {
-  const d = new THREE.Group(), RW = -150;
-  for (const s of [-1, 1]) d.add(box(10, 18, 150, Rd, s * 140, 0, -75));
-  d.add(box(268, 0.3, 140, M.grass, 0, 0, -78));
-  d.add(box(26, 0.35, 120, M.path, 0, 0, -70));
-  // Naubat Khana
-  d.add(box(30, 13, 11, Rd, 0, 0, -42), box(31, 0.8, 12, Rl, 0, 13, -42));
-  d.add(onFace(at(iwan(5, 8, { m: Rd, trim: Mb, shade: Rl, depth: 1.2, frame: 1, top: 1.2, fill: 'room' }), 0, 0, 0), 0, 5.5));
-  for (const x of [-10, 10]) d.add(onFace(at(windowFrame(2, 3, Mb), 0, 8, 0), 0, 5.5, x));
-  // Diwan-i-Aam
-  d.add(at(pavilion(54, 22, 10, Rd, { arch: 4.2, kiosks: false, trim: Rl }), 0, 0, -78));
-  d.add(at(mughalChhatri(2.2, 7, Rd, { crescent: false }), -26, 11.6, -68), at(mughalChhatri(2.2, 7, Rd, { crescent: false }), 26, 11.6, -68));
-  // The river wall and its terrace, the palaces on it.
-  d.add(box(270, 9, 16, Rd, 0, 0, RW), box(272, 0.6, 17, Rl, 0, 9, RW));
-  d.add(box(270, 0.4, 30, M.path, 0, 0, RW + 22));
-  const P = (o, x, z = RW + 2) => d.add(at(o, x, 9.6, z));
+  const d = new THREE.Group(), RW = RIVER;
+  // The ground inside: lawns, and the paved way from the Lahori Gate to the Diwan-i-Aam.
+  // The lawn follows the octagon (shrunk 6 m inside the walls), as a thin slab.
+  const lawn = new THREE.Shape(OUTLINE.map(([x, z]) => new THREE.Vector2(x * 0.985, -(z * 0.985 - 6))));
+  d.add(mesh(new THREE.ExtrudeGeometry(lawn, { depth: 0.3, bevelEnabled: false }).rotateX(-Math.PI / 2), M.grass), box(16, 0.35, 270, M.path, 0, 0, -142));
+  // Chhatta Chowk: the covered bazaar just inside the gate, two storeys of shop arches facing each
+  // other across its street under a vaulted roof with an octagonal court at its middle.
+  for (const s of [-1, 1]) {
+    const len = 74, cells = [];
+    for (let k = 0; k < 18; k++) { const t = -len / 2 + (k + 0.5) * (len / 18); if (Math.abs(t) > 5) cells.push([t, 0.4, 2.6, 3.6, 'room'], [t, 5, 2.2, 2.8, 'jali']); }
+    const r = new THREE.Group();
+    r.add(box(len, 9, 6, Rd, 0, 0, -3 - 1.2), at(arcadeSkin(len, 9, cells, 1.2, Rd, { trim: Rl }), 0, 0, -1.2), box(len + 0.4, 0.6, 8, Rl, 0, 9, -3.6));
+    d.add(at(r, s * 8, 0, -52).rotateY(s > 0 ? -Math.PI / 2 : Math.PI / 2));
+  }
+  d.add(box(8.4, 0.6, 74, Rl, 0, 11, -52), cyl(6, 6, 0.8, Rl, 0, 11.6, -52, 8));
+  // Naubat Khana, the drum house over the inner gate.
+  d.add(box(30, 13, 11, Rd, 0, 0, -160), box(31, 0.8, 12, Rl, 0, 13, -160));
+  d.add(onFace(at(iwan(5, 8, { m: Rd, trim: Mb, shade: Rl, depth: 1.2, frame: 1, top: 1.2, fill: 'room' }), 0, 0, -160), 0, 5.5));
+  for (const x of [-10, 10]) d.add(onFace(at(windowFrame(2, 3, Mb), 0, 8, -160), 0, 5.5, x));
+  // Diwan-i-Aam, in its court.
+  d.add(at(pavilion(54, 22, 10, Rd, { arch: 4.2, kiosks: false, trim: Rl }), 0, 0, -280));
+  d.add(at(mughalChhatri(2.2, 7, Rd, { crescent: false }), -26, 11.6, -270), at(mughalChhatri(2.2, 7, Rd, { crescent: false }), 26, 11.6, -270));
+  // The river wall's terrace, and the white marble palaces on it.
+  d.add(box(620, 9, 16, Rd, 0, 0, RW + 13), box(622, 0.6, 17, Rl, 0, 9, RW + 13), box(620, 0.4, 30, M.path, 0, 0, RW + 36));
+  const P = (o, x, z = RW + 15) => d.add(at(o, x, 9.6, z));
   P(pavilion(30, 20, 8.5, Mb, { arch: 3.6 }), -60);
   P(pavilion(50, 18, 7, Mb, { arch: 3.2, kiosks: false }), 0);
   P(pavilion(26, 15, 7, Mb, { arch: 3 }), 48);
   P(pavilion(22, 13, 6.5, Mb, { arch: 2.8, kiosks: false }), 92);
-  // Musamman Burj: an octagonal tower over the wall's face, with a gilded dome.
-  d.add(cyl(5.4, 6, 17.6, Rd, 48, 0, RW - 8, 8), cyl(5, 5, 6, Mb, 48, 17.6, RW - 8, 8));
-  d.add(at(hemi(4.6, M.gild, 24), 48, 23.6, RW - 8), at(finial(3), 48, 28, RW - 8));
+  P(pavilion(26, 16, 7, Mb, { arch: 3 }), -140);
+  // Musamman Burj: an octagonal tower over the river wall, with a gilded dome.
+  d.add(cyl(5.4, 6, 17.6, Rd, 48, 0, RW - 6, 8), cyl(5, 5, 6, Mb, 48, 17.6, RW - 6, 8));
+  d.add(at(hemi(4.6, M.gild, 24), 48, 23.6, RW - 6), at(finial(3), 48, 28, RW - 6));
+  // Hayat Bakhsh Bagh, the garden to the north of the palaces, with its pavilions and channels.
+  d.add(box(120, 0.4, 120, M.grass, -220, 0, RW + 100), box(4, 0.5, 120, M.water, -220, 0, RW + 100), box(120, 0.5, 4, M.water, -220, 0, RW + 100));
+  for (const x of [-280, -160]) d.add(at(pavilion(14, 10, 6, Mb, { arch: 2.6, kiosks: false }), x, 0, RW + 100));
   // Moti Masjid: a walled marble mosque with three bulbous domes.
-  const mm = at(new THREE.Group(), -100, 0, -118);
+  const mm = at(new THREE.Group(), -120, 0, RW + 70);
   mm.add(box(30, 6, 26, Rd), box(22, 7, 12, Mb, 0, 0, -5), box(22.6, 0.5, 12.6, Mb, 0, 7, -5));
   mm.add(onFace(at(arcadeSkin(22, 6.4, cellRow(3, 6.4, 0, 4, 5.4), 1, Mb, { fill: 'room' }), 0, 0, 0), 0, 1));
   for (const x of [-6.5, 0, 6.5]) mm.add(cyl(2.4, 2.4, 1.2, Mb, x, 7.5, -5, 24), at(onionDome(x ? 2.4 : 2.9, Mb), x, 8.7, -5), at(finial(2, M.gild), x, 8.7 + (x ? 4.4 : 5.4), -5));
   d.add(mm);
-  // The old river bed beyond the wall.
-  d.add(box(300, 0.2, 60, M.grass, 0, 0, RW - 38));
+  // The old river bed beyond the wall (now a green belt and the ring road).
+  d.add(box(1000, 0.2, 80, M.grass, 0, 0, RW - 48));
   g.add(mergeByMaterial(d));
 }
 

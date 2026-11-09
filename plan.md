@@ -32,7 +32,7 @@ The budget count and the flicker scan used so far live outside the repo. Put the
 
 - [x] `tools/check-budgets.mjs`: builds every monument headless at both levels (Playwright with the local three.js, as `video/` already depends on) and fails if any is over 600k / 300k. Prints the top ten of each level.
 - [x] `tools/check-flicker.mjs`: builds each monument as `js/main.js` does (`naturalize`, `separateCoplanar`, `blendIntoLand`), buckets triangles by plane, and reports overlapping same-facing faces of different materials without a depth offset, keeping only those a short ray off the face shows to be uncovered and not inside a solid. Takes monument ids, or all.
-- [ ] `tools/check-heights.mjs` (with T13): compares each model's height with its `refs`.
+- [x] `tools/check-heights.mjs` (with T13): compares each model's height with its `refs`.
 - [x] A short `tools/README.md`: how to run them, and that they need `npm i` in `tools/` (three, playwright).
 
 ### T2. Jama Masjid: open cloisters and the north and south stairs
@@ -99,56 +99,75 @@ These are detailed from the front and plain boxes behind. Give each back the sam
 
 One commit each. Check the budget after each.
 
-- [ ] **Taj Mahal**: the minarets lean slightly outwards (about 0.5°, built so to fall away from the tomb). Tilt each about its foot.
+- [x] **Taj Mahal**: the minarets lean slightly outwards (about 0.5°, built so to fall away from the tomb). Tilt each about its foot.
 - [x] **Laxmi Vilas Palace**: an asymmetric, picturesque skyline (domes, gables and towers of different heights) instead of a symmetrical block; red sandstone with blue trap and marble.
-- [ ] **Qutb Shahi Tombs**: globular grey domes on petalled drums, in place of the pointed white onions (`onionDome` in `js/monuments/qutb-shahi-tombs.js`), and the large raised terraces.
-- [ ] **Golden Temple**: the Akal Takht with white marble lower storeys under its gilded top (`js/details/golden-temple.js`).
-- [ ] **Meenakshi**: roofed halls covering most of the court, and the Thousand Pillar Hall. Desktop budget: pay for it within Meenakshi (for example thinner gopuram figures or one row of town on desktops).
-- [ ] **Red Fort**: the irregular octagon plan in place of straight runs of wall; Chhatta Chowk, Naubat Khana.
-- [ ] **Kamakhya**: a segmented beehive dome with sculpture bands; curved chala roofs on the halls.
-- [ ] **Gwalior**: a long narrow plateau; Teli ka Mandir with its wagon-vault top; the Sas-Bahu temples.
-- [ ] **Akshardham**: the two-storey colonnaded parikrama with pavilions, in place of a solid wall.
-- [ ] **Cellular Jail**: a taller central watchtower with its lantern.
+- [x] **Qutb Shahi Tombs**: globular grey domes on petalled drums, in place of the pointed white onions (`onionDome` in `js/monuments/qutb-shahi-tombs.js`), and the large raised terraces.
+- [x] **Golden Temple**: the Akal Takht with white marble lower storeys under its gilded top (`js/details/golden-temple.js`).
+- [x] **Meenakshi**: roofed halls covering most of the court, and the Thousand Pillar Hall. Desktop budget: pay for it within Meenakshi (for example thinner gopuram figures or one row of town on desktops).
+- [x] **Red Fort**: the irregular octagon plan in place of straight runs of wall; Chhatta Chowk, Naubat Khana.
+- [x] **Kamakhya**: a segmented beehive dome with sculpture bands; curved chala roofs on the halls.
+- [x] **Gwalior**: a long narrow plateau; Teli ka Mandir with its wagon-vault top; the Sas-Bahu temples.
+- [x] **Akshardham**: the two-storey colonnaded parikrama with pavilions, in place of a solid wall.
+- [x] **Cellular Jail**: a taller central watchtower with its lantern.
 - [x] **Mysore Palace**: the outline bulbs that light it at night (already on `main`: `bulbPoints` outlines the walls, arches and domes).
-- [ ] **Key Monastery**: irregular stacked massing on the steeper hill (with T5).
+- [x] **Key Monastery**: irregular stacked massing on the steeper hill (with T5). The blocks were already irregular on `main`; the hill is terrain since T5.
 
 ### T9. Materials
 
-- [ ] Nalanda: the brick (`#a5553b`, `#844230`) is too orange. Darker, weathered, less saturated, with variation between walls.
-- [ ] Grishneshwar: the red basalt (`RED` in `js/monuments/grishneshwar-temple.js`) is too saturated. Darker weathered stone.
-- [ ] Review the other saturated stones in `M` (`js/helpers.js`) against photographs while doing these.
+- [x] Nalanda: the brick (`#a5553b`, `#844230`) is too orange. Darker, weathered, less saturated, with variation between walls.
+- [x] Grishneshwar: the red basalt (`RED` in `js/monuments/grishneshwar-temple.js`) is too saturated. Darker weathered stone.
+- [x] Review the other saturated stones in `M` (`js/helpers.js`) against photographs while doing these. Reviewed: the Mughal red sandstone, Hawa Mahal's pink and the rest are close to photographs; left as they are.
 
 ### T10. Weathering in the surface shader
 
 `js/surface.js` already varies each surface by kind ('brick', 'marble', 'facade', 'ground' ...). Add weathering there, so every monument gains it without new geometry or triangles:
 
-- [ ] Damp and grime at the foot of walls: darken towards the ground over the first metre or two.
-- [ ] Streaks under ledges and cornices: faint vertical darkening below horizontal edges (from world height and a noise, not from geometry).
-- [ ] Soot and age on old brick and stone, weaker on marble, none on gilt and glass.
-- [ ] Phone builds: the same, or switched off if it costs frame rate on a real phone.
+- [x] Damp and grime at the foot of walls: darken towards the ground over the first metre or two.
+- [x] Streaks under ledges and cornices: faint vertical darkening below horizontal edges (from world height and a noise, not from geometry).
+- [x] Soot and age on old brick and stone, weaker on marble, none on gilt and glass.
+- [x] Phone builds: the same (a few shader operations per pixel, no geometry). Recheck on a real phone if frame rate drops.
 
 ### T11. Atmosphere and light
 
 `js/main.js` has fog, a sky shader with haze and distant hills, GTAO, bloom and SMAA.
 
-- [ ] Haze that thickens with distance and takes the sky's colour near the horizon (aerial perspective), so distant mountains and skylines read as far away. In the fog, not in CSS.
-- [ ] Per-site sun: the sun direction is one fixed vector (`SUN_DIR`). Let a monument return its own (from its latitude and its best-known photo light), defaulting to today's.
-- [ ] Colour grading: an optional LUT pass in the composer for a warm, slightly hazy Indian daylight, tuned once for all monuments. Desktops only if it costs a pass on phones.
+- [x] Haze that thickens with distance and takes the sky's colour near the horizon (aerial perspective), so distant mountains and skylines read as far away. In the fog, not in CSS.
+- [x] Per-site sun: the sun direction is one fixed vector (`SUN_DIR`). Let a monument return its own (from its latitude and its best-known photo light), defaulting to today's.
+- [x] Colour grading: an optional LUT pass in the composer for a warm, slightly hazy Indian daylight, tuned once for all monuments. Desktops only if it costs a pass on phones.
 
 ### T12. Vegetation and ground
 
-- [ ] Two or three shapes per tree species in `js/details/realism.js` (`trees`, `fullTrees`), chosen per tree, so a row of the same kind is not identical.
-- [ ] Ground scatter near the monuments on desktops: grass tufts and stones along path edges and lawn borders, instanced and inside the budget.
+- [x] Two or three shapes per tree species in `js/details/realism.js` (`trees`, `fullTrees`), chosen per tree, so a row of the same kind is not identical.
+- [x] Ground scatter near the monuments on desktops: grass tufts and stones along path edges and lawn borders, instanced and inside the budget.
 
 ### T13. Keeping it accurate
 
-- [ ] A `refs` field on each monument in `js/data.js`: its key real dimensions (height, length or area) and a source link.
-- [ ] `tools/check-heights.mjs`: builds each model and compares its bounding-box height (and, where given, its plan size) with `refs`, allowing for the plaque's `scaleNote`.
-- [ ] One camera preset per monument matching its best-known photograph (`view` and `zoom` in the builder, or a `photo` preset beside them), to compare screenshots with reference photos.
+- [x] A `refs` field in `js/data.js`: on the 33 monuments with a stated height (from each plaque's own figure, and the real figures the accuracy review checked, with its source links where it gave them): `height`, and optionally `of` (what is measured), `base` (for a building on a hill), `top: 'rock'` (the hill's height) and `source`. Still to add: the other 68, and source links for most.
+- [x] `tools/check-heights.mjs`: builds each model and compares its height with `refs` (up to 15% over for spires and flags, 5% under). Plan sizes are not checked yet.
+- [x] One camera preset per monument matching its best-known photograph (`view` and `zoom` in the builder, or a `photo` preset beside them), to compare screenshots with reference photos. Done as `view`, `zoom` and a new `target` (the point the home view aims at) on the 15 whose old view was furthest from the photograph; `tools/shoot-views.mjs` renders every home view for comparison.
+
+### T14. Heights out of tolerance
+
+`node tools/check-heights.mjs` finds eleven models more than 15% taller than their stated height. Some
+of the excess is a flag or finial over the measured top (Jagannath's flag adds about 9 m); measure
+each in the browser before rescaling, and keep the kalash or flag above the stated height.
+
+- [x] Gateway of India: 33.2 m against 26 m. Now 29.1 m: the central dome is a low cap hidden behind the parapets, and the turret kiosks are smaller.
+- [x] Hawa Mahal: 20.1 m against 15 m. Now 17.2 m: the upper storeys are 2.7 m (one narrow room deep), and the crown's pavilions are lower.
+- [x] Sher Shah Suri's tomb: 50.8 m against 37 m. Now 40.8 m above its 8 m terrace (the 37.5 m is measured from the terrace); a smaller amalaka finial.
+- [x] Rumi Darwaza: 23.9 m against 18 m. Now 20.4 m: a smaller hood and kiosk over the arch.
+- [x] Jagannath: 82.6 m against 65 m (with the Nila Chakra and flags). Now 70.8 m with the flags (the Nila Chakra's top at 67 m): a smaller kalash under a 3.5 m wheel, shorter flag masts.
+- [x] Sanchi: 21 m against 16.5 m (with the umbrellas). Now the 16.5 m is the dome alone (sources say so), which the model matches; refs now allow for the harmika and umbrellas above it.
+- [x] Kailasa: 38.1 m against 30 m. Now 36.7 m against 32.6 m (Wikipedia: the vimana's top above the court; refs and the info card updated): a smaller kalash.
+- [x] Kandariya: 36.9 m against 31 m. Now 33.7 m: the main spire 1.5 m shorter, its stone kalash half the size.
+- [x] Konark (the Jagamohana): 46 m against 39 m. Now 42.1 m: lower pida tiers and terraces, a smaller kalash.
+- [x] Buland Darwaza: 63.9 m against 54 m. Now 59.6 m with the kiosks' finials: smaller kiosks along the top (the parapet stays at 52 m).
+- [x] Kirti Mandir: 28.3 m against 24 m. Now 25.3 m: a shorter shikhara and smaller kalash.
 
 ## Checking a task
 
 1. `npx serve .`, open the hash, reset the view; look from the default view, the opposite side and close to the new part. Then `?detail=low`.
 2. `node tools/check-budgets.mjs` (or count the one monument): under 600k on desktops, 300k on phones.
 3. `node tools/check-flicker.mjs <id>`: no new visible clashes.
-4. Neighbours that share a helper you changed (a `townHouses`, `nagaraTemple` or `gopuram` change reaches many monuments) still look right.
+4. `node tools/check-heights.mjs <id>`, if the monument has `refs`.
+5. Neighbours that share a helper you changed (a `townHouses`, `nagaraTemple` or `gopuram` change reaches many monuments) still look right.

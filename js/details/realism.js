@@ -120,9 +120,16 @@ export function trees(spots, { kind = 'neem', seed = 1, y = 0, h = null } = {}) 
   // Crown size and height as fractions of the tree's height: [radius, height, trunk]
   const [cr, ch, tr] = { neem: [0.42, 0.36, 0.55], banyan: [0.62, 0.3, 0.45], ashoka: [0.17, 0.62, 0.3], mango: [0.4, 0.38, 0.45] }[kind];
   const leaf = kind === 'mango' || kind === 'ashoka' ? FOLIAGE_DARK : FOLIAGE;
-  // The trunk runs up into the crown, whose underside is flattened.
-  g.add(copies(trunkGeo, BARK, items.map((t) => [t.x, t.gy, t.z, [t.s * 0.17, t.s * (tr + ch * 0.3), t.s * 0.17], t.ry])));
-  g.add(copies(crownGeo(7, seed), leaf, items.map((t) => [t.x, t.gy + t.s * (tr + ch * 0.4), t.z, [t.s * cr, t.s * ch * 0.6, t.s * cr], t.ry])));
+  // The trunk runs up into the crown, whose underside is flattened. Each tree takes one of three
+  // forms of its kind, so a row is not a row of clones: its own crown shape (lobes and seed), a
+  // little broader and lower or narrower and taller, the trunk shorter or longer.
+  const forms = [[1, 1, 1, 7], [1.14, 0.88, 0.9, 5], [0.86, 1.14, 1.12, 9]];
+  forms.forEach(([w, hh, tt, lobes], f) => {
+    const mine = items.filter((_, i) => (i + seed) % 3 === f);
+    if (!mine.length) return;
+    g.add(copies(trunkGeo, BARK, mine.map((t) => [t.x, t.gy, t.z, [t.s * 0.17, t.s * (tr * tt + ch * hh * 0.3), t.s * 0.17], t.ry])));
+    g.add(copies(crownGeo(lobes, seed + f * 17), leaf, mine.map((t) => [t.x, t.gy + t.s * (tr * tt + ch * hh * 0.4), t.z, [t.s * cr * w, t.s * ch * hh * 0.6, t.s * cr * w], t.ry])));
+  });
   return tag(g, items, kind, seed);
 }
 // Remember what was planted, so upgradeTrees can replant it in more detail.
@@ -210,10 +217,15 @@ function fullGeo(kind, seed) {
   fullGeos.set(key, out);
   return out;
 }
+// Each tree takes one of three of the kind's forms (the geometry's own seed), so a row varies.
 function fullTrees({ items, kind, seed }) {
-  const g = new THREE.Group(), geo = fullGeo(kind, seed % 4), place = items.map((t) => [t.x, t.gy, t.z, t.s, t.ry]);
-  const leafM = kind === 'palm' ? FROND : kind === 'mango' || kind === 'ashoka' || kind === 'deodar' || kind === 'cypress' ? FOLIAGE_DARK : FOLIAGE;
-  g.add(copies(geo.bark, kind === 'palm' ? PALM_BARK : BARK, place), copies(geo.leaf, leafM, place));
+  const g = new THREE.Group(), leafM = kind === 'palm' ? FROND : kind === 'mango' || kind === 'ashoka' || kind === 'deodar' || kind === 'cypress' ? FOLIAGE_DARK : FOLIAGE;
+  for (let f = 0; f < 3; f++) {
+    const mine = items.filter((_, i) => (i + seed) % 3 === f);
+    if (!mine.length) continue;
+    const geo = fullGeo(kind, (seed + f) % 4), place = mine.map((t) => [t.x, t.gy, t.z, t.s, t.ry]);
+    g.add(copies(geo.bark, kind === 'palm' ? PALM_BARK : BARK, place), copies(geo.leaf, leafM, place));
+  }
   return g;
 }
 const trisOf = (o) => { let t = 0; o.traverse((m) => { if (m.isMesh) { const g = m.geometry; t += ((g.index ? g.index.count : g.attributes.position.count) / 3) * (m.isInstancedMesh ? m.count : 1); } }); return t; };
@@ -682,4 +694,49 @@ export function townHouses(spots, { seed = 1, y: y0 = 0, paint = HOUSE_PAINT, tr
     add(houseGeos.body, TINTED, signs, signTints);
   }
   return g;
+}
+
+/* ---------- ground scatter ---------- */
+
+// Grass tufts and loose stones on the open ground round a monument, on desktops: dropped from above
+// onto the lawns and earth near it (found by casting down at points in a ring round the focus),
+// clustered a few to a spot, never on paving, water, the monument or the steep terrain meshes.
+// Added only while the monument stays within `budget` triangles. Returns the triangles added.
+let tuftGeo = null, stoneGeo = null;
+export function scatterGround(r, budget) {
+  if (!tuftGeo) {
+    const blades = [];
+    for (let k = 0; k < 7; k++) { const a = (k / 7) * Math.PI * 2; blades.push(new THREE.ConeGeometry(0.05, 0.5 + (k % 3) * 0.12, 3).rotateZ(0.35).rotateY(a).translate(Math.cos(a) * 0.1, 0.25, Math.sin(a) * 0.1)); }
+    tuftGeo = mergeGeometries(blades.map((b) => b.toNonIndexed()));
+    stoneGeo = new THREE.DodecahedronGeometry(0.5, 0).scale(1, 0.55, 0.8).translate(0, 0.12, 0);
+  }
+  r.group.updateMatrixWorld(true);
+  const focus = new Set(); r.focus.traverse((o) => focus.add(o));
+  const targets = [], green = (m) => { const h = m.color.getHSL({}); return h.h > 0.17 && h.h < 0.45 && h.s > 0.12; };
+  r.group.traverse((o) => {
+    if (!o.isMesh || o.isInstancedMesh || !o.visible || focus.has(o) || Array.isArray(o.material) || !o.material.isMeshStandardMaterial) return;
+    const g = o.geometry, n = (g.index ? g.index.count : g.attributes.position.count) / 3;
+    if (n < 20000 && green(o.material) && o.material.userData.surface !== 'water') targets.push(o);
+  });
+  if (!targets.length) return 0;
+  const b = new THREE.Box3().setFromObject(r.focus), c = b.getCenter(new THREE.Vector3()), s = b.getSize(new THREE.Vector3());
+  const R = rng(5), rc = new THREE.Raycaster(), down = new THREE.Vector3(0, -1, 0), nw = new THREE.Vector3(), tufts = [], stones = [];
+  const rx = s.x / 2, rz = s.z / 2;
+  for (let k = 0; k < 220; k++) {
+    const a = R() * Math.PI * 2, t = 1.08 + R() * 0.9, x = c.x + Math.cos(a) * rx * t + (R() - 0.5) * 6, z = c.z + Math.sin(a) * rz * t + (R() - 0.5) * 6;
+    rc.set(new THREE.Vector3(x, b.max.y + 50, z), down);
+    const hit = rc.intersectObjects(targets, false)[0];
+    if (!hit || !hit.face) continue;
+    nw.copy(hit.face.normal).transformDirection(hit.object.matrixWorld);
+    if (nw.y < 0.9) continue;
+    for (let i = 0, n = 2 + Math.floor(R() * 4); i < n; i++) tufts.push([hit.point.x + (R() - 0.5) * 2.4, hit.point.y - 0.02, hit.point.z + (R() - 0.5) * 2.4, 0.7 + R() * 0.8, R() * 6.28]);
+    if (R() < 0.3) stones.push([hit.point.x + (R() - 0.5) * 2, hit.point.y - 0.06, hit.point.z + (R() - 0.5) * 2, 0.4 + R() * 0.7, R() * 6.28]);
+  }
+  const per = (geo) => (geo.index ? geo.index.count : geo.attributes.position.count) / 3, extra = tufts.length * per(tuftGeo) + stones.length * per(stoneGeo);
+  if (!tufts.length || trisOf(r.group) + extra > budget) return 0;
+  const g = new THREE.Group();
+  g.add(copies(tuftGeo, FOLIAGE_DRY, tufts));
+  if (stones.length) g.add(copies(stoneGeo, STONE, stones));
+  r.group.add(g);
+  return extra;
 }

@@ -1,20 +1,28 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, lathe, at, ribbed, kalash, hipRoof, FACES, onFace, sheet } from '../helpers.js';
+import { M, mat, mesh, box, cyl, lathe, at, ribbed, kalash, hipRoof, FACES, onFace, sheet, flat } from '../helpers.js';
 import { heightField, fbm, smooth } from '../details/terrain.js';
 import { detail } from '../detail.js';
 import { templeDoorway } from '../details/doorways.js';
-import { mergeByMaterial } from '../details/components.js';
+import { mergeByMaterial, templeNiche, idol } from '../details/components.js';
 import { addDetails } from '../details/kamakhya-temple.js';
 
 const STONE = mat('#a08766', 0.9);
 const STONE_DARK = mat('#7c6a52', 0.9);
 
 // The Nilachal-style "beehive" dome over a cross-shaped base.
-function beehive(r, m) {
+// The main one (big) is segmented: twelve faceted gores divided by deep ribs, as the dome over the
+// sanctum is built, with a ring of sculpted niches round its foot on desktops (js/detail.js).
+function beehive(r, m, big = false) {
   const g = new THREE.Group();
   g.add(box(r * 2.2, r * 0.9, r * 1.4, m), box(r * 1.4, r * 0.9, r * 2.2, m));
-  const d = ribbed(lathe([[1, 0], [1.06, 0.38], [0.97, 0.82], [0.74, 1.18], [0.42, 1.46], [0.12, 1.58], [0, 1.6]].map(([a, b]) => [a * r, b * r]), m, 32), 16, 0.07);
+  const prof = [[1, 0], [1.06, 0.38], [0.97, 0.82], [0.74, 1.18], [0.42, 1.46], [0.12, 1.58], [0, 1.6]].map(([a, b]) => [a * r, b * r]);
+  const d = big ? ribbed(mesh(new THREE.LatheGeometry(prof.map(([a, b]) => new THREE.Vector2(a, b)), 12).rotateY(Math.PI / 12), flat(m)), 12, 0.12) : ribbed(lathe(prof, m, 32), 16, 0.07);
   g.add(at(d, 0, r * 0.9, 0));
+  if (big && !detail.low) {
+    const n = new THREE.Group();
+    for (let k = 0; k < 12; k++) n.add(onFace(at(templeNiche(r * 0.16, r * 0.3, m, { figure: idol(r * 0.26, m), crown: false }), 0, r * 1.02, 0), (k / 12) * Math.PI * 2, r * 1.03));
+    g.add(mergeByMaterial(n));
+  }
   for (const t of [0.3, 0.62, 0.95]) g.add(cyl(r * (1.08 - t * 0.45), r * (1.08 - t * 0.45), r * 0.05, STONE_DARK, 0, r * (0.9 + t * 1.2), 0, 32));
   g.add(at(kalash(r * 0.45), 0, r * 2.5, 0));
   return g;
@@ -47,7 +55,7 @@ export function buildKamakhya() {
   g.add(box(3000, 0.12, 60, mat('#c2b08a', 0.95), 0, 0, -220), sheet(3000, 900, M.river, 0, 0.3, -700));
   const T = 40;
   f.add(box(70, 1, 80, M.path, 0, T - 0.5, 0));
-  f.add(box(22, 2.5, 22, STONE_DARK, 0, T, -14), at(beehive(9, STONE), 0, T + 2.5, -14));
+  f.add(box(22, 2.5, 22, STONE_DARK, 0, T, -14), at(beehive(9, STONE, true), 0, T + 2.5, -14));
   for (const a of FACES) {
     const s = onFace(at(beehive(3, STONE), 0, T + 2.5, 0), a, 11.5);
     s.position.z += -14;

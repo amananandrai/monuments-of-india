@@ -116,5 +116,6 @@ export function buildJaisalmer() {
   const keep = detail.low ? houses.filter((_, i) => i % 2 === 0) : houses;
   f.add(townHouses(keep, { seed: 61, paint: ['#c9a062', '#b98f55', '#d4ad6e', '#c19656', '#d9b878'], trim: '#dcbf86', fine: !detail.low }));
   addDetails(f, g, PAL);
-  return { group: g, focus: f, view: [0.5, 0.3, 1.2] };
+  // The home view matches the best-known photograph: the fort on its hill from the desert below.
+  return { group: g, focus: f, view: [0.3, 0.1, 1], zoom: 0.5, target: [0, 70, 0] };
 }

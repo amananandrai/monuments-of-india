@@ -54,7 +54,7 @@ export function buildKirtiMandir() {
   for (const x of [-14, 14]) f.add(at(hemi(3.2, CREAM, 20), x, 10.8, 0), at(finial(2), x, 14, 0));
   for (const x of [-8, 8]) f.add(at(chhatri(1.8, 5, CREAM), x, 10.8, 7));
   // The central tower
-  f.add(box(9, 6, 9, CREAM, 0, 10.8, -2), at(shikhara(8, 7, CREAM, nagaraProfile, 10), 0, 16.8, -2));
+  f.add(box(9, 6, 9, CREAM, 0, 10.8, -2), at(shikhara(8, 5, CREAM, nagaraProfile, 10, M.gold, 0.6), 0, 16.8, -2));
   // Gandhi's birthplace house next door, the photograph: see haveli().
   f.add(at(haveli(), -31, 0, -1));
   addDetails(f, g);

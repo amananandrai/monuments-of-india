@@ -3,7 +3,8 @@ import * as THREE from 'three';
 // Procedural surfaces for the stone, brick and earth materials. Everything is computed in the
 // shader from world-space position, so no texture files are needed and a 1 m block is the same
 // size on every model regardless of how its geometry was built. Each kind also adds a bump
-// from the same pattern, weathering (grime near the ground, faint rain streaks) and a small
+// from the same pattern, weathering (grime and damp at the foot of walls, rain streaks, broad
+// patches of soot and age; strongest on brick, about half on marble, none on gilt) and a small
 // per-object tint so that repeated pieces don't look cloned. Water is its own kind: moving ripples
 // that tilt the normal, so the sky reflects in a broken, shifting band instead of a flat sheen.
 export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13, calligraphy: 14, pietra: 15, reliefs: 16, banded: 17 };
@@ -253,10 +254,27 @@ const PATTERN = /* glsl */ `
   sH = dot(sPc, vec3(0.333)) * 2.5 + sH * 0.3;
   sTint = mix(sTint, 1.0, 0.7);
 #endif
-#if SURF_KIND == 1 || SURF_KIND == 2 || SURF_KIND == 3 || SURF_KIND == 12
-  // Weathering: grime near the ground and faint vertical rain streaks on walls
-  sTint *= mix(0.8, 1.0, smoothstep(0.0, 5.0, sp.y));
-  sTint *= 1.0 - 0.07 * smoothstep(0.55, 0.9, sNoise(vec3(sp.x * 1.3, sp.y * 0.06, sp.z * 1.3))) * (1.0 - abs(sn.y));
+#if SURF_KIND == 1 || SURF_KIND == 2 || SURF_KIND == 3 || SURF_KIND == 11 || SURF_KIND == 12 || SURF_KIND == 13 || SURF_KIND == 16 || SURF_KIND == 17
+  // Weathering, from world position alone (no geometry): strongest on brick and old stone, about
+  // half on marble, none on gilt, glass or ground (other kinds). sWx is that strength.
+  #if SURF_KIND == 2
+  float sWx = 0.5;
+  #elif SURF_KIND == 3
+  float sWx = 1.2;
+  #else
+  float sWx = 1.0;
+  #endif
+  float sWall = 1.0 - abs(sn.y);
+  // Grime near the ground, and on walls a band of damp at their foot, darker and a little
+  // green-brown, its top edge ragged.
+  sTint *= mix(1.0 - 0.2 * sWx, 1.0, smoothstep(0.0, 5.0, sp.y));
+  float sDamp = (1.0 - smoothstep(0.4, 1.6, sp.y + (sNoise(vec3(sp.xz * 1.7, 2.0)) - 0.5) * 0.9)) * sWall * sWx;
+  diffuseColor.rgb *= mix(vec3(1.0), vec3(0.72, 0.74, 0.66), 0.55 * sDamp);
+  // Rain streaks down the walls, long and uneven, darker where the water runs off ledges.
+  float sStreak = smoothstep(0.5, 0.88, sNoise(vec3(sp.x * 1.3, sp.y * 0.05, sp.z * 1.3))) * smoothstep(0.3, 0.7, sNoise(vec3(sp.x * 0.2, sp.y * 0.3, sp.z * 0.2)));
+  sTint *= 1.0 - 0.16 * sWx * sStreak * sWall;
+  // Soot and age in broad patches over every face.
+  sTint *= 1.0 - 0.1 * sWx * smoothstep(0.45, 0.8, sFbm(sp * 0.09 + vec3(5.0)));
 #endif
 #if SURF_KIND != 5 && SURF_KIND != 9
   sTint *= 0.95 + 0.1 * vSurfVar;

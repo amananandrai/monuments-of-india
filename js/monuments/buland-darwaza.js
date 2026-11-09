@@ -26,15 +26,17 @@ export function buildBulandDarwaza() {
     for (const y of [P + 2, P + 15]) f.add(at(iwan(4, 8, { m: Rd, trim: Mb, shade: Rl, depth: 0.8, frame: 0.5, top: 0.6, fill: 'jali', band: false }), s * 24.5 + s * 2.6, y, 6.6).rotateY(-s * Math.PI / 5));
     f.add(cyl(1.7, 1.7, 41, Rd, s * 21, P, 8.2, 8), at(onionDome(1.8, Mb), s * 21, P + 41, 8.2));
   }
-  // Rows of kiosks along the top
-  for (let k = 0; k < 13; k++) f.add(at(chhatri(1.25, 4.2, Rd, Mb), -18 + k * 3, P + 39, 6.5));
-  for (const x of [-13, 0, 13]) f.add(at(chhatri(3, 8, Rd, Mb), x, P + 39, -5));
+  // Rows of kiosks along the top: thirteen small ones along the front, three larger behind. The
+  // parapet stands 51 m above the town and the kiosks bring the whole to about 54 m.
+  for (let k = 0; k < 13; k++) f.add(at(chhatri(1.1, 2.6, Rd, Mb), -18 + k * 3, P + 39, 6.5));
+  for (const x of [-13, 0, 13]) f.add(at(chhatri(2.2, 3.6, Rd, Mb), x, P + 39, -5));
   // Behind the gate, on the ridge top, the Jama Masjid it opens into: a court ringed by cloisters,
   // the prayer hall on the west, the Badshahi Darwaza on the east, and in the court Salim Chishti's
   // white marble tomb and Islam Khan's red one.
   f.add(jamaMasjid(P));
   addDetails(f, g);
-  return { group: g, focus: f, view: [0.5, 0.25, 1.25] };
+  // The home view matches the best-known photograph: the gate up its great stair, from the town below.
+  return { group: g, focus: f, view: [0.15, 0.08, 1], zoom: 0.7 };
 }
 
 // The court is about 120 m square inside its cloisters (z from -18 to -138, x from -60 to 60);

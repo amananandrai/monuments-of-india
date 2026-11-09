@@ -68,12 +68,13 @@ export function buildGwaliorFort() {
   // Ramparts round the rest of the plateau's edge
   // The ring of walls round the plateau, one continuous wall, open where the palace front stands
   // It stops at the Hathi Pol, the elephant gate at the east end of the palace front.
-  f.add(ellipseWall(147, 67, 2.054, 0.998 + Math.PI * 2, 2.6, H - 1, H + 5, SAND));
-  const ga = 1.04, hp = new THREE.Group();
+  // The walls run the plateau's length (about 500 m of it here), round both ends.
+  f.add(ellipseWall(250, 66, Math.acos(-62 / 250), 1.25 + Math.PI * 2, 2.6, H - 1, H + 5, SAND));
+  const ga = 1.27, hp = new THREE.Group();
   hp.add(fortGate(13, 18, 8, 4.5, 8.5, { m: SAND, trim: SAND_DARK, towers: { r: 3.6, h: 22, cap: 'dome', seg: 20 } }));
   for (const x of [-8.6, 8.6]) hp.add(at(elephant(SAND_DARK, 0.9), x, 0, 6.5));
-  hp.position.set(147 * Math.cos(ga) * 0.985, H, 67 * Math.sin(ga) * 0.985);
-  hp.rotation.y = Math.atan2(Math.cos(ga) / 147, Math.sin(ga) / 67);
+  hp.position.set(250 * Math.cos(ga) * 0.985, H, 66 * Math.sin(ga) * 0.985);
+  hp.rotation.y = Math.atan2(Math.cos(ga) / 250, Math.sin(ga) / 66);
   f.add(hp);
   addDetails(p, g);
   return { group: g, focus: p, view: [0.45, 0.2, 1.25] };
