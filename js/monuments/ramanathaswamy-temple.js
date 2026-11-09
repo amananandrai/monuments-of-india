@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, box, at, pidaRoof, hemi, kalash, inst, unitCyl, unitBox, aroundRect, sheet } from '../helpers.js';
-import { gopuram, wallWithGaps } from '../details/temples.js';
+import { M, mat, box, at, inst, unitCyl, unitBox, aroundRect, sheet } from '../helpers.js';
+import { gopuram, wallWithGaps, dravidaVimana } from '../details/temples.js';
 import { addDetails } from '../details/ramanathaswamy-temple.js';
 
 const STONE = ['#cfc6b3', '#b9ae97', '#ddd5c4', '#a89c83'];
@@ -34,10 +34,10 @@ export function buildRamanathaswamy() {
   const medGeo = new THREE.CircleGeometry(1.1, 16).rotateX(Math.PI / 2), mi = new THREE.InstancedMesh(medGeo, mat('#ffffff', 0.7), meds.length), o = new THREE.Object3D(), c = new THREE.Color();
   meds.forEach(([x, y, z], i) => { o.position.set(x, y, z); o.updateMatrix(); mi.setMatrixAt(i, o.matrix); mi.setColorAt(i, c.set(['#b8322a', '#e0a93a', '#2f6c8f', '#f2e6cc'][i % 4])); });
   f.add(mi);
-  // Shrines of Ramanathaswamy and Parvatavardhini
+  // Shrines of Ramanathaswamy and Parvatavardhini, each under a granite vimana
+  const CORNICE = mat('#8d826b', 0.9);
   for (const [x, w] of [[-10, 14], [18, 10]]) {
-    const r = pidaRoof(w, w * 0.45, 4, 1, GRANITE, mat('#8d826b', 0.9));
-    f.add(box(w * 1.1, 8, w * 1.1, LIME, x, 0, -14), at(r, x, 8, -14), at(hemi(w * 0.24, GRANITE, 20), x, 8 + r.userData.top, -14), at(kalash(w * 0.15), x, 8 + r.userData.top + w * 0.24, -14));
+    f.add(box(w * 1.1, 8, w * 1.1, LIME, x, 0, -14), at(dravidaVimana(w, 4, 1.7, GRANITE, CORNICE, { kalashM: M.gold, kalashScale: 0.65, taper: 0.5 }), x, 8, -14));
   }
   addDetails(f, g);
   // Framed on the monument itself, closer than its grounds would set.
