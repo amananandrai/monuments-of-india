@@ -1,11 +1,14 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, FACES, chhatri, finial, inst, unitBox, sheet } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, FACES, chhatri, finial, inst, unitBox, sheet, surface } from '../helpers.js';
 import { jali } from '../details/components.js';
 import { iwan } from '../details/mughal.js';
 import { addDetails } from '../details/itmad-ud-daulah.js';
 
 // Pietra dura: inlaid panels of coloured stone set into the white marble.
 const INLAY = [mat('#8a5a3c', 0.5), mat('#c9a24a', 0.45), mat('#4f6b4a', 0.5), mat('#2f2b2a', 0.5)];
+// The walls, towers and upper pavilion are inlaid all over, not just in panels: geometric stars of
+// brown, ochre and green stone outlined in black (js/surface.js, 'pietra').
+const INLAID = surface(mat('#f2eee6', 0.5), 'pietra');
 
 // A canopy roof lofted from a square of half-width a at its eaves to a ridge of half-length r along
 // x at height h, its sides following an ogee: steep at the eaves, curving in, flattening at the top.
@@ -39,7 +42,7 @@ export function buildItmadUdDaulah() {
   f.add(box(50, 1.5, 50, M.red), box(36, 2, 36, Mb, 0, 1.5));
   const B = 3.5, s = 11;
   // The tomb: three arches a side, panels of inlay, and an octagonal tower at each corner
-  f.add(box(22, 8, 22, Mb, 0, B), box(23, 0.6, 23, M.marbleShade, 0, B + 8));
+  f.add(box(22, 8, 22, INLAID, 0, B), box(23, 0.6, 23, M.marbleShade, 0, B + 8));
   const tiles = INLAY.map(() => []);
   for (const a of FACES) {
     // A door in the middle arch, pierced screens in the two beside it.
@@ -50,10 +53,10 @@ export function buildItmadUdDaulah() {
     }
   }
   tiles.forEach((t, i) => f.add(inst(unitBox(), t, INLAY[i])));
-  for (const x of [-s, s]) for (const z of [-s, s]) f.add(cyl(1.9, 2.1, 13, Mb, x, B, z, 8), at(chhatri(1.9, 5.4, Mb), x, B + 13, z));
+  for (const x of [-s, s]) for (const z of [-s, s]) f.add(cyl(1.9, 2.1, 13, INLAID, x, B, z, 8), at(chhatri(1.9, 5.4, Mb), x, B + 13, z));
   // The upper pavilion with its canopy roof
   // The upper pavilion, its front a marble screen over the dark room behind.
-  f.add(box(10, 4.5, 10, Mb, 0, B + 8.6), onFace(box(6, 3, 0.04, M.recess, 0, B + 9.3), 0, 5.02), onFace(box(5.96, 2.96, 0.06, jali(Mb), 0, B + 9.32), 0, 5.09));
+  f.add(box(10, 4.5, 10, INLAID, 0, B + 8.6), onFace(box(6, 3, 0.04, M.recess, 0, B + 9.3), 0, 5.02), onFace(box(5.96, 2.96, 0.06, jali(Mb), 0, B + 9.32), 0, 5.09));
   for (const [w, h, x, y] of [[6.5, 0.25, 0, B + 9.05], [6.5, 0.25, 0, B + 12.3], [0.25, 3.5, -3.12, B + 9.05], [0.25, 3.5, 3.12, B + 9.05]]) f.add(onFace(box(w, h, 0.16, M.marbleShade, 0, y, 0), 0, 5.08, x));
   // The tomb has no dome. The pavilion is roofed by an ogee-curved canopy over a wide chhajja,
   // drawn out along one axis to a short ridge carrying two finials.
