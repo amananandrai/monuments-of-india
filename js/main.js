@@ -5,6 +5,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { nightState, V, box } from './helpers.js';
 import { attachSurface, surface, waterTime, landColor, reflection } from './surface.js';
@@ -61,7 +62,10 @@ controls.autoRotateSpeed = 0.6;
 controls.maxPolarAngle = Math.PI / 2 - 0.01;
 
 // Where the sun stands, seen from the monument: the sun light and the sun in the sky share it.
-const SUN_DIR = V(-0.55, 0.85, 0.45).normalize();
+// A monument may return its own (sun: [x, y, z], from its latitude and its best-known photograph's
+// light); otherwise this one. SUN_DIR is shared with the sky's shader, so the sun in the sky follows.
+const DEFAULT_SUN = V(-0.55, 0.85, 0.45).normalize();
+const SUN_DIR = DEFAULT_SUN.clone();
 
 // The sky: --sky-top fading to --sky-horizon, a haze band and a low line of distant hills on the
 // skyline, the sun, and clouds by day; stars by night. Clouds drift unless the visitor has asked
@@ -124,7 +128,9 @@ groundMat.polygonOffsetFactor = 2;
 groundMat.polygonOffsetUnits = 32;
 scene.add(ground);
 
-scene.fog = new THREE.Fog(0xffffff, 100, 1000);
+// Aerial perspective: haze that thickens with distance (exponential squared), in the sky's colour
+// at the horizon, so the monument stays clear while distant hills and skylines fade into the sky.
+scene.fog = new THREE.FogExp2(0xffffff, 0.001);
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x888888, 1);
 scene.add(hemiLight);
 const sun = new THREE.DirectionalLight(0xffffff, 3);
@@ -171,6 +177,22 @@ const smaa = new SMAAPass(1, 1);
 smaa.enabled = hd;
 composer.addPass(smaa);
 composer.addPass(new OutputPass());
+// A gentle colour grade on desktops, after tone mapping: warmer light, shadows lifted a touch
+// towards a warm grey, and a little more saturation, for the look of hazy Indian daylight.
+const grade = new ShaderPass({
+  uniforms: { tDiffuse: { value: null } },
+  vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: `uniform sampler2D tDiffuse; varying vec2 vUv;
+    void main() {
+      vec4 t = texture2D(tDiffuse, vUv);
+      vec3 c = t.rgb * vec3(1.025, 1.0, 0.965);
+      c += vec3(0.014, 0.010, 0.004) * (1.0 - c);
+      float l = dot(c, vec3(0.299, 0.587, 0.114));
+      gl_FragColor = vec4(clamp(mix(vec3(l), c, 1.06), 0.0, 1.0), t.a);
+    }`,
+});
+grade.enabled = hd;
+composer.addPass(grade);
 
 // The open land: the theme's colour, or, where a monument's site is green or shaped terrain, that
 // colour (siteLand in js/landscape.js), so a meadow or a forested hill does not end on a sandy
@@ -270,7 +292,7 @@ function computeHome(r) {
   const dir = V(...(r.view || [0.9, 0.34, 1.25])).normalize();
   const target = V(center.x, center.y * 0.95, center.z);
   // minElevation: for a monument in a pit or trench, how high the camera must stay to see in.
-  return { target, pos: target.clone().addScaledVector(dir, dist), dist, radius, reach: sceneryReach(r, target, dir), minEl: r.minElevation || 0.01, fog: r.fog || 7 };
+  return { target, pos: target.clone().addScaledVector(dir, dist), dist, radius, reach: sceneryReach(r, target, dir), minEl: r.minElevation || 0.01, fog: r.fog || 7, sun: r.sun ? V(...r.sun).normalize() : DEFAULT_SUN };
 }
 
 // How far the camera may pull back before it would enter the scenery round a monument (hills,
@@ -305,11 +327,13 @@ function setEnvironment(h) {
   // The land runs well past the end of the fog, so its edge is never seen.
   ground.scale.setScalar(dist * Math.max(12, h.fog * 1.8));
   // fog: how many home distances off the haze closes in; mountain sites ask for clearer air.
-  scene.fog.near = dist * 1.6;
-  scene.fog.far = dist * h.fog;
+  // Under 1% haze at the home distance, about two-fifths at h.fog home distances (mountain sites
+  // ask for a larger h.fog, so their peaks stay clear), thickening fast beyond.
+  scene.fog.density = 0.75 / (dist * h.fog);
   controls.minDistance = radius * 0.35;
   controls.maxDistance = Math.max(dist * 1.15, Math.min(dist * 3, h.reach * 0.85));
   controls.maxPolarAngle = Math.PI / 2 - h.minEl;
+  SUN_DIR.copy(h.sun);
   sun.position.copy(target).addScaledVector(SUN_DIR, radius * 3);
   sun.target.position.copy(target);
   const sc = sun.shadow.camera;

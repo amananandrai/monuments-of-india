@@ -131,9 +131,9 @@ One commit each. Check the budget after each.
 
 `js/main.js` has fog, a sky shader with haze and distant hills, GTAO, bloom and SMAA.
 
-- [ ] Haze that thickens with distance and takes the sky's colour near the horizon (aerial perspective), so distant mountains and skylines read as far away. In the fog, not in CSS.
-- [ ] Per-site sun: the sun direction is one fixed vector (`SUN_DIR`). Let a monument return its own (from its latitude and its best-known photo light), defaulting to today's.
-- [ ] Colour grading: an optional LUT pass in the composer for a warm, slightly hazy Indian daylight, tuned once for all monuments. Desktops only if it costs a pass on phones.
+- [x] Haze that thickens with distance and takes the sky's colour near the horizon (aerial perspective), so distant mountains and skylines read as far away. In the fog, not in CSS.
+- [x] Per-site sun: the sun direction is one fixed vector (`SUN_DIR`). Let a monument return its own (from its latitude and its best-known photo light), defaulting to today's.
+- [x] Colour grading: an optional LUT pass in the composer for a warm, slightly hazy Indian daylight, tuned once for all monuments. Desktops only if it costs a pass on phones.
 
 ### T12. Vegetation and ground
 
