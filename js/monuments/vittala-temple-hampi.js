@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { mat, mesh, box, at, rng, pidaRoof, surface } from '../helpers.js';
 import { elephant } from '../details/animals.js';
 import { trabeateGate, wallWithGaps } from '../details/temples.js';
-import { templeDoorway } from '../details/doorways.js';
+import { templeDoorway, grandStair, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { clusterPillar, yaliPillar, carvedWheelGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/vittala-temple-hampi.js';
@@ -60,6 +60,10 @@ export function buildVittala() {
   f.add(box(16, 9, 15.94, GRANITE, 0, 0, -28.03), at(pidaRoof(15, 6, 4, 0.9, GRANITE, GRANITE_DARK), 0, 9, -28));
   f.add(at(templeDoorway(1.8, 3.6, { m: GRANITE, open: 0.9 }), 0, 2.6, -20));
   f.add(at(pillaredHall(20, 20, 5, 3.4, 0, { yali: true, figures: true }), -30, 0, 28), at(pillaredHall(18, 18, 5, 3.4), 30, 0, -40));
+  // A flight up the east face of each hall to its floor, 2.6 m up: the maha-mandapa's between
+  // elephants on pedestals, their trunks curled down beside the foot of the stair as balustrades.
+  f.add(at(grandStair(2.6, 6, GRANITE_DARK, GRANITE, { cheek: 0.7, foot: 'elephant', guardScale: 0.5, coarse: true }), 0, 0, -6 + 14));
+  f.add(at(grandStair(2.6, 5, GRANITE_DARK, GRANITE, { cheek: 0.6 }), -30, 0, 28 + 10), at(grandStair(2.6, 5, GRANITE_DARK, GRANITE, { cheek: 0.6 }), 30, 0, -40 + 9));
   // The stone chariot (Garuda shrine) with its wheels, drawn by two elephants
   const ch = new THREE.Group();
   ch.add(box(6, 3.6, 9, GRANITE), box(6.6, 0.6, 9.6, GRANITE_DARK, 0, 3.6));
@@ -70,6 +74,8 @@ export function buildVittala() {
   }
   ch.add(box(4.6, 4.2, 6, GRANITE, 0, 4.2), at(pidaRoof(5.2, 2.6, 3, 0.6, GRANITE, GRANITE_DARK), 0, 8.4, 0));
   for (const x of [-1.8, 1.8]) ch.add(at(elephant(GRANITE, 0.75, { coarse: detail.low }), x, 0, 7));
+  // Steps up the back of the chariot to the door of its shrine.
+  ch.add(at(steps(2.2, 3.6, 8, GRANITE_DARK, 0.42), 0, 0, -4.5).rotateY(Math.PI));
   f.add(at(ch, 0, 0, 30));
   addDetails(f, g);
   // Framed on the monument itself, closer than its grounds would set.

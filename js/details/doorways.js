@@ -94,11 +94,12 @@ export function steps(width, rise, n, m, tread = 0.42) {
 // at half height (none when landing is 0), between side walls `cheek` above the line of the steps.
 // Guardians, each pair scaled by `guardScale`: elephants on pedestals beside the foot (foot:
 // 'elephant'), lions on the side walls at the landing (mid: 'lion') and standing figures on the
-// plinth either side of the head (top: true). Treads in m, side walls and pedestals in sh.
+// plinth either side of the head (top: true); coarse: lighter elephants, where the budget is tight.
+// Treads in m, side walls and pedestals in sh.
 // userData.run is the length of the stair along z.
 export function grandStair(rise, width, m, sh, {
   n = Math.max(3, Math.round(rise / 0.2)), tread = 0.36, landing = rise > 3 ? 2.4 : 0, cheek = 1,
-  foot = null, mid = null, top = false, guardScale = 0.55,
+  foot = null, mid = null, top = false, guardScale = 0.55, coarse = false,
 } = {}) {
   const g = new THREE.Group(), W = width, h = rise / n, half = landing ? Math.round(n / 2) : 0;
   let z = 0;
@@ -116,7 +117,7 @@ export function grandStair(rise, width, m, sh, {
     g.add(mesh(cg, sh, s > 0 ? W / 2 + 1.19 : -W / 2 + 0.01, 0, 0));
     if (foot === 'elephant') {
       const x = s * (W / 2 + 1.2 + 2.9 * gs), ez = zE - 3.45 * gs;
-      g.add(box(4.4 * gs, 1, 6.9 * gs, sh, x, 0, ez), at(elephant(m, gs), x, 1, ez));
+      g.add(box(4.4 * gs, 1, 6.9 * gs, sh, x, 0, ez), at(elephant(m, gs, { coarse }), x, 1, ez));
     }
     if (mid === 'lion' && half) g.add(at(lion(gs, m), s * (W / 2 + 0.6), yL, (z1 + z2) / 2));
     if (top) g.add(at(statue(4.4 * gs, m), s * (W / 2 + 1.2 + 2.55 * gs), rise, -2.5 * gs));
