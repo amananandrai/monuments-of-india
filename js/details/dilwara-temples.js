@@ -52,5 +52,5 @@ function architecture(f) {
 // walls.
 export function addDetails(f, g) {
   architecture(f);
-  g.add(trees(scatter(30, [-62, 62, -68, 68], { seed: 5, gap: 10, avoid: [[-30, 30, -42, 42], [-8, 8, 30, 70]] }), { kind: 'mango', seed: 5 }));
+  g.add(trees(scatter(48, [-100, 140, -80, 80], { seed: 5, gap: 10, avoid: [[-30, 30, -42, 42], [-8, 8, 30, 80], [28, 110, -36, 28], [-62, -26, -30, 38]] }), { kind: 'mango', seed: 5 }));
 }
