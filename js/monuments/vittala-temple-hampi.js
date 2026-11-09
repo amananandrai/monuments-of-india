@@ -62,7 +62,7 @@ export function buildVittala() {
   f.add(at(pillaredHall(20, 20, 5, 3.4, 0, { yali: true, figures: true }), -30, 0, 28), at(pillaredHall(18, 18, 5, 3.4), 30, 0, -40));
   // A flight up the east face of each hall to its floor, 2.6 m up: the maha-mandapa's between
   // elephants on pedestals, their trunks curled down beside the foot of the stair as balustrades.
-  f.add(at(grandStair(2.6, 6, GRANITE_DARK, GRANITE, { cheek: 0.7, foot: 'elephant', guardScale: 0.5, coarse: true }), 0, 0, -6 + 14));
+  f.add(at(grandStair(2.6, 6, GRANITE_DARK, GRANITE, { cheek: 0.7, foot: 'elephant', guardScale: 0.5, coarse: detail.low }), 0, 0, -6 + 14));
   f.add(at(grandStair(2.6, 5, GRANITE_DARK, GRANITE, { cheek: 0.6 }), -30, 0, 28 + 10), at(grandStair(2.6, 5, GRANITE_DARK, GRANITE, { cheek: 0.6 }), 30, 0, -40 + 9));
   // The stone chariot (Garuda shrine) with its wheels, drawn by two elephants
   const ch = new THREE.Group();
@@ -79,5 +79,5 @@ export function buildVittala() {
   f.add(at(ch, 0, 0, 30));
   addDetails(f, g);
   // Framed on the monument itself, closer than its grounds would set.
-  return { group: g, focus: f, view: [0.95, 0.45, 1.1], zoom: 0.6, budget: 500000 };
+  return { group: g, focus: f, view: [0.95, 0.45, 1.1], zoom: 0.6 };
 }

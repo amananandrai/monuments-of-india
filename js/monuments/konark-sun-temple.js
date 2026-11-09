@@ -32,7 +32,7 @@ export function buildKonark() {
   // (+x) between elephants, on the south between war horses, as the guardians stand at Konark.
   for (const [s, foot] of [[1, 'elephant'], [-1, 'horse']]) {
     f.add(box(2.4, B, 9, Kd, s * 15.7, 0, jz));
-    f.add(at(grandStair(B, 6, K, Kd, { foot, guardScale: 0.6, coarse: true, cheek: 0.9 }), s * 16.9, 0, jz).rotateY(s * Math.PI / 2));
+    f.add(at(grandStair(B, 6, K, Kd, { foot, guardScale: 0.6, coarse: detail.low, cheek: 0.9 }), s * 16.9, 0, jz).rotateY(s * Math.PI / 2));
   }
   let y = B + 12;
   [[29, 22], [20, 14], [13, 8]].forEach(([w0, w1], i) => {
@@ -75,5 +75,5 @@ export function buildKonark() {
   f.add(mergeByMaterial(pil));
   addDetails(f, g);
   // Framed on the monument itself, closer than its grounds would set.
-  return { group: g, focus: f, view: [1.1, 0.38, 0.9], zoom: 0.68, budget: 500000 };
+  return { group: g, focus: f, view: [1.1, 0.38, 0.9], zoom: 0.68 };
 }

@@ -232,8 +232,9 @@ function getBuilt(i) {
     r.focus = r.focus || r.group;
     // The colour of the land round the site, read before the seas are extended over it.
     r.land = siteLand(r);
-    // Fuller trees wherever the monument has triangles to spare; plain ones on phones.
-    if (!detail.low) upgradeTrees(r.group, r.budget || 300000);
+    // Fuller trees wherever the monument has triangles to spare under the desktop budget (js/detail.js);
+    // plain ones on phones.
+    if (!detail.low) upgradeTrees(r.group, detail.budget);
     naturalize(r.group);
     // Faces that share a plane get different depth offsets, so they don't flicker.
     separateCoplanar(r.group, 0.005);

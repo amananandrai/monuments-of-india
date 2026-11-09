@@ -172,3 +172,33 @@ With phones on their own lighter build, desktops at full detail get more:
 
 Phones (low detail) build Konark and Ajanta exactly as before. Both pass the camera and flicker
 audit unchanged.
+
+# Triangle budgets: 600k on desktops, 300k on phones
+
+`js/detail.js` sets one budget per level (`BUDGET`, read as `detail.budget`): up to 600,000
+triangles on desktops and 300,000 on phones. Builders no longer return their own `budget`;
+`js/main.js` replants the trees in more detail up to the desktop budget, and phones keep plain
+trees. On desktops a monument may take two or three seconds to build behind its "Loading" notice.
+
+Every monument was measured at both levels after the change (before the fuller trees):
+
+- **Desktop:** the heaviest are Konark (541k), Meenakshi (527k), Vittala (508k) and Baidyanath (486k).
+  Every other monument is under 400k.
+- **Phone:** unchanged; the heaviest are Mallikarjuna (296k), Ram Mandir (289k), Nageshwar (272k)
+  and Meenakshi (266k).
+
+What desktops get that phones do not:
+
+- **Temples** (`js/details/temples.js`): the full carving on small shrines (sculpted guardians in the
+  niches, finer amalakas), images in the smaller niches beside a sanctum's main ones, a second
+  register of figures low on each hall's walls, and gopurams with their figures closer together and
+  a kudu over every second bay. Fine elephants and horses at the gates and stairs of Jagannath,
+  Vittala and Konark, and the full Ram Mandir corner shrines and gate guardians.
+- **Boats** (`js/details/realism.js`): the gunwale, the stem and stern posts, ribs, stowed oars, and
+  the hoops under a canopy. Every boat now floats with its hull above the water.
+- **Stalls:** a top board and panelled front on the counter, three baskets of flowers or offerings,
+  garlands under a scalloped valance on a sloping awning, and a shelf of brass pots.
+- **Dressed elephants** (`rideElephant` in `js/details/animals.js`): a fringe of tassels and
+  embroidered roundels on the cloths, a rope of bells round the neck, anklets, tusk caps, and on a
+  temple elephant the gold nettipattam over the forehead and trunk.
+
