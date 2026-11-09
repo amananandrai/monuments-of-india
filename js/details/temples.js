@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, FACES, rng, steppedPlan, planPrism, planBand, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, FACES, rng, flat, steppedPlan, planPrism, planBand, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox } from '../helpers.js';
 import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol, placeAll, chhajja, railing, cuspedArchGeo } from './components.js';
 import { templeDoorway, templePorch, steps, grandStair, doorFrame, doorLeaves, guardian } from './doorways.js';
 import { lion } from './animals.js';
-import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze, miniSpireGeo } from './sculpture.js';
+import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze, miniSpireGeo, kuta, shala } from './sculpture.js';
 
 // The shared temple builders, with real entrances: a Nagara temple's front porch, doorway and
 // side doors, a mandapa's doors, and a passage through the base of a gopuram. Moved here from
@@ -318,6 +318,39 @@ export function wallWithGaps(axis, len, h, t, m, gaps = [], x = 0, z = 0) {
     start = Math.max(start, b);
   }
   if (end > start) g.add(axis === 'x' ? box(end - start, h, t, m, (end + start) / 2, 0, z) : box(t, h, end - start, m, x, 0, (end + start) / 2));
+  return g;
+}
+
+// A Dravidian vimana: the tower over a South Indian sanctum, standing on y = 0. `tiers` square
+// storeys (talas), each tierH high, a wall course and a cornice in `shade` standing proud of it,
+// narrowing by `taper` of the base width w from the foot to the top storey. On the ledge of every
+// storey but the last, the hara: miniature shrines, a kuta on each corner and a shala in the middle
+// of each side. Then the griva (a short neck) and the crowning cap (sikhara), octagonal or round,
+// and a kalash. Not a pidha roof: that is the Kalinga or mandapa roof of the north and east.
+// userData.top is the height of the kalash's tip.
+export function dravidaVimana(w, tiers, tierH, m, shade = m, { taper = 0.45, cap = 'octagon', capScale = 0.32, kalashM = m, kalashScale = 0.6 } = {}) {
+  const g = new THREE.Group(), hara = new THREE.Group(), th = tierH;
+  let y = 0;
+  for (let i = 0; i < tiers; i++) {
+    const tw = w * (1 - (taper * i) / tiers);
+    g.add(box(tw, th * 0.72, tw, m, 0, y), box(tw + 0.8, th * 0.28, tw + 0.8, shade, 0, y + th * 0.72));
+    const k = tw * 0.12;
+    if (i < tiers - 1) {
+      for (const x of [-1, 1]) for (const z of [-1, 1]) hara.add(at(kuta(k, m), x * (tw / 2 - k / 2), y + th, z * (tw / 2 - k / 2)));
+      for (const a of FACES) hara.add(onFace(at(shala(tw * 0.32, k, m), 0, y + th, 0), a, tw / 2 - k / 2));
+    }
+    y += th;
+  }
+  g.add(mergeByMaterial(hara));
+  const r = w * capScale;
+  g.add(box(r * 1.2, th * 0.5, r * 1.2, shade, 0, y));
+  y += th * 0.5;
+  const oct = cap === 'octagon';
+  const dome = mesh(new THREE.SphereGeometry(r, oct ? 8 : 20, oct ? 6 : 10, 0, Math.PI * 2, 0, Math.PI / 2), oct ? flat(m) : m, 0, y, 0);
+  if (oct) dome.rotation.y = Math.PI / 8;
+  const k = kalash(r * kalashScale, kalashM);
+  g.add(dome, at(k, 0, y + r, 0));
+  g.userData.top = y + r + r * kalashScale * 1.12;
   return g;
 }
 
