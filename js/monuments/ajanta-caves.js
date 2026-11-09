@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, hemi, lathe, inst, unitBox, unitCyl, archWall, barrelVault, surface, curvedBand } from '../helpers.js';
 import { addDetails } from '../details/ajanta-caves.js';
+import { heightField, rough, smooth } from '../details/terrain.js';
 import { figure, figureFrieze } from '../details/sculpture.js';
 import { detail } from '../detail.js';
 
@@ -99,12 +100,30 @@ export function caveFront(i) {
   return { cols: i % 2 ? [-3.75, -2.25, -0.75, 0.75, 2.25, 3.75] : [-3, -1, 1, 3] };
 }
 
+// How far (m) a point lies outside the open ground of the gorge: the horseshoe's floor inside the
+// cliff (an ellipse 70 m by 56 m) and the valley the river leaves by. 0 or less is open ground.
+export function openDistance(x, z) {
+  const R = 70, dE = (Math.hypot(x / R, z / (0.8 * R)) - 1) * R;
+  const dV = z > 0 ? Math.abs(x) - (R * 0.95 + 0.35 * z) : Infinity;
+  return Math.min(dE, dV);
+}
+
 // The horseshoe-shaped cliff above the Waghora river, with the caves cut in a row along it.
 export function buildAjanta() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(500, 0.2, 400, FOREST), box(18, 0.4, 260, M.river, 0, 0, 40));
   const R = 70, H = 40, a0 = -0.15 * Math.PI, a1 = 1.15 * Math.PI, N = 30;
+  // The gorge is cut into the Deccan plateau: the forested tableland runs on at the top of the cliff
+  // on every side, and the Waghora leaves the horseshoe down a valley to the south (+z) whose sides
+  // widen as they fall away. Inside the horseshoe and along the valley floor the ground is at 0.
+  g.add(heightField(2400, 2400, 240, (x, z) => {
+    const d = openDistance(x, z);
+    if (d <= 0) return -0.3 + rough(x, z, 0.25, 0.6);
+    // Rising to the cliff's top, then past the cliff's 60 m band of forest to that band's own top
+    // (3 m above the rock), so the band does not stand up as a rim seen from the plateau.
+    return H * smooth(0, 38, d) + 2.7 * smooth(34, 62, d) + rough(x, z, 1.6, 0.35) * smooth(62, 110, d);
+  }, { cz: 200, cover: '#4f6a3a', rock: ['#7a6c5c', '#6e6254', '#857664'], band: 6, steep: 0.72 }));
+  g.add(box(18, 0.4, 900, M.river, 0, 0, 380));
   const cave = (i) => {
     const t = a0 + 0.06 + (i / (N - 1)) * (a1 - a0 - 0.12), x = Math.cos(t) * R, z = -Math.sin(t) * R * 0.8;
     const ry = Math.atan2(-x, -z);

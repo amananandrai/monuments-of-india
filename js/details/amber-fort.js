@@ -3,6 +3,7 @@ import { M, mat, at, onFace, aroundRect, FACES } from '../helpers.js';
 import { jharokha, merlons, beltCourse, bracketGeo, placeAll, chhajja, mergeByMaterial } from './components.js';
 import { towerDetail, slitRow } from './forts.js';
 import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
+import { ridgeY } from '../monuments/amber-fort.js';
 import { rideElephant } from './animals.js';
 
 // Amber Fort: painted elephants in their howdahs on the ramp up from the lake to the Suraj Pol, the
@@ -61,4 +62,8 @@ export function addDetails(f, g) {
     g.add(trees(spots, { kind: 'mango', seed: y, y, h: 6 }), shrubs(spots.map(([x, z]) => [x + 2.5, z - 2, 2]), { y, dry: true, seed: y + 1 }));
   }
   g.add(lampPosts(along(8, [-75, 39.5], [75, 39.5])));
+  // Dry scrub scattered up the ridge to the crest, each bush set on the ground where it stands.
+  const scrub = scatter(260, [-560, 560, -460, 30], { seed: 21, gap: 14, avoid: [[-104, 104, -110, 40]] })
+    .map(([x, z]) => [x, z, 2.6, ridgeY(x, z) - 0.4]).filter(([, , , y]) => y > 1);
+  g.add(shrubs(scrub, { dry: true, seed: 22 }));
 }
