@@ -91,6 +91,14 @@ function rockAround(w, W, h, d, y, H) {
 // (i = 18, 25) and the vihara 11 (i = 10). Sizes are [mouth width, hall width, height, depth].
 const HALLS = { 10: ['vihara', 8, 16, 5, 16], 18: ['chaitya', 9, 9, 12, 22], 25: ['chaitya', 9, 9, 12, 22] };
 
+// The other mouths are not all alike. Caves 9, 10 and 29 (i = 8, 9, 28) are chaityas too: a tall
+// doorway under a horseshoe window, no verandah. The viharas' verandahs alternate between four
+// pillars and six. caveFront(i): { chaitya: true } or { cols: the pillars' x across the mouth }.
+export function caveFront(i) {
+  if (i === 8 || i === 9 || i === 28) return { chaitya: true };
+  return { cols: i % 2 ? [-3.75, -2.25, -0.75, 0.75, 2.25, 3.75] : [-3, -1, 1, 3] };
+}
+
 // The horseshoe-shaped cliff above the Waghora river, with the caves cut in a row along it.
 export function buildAjanta() {
   const g = new THREE.Group(), f = new THREE.Group();
@@ -145,8 +153,15 @@ export function buildAjanta() {
       const [kind, w, W, h, d] = hall, o = new THREE.Group();
       o.add(rockAround(w, W, h, d, y, H), at(kind === 'chaitya' ? chaitya(w, h, d) : vihara(w, W, h, d), 0, y, 0));
       f.add(at(o, x, 0, z).rotateY(ry));
+    } else if (caveFront(i).chaitya) {
+      // A chaitya's front: the doorway, and over it the dark horseshoe window into the vault.
+      caves.push([x + ux * 0.2, y, z + uz * 0.2, 2.6, 4, 1, ry]);
+      const win = mesh(new THREE.CircleGeometry(2.3, 20, -Math.PI * 0.15, Math.PI * 1.3), DARK, x + ux * 0.72, y + 6.6, z + uz * 0.72);
+      win.rotation.y = ry;
+      f.add(win);
     } else caves.push([x + ux * 0.2, y, z + uz * 0.2, 8, 5, 1, ry]);
-    if (!hall || hall[0] === 'vihara') for (let c = -3; c <= 3; c += 2) porch.push([x + ux * 1.4 + Math.cos(ry) * c, y, z + uz * 1.4 - Math.sin(ry) * c, 0.8, 5, 0.8]);
+    const cols = hall ? (hall[0] === 'vihara' ? [-3, -1, 1, 3] : []) : caveFront(i).cols || [];
+    for (const c of cols) porch.push([x + ux * 1.4 + Math.cos(ry) * c, y, z + uz * 1.4 - Math.sin(ry) * c, 0.8, 5, 0.8]);
     f.add(at(box(10, 0.8, 4, ROCK_LIGHT), x + ux * 2, y - 0.8, z + uz * 2).rotateY(ry));
   }
   f.add(inst(unitBox(), caves, DARK), inst(unitCyl(8), porch, ROCK_LIGHT));
