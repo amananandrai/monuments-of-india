@@ -6,7 +6,8 @@ import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
 // Jallianwala Bagh, finer detail. From photographs: the base of the flame memorial is lettered on
 // its faces; a low railing edges the reflecting pool; and on the preserved wall the bullet marks
 // of 13 April 1919 are each outlined in a white painted square. Dimensions follow
-// js/monuments/jallianwala-bagh.js: the pool 24 square at (0, -6), the base 10 square and 1.6 high,
+// js/monuments/jallianwala-bagh.js: the garden 200 × 135 inside its walls, the pool 24 square
+// at (0, -6), the base 10 square and 1.6 high,
 // the wall 16 × 4 × 1.2 at (40, 0, 26).
 const LETTERS = surface(mat('#e8dcc4', 0.8), 'script'), WHITE = mat('#f2efe8', 0.8);
 function architecture(f) {
@@ -37,7 +38,7 @@ function architecture(f) {
 // narrow lane that was its only way out in 1919, and lamps.
 export function addDetails(f, g) {
   architecture(f);
-  f.add(trees(scatter(14, [-54, 54, -40, 40], { seed: 6, gap: 13, avoid: [[-18, 18, -24, 12], [-42, -30, 14, 26]] }), { kind: 'neem', seed: 6 }));
-  f.add(shrubs([...along(10, [-50, 37], [50, 37]), ...along(10, [-50, -37], [50, -37])].map(([x, z]) => [x, z, 1.1]), { seed: 7 }));
-  f.add(lampPosts([...along(4, [-3.5, 40], [-3.5, 64]), ...along(4, [3.5, 40], [3.5, 64])]));
+  f.add(trees(scatter(26, [-92, 92, -60, 60], { seed: 6, gap: 14, avoid: [[-20, 20, -26, 14], [-42, -30, 14, 26], [30, 50, 22, 30]] }), { kind: 'neem', seed: 6 }));
+  f.add(shrubs([...along(16, [-92, 62], [92, 62]), ...along(16, [-92, -62], [92, -62])].map(([x, z]) => [x, z, 1.1]), { seed: 7 }));
+  f.add(lampPosts([...along(4, [-3.5, 64], [-3.5, 88]), ...along(4, [3.5, 64], [3.5, 88])]));
 }
