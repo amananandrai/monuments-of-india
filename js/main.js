@@ -17,6 +17,7 @@ import { upgradeTrees, scatterGround } from './details/realism.js';
 import { naturalize } from './naturalize.js';
 import { loadPhotoTextures } from './textures.js';
 import { MONUMENTS } from './data.js';
+import { STYLE_GROUPS, MATERIAL_GROUPS, styleMatches, materialMatches } from './filters.js';
 import { createMap } from './map.js';
 import { warmSculpts } from './warmup.js';
 import { detail, chooseDetail } from './detail.js';
@@ -483,19 +484,24 @@ const q = $('q');
 q.placeholder = `Search ${MONUMENTS.length} monuments`;
 
 /* ---------- architectural style & material filtering ---------- */
-const STYLE_FILTERS = {
-  dravidian: (m) => /dravidian/i.test(m.style),
-  'indo-islamic': (m) => /indo-islamic|mughal|qutb shahi|deccan|nawabi|indo-afghan/i.test(m.style),
-  nagara: (m) => /\bnagara\b/i.test(m.style),
-  gothic: (m) => /gothic/i.test(m.style),
-};
-
-const MATERIAL_FILTERS = {
-  'red-sandstone': (m) => /red (?:and [^,]+ )?sandstone|red sandstone/i.test(m.material),
-  'white-marble': (m) => /white.*marble|marble.*white|white makrana marble/i.test(m.material),
-  laterite: (m) => /laterite/i.test(m.material),
-  granite: (m) => /granite/i.test(m.material),
-};
+// The groups are defined in js/filters.js; their chips are built here, after the "All" chip in
+// index.html, each with a tooltip saying how many monuments it holds.
+function buildChips(kind, groups, field) {
+  const el = document.querySelector(`.chips[data-filter="${kind}"]`);
+  if (!el) return;
+  for (const gr of groups) {
+    const n = MONUMENTS.filter((m) => gr.test.test(m[field])).length;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip';
+    b.dataset.val = gr.id;
+    b.textContent = gr.label;
+    b.title = `${n} monument${n === 1 ? '' : 's'}`;
+    el.appendChild(b);
+  }
+}
+buildChips('style', STYLE_GROUPS, 'style');
+buildChips('material', MATERIAL_GROUPS, 'material');
 
 let activeStyle = '';
 let activeMaterial = '';
@@ -506,13 +512,7 @@ function matchesFilter(m) {
     const haystack = `${m.name} ${m.place} ${m.state} ${m.style} ${m.material}`.toLowerCase();
     if (!haystack.includes(t)) return false;
   }
-  if (activeStyle && STYLE_FILTERS[activeStyle] && !STYLE_FILTERS[activeStyle](m)) {
-    return false;
-  }
-  if (activeMaterial && MATERIAL_FILTERS[activeMaterial] && !MATERIAL_FILTERS[activeMaterial](m)) {
-    return false;
-  }
-  return true;
+  return styleMatches(m, activeStyle) && materialMatches(m, activeMaterial);
 }
 
 function applyFilters() {
