@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { surface } from '../surface.js';
-import { mat, mesh, box, at, onFace, inst, unitBox, aroundRect, ellipsoid, tube, face, pidaRoof } from '../helpers.js';
+import { mat, mesh, box, at, onFace, rng, inst, unitBox, aroundRect, ellipsoid, tube, face, pidaRoof } from '../helpers.js';
+import { heightField, fbm, smooth } from '../details/terrain.js';
 import { trabeateGate } from '../details/temples.js';
 import { templeNiche, mergeByMaterial } from '../details/components.js';
 import { figure } from '../details/sculpture.js';
@@ -87,19 +88,34 @@ function cloister(H) {
   return g;
 }
 
+// Vindhyagiri's height at (x, z): a granite dome 40 m high and about 80 m round, its outline
+// irregular, level on top (under the 40 m enclosure) and spreading at its foot, its flanks rippled like sheet rock, the foot sinking
+// under the plain. Read by the stair here and the shrubs in js/details/gommateshwara.js.
+export function vindhyagiri(x, z) {
+  const H = 40, u = Math.min(1, Math.max(0, (Math.hypot(x, z) + 7 * fbm(x, z, { scale: 0.012, octaves: 2 }) * smooth(30, 45, Math.hypot(x, z)) - 29) / 55));
+  let y = H * Math.pow(1 - u * u, 1.1);
+  y += smooth(0.5, 4, y) * (1 - smooth(H - 3, H - 0.4, y)) * 1.6 * fbm(x, z, { scale: 0.04, octaves: 3 });
+  return y - 0.4 * (1 - smooth(0, 3, y));
+}
+
 export function buildGommateshwara() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  // Vindhyagiri: a bare granite hill, with steps cut up its face
+  // Vindhyagiri: a bare granite dome, with steps cut up its face and boulders lying on its flanks.
   const H = 40;
-  const hill = mesh(new THREE.SphereGeometry(80, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), HILL);
-  hill.scale.y = H / 80;
-  g.add(hill, box(300, 0.2, 300, mat('#7d8c5a', 0.95)));
+  g.add(box(300, 0.2, 300, mat('#7d8c5a', 0.95)));
+  g.add(heightField(200, 200, detail.low ? 110 : 170, vindhyagiri, { rock: ['#958d7f', '#8e8678'], cover: '#8f8a6e', steep: 0.96, band: 400 }));
+  const R = rng(13), stones = [];
+  for (let k = 0; k < 60 && stones.length < 26; k++) {
+    const a = R() * Math.PI * 2, r = 34 + R() * 42, x = Math.sin(a) * r, z = Math.cos(a) * r, sz = 1 + R() * 2.4;
+    if (Math.abs(x) < 16 && z > 12) continue; // clear of the stair
+    stones.push([x, vindhyagiri(x, z) - sz * 0.3, z, sz * 1.3, sz, sz * 1.1, R() * 6.28]);
+  }
+  g.add(inst(new THREE.IcosahedronGeometry(0.5, 1).translate(0, 0.5, 0), stones, HILL));
   // The Vindhyagiri stair, cut in the rock: a steep flight up the foot of the hill, then a switchback
   // of six legs with a landing at each turn, some 250 treads to the gateway of the enclosure. Each
-  // tread reaches from below the hill's faceted surface to just above its curve, and none is lower
-  // than the one before it.
-  const ground = (x, z) => H * Math.sqrt(Math.max(0, 1 - (x * x + z * z) / 6400)), TOP = H + 0.5, treads = [];
+  // tread reaches from below the rock to just above it, and none is lower than the one before it.
+  const ground = (x, z) => Math.max(0, vindhyagiri(x, z)), TOP = H + 0.5, treads = [];
   const nodes = [[4, 86], [4, 70.5], ...[0, 1, 2, 3, 4].map((i) => [i % 2 ? 10 : -10, 62 - i * 8.6]), [0, 20.6]];
   let top = 0;
   const put = (x, z, w, d, ry) => {

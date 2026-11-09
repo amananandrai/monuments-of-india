@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { mat, box, cyl, at, onFace, FACES } from '../helpers.js';
 import { chhajja, frieze, petalRing, mergeByMaterial } from './components.js';
 import { trees, shrubs, asiBoard, scatter } from './realism.js';
+import { vindhyagiri } from '../monuments/gommateshwara.js';
 
 // Gommateshwara, finer detail. From photographs of the hilltop enclosure: a sloping eave runs along
 // the cloisters round the statue, carved in a band under it; and in the court before the statue
@@ -34,7 +35,7 @@ export function addDetails(f, g) {
   architecture(f);
   const H = 40;
   const rock = scatter(30, [-75, 75, -75, 75], { seed: 5, gap: 7 }).filter(([x, z]) => { const r = Math.hypot(x, z); return r > 26 && r < 72 && !(Math.abs(x) < 14 && z > 15); });
-  g.add(shrubs(rock.map(([x, z]) => [x, z, 2, H * Math.sqrt(Math.max(0, 1 - (Math.hypot(x, z) / 80) ** 2)) - 0.3]), { dry: true, seed: 5 }));
+  g.add(shrubs(rock.map(([x, z]) => [x, z, 2, vindhyagiri(x, z) - 0.3]), { dry: true, seed: 5 }));
   g.add(trees(scatter(30, [-145, 145, -145, 145], { seed: 6, gap: 14 }).filter(([x, z]) => Math.hypot(x, z) > 88), { kind: 'palm', seed: 6 }));
   g.add(asiBoard('Gommateshwara, Shravanabelagola', 11, 88, 0));
 }

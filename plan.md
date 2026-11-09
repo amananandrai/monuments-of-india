@@ -69,7 +69,7 @@ Use `heightField`, `rough` and `smooth` from `js/details/terrain.js` (as the Kai
 - [x] **Palitana** (`js/monuments/palitana-temples.js`): the two hills are `CylinderGeometry` cones squashed to 0.7 in z. Make one ridge with two summits and a saddle; keep the tuks on the summits, the switchback stair and the `ground()` function the stair and trees read (rewrite it to sample the new field). The dark patches at the foot go with the cones.
 - [ ] **Kamakhya**: the Nilachal hill above the Brahmaputra, the temple on its top.
 - [ ] **Golconda**: the granite hill is a lathe on `hillRadius(a)`. Keep the outline, add boulders and rough relief.
-- [ ] **Gommateshwara**: Vindhyagiri is a hemisphere. Make it a granite dome with sheet-rock slopes; rewrite `ground()` for the stair.
+- [x] **Gommateshwara**: Vindhyagiri is a hemisphere. Make it a granite dome with sheet-rock slopes; rewrite `ground()` for the stair.
 - [ ] **Key**: steeper, rockier cone; the Spiti river braided across the valley floor.
 - [ ] **Jaisalmer and Chittorgarh**: real hills under the forts (see T6 for their size).
 - [ ] **Statue of Unity**: the green hills read as blobs on the water and the dam as a pale panel in the haze. Rocky Satpura hills with real relief; a solid dam face that holds up in the fog.
