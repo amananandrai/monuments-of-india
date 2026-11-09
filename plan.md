@@ -90,7 +90,7 @@ These are detailed from the front and plain boxes behind. Give each back the sam
 
 - [x] Mysore Palace: rear and side ranges with arcades, windows and turrets.
 - [x] City Palace, Udaipur: the rear mass, and raise the palace onto its ridge above the lake.
-- [ ] Laxmi Vilas Palace: rear wings (and see T8 for its skyline).
+- [x] Laxmi Vilas Palace: rear wings (and see T8 for its skyline).
 - [ ] Cooch Behar Palace: rear wings.
 - [ ] Rumtek: monks' quarters with windows and doors round the courtyard instead of a blank yellow wall.
 - [ ] Hawa Mahal: the rear courtyards and ramps behind the screen front.
@@ -100,7 +100,7 @@ These are detailed from the front and plain boxes behind. Give each back the sam
 One commit each. Check the budget after each.
 
 - [ ] **Taj Mahal**: the minarets lean slightly outwards (about 0.5°, built so to fall away from the tomb). Tilt each about its foot.
-- [ ] **Laxmi Vilas Palace**: an asymmetric, picturesque skyline (domes, gables and towers of different heights) instead of a symmetrical block; red sandstone with blue trap and marble.
+- [x] **Laxmi Vilas Palace**: an asymmetric, picturesque skyline (domes, gables and towers of different heights) instead of a symmetrical block; red sandstone with blue trap and marble.
 - [ ] **Qutb Shahi Tombs**: globular grey domes on petalled drums, in place of the pointed white onions (`onionDome` in `js/monuments/qutb-shahi-tombs.js`), and the large raised terraces.
 - [ ] **Golden Temple**: the Akal Takht with white marble lower storeys under its gilded top (`js/details/golden-temple.js`).
 - [ ] **Meenakshi**: roofed halls covering most of the court, and the Thousand Pillar Hall. Desktop budget: pay for it within Meenakshi (for example thinner gopuram figures or one row of town on desktops).
