@@ -23,7 +23,7 @@ const STROKES = [
   [[[-80, 6], [-66, 18]], 6, 16],
 ];
 const segDist = (x, z, [ax, az], [bx, bz]) => { const dx = bx - ax, dz = bz - az, t = Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz))); return Math.hypot(x - ax - t * dx, z - az - t * dz); };
-function islandHeight(x, z) {
+export function islandHeight(x, z) {
   let h = -3;
   for (const [pts, H, w] of STROKES) {
     let d = Infinity;

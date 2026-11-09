@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, FACES, lathe, surface, tricolour } from '../helpers.js';
+import { M, mat, box, cyl, at, onFace, FACES, lathe, surface, tricolour, hemi, finial, chhatri, inst, unitBox, unitCyl } from '../helpers.js';
 import { chhajja, bracketGeo, placeAll, alongFace, windowFrame, railing, jali, aroundCircle, petalRing, star, mouldings, frieze, panel, dentils, mergeByMaterial } from './components.js';
 import { instances, elephantGeo } from './sculpture.js';
 import { trees, lampPosts, along } from './realism.js';
@@ -68,12 +68,51 @@ function sculpture(f, g) {
 const LETTERS = surface(mat('#cfae86', 0.8), 'script');
 
 
-// Rashtrapati Bhavan: the tricolour on the dome, and lamps and trees along the avenue to the Jaipur
-// Column.
+// Herbert Baker's Secretariat (1912–27): the North and South Blocks either side of the avenue
+// beyond the forecourt, in the same red and cream Dholpur stone. Each is a long range two storeys
+// over a red base, with a domed tower at its middle, a colonnaded loggia facing the avenue,
+// pavilions projecting at its ends with chhatris on them, and rows of windows. s = -1 for the North
+// Block (west of the axis here), +1 for the South; the inner face stands at x = ±48.
+function secretariat(s) {
+  const g = new THREE.Group(), Rd = M.red, Cr = M.cream, Bf = M.buff;
+  const X = s * 66, Z0 = 220, Z1 = 360, ZC = (Z0 + Z1) / 2, L = Z1 - Z0;
+  g.add(box(36, 8, L, Rd, X, 0, ZC), box(34, 12, L - 2, Cr, X, 8, ZC), box(37, 0.9, L + 1, Bf, X, 20, ZC));
+  // The end pavilions, stepping out toward the avenue, each with a chhatri.
+  for (const z of [Z0 + 12, Z1 - 12]) {
+    g.add(box(10, 8, 24, Rd, s * 44, 0, z), box(9, 13, 22, Cr, s * 44.5, 8, z), box(10.5, 0.9, 25, Bf, s * 44.5, 21, z));
+    g.add(at(chhatri(3, 8, Cr), s * 44.5, 21.9, z));
+  }
+  // The loggia on the avenue side: cream columns between the pavilions, under a deep eave.
+  const cols = [];
+  for (let z = Z0 + 30; z <= Z1 - 30; z += 4) cols.push([s * 47.2, 8, z, 1.1, 12, 1.1]);
+  g.add(inst(unitCyl(12), cols, Cr), box(2.4, 0.6, L - 54, Bf, s * 47.6, 19.6, ZC));
+  // Windows: deep reveals in the cream storeys and smaller ones in the red base, on both long faces.
+  const win = [];
+  for (const side of [-1, 1]) {
+    const x = X + side * 18.02, xc = X + side * 17.02;
+    for (let z = Z0 + 4; z < Z1 - 3; z += 5) {
+      if (side === -s && Math.abs(z - Z0 - 12) > 13 && Math.abs(z - Z1 + 12) > 13) continue; // behind the loggia
+      win.push([x, 2.4, z, 0.2, 3, 1.8], [xc, 10.2, z, 0.2, 3.6, 1.8], [xc, 15.4, z, 0.2, 3.2, 1.8]);
+    }
+  }
+  g.add(inst(unitBox(), win, M.recess));
+  // The domed tower at the middle: a square base, a drum with a red railing band like the one on
+  // Rashtrapati Bhavan's dome, the dome and its finial, and chhatris at the corners of the base.
+  g.add(box(24, 7, 24, Cr, X, 20.9, ZC), box(25, 0.8, 25, Bf, X, 27.9, ZC));
+  g.add(cyl(8.5, 8.5, 4.5, Cr, X, 28.7, ZC, 40), cyl(8.9, 8.9, 1, Rd, X, 33.2, ZC, 40));
+  g.add(at(hemi(8.2, Cr, 40), X, 34.2, ZC), cyl(0.9, 1.3, 1.6, Cr, X, 42.2, ZC, 12), at(finial(3.2), X, 43.8, ZC));
+  for (const dx of [-10, 10]) for (const dz of [-10, 10]) g.add(at(chhatri(1.6, 5, Cr), X + dx, 28.7, ZC + dz));
+  return g;
+}
+
+// Rashtrapati Bhavan: the tricolour on the dome, lamps and trees along the avenue to the Jaipur
+// Column, and the two Secretariat blocks flanking the avenue beyond it.
 export function addDetails(f, g) {
   architecture(f);
   sculpture(f, g);
   f.add(at(tricolour(10), 0, 45.6, 0));
   g.add(trees([...along(8, [-38, 70], [-38, 200]), ...along(8, [38, 70], [38, 200])], { kind: 'neem', seed: 5 }));
   g.add(lampPosts([...along(8, [-20, 70], [-20, 200]), ...along(8, [20, 70], [20, 200])]));
+  g.add(box(240, 0.2, 170, M.path, 0, 0, 295), mergeByMaterial(new THREE.Group().add(secretariat(-1), secretariat(1))));
+  g.add(lampPosts([...along(10, [-20, 215], [-20, 370]), ...along(10, [20, 215], [20, 370])]));
 }

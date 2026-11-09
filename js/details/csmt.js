@@ -4,7 +4,7 @@ import { railing, jali, clockFace, rosette, windowFrame, bracketGeo, mergeByMate
 import { statue, gothicPinnacle } from './sculpture.js';
 import { GLASS } from './colonial.js';
 import { lion } from './animals.js';
-import { trees, lampPosts, along } from './realism.js';
+import { trees, lampPosts, along, cityAround } from './realism.js';
 
 // CSMT, finer detail. From photographs of the terminus: a pierced Gothic parapet runs along the
 // eaves of every range, with pinnacles at the corners; carved roundels sit between the windows of
@@ -94,4 +94,33 @@ export function addDetails(f, g) {
   sculpture(f);
   g.add(lampPosts([...along(9, [-100, 58], [100, 58]), ...along(9, [-100, 90], [100, 90])], { h: 5 }));
   g.add(trees(along(8, [-100, 95], [100, 95]), { kind: 'banyan', seed: 7, h: 12 }));
+  // It is a working station: behind the head office, the platforms run out under long trainsheds.
+  g.add(at(trainShed(), 0, 0, -36));
+  // Fort and Bori Bunder round it: blocks of offices and houses along the streets, clear of the
+  // forecourt, the road in front (whose far side they line) and the tracks.
+  g.add(cityAround([-110, 110, -260, 100], { rows: 2, gap: 8, depth: [14, 20], storeys: [3, 6], seed: 81,
+    paint: ['#d8c9ac', '#c9b08a', '#e2d6bf', '#b9a58a', '#d6cfc2', '#cdb594'] }));
+}
+
+// The trainsheds: eight platforms 240 m long between the tracks, under three long pitched roofs of
+// grey sheet carried on iron columns, running back (-z) from the head office.
+const SHEET = mat('#7f8a8f', 0.6, 0.3), IRON = mat('#4a4f52', 0.6, 0.5), BALLAST = mat('#5c5650', 0.95);
+function trainShed() {
+  const g = new THREE.Group(), L = 240, z0 = -L / 2;
+  g.add(box(200, 0.3, L, BALLAST, 0, 0, z0));
+  for (let k = 0; k < 8; k++) {
+    const x = -84 + k * 24;
+    g.add(box(8, 1, L - 10, M.path, x, 0, z0 + 5));
+    for (const s of [-1, 1]) for (const r of [-0.75, 0.75]) g.add(box(0.15, 0.2, L, IRON, x + s * 8 + r, 0.3, z0));
+  }
+  for (const cx of [-64, 0, 64]) {
+    for (const s of [-1, 1]) {
+      const slab = box(33.5, 0.3, L - 10, SHEET, 0, 0, 0);
+      slab.position.set(cx + s * 16, 15.2, z0 + 5);
+      slab.rotation.z = -s * 0.24;
+      g.add(slab);
+    }
+    for (let z = z0 + 10; z < -6; z += 20) for (const x of [cx - 30, cx, cx + 30]) g.add(cyl(0.35, 0.4, x === cx ? 18.6 : 11.4, IRON, x, 0, z, 8));
+  }
+  return g;
 }

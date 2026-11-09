@@ -12,7 +12,7 @@ const SPIRE = mat('#eadcc0', 0.8);
 // The old town of Ujjain further out, beyond the first ring of houses round the court (both
 // levels; js/details/realism.js, townHouses): rows two to four storeys high facing each other
 // across lanes, a few old houses under tiled roofs among them, the approach road on the axis to
-// the south kept open, and to the north the houses that look over the Rudra Sagar.
+// the south kept open, and to the north the houses behind the Mahakal Lok corridor.
 function ujjain() {
   const R = rng(19), flat = [], tiled = [];
   const row = (axis, at, a, b, ry, d = 11, gap = null) => {
@@ -29,7 +29,7 @@ function ujjain() {
   row('x', 81, -72, 72, 0, 11, 9);
   row('x', 97, -72, 72, S, 11, 9);
   row('x', 111, -72, 72, 0, 10, 9);
-  row('x', -84, -72, 72, 0, 12);
+  // (The first row north of the lake gave way to the Mahakal Lok corridor in 2022: js/details.)
   row('x', -100, -72, 72, S, 11);
   row('x', -114, -72, 72, 0, 10);
   // East and west, the whole depth of the town.

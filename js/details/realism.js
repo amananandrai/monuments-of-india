@@ -560,6 +560,39 @@ export function houseRow(R, axis, at, a, b, ry, { w = [6.5, 10.5], d = [9, 12], 
   return out;
 }
 
+// A city round a site: rows of town houses (townHouses, below) lining streets on every side of the
+// clear rectangle [x0, x1, z0, z1]. The first row stands `gap` back from it, fronts towards the
+// site; each further row stands back to back with the one before or across a lane `lane` wide,
+// alternately. Houses whose footprint touches a rectangle in `keep` (roads, squares, neighbouring
+// buildings, [x0, x1, z0, z1]) are left out. Widths, depths and storeys vary within their ranges.
+export function cityAround([x0, x1, z0, z1], {
+  rows = 2, gap = 6, lane = 7, width = [8, 14], depth = [10, 14], storeys = [2, 5], keep = [], seed = 1, ...opts
+} = {}) {
+  const R = rng(seed + 101), spots = [], pick = ([a, b]) => a + R() * (b - a);
+  const clear = (x, z, w, d) => !keep.some(([a, b, c, e]) => x + w / 2 > a && x - w / 2 < b && z + d / 2 > c && z - d / 2 < e);
+  let o = gap;
+  for (let r = 0; r < rows; r++) {
+    const D = depth[1], inward = r % 2 === 0;
+    const sides = [
+      // [along axis, fixed coordinate, from, to, facing ry towards the site]
+      ['x', z0 - o - D / 2, x0 - o - D, x1 + o + D, 0],
+      ['x', z1 + o + D / 2, x0 - o - D, x1 + o + D, Math.PI],
+      ['z', x0 - o - D / 2, z0 - o, z1 + o, Math.PI / 2],
+      ['z', x1 + o + D / 2, z0 - o, z1 + o, -Math.PI / 2],
+    ];
+    for (const [ax, fixed, from, to, ry] of sides) {
+      for (let t = from; t < to - 4;) {
+        const w = Math.min(pick(width), to - t), d = pick(depth), c = t + w / 2;
+        const x = ax === 'x' ? c : fixed, z = ax === 'x' ? fixed : c, fx = ax === 'x' ? w : d, fz = ax === 'x' ? d : w;
+        if (clear(x, z, fx, fz)) spots.push([x, z, w - 0.3, d, Math.round(pick(storeys)), inward ? ry : ry + Math.PI]);
+        t += w;
+      }
+    }
+    o += D + (inward ? 0 : lane);
+  }
+  return townHouses(spots, { seed, ...opts });
+}
+
 // Town houses, as in the old streets round a temple: spots are [x, z, w, d, storeys, ry, y?], each a
 // painted block w × d of 3.2 m storeys with its front (+z before ry) on the street. Dark windows run
 // in bays on every storey, front and back, with a door in the middle of the front; a balcony slab
