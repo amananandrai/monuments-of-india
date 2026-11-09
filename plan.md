@@ -107,7 +107,7 @@ One commit each. Check the budget after each.
 - [ ] **Red Fort**: the irregular octagon plan in place of straight runs of wall; Chhatta Chowk, Naubat Khana.
 - [x] **Kamakhya**: a segmented beehive dome with sculpture bands; curved chala roofs on the halls.
 - [ ] **Gwalior**: a long narrow plateau; Teli ka Mandir with its wagon-vault top; the Sas-Bahu temples.
-- [ ] **Akshardham**: the two-storey colonnaded parikrama with pavilions, in place of a solid wall.
+- [x] **Akshardham**: the two-storey colonnaded parikrama with pavilions, in place of a solid wall.
 - [x] **Cellular Jail**: a taller central watchtower with its lantern.
 - [x] **Mysore Palace**: the outline bulbs that light it at night (already on `main`: `bulbPoints` outlines the walls, arches and domes).
 - [ ] **Key Monastery**: irregular stacked massing on the steeper hill (with T5).

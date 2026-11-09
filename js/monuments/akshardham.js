@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { M, box, cyl, lathe, group, at, kalash, shikhara, nagaraProfile, ribbed, inst, unitCyl, unitHemi, aroundRect } from '../helpers.js';
 import { templeDoorway } from '../details/doorways.js';
+import { arcadeSkin } from '../details/mughal.js';
+import { detail } from '../detail.js';
 import { instances, elephantGeo, miniSpireGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/akshardham.js';
 
@@ -9,11 +11,23 @@ export function buildAkshardham() {
   g.add(f);
   g.add(box(250, 0.2, 270, M.path), box(150, 0.3, 166, M.water, 0, 0, 0));
   // Two-storey parikrama colonnade around the complex
-  const pw = 230, pd = 250, cols = [], domes = [];
-  aroundRect(pw - 8, pd - 8, 4).forEach(([x, z]) => cols.push([x, 0, z, 1, 11, 1]));
+  // Two storeys of arches open towards the temple (each cell a gallery 4 m deep behind the arcade),
+  // the solid outer wall behind them, the floor between the storeys and the roof, with a small
+  // dome over every bay along the top.
+  const pw = 230, pd = 250, domes = [];
   aroundRect(pw, pd, 10).forEach(([x, z]) => domes.push([x, 12.4, z, 4, 3.4, 4]));
-  for (const s of [-1, 1]) g.add(box(pw, 12, 6, M.red, 0, 0, s * (pd / 2)), box(6, 12, pd, M.red, s * (pw / 2), 0, 0));
-  g.add(inst(unitCyl(10), cols, M.redLight), inst(unitHemi(16), domes, M.redLight));
+  const range = (len) => {
+    // On phones (js/detail.js), bays twice as wide with plain backs and no rings.
+    const bay = detail.low ? 8 : 4, r = new THREE.Group(), n = Math.floor(len / bay), cells = [];
+    for (let k = 0; k < n; k++) { const x = -len / 2 + (k + 0.5) * (len / n); cells.push([x, 0.4, 2.8, 4.8], [x, 6.4, 2.6, 4.4]); }
+    r.add(box(len, 12, 2, M.red, 0, 0, -1), at(arcadeSkin(len, 12, cells, 4, M.red, { trim: M.redLight, fill: detail.low ? 'none' : 'room', ring: !detail.low }), 0, 0, 0), box(len, 0.4, 4, M.redLight, 0, 6, 2));
+    return r;
+  };
+  for (const s of [-1, 1]) {
+    g.add(at(range(pw - 12), 0, 0, s * (pd / 2 - 3) - s * 3).rotateY(s > 0 ? Math.PI : 0));
+    g.add(at(range(pd), s * (pw / 2 - 3) - s * 3, 0, 0).rotateY(s > 0 ? -Math.PI / 2 : Math.PI / 2));
+  }
+  g.add(inst(unitHemi(16), domes, M.redLight));
   // Gajendra Pith: the plinth with its frieze of elephants
   f.add(box(100, 5, 116, Ps));
   const eles = [];
