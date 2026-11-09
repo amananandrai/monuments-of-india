@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, lathe, at, onFace, FACES, archPanel, onionDome, hemi, finial, kalash, chhatri, ribbed, sheet } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
 import { wallWithGaps } from '../details/temples.js';
+import { steps } from '../details/doorways.js';
 import { mughalDoorway } from '../details/mughal.js';
 import { addDetails } from '../details/golden-temple.js';
 
@@ -21,6 +22,14 @@ export function buildGoldenTemple() {
     else g.add(wallWithGaps('z', 200, 9, 10, M.lime, [[0, 34]], -105, 0));
   }
   g.add(sheet(150, 150, M.lake, 0, 0.3, 0));
+  // Bathing ghats: flights cut from the parikrama's edge down into the water between low marble
+  // cheeks, on the north, south and east sides (between the lamps along the edge).
+  for (const [x, z, ry] of [[-45, -75, 0], [45, -75, 0], [-45, 75, Math.PI], [45, 75, Math.PI], [75, -27, -Math.PI / 2], [75, 27, -Math.PI / 2]]) {
+    const gh = new THREE.Group();
+    gh.add(steps(9, 0.8, 6, W, 0.45));
+    for (const sx of [-1, 1]) gh.add(box(0.5, 1.3, 3.4, W, sx * 4.75, 0, 1.4));
+    g.add(at(gh, x, 0, z).rotateY(ry));
+  }
   const b = 1.6;
   f.add(box(20, b, 20, W));
   // Guru's Bridge from the Darshani Deori gateway
@@ -35,6 +44,8 @@ export function buildGoldenTemple() {
   // The Darshani Deori: a passage through the gateway, its silver doors standing open
   f.add(at(fortGate(16, 9, 14, 4.2, 7, { m: W, trim: G, crest: false, spikes: false, leafM: SILVER }), -86, 0.8, 0).rotateY(-Math.PI / 2), box(12.5, 3.5, 14.5, G, -86, 9.8, 0));
   for (const z of [-5, 5]) f.add(at(chhatri(1.4, 4.4, G), -86, 13.3, z));
+  // The Har ki Pauri: steps down from the back of the temple's platform into the water.
+  f.add(at(steps(6, b, 6, W, 0.42), 10, 0, 0).rotateY(Math.PI / 2));
   // Harmandir Sahib: marble lower storey, gilded upper storeys
   f.add(box(12.25, 6, 12.25, W, 0, b));
   f.add(box(12.6, 0.4, 12.6, Gd, 0, b + 6));
