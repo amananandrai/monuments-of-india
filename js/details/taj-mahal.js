@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, FACES, chamferPrism, finial, onionDome, sheet, inst, unitCyl, unitHemi } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, FACES, chamferPrism, finial, onionDome, sheet, inst, unitCyl, unitHemi, surface } from '../helpers.js';
 import { iwan, arcadeSkin, cellRow } from './mughal.js';
 import {
   jali, frieze, niche, archSlab, archRing, rosette, bracketGeo, placeAll, aroundCircle, alongFace,
@@ -27,6 +27,8 @@ import { trees, asiBoard, fountains, scatter, along } from './realism.js';
 // chamfered by c, walls H high.
 
 const MB = M.marble, SH = M.marbleShade;
+// The Quranic inscriptions in black marble set into the white (js/surface.js, 'calligraphy').
+const CALLIG = surface(mat('#f3f0e9', 0.45), 'calligraphy');
 
 // The crown of the tomb's walls: a chamfered parapet with merlons (replaces the plain band).
 function parapet(s, c, P, H, d) {
@@ -63,9 +65,11 @@ function pishtaq(depth) {
   g.add(at(archSlab(4.4, 4.0, true, M.recess, 0.06), 0, 9.8, 0.06), at(archSlab(4.4, 4.0, true, jali(MB), 0.06), 0, 9.8, 0.12));
   g.add(at(archRing(4.4, 4.0, true, 0.26, 0.12, MB), 0, 9.8, 0.1));
   g.add(box(6.0, 0.45, 0.18, MB, 0, 9.15, 0.1));
-  // The calligraphy frame round the arch, as a raised white band with a fine bead inside it.
+  // The calligraphy frame round the arch: a band of black lettering inlaid in the white, about a
+  // metre wide, up both sides and across the top, with a fine bead inside it. (At the Taj the
+  // letters grow taller toward the top so they read the same size from the ground.)
   const z = depth;
-  for (const [w, h, x, y] of [[0.5, 26.3, -8.3, 0], [0.5, 26.3, 8.3, 0], [17.1, 0.5, 0, 26.3]]) g.add(box(w, h, 0.07, MB, x, y, z));
+  for (const [w, h, x, y] of [[1.0, 27.2, -8.55, 0], [1.0, 27.2, 8.55, 0], [18.1, 1.1, 0, 26.1]]) g.add(box(w, h, 0.07, CALLIG, x, y, z));
   for (const [w, h, x, y] of [[0.12, 25.4, -7.75, 0], [0.12, 25.4, 7.75, 0], [15.62, 0.12, 0, 25.4]]) g.add(box(w, h, 0.05, MB, x, y, z));
   // Carved flowers in the spandrels, white on white.
   for (const x of [-5.6, 5.6]) {

@@ -6,7 +6,7 @@ import * as THREE from 'three';
 // from the same pattern, weathering (grime near the ground, faint rain streaks) and a small
 // per-object tint so that repeated pieces don't look cloned. Water is its own kind: moving ripples
 // that tilt the normal, so the sky reflects in a broken, shifting band instead of a flat sheen.
-export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13 };
+export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13, calligraphy: 14, pietra: 15, reliefs: 16, banded: 17 };
 
 // Seconds since the page opened, shared by every water material; main.js advances it each frame.
 export const waterTime = { value: 0 };
@@ -100,6 +100,7 @@ const PATTERN = /* glsl */ `
   float sFw = length(fwidth(sp));
   float sNear = 1.0 - smoothstep(0.04, 0.16, sFw);
   float sTint = 1.0, sH = 0.0, sRough = 0.0;
+  vec3 sCol = vec3(1.0);
   vec2 sCell;
 #if SURF_KIND == 1
   float big = sFbm(sp * 0.3), fine = sNoise(sp * 6.0);
@@ -178,6 +179,63 @@ const PATTERN = /* glsl */ `
   glaze *= step(1.2, sp.y) * (1.0 - step(0.5, abs(sn.y)));
   sTint = mix(1.0, 0.5, glaze);
   sRough = -0.4 * glaze;
+#elif SURF_KIND == 14
+  // Calligraphy inlaid in black marble on white: one line of tall upright strokes (alifs), bowls
+  // and a running baseline with dots, on a 24 cm letter pitch. From afar it settles to a grey band.
+  vec2 uv = sFaceUV(sp, sn);
+  vec2 g = vec2(uv.x / 0.24, uv.y / 0.75), gi = floor(g), gf = fract(g);
+  float h = sHash(vec3(gi, 7.0));
+  float alif = step(0.55, h) * (1.0 - smoothstep(0.1, 0.17, abs(gf.x - 0.5))) * step(0.16, gf.y) * step(gf.y, 0.9);
+  float bowl = step(0.08, h) * step(h, 0.55) * (1.0 - smoothstep(0.08, 0.15, abs(length(vec2(gf.x - 0.5, (gf.y - 0.38) * 1.4)) - 0.3))) * step(gf.y, 0.5);
+  float base = (1.0 - smoothstep(0.04, 0.09, abs(gf.y - 0.2))) * step(0.2, h);
+  float dot_ = step(0.8, sHash(vec3(gi, 9.0))) * (1.0 - smoothstep(0.08, 0.12, length(vec2(gf.x - 0.3, gf.y - 0.66))));
+  float ink = max(max(alif, bowl), max(base, dot_));
+  float sFar = smoothstep(0.03, 0.08, sFw);
+  sTint = mix(mix(1.0, 0.1, ink), 0.6, sFar);
+  sH = -ink * 0.3 * (1.0 - sFar);
+  sRough = -0.2;
+#elif SURF_KIND == 15
+  // Pietra dura: coloured stone inlaid in white marble, an eight-pointed star in every 90 cm square
+  // (brown or ochre) round a green rosette, outlined and framed in black. From afar, a warm tone.
+  vec2 uv = sFaceUV(sp, sn) / 0.9;
+  vec2 ci = floor(uv), cf = fract(uv) - 0.5;
+  float q1 = max(abs(cf.x), abs(cf.y)), q2 = max(abs(cf.x + cf.y), abs(cf.x - cf.y)) * 0.7071;
+  float ds = min(q1, q2), hv = sHash(vec3(ci, 11.0));
+  float star = 1.0 - smoothstep(0.27, 0.29, ds), core = 1.0 - smoothstep(0.1, 0.12, ds);
+  float line = max(1.0 - smoothstep(0.012, 0.03, abs(ds - 0.28)), smoothstep(0.465, 0.48, q1));
+  vec3 c = mix(vec3(1.0), hv < 0.5 ? vec3(0.62, 0.42, 0.28) : vec3(0.84, 0.67, 0.34), star);
+  c = mix(c, vec3(0.36, 0.48, 0.33), core);
+  // The thin black lines go first as the pattern shrinks on screen; the 55 cm stars hold on longer.
+  c = mix(c, vec3(0.2, 0.18, 0.17), line * (1.0 - smoothstep(0.02, 0.06, sFw)));
+  float sFar = smoothstep(0.1, 0.25, sFw);
+  sCol = mix(c, vec3(0.84, 0.75, 0.62), sFar);
+  sH = star * 0.2 - line * 0.2;
+  sRough = -0.15;
+#elif SURF_KIND == 16
+  // Sculpture panels: a figure in high relief in every panel, 1.1 m wide and 2.4 m high, each
+  // standing a little differently, some with an arm raised, between plain pilasters and ledges.
+  vec2 uv = sFaceUV(sp, sn);
+  vec2 g = vec2(uv.x / 1.1, uv.y / 2.4), gi = floor(g), gf = fract(g);
+  float u = gf.x - 0.5, v = gf.y, hv = sHash(vec3(gi, 13.0));
+  float uu = u - (hv - 0.5) * 0.3 * (v - 0.1);
+  float w = mix(0.1, 0.19, smoothstep(0.08, 0.4, v)) - 0.05 * smoothstep(0.42, 0.56, v) + 0.05 * smoothstep(0.58, 0.68, v);
+  float body = step(0.07, v) * step(v, 0.73) * (1.0 - smoothstep(w - 0.01, w + 0.01, abs(uu)));
+  float head = 1.0 - smoothstep(0.07, 0.085, length(vec2(uu, (v - 0.81) * 0.85)));
+  float arm = step(0.5, hv) * (1.0 - smoothstep(0.015, 0.03, abs(uu - 0.13 - (v - 0.62) * 0.7))) * step(0.62, v) * step(v, 0.88);
+  float fig = max(max(body, head), arm);
+  float frame = clamp(smoothstep(0.42, 0.45, abs(u)) + smoothstep(0.93, 0.96, v) + 1.0 - smoothstep(0.02, 0.05, v), 0.0, 1.0);
+  float sFar = smoothstep(0.03, 0.09, sFw);
+  sTint = mix(mix(mix(0.5, 1.12, fig), 0.78, frame), 0.84, sFar);
+  sH = (fig + frame * 0.7) * (1.0 - sFar);
+#elif SURF_KIND == 17
+  // Polychrome Gothic masonry: buff stone in courses, with a band of blue-grey basalt every 3.6 m
+  // up the walls (roofs and sills stay buff).
+  float j = sJoints(sp, sn, vec2(1.2, 0.6), sCell) * sNear;
+  float big = sFbm(sp * 0.3);
+  float band = step(0.8, fract(sp.y / 3.6)) * (1.0 - step(0.7, abs(sn.y)));
+  sTint = 0.9 + 0.16 * big + 0.05 * (sHash(vec3(sCell, 3.0)) - 0.5) - 0.18 * j;
+  sCol = mix(vec3(1.0), vec3(0.58, 0.66, 0.78), band);
+  sH = big * 0.3 - j * 0.8;
 #elif SURF_KIND == 9
   // Broad patches of slightly darker and lighter water, as wind and depth vary, and wind slicks:
   // rough and glassy streaks a few hundred metres long that break up the sky's reflection.
@@ -203,7 +261,7 @@ const PATTERN = /* glsl */ `
 #if SURF_KIND != 5 && SURF_KIND != 9
   sTint *= 0.95 + 0.1 * vSurfVar;
 #endif
-  diffuseColor.rgb *= sTint;
+  diffuseColor.rgb *= sTint * sCol;
   float sKeep = 1.0;
 #ifdef SURF_PATCH
   // Fade into the open land over the margin of each open edge. Noise moves the edge in and out, so
@@ -294,7 +352,7 @@ function patch(shader, kind, bump, photo, wave, edge, reflect) {
       : `  normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`));
 }
 
-const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0 };
+const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0, calligraphy: 0.2, pietra: 0.3, reliefs: 1.4, banded: 1.0 };
 
 // Choose a surface for a material from its look, unless one was set with surface().
 function guess(m) {
