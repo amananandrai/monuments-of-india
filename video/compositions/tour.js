@@ -8,7 +8,8 @@ import { RenderPass } from '../lib/three/addons/postprocessing/RenderPass.js';
 import { OutputPass } from '../lib/three/addons/postprocessing/OutputPass.js';
 import { V } from '../site/js/helpers.js';
 import { attachSurface, surface, waterTime, landColor, reflection } from '../site/js/surface.js';
-import { separateCoplanar } from '../site/js/coplanar.js';
+import { separateCoplanar, separateMerged } from '../site/js/coplanar.js';
+import { frameBox } from '../site/js/framing.js';
 import { naturalize } from '../site/js/naturalize.js';
 import { blendIntoLand } from '../site/js/landscape.js';
 import { loadPhotoTextures } from '../site/js/textures.js';
@@ -120,6 +121,7 @@ function getBuilt(i) {
     r.focus = r.focus || r.group;
     naturalize(r.group);
     separateCoplanar(r.group, 0.005);
+    separateMerged(r.group);
     blendIntoLand(r);
     r.mirror = findMirror(r.group);
     r.home = computeHome(r);
@@ -136,13 +138,17 @@ function getBuilt(i) {
   return built.get(i);
 }
 
+// The site's home view (js/main.js): the monument as built (js/framing.js), and the builder's own
+// preset where it gives one: view (the direction), zoom (closer than the whole site) and target
+// (the point aimed at, for the view of a best-known photograph).
 function computeHome(r) {
-  const box = new THREE.Box3().setFromObject(r.focus);
+  const box = r.frame || frameBox(r.focus);
   const size = box.getSize(new THREE.Vector3()), center = box.getCenter(new THREE.Vector3());
   const radius = size.length() / 2;
   const vfov = THREE.MathUtils.degToRad(camera.fov), hfov = 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect);
-  const dist = (radius / Math.sin(Math.min(vfov, hfov) / 2)) * 1.02;
-  return { target: V(center.x, center.y * 0.95, center.z), dir: V(...(r.view || [0.9, 0.34, 1.25])).normalize(), dist, radius };
+  const dist = (radius / Math.sin(Math.min(vfov, hfov) / 2)) * 1.1 * (r.zoom || 1);
+  const target = r.target ? V(...r.target) : V(center.x, center.y * 0.95, center.z);
+  return { target, dir: V(...(r.view || [0.9, 0.34, 1.25])).normalize(), dist, radius };
 }
 
 function setEnvironment({ dist, radius, target }) {
