@@ -354,6 +354,22 @@ export function dravidaVimana(w, tiers, tierH, m, shade = m, { taper = 0.45, cap
   return g;
 }
 
+// The gold flagstaff (dwajasthambha) h tall before the sanctum at (x, z): a moulded granite
+// pedestal, a gilt shaft girdled by bands, a small square platform near the top with bells hanging
+// from its corners, and a finial.
+export function dwajasthambha(x, z, h) {
+  const g = new THREE.Group(), ph = 1.8, sh = h - ph - 2.2;
+  g.add(box(3, 0.6, 3, M.granite, 0, 0, 0), box(2.4, ph - 0.9, 2.4, M.granite, 0, 0.6, 0), box(2.8, 0.3, 2.8, M.granite, 0, ph - 0.3, 0));
+  g.add(cyl(0.32, 0.5, sh, M.gild, 0, ph, 0, 12));
+  for (let k = 1; k < 6; k++) g.add(cyl(0.55 - k * 0.035, 0.55 - k * 0.035, 0.22, M.gildDeep, 0, ph + (k / 6) * sh, 0, 12));
+  const ty = ph + sh;
+  g.add(box(1.6, 0.25, 1.6, M.gild, 0, ty, 0), box(1.1, 0.7, 1.1, M.gildDeep, 0, ty + 0.25, 0), box(1.7, 0.2, 1.7, M.gild, 0, ty + 0.95, 0));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(cyl(0.05, 0.14, 0.3, M.gild, sx * 0.75, ty - 0.3, sz * 0.75, 8));
+  g.add(at(kalash(0.9, M.gild), 0, ty + 1.15, 0));
+  g.position.set(x, 0, z);
+  return g;
+}
+
 // Dravidian gateway tower: a granite base with a passage running through it between stepped
 // doorframes, its great doors standing open, then tapering storeys of painted stucco figures and
 // a barrel-vault crown.
