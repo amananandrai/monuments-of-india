@@ -194,6 +194,10 @@ What desktops get that phones do not:
   register of figures low on each hall's walls, and gopurams with their figures closer together and
   a kudu over every second bay. Fine elephants and horses at the gates and stairs of Jagannath,
   Vittala and Konark, and the full Ram Mandir corner shrines and gate guardians.
+- **Harbour craft at the Gateway of India:** the Elephanta ferry launches (`launches`: a painted
+  hull, closed lower cabin with windows, open upper deck under a canopy, wheelhouse, flag) and two
+  ships at anchor (`ships`) on both levels; desktops add the launches' railings, life rings and
+  mast, and the ships' bridge windows, mast and derricks.
 - **Boats** (`js/details/realism.js`): the gunwale, the stem and stern posts, ribs, stowed oars, and
   the hoops under a canopy. Every boat now floats with its hull above the water.
 - **Stalls:** a top board and panelled front on the counter, three baskets of flowers or offerings,

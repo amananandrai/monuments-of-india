@@ -385,6 +385,67 @@ export function boats(spots, { y = 0, size = 1, canopy = false, colours = ['#7a4
   }
   return g;
 }
+// Harbour ferry launches at [x, z, ry], afloat at y, bow towards +z before ry: the wooden two-deck
+// launches that carry visitors from the Gateway of India to Elephanta. A painted hull about 18 m
+// long with a band of a second colour along its sheer, a closed lower cabin with a row of windows,
+// an open upper deck under a canopy on posts, a wheelhouse forward and a flag astern. On desktops
+// (js/detail.js) also the upper deck's railing, life rings on the cabin sides, and a mast forward.
+let launchGeos = null;
+export function launches(spots, { y = 0, hulls = ['#f4f1ea', '#f4f1ea', '#2f5d9a', '#f4f1ea'], bands = ['#2f5d9a', '#c2512a', '#f4f1ea', '#3c8a5a'], canopies = ['#2f5d9a', '#c2512a', '#3c8a5a', '#e3b23c'] } = {}) {
+  if (!launchGeos) {
+    const clean = (g) => { const n = g.index ? g.toNonIndexed() : g; for (const k of Object.keys(n.attributes)) if (k !== 'position' && k !== 'normal') n.deleteAttribute(k); return n; };
+    // The hull in plan: a square stern, straight sides, and the bow drawn to a point.
+    const plan = (w, l0, l1, tip) => new THREE.Shape([[-w, l0], [w, l0], [w, l1], [w * 0.75, l1 + (tip - l1) * 0.55], [0, tip], [-w * 0.75, l1 + (tip - l1) * 0.55], [-w, l1]].map(([a, b]) => new THREE.Vector2(a, b)));
+    const prism = (sh, h, y0) => new THREE.ExtrudeGeometry(sh, { depth: h, bevelEnabled: false }).rotateX(Math.PI / 2).translate(0, y0 + h, 0);
+    const posts = [];
+    for (const x of [-2.15, 2.15]) for (const z of [-7.2, -3.6, 0, 3.6]) posts.push(new THREE.CylinderGeometry(0.06, 0.06, 1.9, 6).translate(x, 4.25, z));
+    const rails = [], stanchions = [];
+    for (const x of [-2.25, 2.25]) { rails.push(new THREE.BoxGeometry(0.06, 0.06, 11).translate(x, 4.1, -2)); for (let z = -7.4; z <= 3.4; z += 0.9) stanchions.push(new THREE.BoxGeometry(0.04, 0.9, 0.04).translate(x, 3.7, z)); }
+    rails.push(new THREE.BoxGeometry(4.5, 0.06, 0.06).translate(0, 4.1, -7.5));
+    launchGeos = {
+      hull: clean(prism(plan(2.5, -8, 4, 9.5), 1.9, -0.7)),
+      band: clean(prism(plan(2.53, -8.02, 4, 9.56), 0.35, 0.85)),
+      deck: mergeGeometries([new THREE.BoxGeometry(4.3, 2.0, 11).translate(0, 2.2, -2), new THREE.BoxGeometry(4.7, 0.14, 12).translate(0, 3.27, -2), new THREE.BoxGeometry(2.3, 1.6, 2).translate(0, 4.14, 3.2)].map(clean)),
+      windows: mergeGeometries([new THREE.BoxGeometry(4.36, 0.62, 9.6).translate(0, 2.55, -2), new THREE.BoxGeometry(2.36, 0.6, 1.4).translate(0, 4.55, 3.4), new THREE.BoxGeometry(1.9, 0.6, 2.06).translate(0, 4.55, 3.2)].map(clean)),
+      canopy: clean(new THREE.BoxGeometry(4.6, 0.1, 9.4).translate(0, 5.25, -2.6)),
+      posts: mergeGeometries(posts.map(clean)),
+      flag: clean(new THREE.CylinderGeometry(0.04, 0.04, 2.4, 6).translate(0, 2.4, -7.8)),
+      rails: mergeGeometries([...rails, ...stanchions, new THREE.CylinderGeometry(0.06, 0.08, 3.4, 6).translate(0, 6.4, 3.2)].map(clean)),
+      rings: mergeGeometries([-1, 1].flatMap((s) => [-4.5, 0.5].map((z) => new THREE.TorusGeometry(0.32, 0.08, 6, 14).rotateY(Math.PI / 2).translate(s * 2.2, 2.2, z))).map(clean)),
+    };
+  }
+  const p = spots.map(([x, z, ry = 0]) => [x, y, z, 1, ry]), G = launchGeos, g = new THREE.Group();
+  g.add(copies(G.hull, TINTED, p, hulls), copies(G.band, TINTED, p, bands), copies(G.deck, plain('#ece6d8', 0.8), p), copies(G.windows, plain('#1d2a33', 0.3, 0.2), p));
+  g.add(copies(G.canopy, TINTED, p, canopies), copies(G.posts, TIMBER, p), copies(G.flag, TIMBER, p));
+  if (!detail.low) g.add(copies(G.rails, plain('#f4f1ea', 0.6), p), copies(G.rings, plain('#e8642c', 0.7), p));
+  return g;
+}
+
+// Ships at anchor out in a harbour, at [x, z, ry], afloat at y: a cargo ship about 90 m long with a
+// dark hull and red boot-topping, its deck crane posts forward, and its white superstructure and
+// funnel aft. On desktops (js/detail.js) also the bridge windows, a mast on the superstructure and
+// derricks on the crane posts.
+let shipGeos = null;
+export function ships(spots, { y = 0, hulls = ['#2b3a4a', '#3a2f2a'], funnels = ['#c2512a', '#e3b23c'] } = {}) {
+  if (!shipGeos) {
+    const clean = (g) => { const n = g.index ? g.toNonIndexed() : g; for (const k of Object.keys(n.attributes)) if (k !== 'position' && k !== 'normal') n.deleteAttribute(k); return n; };
+    const plan = (w, l0, l1, tip) => new THREE.Shape([[-w, l0], [w, l0], [w, l1], [w * 0.7, l1 + (tip - l1) * 0.6], [0, tip], [-w * 0.7, l1 + (tip - l1) * 0.6], [-w, l1]].map(([a, b]) => new THREE.Vector2(a, b)));
+    const prism = (sh, h, y0) => new THREE.ExtrudeGeometry(sh, { depth: h, bevelEnabled: false }).rotateX(Math.PI / 2).translate(0, y0 + h, 0);
+    shipGeos = {
+      hull: clean(prism(plan(7, -45, 30, 46), 7, 1.5)),
+      boot: clean(prism(plan(7.05, -45.05, 30, 46.1), 2.6, -1)),
+      upper: mergeGeometries([new THREE.BoxGeometry(12, 4, 12).translate(0, 10.5, -34), new THREE.BoxGeometry(10, 3, 9).translate(0, 14, -34), new THREE.BoxGeometry(13, 0.4, 4).translate(0, 16.2, -30.5), new THREE.BoxGeometry(1.5, 9, 1.5).translate(0, 12.5, 20), new THREE.BoxGeometry(1.5, 9, 1.5).translate(0, 12.5, 0)].map(clean)),
+      funnel: clean(new THREE.CylinderGeometry(1.6, 1.9, 6, 12).translate(0, 18.5, -39)),
+      fine: mergeGeometries([new THREE.CylinderGeometry(0.2, 0.25, 9, 6).translate(0, 20.5, -32), ...[20, 0].flatMap((z) => [new THREE.CylinderGeometry(0.18, 0.18, 12, 6).rotateX(0.9).translate(0, 13, z + 4.5), new THREE.CylinderGeometry(0.18, 0.18, 12, 6).rotateX(-0.9).translate(0, 13, z - 4.5)])].map(clean)),
+      windows: clean(new THREE.BoxGeometry(10.08, 0.7, 9.08).translate(0, 15, -34)),
+    };
+  }
+  const p = spots.map(([x, z, ry = 0]) => [x, y, z, 1, ry]), G = shipGeos, g = new THREE.Group();
+  g.add(copies(G.hull, TINTED, p, hulls), copies(G.boot, plain('#8a2a22', 0.7), p), copies(G.upper, plain('#ece9e2', 0.7), p), copies(G.funnel, TINTED, p, funnels));
+  if (!detail.low) g.add(copies(G.fine, plain('#5a5f63', 0.5, 0.4), p), copies(G.windows, plain('#1d2a33', 0.3, 0.2), p));
+  return g;
+}
+
 // Fountain jets at [x, z]: a fine spray rising h and falling back into a ring of foam.
 export function fountains(spots, { y = 0, h = 2.2 } = {}) {
   const water = plain('#e8f4ff', 0.1, 0, { transparent: true, opacity: 0.55, emissive: '#bcd9f2', emissiveIntensity: 0.15 });

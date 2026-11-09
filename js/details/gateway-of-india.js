@@ -4,7 +4,7 @@ import {
   jali, archCurve, archRing, archSlab, tympanum, bracketGeo, placeAll, alongFace, chhajja, railingRing,
   arcadeScreen, mughalChhatri, mergeByMaterial,
 } from './components.js';
-import { lampPosts, boats, along } from './realism.js';
+import { lampPosts, boats, launches, ships, along } from './realism.js';
 import { horse } from './animals.js';
 
 // Gateway of India, finer detail (George Wittet, 1913–24). From photographs and descriptions
@@ -167,7 +167,10 @@ export function addDetails(f, g) {
   ped.add(at(rider, 0, 4.5, 0));
   ped.rotation.y = 0;
   g.add(at(ped, 0, 0, -48));
-  g.add(boats([[-30, 22, Math.PI / 2], [-22, 22, Math.PI / 2], [26, 22, Math.PI / 2], [34, 22, Math.PI / 2]], { y: 0.1, size: 3.4, canopy: true, colours: ['#f4f1ea', '#2f5d9a', '#f4f1ea', '#c2512a'] }));
+  // The Elephanta ferry launches moored bow-out along the harbour wall, either side of the steps;
+  // small boats out in the harbour; and ships at anchor in the roads beyond.
+  g.add(launches([[-36, 22, 0.05], [-29, 22, -0.04], [-22, 22, 0.03], [24, 22, -0.03], [31, 22, 0.04], [38, 22, -0.02]], { y: 0.1 }));
   g.add(boats([[-80, 90, 1.1], [60, 120, 2.3], [140, 70, 0.4], [-150, 140, 2.9], [10, 180, 1.7]], { y: 0.1, size: 2 }));
+  g.add(ships([[-210, 255, 0.35], [190, 270, 2.0]], { y: 0.1 }));
   g.add(lampPosts(along(10, [-34, 2.5], [34, 2.5])));
 }
