@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, at, onFace, FACES, kalash, bell, shikhara, pidaRoof, aroundRect } from '../helpers.js';
-import { templeDoorway, steps } from '../details/doorways.js';
+import { templeDoorway, steps, grandStair } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { figureRow } from '../details/sculpture.js';
 import { addDetails } from '../details/kandariya-mahadeva.js';
@@ -10,7 +10,8 @@ export function buildKandariya() {
   g.add(f);
   g.add(box(90, 0.2, 110, M.grass));
   f.add(box(32, 3, 64, Sd));
-  for (let k = 0; k < 4; k++) f.add(box(8, 3 - k * 0.75, 2, Sd, 0, 0, 33 + k * 2));
+  // The steep flight up the front of the jagati: fifteen rises between side walls.
+  f.add(at(grandStair(3, 8, Sd, S, { n: 15, landing: 0, cheek: 0.8 }), 0, 0, 32));
   // Moulded base and sculpted wall, with projecting balconies on the halls
   f.add(box(24, 2, 42, S, 0, 3, -4), box(22, 6, 40, S, 0, 5, -4));
   for (const [z, d] of [[0, 9], [12.25, 7.5]]) f.add(box(29, 3.6, d, S, 0, 6, z), box(30.5, 0.6, d + 1.5, Sd, 0, 9.6, z));
