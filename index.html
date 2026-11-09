@@ -20,6 +20,9 @@
   <aside class="side">
     <header class="masthead">
       <h1>Monuments of India</h1>
+      <button class="btn filter-btn-mobile" id="mobile-filter-btn" type="button" aria-label="Search and filter monuments" aria-expanded="false">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 3h13M3.5 8h9M6 13h4"/></svg>
+      </button>
       <button class="btn theme-btn" id="theme" type="button" aria-pressed="false">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 9.6A5.8 5.8 0 0 1 6.4 2.5a5.8 5.8 0 1 0 7.1 7.1z"/></svg>
         <span class="label">Night</span>
@@ -30,6 +33,34 @@
     <div class="search">
       <label class="visually-hidden" for="q">Search monuments</label>
       <input id="q" type="search" autocomplete="off" spellcheck="false">
+      
+      <div class="filters" id="filters">
+        <div class="filter-group">
+          <span class="filter-label">Style</span>
+          <div class="chips" role="group" aria-label="Filter by architectural style" data-filter="style">
+            <button type="button" class="chip is-active" data-val="">All</button>
+            <button type="button" class="chip" data-val="dravidian">Dravidian</button>
+            <button type="button" class="chip" data-val="indo-islamic">Indo-Islamic</button>
+            <button type="button" class="chip" data-val="nagara">Nagara</button>
+            <button type="button" class="chip" data-val="gothic">Gothic Revival</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Material</span>
+          <div class="chips" role="group" aria-label="Filter by primary material" data-filter="material">
+            <button type="button" class="chip is-active" data-val="">All</button>
+            <button type="button" class="chip" data-val="red-sandstone">Red Sandstone</button>
+            <button type="button" class="chip" data-val="white-marble">White Marble</button>
+            <button type="button" class="chip" data-val="laterite">Laterite</button>
+            <button type="button" class="chip" data-val="granite">Granite</button>
+          </div>
+        </div>
+        <div class="filter-summary" id="filter-summary" hidden>
+          <span class="filter-count" id="filter-count"></span>
+          <button type="button" class="filter-clear-btn" id="filter-clear">Clear filters</button>
+        </div>
+      </div>
+
       <p class="q-empty" id="q-empty" hidden>No monument matches that search.</p>
     </div>
     <ul class="list" id="list"></ul>

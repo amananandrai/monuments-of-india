@@ -43,7 +43,7 @@ export function createMap(root, items, { onSelect }) {
   svg.querySelector('.outline').setAttribute('d', INDIA.outline);
 
   const full = { x: 0, y: 0, w: INDIA.width, h: INDIA.height };
-  let vb = { ...full }, hl = null, anim = 0;
+  let vb = { ...full }, hl = null, anim = 0, filterFn = null;
   const pts = items.map((m) => { const [x, y] = project(m.lat, m.lng); return { m, x, y }; });
 
   const setVB = (v) => { vb = v; svg.setAttribute('viewBox', `${v.x} ${v.y} ${v.w} ${v.h}`); };
@@ -54,7 +54,8 @@ export function createMap(root, items, { onSelect }) {
 
   function clusters(gap) {
     const cs = [];
-    for (const p of pts) {
+    const source = filterFn ? pts.filter((p) => filterFn(p.m)) : pts;
+    for (const p of source) {
       const c = cs.find((c) => Math.hypot(c.x - p.x, c.y - p.y) < gap);
       if (c) {
         c.members.push(p);
@@ -170,5 +171,9 @@ export function createMap(root, items, { onSelect }) {
   return {
     render,
     highlight(id) { hl = id; applyHighlight(); },
+    setFilter(fn) {
+      filterFn = fn;
+      render();
+    },
   };
 }

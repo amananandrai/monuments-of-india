@@ -452,21 +452,142 @@ MONUMENTS.forEach((m, i) => { if (!groups.has(m.state)) groups.set(m.state, []);
 });
 const q = $('q');
 q.placeholder = `Search ${MONUMENTS.length} monuments`;
-q.addEventListener('input', () => {
+
+/* ---------- architectural style & material filtering ---------- */
+const STYLE_FILTERS = {
+  dravidian: (m) => /dravidian/i.test(m.style),
+  'indo-islamic': (m) => /indo-islamic|mughal|qutb shahi|deccan|nawabi|indo-afghan/i.test(m.style),
+  nagara: (m) => /\bnagara\b/i.test(m.style),
+  gothic: (m) => /gothic/i.test(m.style),
+};
+
+const MATERIAL_FILTERS = {
+  'red-sandstone': (m) => /red (?:and [^,]+ )?sandstone|red sandstone/i.test(m.material),
+  'white-marble': (m) => /white.*marble|marble.*white|white makrana marble/i.test(m.material),
+  laterite: (m) => /laterite/i.test(m.material),
+  granite: (m) => /granite/i.test(m.material),
+};
+
+let activeStyle = '';
+let activeMaterial = '';
+
+function matchesFilter(m) {
   const t = q.value.trim().toLowerCase();
+  if (t) {
+    const haystack = `${m.name} ${m.place} ${m.state} ${m.style} ${m.material}`.toLowerCase();
+    if (!haystack.includes(t)) return false;
+  }
+  if (activeStyle && STYLE_FILTERS[activeStyle] && !STYLE_FILTERS[activeStyle](m)) {
+    return false;
+  }
+  if (activeMaterial && MATERIAL_FILTERS[activeMaterial] && !MATERIAL_FILTERS[activeMaterial](m)) {
+    return false;
+  }
+  return true;
+}
+
+function applyFilters() {
+  const isFiltering = !!(q.value.trim() || activeStyle || activeMaterial);
+  let visibleCount = 0;
+
   list.querySelectorAll('.grp').forEach((g) => {
-    let any = false;
+    let groupAny = false;
     g.querySelectorAll('li').forEach((li) => {
       const m = MONUMENTS[+li.dataset.i];
-      const hit = !t || `${m.name} ${m.place} ${m.state} ${m.style}`.toLowerCase().includes(t);
+      const hit = matchesFilter(m);
       li.hidden = !hit;
-      any = any || hit;
+      if (hit) {
+        groupAny = true;
+        visibleCount++;
+      }
     });
-    g.hidden = !any;
-    if (t) { g.querySelector('ul').hidden = false; g.querySelector('.grp-h').setAttribute('aria-expanded', 'true'); }
+    g.hidden = !groupAny;
+    if (isFiltering && groupAny) {
+      g.querySelector('ul').hidden = false;
+      g.querySelector('.grp-h').setAttribute('aria-expanded', 'true');
+    }
   });
-  $('q-empty').hidden = !!list.querySelector('.grp:not([hidden])');
-});
+
+  const emptyEl = $('q-empty');
+  emptyEl.hidden = visibleCount > 0;
+  if (visibleCount === 0) {
+    emptyEl.textContent = isFiltering
+      ? 'No monument matches that search or filter.'
+      : 'No monument matches that search.';
+  }
+
+  const summary = $('filter-summary');
+  const countEl = $('filter-count');
+  if (summary && countEl) {
+    summary.hidden = !isFiltering;
+    if (isFiltering) {
+      countEl.textContent = `${visibleCount} of ${MONUMENTS.length} monuments`;
+    }
+  }
+
+  const mobFilterBtn = $('mobile-filter-btn');
+  if (mobFilterBtn) {
+    mobFilterBtn.setAttribute('aria-pressed', String(isFiltering));
+  }
+
+  if (typeof map !== 'undefined' && map && map.setFilter) {
+    map.setFilter(isFiltering ? matchesFilter : null);
+  }
+}
+
+q.addEventListener('input', applyFilters);
+
+const filterContainer = $('filters');
+if (filterContainer) {
+  filterContainer.addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    const group = chip.closest('.chips');
+    const filterType = group ? group.dataset.filter : null;
+    const val = chip.dataset.val || '';
+
+    if (filterType === 'style') {
+      activeStyle = (activeStyle === val && val !== '') ? '' : val;
+      group.querySelectorAll('.chip').forEach((c) => {
+        c.classList.toggle('is-active', (c.dataset.val || '') === activeStyle);
+      });
+    } else if (filterType === 'material') {
+      activeMaterial = (activeMaterial === val && val !== '') ? '' : val;
+      group.querySelectorAll('.chip').forEach((c) => {
+        c.classList.toggle('is-active', (c.dataset.val || '') === activeMaterial);
+      });
+    }
+    applyFilters();
+  });
+
+  const clearBtn = $('filter-clear');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      q.value = '';
+      activeStyle = '';
+      activeMaterial = '';
+      filterContainer.querySelectorAll('.chips').forEach((group) => {
+        group.querySelectorAll('.chip').forEach((c) => {
+          c.classList.toggle('is-active', (c.dataset.val || '') === '');
+        });
+      });
+      applyFilters();
+    });
+  }
+}
+
+const mobFilterBtn = $('mobile-filter-btn');
+const searchEl = document.querySelector('.search');
+if (mobFilterBtn && searchEl) {
+  mobFilterBtn.addEventListener('click', () => {
+    const open = searchEl.classList.toggle('is-open-mobile');
+    mobFilterBtn.setAttribute('aria-expanded', String(open));
+    if (open) {
+      setTimeout(() => q.focus(), 100);
+    }
+  });
+}
+
 $('sub').textContent = `${MONUMENTS.length} landmarks modelled in 3D, almost all at their real proportions. Pick one on the map or from the list, then drag to walk around it.`;
 
 function renderInfo(mo) {
@@ -531,8 +652,11 @@ addEventListener('popstate', route);
 addEventListener('hashchange', route);
 
 const step = (d) => {
-  const pos = order.indexOf(current);
-  showMonument(order[(pos + d + order.length) % order.length]);
+  const visible = order.filter((i) => matchesFilter(MONUMENTS[i]));
+  const pool = visible.length ? visible : order;
+  const pos = pool.indexOf(current);
+  const next = pos === -1 ? 0 : (pos + d + pool.length) % pool.length;
+  showMonument(pool[next]);
 };
 $('to-map').addEventListener('click', () => showMap(true));
 $('prev').addEventListener('click', () => step(-1));
