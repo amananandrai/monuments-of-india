@@ -66,7 +66,7 @@ Run `tools/check-flicker.mjs` on all monuments and fix what is left.
 
 Use `heightField`, `rough` and `smooth` from `js/details/terrain.js` (as the Kailasa, Amber, Tawang and Trimbak terrain does): a slope that reads as rock where it is steep and as scrub or grass where it is not, sinking under the ground at its foot so there is no dark seam.
 
-- [ ] **Palitana** (`js/monuments/palitana-temples.js`): the two hills are `CylinderGeometry` cones squashed to 0.7 in z. Make one ridge with two summits and a saddle; keep the tuks on the summits, the switchback stair and the `ground()` function the stair and trees read (rewrite it to sample the new field). The dark patches at the foot go with the cones.
+- [x] **Palitana** (`js/monuments/palitana-temples.js`): the two hills are `CylinderGeometry` cones squashed to 0.7 in z. Make one ridge with two summits and a saddle; keep the tuks on the summits, the switchback stair and the `ground()` function the stair and trees read (rewrite it to sample the new field). The dark patches at the foot go with the cones.
 - [ ] **Kamakhya**: the Nilachal hill above the Brahmaputra, the temple on its top.
 - [ ] **Golconda**: the granite hill is a lathe on `hillRadius(a)`. Keep the outline, add boulders and rough relief.
 - [ ] **Gommateshwara**: Vindhyagiri is a hemisphere. Make it a granite dome with sheet-rock slopes; rewrite `ground()` for the stair.
