@@ -71,7 +71,7 @@ Use `heightField`, `rough` and `smooth` from `js/details/terrain.js` (as the Kai
 - [x] **Golconda**: the granite hill is a lathe on `hillRadius(a)`. Keep the outline, add boulders and rough relief.
 - [x] **Gommateshwara**: Vindhyagiri is a hemisphere. Make it a granite dome with sheet-rock slopes; rewrite `ground()` for the stair.
 - [x] **Key**: steeper, rockier cone; the Spiti river braided across the valley floor.
-- [ ] **Jaisalmer and Chittorgarh**: real hills under the forts (see T6 for their size).
+- [x] **Jaisalmer and Chittorgarh**: real hills under the forts (see T6 for their size).
 - [x] **Statue of Unity**: the green hills read as blobs on the water and the dam as a pale panel in the haze. Rocky Satpura hills with real relief; a solid dam face that holds up in the fog.
 - [x] **Kargil**: the mountains are a flat grey wall. Tololing and Tiger Hill as terrain with relief.
 - [x] **Ring mountains** (`mountainRing`: Mallikarjuna, Tirumala, Rumtek, Bhimashankar, Kedarnath, Tawang, Thiksey): finer relief and rock strata, so they stop reading as low-poly facets. One change in `js/details/terrain.js` reaches all seven.
@@ -81,7 +81,7 @@ Use `heightField`, `rough` and `smooth` from `js/details/terrain.js` (as the Kai
 Today each says on its plaque that it is compressed (`scaleNote` in `js/data.js`). Rebuild them at or nearer real size where the camera can still frame them, and update or remove the note.
 
 - [x] **Mehrangarh**: the rock is `H = 45`; real is about 122 m. Raise it, stretch the fort along the ridge with the palace ranges at its north end, and detail the back and sides. The blue city stays at the foot.
-- [ ] **Jaisalmer**: `RX = 92, RZ = 54` on a `H = 22` hill; real is about 460 × 230 m on a 76 m hill. Scale about 2.5×, follow the three-lobed Trikuta outline, add the lower outer wall. The houses inside (`townHouses`) scale with it; check the budget.
+- [x] **Jaisalmer**: `RX = 92, RZ = 54` on a `H = 22` hill; real is about 460 × 230 m on a 76 m hill. Scale about 2.5×, follow the three-lobed Trikuta outline, add the lower outer wall. The houses inside (`townHouses`) scale with it; check the budget.
 - [ ] **Chittorgarh**: `L = 300, W = 90, H = 40`; real is a 180 m hill, about 280 ha. Full size would make the towers specks, so keep a labelled compression but lengthen the plateau, raise the hill, and add the zigzag ascent road with its gates.
 
 ### T7. Blank backs
