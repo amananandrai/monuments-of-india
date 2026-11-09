@@ -114,9 +114,9 @@ One commit each. Check the budget after each.
 
 ### T9. Materials
 
-- [ ] Nalanda: the brick (`#a5553b`, `#844230`) is too orange. Darker, weathered, less saturated, with variation between walls.
-- [ ] Grishneshwar: the red basalt (`RED` in `js/monuments/grishneshwar-temple.js`) is too saturated. Darker weathered stone.
-- [ ] Review the other saturated stones in `M` (`js/helpers.js`) against photographs while doing these.
+- [x] Nalanda: the brick (`#a5553b`, `#844230`) is too orange. Darker, weathered, less saturated, with variation between walls.
+- [x] Grishneshwar: the red basalt (`RED` in `js/monuments/grishneshwar-temple.js`) is too saturated. Darker weathered stone.
+- [x] Review the other saturated stones in `M` (`js/helpers.js`) against photographs while doing these. Reviewed: the Mughal red sandstone, Hawa Mahal's pink and the rest are close to photographs; left as they are.
 
 ### T10. Weathering in the surface shader
 

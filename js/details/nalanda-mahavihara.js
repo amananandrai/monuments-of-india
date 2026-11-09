@@ -8,7 +8,7 @@ import { trees, asiBoard, scatter, along } from './realism.js';
 // its brick terraces ends in a moulded cornice. Dimensions follow js/monuments/nalanda-mahavihara.js:
 // the temple at (20, 0, 10), terraces 40 wide stepping in by 6 every 5 m, its towers 7 square at
 // (±17, ±17).
-const BRICK = surface(mat('#a5553b', 0.95), 'brick'), STUCCO = mat('#c9b79a', 0.9);
+const BRICK = surface(mat('#8c5d49', 0.95), 'brick'), STUCCO = mat('#c9b79a', 0.9);
 function architecture(f) {
   const d = new THREE.Group(), t = at(new THREE.Group(), 20, 0, 10);
   let w = 40;
