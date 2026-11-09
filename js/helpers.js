@@ -706,9 +706,12 @@ const TIB_WHITE = mat('#efece4', 0.85), TIB_MAROON = mat('#6b2a22', 0.85), TIB_W
 export function tibetanBlock(w, h, d, floors = 2, wallM = TIB_WHITE) {
   const g = new THREE.Group();
   g.add(box(w, h, d, wallM), box(w + 0.3, Math.min(1.6, h * 0.14), d + 0.3, TIB_MAROON, 0, h - Math.min(1.6, h * 0.14)));
-  const n = Math.max(1, Math.floor(w / 3.4));
-  for (let fl = 0; fl < floors; fl++) for (let k = 0; k < n; k++) {
-    g.add(onFace(box(1.1, 1.5, 0.2, TIB_WINDOW, 0, 0.8 + fl * ((h * 0.8) / floors)), 0, d / 2, -w / 2 + (k + 0.5) * (w / n)));
+  // Windows on every face (the front's set a little further out, as before), so no side is blank.
+  for (const a of FACES) {
+    const len = Math.abs(Math.sin(a)) > 0.5 ? d : w, dist = (Math.abs(Math.sin(a)) > 0.5 ? w : d) / 2, n = Math.max(1, Math.floor(len / 3.4));
+    for (let fl = 0; fl < floors; fl++) for (let k = 0; k < n; k++) {
+      g.add(onFace(box(1.1, 1.5, 0.2, TIB_WINDOW, 0, 0.8 + fl * ((h * 0.8) / floors)), a, dist, -len / 2 + (k + 0.5) * (len / n)));
+    }
   }
   return g;
 }
