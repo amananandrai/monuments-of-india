@@ -89,7 +89,7 @@ Today each says on its plaque that it is compressed (`scaleNote` in `js/data.js`
 These are detailed from the front and plain boxes behind. Give each back the same language as its front, lighter where it is seen least.
 
 - [x] Mysore Palace: rear and side ranges with arcades, windows and turrets.
-- [ ] City Palace, Udaipur: the rear mass, and raise the palace onto its ridge above the lake.
+- [x] City Palace, Udaipur: the rear mass, and raise the palace onto its ridge above the lake.
 - [ ] Laxmi Vilas Palace: rear wings (and see T8 for its skyline).
 - [ ] Cooch Behar Palace: rear wings.
 - [ ] Rumtek: monks' quarters with windows and doors round the courtyard instead of a blank yellow wall.

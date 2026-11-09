@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, FACES } from '../helpers.js';
 import { jharokha, chhajja, windowFrame, archRing, archSlab, mergeByMaterial } from './components.js';
 import { trees, shrubs, boats, scatter, along } from './realism.js';
+import { ridge } from '../monuments/city-palace-udaipur.js';
 
 // The City Palace, Udaipur, finer detail. From photographs: the white blocks are hung with
 // jharokhas under curved bangla roofs between their arched windows, storey on storey, with a
@@ -51,6 +52,8 @@ function architecture(f, g) {
 export function addDetails(f, g) {
   architecture(f, g);
   g.add(boats([[-80, 60, 0.3], [-30, 95, 1.2], [90, 110, -0.5], [120, 60, 2.3], [-120, 130, 0.9], [-10, 150, 1.8], [75, 205, 0.2]], { y: 0.3, size: 1.8, canopy: true, colours: ['#f4f1ea', '#e8d9b0', '#c2512a'] }));
-  g.add(trees(scatter(40, [-380, 380, -230, -50], { seed: 3, gap: 16, avoid: [[-130, 130, -30, 20]] }), { kind: 'mango', seed: 3, y: 0.2, h: 8 }));
+  // On the ridge behind the palace the trees stand on its slope (js/monuments/city-palace-udaipur.js,
+  // 16 m along the palace and falling away behind).
+  g.add(trees(scatter(40, [-380, 380, -230, -70], { seed: 3, gap: 16 }).map(([x, z]) => [x, z, null, ridge(x, z) - 0.3]), { kind: 'mango', seed: 3, h: 8 }));
   f.add(shrubs(along(14, [-120, 9.5], [120, 9.5]).map(([x, z]) => [x, z, 1.6]), { y: 14, flowers: '#d0306f', seed: 4 }));
 }
