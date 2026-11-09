@@ -91,7 +91,7 @@ These are detailed from the front and plain boxes behind. Give each back the sam
 - [x] Mysore Palace: rear and side ranges with arcades, windows and turrets.
 - [x] City Palace, Udaipur: the rear mass, and raise the palace onto its ridge above the lake.
 - [x] Laxmi Vilas Palace: rear wings (and see T8 for its skyline).
-- [ ] Cooch Behar Palace: rear wings.
+- [x] Cooch Behar Palace: rear wings.
 - [ ] Rumtek: monks' quarters with windows and doors round the courtyard instead of a blank yellow wall.
 - [ ] Hawa Mahal: the rear courtyards and ramps behind the screen front.
 
