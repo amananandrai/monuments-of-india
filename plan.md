@@ -41,9 +41,9 @@ Files: `js/monuments/jama-masjid.js`, `js/details/jama-masjid.js`. Hash: `#jama-
 
 Today the cloisters on three sides are solid red boxes (`box(w, 7, d, Rd, ...)`), and a stair (six boxes at `z = 59.5 + k * 3`) climbs only to the east gate. The real mosque has open arched colonnades round the court and flights at all three gates.
 
-- [ ] Replace each solid cloister with an open arcade facing the court: piers and cusped arches (`arcadeSkin` from `js/details/mughal.js`, as Kashi's ranges use it) in front of a roofed gallery, the outer wall kept solid. Marble trim on the arches and the parapet.
-- [ ] A broad flight up to the north and the south gate, like the east one (the plinth is `P = 6` high). Use `grandStair` or `steps`; keep the east stair.
-- [ ] Keep the striped domes and minarets and the old-town ring. Run the flicker check: the new arcades sit on the plinth's top and against the gates.
+- [x] Replace each solid cloister with an open arcade facing the court: piers and cusped arches (`arcadeSkin` from `js/details/mughal.js`, as Kashi's ranges use it) in front of a roofed gallery, the outer wall kept solid. Marble trim on the arches and the parapet.
+- [x] A broad flight up to the north and the south gate, like the east one (the plinth is `P = 6` high). Use `grandStair` or `steps`; keep the east stair.
+- [x] Keep the striped domes and minarets and the old-town ring. Run the flicker check: the new arcades sit on the plinth's top and against the gates.
 
 ### T3. Gommateshwara: proportions and the cloister
 
