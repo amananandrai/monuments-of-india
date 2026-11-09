@@ -56,7 +56,7 @@ export function addDetails(f, g) {
   architecture(f);
   sculpture(f);
   g.add(trees(scatter(24, [-78, 78, -58, 98], { seed: 3, gap: 10, avoid: [[-30, 32, -48, 20], [-16, 16, 18, 82]] }), { kind: 'palm', seed: 3 }));
-  g.add(shrubs(scatter(16, [-70, 70, 22, 90], { seed: 4, gap: 6, avoid: [[-17, 17, 18, 82]] }).map(([x, z]) => [x, z, 1.8]), { flowers: '#d0306f', seed: 4 }));
+  g.add(shrubs(scatter(16, [-70, 70, 22, 90], { seed: 4, gap: 6, avoid: [[-17, 17, 18, 82]] }).map(([x, z]) => [x, z, 1.15]), { flowers: '#7a3d52', seed: 4 }));
   // The cross in front of the church: a laterite pedestal, a whitewashed shaft and cross
   f.add(box(3, 2, 3, LATERITE, 0, 0, 40), box(2.2, 0.4, 2.2, LIME, 0, 2, 40), cyl(0.18, 0.22, 4.5, LIME, 0, 2.4, 40, 8), box(2, 0.32, 0.32, LIME, 0, 5.6, 40));
   g.add(lampPosts([...along(5, [-15, 24], [-15, 78]), ...along(5, [15, 24], [15, 78])]));
