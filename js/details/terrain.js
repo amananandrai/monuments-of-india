@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { mat, mesh, surface } from '../helpers.js';
+import { detail } from '../detail.js';
 
 // Terrain as one heightfield mesh, coloured by height and slope: the shared part for hills,
 // ridges, cliffs and mountain ranges, in place of cones and domes.
@@ -24,10 +25,16 @@ export function heightField(w, d, n, fn, {
   const nrm = geo.attributes.normal, col = [], c = new THREE.Color();
   const rocks = rock.map((h) => new THREE.Color(h)), cov = new THREE.Color(cover), sn = new THREE.Color(snowColor);
   for (let k = 0; k < p.count; k++) {
-    const y = p.getY(k), x = p.getX(k);
-    if (y > snow + 12 * Math.sin(x * 0.05)) c.copy(sn);
-    else if (nrm.getY(k) < steep) c.copy(rocks[((Math.floor(y / band) % rocks.length) + rocks.length) % rocks.length]);
+    const y = p.getY(k), x = p.getX(k), z = p.getZ(k), ny = nrm.getY(k), wob = fbm(x, z, { scale: 0.02, octaves: 3 });
+    // Rock in strata by height, the bands wavering; scree (rock and cover mixed) on the slopes
+    // between rock and level ground; a ragged snow line; and a slight variation over everything,
+    // so a slope is never one flat colour.
+    const strata = rocks[((Math.floor((y + wob * band * 0.35) / band) % rocks.length) + rocks.length) % rocks.length];
+    if (y > snow + 12 * Math.sin(x * 0.05) + 8 * wob && ny > 0.45) c.copy(sn);
+    else if (ny < steep) c.copy(strata);
+    else if (ny < steep + 0.08) c.copy(strata).lerp(cov, smooth(steep, steep + 0.08, ny));
     else c.copy(cov);
+    c.multiplyScalar(1 + 0.07 * fbm(x, z, { scale: 0.05, octaves: 2 }) + 0.04 * wob);
     col.push(c.r, c.g, c.b);
   }
   geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
@@ -44,15 +51,43 @@ export function rough(x, z, amp = 1, s = 1) {
 // A smooth step from 0 at a to 1 at b.
 export function smooth(a, b, t) { const k = Math.min(1, Math.max(0, (t - a) / (b - a))); return k * k * (3 - 2 * k); }
 
+// Value noise: a lattice of repeatable random values, smoothly interpolated (0 to 1).
+function hash(i, j) {
+  let h = Math.imul(i, 374761393) + Math.imul(j, 668265263);
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+}
+function noise(x, z) {
+  const i = Math.floor(x), j = Math.floor(z), fx = x - i, fz = z - j, u = fx * fx * (3 - 2 * fx), v = fz * fz * (3 - 2 * fz);
+  const a = hash(i, j), b = hash(i + 1, j), c = hash(i, j + 1), d = hash(i + 1, j + 1);
+  return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+}
+// Fractal noise, about -1 to 1: octaves of value noise, each finer and fainter. scale is the
+// frequency of the first (1 / its wavelength in metres).
+export function fbm(x, z, { scale = 0.01, octaves = 5, gain = 0.5, lacunarity = 2.03 } = {}) {
+  let sum = 0, amp = 1, norm = 0, f = scale;
+  for (let o = 0; o < octaves; o++) { sum += amp * (noise(x * f + o * 17.3, z * f - o * 9.1) * 2 - 1); norm += amp; amp *= gain; f *= lacunarity; }
+  return sum / norm;
+}
+// Ridged noise, 0 to 1: sharp crests where the noise crosses its middle, as mountain ridges.
+export function ridged(x, z, { scale = 0.01, octaves = 4, gain = 0.5, lacunarity = 2.1 } = {}) {
+  let sum = 0, amp = 1, norm = 0, f = scale, w = 1;
+  for (let o = 0; o < octaves; o++) {
+    const r = 1 - Math.abs(noise(x * f + o * 31.7, z * f + o * 11.3) * 2 - 1), q = r * r * w;
+    sum += amp * q; norm += amp; w = Math.min(1, q * 2); amp *= gain; f *= lacunarity;
+  }
+  return sum / norm;
+}
+
 // A ring of mountains round a valley: the ground is flat (and below 0) within `inner` of the
 // centre, rises steeply to ridges between `inner` and `outer`, and stays high beyond. The ridges
-// rise to `h` give or take `vary`, with peaks and gullies. aspect stretches the ring along z.
-export function mountainRing({ inner = 400, outer = 700, h = 260, vary = 90, size = 2600, n = 120, aspect = 1, cx = 0, cz = 0, ...opts } = {}) {
+// rise to `h` give or take `vary`: ridged noise for crests, spurs and gullies, the foot of the range
+// wandering in and out. aspect stretches the ring along z. Finer on desktops (js/detail.js).
+export function mountainRing({ inner = 400, outer = 700, h = 260, vary = 90, size = 2600, n = detail.low ? 120 : 170, aspect = 1, cx = 0, cz = 0, ...opts } = {}) {
   return heightField(size, size, n, (x, z) => {
-    const dx = x - cx, dz = (z - cz) / aspect, r = Math.hypot(dx, dz), a = Math.atan2(dz, dx);
+    const dx = x - cx, dz = (z - cz) / aspect, r = Math.hypot(dx, dz) + 70 * fbm(x, z, { scale: 0.003, octaves: 3 });
     const t = smooth(inner, outer, r);
-    const ridge = h + vary * (0.6 * Math.sin(a * 5 + 1.3) + 0.4 * Math.sin(a * 11 + 0.2)) + rough(x, z, 22, 0.4);
-    const gully = 1 - 0.18 * Math.pow(Math.abs(Math.sin(a * 23 + r * 0.01)), 5);
-    return t * ridge * gully - 3;
+    const ridge = (h + vary * fbm(x, z, { scale: 0.0022, octaves: 3 })) * (0.62 + 0.55 * ridged(x, z, { scale: 0.0045, octaves: 5 }));
+    return t * ridge - 3;
   }, { cx, cz, ...opts });
 }
