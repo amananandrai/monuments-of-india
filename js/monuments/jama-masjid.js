@@ -1,7 +1,17 @@
 import * as THREE from 'three';
-import { M, box, cyl, at, onionDome, finial, chhatri, minaret, domeBands } from '../helpers.js';
+import { M, box, cyl, at, onionDome, finial, chhatri, minaret } from '../helpers.js';
 import { iwan, arcadeSkin } from '../details/mughal.js';
 import { addDetails } from '../details/jama-masjid.js';
+
+// Vertical black-marble stripes on an onion dome, the inlay that names the Jama Masjid's domes.
+function domeStripes(x, y, z, r, m) {
+  const g = new THREE.Group();
+  for (let i = 0; i < 16; i++) {
+    const a = (i / 16) * Math.PI * 2;
+    g.add(cyl(r * 0.04, r * 0.028, r * 1.2, m, x + Math.sin(a) * r * 0.72, y + r * 0.48, z + Math.cos(a) * r * 0.72, 5));
+  }
+  return g;
+}
 
 export function buildJamaMasjid() {
   const Rd = M.red, Mb = M.marble, g = new THREE.Group(), f = new THREE.Group();
@@ -15,12 +25,15 @@ export function buildJamaMasjid() {
     const w = big ? 24 : 18, h = big ? 18 : 15, gr = new THREE.Group();
     gr.add(box(w, h, 14, Rd), box(w + 0.4, 0.6, 14.4, Mb, 0, h - 0.6), at(iwan(w * 0.42, h * 0.75, { m: Rd, trim: Mb, shade: M.redLight, depth: 1.8, frame: w * 0.08, top: h * 0.1 }), 0, 0, 7));
     for (const x of [-w / 2 + 2, w / 2 - 2]) gr.add(at(chhatri(1.8, 5.5, Rd, Mb), x, h, 5));
-    gr.add(at(onionDome(3.2, Mb), 0, h, 0));
+    gr.add(at(onionDome(3.2, Mb), 0, h, 0), domeStripes(0, h, 0, 3.2, M.stoneDark));
     return gr;
   };
   f.add(at(gate(true), 0, P, 51));
   for (let k = 0; k < 6; k++) f.add(box(34 - k * 2, P - k, 3, Rd, 0, 0, 59.5 + k * 3));
-  for (const s of [-1, 1]) f.add(at(gate(false), s * 51, P, 0).rotateY(s * Math.PI / 2));
+  for (const s of [-1, 1]) {
+    f.add(at(gate(false), s * 51, P, 0).rotateY(s * Math.PI / 2));
+    for (let k = 0; k < 6; k++) f.add(box(3, P - k, 22 - k * 1.2, Rd, s * (59.5 + k * 3), 0, 0));
+  }
   // Prayer hall with eleven arches, three striped marble domes and two minarets
   const hz = -40;
   // Its front: the great marble iwan, and five open arches either side, 1.4 m deep.
@@ -33,9 +46,12 @@ export function buildJamaMasjid() {
   }
   [[-18, 7], [0, 9.5], [18, 7]].forEach(([x, r]) => {
     f.add(cyl(r * 0.92, r * 0.92, 3, Mb, x, P + 14, hz - 2, 32));
-    f.add(at(onionDome(r, Mb), x, P + 17, hz - 2), domeBands(x, P + 17, hz - 2, r, M.stoneDark), at(finial(r * 0.6), x, P + 17 + r * 1.78, hz - 2));
+    f.add(at(onionDome(r, Mb), x, P + 17, hz - 2), domeStripes(x, P + 17, hz - 2, r, M.stoneDark), at(finial(r * 0.6), x, P + 17 + r * 1.78, hz - 2));
   });
-  for (const s of [-1, 1]) f.add(at(minaret(34, 2.2, Rd, { capM: Mb }), s * 40, P, hz + 12));
+  for (const s of [-1, 1]) {
+    f.add(at(minaret(34, 2.2, Rd, { capM: Mb }), s * 40, P, hz + 12));
+    for (const t of [0.16, 0.34, 0.52, 0.7]) f.add(cyl(2.32, 2.32, 0.7, Mb, s * 40, P + 34 * t, hz + 12, 20));
+  }
   f.add(box(16, 0.6, 12, Mb, 0, P, 8), box(14, 0.7, 10, M.water, 0, P, 8));
   for (const x of [-51, 51]) f.add(at(chhatri(3, 8, Rd, Mb), x, P + 7.5, 51));
   addDetails(f, g);

@@ -53,14 +53,14 @@ export function bhumijaRows(w, h, prof, rows = 9) {
 export function nagaraTemple({
   w = 12, h = 22, m, shade = m, spireM = m, plinth = 2, urus = 4, uruScale = 0.5,
   halls = [[14, 8, 4]], prof = nagaraProfile, flagM = M.saffron, hallM = m, crown = null, apron = 8, friezeSpacing = 1,
-  base = { tiers: 2, cut: 0.8 }, stair = {}, sanctumStoreys = 1, spireBands = 0, nicheFigure = null,
+  base = { tiers: 2, cut: 0.8 }, stair = {}, sanctumStoreys = 1, spireBands = 0, finialM = M.gold, nicheFigure = null,
 } = {}) {
   const g = new THREE.Group();
   const sw = w * 1.15;
   const wh = w * 0.7 + (sanctumStoreys - 1) * w * 0.42;
   g.add(box(sw, wh, sw, m, 0, plinth, 0));
   const sy = plinth + wh;
-  const spire = shikhara(w, h, spireM, prof, 16);
+  const spire = shikhara(w, h, spireM, prof, 16, finialM);
   g.add(at(spire, 0, sy, 0), at(crown || flag(Math.max(3, w * 0.45), flagM), 0, sy + spire.userData.top - 0.5, 0));
   // Bands round the spire at each storey, following its cross-shaped plan.
   for (let k = 1; k < spireBands; k++) {
@@ -70,7 +70,7 @@ export function nagaraTemple({
   const ring = (n, dist, scale, hs) => {
     for (let k = 0; k < n; k++) {
       const a = (k / n) * Math.PI * 2 + (n === 4 ? 0 : Math.PI / n);
-      g.add(onFace(at(shikhara(w * scale, h * hs, spireM, prof, 10), 0, sy, 0), a, dist));
+      g.add(onFace(at(shikhara(w * scale, h * hs, spireM, prof, 10, finialM), 0, sy, 0), a, dist));
     }
   };
   if (urus >= 4) ring(4, w * 0.5, uruScale, 0.62);
