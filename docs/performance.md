@@ -216,6 +216,9 @@ What desktops get that phones do not:
   Bandra–Worli Sea Link, desktops get a fuller Mumbai skyline from its own random sequence (podiums,
   setbacks, glass and round towers, spires, helipads, and mid-rise blocks along the shore): 167k;
   phones keep the old skyline (136k).
+  The town of Trimbak now surrounds Trimbakeshwar on both levels: houses under terracotta-tiled
+  pitched roofs and newer flat-roofed ones along the temple street behind its stalls, in lanes west
+  of the court and round the Kushavarta kund: 296k on desktops, 204k on phones.
 - **Dressed elephants** (`rideElephant` in `js/details/animals.js`): a fringe of tassels and
   embroidered roundels on the cloths, a rope of bells round the neck, anklets, tusk caps, and on a
   temple elephant the gold nettipattam over the forehead and trunk.
