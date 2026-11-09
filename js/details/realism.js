@@ -565,12 +565,13 @@ export function houseRow(R, axis, at, a, b, ry, { w = [6.5, 10.5], d = [9, 12], 
 // site; each further row stands back to back with the one before or across a lane `lane` wide,
 // alternately. Houses whose footprint touches a rectangle in `keep` (roads, squares, neighbouring
 // buildings, [x0, x1, z0, z1]) are left out. Widths, depths and storeys vary within their ranges.
+// every: build only one plot in that many (a thinner town, for phones); fine: passed to townHouses.
 export function cityAround([x0, x1, z0, z1], {
-  rows = 2, gap = 6, lane = 7, width = [8, 14], depth = [10, 14], storeys = [2, 5], keep = [], seed = 1, ...opts
+  rows = 2, gap = 6, lane = 7, width = [8, 14], depth = [10, 14], storeys = [2, 5], keep = [], seed = 1, every = 1, ...opts
 } = {}) {
   const R = rng(seed + 101), spots = [], pick = ([a, b]) => a + R() * (b - a);
   const clear = (x, z, w, d) => !keep.some(([a, b, c, e]) => x + w / 2 > a && x - w / 2 < b && z + d / 2 > c && z - d / 2 < e);
-  let o = gap;
+  let o = gap, n = 0;
   for (let r = 0; r < rows; r++) {
     const D = depth[1], inward = r % 2 === 0;
     const sides = [
@@ -584,7 +585,7 @@ export function cityAround([x0, x1, z0, z1], {
       for (let t = from; t < to - 4;) {
         const w = Math.min(pick(width), to - t), d = pick(depth), c = t + w / 2;
         const x = ax === 'x' ? c : fixed, z = ax === 'x' ? fixed : c, fx = ax === 'x' ? w : d, fz = ax === 'x' ? d : w;
-        if (clear(x, z, fx, fz)) spots.push([x, z, w - 0.3, d, Math.round(pick(storeys)), inward ? ry : ry + Math.PI]);
+        if (clear(x, z, fx, fz) && !(n++ % every)) spots.push([x, z, w - 0.3, d, Math.round(pick(storeys)), inward ? ry : ry + Math.PI]);
         t += w;
       }
     }
@@ -598,7 +599,8 @@ export function cityAround([x0, x1, z0, z1], {
 // in bays on every storey, front and back, with a door in the middle of the front; a balcony slab
 // sits under each upper storey, and the flat roof has a parapet and, often, a black water tank.
 // roof: 'pitched' for a gabled roof of painted sheet iron instead (hill towns), coloured from `roofs`;
-// trim: the colour of the roof slabs, floor bands, balconies and steps.
+// trim: the colour of the roof slabs, floor bands, balconies and steps. fine: the desktop finish
+// below (false for distant rows, where the triangles show least).
 // On desktops (js/detail.js) each house is finished: a moulded band at every floor, a light frame
 // round each window with a sunshade over it, a framed door up two steps, a railing along each
 // balcony, often a shop on the ground floor (a shutter, a coloured awning and a signboard), and on a
@@ -606,7 +608,7 @@ export function cityAround([x0, x1, z0, z1], {
 const HOUSE_PAINT = ['#e9d9b8', '#d98c5f', '#9fc3c9', '#e7b9b0', '#c9d6a3', '#f1e6cf', '#d6b06a', '#b9a7cf'];
 const SIGNS = ['#c2512a', '#2f5d9a', '#e3b23c', '#3c8a5a', '#b3262e', '#f4f1ea'];
 let houseGeos = null;
-export function townHouses(spots, { seed = 1, y: y0 = 0, paint = HOUSE_PAINT, trim = '#efe9dc', roof = 'flat', roofs = ['#8a3b2a', '#2f5d9a', '#3c7a4f', '#7a7f84'] } = {}) {
+export function townHouses(spots, { seed = 1, y: y0 = 0, paint = HOUSE_PAINT, trim = '#efe9dc', roof = 'flat', roofs = ['#8a3b2a', '#2f5d9a', '#3c7a4f', '#7a7f84'], fine = !detail.low } = {}) {
   if (!houseGeos) houseGeos = {
     body: new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0),
     win: new THREE.BoxGeometry(1.1, 1.5, 0.1).translate(0, 0.75, 0),
@@ -628,21 +630,21 @@ export function townHouses(spots, { seed = 1, y: y0 = 0, paint = HOUSE_PAINT, tr
     tints.push(paint[Math.floor(R() * paint.length)]);
     if (roof === 'pitched') { gables.push([x, y + h, z, [w * 1.1, Math.min(w, d) * 0.9, d * 1.1], ry]); gableTints.push(roofs[Math.floor(R() * roofs.length)]); }
     else trims.push([x, y + h, z, [w + 0.2, 0.9, d + 0.2], ry]);
-    const bays = Math.max(1, Math.floor(w / 2.6)), shop = !detail.low && roof === 'flat' && R() < 0.55;
+    const bays = Math.max(1, Math.floor(w / 2.6)), shop = fine && roof === 'flat' && R() < 0.55;
     for (let k = 0; k < n; k++) {
       for (const side of [1, -1]) for (let b = 0; b < bays; b++) {
         if (!k && side > 0 && (b === bays >> 1 || shop)) continue;
         const [wx, wz] = P(-w / 2 + (b + 0.5) * (w / bays), side * (d / 2 + 0.02)), wr = ry + (side > 0 ? 0 : Math.PI);
         wins.push([wx, y + k * 3.2 + 0.9, wz, 1, wr]);
-        if (!detail.low) { frames.push([wx, y + k * 3.2 + 0.9, wz, 1, wr]); shades.push([wx, y + k * 3.2 + 0.9, wz, 1, wr]); }
+        if (fine) { frames.push([wx, y + k * 3.2 + 0.9, wz, 1, wr]); shades.push([wx, y + k * 3.2 + 0.9, wz, 1, wr]); }
       }
       if (k) {
         const [bx, bz] = P(0, d / 2 + 0.55);
         trims.push([bx, y + k * 3.2 - 0.15, bz, [w * 0.8, 0.15, 1.1], ry]);
-        if (!detail.low) { const [rx, rz] = P(0, d / 2 + 1.06); trims.push([rx, y + k * 3.2, rz, [w * 0.8, 0.5, 0.08], ry]); rails.push([rx, y + k * 3.2 + 0.86, rz, [w * 0.8, 0.06, 0.1], ry]); for (const e of [-1, 1]) { const [px, pz] = P(e * w * 0.39, d / 2 + 1.06); rails.push([px, y + k * 3.2 + 0.5, pz, [0.06, 0.38, 0.06], ry]); } trims.push([x, y + k * 3.2 - 0.12, z, [w + 0.12, 0.12, d + 0.12], ry]); }
+        if (fine) { const [rx, rz] = P(0, d / 2 + 1.06); trims.push([rx, y + k * 3.2, rz, [w * 0.8, 0.5, 0.08], ry]); rails.push([rx, y + k * 3.2 + 0.86, rz, [w * 0.8, 0.06, 0.1], ry]); for (const e of [-1, 1]) { const [px, pz] = P(e * w * 0.39, d / 2 + 1.06); rails.push([px, y + k * 3.2 + 0.5, pz, [0.06, 0.38, 0.06], ry]); } trims.push([x, y + k * 3.2 - 0.12, z, [w + 0.12, 0.12, d + 0.12], ry]); }
       }
     }
-    if (!detail.low) {
+    if (fine) {
       if (shop) {
         const [sx, sz] = P(0, d / 2 + 0.03), [ax, az] = P(0, d / 2 + 0.6), [gx, gz] = P(0, d / 2 + 0.06);
         shutters.push([sx, y, sz, [w * 0.86, 2.6, 0.06], ry]);
@@ -665,7 +667,7 @@ export function townHouses(spots, { seed = 1, y: y0 = 0, paint = HOUSE_PAINT, tr
   );
   if (tanks.length) g.add(copies(houseGeos.tank, plain('#222222', 0.7), tanks));
   if (gables.length) g.add(copies(houseGeos.gable, TINTED, gables, gableTints));
-  if (!detail.low) {
+  if (fine) {
     const add = (geo, m, list, tints) => { if (list.length) g.add(copies(geo, m, list, tints)); };
     add(houseGeos.frame, plain(trim, 0.85), frames);
     add(houseGeos.shade, plain('#d8d1c2', 0.85), shades);

@@ -6,6 +6,7 @@ import {
   railingRing, merlons, lotusDome, petalRing, crescentFinial, mughalChhatri, mergeByMaterial,
 } from './components.js';
 import { trees, asiBoard, fountains, scatter, along } from './realism.js';
+import { detail } from '../detail.js';
 
 // Taj Mahal, finer detail (1632–1653). From photographs and descriptions (tajmahal.gov.in,
 // Archnet, the Taj Mahal articles of Wikipedia and Britannica):
@@ -174,7 +175,7 @@ function mosque() {
   g.add(box(L, H, D - dp, R, 0, 0, -dp / 2), box(L + 0.6, 0.6, D + 0.6, W, 0, H));
   g.add(onFace(arcadeSkin(L - 16, H, cellRow(4, 9, 0, 5, 9.5, [[-6, 6]]).flatMap(([x, s0, w, h]) => [[x, s0, w, h], [x, 10.3, w * 0.6, 3.6, 'jali']]), dp, R, { trim: W, fill: 'room' }), 0, D / 2 - dp, 0));
   g.add(onFace(at(iwan(9, 13, { m: R, trim: W, shade: M.redLight, depth: 2.4, frame: 1.4, top: 1.6, fill: 'room' }), 0, 0, 0), 0, D / 2));
-  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(cyl(2.2, 2.4, H + 3, R, sx * (L / 2 - 1.5), 0, sz * (D / 2 - 1.5), 8), at(mughalChhatri(2, 6, R, { domeM: W }), sx * (L / 2 - 1.5), H + 3, sz * (D / 2 - 1.5)));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(cyl(2.2, 2.4, H + 3, R, sx * (L / 2 - 1.5), 0, sz * (D / 2 - 1.5), 8), at(mughalChhatri(2, 6, R, { domeM: W, arches: !detail.low, crescent: !detail.low }), sx * (L / 2 - 1.5), H + 3, sz * (D / 2 - 1.5)));
   g.add(onFace(at(merlons(L - 8, 0.8, 1, 0.3, R, 0.35), 0, H + 0.6, 0), 0, D / 2 - 0.3));
   for (const [x, r] of [[-16, 4.6], [0, 6.4], [16, 4.6]]) {
     g.add(cyl(r * 0.92, r * 0.92, r * 0.5, W, x, H + 0.6, -1, 32), at(onionDome(r, W), x, H + 0.6 + r * 0.5, -1), at(finial(r * 0.75), x, H + 0.6 + r * 0.5 + r * 1.8, -1));
@@ -196,7 +197,7 @@ function greatGate() {
   }
   g.add(inst(unitCyl(8), kp, W), inst(unitHemi(10), kd, W));
   g.add(box(w + 0.6, 0.8, d - 1.8, W, 0, h));
-  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(cyl(2.4, 2.6, h + 3, R, sx * (w / 2), 0, sz * (d / 2 - 2.4), 8), at(mughalChhatri(2.4, 6.5, R, { domeM: W }), sx * (w / 2), h + 3, sz * (d / 2 - 2.4)));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(cyl(2.4, 2.6, h + 3, R, sx * (w / 2), 0, sz * (d / 2 - 2.4), 8), at(mughalChhatri(2.4, 6.5, R, { domeM: W, arches: !detail.low, crescent: !detail.low }), sx * (w / 2), h + 3, sz * (d / 2 - 2.4)));
   return mergeByMaterial(g);
 }
 

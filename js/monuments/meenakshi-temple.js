@@ -34,7 +34,7 @@ export function buildMeenakshi() {
       g.add(wallWithGaps('z', hw * 2 + 1, 5, 1.2, S, gz ? [[cz, 11]] : [], cx + s * hw, cz));
     }
     gates.forEach(([sx, sz, h], k) => {
-      const t = gopuram(12, 7, h, 5, 9 + k + (cx > 0 ? 0 : 3), undefined, detail.low ? { pitch: 2.8, kuduEvery: 4, cheap: true } : undefined);
+      const t = gopuram(12, 7, h, 5, 9 + k + (cx > 0 ? 0 : 3), undefined, detail.low ? { pitch: 2.8, kuduEvery: 4, cheap: true } : { pitch: 2.1, kuduEvery: 3 });
       t.position.set(cx + sx * hw, 0, cz + sz * hw);
       t.rotation.y = sx ? Math.PI / 2 : 0;
       g.add(t);

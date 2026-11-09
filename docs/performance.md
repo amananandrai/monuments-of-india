@@ -232,3 +232,15 @@ What desktops get that phones do not:
   embroidered roundels on the cloths, a rope of bells round the neck, anklets, tusk caps, and on a
   temple elephant the gold nettipattam over the forehead and trunk.
 
+## Back inside the budgets after the town rings
+
+The old-town rings added round Meenakshi and Baidyanath (`cityAround` in js/details/realism.js), and
+Taj Mahal's new garden and calligraphy, took three monuments over: Meenakshi to 1,037k on desktops and
+439k on phones, Baidyanath to 692k and 323k, Taj Mahal to 311k on phones. `cityAround` now takes
+`every` (build one plot in that many) and `fine` (passed to `townHouses`, whose desktop finish it
+switches off for distant rows). Meenakshi's ring is two rows of plain houses on desktops and one
+thinned row on phones, and its inner gopurams keep their earlier spacing; Baidyanath's is three plain
+rows on desktops and two thinned on phones; the Taj's mosque, jawab and gate kiosks drop their
+arches and crescents on phones. After: Meenakshi 598k / 284k, Baidyanath 555k / 274k, Taj Mahal
+311k / 294k. Every monument is again under 600k on desktops and 300k on phones.
+
