@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { mat, mesh, box, cyl, at, onFace, flat, kalash, aroundRect } from '../helpers.js';
 import { elephant } from '../details/animals.js';
 import { trabeateGate } from '../details/temples.js';
-import { templeDoorway } from '../details/doorways.js';
+import { templeDoorway, grandStair } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { instances, elephantGeo, kuta, shala } from '../details/sculpture.js';
 import { addDetails } from '../details/kailasa-temple.js';
@@ -57,11 +57,21 @@ export function buildKailasa() {
   // High plinth with a frieze of elephants carrying the temple
   f.add(box(40, 8, 62, ROCK_DARK, 0, 0, -12));
   const eles = [];
-  aroundRect(40.6, 62.6, 3.2).forEach(([x, z, ry]) => eles.push([x, 0.6, z - 12, 2.2, 3.2, 1.2, ry]));
+  // The two stairs climb the long sides of the plinth beside the hall (z = ST0 to ST0 + run): no
+  // elephants behind them.
+  const ST0 = 1, SW = 3.6;
+  aroundRect(40.6, 62.6, 3.2).forEach(([x, z, ry]) => { if (!(Math.abs(x) > 19 && z - 12 > ST0 - 3 && z - 12 < 19)) eles.push([x, 0.6, z - 12, 2.2, 3.2, 1.2, ry]); });
   f.add(instances(elephantGeo(), eles.map(([x, y, z, sx, sy, sz, ry]) => [x, y, z, sx, sy, sz, ry + Math.PI]), ROCK));
   f.add(box(22, 8, 24, ROCK, 0, 8, 5), box(23.5, 1, 25.5, ROCK_DARK, 0, 16, 5));
   f.add(at(templeDoorway(2.2, 4.4, { m: ROCK, bands: 4, guardianH: 2.2 }), 0, 8, 17));
-  f.add(box(20, 8, 20, ROCK, 0, 8, -26), at(vimana(19, 4, 3.4, ROCK, ROCK_DARK), 0, 16, -26));
+  // A stair up each long side of the plinth, from the court floor to the walk round the hall, so
+  // the hall's doorway is reached: each climbs towards the back of the temple against the plinth,
+  // with a landing half-way and a block at its head level with the plinth top.
+  for (const s of [-1, 1]) {
+    const st = grandStair(7.6, SW, ROCK_DARK, ROCK, { cheek: 0.8 }), x = s * (20 + 1.2 + SW / 2 - 0.02);
+    f.add(at(st, x, 0.4, ST0), box(SW + 2.4, 7.6, 2.6, ROCK_DARK, x, 0.4, ST0 - 1.3));
+  }
+  f.add(box(20, 8, 20, ROCK, 0, 8, -26), at(vimana(19, 3, 3.4, ROCK, ROCK_DARK), 0, 16, -26));
   // Nandi pavilion on its bridge, two victory pillars and life-size elephants in the court
   f.add(box(4, 1.2, 12, ROCK, 0, 6.8, 24), box(10, 12, 10, ROCK, 0, 0, 33), box(11, 1, 11, ROCK_DARK, 0, 12, 33), at(vimana(8, 2, 2.4, ROCK, ROCK_DARK), 0, 13, 33));
   for (const x of [-15, 15]) {

@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, onFace, FACES } from '../helpers.js';
-import { medallion, idol, frieze, mergeByMaterial } from './components.js';
-import { instances, elephantGeo, horseGeo } from './sculpture.js';
+import { medallion, frieze, mergeByMaterial } from './components.js';
+import { instances, elephantGeo, horseGeo, figure, figureGeo } from './sculpture.js';
 import { steps } from './doorways.js';
 import { trees, asiBoard, scatter } from './realism.js';
 
 // The Great Stupa at Sanchi, finer detail. From photographs: the posts of the ground railing
 // (vedika) carry lotus medallions; a double stairway climbs from the south to the walkway on the
 // drum; and the gateways (toranas) have bracket figures of yakshis leaning out from their pillars
-// under the lowest architrave. Dimensions follow js/monuments/sanchi-stupa.js: the drum r = 18.3
+// under the lowest architrave, on both faces, each holding the bough of a tree. Dimensions follow js/monuments/sanchi-stupa.js: the drum r = 18.3
 // and 4.3 high, the railing r = 22 with 120 posts, the gateways at 23.4.
 function architecture(f) {
   const d = new THREE.Group(), S = M.sanchi;
@@ -22,12 +22,16 @@ function architecture(f) {
     st.rotation.y = Math.PI;
     d.add(st);
   }
-  for (const a of FACES) for (const x of [-2.4, 2.4]) {
-    const y = idol(2, S);
-    y.position.set(x + Math.sign(x) * 0.65, 5.3, 0.2);
-    y.rotation.z = -Math.sign(x) * 0.5;
-    const t = new THREE.Group();
+  // Each yakshi (a salabhanjika) leans out from the pillar, one arm up into the bough of a mango
+  // tree whose leaves spread under the architrave above her.
+  const leaf = new THREE.SphereGeometry(1, 8, 5);
+  for (const a of FACES) for (const x of [-2.4, 2.4]) for (const sz of [-1, 1]) {
+    const sx = Math.sign(x), y = figure(2, S, 'dancer'), t = new THREE.Group();
+    y.position.set(x + sx * 0.65, 5.3, sz * 0.2);
+    y.rotation.z = -sx * 0.5;
+    if (sz < 0) y.rotation.y = Math.PI;
     t.add(y);
+    for (const [dx, dy, r] of [[0.9, 7.25, 0.42], [1.35, 7.1, 0.32], [0.55, 7.35, 0.3]]) { const o = new THREE.Mesh(leaf, S); o.position.set(x + sx * dx, dy, sz * 0.2); o.scale.set(r, r * 0.6, r * 0.7); t.add(o); }
     d.add(onFace(t, a, 23.4));
   }
   mergeByMaterial(d);
@@ -38,7 +42,7 @@ function architecture(f) {
 // - the capitals of the pillars are elephants (here one each way on each pillar) carrying the
 //   architraves;
 // - the three architraves are carved on both faces with processions and Jataka scenes, and roll up
-//   at their ends in spirals; elephants and horses with riders stand between them;
+//   at their ends in spirals; elephants and horses with their riders stand between them;
 // - the pillars are carved in panels on every face;
 // - the Dharma wheel at the top has its spokes, and a triratna (the three jewels: a trident on a
 //   wheel) stands on each of the side posts.
@@ -46,7 +50,7 @@ function architecture(f) {
 // (pillars at x = ±2.4, 6.5 high; architraves 8.6 long at 7.9, 9.6 and 11.3; the wheel at 12.6)
 // and js/monuments/sanchi-stupa.js (gateways at 23.4; the drum r = 18.3, 4.3 high).
 function gateways(f) {
-  const d = new THREE.Group(), S = M.sanchi, eles = [], beasts = [];
+  const d = new THREE.Group(), S = M.sanchi, eles = [], beasts = [], rideEles = [], riders = [];
   for (const a of FACES) {
     const t = onFace(new THREE.Group(), a, 23.4);
     for (const x of [-2.4, 2.4]) {
@@ -73,14 +77,19 @@ function gateways(f) {
     t.updateMatrixWorld(true);
     const put = (list, x, y, z, sx, sy, sz, turn) => { const p = new THREE.Vector3(x, y, z).applyMatrix4(t.matrixWorld); list.push([p.x, p.y, p.z, sx, sy, sz, t.rotation.y + turn]); };
     for (const x of [-2.4, 2.4]) for (const sz of [-1, 1]) put(eles, x, 6.55, sz * 0.95, 1.5, 1.3, 0.8, sz > 0 ? 0 : Math.PI);
-    for (const y of [8.45, 10.15]) for (const x of [-3.4, -0.75, 0.75, 3.4]) put(beasts, x, y, 0, 1.0, 0.95, 0.4, x < 0 ? 0 : Math.PI);
+    // Between the architraves, horses at the ends and elephants in the middle, each with its rider.
+    for (const y of [8.45, 10.15]) for (const x of [-3.4, -0.75, 0.75, 3.4]) {
+      put(Math.abs(x) > 2 ? beasts : rideEles, x, y, 0, 0.9, 0.62, 0.38, x < 0 ? 0 : Math.PI);
+      put(riders, x, y + 0.48, 0, 0.3, 0.46, 0.26, x < 0 ? Math.PI / 2 : -Math.PI / 2);
+    }
     d.add(t);
   }
   // The railing round the walkway on top of the drum.
   for (let k = 0; k < 90; k++) { const a = (k / 90) * Math.PI * 2; d.add(box(0.2, 1.0, 0.2, S, Math.cos(a) * 18.15, 4.3, Math.sin(a) * 18.15)); }
   for (const y of [4.75, 5.15]) d.add(new THREE.Mesh(new THREE.TorusGeometry(18.15, 0.07, 4, 90).rotateX(Math.PI / 2), S).translateY(y));
   mergeByMaterial(d);
-  f.add(d, instances(elephantGeo(), eles, S), instances(horseGeo(), beasts.map(([x, y, z, sx, sy, sz, r]) => [x, y, z, sx, sy, sz, r + Math.PI / 2]), S));
+  const turn = (list) => list.map(([x, y, z, sx, sy, sz, r]) => [x, y, z, sx, sy, sz, r + Math.PI / 2]);
+  f.add(d, instances(elephantGeo(), [...eles, ...turn(rideEles)], S), instances(horseGeo(), turn(beasts), S), instances(figureGeo('seated'), riders, S));
 }
 
 

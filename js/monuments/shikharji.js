@@ -27,11 +27,13 @@ export function buildShikharji() {
   // A tonk on each summit: a square shrine under a dome, footprints of the Tirthankara inside;
   // Parshvanath's tonk, larger, with a spire.
   const bodies = [], domes = [], plinths = [];
+  // No two tonks alike: each its own size, the height of its walls and the rise of its dome vary.
   PEAKS.forEach(([x, z, h], i) => {
     if (i === 17) return;
-    plinths.push([x, h - 0.6, z, 6, 1, 6]);
-    bodies.push([x, h + 0.4, z, 3.6, 3.4, 3.6]);
-    domes.push([x, h + 3.8, z, 3.6, 2.8, 3.6]);
+    const s = 0.8 + 0.45 * ((i * 0.618) % 1), wall = 3.4 * (0.8 + 0.4 * ((i * 0.381 + 0.5) % 1)), rise = 2.8 * (0.75 + 0.6 * ((i * 0.737 + 0.2) % 1)), b = 3.6 * s;
+    plinths.push([x, h - 0.6, z, 6 * s, 1, 6 * s]);
+    bodies.push([x, h + 0.4, z, b, wall, b]);
+    domes.push([x, h + 0.4 + wall, z, b, rise * s, b]);
   });
   f.add(inst(unitBox(), plinths, SHADE), inst(unitBox(), bodies, WHITE), inst(unitHemi(16), domes, WHITE));
   const [px, pz, ph] = PEAKS[17];

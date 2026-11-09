@@ -1,12 +1,53 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, kalash, flag, shikhara } from '../helpers.js';
-import { nagaraTemple, bhumijaRows } from '../details/temples.js';
+import { M, mat, mesh, box, cyl, at, rng, kalash, flag, shikhara } from '../helpers.js';
+import { townHouses } from '../details/realism.js';
+import { nagaraTemple, bhumijaRows, trabeateGate, wallWithGaps } from '../details/temples.js';
+import { steps } from '../details/doorways.js';
 import { instances, miniSpireGeo } from '../details/sculpture.js';
 import { heightField, rough, smooth } from '../details/terrain.js';
 import { addDetails } from '../details/trimbakeshwar-temple.js';
 
 const BASALT = mat('#3d3a37', 0.8);
 const SHADE = mat('#2c2a28', 0.85);
+
+// The town of Trimbak round the temple (js/details/realism.js, townHouses), both levels: old houses
+// under pitched roofs of terracotta tiles and newer ones with flat roofs, two to four storeys. They
+// line the temple street south of the gate behind its stalls, fill lanes west of the temple court,
+// and face the Kushavarta kund from north, south and east, and the lanes south of it.
+// A row runs along x (axis 'x', at z = at) or along z (at x = at) from a to b, facing `ry`.
+function trimbak() {
+  const R = rng(73), tiled = [], flat = [];
+  const row = (axis, at, a, b, ry, [d0, d1] = [9, 12]) => {
+    for (let t = a; t < b;) {
+      const w = 6.5 + R() * 4, d = d0 + R() * (d1 - d0), n = 2 + Math.floor(R() * 3), c = t + w / 2, off = (R() - 0.5) * 0.8;
+      if (c + w / 2 > b) break;
+      (R() < 0.45 ? tiled : flat).push(axis === 'x' ? [c, at + off, w, d, n, ry] : [at + off, c, w, d, n, ry]);
+      t += w + (R() < 0.12 ? 3.2 : 0.3);
+    }
+  };
+  const E = Math.PI / 2;
+  // The temple street: two rows a side behind the stalls, the inner rows facing the street.
+  for (const s of [-1, 1]) {
+    row('z', s * 27, 53, 99, -s * E, [10, 12]);
+    row('z', s * 42, 53, 99, s * E, [10, 12]);
+    row('z', s * 58, 53, 99, -s * E, [9, 11]);
+  }
+  // West of the court: three rows along lanes running north to south.
+  row('z', -52, -42, 46, -E);
+  row('z', -67, -42, 46, E);
+  row('z', -82, -42, 46, -E);
+  row('z', -96, -42, 46, E, [7, 8]);
+  // Round the kund: a row to its north and to its south facing it, one to its east, and rows
+  // south of it to the edge of the town.
+  row('x', -27, 50, 99, 0);
+  row('x', 37, 50, 99, Math.PI);
+  row('z', 103.5, -14, 26, -E, [6, 7]);
+  row('x', 60, 67, 99, 0);
+  row('x', 78, 67, 99, Math.PI);
+  row('x', 93, 67, 99, 0, [7, 8]);
+  const paint = ['#e9dcc0', '#d9a46b', '#bcc9c4', '#e8c9a8', '#cfd8b8', '#e2b98f', '#c7b6d6', '#f0e6d2'];
+  return new THREE.Group().add(townHouses(tiled, { seed: 74, paint, roof: 'pitched', roofs: ['#9a4a32', '#a85a3a', '#8a4030', '#7d4a3a'] }), townHouses(flat, { seed: 75, paint }));
+}
 
 export function buildTrimbakeshwar() {
   const g = new THREE.Group(), f = new THREE.Group();
@@ -19,9 +60,15 @@ export function buildTrimbakeshwar() {
     const step = Math.floor(smooth(1.6, 0.95, e) * 4) / 4;
     return Math.max(0, 140 * (0.25 * smooth(1.9, 1.2, e) + 0.75 * step) + rough(x, z, 3, 0.5) * smooth(1.9, 1, e)) - 0.5;
   }, { cz: -430, cx: -60, rock: ['#4d4943', '#5c5750'], cover: '#6c7650', steep: 0.7, band: 30 }), box(200, 0.2, 200, M.path));
+  g.add(trimbak());
   // Walled courtyard round the black basalt temple
-  for (const s of [-1, 1]) f.add(box(80, 6, 2, mat('#5d5853', 0.9), 0, 0, s * 45), box(2, 6, 90, mat('#5d5853', 0.9), s * 40, 0, 0));
-  f.add(box(20, 9, 8, BASALT, 0, 0, 45));
+  const WALL = mat('#5d5853', 0.9);
+  f.add(box(80, 6, 2, WALL, 0, 0, -45), wallWithGaps('x', 80, 6, 2, WALL, [[0, 19.6]], 0, 45));
+  for (const s of [-1, 1]) f.add(box(2, 6, 90, WALL, s * 40, 0, 0));
+  // The south gate: a passage through the gatehouse on a raised sill, with steps up to it from the
+  // street and down from it into the court.
+  f.add(box(20, 1.2, 8, SHADE, 0, 0, 45), at(trabeateGate(20, 9, 8, 4.4, 6, { m: BASALT, trim: SHADE }), 0, 1.2, 45));
+  f.add(at(steps(6, 1.2, 4, SHADE, 0.4), 0, 0, 49), at(steps(6, 1.2, 4, SHADE, 0.4), 0, 0, 41).rotateY(Math.PI));
   // The temple Nanasaheb Peshwa built: its tall spire banded with rows of miniature spires (the
   // Maratha Bhumija manner), under a great gilded kalash and the flag.
   const prof = (t) => 1 - 0.6 * Math.pow(t, 1.45);

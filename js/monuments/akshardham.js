@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, box, cyl, lathe, group, at, kalash, shikhara, nagaraProfile, ribbed, inst, unitCyl, unitHemi, aroundRect } from '../helpers.js';
 import { templeDoorway } from '../details/doorways.js';
-import { instances, elephantGeo } from '../details/sculpture.js';
+import { instances, elephantGeo, miniSpireGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/akshardham.js';
 
 export function buildAkshardham() {
@@ -38,6 +38,9 @@ export function buildAkshardham() {
   dome(0, 0, 11);
   for (const [x, z] of [[-22, -26], [22, -26], [-22, 26], [22, 26], [0, -32], [0, 32], [-26, 0], [26, 0]]) dome(x, z, 5.2);
   for (const x of [-31, 31]) for (const z of [-38, 38]) f.add(at(shikhara(6, 11, P, nagaraProfile, 10), x, 27.5, z));
+  // A ring of miniature shikharas round the edge of the roof, between the corner spires.
+  const minis = aroundRect(68, 82, 3.4).filter(([x, z]) => Math.abs(Math.abs(x) - 31) + Math.abs(Math.abs(z) - 38) > 6.5 && !(Math.abs(x) > 30 && Math.abs(z) > 35)).map(([x, z, ry]) => [x, 27.5, z, 2, 2.4, 2, ry]);
+  f.add(instances(miniSpireGeo(), minis, P));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.75, 0.38, 1.2] };
 }

@@ -26,7 +26,7 @@ export function buildGrishneshwar() {
   for (let i = 0; i < 18; i++) { const x = -260 + i * 30 + (i % 3) * 4, w = 8 + (i % 4) * 3; g.add(box(w, 7 + (i % 3) * 2, 1, M.recess, x, 4, cz + 6.6 * Math.sin(Math.round((x + 400) / 100) * 1.3) + 0.1)); }
   for (const s of [-1, 1]) f.add(box(70, 4, 2, mat('#a39079', 0.9), 0, 0, s * 40), box(2, 4, 80, mat('#a39079', 0.9), s * 35, 0, 0));
   // Red basalt temple with a five-tiered spire
-  const t = nagaraTemple({ w: 11, h: 17, m: RED, shade: SHADE, plinth: 2, urus: 4, uruScale: 0.45, halls: [[16, 8, 4]], prof: (k) => 1 - 0.55 * Math.floor(k * 5) / 5 - 0.08 * k });
+  const t = nagaraTemple({ w: 11, h: 17, m: RED, shade: SHADE, plinth: 2, urus: 4, uruScale: 0.45, halls: [[16, 8, 4]], prof: (k) => 1 - 0.62 * Math.floor(k * 5) / 5 - 0.03 * k, spireBands: 5 });
   f.add(at(t, 0, 0, -12));
   // Carved friezes of the ten avatars round the walls of the hall
   const figs = [];

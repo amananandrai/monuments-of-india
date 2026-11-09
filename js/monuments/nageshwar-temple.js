@@ -19,5 +19,5 @@ export function buildNageshwar() {
   // Neem trees behind the temple and along the lawn's far side, and coconut palms along the outer path.
   g.add(trees([...along(9, [-60, -70], [40, -70]), ...along(7, [-56, 30], [-56, 86])], { kind: 'neem', seed: 11 }));
   g.add(trees([...along(12, [-80, -80], [-80, 80]), ...along(12, [80, -80], [80, 30])], { kind: 'palm', seed: 12 }));
-  return { group: g, focus: f, view: [0.6, 0.3, 1.25], budget: 500000 };
+  return { group: g, focus: f, view: [0.6, 0.3, 1.25] };
 }

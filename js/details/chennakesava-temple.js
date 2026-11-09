@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, box, cyl, at, onFace, FACES, starPrism } from '../helpers.js';
+import { mat, at, onFace, FACES, starPrism } from '../helpers.js';
 import { frieze, idol, windowFrame, jali, bracketGeo, placeAll, mergeByMaterial } from './components.js';
 import { instances, kutaGeo } from './sculpture.js';
 import { trees, garland, asiBoard, along } from './realism.js';
@@ -7,7 +7,8 @@ import { lamp } from './doorways.js';
 
 const SOAP = mat('#8f877b', 0.85), SOAP_DARK = mat('#6f685e', 0.85);
 
-// Chennakesava, Belur, finer detail. From photographs and descriptions of Hoysala work:
+// Chennakesava (the Keshava temple), Somanathapura, 1258, finer detail. From photographs and
+// descriptions of this temple and its Hoysala kin:
 // - the star-shaped walls of the shrines are wrapped in horizontal friezes (elephants, lions,
 //   scrolls, scenes) below a band of images, here as carved bands following the star;
 // - bracket figures (madanikas), dancers leaning out under the eaves, on the hall's corners and
@@ -41,10 +42,10 @@ function architecture(f) {
   f.add(d);
 }
 
-// The towers, after photographs of Hoysala vimanas (Belur's own was lost and is rebuilt here from
-// its sisters at Halebidu and Somanathapura): each tier of the star-shaped tower carries a ring of
-// miniature shrines on its points. Dimensions follow js/monuments/chennakesava-temple.js and
-// helpers.stellateTower: towers r = 5.6 and 9 high in 7 tiers, from B + 7.
+// The towers, after photographs of Somanathapura's three, which still stand complete (unlike the
+// lost tower at Belur): each tier of the star-shaped tower carries a ring of miniature shrines on its
+// points. Dimensions follow js/monuments/chennakesava-temple.js and helpers.stellateTower: towers
+// r = 5.6 and 9 high in 7 tiers, from B + 7.
 function towers(f) {
   const list = [], B = 1.8, r = 5.6, th = 9 / 7;
   for (const [x, z] of [[0, -10], [-11, 0], [11, 0]]) for (let i = 0; i < 6; i++) {
@@ -58,17 +59,13 @@ function towers(f) {
 }
 
 
-// The Chennakesava temple at Belur: the tall stone lamp pillar (deepa stambha) that stands in the
-// court without being fixed to its base, marigolds over the hall's doorway, coconut palms outside
-// the cloister, and the ASI board at the gate.
+// The Keshava temple at Somanathapura: marigolds over the hall's doorway, lamps either side of it,
+// coconut palms outside the cloister, and the ASI board at the gate.
 export function addDetails(f, g) {
   architecture(f);
   towers(f);
-  const p = [-12, 24];
-  f.add(box(3.2, 1, 3.2, SOAP_DARK, p[0], 0, p[1]), box(2.4, 1.2, 2.4, SOAP, p[0], 1, p[1]), cyl(0.55, 0.7, 11, SOAP, p[0], 2.2, p[1], 16));
-  f.add(cyl(1.1, 0.6, 0.8, SOAP_DARK, p[0], 13.2, p[1], 16), box(1.6, 1.2, 1.6, SOAP, p[0], 14, p[1]), cyl(0, 0.9, 1.6, SOAP_DARK, p[0], 15.2, p[1], 4));
   f.add(garland([-1.4, 5.5, 15.1], [1.4, 5.5, 15.1], { sag: 0.4, strands: 2 }));
   for (const x of [-2.2, 2.2]) f.add(at(lamp(1.3), x, 1.8, 16.2));
   g.add(trees([...along(8, [-48, -55], [-48, 55]), ...along(8, [48, -55], [48, 55]), ...along(6, [-40, -52], [40, -52])], { kind: 'palm', seed: 4 }));
-  g.add(asiBoard('Chennakesava Temple, Belur', 12, 44, 0));
+  g.add(asiBoard('Keshava Temple, Somanathapura', 12, 44, 0));
 }

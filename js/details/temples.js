@@ -1,9 +1,10 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, FACES, rng, steppedPlan, planPrism, planBand, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, FACES, rng, flat, steppedPlan, planPrism, planBand, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox } from '../helpers.js';
 import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol, placeAll, chhajja, railing, cuspedArchGeo } from './components.js';
 import { templeDoorway, templePorch, steps, grandStair, doorFrame, doorLeaves, guardian } from './doorways.js';
-import { lion } from './animals.js';
-import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze, miniSpireGeo } from './sculpture.js';
+import { lion, elephant, horse } from './animals.js';
+import { detail } from '../detail.js';
+import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze, miniSpireGeo, kuta, shala } from './sculpture.js';
 
 // The shared temple builders, with real entrances: a Nagara temple's front porch, doorway and
 // side doors, a mandapa's doors, and a passage through the base of a gopuram. Moved here from
@@ -46,11 +47,13 @@ export function bhumijaRows(w, h, prof, rows = 9) {
 // sanctumStoreys: storeys of the sanctum's wall under the spire. Each one above the ground storey
 // (w * 0.42 high) has a balcony ledge with railings, a niche with an image on each face and an eave.
 // userData.sy is the height of the spire's foot. spireBands: the spire is cut into this many
-// storeys by a moulded band at each (a Maha Meru spire's floors); 0 for none.
+// storeys by a moulded band at each (a Maha Meru spire's floors); 0 for none. nicheFigure(h, m):
+// the image in the sanctum's outer niches (a guardian by default; a seated tirthankara on a Jain
+// temple).
 export function nagaraTemple({
   w = 12, h = 22, m, shade = m, spireM = m, plinth = 2, urus = 4, uruScale = 0.5,
   halls = [[14, 8, 4]], prof = nagaraProfile, flagM = M.saffron, hallM = m, crown = null, apron = 8, friezeSpacing = 1,
-  base = { tiers: 2, cut: 0.8 }, stair = {}, sanctumStoreys = 1, spireBands = 0,
+  base = { tiers: 2, cut: 0.8 }, stair = {}, sanctumStoreys = 1, spireBands = 0, nicheFigure = null,
 } = {}) {
   const g = new THREE.Group();
   const sw = w * 1.15;
@@ -103,6 +106,7 @@ export function nagaraTemple({
   } else g.add(box(sw + apron, plinth, z + sw / 2 + 6, shade, 0, 0, (z - sw / 2) / 2 + 3));
 
   const e = new THREE.Group(), half = base && placed.length ? placed[0].hw / 2 + a : (sw + apron) / 2;
+  let frontDoor = 0;
   let stairW = 6;
   if (placed.length) {
     // The main entrance: a porch in front of the front hall, with the doorway at its back.
@@ -136,14 +140,15 @@ export function nagaraTemple({
     }
   } else {
     // A small shrine with no hall: the doorway is in the sanctum itself.
-    const ds = doorSize(w * 0.7);
-    e.add(at(templeDoorway(ds.w, ds.h, { m, guardians: w >= 7, hood: true }), 0, plinth, sw / 2));
+    const ds = doorSize(w * 0.7), door = templeDoorway(ds.w, ds.h, { m, guardians: w >= 7, hood: true });
+    e.add(at(door, 0, plinth, sw / 2));
+    frontDoor = door.userData.outerW;
   }
   if (stair?.width) stairW = stair.width;
   if (stair) e.add(at(grandStair(plinth, stairW, shade, m, { cheek: Math.min(0.9, 0.25 + plinth * 0.25), ...stair }), 0, 0, z + 6));
   else e.add(at(steps(stairW, plinth, Math.max(3, Math.ceil(plinth / 0.42)), shade, 0.45), 0, 0, z + 6));
   g.add(mergeByMaterial(e));
-  if (placed.length) g.add(sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing, sanctumStoreys));
+  g.add(sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing, sanctumStoreys, frontDoor, nicheFigure));
   // A band of carved figures along each side of every hall, parted round the side doors.
   // Halls of more than one storey, with doors on the faces that open: the front of the front hall and
   // the sides of the first, where it has side steps.
@@ -162,6 +167,13 @@ export function nagaraTemple({
       fr.position.set(s * hw / 2, plinth + hh * 0.62, (z0 + z1) / 2);
       fr.rotation.y = (s * Math.PI) / 2;
       g.add(fr);
+      // On desktops (js/detail.js), a second register lower on the wall: musicians and attendants.
+      if (!detail.low && hh * 0.62 - hh * 0.2 > fh * 1.6) {
+        const lo = figureFrieze(z1 - z0, fh * 0.85, hallM, { pitch: fh * 0.7 * friezeSpacing, kinds: ['musician', 'standing', 'dancer'] });
+        lo.position.set(s * hw / 2, plinth + hh * 0.2, (z0 + z1) / 2);
+        lo.rotation.y = (s * Math.PI) / 2;
+        g.add(lo);
+      }
     }
   });
   g.userData.length = z;
@@ -169,14 +181,33 @@ export function nagaraTemple({
   return g;
 }
 
-// The finer detail of a Nagara sanctum (its front face hidden by the first hall): the mouldings of
-// its base (khura, kumbha and kalasha, stepping in as they rise), a band across the wall and a
-// cornice under the spire; a niche on each outer face with an image in it, and smaller empty niches
-// either side on a large temple; and the ribbed amalaka stones (bhumi-amalakas) on the corners of
-// the spire, one at each of its storeys.
-function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing = 1, storeys = 1) {
+// The finer detail of a Nagara sanctum (its front face hidden by the first hall, or, on a shrine
+// with no hall, holding the doorway): the mouldings of its base (khura, kumbha and kalasha, stepping
+// in as they rise), a band across the wall and a cornice under the spire; a niche on each outer face
+// with an image in it, and smaller empty niches either side on a large temple; and the ribbed
+// amalaka stones (bhumi-amalakas) on the corners of the spire, one at each of its storeys.
+// doorW: the width of the doorway in the front face of a shrine with no hall, where the base
+// mouldings stop either side of it (0 when a hall covers the front).
+function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing = 1, storeys = 1, doorW = 0, nicheFigure = null) {
   const d = new THREE.Group(), g0 = w * 0.7, fu = w * 0.42, wh = g0 + (storeys - 1) * fu, u = Math.max(0.12, w * 0.018);
-  d.add(at(mouldings(sw, sw, [[0, 2 * u, 2 * u, shade], [2 * u, 1.5 * u, 1.4 * u], [3.5 * u, u, 0.9 * u, shade], [g0 * 0.8, u, 0.7 * u], [wh - 1.6 * u, 1.6 * u, 2 * u, shade]], m), 0, plinth, 0));
+  // A small shrine (under 7 m) on a phone (js/detail.js), often one of many in a court: a plain
+  // image in each niche rather than a sculpted guardian, and coarser amalakas, so a group of them
+  // stays light. Desktops get the full carving.
+  const small = w < 7 && detail.low;
+  const base = [[0, 2 * u, 2 * u, shade], [2 * u, 1.5 * u, 1.4 * u], [3.5 * u, u, 0.9 * u, shade]], upper = [[g0 * 0.8, u, 0.7 * u], [wh - 1.6 * u, 1.6 * u, 2 * u, shade]];
+  if (!doorW) d.add(at(mouldings(sw, sw, [...base, ...upper], m), 0, plinth, 0));
+  else {
+    // Round three sides and either side of the doorway; the courses meet at the front corners.
+    d.add(at(mouldings(sw, sw, upper, m), 0, plinth, 0));
+    const side = (sw - doorW) / 2;
+    for (const [y, ch, p, cm = m] of base) {
+      d.add(box(sw + 2 * p, ch, p, cm, 0, plinth + y, -sw / 2 - p / 2));
+      for (const s of [-1, 1]) {
+        d.add(box(p, ch, sw, cm, s * (sw / 2 + p / 2), plinth + y, 0));
+        if (side > 0.2) d.add(box(side + p, ch, p, cm, s * (sw / 2 + p - (side + p) / 2), plinth + y, sw / 2 + p / 2));
+      }
+    }
+  }
   // The upper storeys: a balcony ledge round the wall with railings on the three free faces, a niche
   // with an image in the middle of every face, and an eave under the next floor.
   for (let k = 1; k < storeys; k++) {
@@ -193,10 +224,11 @@ function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing =
   const fh = Math.min(1.1, g0 * 0.2 - 4.6 * u);
   if (fh > 0.45) for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) d.add(onFace(at(figureFrieze(sw - 0.6, fh, m, { pitch: fh * 0.75 * friezeSpacing, kinds: ['standing', 'dancer', 'standing', 'musician'] }), 0, plinth + 4.6 * u, 0), a, sw / 2));
   for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) {
-    d.add(onFace(at(templeNiche(nw, nh, m, { figure: guardian(nh * 0.88, m) }), 0, ny, 0), a, sw / 2));
-    if (sw > 10) for (const s of [-1, 1]) d.add(onFace(at(templeNiche(nw * 0.6, nh * 0.62, m), 0, ny + nh * 0.12, 0), a, sw / 2, s * sw * 0.32));
+    d.add(onFace(at(templeNiche(nw, nh, m, { figure: nicheFigure ? nicheFigure(nh * 0.85, m) : small ? idol(nh * 0.85, m) : guardian(nh * 0.88, m) }), 0, ny, 0), a, sw / 2));
+    // The smaller niches either side hold images on desktops (js/detail.js), and stand empty on phones.
+    if (sw > 10) for (const s of [-1, 1]) d.add(onFace(at(templeNiche(nw * 0.6, nh * 0.62, m, { figure: detail.low ? null : idol(nh * 0.62 * 0.85, m) }), 0, ny + nh * 0.12, 0), a, sw / 2, s * sw * 0.32));
   }
-  const sy = plinth + wh, am = new THREE.SphereGeometry(1, 16, 6);
+  const sy = plinth + wh, am = small ? new THREE.SphereGeometry(1, 10, 4) : new THREE.SphereGeometry(1, 16, 6);
   for (let k = 1; k <= 4; k++) {
     const t = k / 5, wt = w * prof(t), y = sy + t * h, r = wt * 0.085;
     for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
@@ -321,12 +353,62 @@ export function wallWithGaps(axis, len, h, t, m, gaps = [], x = 0, z = 0) {
   return g;
 }
 
+// A Dravidian vimana: the tower over a South Indian sanctum, standing on y = 0. `tiers` square
+// storeys (talas), each tierH high, a wall course and a cornice in `shade` standing proud of it,
+// narrowing by `taper` of the base width w from the foot to the top storey. On the ledge of every
+// storey but the last, the hara: miniature shrines, a kuta on each corner and a shala in the middle
+// of each side. Then the griva (a short neck) and the crowning cap (sikhara), octagonal or round,
+// and a kalash. Not a pidha roof: that is the Kalinga or mandapa roof of the north and east.
+// userData.top is the height of the kalash's tip.
+export function dravidaVimana(w, tiers, tierH, m, shade = m, { taper = 0.45, cap = 'octagon', capScale = 0.32, kalashM = m, kalashScale = 0.6 } = {}) {
+  const g = new THREE.Group(), hara = new THREE.Group(), th = tierH;
+  let y = 0;
+  for (let i = 0; i < tiers; i++) {
+    const tw = w * (1 - (taper * i) / tiers);
+    g.add(box(tw, th * 0.72, tw, m, 0, y), box(tw + 0.8, th * 0.28, tw + 0.8, shade, 0, y + th * 0.72));
+    const k = tw * 0.12;
+    if (i < tiers - 1) {
+      for (const x of [-1, 1]) for (const z of [-1, 1]) hara.add(at(kuta(k, m), x * (tw / 2 - k / 2), y + th, z * (tw / 2 - k / 2)));
+      for (const a of FACES) hara.add(onFace(at(shala(tw * 0.32, k, m), 0, y + th, 0), a, tw / 2 - k / 2));
+    }
+    y += th;
+  }
+  g.add(mergeByMaterial(hara));
+  const r = w * capScale;
+  g.add(box(r * 1.2, th * 0.5, r * 1.2, shade, 0, y));
+  y += th * 0.5;
+  const oct = cap === 'octagon';
+  const dome = mesh(new THREE.SphereGeometry(r, oct ? 8 : 20, oct ? 6 : 10, 0, Math.PI * 2, 0, Math.PI / 2), oct ? flat(m) : m, 0, y, 0);
+  if (oct) dome.rotation.y = Math.PI / 8;
+  const k = kalash(r * kalashScale, kalashM);
+  g.add(dome, at(k, 0, y + r, 0));
+  g.userData.top = y + r + r * kalashScale * 1.12;
+  return g;
+}
+
+// The gold flagstaff (dwajasthambha) h tall before the sanctum at (x, z): a moulded granite
+// pedestal, a gilt shaft girdled by bands, a small square platform near the top with bells hanging
+// from its corners, and a finial.
+export function dwajasthambha(x, z, h) {
+  const g = new THREE.Group(), ph = 1.8, sh = h - ph - 2.2;
+  g.add(box(3, 0.6, 3, M.granite, 0, 0, 0), box(2.4, ph - 0.9, 2.4, M.granite, 0, 0.6, 0), box(2.8, 0.3, 2.8, M.granite, 0, ph - 0.3, 0));
+  g.add(cyl(0.32, 0.5, sh, M.gild, 0, ph, 0, 12));
+  for (let k = 1; k < 6; k++) g.add(cyl(0.55 - k * 0.035, 0.55 - k * 0.035, 0.22, M.gildDeep, 0, ph + (k / 6) * sh, 0, 12));
+  const ty = ph + sh;
+  g.add(box(1.6, 0.25, 1.6, M.gild, 0, ty, 0), box(1.1, 0.7, 1.1, M.gildDeep, 0, ty + 0.25, 0), box(1.7, 0.2, 1.7, M.gild, 0, ty + 0.95, 0));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(cyl(0.05, 0.14, 0.3, M.gild, sx * 0.75, ty - 0.3, sz * 0.75, 8));
+  g.add(at(kalash(0.9, M.gild), 0, ty + 1.15, 0));
+  g.position.set(x, 0, z);
+  return g;
+}
+
 // Dravidian gateway tower: a granite base with a passage running through it between stepped
 // doorframes, its great doors standing open, then tapering storeys of painted stucco figures and
 // a barrel-vault crown.
 const paletteMats = new Map();
-// cheap: the simplest stucco figure ('stuccoLow'), for phones (js/detail.js).
-export function gopuram(w, d, h, tiers, seed, palette = PAINT, { pitch = 2.1, kuduEvery = 3, cheap = false } = {}) {
+// cheap: the simplest stucco figure ('stuccoLow'), for phones (js/detail.js). By default the
+// figures stand closer, with a kudu over every second bay, on desktops.
+export function gopuram(w, d, h, tiers, seed, palette = PAINT, { pitch = detail.low ? 2.1 : 1.8, kuduEvery = detail.low ? 3 : 2, cheap = false } = {}) {
   if (!paletteMats.has(palette)) paletteMats.set(palette, palette.map((c) => mat(c, 0.75)));
   const pm = paletteMats.get(palette);
   const g = new THREE.Group(), R = rng(seed), figs = [], pilas = [], kudus = [], kutas = [];
@@ -418,8 +500,10 @@ export function gopuram(w, d, h, tiers, seed, palette = PAINT, { pitch = 2.1, ku
 
 // A temple gate on post-and-lintel lines: a gatehouse w × h × d (front face at z = d/2) with a
 // passage pw × ph through it under a flat lintel, stepped frames on both faces, the leaves standing
-// open inward at its middle, a paved floor, and optionally guardians or lions before it.
-export function trabeateGate(w, h, d, pw, ph, { m, trim = m, bands = 3, bw = Math.min(0.45, pw * 0.1), guardians = false, lions = false, open = 1.35 } = {}) {
+// open inward at its middle, a paved floor, and optionally guardians or a pair of carved beasts
+// before it: beasts 'lion', 'tiger' (the seated lion's figure: Puri's tiger gate carves them the
+// same way), 'elephant' or 'horse'. lions: true is beasts: 'lion'.
+export function trabeateGate(w, h, d, pw, ph, { m, trim = m, bands = 3, bw = Math.min(0.45, pw * 0.1), guardians = false, lions = false, beasts = lions ? 'lion' : null, open = 1.35 } = {}) {
   const g = new THREE.Group(), sw = (w - pw) / 2;
   for (const s of [-1, 1]) g.add(box(sw, h, d, m, s * (pw / 2 + sw / 2), 0, 0));
   g.add(box(pw + 0.2, h - ph, d, m, 0, ph, 0));
@@ -428,6 +512,10 @@ export function trabeateGate(w, h, d, pw, ph, { m, trim = m, bands = 3, bw = Mat
   g.add(at(doorLeaves(pw * 0.996, ph * 0.97, { open, inward: true }), 0, 0.02, d * 0.1));
   const ow = pw / 2 + bands * bw;
   if (guardians) for (const s of [-1, 1]) g.add(at(guardian(Math.min(2.6, ph * 0.5), trim), s * (ow + 0.6), 0, d / 2 + 0.45));
-  if (lions) for (const s of [-1, 1]) g.add(at(lion(Math.min(1.3, ph * 0.22), trim), s * (ow + 1.6), 0, d / 2 + 1.6));
+  if (beasts) for (const s of [-1, 1]) {
+    if (beasts === 'lion' || beasts === 'tiger') g.add(at(lion(Math.min(1.3, ph * 0.22), trim), s * (ow + 1.6), 0, d / 2 + 1.6));
+    else if (beasts === 'elephant') { const e = Math.min(0.6, ph * 0.09); g.add(at(elephant(trim, e, { coarse: detail.low }), s * (ow + 1.4 + 1.8 * e), 0, d / 2 + 2.6 * e + 0.4)); }
+    else if (beasts === 'horse') { const e = Math.min(0.6, ph * 0.09), o = horse(trim, { coarse: detail.low }); o.scale.setScalar(e); g.add(at(o, s * (ow + 1.2 + e), 0, d / 2 + 2.4 * e + 0.4)); }
+  }
   return mergeByMaterial(g);
 }

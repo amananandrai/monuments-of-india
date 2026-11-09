@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, cyl, at, onFace, surface } from '../helpers.js';
+import { mat, box, cyl, at, onFace, surface } from '../helpers.js';
 import { idol, mergeByMaterial } from './components.js';
 import { trees, prayerFlags, asiBoard, scatter } from './realism.js';
 import { deer } from './animals.js';
@@ -8,12 +8,20 @@ import { deer } from './animals.js';
 // carving (swastikas, geometric and floral scrolls) between the projecting faces; and each of the
 // eight niches once held an image of the Buddha, here a standing figure in each. Dimensions follow
 // js/monuments/dhamek-stupa.js: the drum r = 14 from 1.2 to 12.2, the faces 1.4 proud at angles
-// k π / 4, their niches from y 6 to 8.6.
+// k π / 4 (their fronts at r 14.7, 5 wide, from y 2 to 11), their niches from y 6 to 8.6.
 const STONE = mat('#b8a88e', 0.9), BAND = surface(mat('#b7a48c', 0.9), 'frieze');
 function architecture(f) {
   const d = new THREE.Group();
   d.add(cyl(14.05, 14.05, 2.6, BAND, 0, 5.4, 0, 64));
-  for (let k = 0; k < 8; k++) d.add(onFace(at(idol(2.3, STONE), 0, 6.05, 0), (k / 8) * Math.PI * 2, 14.72));
+  for (let k = 0; k < 8; k++) {
+    const a = (k / 8) * Math.PI * 2;
+    d.add(onFace(at(idol(2.3, STONE), 0, 6.05, 0), a, 14.72));
+    // The face's carving cut deeper: a moulded frame round the niche, a carved pilaster up each
+    // edge of the face, a deep band of scrollwork at its head and a second register under the niche.
+    for (const [w, h, x, y] of [[3.1, 0.3, 0, 5.7], [3.1, 0.35, 0, 8.6], [0.3, 2.9, -1.4, 5.7], [0.3, 2.9, 1.4, 5.7]]) d.add(onFace(box(w, h, 0.14, STONE, x, y, 0.07), a, 14.7));
+    for (const s of [-1, 1]) d.add(onFace(box(0.5, 8.6, 0.2, BAND, s * 2.22, 2.2, 0.1), a, 14.7));
+    d.add(onFace(box(4.9, 1.1, 0.22, BAND, 0, 9.7, 0.11), a, 14.7), onFace(box(3.9, 0.5, 0.12, BAND, 0, 4.7, 0.06), a, 14.7));
+  }
   mergeByMaterial(d);
   f.add(d);
 }

@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import { M, mesh, box, at, onFace, flag, mat, FACES, nagaraProfile, steppedPlan, planBand, shikhara, pidaRoof, kalash } from '../helpers.js';
 import { mouldings, frieze, templeNiche, idol, mergeByMaterial, chhajja, cuspedArchGeo } from './components.js';
-import { carvedPillar, storeyedHall } from './temples.js';
+import { carvedPillar, storeyedHall, nagaraTemple, trabeateGate, wallWithGaps } from './temples.js';
 import { trees, lampPosts, garland, along } from './realism.js';
+import { detail } from '../detail.js';
 
 // The Ram Mandir, from the published design and photographs and renderings of the finished
 // temple (Nagara style, in pink Bansi Paharpur sandstone). It stands on a plinth P high (21 ft) and
@@ -75,7 +76,8 @@ export function sanctum(m, sh) {
 
 // The porch at the head of the stair, before the Nritya mandap's door (its pillars at z = 39.4):
 // three cusped arches on four pillars across the front at z = 43, one at each side, a chhajja, and
-// a small stepped spire over each front bay. Its foot at y = 0.
+// a small stepped spire over each front bay; with the two piers either side (x = ±6.7, z 40.4 to
+// 43.8) it is the Singh Dwar, the gatehouse at the head of the stair. Its foot at y = 0.
 export function porch(m, sh) {
   const g = new THREE.Group(), c = new THREE.Group(), ph = F - 1, z = 43, xs = [-5, -1.7, 1.7, 5];
   for (const x of xs) c.add(at(carvedPillar(ph, m), x, 0, z));
@@ -96,6 +98,15 @@ export function porch(m, sh) {
     const r = pidaRoof(3.4, 1.4, 3, 0.55, m, sh);
     g.add(at(r, x, F, 41.4), at(kalash(0.7), x, F + r.userData.top, 41.4));
   }
+  // The Singh Dwar: the porch is the passage of a gatehouse, between two solid piers that rise above
+  // its roof, each with a niche and image on its front, a cornice and a small spire.
+  for (const s of [-1, 1]) {
+    const x = s * 6.7, ph2 = F + 2.2;
+    g.add(box(1.6, ph2, 3.4, sh, x, 0, 42.1), box(2, 0.4, 3.8, m, x, ph2, 42.1));
+    c.add(at(templeNiche(0.8, 1.8, m, { figure: idol(1.5, m) }), x, 1.6, 43.8));
+    const sp = shikhara(1.6, 2.6, m, nagaraProfile, 6);
+    g.add(at(sp, x, ph2 + 0.4, 42.1));
+  }
   g.add(mergeByMaterial(c));
   return g;
 }
@@ -108,14 +119,39 @@ function architecture(g) {
   g.add(d);
 }
 
-// The paved parikrama round the plinth with lawns beyond it, saffron flags, lamps, and garlands
-// across the entrance porch.
-export function addDetails(g) {
-  architecture(g);
+// The parkota, the rectangular enclosure round the temple: a walled cloister KX either side of the
+// axis, from z = KZ0 behind to KZ1 in front, its wall W thick under a cornice, open on the east
+// through a gate on post-and-lintel lines. At its corners, on raised platforms, the four shrines of
+// Surya, Bhagwati, Ganesh and Shiva, each a single cell under its own spire (not the main temple's
+// three storeys), facing the temple.
+export const KX = 52, KZ0 = -72, KZ1 = 80;
+export function parkota(m, sh) {
+  const g = new THREE.Group(), W = 4, H = 5.5, len = KZ1 - KZ0, cz = (KZ0 + KZ1) / 2;
+  g.add(box(KX * 2 + W, H, W, m, 0, 0, KZ0), wallWithGaps('x', KX * 2 + W, H, W, m, [[0, 22]], 0, KZ1));
+  for (const s of [-1, 1]) g.add(box(W, H, len, m, s * KX, 0, cz));
+  for (const s of [-1, 1]) g.add(box(KX * 2 + W + 0.8, 0.5, W + 0.8, sh, 0, H, s > 0 ? KZ1 : KZ0), box(W + 0.8, 0.5, len, sh, s * KX, H, cz));
+  const gate = new THREE.Group();
+  gate.add(trabeateGate(22, 9, 6, 7, 6.5, { m, trim: sh, guardians: !detail.low }));
+  const r = pidaRoof(20, 8, 4, 0.8, m, sh);
+  gate.add(at(r, 0, 9, 0), at(kalash(1.2), 0, 9 + r.userData.top, 0));
+  g.add(at(gate, 0, 0, KZ1));
+  for (const sx of [-1, 1]) for (const sz of [KZ0, KZ1]) {
+    const x = sx * KX, sp = new THREE.Group();
+    sp.add(box(13, 2, 13, sh), nagaraTemple({ w: 6, h: 10, m, shade: sh, plinth: 0.8, urus: detail.low ? 0 : 4, uruScale: 0.45, halls: [], apron: 2, base: null }).translateY(2));
+    sp.rotation.y = Math.atan2(-x, -sz);
+    g.add(at(sp, x, 0, sz));
+  }
+  return g;
+}
+
+// The paved parikrama round the plinth with lawns beyond it, lamps and trees (in g), and on the
+// temple (f) the carved plinth bands, saffron flags and garlands across the entrance porch.
+export function addDetails(f, g) {
+  architecture(f);
   g.add(box(160, 0.2, 200, M.path, 0, -0.2, 0));
   for (const s of [-1, 1]) g.add(box(40, 0.3, 160, M.grass, s * 64, -0.15, 0));
-  for (const [x, z] of [[-15, -41], [15, -41], [-25, 5], [25, 5]]) g.add(at(flag(8, SAFFRON), x, P, z));
-  g.add(lampPosts([...along(8, [-34, -60], [-34, 90]), ...along(8, [34, -60], [34, 90])]));
+  for (const [x, z] of [[-15, -41], [15, -41], [-25, 5], [25, 5]]) f.add(at(flag(8, SAFFRON), x, P, z));
+  g.add(lampPosts([...along(8, [-34, -60], [-34, 70]), ...along(8, [34, -60], [34, 70])]));
   g.add(trees([...along(8, [-82, -90], [-82, 90]), ...along(8, [82, -90], [82, 90])], { kind: 'ashoka', seed: 6 }));
-  g.add(garland([-5, P + 3.7, 43.7], [5, P + 3.7, 43.7], { sag: 0.6, strands: 3 }));
+  f.add(garland([-5, P + 3.7, 43.7], [5, P + 3.7, 43.7], { sag: 0.6, strands: 3 }));
 }

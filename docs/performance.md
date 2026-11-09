@@ -172,3 +172,58 @@ With phones on their own lighter build, desktops at full detail get more:
 
 Phones (low detail) build Konark and Ajanta exactly as before. Both pass the camera and flicker
 audit unchanged.
+
+# Triangle budgets: 600k on desktops, 300k on phones
+
+`js/detail.js` sets one budget per level (`BUDGET`, read as `detail.budget`): up to 600,000
+triangles on desktops and 300,000 on phones. Builders no longer return their own `budget`;
+`js/main.js` replants the trees in more detail up to the desktop budget, and phones keep plain
+trees. On desktops a monument may take two or three seconds to build behind its "Loading" notice.
+
+Every monument was measured at both levels after the change (before the fuller trees):
+
+- **Desktop:** the heaviest are Konark (541k), Meenakshi (527k), Vittala (508k) and Baidyanath (486k).
+  Every other monument is under 400k.
+- **Phone:** unchanged; the heaviest are Mallikarjuna (296k), Ram Mandir (289k), Nageshwar (272k)
+  and Meenakshi (266k).
+
+What desktops get that phones do not:
+
+- **Temples** (`js/details/temples.js`): the full carving on small shrines (sculpted guardians in the
+  niches, finer amalakas), images in the smaller niches beside a sanctum's main ones, a second
+  register of figures low on each hall's walls, and gopurams with their figures closer together and
+  a kudu over every second bay. Fine elephants and horses at the gates and stairs of Jagannath,
+  Vittala and Konark, and the full Ram Mandir corner shrines and gate guardians.
+- **Harbour craft at the Gateway of India:** the Elephanta ferry launches (`launches`: a painted
+  hull, closed lower cabin with windows, open upper deck under a canopy, wheelhouse, flag) and two
+  ships at anchor (`ships`) on both levels; desktops add the launches' railings, life rings and
+  mast, and the ships' bridge windows, mast and derricks.
+- **Boats** (`js/details/realism.js`): the gunwale, the stem and stern posts, ribs, stowed oars, and
+  the hoops under a canopy. Every boat now floats with its hull above the water.
+- **Stalls:** a top board and panelled front on the counter, three baskets of flowers or offerings,
+  garlands under a scalloped valance on a sloping awning, and a shelf of brass pots.
+- **Surrounding buildings:** `townHouses` (`js/details/realism.js`) gives each house on desktops a
+  moulded band at every floor, light frames and sunshades on the windows, a framed door up two
+  steps, railings on the balconies, often a ground-floor shop (shutter, coloured awning, signboard)
+  and a stair cabin on the roof. It also takes `roof: 'pitched'` (sheet-iron gables, on both levels)
+  and a `trim` colour. Kedarnath's pilgrim lodges and Jaisalmer's houses inside the fort are now
+  `townHouses` instead of plain boxes, and on desktops the ranges round the Golden Temple's pool have
+  two storeys of arches and domed kiosks along their parapets. The largest increases are Howrah
+  (157k to 341k) and Jaisalmer (169k to 316k; 216k on phones).
+- **Backdrops:** the old city of Varanasi now surrounds the Kashi corridor on both levels (the ghats
+  run on along the river, tall houses rise from them, and lanes of houses fill the blocks behind;
+  kiosks on the riverfront roofs on desktops): 511k on desktops, 252k on phones. Behind the
+  Bandra–Worli Sea Link, desktops get a fuller Mumbai skyline from its own random sequence (podiums,
+  setbacks, glass and round towers, spires, helipads, and mid-rise blocks along the shore): 167k;
+  phones keep the old skyline (136k).
+  The town of Trimbak now surrounds Trimbakeshwar on both levels: houses under terracotta-tiled
+  pitched roofs and newer flat-roofed ones along the temple street behind its stalls, in lanes west
+  of the court and round the Kushavarta kund: 296k on desktops, 204k on phones.
+  Ujjain's old town now runs out three more rows on every side of Mahakaleshwar, and north beyond
+  the Rudra Sagar (386k on desktops, 212k on phones). At Omkareshwar the island's houses stand in
+  terraces up the slope behind the ghat, and a town lines the south bank round Mamleshwar (493k on
+  desktops; phones build every other house of both, 258k).
+- **Dressed elephants** (`rideElephant` in `js/details/animals.js`): a fringe of tassels and
+  embroidered roundels on the cloths, a rope of bells round the neck, anklets, tusk caps, and on a
+  temple elephant the gold nettipattam over the forehead and trunk.
+

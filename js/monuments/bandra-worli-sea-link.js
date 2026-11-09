@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, box, at, rng, V, strut, inst, unitBox, sheet, surface } from '../helpers.js';
+import { M, mat, box, at, rng, V, strut, inst, unitBox, unitCyl, sheet, surface } from '../helpers.js';
+import { detail } from '../detail.js';
 import { addDetails } from '../details/bandra-worli-sea-link.js';
 import { heightField, rough, smooth } from '../details/terrain.js';
 
@@ -63,13 +64,32 @@ export function buildBandraWorli() {
   // ('facade' in js/surface.js), not modelled: seen from one to five kilometres off, modelled
   // bands were thinner than a pixel and shimmered, and fought the walls for depth.
   const tops = [];
+  // On desktops (js/detail.js) the skyline is fuller, from its own random sequence so the phone
+  // build stays as it was: a podium under each tower, the upper floors of many set back, glass
+  // towers among the concrete ones, crowns (a spire, a helipad, a stepped top), a few round towers,
+  // and in front of them a band of mid-rise blocks along the shore.
+  const R2 = rng(91), podia = [], setbacks = [], glass = [], spires = [], pads = [], rounds = [], mid = [];
   for (let i = 0; i < 70; i++) {
     const x = -900 + i * 26 + R() * 10, z = -700 - R() * 160, w = 18 + R() * 14, h = 30 + R() * 140, d = 18 + R() * 14;
-    city.push([x, 0, z, w, h, d]);
-    if (R() < 0.5) tops.push([x, h, z, w * 0.3, 4, d * 0.3]);
+    const top = R() < 0.5;
+    if (detail.low || R2() < 0.6) city.push([x, 0, z, w, h, d]); else glass.push([x, 0, z, w, h, d]);
+    if (top) tops.push([x, h, z, w * 0.3, 4, d * 0.3]);
+    if (detail.low) continue;
+    podia.push([x, 0, z, w * 1.35, 6 + R2() * 8, d * 1.35]);
+    const r = R2();
+    if (h > 80 && r < 0.4) setbacks.push([x, h, z, w * 0.72, h * 0.12, d * 0.72], [x, h * 1.12, z, w * 0.45, h * 0.06, d * 0.45]);
+    else if (h > 100 && r < 0.6) spires.push([x, h + (top ? 4 : 0), z, 0.8, 18 + R2() * 20, 0.8]);
+    else if (r < 0.8) pads.push([x, h + (top ? 4 : 0), z, w * 0.32, 0.6, w * 0.32]);
   }
   const wall = surface(mat('#c9c6bf', 0.9), 'facade');
   g.add(inst(unitBox(), city, wall), inst(unitBox(), tops, mat('#c9c6bf', 0.9)));
+  if (!detail.low) {
+    for (let i = 0; i < 8; i++) { const x = -800 + i * 220 + R2() * 60, z = -740 - R2() * 90, r = 9 + R2() * 6; rounds.push([x, 0, z, r * 2, 110 + R2() * 90, r * 2]); }
+    for (let i = 0; i < 95; i++) { const x = -920 + i * 19.5 + R2() * 6; mid.push([x, 0, Math.min(-665, coast(x) - 40) - R2() * 25, 14 + R2() * 10, 12 + R2() * 26, 12 + R2() * 8]); }
+    const glassM = surface(mat('#8ea3b4', 0.35, 0.3), 'facade'), concrete = mat('#bdb9b0', 0.9);
+    g.add(inst(unitBox(), glass, glassM), inst(unitBox(), podia, concrete), inst(unitBox(), setbacks, wall), inst(unitBox(), pads, mat('#6e6f70', 0.8)));
+    g.add(inst(unitCyl(16), spires.map(([x, y, z, a, b, c]) => [x, y, z, a, b, c]), mat('#9a9c9e', 0.4, 0.6)), inst(unitCyl(24), rounds, glassM), inst(unitBox(), mid, wall));
+  }
   addDetails(f, g);
   return { group: g, focus: f, view: [0.35, 0.22, 1.2], zoom: 0.55 };
 }

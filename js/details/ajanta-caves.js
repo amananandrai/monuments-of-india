@@ -5,6 +5,7 @@ import { figure } from './sculpture.js';
 import { doorFrame } from './doorways.js';
 import { trees, shrubs, asiBoard, scatter } from './realism.js';
 import { detail } from '../detail.js';
+import { caveFront } from '../monuments/ajanta-caves.js';
 
 // Ajanta, finer detail. From photographs of the caves: the facades of the chaitya halls 19 and 26
 // are carved round the great horseshoe window, which is outlined by a projecting horseshoe arch,
@@ -31,6 +32,12 @@ function architecture(f) {
         o.add(at(pilasters(1.1, 2, 0.3, h * 0.65, 0.12, ROCK_LIGHT), s * (ar + 1.15), y, 1.1));
         o.add(at(templeNiche(0.6, 1.8, ROCK_LIGHT, { figure: idol(1.5, ROCK_LIGHT), crown: false }), s * (ar + 1.15), y + h * 0.35, 1.12));
       }
+    } else if (caveFront(i).chaitya) {
+      // The smaller chaityas: a horseshoe arch round the window, a row of kudus over it, and a
+      // pilaster either side of the doorway.
+      o.add(mesh(new THREE.TorusGeometry(2.55, 0.22, 6, 20, Math.PI * 1.3).rotateZ(-Math.PI * 0.15), ROCK_LIGHT, 0, y + 6.6, 1.0));
+      for (let k = -2; k <= 2; k++) o.add(mesh(kg, ROCK_LIGHT, k * 1.1, y + 9.6, 0.98));
+      for (const s of [-1, 1]) o.add(at(pilasters(0.6, 1, 0.4, 4.2, 0.12, ROCK_LIGHT), s * 2, y, 0.72));
     } else if (i !== 10) o.add(box(9, 0.6, 0.3, FRAME, 0, y + 5.05, 0.86));
     d.add(o);
   }
@@ -43,16 +50,16 @@ function architecture(f) {
 // moulding; on the verandah's back wall a carved doorway leads into the hall between two windows,
 // with the seated Buddha of the shrine seen through it. In each cave's own frame
 // (as js/monuments/ajanta-caves.js places them): the mouth 8 wide and 5 high with its face at
-// z = 0.7, the verandah pillars at x = -3, -1, 1 and 3, z = 1.4.
+// z = 0.7, the verandah pillars at z = 1.4, four or six across (caveFront in that file).
 const DARK_ = mat('#231d19', 0.9);
 function caveFronts(f) {
   const d = new THREE.Group(), R = 70, a0 = -0.15 * Math.PI, a1 = 1.15 * Math.PI, N = 30, L = ROCK_LIGHT;
   for (let i = 0; i < N; i++) {
-    if (i === 10 || i === 18 || i === 25) continue;
+    if (i === 10 || i === 18 || i === 25 || caveFront(i).chaitya) continue;
     const t = a0 + 0.06 + (i / (N - 1)) * (a1 - a0 - 0.12), x = Math.cos(t) * R, z = -Math.sin(t) * R * 0.8;
     const ry = Math.atan2(-x, -z), y = 14 + Math.sin(i * 1.7) * 3, o = at(new THREE.Group(), x, 0, z);
     o.rotation.y = ry;
-    for (const c of [-3, -1, 1, 3]) {
+    for (const c of caveFront(i).cols) {
       o.add(box(1.1, 0.5, 1.1, L, c, y, 1.4), cyl(0.47, 0.47, 0.4, frieze(L), c, y + 2.3, 1.4, 8));
       o.add(cyl(0.62, 0.42, 0.45, L, c, y + 4.1, 1.4, 8), box(1.2, 0.3, 1.2, L, c, y + 4.55, 1.4));
     }

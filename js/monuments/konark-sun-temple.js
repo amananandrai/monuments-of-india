@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, bell, pidaRoof, rng } from '../helpers.js';
-import { templeDoorway } from '../details/doorways.js';
+import { templeDoorway, grandStair } from '../details/doorways.js';
 import { mergeByMaterial, frieze } from '../details/components.js';
 import { figure, instances, carvedWheelGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/konark-sun-temple.js';
@@ -14,20 +14,26 @@ export function buildKonark() {
   const L = 76, zc = -6, B = 6, zf = zc + L / 2;
   f.add(box(32, 4.6, L, Kd, 0, 0, zc), box(29, 1.4, L - 4, K, 0, 4.6, zc));
   // Twelve carved sundial wheels a side, standing just proud of the plinth.
-  const wl = [];
+  // They part either side of the stairs up to the Jagamohana's side doors: ten behind, two in front.
+  const wl = [], jz = zf - 16, z0 = zc - L / 2 + 4, gap0 = jz - 6.6, gap1 = jz + 6.6;
   for (let i = 0; i < 12; i++) {
-    const z = zc - L / 2 + 4 + i * ((L - 8) / 11);
+    const z = i < 10 ? z0 + i * ((gap0 - z0) / 9) : gap1 + 1 + (i - 10) * ((zf - 3 - gap1 - 1));
     for (const s of [-1, 1]) wl.push([s * 16.14, 2.4, z, 1, 1, 1, s * Math.PI / 2]);
   }
   f.add(instances(carvedWheelGeo(1.95, { low: detail.low }), wl, Kd));
   for (let k = 0; k < 4; k++) f.add(box(10, B - k * 1.5, 2, K, 0, 0, zf + 1 + k * 2));
   // Jagamohana (the surviving porch) with three tiers of pida roof
-  const jz = zf - 16;
   f.add(box(26, 12, 26, K, 0, B, jz), box(30, 12, 16, K, 0, B, jz), box(16, 12, 30, K, 0, B, jz));
   // Its three doorways, east (in front) and on the north and south arms
   const doors = new THREE.Group();
   for (const a of [0, Math.PI / 2, -Math.PI / 2]) doors.add(onFace(at(templeDoorway(2.2, 4.4, { m: K, bands: 4 }), 0, B, 0), a, 15.02));
   f.add(at(mergeByMaterial(doors), 0, 0, jz));
+  // Stairs up to the side doors from the ground, each from a block under its doorway: on the north
+  // (+x) between elephants, on the south between war horses, as the guardians stand at Konark.
+  for (const [s, foot] of [[1, 'elephant'], [-1, 'horse']]) {
+    f.add(box(2.4, B, 9, Kd, s * 15.7, 0, jz));
+    f.add(at(grandStair(B, 6, K, Kd, { foot, guardScale: 0.6, coarse: detail.low, cheek: 0.9 }), s * 16.9, 0, jz).rotateY(s * Math.PI / 2));
+  }
   let y = B + 12;
   [[29, 22], [20, 14], [13, 8]].forEach(([w0, w1], i) => {
     const r = pidaRoof(w0, w1, 4, 0.75, K, Kd);
@@ -69,5 +75,5 @@ export function buildKonark() {
   f.add(mergeByMaterial(pil));
   addDetails(f, g);
   // Framed on the monument itself, closer than its grounds would set.
-  return { group: g, focus: f, view: [1.1, 0.38, 0.9], zoom: 0.68, budget: 500000 };
+  return { group: g, focus: f, view: [1.1, 0.38, 0.9], zoom: 0.68 };
 }

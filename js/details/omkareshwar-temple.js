@@ -3,11 +3,12 @@ import { mat, mesh, box, rng, strut, V } from '../helpers.js';
 import { trees, boats, scatter } from './realism.js';
 
 // Omkareshwar on its island in the Narmada: the suspension footbridge from the south bank, the bank
-// itself with the town and its trees, and boats on the river below the ghat steps.
+// itself with its trees (clear of the town on it, x -160 to 160, z 155 to 220, built in
+// js/monuments/omkareshwar-temple.js), and boats on the river below the ghat steps.
 const CABLE = mat('#d8d5ce', 0.5, 0.3), DECK = mat('#8a8780', 0.8);
 export function addDetails(f, g) {
   const R = rng(9);
-  g.add(box(700, 1.2, 110, mat('#a39a72', 0.95), 0, 0, 205), trees(scatter(40, [-320, 320, 160, 245], { seed: 3, gap: 14 }), { kind: 'neem', seed: 3, y: 1.2 }));
+  g.add(box(700, 1.2, 110, mat('#a39a72', 0.95), 0, 0, 205), trees(scatter(40, [-320, 320, 160, 245], { seed: 3, gap: 14, avoid: [[-160, 160, 155, 220]] }), { kind: 'neem', seed: 3, y: 1.2 }));
   // The Mamleshwar footbridge: two towers, a deck, the main cables and the hangers
   const x = -70, z0 = 24, z1 = 152, deckY = 9;
   g.add(box(4, 0.5, z1 - z0, DECK, x, deckY, (z0 + z1) / 2));
