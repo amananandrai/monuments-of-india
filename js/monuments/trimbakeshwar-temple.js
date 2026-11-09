@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, kalash, flag, shikhara } from '../helpers.js';
-import { nagaraTemple, bhumijaRows } from '../details/temples.js';
+import { nagaraTemple, bhumijaRows, trabeateGate, wallWithGaps } from '../details/temples.js';
+import { steps } from '../details/doorways.js';
 import { instances, miniSpireGeo } from '../details/sculpture.js';
 import { heightField, rough, smooth } from '../details/terrain.js';
 import { addDetails } from '../details/trimbakeshwar-temple.js';
@@ -20,8 +21,13 @@ export function buildTrimbakeshwar() {
     return Math.max(0, 140 * (0.25 * smooth(1.9, 1.2, e) + 0.75 * step) + rough(x, z, 3, 0.5) * smooth(1.9, 1, e)) - 0.5;
   }, { cz: -430, cx: -60, rock: ['#4d4943', '#5c5750'], cover: '#6c7650', steep: 0.7, band: 30 }), box(200, 0.2, 200, M.path));
   // Walled courtyard round the black basalt temple
-  for (const s of [-1, 1]) f.add(box(80, 6, 2, mat('#5d5853', 0.9), 0, 0, s * 45), box(2, 6, 90, mat('#5d5853', 0.9), s * 40, 0, 0));
-  f.add(box(20, 9, 8, BASALT, 0, 0, 45));
+  const WALL = mat('#5d5853', 0.9);
+  f.add(box(80, 6, 2, WALL, 0, 0, -45), wallWithGaps('x', 80, 6, 2, WALL, [[0, 19.6]], 0, 45));
+  for (const s of [-1, 1]) f.add(box(2, 6, 90, WALL, s * 40, 0, 0));
+  // The south gate: a passage through the gatehouse on a raised sill, with steps up to it from the
+  // street and down from it into the court.
+  f.add(box(20, 1.2, 8, SHADE, 0, 0, 45), at(trabeateGate(20, 9, 8, 4.4, 6, { m: BASALT, trim: SHADE }), 0, 1.2, 45));
+  f.add(at(steps(6, 1.2, 4, SHADE, 0.4), 0, 0, 49), at(steps(6, 1.2, 4, SHADE, 0.4), 0, 0, 41).rotateY(Math.PI));
   // The temple Nanasaheb Peshwa built: its tall spire banded with rows of miniature spires (the
   // Maratha Bhumija manner), under a great gilded kalash and the flag.
   const prof = (t) => 1 - 0.6 * Math.pow(t, 1.45);
