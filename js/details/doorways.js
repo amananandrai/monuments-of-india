@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { mat, mesh, box, cyl, at, surface, pidaRoof, bell, kalash } from '../helpers.js';
 import { D, frieze, rosette, bracketGeo, chhajja } from './components.js';
 import { guardian } from './figures.js';
-import { elephant, lion } from './animals.js';
+import { elephant, lion, horse } from './animals.js';
 import { statue } from './sculpture.js';
 
 export { guardian };
@@ -92,9 +92,10 @@ export function steps(width, rise, n, m, tread = 0.42) {
 // A grand stair up to a plinth `rise` high whose front face is at z = 0, running out towards +z:
 // n steps (about 0.2 m each) `width` wide, treads `tread` deep, split by a landing `landing` deep
 // at half height (none when landing is 0), between side walls `cheek` above the line of the steps.
-// Guardians, each pair scaled by `guardScale`: elephants on pedestals beside the foot (foot:
-// 'elephant'), lions on the side walls at the landing (mid: 'lion') and standing figures on the
-// plinth either side of the head (top: true); coarse: lighter elephants, where the budget is tight.
+// Guardians, each pair scaled by `guardScale`: elephants or war horses on pedestals beside the
+// foot (foot: 'elephant' or 'horse'), lions on the side walls at the landing (mid: 'lion') and
+// standing figures on the plinth either side of the head (top: true); coarse: lighter beasts,
+// where the budget is tight.
 // Treads in m, side walls and pedestals in sh.
 // userData.run is the length of the stair along z.
 export function grandStair(rise, width, m, sh, {
@@ -115,9 +116,11 @@ export function grandStair(rise, width, m, sh, {
   const gs = guardScale;
   for (const s of [-1, 1]) {
     g.add(mesh(cg, sh, s > 0 ? W / 2 + 1.19 : -W / 2 + 0.01, 0, 0));
-    if (foot === 'elephant') {
+    if (foot === 'elephant' || foot === 'horse') {
       const x = s * (W / 2 + 1.2 + 2.9 * gs), ez = zE - 3.45 * gs;
-      g.add(box(4.4 * gs, 1, 6.9 * gs, sh, x, 0, ez), at(elephant(m, gs, { coarse }), x, 1, ez));
+      let beast = elephant(m, gs, { coarse });
+      if (foot === 'horse') { beast = horse(m, { coarse }); beast.scale.setScalar(gs * 0.95); }
+      g.add(box(4.4 * gs, 1, 6.9 * gs, sh, x, 0, ez), at(beast, x, 1, ez));
     }
     if (mid === 'lion' && half) g.add(at(lion(gs, m), s * (W / 2 + 0.6), yL, (z1 + z2) / 2));
     if (top) g.add(at(statue(4.4 * gs, m), s * (W / 2 + 1.2 + 2.55 * gs), rise, -2.5 * gs));
