@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { mat, mesh, box, cyl, surface, rng, nightState } from '../helpers.js';
+import { detail } from '../detail.js';
 
 // The setting round a monument, shared by every file in js/details: trees and shrubs, heritage
 // lamp posts, benches, the blue board of the Archaeological Survey of India, marigold garlands,
@@ -362,11 +363,26 @@ export function boats(spots, { y = 0, size = 1, canopy = false, colours = ['#7a4
     const hull = new THREE.SphereGeometry(1, 16, 8, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2).scale(0.9, 0.55, 3.2);
     const seats = mergeGeometries([-1.2, 0, 1.2].map((z) => new THREE.BoxGeometry(1.5, 0.06, 0.25).translate(0, -0.08, z)));
     const roof = new THREE.CylinderGeometry(0.75, 0.75, 1.6, 10, 1, true, -Math.PI / 2, Math.PI).rotateX(Math.PI / 2).translate(0, 0.45, 0.2);
-    boatGeos = { hull, seats, roof };
+    // On desktops, a country boat's timbers: the gunwale round the rim, the stem and stern posts
+    // sweeping up out of the water, ribs inside the hull, two oars stowed along the thwarts, and
+    // the bamboo hoops that carry the mat canopy.
+    const tube = (pts, r, n = 24, closed = false) => new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map((p) => new THREE.Vector3(...p)), closed), n, r, 5, closed);
+    const rim = tube(Array.from({ length: 32 }, (_, k) => { const t = (k / 32) * Math.PI * 2; return [0.9 * Math.cos(t), 0.02, 3.2 * Math.sin(t)]; }), 0.05, 64, true);
+    const posts = [-1, 1].map((s) => tube([[0, -0.25, s * 3.05], [0, 0.1, s * 3.25], [0, 0.45, s * 3.42], [0, 0.72, s * 3.4]], 0.07, 10));
+    const ribs = [-2.2, -1.1, 0, 1.1, 2.2].map((z) => { const f = Math.sqrt(1 - (z / 3.2) ** 2) * 0.96; return tube(Array.from({ length: 9 }, (_, k) => { const t = (k / 8) * Math.PI; return [0.9 * f * Math.cos(t), -0.55 * f * Math.sin(t) + 0.01, z]; }), 0.028, 12); });
+    const oars = [-0.32, 0.32].flatMap((x) => [new THREE.CylinderGeometry(0.03, 0.03, 4.2, 6).rotateX(Math.PI / 2).translate(x, 0.0, 0.3), new THREE.BoxGeometry(0.22, 0.03, 0.7).translate(x, 0.0, 2.55)]);
+    const hoops = [-0.5, 0.2, 0.9].map((z) => new THREE.TorusGeometry(0.77, 0.03, 4, 12, Math.PI).translate(0, 0.45, z));
+    const clean = (g) => { const n = g.index ? g.toNonIndexed() : g; for (const k of Object.keys(n.attributes)) if (k !== 'position' && k !== 'normal') n.deleteAttribute(k); return n; };
+    boatGeos = { hull, seats, roof, timbers: mergeGeometries([rim, ...posts, ...ribs, ...oars].map(clean)), hoops: mergeGeometries(hoops.map(clean)) };
   }
-  const places = spots.map(([x, z, ry = 0]) => [x, y, z, size, ry]), g = new THREE.Group();
+  // Afloat: the hull stands about a quarter of its depth out of the water at y.
+  const places = spots.map(([x, z, ry = 0]) => [x, y + 0.22 * size, z, size, ry]), g = new THREE.Group();
   g.add(copies(boatGeos.hull, plain('#ffffff', 0.75, 0, { side: THREE.DoubleSide }), places, colours), copies(boatGeos.seats, TIMBER, places));
-  if (canopy) g.add(copies(boatGeos.roof, plain('#d9c08a', 0.9, 0, { side: THREE.DoubleSide }), places));
+  if (!detail.low) g.add(copies(boatGeos.timbers, TIMBER, places));
+  if (canopy) {
+    g.add(copies(boatGeos.roof, plain('#d9c08a', 0.9, 0, { side: THREE.DoubleSide }), places));
+    if (!detail.low) g.add(copies(boatGeos.hoops, TIMBER, places));
+  }
   return g;
 }
 // Fountain jets at [x, z]: a fine spray rising h and falling back into a ring of foam.
@@ -418,17 +434,44 @@ export function umbrellas(spots, { y = 0 } = {}) {
 }
 
 // Market stalls at [x, z, ry]: a counter heaped with flowers or goods under a striped awning on
-// four poles, as the flower and pooja stalls outside a temple gate.
+// four poles, as the flower and pooja stalls outside a temple gate. On desktops each is furnished:
+// the counter has a top board and a panelled front, three baskets of flowers or offerings sit on
+// it, garlands hang from the front of the sloping awning under a scalloped valance, and a shelf of
+// brass pots runs along the back.
 let stallGeos = null;
+const BRASS = plain('#c99a3a', 0.35, 0.8);
 export function stalls(spots, { y = 0, awnings = ['#c2512a', '#2f5d9a', '#e3b23c', '#3c8a5a', '#b3262e'], goods = ['#f28a1a', '#f6c21c', '#d63c6a', '#f4f1ea'] } = {}) {
-  if (!stallGeos) stallGeos = {
-    counter: new THREE.BoxGeometry(2.4, 0.9, 1.2).translate(0, 0.45, 0),
-    heap: new THREE.SphereGeometry(0.5, 8, 5, 0, Math.PI * 2, 0, Math.PI / 2).scale(2, 0.5, 0.9).translate(0, 0.9, 0),
-    poles: mergeGeometries([[-1.15, -0.55], [1.15, -0.55], [-1.15, 0.55], [1.15, 0.55]].map(([x, z]) => new THREE.CylinderGeometry(0.03, 0.03, 2.2, 5).translate(x, 1.1, z))),
-    awning: new THREE.BoxGeometry(2.8, 0.08, 1.8).translate(0, 2.2, 0.2),
-  };
-  const p = spots.map(([x, z, ry = 0]) => [x, y, z, 1, ry]);
-  return new THREE.Group().add(copies(stallGeos.counter, TIMBER, p), copies(stallGeos.heap, TINTED, p, goods), copies(stallGeos.poles, TIMBER, p), copies(stallGeos.awning, TINTED, p, awnings));
+  if (!stallGeos) {
+    const clean = (g) => { const n = g.index ? g.toNonIndexed() : g; for (const k of Object.keys(n.attributes)) if (k !== 'position' && k !== 'normal') n.deleteAttribute(k); return n; };
+    const scallops = Array.from({ length: 7 }, (_, k) => new THREE.CircleGeometry(0.2, 8, Math.PI, Math.PI).translate(-1.2 + k * 0.4, 1.93, 1.13));
+    stallGeos = {
+      counter: new THREE.BoxGeometry(2.4, 0.9, 1.2).translate(0, 0.45, 0),
+      heap: new THREE.SphereGeometry(0.5, 8, 5, 0, Math.PI * 2, 0, Math.PI / 2).scale(2, 0.5, 0.9).translate(0, 0.9, 0),
+      poles: mergeGeometries([[-1.15, -0.55], [1.15, -0.55], [-1.15, 0.55], [1.15, 0.55]].map(([x, z]) => new THREE.CylinderGeometry(0.03, 0.03, 2.2, 5).translate(x, 1.1, z))),
+      awning: new THREE.BoxGeometry(2.8, 0.08, 1.8).translate(0, 2.2, 0.2),
+      // Desktop parts.
+      fittings: mergeGeometries([
+        new THREE.BoxGeometry(2.6, 0.06, 1.36).translate(0, 0.93, 0), new THREE.BoxGeometry(2.5, 0.08, 1.3).translate(0, 0.04, 0),
+        new THREE.BoxGeometry(2.36, 0.05, 0.3).translate(0, 1.35, -0.5), new THREE.BoxGeometry(2.3, 0.04, 0.04).translate(0, 1.8, -0.55),
+        ...[-1.15, 1.15].map((x) => new THREE.CylinderGeometry(0.04, 0.04, 2.25, 6).translate(x, 1.12, -0.55)),
+      ].map(clean)),
+      panels: mergeGeometries([-0.8, 0, 0.8].map((x) => new THREE.BoxGeometry(0.66, 0.5, 0.03).translate(x, 0.3, 0.615)).map(clean)),
+      baskets: mergeGeometries([-0.8, 0, 0.8].map((x) => new THREE.CylinderGeometry(0.34, 0.26, 0.2, 10).translate(x, 1.06, 0.05)).map(clean)),
+      heaps: [-0.8, 0, 0.8].map((x) => new THREE.SphereGeometry(0.31, 10, 5, 0, Math.PI * 2, 0, Math.PI / 2).scale(1, 0.75, 1).translate(x, 1.15, 0.05)),
+      garlands: mergeGeometries(Array.from({ length: 6 }, (_, k) => new THREE.CylinderGeometry(0.05, 0.04, 0.85, 6).translate(-1.05 + k * 0.42, 1.55, 1.08)).map(clean)),
+      pots: mergeGeometries(Array.from({ length: 6 }, (_, k) => new THREE.SphereGeometry(0.11, 8, 6).scale(1, 0.9, 1).translate(-0.95 + k * 0.38, 1.48, -0.5)).map(clean)),
+      // The awning sloping down to the front, with its scalloped valance.
+      awningFull: mergeGeometries([new THREE.BoxGeometry(2.8, 0.06, 1.85).rotateX(0.12).translate(0, 2.2, 0.2), new THREE.BoxGeometry(2.8, 0.22, 0.03).translate(0, 2.04, 1.13), ...scallops].map(clean)),
+    };
+  }
+  const p = spots.map(([x, z, ry = 0]) => [x, y, z, 1, ry]), G = stallGeos, g = new THREE.Group();
+  g.add(copies(G.counter, TIMBER, p), copies(G.poles, TIMBER, p));
+  if (detail.low) return g.add(copies(G.heap, TINTED, p, goods), copies(G.awning, TINTED, p, awnings));
+  const shift = (list, k) => list.map((_, i) => list[(i + k) % list.length]);
+  g.add(copies(G.fittings, TIMBER, p), copies(G.panels, TINTED, p, shift(awnings, 2)), copies(G.baskets, plain('#a07a45', 0.9), p));
+  G.heaps.forEach((h, k) => g.add(copies(h, TINTED, p, shift(goods, k))));
+  g.add(copies(G.garlands, TINTED, p, shift(goods, 1)), copies(G.pots, BRASS, p), copies(G.awningFull, plain('#ffffff', 0.85, 0, { side: THREE.DoubleSide }), p, awnings));
+  return g;
 }
 
 // Town houses, as in the old streets round a temple: spots are [x, z, w, d, storeys, ry, y?], each a
