@@ -1,9 +1,12 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, ring, inst, unitBox, unitCyl } from '../helpers.js';
+import { M, mat, box, cyl, ring, inst, unitBox, unitCyl, surface } from '../helpers.js';
 import { addDetails } from '../details/rani-ki-vav.js';
 
 const SAND = mat('#c8a57c', 0.9);
 const SAND_DARK = mat('#a3825d', 0.9);
+// The side walls are carved over their whole face: panels of figures in relief between pilasters
+// and ledges, behind the niches (js/surface.js, 'reliefs'; over 500 figures survive in the well).
+const RELIEF = surface(mat('#c8a57c', 0.9), 'reliefs');
 
 // The stepwell is cut into the ground: the surrounding land is modelled as raised blocks
 // at ground level (y = D), and the trench steps down seven levels to the well at y = 0.
@@ -13,7 +16,9 @@ export function buildRaniKiVav() {
   const z0 = L / 2, z1 = -L / 2;
   for (const s of [-1, 1]) g.add(box(70, D, L + 40, M.grass, s * (W / 2 + 35), 0, 0));
   g.add(box(W, D, 20, M.grass, 0, 0, z1 - 10), box(W, D, 20, M.grass, 0, 0, z0 + 10));
-  for (const s of [-1, 1]) f.add(box(1.6, 1.2, L + 4, SAND_DARK, s * (W / 2 + 0.8), D, 0));
+  // The rim: a stone kerb nearly flush with the lawn, not a parapet.
+  for (const s of [-1, 1]) f.add(box(1.6, 0.25, L + 4, SAND_DARK, s * (W / 2 + 0.8), D, 0));
+  for (const s of [-1, 1]) f.add(box(0.1, D, L, RELIEF, s * (W / 2 - 0.05), 0, 0));
   // Steps, landing by landing, from ground level down to the well
   const steps = 32, run = (L - 12) / steps;
   for (let i = 0; i < steps; i++) f.add(box(W, D - (i + 1) * (D / steps), run, SAND, 0, 0, z0 - (i + 0.5) * run));
