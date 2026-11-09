@@ -4,6 +4,7 @@ import { mergeByMaterial } from './components.js';
 import { dharmaWheel, shabkhep, parapetDiscs } from './tibetan.js';
 import { prayerFlags } from './realism.js';
 import { yaks } from './animals.js';
+import { spurY } from '../monuments/tawang-monastery.js';
 
 // Tawang, finer detail. From photographs of the Dukhang: the Dharma wheel and its deer over the
 // front of the gilded roof; gilded discs along the maroon parapet; and pleated awnings in red, blue
@@ -28,6 +29,7 @@ function architecture(f) {
 export function addDetails(f, g) {
   architecture(f);
   const T = 24;
-  for (const [a, b] of [[[0, T + 25, -18], [-40, T + 1, 34]], [[0, T + 25, -18], [40, T + 1, 34]], [[-30, T + 6, -10], [30, T + 6, -10]], [[0, T + 25, -18], [0, T + 1, 40]]]) f.add(prayerFlags(a, b, { sag: 3, size: 0.6 }));
-  g.add(yaks([[-60, 80, 0.4], [-52, 86, 1.6], [70, -76, 2.2], [78, -70, 0.9]], { y: 0.5 }));
+  for (const [a, b] of [[[0, T + 25, -18], [-40, T + 1, 34]], [[0, T + 25, -18], [40, T + 1, 34]], [[-30, T + 6, -10], [30, T + 6, -10]], [[0, T + 25, -18], [0, T + 1, 30]]]) f.add(prayerFlags(a, b, { sag: 3, size: 0.6 }));
+  // Yaks on the spur below the gate, each on the ground where it stands.
+  for (const [x, z, ry] of [[132, 10, 0.4], [140, -6, 1.6], [150, 14, 2.2], [158, -12, 0.9]]) g.add(yaks([[x, z, ry]], { y: spurY(x, z) + 0.1 }));
 }
