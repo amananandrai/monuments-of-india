@@ -4,6 +4,7 @@ import { pilasters, templeNiche, idol, panel, frieze, windowFrame, mergeByMateri
 import { figure } from './sculpture.js';
 import { doorFrame } from './doorways.js';
 import { trees, shrubs, asiBoard, scatter } from './realism.js';
+import { openDistance } from '../monuments/ajanta-caves.js';
 import { detail } from '../detail.js';
 import { caveFront } from '../monuments/ajanta-caves.js';
 
@@ -93,5 +94,8 @@ export function addDetails(f, g) {
   // The valley floor inside the horseshoe, either side of the river
   const valley = scatter(26, [-50, 50, -40, 140], { seed: 9, gap: 9, avoid: [[-11, 11, -60, 200]] }).filter(([x, z]) => z > 10 || Math.hypot(x, z / 0.8) < 48);
   g.add(trees(valley, { kind: 'neem', seed: 10, y: 0.2 }));
+  // The teak forest running on across the plateau, back from the cliff's own band of trees.
+  const plateau = scatter(160, [-420, 420, -420, 520], { seed: 11, gap: 18 }).filter(([x, z]) => openDistance(x, z) > 75);
+  g.add(trees(plateau, { kind: 'mango', seed: 12, y: H + 1.2, h: 9 }));
   g.add(asiBoard('Ajanta Caves', 16, 70, -Math.PI / 2, { line2: 'WORLD HERITAGE SITE' }));
 }
