@@ -3,6 +3,7 @@ import { M, mat, mesh, box, cyl, at, onFace, FACES, rng, flat, steppedPlan, plan
 import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol, placeAll, chhajja, railing, cuspedArchGeo } from './components.js';
 import { templeDoorway, templePorch, steps, grandStair, doorFrame, doorLeaves, guardian } from './doorways.js';
 import { lion, elephant, horse } from './animals.js';
+import { detail } from '../detail.js';
 import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze, miniSpireGeo, kuta, shala } from './sculpture.js';
 
 // The shared temple builders, with real entrances: a Nagara temple's front porch, doorway and
@@ -166,6 +167,13 @@ export function nagaraTemple({
       fr.position.set(s * hw / 2, plinth + hh * 0.62, (z0 + z1) / 2);
       fr.rotation.y = (s * Math.PI) / 2;
       g.add(fr);
+      // On desktops (js/detail.js), a second register lower on the wall: musicians and attendants.
+      if (!detail.low && hh * 0.62 - hh * 0.2 > fh * 1.6) {
+        const lo = figureFrieze(z1 - z0, fh * 0.85, hallM, { pitch: fh * 0.7 * friezeSpacing, kinds: ['musician', 'standing', 'dancer'] });
+        lo.position.set(s * hw / 2, plinth + hh * 0.2, (z0 + z1) / 2);
+        lo.rotation.y = (s * Math.PI) / 2;
+        g.add(lo);
+      }
     }
   });
   g.userData.length = z;
@@ -182,9 +190,10 @@ export function nagaraTemple({
 // mouldings stop either side of it (0 when a hall covers the front).
 function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing = 1, storeys = 1, doorW = 0, nicheFigure = null) {
   const d = new THREE.Group(), g0 = w * 0.7, fu = w * 0.42, wh = g0 + (storeys - 1) * fu, u = Math.max(0.12, w * 0.018);
-  // A small shrine (under 7 m), often one of many in a court: a plain image in each niche rather
-  // than a sculpted guardian, and coarser amalakas, so a group of them stays light.
-  const small = w < 7;
+  // A small shrine (under 7 m) on a phone (js/detail.js), often one of many in a court: a plain
+  // image in each niche rather than a sculpted guardian, and coarser amalakas, so a group of them
+  // stays light. Desktops get the full carving.
+  const small = w < 7 && detail.low;
   const base = [[0, 2 * u, 2 * u, shade], [2 * u, 1.5 * u, 1.4 * u], [3.5 * u, u, 0.9 * u, shade]], upper = [[g0 * 0.8, u, 0.7 * u], [wh - 1.6 * u, 1.6 * u, 2 * u, shade]];
   if (!doorW) d.add(at(mouldings(sw, sw, [...base, ...upper], m), 0, plinth, 0));
   else {
@@ -216,7 +225,8 @@ function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing =
   if (fh > 0.45) for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) d.add(onFace(at(figureFrieze(sw - 0.6, fh, m, { pitch: fh * 0.75 * friezeSpacing, kinds: ['standing', 'dancer', 'standing', 'musician'] }), 0, plinth + 4.6 * u, 0), a, sw / 2));
   for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) {
     d.add(onFace(at(templeNiche(nw, nh, m, { figure: nicheFigure ? nicheFigure(nh * 0.85, m) : small ? idol(nh * 0.85, m) : guardian(nh * 0.88, m) }), 0, ny, 0), a, sw / 2));
-    if (sw > 10) for (const s of [-1, 1]) d.add(onFace(at(templeNiche(nw * 0.6, nh * 0.62, m), 0, ny + nh * 0.12, 0), a, sw / 2, s * sw * 0.32));
+    // The smaller niches either side hold images on desktops (js/detail.js), and stand empty on phones.
+    if (sw > 10) for (const s of [-1, 1]) d.add(onFace(at(templeNiche(nw * 0.6, nh * 0.62, m, { figure: detail.low ? null : idol(nh * 0.62 * 0.85, m) }), 0, ny + nh * 0.12, 0), a, sw / 2, s * sw * 0.32));
   }
   const sy = plinth + wh, am = small ? new THREE.SphereGeometry(1, 10, 4) : new THREE.SphereGeometry(1, 16, 6);
   for (let k = 1; k <= 4; k++) {
@@ -396,8 +406,9 @@ export function dwajasthambha(x, z, h) {
 // doorframes, its great doors standing open, then tapering storeys of painted stucco figures and
 // a barrel-vault crown.
 const paletteMats = new Map();
-// cheap: the simplest stucco figure ('stuccoLow'), for phones (js/detail.js).
-export function gopuram(w, d, h, tiers, seed, palette = PAINT, { pitch = 2.1, kuduEvery = 3, cheap = false } = {}) {
+// cheap: the simplest stucco figure ('stuccoLow'), for phones (js/detail.js). By default the
+// figures stand closer, with a kudu over every second bay, on desktops.
+export function gopuram(w, d, h, tiers, seed, palette = PAINT, { pitch = detail.low ? 2.1 : 1.8, kuduEvery = detail.low ? 3 : 2, cheap = false } = {}) {
   if (!paletteMats.has(palette)) paletteMats.set(palette, palette.map((c) => mat(c, 0.75)));
   const pm = paletteMats.get(palette);
   const g = new THREE.Group(), R = rng(seed), figs = [], pilas = [], kudus = [], kutas = [];
@@ -503,8 +514,8 @@ export function trabeateGate(w, h, d, pw, ph, { m, trim = m, bands = 3, bw = Mat
   if (guardians) for (const s of [-1, 1]) g.add(at(guardian(Math.min(2.6, ph * 0.5), trim), s * (ow + 0.6), 0, d / 2 + 0.45));
   if (beasts) for (const s of [-1, 1]) {
     if (beasts === 'lion' || beasts === 'tiger') g.add(at(lion(Math.min(1.3, ph * 0.22), trim), s * (ow + 1.6), 0, d / 2 + 1.6));
-    else if (beasts === 'elephant') { const e = Math.min(0.6, ph * 0.09); g.add(at(elephant(trim, e), s * (ow + 1.4 + 1.8 * e), 0, d / 2 + 2.6 * e + 0.4)); }
-    else if (beasts === 'horse') { const e = Math.min(0.6, ph * 0.09), o = horse(trim, { coarse: true }); o.scale.setScalar(e); g.add(at(o, s * (ow + 1.2 + e), 0, d / 2 + 2.4 * e + 0.4)); }
+    else if (beasts === 'elephant') { const e = Math.min(0.6, ph * 0.09); g.add(at(elephant(trim, e, { coarse: detail.low }), s * (ow + 1.4 + 1.8 * e), 0, d / 2 + 2.6 * e + 0.4)); }
+    else if (beasts === 'horse') { const e = Math.min(0.6, ph * 0.09), o = horse(trim, { coarse: detail.low }); o.scale.setScalar(e); g.add(at(o, s * (ow + 1.2 + e), 0, d / 2 + 2.4 * e + 0.4)); }
   }
   return mergeByMaterial(g);
 }

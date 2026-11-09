@@ -3,6 +3,7 @@ import { M, mesh, box, at, onFace, flag, mat, FACES, nagaraProfile, steppedPlan,
 import { mouldings, frieze, templeNiche, idol, mergeByMaterial, chhajja, cuspedArchGeo } from './components.js';
 import { carvedPillar, storeyedHall, nagaraTemple, trabeateGate, wallWithGaps } from './temples.js';
 import { trees, lampPosts, garland, along } from './realism.js';
+import { detail } from '../detail.js';
 
 // The Ram Mandir, from the published design and photographs and renderings of the finished
 // temple (Nagara style, in pink Bansi Paharpur sandstone). It stands on a plinth P high (21 ft) and
@@ -130,13 +131,13 @@ export function parkota(m, sh) {
   for (const s of [-1, 1]) g.add(box(W, H, len, m, s * KX, 0, cz));
   for (const s of [-1, 1]) g.add(box(KX * 2 + W + 0.8, 0.5, W + 0.8, sh, 0, H, s > 0 ? KZ1 : KZ0), box(W + 0.8, 0.5, len, sh, s * KX, H, cz));
   const gate = new THREE.Group();
-  gate.add(trabeateGate(22, 9, 6, 7, 6.5, { m, trim: sh }));
+  gate.add(trabeateGate(22, 9, 6, 7, 6.5, { m, trim: sh, guardians: !detail.low }));
   const r = pidaRoof(20, 8, 4, 0.8, m, sh);
   gate.add(at(r, 0, 9, 0), at(kalash(1.2), 0, 9 + r.userData.top, 0));
   g.add(at(gate, 0, 0, KZ1));
   for (const sx of [-1, 1]) for (const sz of [KZ0, KZ1]) {
     const x = sx * KX, sp = new THREE.Group();
-    sp.add(box(13, 2, 13, sh), nagaraTemple({ w: 6, h: 10, m, shade: sh, plinth: 0.8, urus: 0, halls: [], apron: 2, base: null }).translateY(2));
+    sp.add(box(13, 2, 13, sh), nagaraTemple({ w: 6, h: 10, m, shade: sh, plinth: 0.8, urus: detail.low ? 0 : 4, uruScale: 0.45, halls: [], apron: 2, base: null }).translateY(2));
     sp.rotation.y = Math.atan2(-x, -sz);
     g.add(at(sp, x, 0, sz));
   }
