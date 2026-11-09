@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, onFace, rng, pidaRoof, hemi, kalash } from '../helpers.js';
+import { M, mat, mesh, box, at, onFace, rng } from '../helpers.js';
 import { figureFrieze } from '../details/sculpture.js';
-import { gopuram, wallWithGaps } from '../details/temples.js';
+import { gopuram, wallWithGaps, dravidaVimana } from '../details/temples.js';
 import { mountainRing } from '../details/terrain.js';
 import { addDetails } from '../details/mallikarjuna-temple.js';
 
@@ -32,8 +32,8 @@ export function buildMallikarjuna() {
   for (const s of [-1, 1]) f.add(at(gopuram(18, 10, 26, 7, 7 + s, CREAM).rotateY(Math.PI / 2), s * W / 2, 0, 0));
   // The shrine of Mallikarjuna under its gilded vimana, and Bhramaramba's shrine behind
   for (const [z, w, sc] of [[0, 14, 1], [-30, 10, 0.75]]) {
-    const r = pidaRoof(w, w * 0.45, 4, 1, M.gild, M.gildDeep);
-    f.add(box(w * 1.1, 8 * sc, w * 1.1, mat('#e9e0cc', 0.85), 0, 0, z), at(r, 0, 8 * sc, z), at(hemi(w * 0.24, M.gild, 20), 0, 8 * sc + r.userData.top, z), at(kalash(w * 0.15), 0, 8 * sc + r.userData.top + w * 0.24, z));
+    f.add(box(w * 1.1, 8 * sc, w * 1.1, mat('#e9e0cc', 0.85), 0, 0, z), box(w * 1.15, 0.5, w * 1.15, M.gildDeep, 0, 8 * sc, z));
+    f.add(at(dravidaVimana(w, 4, 1.9 * (0.6 + 0.4 * sc), M.gild, M.gildDeep, { kalashM: M.gild, kalashScale: 0.7, taper: 0.5 }), 0, 8 * sc + 0.5, z));
   }
   f.add(box(22, 6, 18, mat('#e9e0cc', 0.85), 0, 0, 20));
   addDetails(f, g);
