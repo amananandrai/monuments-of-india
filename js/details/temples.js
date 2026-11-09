@@ -103,6 +103,7 @@ export function nagaraTemple({
   } else g.add(box(sw + apron, plinth, z + sw / 2 + 6, shade, 0, 0, (z - sw / 2) / 2 + 3));
 
   const e = new THREE.Group(), half = base && placed.length ? placed[0].hw / 2 + a : (sw + apron) / 2;
+  let frontDoor = 0;
   let stairW = 6;
   if (placed.length) {
     // The main entrance: a porch in front of the front hall, with the doorway at its back.
@@ -136,14 +137,15 @@ export function nagaraTemple({
     }
   } else {
     // A small shrine with no hall: the doorway is in the sanctum itself.
-    const ds = doorSize(w * 0.7);
-    e.add(at(templeDoorway(ds.w, ds.h, { m, guardians: w >= 7, hood: true }), 0, plinth, sw / 2));
+    const ds = doorSize(w * 0.7), door = templeDoorway(ds.w, ds.h, { m, guardians: w >= 7, hood: true });
+    e.add(at(door, 0, plinth, sw / 2));
+    frontDoor = door.userData.outerW;
   }
   if (stair?.width) stairW = stair.width;
   if (stair) e.add(at(grandStair(plinth, stairW, shade, m, { cheek: Math.min(0.9, 0.25 + plinth * 0.25), ...stair }), 0, 0, z + 6));
   else e.add(at(steps(stairW, plinth, Math.max(3, Math.ceil(plinth / 0.42)), shade, 0.45), 0, 0, z + 6));
   g.add(mergeByMaterial(e));
-  if (placed.length) g.add(sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing, sanctumStoreys));
+  g.add(sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing, sanctumStoreys, frontDoor));
   // A band of carved figures along each side of every hall, parted round the side doors.
   // Halls of more than one storey, with doors on the faces that open: the front of the front hall and
   // the sides of the first, where it has side steps.
@@ -169,14 +171,32 @@ export function nagaraTemple({
   return g;
 }
 
-// The finer detail of a Nagara sanctum (its front face hidden by the first hall): the mouldings of
-// its base (khura, kumbha and kalasha, stepping in as they rise), a band across the wall and a
-// cornice under the spire; a niche on each outer face with an image in it, and smaller empty niches
-// either side on a large temple; and the ribbed amalaka stones (bhumi-amalakas) on the corners of
-// the spire, one at each of its storeys.
-function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing = 1, storeys = 1) {
+// The finer detail of a Nagara sanctum (its front face hidden by the first hall, or, on a shrine
+// with no hall, holding the doorway): the mouldings of its base (khura, kumbha and kalasha, stepping
+// in as they rise), a band across the wall and a cornice under the spire; a niche on each outer face
+// with an image in it, and smaller empty niches either side on a large temple; and the ribbed
+// amalaka stones (bhumi-amalakas) on the corners of the spire, one at each of its storeys.
+// doorW: the width of the doorway in the front face of a shrine with no hall, where the base
+// mouldings stop either side of it (0 when a hall covers the front).
+function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing = 1, storeys = 1, doorW = 0) {
   const d = new THREE.Group(), g0 = w * 0.7, fu = w * 0.42, wh = g0 + (storeys - 1) * fu, u = Math.max(0.12, w * 0.018);
-  d.add(at(mouldings(sw, sw, [[0, 2 * u, 2 * u, shade], [2 * u, 1.5 * u, 1.4 * u], [3.5 * u, u, 0.9 * u, shade], [g0 * 0.8, u, 0.7 * u], [wh - 1.6 * u, 1.6 * u, 2 * u, shade]], m), 0, plinth, 0));
+  // A small shrine (under 7 m), often one of many in a court: a plain image in each niche rather
+  // than a sculpted guardian, and coarser amalakas, so a group of them stays light.
+  const small = w < 7;
+  const base = [[0, 2 * u, 2 * u, shade], [2 * u, 1.5 * u, 1.4 * u], [3.5 * u, u, 0.9 * u, shade]], upper = [[g0 * 0.8, u, 0.7 * u], [wh - 1.6 * u, 1.6 * u, 2 * u, shade]];
+  if (!doorW) d.add(at(mouldings(sw, sw, [...base, ...upper], m), 0, plinth, 0));
+  else {
+    // Round three sides and either side of the doorway; the courses meet at the front corners.
+    d.add(at(mouldings(sw, sw, upper, m), 0, plinth, 0));
+    const side = (sw - doorW) / 2;
+    for (const [y, ch, p, cm = m] of base) {
+      d.add(box(sw + 2 * p, ch, p, cm, 0, plinth + y, -sw / 2 - p / 2));
+      for (const s of [-1, 1]) {
+        d.add(box(p, ch, sw, cm, s * (sw / 2 + p / 2), plinth + y, 0));
+        if (side > 0.2) d.add(box(side + p, ch, p, cm, s * (sw / 2 + p - (side + p) / 2), plinth + y, sw / 2 + p / 2));
+      }
+    }
+  }
   // The upper storeys: a balcony ledge round the wall with railings on the three free faces, a niche
   // with an image in the middle of every face, and an eave under the next floor.
   for (let k = 1; k < storeys; k++) {
@@ -193,10 +213,10 @@ function sanctumDetail(w, h, sw, plinth, prof, m, shade, spireM, friezeSpacing =
   const fh = Math.min(1.1, g0 * 0.2 - 4.6 * u);
   if (fh > 0.45) for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) d.add(onFace(at(figureFrieze(sw - 0.6, fh, m, { pitch: fh * 0.75 * friezeSpacing, kinds: ['standing', 'dancer', 'standing', 'musician'] }), 0, plinth + 4.6 * u, 0), a, sw / 2));
   for (const a of [Math.PI, Math.PI / 2, -Math.PI / 2]) {
-    d.add(onFace(at(templeNiche(nw, nh, m, { figure: guardian(nh * 0.88, m) }), 0, ny, 0), a, sw / 2));
+    d.add(onFace(at(templeNiche(nw, nh, m, { figure: small ? idol(nh * 0.85, m) : guardian(nh * 0.88, m) }), 0, ny, 0), a, sw / 2));
     if (sw > 10) for (const s of [-1, 1]) d.add(onFace(at(templeNiche(nw * 0.6, nh * 0.62, m), 0, ny + nh * 0.12, 0), a, sw / 2, s * sw * 0.32));
   }
-  const sy = plinth + wh, am = new THREE.SphereGeometry(1, 16, 6);
+  const sy = plinth + wh, am = small ? new THREE.SphereGeometry(1, 10, 4) : new THREE.SphereGeometry(1, 16, 6);
   for (let k = 1; k <= 4; k++) {
     const t = k / 5, wt = w * prof(t), y = sy + t * h, r = wt * 0.085;
     for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
