@@ -3,6 +3,7 @@ import { M, mat, mesh, box, at, rng, inst, unitBox, sheet } from '../helpers.js'
 import { nagaraTemple } from '../details/temples.js';
 import { addDetails } from '../details/omkareshwar-temple.js';
 import { townHouses } from '../details/realism.js';
+import { detail } from '../detail.js';
 
 const WHITE = mat('#efe9de', 0.85);
 const SHADE = mat('#cdbfa6', 0.9);
@@ -47,12 +48,22 @@ export function buildOmkareshwar() {
   // Ghats stepping down to the water, with the town on the slope above
   for (let k = 0; k < 8; k++) f.add(box(80, 1 + k * 0.9, 2.4, SHADE, 0, 0, 22 - k * 2.4));
   f.add(box(90, 8, 50, SHADE, 0, 0, -12));
-  const houses = [];
-  for (let i = 0; i < 40; i++) {
-    const x = (R() - 0.5) * 120, z = -40 - R() * 40, y = islandHeight(x, z);
-    if (y > 6) houses.push([x, z, 5 + R() * 4, 5 + R() * 3, 1 + Math.floor(R() * 3), R() * 6.28, y - 1.2]);
+  // The town on the slope behind the ghat: terraces of houses facing the river, each set down at
+  // the lowest corner of its plot with its back dug into the hill; none where the hill is a cliff.
+  // On phones (js/detail.js) every other house, so the island stays within its budget.
+  const houses = [], tiledH = [];
+  for (let zr = -43, j = 0; zr > -96; zr -= 8.5, j++) {
+    for (let x = -78 + (j % 2) * 4; x < 78;) {
+      const w = 5.5 + R() * 3.5, d = 6 + R() * 2.5, cx = x + w / 2, hs = [[-w / 2, -d / 2], [w / 2, -d / 2], [-w / 2, d / 2], [w / 2, d / 2]].map(([a, b]) => islandHeight(cx + a, zr + b));
+      const lo = Math.min(...hs), hi = Math.max(...hs), keep = !detail.low || (houses.length + tiledH.length) % 2 === 0;
+      // On a slope the house gets storeys enough to stand clear of the ground on its uphill side.
+      const n = Math.max(1 + Math.floor(R() * 3), Math.ceil((hi - lo) / 3.2) + 1);
+      if (lo > 6 && hi - lo < 9 && keep) (R() < 0.35 ? tiledH : houses).push([cx, zr, w, d, n, (R() - 0.5) * 0.3, lo - 0.3]);
+      x += w + 0.5 + (R() < 0.2 ? 3 : 0);
+    }
   }
-  g.add(townHouses(houses, { seed: 41 }));
+  const OPAINT = ['#f1ece0', '#e8c9a8', '#cfe0e3', '#f0d9b5', '#e7b9b0', '#d9e3c4', '#efe6d6'];
+  g.add(townHouses(houses, { seed: 41, paint: OPAINT }), townHouses(tiledH, { seed: 42, paint: OPAINT, roof: 'pitched', roofs: ['#9a4a32', '#a85a3a', '#8a4030'] }));
   // On the ghat, a cluster of white spires of different heights: the jyotirlinga's temple, full
   // size with its hall, and smaller shrines round it, each a cell under its own shikhara.
   f.add(at(nagaraTemple({ w: 11, h: 20, m: WHITE, shade: SHADE, plinth: 2, urus: 4, halls: [[13, 7, 4]] }), 0, 8, -18));
@@ -61,6 +72,17 @@ export function buildOmkareshwar() {
   }
   // Across the river on the south bank, the smaller Mamleshwar temple, facing the island.
   g.add(at(nagaraTemple({ w: 7, h: 12, m: WHITE, shade: SHADE, plinth: 1.2, urus: 0, halls: [[8, 5, 3]], apron: 4, base: { tiers: 1 } }), -36, 1.2, 182).rotateY(Math.PI));
+  // The town on the south bank round it: rows of houses facing the river and the lanes behind,
+  // clear of Mamleshwar's court and the footbridge's landing. On phones, every other house.
+  const bank = [], bankTiled = [];
+  for (const [zr, ry] of [[166, Math.PI], [181, 0], [196, Math.PI], [210, 0]]) {
+    for (let x = -150; x < 150;) {
+      const w = 6 + R() * 4, cx = x + w / 2, clear = !(cx > -54 && cx < -18 && zr < 200) && !(cx > -80 && cx < -60), keep = !detail.low || (bank.length + bankTiled.length) % 2 === 0;
+      if (clear && keep) (R() < 0.3 ? bankTiled : bank).push([cx, zr, w, 10, 2 + Math.floor(R() * 3), ry + (R() - 0.5) * 0.1, 1.2]);
+      x += w + 0.4 + (R() < 0.12 ? 4 : 0);
+    }
+  }
+  g.add(townHouses(bank, { seed: 43, paint: OPAINT }), townHouses(bankTiled, { seed: 44, paint: OPAINT, roof: 'pitched', roofs: ['#9a4a32', '#a85a3a', '#8a4030'] }));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.6, 0.3, 1.25] };
 }

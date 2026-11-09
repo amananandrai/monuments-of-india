@@ -219,6 +219,10 @@ What desktops get that phones do not:
   The town of Trimbak now surrounds Trimbakeshwar on both levels: houses under terracotta-tiled
   pitched roofs and newer flat-roofed ones along the temple street behind its stalls, in lanes west
   of the court and round the Kushavarta kund: 296k on desktops, 204k on phones.
+  Ujjain's old town now runs out three more rows on every side of Mahakaleshwar, and north beyond
+  the Rudra Sagar (386k on desktops, 212k on phones). At Omkareshwar the island's houses stand in
+  terraces up the slope behind the ghat, and a town lines the south bank round Mamleshwar (493k on
+  desktops; phones build every other house of both, 258k).
 - **Dressed elephants** (`rideElephant` in `js/details/animals.js`): a fringe of tassels and
   embroidered roundels on the cloths, a rope of bells round the neck, anklets, tusk caps, and on a
   temple elephant the gold nettipattam over the forehead and trunk.
