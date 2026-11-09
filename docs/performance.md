@@ -202,6 +202,14 @@ What desktops get that phones do not:
   the hoops under a canopy. Every boat now floats with its hull above the water.
 - **Stalls:** a top board and panelled front on the counter, three baskets of flowers or offerings,
   garlands under a scalloped valance on a sloping awning, and a shelf of brass pots.
+- **Surrounding buildings:** `townHouses` (`js/details/realism.js`) gives each house on desktops a
+  moulded band at every floor, light frames and sunshades on the windows, a framed door up two
+  steps, railings on the balconies, often a ground-floor shop (shutter, coloured awning, signboard)
+  and a stair cabin on the roof. It also takes `roof: 'pitched'` (sheet-iron gables, on both levels)
+  and a `trim` colour. Kedarnath's pilgrim lodges and Jaisalmer's houses inside the fort are now
+  `townHouses` instead of plain boxes, and on desktops the ranges round the Golden Temple's pool have
+  two storeys of arches and domed kiosks along their parapets. The largest increases are Howrah
+  (157k to 341k) and Jaisalmer (169k to 316k; 216k on phones).
 - **Dressed elephants** (`rideElephant` in `js/details/animals.js`): a fringe of tassels and
   embroidered roundels on the cloths, a rope of bells round the neck, anklets, tusk caps, and on a
   temple elephant the gold nettipattam over the forehead and trunk.

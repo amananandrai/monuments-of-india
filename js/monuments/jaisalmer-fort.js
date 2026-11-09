@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { townHouses } from '../details/realism.js';
 import { mat, mesh, box, at, rng, inst, unitBox, unitCyl, chhatri } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
 import { miniSpireGeo } from '../details/sculpture.js';
@@ -27,12 +28,14 @@ export function buildJaisalmer() {
   f.add(inst(unitCyl(12), bastions, GOLD), inst(unitBox(), wall, GOLD));
   f.add(at(fortGate(12, 12, 8, 4.5, 8, { m: GOLD, trim: GOLD_DARK, towers: { r: 3.4, h: 14, cap: 'merlons', seg: 12 } }), 0, H, RZ));
   // Houses, havelis, the palace and the spires of the Jain temples within the walls
+  // The houses are townHouses (js/details/realism.js) in the golden stone: windows, balconies and
+  // water tanks, and on desktops their frames, sunshades, doors and shops.
   const houses = [];
   for (let i = 0; i < 220; i++) {
-    const a = R() * Math.PI * 2, d = Math.sqrt(R()) * 0.85;
-    houses.push([Math.cos(a) * RX * d, H, Math.sin(a) * RZ * d, 5 + R() * 5, 5 + R() * 9, 5 + R() * 5, R()]);
+    const a = R() * Math.PI * 2, d = Math.sqrt(R()) * 0.85, w = 5 + R() * 5, h = 5 + R() * 9, dd = 5 + R() * 5;
+    houses.push([Math.cos(a) * RX * d, Math.sin(a) * RZ * d, w, dd, Math.max(1, Math.round(h / 3.2)), R() * Math.PI * 2, H]);
   }
-  f.add(inst(unitBox(), houses, GOLD_DARK));
+  f.add(townHouses(houses, { seed: 61, paint: ['#c9a062', '#b98f55', '#d4ad6e', '#c19656', '#d9b878'], trim: '#dcbf86' }));
   f.add(box(30, 20, 16, GOLD, -20, H, 10));
   for (const x of [-30, -20, -10]) f.add(at(chhatri(2.4, 6, GOLD), x, H + 20, 14));
   f.add(inst(miniSpireGeo(), [[30, H + 14, -10, 6, 12, 6], [38, H + 12, -4, 5, 10, 5], [24, H + 12, -18, 5, 9, 5]], GOLD));

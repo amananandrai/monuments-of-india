@@ -3,7 +3,8 @@ import { M, mat, mesh, box, cyl, lathe, at, onFace, FACES, archPanel, onionDome,
 import { fortGate } from '../details/forts.js';
 import { wallWithGaps } from '../details/temples.js';
 import { steps } from '../details/doorways.js';
-import { mughalDoorway } from '../details/mughal.js';
+import { mughalDoorway, arcadeSkin } from '../details/mughal.js';
+import { detail } from '../detail.js';
 import { addDetails } from '../details/golden-temple.js';
 
 const SILVER = mat('#cfd3d8', 0.3, 0.85);
@@ -20,6 +21,22 @@ export function buildGoldenTemple() {
     // The west range parts for the plaza before the Akal Takht.
     if (s > 0) g.add(box(10, 9, 200, M.lime, 105, 0, 0));
     else g.add(wallWithGaps('z', 200, 9, 10, M.lime, [[0, 34]], -105, 0));
+  }
+  // On desktops (js/detail.js), the ranges' faces towards the pool: two storeys of arches, rooms
+  // below and screened windows above, under a moulded parapet with small domed kiosks along it.
+  if (!detail.low) {
+    const face = (len, x, z, ry) => {
+      const n = Math.floor(len / 5.5), cells = [];
+      for (let k = 0; k < n; k++) { const cx = -len / 2 + (k + 0.5) * (len / n); cells.push([cx, 0.9, 3, 4.2, 'room'], [cx, 5.3, 2.4, 2.8, 'jali']); }
+      const r = new THREE.Group();
+      r.add(arcadeSkin(len, 9, cells, 1.2, M.lime, { trim: W }), box(len, 0.5, 1.6, W, 0, 9, 0.4));
+      for (let k = 0; k < Math.floor(len / 30); k++) r.add(at(chhatri(1.3, 3.6, W), -len / 2 + 15 + k * 30, 9.5, 0.6));
+      g.add(at(r, x, 0, z).rotateY(ry));
+    };
+    face(200, 0, -100, 0);
+    face(200, 0, 100, Math.PI);
+    face(190, 100, 0, -Math.PI / 2);
+    for (const sz of [-1, 1]) face(83, -100, sz * 58.5, Math.PI / 2);
   }
   g.add(sheet(150, 150, M.lake, 0, 0.3, 0));
   // Bathing ghats: flights cut from the parikrama's edge down into the water between low marble

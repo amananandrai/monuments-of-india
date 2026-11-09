@@ -1,11 +1,12 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, group, rng, hipRoof, kalash, flag, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, group, rng, hipRoof, kalash, flag } from '../helpers.js';
 import { templeDoorway, templePorch, grandStair } from '../details/doorways.js';
 import { statue } from '../details/sculpture.js';
 import { mergeByMaterial } from '../details/components.js';
 import { nandi } from '../details/animals.js';
 import { mountainRing } from '../details/terrain.js';
 import { addDetails } from '../details/kedarnath-temple.js';
+import { townHouses } from '../details/realism.js';
 
 const STONE = mat('#8e8a82', 0.9);
 const STONE_DARK = mat('#6f6b64', 0.9);
@@ -39,10 +40,14 @@ export function buildKedarnath() {
   // The Kedar peaks: a ring of rock walls under snow (js/details/terrain.js).
   g.add(mountainRing({ inner: 420, outer: 760, h: 250, vary: 70, snow: 165, rock: ['#7d7a74', '#6e6b66', '#8a867f'], cover: '#6f7550', steep: 0.82, aspect: 1.2 }));
 
-  // Pilgrim lodges along the approach
+  // Pilgrim lodges along the approach, facing the path, under pitched roofs of painted sheet iron
+  // (js/details/realism.js, townHouses).
   const lodges = [];
-  for (let i = 0; i < 18; i++) lodges.push([(R() < 0.5 ? -1 : 1) * (18 + R() * 25), 0, 20 + R() * 70, 6 + R() * 4, 4 + R() * 4, 5 + R() * 3, R()]);
-  g.add(inst(unitBox(), lodges, mat('#c9b9a0', 0.9)));
+  for (let i = 0; i < 18; i++) {
+    const side = R() < 0.5 ? -1 : 1, x = side * (18 + R() * 25), z = 20 + R() * 70, w = 6 + R() * 4, h = 4 + R() * 4, d = 5 + R() * 3;
+    lodges.push([x, z, w, d, Math.max(1, Math.round(h / 3.2)), side * -Math.PI / 2 + (R() - 0.5) * 0.3]);
+  }
+  g.add(townHouses(lodges, { seed: 9, roof: 'pitched', paint: ['#c9b9a0', '#d8cdb8', '#b8ad9a', '#e6dccb', '#a9b6bf'] }));
   // Temple: grey stone sanctum with its curved tower, and the hall in front under a sloping roof
   f.add(box(22, 2, 34, STONE_DARK, 0, 0, 0));
   f.add(box(12, 9, 12, STONE, 0, 2, -9), box(12.8, 0.6, 12.8, STONE_DARK, 0, 11, -9));
