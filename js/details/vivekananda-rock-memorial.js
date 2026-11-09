@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, at, onFace, FACES, aroundRect, inst, unitBox } from '../helpers.js';
+import { mat, mesh, box, at, onFace, FACES, aroundRect, inst, unitBox, strut } from '../helpers.js';
 import { mouldings, frieze, chhajja, bracketGeo, placeAll, templeNiche, mergeByMaterial } from './components.js';
 import { boats, lampPosts, along } from './realism.js';
 
@@ -32,10 +32,33 @@ function architecture(f) {
   f.add(d, inst(unitBox(), bases, SHADE), inst(unitBox(), caps, SHADE));
 }
 
-// The Vivekananda Rock Memorial off Kanyakumari: the ferries out from the shore, fishing boats in
-// the bay, and lamps along the promenade.
+// The glass bridge (opened at the end of 2024) between the memorial's rock and the Thiruvalluvar
+// rock: a level deck with a glass walkway down its middle, glass balustrades, and a pair of white
+// steel bowstring arches carrying it on hangers, set on an abutment on each rock. In the model it
+// runs from the edge of the memorial platform (x -18) to just short of the statue's pedestal.
+const GLASS = mat('#bfe3ec', 0.05, 0.1, { transparent: true, opacity: 0.45 }), STEEL = mat('#eceae4', 0.4, 0.5), CONC = mat('#b8b2a8', 0.9);
+function glassBridge() {
+  const A = [-18, 4.3], B = [-63, 15], Y = 7.2, W = 9, Ha = 8;
+  const L = Math.hypot(B[0] - A[0], B[1] - A[1]), b = new THREE.Group();
+  b.add(box(L, 0.5, W, CONC, L / 2, Y - 0.5, 0), box(L, 0.08, 3.2, GLASS, L / 2, Y, 0));
+  for (const s of [-1, 1]) {
+    b.add(box(L, 0.7, 0.6, STEEL, L / 2, Y - 0.6, s * (W / 2 - 0.3)), box(L, 1.2, 0.06, GLASS, L / 2, Y, s * (W / 2 - 0.7)));
+    const pts = [];
+    for (let k = 0; k <= 24; k++) pts.push(new THREE.Vector3((L * k) / 24, Y + Ha * Math.sin((Math.PI * k) / 24), s * (W / 2 - 0.3)));
+    b.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 48, 0.35, 8, false), STEEL));
+    for (let k = 2; k < 24; k += 2) b.add(strut(new THREE.Vector3(pts[k].x, Y, pts[k].z), pts[k], 0.06, STEEL));
+  }
+  // Abutments down into the rock at each end.
+  for (const x of [0, L]) b.add(box(4, Y, W + 1, CONC, x, 0, 0));
+  b.rotation.y = Math.atan2(-(B[1] - A[1]), B[0] - A[0]);
+  return at(b, A[0], 0, A[1]);
+}
+
+// The Vivekananda Rock Memorial off Kanyakumari: the glass bridge to the Thiruvalluvar rock, the
+// ferries out from the shore, fishing boats in the bay, and lamps along the promenade.
 export function addDetails(f, g) {
   architecture(f);
+  f.add(glassBridge());
   g.add(boats([[20, 80, 0.2], [-20, 170, 3.3], [30, 260, 0.1]], { y: 0.3, size: 3.4, canopy: true, colours: ['#f4f1ea', '#2f5d9a', '#f4f1ea'] }));
   g.add(boats([[-200, 200, 1.2], [180, 150, 2.4], [260, 300, 0.6], [-260, 280, 2.9]], { y: 0.3, size: 1.8, colours: ['#2f5d9a', '#c2512a', '#f2d23a'] }));
   g.add(lampPosts(along(14, [-200, 362], [200, 362]), { y: 0.3 }));
