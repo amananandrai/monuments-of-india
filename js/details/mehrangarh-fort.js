@@ -1,40 +1,53 @@
 import * as THREE from 'three';
-import { box, at, flag, mat, rng } from '../helpers.js';
-import { jharokha, bracketGeo, placeAll, alongFace, chhajja, beltCourse, mergeByMaterial } from './components.js';
-import { towerDetail, slitRow } from './forts.js';
+import { box, at, flag, mat, rng, onFace, FACES } from '../helpers.js';
+import { jharokha, chhajja, beltCourse, mergeByMaterial } from './components.js';
+import { towerDetail } from './forts.js';
 import { shrubs } from './realism.js';
+import { H, rock, bastions } from '../monuments/mehrangarh-fort.js';
+import { detail } from '../detail.js';
 
-// Mehrangarh, finer detail. The bastions rising from the rock are banded and slit, and the wall
-// between them has string courses and loopholes; over the Phool Mahal's screened front runs a deep
-// eave on brackets; the palace to the east is hung with two tiers of jharokhas under curved roofs.
-// Dimensions follow js/monuments/mehrangarh-fort.js.
+// Mehrangarh, finer detail. The bastions rising from the rock are banded and slit; the palace
+// ranges at the north end are hung with tiers of jharokhas under curved roofs on every outer face,
+// over a deep eave on the Phool Mahal front. Dimensions follow js/monuments/mehrangarh-fort.js: the
+// rock's top at H, the walls 24 to 32 m high from it, the bastions 8.5 in radius from H - 14 rising 48 m;
+// the palace ranges [x, z, w, h, d] below.
 const SAND = mat('#b9774f', 0.9), SAND_LIGHT = mat('#cf9a6e', 0.85);
+const PALACES = [[130, 16, 72, 40, 22], [146, -12, 52, 34, 24], [166, 0, 14, 36, 50]];
 function architecture(f) {
-  const d = new THREE.Group(), H = 45;
-  for (const x of [-60, -30, 0, 30, 60]) d.add(at(towerDetail(9, 8, 32, SAND, SAND_LIGHT, { n: 12, courses: [0.4, 0.75], slits: [0.3, 0.6, 0.88] }), x, H - 6, 20));
-  d.add(box(130, 0.6, 0.3, SAND_LIGHT, 0, H + 10, 22.1), box(130, 0.5, 0.3, SAND_LIGHT, 0, H + 21, 22.1));
-  d.add(at(slitRow(124, 40, H + 17, 0.4, 1.3), 0, 0, 22));
-  // The Phool Mahal front (70 × 14 at (-10, H + 24, -2), face at z = 12): eave on brackets.
-  d.add(at(chhajja(70.6, 1.6, 0.6, 0.18, SAND_LIGHT), -10, H + 33.4, 12));
-  d.add(placeAll(bracketGeo(1.2, 1.2, 0.4), alongFace(0, 12, 68, 23, H + 32.6).map(([x, y, z, r]) => [x - 10, y, z, r]), SAND));
-  d.add(beltCourse(70, 28, H + 25.6, 0.5, 0.2, SAND).translateX(-10).translateZ(-2));
-  // The palace to the east (40 × 10 × 20 at (34, H + 24, 4), face at z = 14).
-  for (let r = 0; r < 2; r++) for (let k = 0; k < 7; k++) d.add(at(jharokha(2, 2.6, SAND_LIGHT, { d: 1, trim: SAND }), 34 - 17 + k * (34 / 6), H + 25.4 + r * 4.4, 14.02));
+  const d = new THREE.Group();
+  for (const [x, z] of bastions()) d.add(at(towerDetail(8.5, 8.5, 48, SAND, SAND_LIGHT, { n: 12, courses: [0.5, 0.82], slits: [0.55, 0.7, 0.9] }), x, H - 14, z));
+  // On each palace range, the outer faces above the walls (from H + 22) carry rows of jharokhas,
+  // two tiers on desktops and one on phones, with an eave over them and a band below.
+  for (const [x, z, w, h, dd] of PALACES) {
+    for (const a of FACES) {
+      const along = Math.abs(Math.sin(a)) > 0.5 ? dd : w, out = (Math.abs(Math.sin(a)) > 0.5 ? w : dd) / 2;
+      const n = Math.max(2, Math.floor(along / 5)), rows = detail.low ? 1 : 2;
+      for (let r = 0; r < rows; r++) for (let k = 0; k < n; k++) {
+        const o = onFace(at(jharokha(2.2, 2.8, SAND_LIGHT, { d: 1, trim: SAND }), 0, H + h - 13 + r * 5, 0), a, out + 0.02, -along / 2 + (k + 0.5) * (along / n));
+        o.position.x += x; o.position.z += z;
+        d.add(o);
+      }
+      const e = onFace(at(chhajja(along + 0.8, 1.4, 0.5, 0.16, SAND), 0, H + h - 3.4, 0), a, out);
+      e.position.x += x; e.position.z += z;
+      d.add(e);
+    }
+    d.add(beltCourse(w, dd, H + h - 15, 0.5, 0.2, SAND).translateX(x).translateZ(z));
+  }
   mergeByMaterial(d);
   f.add(d);
 }
 
-// Mehrangarh above Jodhpur: the rhyolite scrub of the Rao Jodha desert park on the hill, and the
+// Mehrangarh above Jodhpur: the rhyolite scrub of the Rao Jodha desert park on the slopes, and the
 // five-coloured flag of Marwar over the palace.
 const FLAG = mat('#d9342b', 0.8, 0, { side: 2 });
 export function addDetails(f, g) {
   architecture(f);
-  const H = 45, R = rng(4), slope = [];
-  for (let i = 0; i < 70; i++) {
-    const a = R() * Math.PI * 2, t = 0.15 + R() * 0.75, r = 130 - 60 * t, x = Math.cos(a) * r, z = Math.sin(a) * r * 0.5;
-    if (Math.abs(x) < 70 && z > 10) continue;
-    slope.push([x, z, 2.2, t * H - 0.4]);
+  const R = rng(4), slope = [];
+  for (let i = 0; i < 200 && slope.length < 90; i++) {
+    const x = (R() - 0.5) * 820, z = (R() - 0.5) * 300, y = rock(x, z);
+    if (y < 3 || y > H - 20) continue;
+    slope.push([x, z, 2.6, y - 0.5]);
   }
   g.add(shrubs(slope, { dry: true, seed: 5 }));
-  f.add(at(flag(9, FLAG), 0, H + 38, 0));
+  f.add(at(flag(10, FLAG), 146, H + 34.8, -12));
 }

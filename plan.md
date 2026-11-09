@@ -80,7 +80,7 @@ Use `heightField`, `rough` and `smooth` from `js/details/terrain.js` (as the Kai
 
 Today each says on its plaque that it is compressed (`scaleNote` in `js/data.js`). Rebuild them at or nearer real size where the camera can still frame them, and update or remove the note.
 
-- [ ] **Mehrangarh**: the rock is `H = 45`; real is about 122 m. Raise it, stretch the fort along the ridge with the palace ranges at its north end, and detail the back and sides. The blue city stays at the foot.
+- [x] **Mehrangarh**: the rock is `H = 45`; real is about 122 m. Raise it, stretch the fort along the ridge with the palace ranges at its north end, and detail the back and sides. The blue city stays at the foot.
 - [ ] **Jaisalmer**: `RX = 92, RZ = 54` on a `H = 22` hill; real is about 460 × 230 m on a 76 m hill. Scale about 2.5×, follow the three-lobed Trikuta outline, add the lower outer wall. The houses inside (`townHouses`) scale with it; check the budget.
 - [ ] **Chittorgarh**: `L = 300, W = 90, H = 40`; real is a 180 m hill, about 280 ha. Full size would make the towers specks, so keep a labelled compression but lengthen the plateau, raise the hill, and add the zigzag ascent road with its gates.
 
