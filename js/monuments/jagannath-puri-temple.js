@@ -1,26 +1,46 @@
 import * as THREE from 'three';
-import { M, flat, mesh, box, group, at, kalash, bell, shikhara, pidaRoof, flag, kalingaProfile } from '../helpers.js';
-import { trabeateGate } from '../details/temples.js';
-import { templeDoorway } from '../details/doorways.js';
+import { M, flat, mesh, box, at, kalash, bell, shikhara, pidaRoof, flag, kalingaProfile } from '../helpers.js';
+import { trabeateGate, wallWithGaps } from '../details/temples.js';
+import { templeDoorway, grandStair } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { addDetails } from '../details/jagannath-puri-temple.js';
 
 export function buildJagannath() {
   const m = M.puri, d = M.puriShade, g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(84, 1.2, 116, M.path));
-  for (const [w, dd, x, z] of [[90, 2, 0, -59], [2, 120, -45, 0], [2, 120, 45, 0], [36, 2, -27, 59], [36, 2, 27, 59]]) g.add(box(w, 7, dd, d, x, 0, z));
-  // The Singhadwara (Lion Gate): a passage through the gatehouse between its two lions
-  const gate = new THREE.Group();
-  gate.add(trabeateGate(18, 9, 10, 4.5, 6, { m, trim: d, lions: true }));
-  gate.add(at(pidaRoof(18, 7, 5, 0.9, m, d), 0, 9, 0));
-  g.add(at(gate, 0, 0, 59));
-  const B = 1.2;
+  // The inner enclosure (Kurma Bedha) is a terrace 4.5 m high, faced in stone, its wall standing
+  // on it; the front of the wall is open where the Baisi Pahacha arrives.
+  const B = 4.5, SW = 12;
+  g.add(box(92, B, 120, d, 0, 0, 0), box(86, 0.1, 114, M.path, 0, B, 0));
+  for (const [w, dd, x, z] of [[90, 2, 0, -59], [2, 120, -45, 0], [2, 120, 45, 0], [45 - SW, 2, -(SW + 45) / 2, 59], [45 - SW, 2, (SW + 45) / 2, 59]]) g.add(box(w, 5.5, dd, d, x, B, z));
+  // The Baisi Pahacha: twenty-two broad steps, each about 21 m long, 1.8 m deep and 0.2 m high,
+  // from inside the Lion Gate up to the terrace.
+  const stair = grandStair(B, 21, d, m, { n: 22, tread: 1.8 });
+  g.add(at(stair, 0, 0, 60));
+  // The outer wall (Meghanada Pacheri) round the lower court, with a gate on each side: the Lion
+  // Gate on the east (+z) at the foot of the steps, the Tiger Gate on the west, the Elephant Gate
+  // on the north (+x) and the Horse Gate on the south.
+  const GZ = 60 + stair.userData.run + 5.6, OX = 68, OZ = -84, ow = 2.4, oh = 7.5, len = GZ - OZ, cz = (GZ + OZ) / 2;
+  g.add(box(OX * 2, 0.08, len, M.path, 0, 0, cz));
+  g.add(wallWithGaps('x', OX * 2 + ow, oh, ow, d, [[0, 18]], 0, GZ), wallWithGaps('x', OX * 2 + ow, oh, ow, d, [[0, 14]], 0, OZ));
+  for (const s of [-1, 1]) g.add(wallWithGaps('z', len, oh, ow, d, [[cz, 14]], s * OX, cz));
+  const gateAt = (w, beasts, x, z, ry) => {
+    const gt = new THREE.Group();
+    gt.add(trabeateGate(w, 9, 10, 4.5, 6, { m, trim: d, beasts }));
+    gt.add(at(pidaRoof(w, w * 0.4, 5, 0.9, m, d), 0, 9, 0));
+    g.add(at(gt, x, 0, z).rotateY(ry));
+  };
+  gateAt(18, 'lion', 0, GZ, 0);
+  gateAt(14, 'tiger', 0, OZ, Math.PI);
+  gateAt(14, 'elephant', OX, cz, Math.PI / 2);
+  gateAt(14, 'horse', -OX, cz, -Math.PI / 2);
   // Rekha deula (main sanctum tower)
   const dz = -30;
   f.add(box(22, 16, 22, m, 0, B, dz), box(26, 16, 14, m, 0, B, dz), box(14, 16, 26, m, 0, B, dz));
   f.add(box(27, 1, 27, d, 0, B + 15, dz));
-  const tower = shikhara(24, 36, m, kalingaProfile, 20);
+  // The terrace raised the temple 3.3 m: the spire is that much shorter, so the top stays where it was.
+  const TH = 36 - (B - 1.2);
+  const tower = shikhara(24, TH, m, kalingaProfile, 20);
   f.add(at(tower, 0, B + 16, dz));
   const ty = B + 16 + tower.userData.top;
   const chakra = new THREE.Group();
@@ -47,6 +67,6 @@ export function buildJagannath() {
     f.add(am);
     f.add(at(kalash(w1 * 0.35), 0, ry + w1 * 0.72, z));
   }
-  addDetails(f, g);
+  addDetails(f, g, { B, TH, gateZ: GZ });
   return { group: g, focus: f, view: [1.05, 0.4, 1.05] };
 }

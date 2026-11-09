@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, FACES, rng, flat, steppedPlan, planPrism, planBand, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox } from '../helpers.js';
 import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol, placeAll, chhajja, railing, cuspedArchGeo } from './components.js';
 import { templeDoorway, templePorch, steps, grandStair, doorFrame, doorLeaves, guardian } from './doorways.js';
-import { lion } from './animals.js';
+import { lion, elephant, horse } from './animals.js';
 import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze, miniSpireGeo, kuta, shala } from './sculpture.js';
 
 // The shared temple builders, with real entrances: a Nagara temple's front porch, doorway and
@@ -467,8 +467,10 @@ export function gopuram(w, d, h, tiers, seed, palette = PAINT, { pitch = 2.1, ku
 
 // A temple gate on post-and-lintel lines: a gatehouse w × h × d (front face at z = d/2) with a
 // passage pw × ph through it under a flat lintel, stepped frames on both faces, the leaves standing
-// open inward at its middle, a paved floor, and optionally guardians or lions before it.
-export function trabeateGate(w, h, d, pw, ph, { m, trim = m, bands = 3, bw = Math.min(0.45, pw * 0.1), guardians = false, lions = false, open = 1.35 } = {}) {
+// open inward at its middle, a paved floor, and optionally guardians or a pair of carved beasts
+// before it: beasts 'lion', 'tiger' (the seated lion's figure: Puri's tiger gate carves them the
+// same way), 'elephant' or 'horse'. lions: true is beasts: 'lion'.
+export function trabeateGate(w, h, d, pw, ph, { m, trim = m, bands = 3, bw = Math.min(0.45, pw * 0.1), guardians = false, lions = false, beasts = lions ? 'lion' : null, open = 1.35 } = {}) {
   const g = new THREE.Group(), sw = (w - pw) / 2;
   for (const s of [-1, 1]) g.add(box(sw, h, d, m, s * (pw / 2 + sw / 2), 0, 0));
   g.add(box(pw + 0.2, h - ph, d, m, 0, ph, 0));
@@ -477,6 +479,10 @@ export function trabeateGate(w, h, d, pw, ph, { m, trim = m, bands = 3, bw = Mat
   g.add(at(doorLeaves(pw * 0.996, ph * 0.97, { open, inward: true }), 0, 0.02, d * 0.1));
   const ow = pw / 2 + bands * bw;
   if (guardians) for (const s of [-1, 1]) g.add(at(guardian(Math.min(2.6, ph * 0.5), trim), s * (ow + 0.6), 0, d / 2 + 0.45));
-  if (lions) for (const s of [-1, 1]) g.add(at(lion(Math.min(1.3, ph * 0.22), trim), s * (ow + 1.6), 0, d / 2 + 1.6));
+  if (beasts) for (const s of [-1, 1]) {
+    if (beasts === 'lion' || beasts === 'tiger') g.add(at(lion(Math.min(1.3, ph * 0.22), trim), s * (ow + 1.6), 0, d / 2 + 1.6));
+    else if (beasts === 'elephant') { const e = Math.min(0.6, ph * 0.09); g.add(at(elephant(trim, e), s * (ow + 1.4 + 1.8 * e), 0, d / 2 + 2.6 * e + 0.4)); }
+    else if (beasts === 'horse') { const e = Math.min(0.6, ph * 0.09), o = horse(trim, { coarse: true }); o.scale.setScalar(e); g.add(at(o, s * (ow + 1.2 + e), 0, d / 2 + 2.4 * e + 0.4)); }
+  }
   return mergeByMaterial(g);
 }
