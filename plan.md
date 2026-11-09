@@ -122,10 +122,10 @@ One commit each. Check the budget after each.
 
 `js/surface.js` already varies each surface by kind ('brick', 'marble', 'facade', 'ground' ...). Add weathering there, so every monument gains it without new geometry or triangles:
 
-- [ ] Damp and grime at the foot of walls: darken towards the ground over the first metre or two.
-- [ ] Streaks under ledges and cornices: faint vertical darkening below horizontal edges (from world height and a noise, not from geometry).
-- [ ] Soot and age on old brick and stone, weaker on marble, none on gilt and glass.
-- [ ] Phone builds: the same, or switched off if it costs frame rate on a real phone.
+- [x] Damp and grime at the foot of walls: darken towards the ground over the first metre or two.
+- [x] Streaks under ledges and cornices: faint vertical darkening below horizontal edges (from world height and a noise, not from geometry).
+- [x] Soot and age on old brick and stone, weaker on marble, none on gilt and glass.
+- [x] Phone builds: the same (a few shader operations per pixel, no geometry). Recheck on a real phone if frame rate drops.
 
 ### T11. Atmosphere and light
 
