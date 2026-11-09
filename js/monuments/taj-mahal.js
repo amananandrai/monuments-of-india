@@ -23,12 +23,20 @@ export function buildTaj() {
   // The pishtaqs, alcoves, calligraphy, inlay, parapets, guldastas, lotus crown and finial, the
   // chhatris and the minarets: see js/details/taj-mahal.js.
   addTajDetails(f, { P, s, c, H });
-  // Charbagh garden and reflecting pool in front of the tomb
-  g.add(box(8, 0.35, 150, M.water, 0, 0, 135));
-  g.add(box(12, 0.3, 150, M.path, 0, 0, 135).translateY(-0.02));
-  for (const x of [-24, 24]) g.add(box(34, 0.2, 150, M.grass, x, 0, 135));
-  g.add(box(16, 0.8, 16, M.marble, 0, 0, 135));
-  g.add(box(12, 0.9, 12, M.water, 0, 0, 135));
-  addDetails(f, g);
+  // The charbagh: a square garden about 300 m a side between the terrace and the great gate,
+  // quartered by water channels on raised walks, each quarter split again into four beds, with the
+  // raised marble pool (al-Hawd al-Kawthar) where the channels cross.
+  const G0 = 60, GL = 300, GW = 300, gc = G0 + GL / 2;
+  // The lawn runs 40 m past the side walls, so its fade into the open land happens outside them.
+  g.add(box(GW + 80, 0.15, GL, M.grass, 0, 0, gc));
+  // The cross channel sits 2 cm lower than the long one, so their walks and water never share a
+  // plane: the coplanar pass would otherwise lift one walk over the other channel's water.
+  for (const [w, d, x, z, dy] of [[12, GL, 0, gc, 0], [GW, 12, 0, gc, -0.02]]) g.add(box(w, 0.3 + dy, d, M.path, x, 0, z), box(w > d ? w : w - 4, 0.35 + dy, w > d ? d - 4 : d, M.water, x, 0, z));
+  for (const q of [-1, 1]) {
+    g.add(box(6, 0.25, GL, M.path, q * GW / 4, 0, gc), box(GW, 0.25, 6, M.path, 0, 0, gc + q * GL / 4));
+  }
+  for (const s of [-1, 1]) g.add(box(GW, 0.25, 5, M.path, 0, 0, G0 + 2.5 + (s > 0 ? GL - 5 : 0)), box(5, 0.25, GL, M.path, s * (GW / 2 - 2.5), 0, gc));
+  g.add(box(30, 1.4, 30, M.marble, 0, 0, gc), box(24, 1.5, 24, M.water, 0, 0, gc));
+  addDetails(f, g, { G0, GL, GW });
   return { group: g, focus: f };
 }

@@ -196,8 +196,19 @@ function greatGate() {
   return mergeByMaterial(g);
 }
 
-export function addDetails(f, g) {
-  g.add(at(greatGate(), 0, 0, 228));
+export function addDetails(f, g, { G0 = 60, GL = 300, GW = 300 } = {}) {
+  const G1 = G0 + GL, gc = G0 + GL / 2;
+  g.add(at(greatGate(), 0, 0, G1 + 15));
+  // The garden's red sandstone walls, with a pavilion in the middle of the east and west sides.
+  for (const s of [-1, 1]) {
+    g.add(box(2, 6, GL, M.red, s * (GW / 2 + 1), 0, gc), box(2.6, 0.5, GL, M.marble, s * (GW / 2 + 1), 6, gc));
+    const pv = new THREE.Group();
+    pv.add(box(24, 10, 14, M.red), box(24.6, 0.6, 14.6, M.marble, 0, 10, 0), at(iwan(7, 8, { m: M.red, trim: M.marble, shade: M.redLight, depth: 1.4, frame: 1, top: 1 }), 0, 0, 7 - 1.4));
+    for (const x of [-9, 9]) pv.add(at(mughalChhatri(1.8, 5, M.red, { domeM: M.marble }), x, 10.6, 0));
+    g.add(at(pv, s * (GW / 2 + 7), 0, gc).rotateY(-s * Math.PI / 2));
+  }
+  // The south wall runs out from either side of the great gate (41 m wide) to the corners.
+  for (const s of [-1, 1]) g.add(box(GW / 2 - 21, 6, 2, M.red, s * (GW / 4 + 10.5), 0, G1 + 1), box(GW / 2 - 21, 0.5, 2.6, M.marble, s * (GW / 4 + 10.5), 6, G1 + 1));
   // The red sandstone terrace runs on either side of the tomb's platform to the mosque and the
   // jawab; the Yamuna flows behind, below a sandy bank.
   for (const s of [-1, 1]) {
@@ -205,8 +216,11 @@ export function addDetails(f, g) {
     g.add(at(mosque(), s * 128, 1.5, 0).rotateY(-s * Math.PI / 2));
   }
   g.add(sheet(1400, 60, mat('#c8b48c', 0.95), 0, 0.05, -90), sheet(1400, 300, M.lake, 0, 0.1, -270));
-  g.add(fountains(along(14, [0, 64], [0, 206]).filter(([, z]) => Math.abs(z - 135) > 10), { y: 0.35, h: 1.6 }));
-  for (const x of [-9, 9]) g.add(trees(along(16, [x, 62], [x, 208]).filter(([, z]) => Math.abs(z - 135) > 11), { kind: 'cypress', seed: x > 0 ? 3 : 4, h: 9 }));
-  g.add(trees(scatter(16, [-40, 40, 64, 206], { seed: 5, gap: 14, avoid: [[-12, 12, 0, 220]] }), { kind: 'neem', seed: 5 }));
-  g.add(asiBoard('Taj Mahal', 14, 212, 0, { line2: 'WORLD HERITAGE SITE' }));
+  g.add(fountains(along(24, [0, G0 + 4], [0, G1 - 4]).filter(([, z]) => Math.abs(z - gc) > 18), { y: 0.35, h: 1.6 }));
+  // Cypresses line the long channel; the sixteen beds are planted with fruit and shade trees.
+  for (const x of [-9, 9]) g.add(trees(along(30, [x, G0 + 2], [x, G1 - 2]).filter(([, z]) => Math.abs(z - gc) > 19), { kind: 'cypress', seed: x > 0 ? 3 : 4, h: 9 }));
+  const beds = scatter(64, [-GW / 2 + 6, GW / 2 - 6, G0 + 6, G1 - 6], { seed: 5, gap: 16, avoid: [[-14, 14, 0, 999], [-999, 999, gc - 14, gc + 14]] })
+    .filter(([x, z]) => Math.abs(Math.abs(x) - GW / 4) > 6 && Math.abs(Math.abs(z - gc) - GL / 4) > 6);
+  g.add(trees(beds.filter((_, i) => i % 2), { kind: 'mango', seed: 5 }), trees(beds.filter((_, i) => !(i % 2)), { kind: 'neem', seed: 6 }));
+  g.add(asiBoard('Taj Mahal', 14, G1 - 8, 0, { line2: 'WORLD HERITAGE SITE' }));
 }
