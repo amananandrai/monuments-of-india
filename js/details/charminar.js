@@ -4,7 +4,8 @@ import {
   archRing, archSlab, rosette, clockFace, bracketGeo, placeAll, aroundCircle, alongFace, chhajjaRing,
   railingRing, arcadeScreen, merlons, lotusDome, petalRing, mergeByMaterial,
 } from './components.js';
-import { stalls, along } from './realism.js';
+import { stalls, along, cityAround } from './realism.js';
+import { iwan } from './mughal.js';
 
 // Charminar, finer detail (Muhammad Quli Qutb Shah, 1591). From photographs and descriptions:
 // - four minarets, each a fluted shaft rising through the building and on above the roof in two
@@ -107,4 +108,29 @@ export function addDetails(f, g) {
   g.add(cyl(30, 30, 0.1, M.asphalt, 0, -0.06, 0, 48));
   g.add(box(360, 0.1, 18, M.asphalt, 0, -0.07, 0), box(18, 0.1, 360, M.asphalt, 0, -0.08, 0));
   g.add(stalls([...along(8, [-40, -9], [-100, -9]).map(([x, z]) => [x, z, 0]), ...along(8, [-40, 9], [-100, 9]).map(([x, z]) => [x, z, Math.PI])], { goods: ['#d9342b', '#2f7a3f', '#e3b54a', '#7a3f8f', '#2f5d9a'] }));
+  // The Mecca Masjid, a hundred metres to the south-west (north is -z), and the old city filling
+  // the four quarters between the streets.
+  g.add(at(meccaMasjid(), -95, 0, 90));
+  g.add(cityAround([-34, 34, -34, 34], { rows: 4, gap: 10, seed: 71, paint: ['#efe6d2', '#e3d3b2', '#d9c7a6', '#f1e9d8', '#cfd8d4', '#e8d0b8'],
+    keep: [[-400, 400, -12, 12], [-12, 12, -400, 400], [-145, -42, 42, 140]] }));
+}
+
+// The Mecca Masjid (1617–94): a court of grey granite before the prayer hall on its west side,
+// five great arches in the hall's front between two octagonal minarets crowned by arcaded
+// galleries and small domes, a pool in the court and low ranges round it. Centred on the court.
+function meccaMasjid() {
+  const g = new THREE.Group(), G = M.granite, Gd = M.graniteDark;
+  g.add(box(80, 0.5, 76, mat('#c9c4ba', 0.9)), box(18, 0.6, 10, Gd, 8, 0.5, 0), box(16, 0.7, 8, M.water, 8, 0.5, 0));
+  for (const s of [-1, 1]) g.add(box(80, 5, 3, G, 0, 0.5, s * 38));
+  g.add(box(3, 5, 30, G, 40, 0.5, -23), box(3, 5, 30, G, 40, 0.5, 23));
+  const hall = new THREE.Group();
+  hall.add(box(66, 20, 22, G, 0, 0, -11), box(66.6, 0.8, 22.6, Gd, 0, 20, -11));
+  for (let k = 0; k < 5; k++) hall.add(at(iwan(7, 14, { m: G, trim: Gd, shade: M.recess, depth: 1.8, frame: 1.2, top: 1.4, fill: 'room' }), -24 + k * 12, 0, -1.8));
+  for (const s of [-1, 1]) {
+    hall.add(cyl(3.2, 3.6, 34, G, s * 33, 0, 0, 8), cyl(4.2, 3.4, 1.2, Gd, s * 33, 26, 0, 8));
+    for (let k = 0; k < 8; k++) { const a = (k / 8) * Math.PI * 2; hall.add(box(0.5, 3.6, 0.5, G, s * 33 + Math.cos(a) * 3, 27.2, Math.sin(a) * 3)); }
+    hall.add(cyl(3.4, 3.4, 0.6, Gd, s * 33, 30.8, 0, 8), at(mesh(new THREE.SphereGeometry(3.1, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), G), s * 33, 31.4, 0), at(finial(2), s * 33, 34.4, 0));
+  }
+  g.add(at(hall, -37, 0.5, 0).rotateY(Math.PI / 2));
+  return g;
 }
