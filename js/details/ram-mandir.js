@@ -123,7 +123,7 @@ function architecture(g) {
 // axis, from z = KZ0 behind to KZ1 in front, its wall W thick under a cornice, open on the east
 // through a gate on post-and-lintel lines. At its corners, on raised platforms, the four shrines of
 // Surya, Bhagwati, Ganesh and Shiva, each a single cell under its own spire (not the main temple's
-// three storeys), facing the temple.
+// three storeys), facing across the court.
 export const KX = 52, KZ0 = -72, KZ1 = 80;
 export function parkota(m, sh) {
   const g = new THREE.Group(), W = 4, H = 5.5, len = KZ1 - KZ0, cz = (KZ0 + KZ1) / 2;
@@ -138,7 +138,9 @@ export function parkota(m, sh) {
   for (const sx of [-1, 1]) for (const sz of [KZ0, KZ1]) {
     const x = sx * KX, sp = new THREE.Group();
     sp.add(box(13, 2, 13, sh), nagaraTemple({ w: 6, h: 10, m, shade: sh, plinth: 0.8, urus: detail.low ? 0 : 4, uruScale: 0.45, halls: [], apron: 2, base: null }).translateY(2));
-    sp.rotation.y = Math.atan2(-x, -sz);
+    // Facing across the court towards the temple's axis, square to the walls (js/coplanar.js only
+    // separates faces of axis-aligned parts).
+    sp.rotation.y = sx > 0 ? -Math.PI / 2 : Math.PI / 2;
     g.add(at(sp, x, 0, sz));
   }
   return g;

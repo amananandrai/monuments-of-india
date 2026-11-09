@@ -18,10 +18,27 @@ export function buildRumtek() {
   g.add(mountainRing({ inner: 400, outer: 700, h: 170, vary: 60, rock: ['#4a5d3a', '#56693f'], cover: '#4e6e3c', steep: 0.6 }));
 
   // Courtyard ringed by monks' quarters
-  f.add(box(70, 0.4, 70, M.path));
+  f.add(box(69.8, 0.4, 69.8, M.path));
   const q = [];
   for (const s of [-1, 1]) q.push([0, 0, s * 32, 70, 7, 6], [s * 32, 0, 0, 6, 7, 58]);
   f.add(inst(unitBox(), q, YELLOW), inst(unitBox(), q.map(([x, y, z, w, h, d]) => [x, h, z, w + 0.4, 0.8, d + 0.4]), TIBETAN.maroon));
+  // The quarters are two storeys of monks' cells: on both faces a row of dark-framed windows on
+  // each floor, a door every few cells on the court side, and a maroon band under the eave. Each
+  // face is [centre x, z, length, facing].
+  const wins = [], frames = [], doors = [], bands = [];
+  for (const s of [-1, 1]) for (const [cx, cz, len, ry] of [[0, s * 32, 70, s > 0 ? Math.PI : 0], [s * 32, 0, 58, s > 0 ? -Math.PI / 2 : Math.PI / 2]]) {
+    for (const side of [1, -1]) {
+      const a = ry + (side > 0 ? 0 : Math.PI), ox = Math.sin(a) * 3.03, oz = Math.cos(a) * 3.03, tx = Math.cos(a), tz = -Math.sin(a);
+      const n = Math.floor(len / 3.2);
+      for (let k = 0; k < n; k++) {
+        const t = -len / 2 + (k + 0.5) * (len / n), x = cx + ox + tx * t, z = cz + oz + tz * t;
+        for (const y of side > 0 && k % 4 === 2 ? [4.2] : [1.4, 4.2]) { wins.push([x, y, z, 0.9, 1.3, 0.06, a]); frames.push([x - Math.sin(a) * 0.01, y - 0.18, z - Math.cos(a) * 0.01, 1.3, 1.66, 0.04, a]); }
+        if (side > 0 && k % 4 === 2) doors.push([x, 0, z, 1.2, 2.4, 0.08, a]);
+      }
+      bands.push([cx + ox * 1.01, 6.2, cz + oz * 1.01, len, 0.5, 0.06, a]);
+    }
+  }
+  f.add(inst(unitBox(), frames, mat('#2a2220', 0.8)), inst(unitBox(), wins, M.recess), inst(unitBox(), doors, mat('#9a2b22', 0.7)), inst(unitBox(), bands, TIBETAN.maroon));
   // The main shrine hall: four storeys under a gilded roof with its golden finial
   f.add(at(tibetanBlock(28, 14, 22, 3), 0, 0, -12), box(18, 5, 14, TIBETAN.white, 0, 14, -14), box(18.4, 0.8, 14.4, TIBETAN.maroon, 0, 18.2, -14));
   // The gilded roof that marks Rumtek from across the valley: a broad lower roof, a clerestory, and

@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { heightField, ridged, fbm, smooth } from '../details/terrain.js';
+import { detail } from '../detail.js';
 import { M, V, mat, mesh, box, at, ellipsoid, capsule, tube, smoothLathe, sheet, face, fingers, inst, unitBox } from '../helpers.js';
 import { patelBody } from '../details/figures.js';
 import { addDetails } from '../details/statue-of-unity.js';
@@ -71,7 +73,7 @@ export function buildStatue() {
     for (const sd of [-1, 1]) fins.push([k, y, sd * (w / 2 + 0.5), 1.2, h, 1], [sd * (w / 2 + 0.5), y, k, 1, h, 1.2]);
   }
   f.add(inst(unitBox(), fins, STONE));
-  for (const sx of [-1, 1]) for (const sz of [-1, 1]) f.add(box(10, 21, 10, STONE_DARK, sx * 37, 0, sz * 37));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) f.add(box(10.4, 21, 10.4, STONE_DARK, sx * 37, 0, sz * 37));
   f.add(smoothLathe([[25.6, 55.6], [24.8, 56.6], [22.4, 57.3], [20.4, 58.0], [0.1, 58.0]], M.marbleShade, 64));
   for (let st = 0; st < 8; st++) f.add(box(30, 1.1, 2, M.marbleShade, 0, st * 1.1, 49 - st * 1.0));
   f.add(at(patel(M.bronze), 0, 58, 0));
@@ -84,14 +86,17 @@ export function buildStatue() {
   g.add(box(18, 2, 420, M.concrete, 0, 0, 290));
   for (let z = 100; z <= 480; z += 40) g.add(box(10, 6, 4, M.concrete, 0, -6, z));
   g.add(sheet(7000, 7000, M.river, 0, 0.08, 0));
-  for (let i = 0; i < 14; i++) {
-    const a = (i / 14) * Math.PI * 2 + 0.2, d = 1000 + (i % 3) * 140;
-    if (Math.abs(Math.sin(a)) > 0.85 && Math.sin(a) < 0) continue;
-    const h = ellipsoid(420 + (i % 4) * 80, 60 + (i % 3) * 25, 260 + (i % 2) * 80, mat('#5d6a4a', 0.95, 0, { flatShading: true }), Math.cos(a) * d * 1.6, -14, Math.sin(a) * d * 1.6);
-    h.rotation.y = -a;
-    g.add(h);
-  }
-  // The Sardar Sarovar Dam, 3.2 km upstream (drawn nearer, at 1.9 km, so it shows through the
+  // The Satpura and Vindhya hills round the gorge (js/details/terrain.js): rocky, scrub-covered
+  // ridges rising from the river's banks, the Narmada running between them past the island to the
+  // dam upstream (-z), their feet sinking under the water.
+  g.add(heightField(6000, 6000, detail.low ? 130 : 190, (x, z) => {
+    // The river valley: open round the island and along the Narmada's course, upstream to the dam
+    // and down past the causeway; the hills close in on either side.
+    const bend = 140 * Math.sin(z * 0.0009), across = Math.abs(x - bend), r = Math.hypot(x, z);
+    const open = Math.max(smooth(380, 260, r) , smooth(330, 220, across) * (z < 900 ? 1 : 0.3));
+    const hills = (90 + 150 * smooth(500, 2400, across)) * (0.55 + 0.6 * ridged(x, z, { scale: 0.0011, octaves: 4 })) + 18 * fbm(x, z, { scale: 0.006, octaves: 3 });
+    return hills * (1 - open) * smooth(250, 700, Math.max(across, r * 0.8)) - 12;
+  }, { rock: ['#6f6553', '#7c7160', '#655c4c'], cover: '#5d6a4a', steep: 0.82, band: 28 }));  // The Sardar Sarovar Dam, 3.2 km upstream (drawn nearer, at 1.9 km, so it shows through the
   // haze): a concrete gravity dam 150 m high across the valley behind the statue.
   const dz = -1900, dam = new THREE.Group();
   // The face towards the statue is the downstream one: a sloping concrete face stepping out to the
@@ -105,7 +110,7 @@ export function buildStatue() {
   // The face's distance out at height y; the spillway's piers stand out from the crest, the radial
   // gates between them, and the overflow runs down the face as a white sheet.
   const face = (y) => 16 + 54 * (1 - y / H), piers = [], gates = [];
-  for (let x = -270; x <= 270; x += 18) piers.push([x, H - 30, dz + face(H - 30) / 2 + 8, 5, 34, face(H - 30) + 6]);
+  for (let x = -270; x <= 270; x += 18) piers.push([x, H - 30, dz + face(H - 30) / 2 + 8, 5, 33.9, face(H - 30) + 6]);
   for (let x = -261; x < 270; x += 18) gates.push([x, H - 24, dz + face(H - 24) + 3, 12.4, 18, 1.2]);
   dam.add(inst(unitBox(), piers, CONC), inst(unitBox(), gates, mat('#4f5a63', 0.5, 0.4)));
   const fall = new THREE.Shape([[face(H - 26) + 0.6, H - 26], [face(0) + 0.6, 0], [face(0) + 5, 0], [face(H - 26) + 1.6, H - 26]].map(([z, y]) => new THREE.Vector2(z, y)));

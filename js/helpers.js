@@ -72,6 +72,10 @@ export const M = {
   saffron: surface(mat('#ef7d1a', 0.7, 0, { side: THREE.DoubleSide }), 'none'),
   flagRed: surface(mat('#d23a24', 0.7, 0, { side: THREE.DoubleSide }), 'none'),
 };
+// A recess (the dark back of a blind arch, a window or a niche) is often laid exactly on the wall it
+// decorates: a small depth offset makes it always draw over that wall instead of flickering with it.
+// It is a few millimetres at most, so it never shows through anything standing in front of it.
+Object.assign(M.recess, { polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -4 });
 
 // Objects shown only in the night scene (e.g. festival lighting); applyTheme toggles them.
 export const nightState = { on: false, objects: [] };
@@ -604,10 +608,17 @@ export function domeBands(cx, cy, cz, r, m) {
 }
 
 // Vertical inlay stripes on a dome or shaft: n thin gores following the lathe profile pts
-// ([r, y] pairs, already set a little proud of the surface), each frac of its share of the circle
-// wide, centred on the angles k·2π/n so they can sit on a faceted cylinder's vertices. One mesh.
-export function latheStripes(pts, n, frac, m, seg = 3) {
-  const v = pts.map(([r, y]) => new THREE.Vector2(r, y)), step = (Math.PI * 2) / n, w = step * frac, pos = [], idx = [];
+// ([r, y] pairs on the surface), each frac of its share of the circle wide, centred on the angles
+// k·2π/n so they can sit on a faceted cylinder's vertices. One mesh. The gores stand `lift` off the
+// surface along its normal (the same distance all the way up, so they stay clear of it where the
+// dome narrows to its apex) and draw with a depth offset, so they never flicker against it.
+const inlays = new Map();
+export function latheStripes(pts, n, frac, m, seg = 3, lift = 0.04) {
+  const v = pts.map(([r, y], i) => {
+    const [r0, y0] = pts[Math.max(0, i - 1)], [r1, y1] = pts[Math.min(pts.length - 1, i + 1)], dr = r1 - r0, dy = y1 - y0, l = Math.hypot(dr, dy) || 1;
+    return new THREE.Vector2(Math.max(0, r + (dy / l) * lift), y - (dr / l) * lift);
+  });
+  const step = (Math.PI * 2) / n, w = step * frac, pos = [], idx = [];
   for (let k = 0; k < n; k++) {
     const g = new THREE.LatheGeometry(v, seg, k * step - w / 2, w), base = pos.length / 3;
     pos.push(...g.attributes.position.array);
@@ -618,7 +629,8 @@ export function latheStripes(pts, n, frac, m, seg = 3) {
   geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   geo.setIndex(idx);
   geo.computeVertexNormals();
-  return mesh(geo, m);
+  if (!inlays.has(m)) { const c = attachSurface(m.clone()); c.polygonOffset = true; c.polygonOffsetFactor = -2; c.polygonOffsetUnits = -6; inlays.set(m, c); }
+  return mesh(geo, inlays.get(m));
 }
 
 export function stellateTower(r, h, m, md, tiers = 7) {
@@ -694,9 +706,12 @@ const TIB_WHITE = mat('#efece4', 0.85), TIB_MAROON = mat('#6b2a22', 0.85), TIB_W
 export function tibetanBlock(w, h, d, floors = 2, wallM = TIB_WHITE) {
   const g = new THREE.Group();
   g.add(box(w, h, d, wallM), box(w + 0.3, Math.min(1.6, h * 0.14), d + 0.3, TIB_MAROON, 0, h - Math.min(1.6, h * 0.14)));
-  const n = Math.max(1, Math.floor(w / 3.4));
-  for (let fl = 0; fl < floors; fl++) for (let k = 0; k < n; k++) {
-    g.add(onFace(box(1.1, 1.5, 0.2, TIB_WINDOW, 0, 0.8 + fl * ((h * 0.8) / floors)), 0, d / 2, -w / 2 + (k + 0.5) * (w / n)));
+  // Windows on every face (the front's set a little further out, as before), so no side is blank.
+  for (const a of FACES) {
+    const len = Math.abs(Math.sin(a)) > 0.5 ? d : w, dist = (Math.abs(Math.sin(a)) > 0.5 ? w : d) / 2, n = Math.max(1, Math.floor(len / 3.4));
+    for (let fl = 0; fl < floors; fl++) for (let k = 0; k < n; k++) {
+      g.add(onFace(box(1.1, 1.5, 0.2, TIB_WINDOW, 0, 0.8 + fl * ((h * 0.8) / floors)), a, dist, -len / 2 + (k + 0.5) * (len / n)));
+    }
   }
   return g;
 }

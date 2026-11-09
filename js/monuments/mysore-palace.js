@@ -38,7 +38,20 @@ export function buildMysorePalace() {
   // The front is an open arcade 2.4 m deep: tall arches onto the verandah below, a gallery above
   const cells = [];
   for (let k = -3; k <= 3; k++) if (k) cells.push([k * 10, 0.5, 7, 11, 'room'], [k * 10, 11.5, 4.5, 4, 'room']);
-  f.add(box(76, 16, 43.6, S, 0, b, -1.2), at(arcadeSkin(76, 16, cells, 2.4, S, { trim: M.lime }), 0, b, 20.6));
+  f.add(box(72, 16, 41.6, S, 0, b, -0.2), at(arcadeSkin(76, 16, cells, 2.4, S, { trim: M.lime }), 0, b, 20.6));
+  // The back and sides are ranges of two storeys of arched windows (rooms below, screened windows
+  // above) between pilaster bays, 2 m deep, with domed turrets on the back corners.
+  const back = [], ends = [];
+  for (let k = -5; k <= 5; k++) back.push([k * 6.6, 1, 3.4, 6.4, 'room'], [k * 6.6, 9.2, 3, 5, 'jali']);
+  for (let k = -3; k <= 3; k++) ends.push([k * 5.6, 1, 3.2, 6.4, 'room'], [k * 5.6, 9.2, 2.8, 5, 'jali']);
+  f.add(at(arcadeSkin(76, 16, back, 2, S, { trim: M.lime, fill: 'room' }), 0, b, -21).rotateY(Math.PI));
+  for (const s of [-1, 1]) f.add(at(arcadeSkin(41.6, 16, ends, 2, S, { trim: M.lime, fill: 'room' }), s * 36, b, -0.2).rotateY(s * Math.PI / 2));
+  for (const s of [-1, 1]) {
+    f.add(cyl(3.2, 3.2, 20, S, s * 37, b, -22, 16), cyl(3.6, 3.6, 0.6, M.lime, s * 37, b + 16, -22, 16));
+    f.add(at(onionDome(3.4, Rz), s * 37, b + 20, -22), at(finial(2.4), s * 37, b + 20 + 3.4 * 1.78, -22));
+    dome(s * 37, b + 20, -22, 3.4);
+  }
+  for (let k = -5; k <= 5; k++) arch(3.4, 6.4, k * 6.6, b + 1, -23.1);
   f.add(box(77, 0.8, 47, M.lime, 0, b + 16, 0));
   rect(-38.5, 38.5, b + 16.9, -23.5, 23.5);
   verticals(-38, 38, -23, 23, b, b + 16);
@@ -79,7 +92,6 @@ export function buildMysorePalace() {
     verticals(x - 5, x + 5, z - 5, z + 5, b, b + 22);
     rect(x - 5.1, x + 5.1, b + 22, z - 5.1, z + 5.1);
     dome(x, b + 23.5, z, 4.2);
-    f.add(at(chhatri(3, 8, S, Rz), x, b + 16.8, -19));
   }
   for (const x of [-22, -12, 12, 22]) f.add(at(chhatri(2.2, 6.5, S, Rz), x, b + 16.8, 20.5));
   f.add(bulbPoints(bulbs));

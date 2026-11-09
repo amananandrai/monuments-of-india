@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { at, onFace, FACES, flag, mat } from '../helpers.js';
 import { mouldings, frieze, templeNiche, idol, mergeByMaterial } from './components.js';
 import { trees, scatter } from './realism.js';
+import { nilachal } from '../monuments/kamakhya-temple.js';
 
 // Kamakhya, finer detail. From photographs: the cross-shaped base of the sanctum is banded with
 // carved friezes and set with sculpted panels of deities (Ganesha among them) in niches; the
@@ -26,8 +27,8 @@ function architecture(f) {
 const RED = mat('#c62a2a', 0.8, 0, { side: 2 });
 export function addDetails(f, g) {
   architecture(f);
-  const T = 40, slope = scatter(90, [-145, 145, -145, 145], { seed: 3, gap: 11 }).filter(([x, z]) => { const r = Math.hypot(x, z); return r > 66 && r < 146; });
-  for (const s of slope) s.push(T * (150 - Math.hypot(s[0], s[1])) / 90 - 0.6);
+  const T = 40, slope = scatter(90, [-145, 145, -145, 145], { seed: 3, gap: 11 }).filter(([x, z]) => { const r = Math.hypot(x, z); return r > 64 && r < 158; });
+  for (const s of slope) s.push(nilachal(s[0], s[1]) - 0.4);
   // Each tree stands on the slope, at the hill's height where it grows.
   g.add(trees(slope.map(([x, z, y]) => [x, z, null, y]), { kind: 'mango', seed: 4, h: 9 }));
   for (const [x, z] of [[-30, -36], [30, -36], [-30, 36], [30, 36], [0, 46]]) f.add(at(flag(6, RED), x, T, z));

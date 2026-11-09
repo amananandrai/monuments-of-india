@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, onFace, archPanel, archWall, hemi, finial, ellipseWall, curvedBand, inst, unitBox } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
+import { heightField, fbm, smooth } from '../details/terrain.js';
+import { detail } from '../detail.js';
 import { addDetails } from '../details/golconda-fort.js';
 
 const GRANITE = mat('#9a917f', 0.9);
@@ -14,16 +16,20 @@ export const RINGS = [0.9, 0.58, 0.27];
 export function hillRadius(a) { return 110 * (1 + 0.16 * Math.sin(3 * a + 1) + 0.08 * Math.sin(5 * a + 2)); }
 export function ringPoint(q, a) { const r = q * hillRadius(a) + 2 * Math.sin(7 * a) * q; return [Math.cos(a) * r, H * (1 - q), Math.sin(a) * r]; }
 export function hillY(x, z) { const q = Math.hypot(x, z) / hillRadius(Math.atan2(z, x)); return q < 1 ? H * (1 - q) : 0; }
+// The rock's surface: the even slope (on which the walls stand) with granite relief that only ever
+// raises it (by up to 1.4 m), so a wall may sink a little into the rock but never floats; the foot
+// sinks under the plain. Read by the shrubs in js/details/golconda-fort.js.
+export function hillSurface(x, z) {
+  const y = hillY(x, z);
+  return y + smooth(0.5, 6, y) * 0.7 * (1 + fbm(x, z, { scale: 0.05, octaves: 3 })) - 0.4 * (1 - smooth(0, 3, y));
+}
 
 export function buildGolconda() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(97);
   g.add(f);
   g.add(box(500, 0.2, 500, mat('#a69b7a', 0.95)));
   // The granite hill, irregular in plan and strewn with boulders
-  const hill = new THREE.ConeGeometry(110, H, 72, 14).translate(0, H / 2, 0), hp = hill.attributes.position;
-  for (let k = 0; k < hp.count; k++) { const x = hp.getX(k), z = hp.getZ(k), s = hillRadius(Math.atan2(z, x)) / 110; hp.setX(k, x * s); hp.setZ(k, z * s); }
-  hill.computeVertexNormals();
-  g.add(mesh(hill, BOULDER));
+  g.add(heightField(320, 320, detail.low ? 120 : 180, hillSurface, { rock: ['#8c8270', '#958b78', '#857b69'], cover: '#9a8f72', steep: 0.9, band: 400 }));
   for (let i = 0; i < 30; i++) {
     const a = R() * Math.PI * 2, q = 0.18 + R() * 0.72, r = 3 + R() * 5, [x, y, z] = ringPoint(q, a);
     g.add(mesh(new THREE.IcosahedronGeometry(r, 0), BOULDER, x, y + r * 0.3, z));

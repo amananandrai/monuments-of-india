@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, hemi, finial, surface, inst, unitBox, unitHemi, guldasta } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, hemi, finial, surface, inst, unitBox, unitHemi, guldasta } from '../helpers.js';
 import { addDetails } from '../details/hawa-mahal.js';
+import { arcadeSkin } from '../details/mughal.js';
 
 // The jali in each window. Its holes are cut in the shader, so it stays opaque (a transparent
 // material would lose its surface) and casts no shadow; the stone screen around it does.
@@ -123,6 +124,34 @@ export function buildHawaMahal() {
   });
   f.add(box(3.4, 1.4, 2.1, P, 0, y, -D / 2), at(hemi(1.1, L, 16), 0, y + 1.4, -D / 2), at(finial(2), 0, y + 2.5, -D / 2));
   for (const x of [-3.8, 3.8]) f.add(box(2, 0.9, 2, P, x, y, -D / 2), at(hemi(0.9, L, 12), x, y + 0.9, -D / 2), at(finial(1.3), x, y + 1.75, -D / 2));
+  // Behind the screen, the palace it fronts (the real Hawa Mahal is a screen on the side of the
+  // City Palace's zenana): a paved court, ranges of two storeys round it with arcades on the court
+  // side, an open pavilion at its middle, and the ramps (not stairs) that climb to the upper
+  // floors, built for palanquins.
+  const court = new THREE.Group(), C0 = -D - 2, CD = 34, CW = 46;
+  court.add(box(CW, 0.25, CD, M.path, 0, 0, C0 - CD / 2));
+  for (const [cx, cz, len, ry] of [[0, C0 - CD - 4, CW + 16, 0], [-(CW / 2 + 4), C0 - CD / 2, CD, -Math.PI / 2], [CW / 2 + 4, C0 - CD / 2, CD, Math.PI / 2]]) {
+    const cells = [], n = Math.floor(len / 4);
+    for (let k = 0; k < n; k++) { const x = -len / 2 + (k + 0.5) * (len / n); cells.push([x, 0.3, 2.4, 3.2, 'room'], [x, 4.3, 2, 2.6, 'jali']); }
+    const r = new THREE.Group();
+    // The court side opens in an arcade; the outer side has two rows of windows.
+    const outer = cells.map(([x, sl, w, h]) => [x, sl + 0.6, w * 0.6, h * 0.7, 'room']);
+    r.add(box(len, 7.4, 5.6, P, 0, 0, -4), at(arcadeSkin(len, 7.4, cells, 1.2, P, { trim: L }), 0, 0, -1.2), at(arcadeSkin(len, 7.4, outer, 1.2, P, { trim: L, fill: 'room' }), 0, 0, -6.8).rotateY(Math.PI), box(len + 0.4, 0.5, 8, L, 0, 7.4, -4));
+    court.add(at(r, cx, 0, cz).rotateY(ry));
+  }
+  // The pavilion: twelve columns under a flat roof with a parapet.
+  for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) if (i % 3 === 0 || j % 2 === 0) court.add(cyl(0.3, 0.3, 4, L, -4.5 + i * 3, 0.25, C0 - CD / 2 - 3 + j * 3, 8));
+  court.add(box(11, 0.5, 8, L, 0, 4.25, C0 - CD / 2), box(11.4, 0.6, 8.4, P, 0, 4.75, C0 - CD / 2));
+  // The ramps: a broad sloping way up each side of the court, against the side ranges.
+  for (const s of [-1, 1]) {
+    const ramp = box(4, 0.4, 24, P);
+    ramp.position.set(s * (CW / 2 - 4.6), 3.5, C0 - CD / 2);
+    ramp.rotation.x = s * Math.atan2(7.4, 24);
+    const rail = box(0.4, 1, 24, L, s * (CW / 2 - 6.8), 3.5, C0 - CD / 2);
+    rail.rotation.x = s * Math.atan2(7.4, 24);
+    court.add(ramp, rail);
+  }
+  f.add(court);
   addDetails(f, g);
   // A flat facade: framed closer than its bounding sphere would allow.
   return { group: g, focus: f, view: [0.4, 0.2, 1.2], zoom: 0.72 };

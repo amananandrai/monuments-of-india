@@ -10,7 +10,7 @@ export function buildOldParliament() {
   f.add(cyl(88, 89, 2, M.redLight, 0, 0, 0, 96), cyl(85, 85, 8, Rd, 0, 2, 0, 96));
   const wins = [], cols = [];
   for (let k = 0; k < 72; k++) { const a = (k / 72) * Math.PI * 2; wins.push([Math.sin(a) * 85.05, 3.5, Math.cos(a) * 85.05, 2.4, 4, 0.3, a]); }
-  for (let k = 0; k < 144; k++) { const a = (k / 144) * Math.PI * 2; cols.push([Math.sin(a) * 84.4, 10.8, Math.cos(a) * 84.4, 1.5, 9, 1.5]); }
+  for (let k = 0; k < 144; k++) { const a = (k / 144) * Math.PI * 2; cols.push([Math.sin(a) * 84.4, 10.8, Math.cos(a) * 84.4, 1.5, 8.98, 1.5]); }
   f.add(inst(unitBox(), wins, M.recess), inst(unitCyl(14), cols, Bf));
   // The verandah's back wall is in the shade of the colonnade and its eave.
   f.add(cyl(86, 86, 0.8, Rd, 0, 10, 0, 96), cyl(81, 81, 10, M.khajShade, 0, 10, 0, 96));

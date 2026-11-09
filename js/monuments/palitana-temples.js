@@ -1,40 +1,50 @@
 import * as THREE from 'three';
-import { mat, mesh, box, at, rng, inst, unitBox, ellipseWall } from '../helpers.js';
+import { mat, box, cyl, at, rng, inst, unitBox, ellipseWall } from '../helpers.js';
+import { heightField, fbm, smooth } from '../details/terrain.js';
+import { detail } from '../detail.js';
 import { nagaraTemple, trabeateGate } from '../details/temples.js';
 import { miniSpireGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/palitana-temples.js';
 
 const MARBLE = mat('#f1ede4', 0.6);
 const SHADE = mat('#d6cebd', 0.8);
-const HILL = mat('#8b8a5c', 0.95, 0, { flatShading: true });
 
-// Shatrunjaya hill: two summits crowded with more than 800 shrines inside fortified enclosures (tuks).
+// Shatrunjaya hill: two summits crowded with more than 800 shrines inside fortified enclosures (tuks),
+// joined by a saddle. The summits are flat at H where the tuks stand; the flanks fall away in
+// rounded shoulders to a spreading foot, roughened by noise (rocky outcrops, gullies), and the foot
+// sinks under the plain, so there is no seam. shatrunjaya(x, z) is the ground's height, read by the
+// stair here and the trees in js/details/palitana-temples.js.
+const H = 44, HILLS = [[-40, 1], [45, 0.85]];
+export function shatrunjaya(x, z) {
+  let y = 0;
+  for (const [hx, s] of HILLS) {
+    const d = Math.hypot(x - hx, z / 0.7), rb = 120 * s, rt = 42 * s, t = d <= rt ? 1 : d >= rb ? 0 : (rb - d) / (rb - rt);
+    y = Math.max(y, H * Math.pow(t, 1.3) * (1.12 - 0.12 * t));
+  }
+  // The saddle between the summits, about 30 m up.
+  y = Math.max(y, 30 * smooth(-40, -18, x) * (1 - smooth(18, 45, x)) * Math.exp(-((z / 0.7 / 34) ** 2)));
+  // Rough on the flanks only: the summits stay level for the tuks.
+  y += smooth(0.5, 6, y) * (1 - smooth(H - 7, H - 0.5, y)) * 3.2 * fbm(x, z, { scale: 0.025, octaves: 3 });
+  return y - 0.4 * (1 - smooth(0, 3, y));
+}
+
 export function buildPalitana() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(71);
   g.add(f);
   g.add(box(500, 0.2, 500, mat('#9aa166', 0.95)));
-  const H = 44, HILLS = [[-40, 1], [45, 0.85]];
-  for (const [x, s] of HILLS) {
-    const hill = mesh(new THREE.CylinderGeometry(42 * s, 120 * s, H, 12, 2).translate(0, H / 2, 0), HILL, x, 0, 0);
-    hill.scale.z = 0.7;
-    g.add(hill);
-  }
+  g.add(heightField(380, 230, detail.low ? 120 : 190, shatrunjaya, { cx: -5, rock: ['#7d7552', '#8a8160', '#6f6a4f'], cover: '#8b8a5c', steep: 0.86, band: 7 }));
   // The pilgrim stair: about 3,800 steps in life, here a switchback of some 250 treads in seven legs
   // across the face of the higher summit, with a landing at every turn, up to the gate of the
   // Adinath tuk. Each tread is set into the slope under it, from below its lowest corner to above its
-  // highest (the hills bulge out by up to 7%), so the hillside never crosses a step's top, and no
-  // tread is lower than the one before.
-  const ground = (x, z, bulge) => Math.max(0, ...HILLS.map(([hx, s]) => {
-    const d = Math.hypot(x - hx, z / 0.7) / bulge, rb = 120 * s, rt = 42 * s;
-    return d <= rt ? H : d >= rb ? 0 : (H * (rb - d)) / (rb - rt);
-  }));
+  // highest, so the hillside never crosses a step's top, and no tread is lower than the one before.
+  const ground = (x, z) => Math.max(0, shatrunjaya(x, z));
   const CX = -40, TOP = H + 0.4, TW = 3.2, TD = 0.6, treads = [];
   const nodes = [[CX + 14, 96], ...[0, 1, 2, 3, 4, 5, 6].map((i) => [CX + (i % 2 ? -9 : 9), 84 - i * 7.4]), [CX, 30.6]];
   let top = 0;
   const put = (x, z, w, d, ry) => {
     const c = Math.cos(ry), sn = Math.sin(ry), corners = [[-w / 2, -d / 2], [w / 2, -d / 2], [-w / 2, d / 2], [w / 2, d / 2]].map(([u, v]) => [x + u * c + v * sn, z - u * sn + v * c]);
-    const lo = Math.min(...corners.map(([px, pz]) => ground(px, pz, 1))) - 0.3;
-    top = Math.min(TOP, Math.max(top, ...corners.map(([px, pz]) => ground(px, pz, 1.07) + 0.2)));
+    const lo = Math.min(...corners.map(([px, pz]) => ground(px, pz))) - 0.4;
+    top = Math.min(TOP, Math.max(top, 0.26, ...corners.map(([px, pz]) => ground(px, pz) + 0.3)));
     treads.push([x, lo, z, w, top - lo, d, ry]);
   };
   for (let k = 1; k < nodes.length; k++) {
@@ -56,8 +66,11 @@ export function buildPalitana() {
     // The tuk's fortified wall; on the higher summit it opens on the south where the stair arrives.
     if (cx === CX) f.add(ellipseWall(r0, r0 * 0.7, Math.PI / 2 + 0.1, Math.PI * 2.5 - 0.1, 1.4, H, H + 3.2, SHADE, cx, 0), at(trabeateGate(10, 4.6, 2.2, 3.2, 3.4, { m: MARBLE, trim: SHADE }), cx, H + 0.4, r0 * 0.7));
     else f.add(ellipseWall(r0, r0 * 0.7, 0, Math.PI * 2, 1.4, H, H + 3.2, SHADE, cx, 0));
-    // The temple platform stands 0.4 m proud of the hilltop, its base clear of the top steps' bases.
-    f.add(box(r0 * 2.1, 0.6, r0 * 1.5, SHADE, cx, H - 0.2, 0));
+    // The temple platform stands 0.4 m proud of the hilltop, an ellipse within the summit's level
+    // top (not a square jutting past it), its base clear of the top steps' bases.
+    const slab = cyl(r0 * 1.04, r0 * 1.04, 0.6, SHADE, cx, H - 0.2, 0, 48);
+    slab.scale.z = 0.7;
+    f.add(slab);
   }
   f.add(inst(unitBox(), bodies, MARBLE), inst(miniSpireGeo(), spires, MARBLE));
   // The principal temple of Adinath on the higher summit

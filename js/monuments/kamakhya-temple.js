@@ -1,12 +1,13 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, lathe, at, ribbed, kalash, hipRoof, FACES, onFace } from '../helpers.js';
+import { M, mat, mesh, box, cyl, lathe, at, ribbed, kalash, hipRoof, FACES, onFace, sheet } from '../helpers.js';
+import { heightField, fbm, smooth } from '../details/terrain.js';
+import { detail } from '../detail.js';
 import { templeDoorway } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { addDetails } from '../details/kamakhya-temple.js';
 
 const STONE = mat('#a08766', 0.9);
 const STONE_DARK = mat('#7c6a52', 0.9);
-const HILL = mat('#5f7d45', 0.95, 0, { flatShading: true });
 
 // The Nilachal-style "beehive" dome over a cross-shaped base.
 function beehive(r, m) {
@@ -27,11 +28,23 @@ function dochala(w, d, h, m) {
   return mesh(geo, m);
 }
 
+// Nilachal's height at (x, z): level at 40 m over the temple's court (about 56 m round), falling in
+// forested slopes to the plain about 160 m out, the outline wandering and the slopes rough; the foot
+// sinks under the plain. Read by the trees in js/details/kamakhya-temple.js.
+export function nilachal(x, z) {
+  const T = 40, r = Math.hypot(x, z) + 14 * fbm(x, z, { scale: 0.008, octaves: 2 }) * smooth(56, 80, Math.hypot(x, z)), u = Math.min(1, Math.max(0, (r - 56) / 110));
+  let y = T * (1 - u * u * (3 - 2 * u));
+  y += smooth(0.5, 5, y) * (1 - smooth(T - 4, T - 0.4, y)) * 3 * fbm(x, z, { scale: 0.03, octaves: 3 });
+  return y - 0.4 * (1 - smooth(0, 3, y));
+}
+
 export function buildKamakhya() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  // Nilachal Hill, with the temple on its levelled top
-  g.add(mesh(new THREE.CylinderGeometry(60, 150, 40, 18, 3), HILL, 0, 19.5, 0));
+  // Nilachal Hill, with the temple on its levelled top; the Brahmaputra below it to the north.
+  g.add(heightField(380, 380, detail.low ? 110 : 160, nilachal, { rock: ['#6f6655', '#7c725f'], cover: '#4f6e3a', steep: 0.8, band: 9 }));
+  // The river starts beyond the hill's foot, with a sand bank along it.
+  g.add(box(3000, 0.12, 60, mat('#c2b08a', 0.95), 0, 0, -220), sheet(3000, 900, M.river, 0, 0.3, -700));
   const T = 40;
   f.add(box(70, 1, 80, M.path, 0, T - 0.5, 0));
   f.add(box(22, 2.5, 22, STONE_DARK, 0, T, -14), at(beehive(9, STONE), 0, T + 2.5, -14));

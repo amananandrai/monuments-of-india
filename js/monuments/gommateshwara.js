@@ -1,6 +1,11 @@
 import * as THREE from 'three';
 import { surface } from '../surface.js';
-import { mat, mesh, box, at, chhatri, inst, unitBox, aroundRect, ellipsoid, tube, face } from '../helpers.js';
+import { mat, mesh, box, at, onFace, rng, inst, unitBox, aroundRect, ellipsoid, tube, face, pidaRoof } from '../helpers.js';
+import { heightField, fbm, smooth } from '../details/terrain.js';
+import { trabeateGate } from '../details/temples.js';
+import { templeNiche, mergeByMaterial } from '../details/components.js';
+import { figure } from '../details/sculpture.js';
+import { detail } from '../detail.js';
 import { bahubaliBody } from '../details/figures.js';
 import { addDetails } from '../details/gommateshwara.js';
 
@@ -18,7 +23,7 @@ function bahubali() {
   g.add(bahubaliBody(G));
   for (const s of [-1, 1]) {
     // Creepers spiralling up the legs and the arms
-    for (const [x0, y0, y1, r] of [[s * 1.3, 0.8, 8.4, 1.1], [s * 3.5, 7.6, 14.6, 0.95]]) {
+    for (const [x0, y0, y1, r] of [[s * 1.3, 0.8, 8.4, 1.0], [s * 3.7, 6.6, 14.4, 0.85]]) {
       const pts = [];
       for (let k = 0; k <= 26; k++) { const a = k * 0.62 + (s > 0 ? 0 : Math.PI); pts.push([x0 + Math.sin(a) * r, y0 + (k / 26) * (y1 - y0), Math.cos(a) * r]); }
       g.add(tube(pts, 0.12, VINE, 120, 6));
@@ -53,19 +58,64 @@ function bahubali() {
   return g;
 }
 
+// The pillared cloister round the hilltop court (a 36 m square, its floor at H + 0.5): the solid
+// outer wall, a colonnade 2.4 m in from it under a flat roof with a parapet, and in the middle of the
+// front a gateway over the head of the stair. On desktops (js/detail.js) the back of the walk is
+// lined with small niches, each holding a seated tirthankara, as the cloister's cells do.
+function cloister(H) {
+  const g = new THREE.Group(), y = H + 0.5, S = 18, WT = 1.1, IN = 14.5, CH = 3.8;
+  // The wall: a ring of blocks, open at the front where the stair arrives.
+  const walls = [];
+  aroundRect(S * 2, S * 2, 3).forEach(([x, z, ry]) => { if (!(z > 0 && Math.abs(x) < 3.5)) walls.push([x, y, z, 3, 4.5, WT * 2, ry]); });
+  g.add(inst(unitBox(), walls, GRANITE));
+  // The colonnade: square pillars every 3 m on the inner line, the roof from the wall to it.
+  const cols = aroundRect(IN * 2, IN * 2, 3).filter(([x, z]) => !(z > 0 && Math.abs(x) < 3.5)).map(([x, z]) => [x, y, z, 0.5, CH, 0.5]);
+  g.add(inst(unitBox(), cols, GRANITE));
+  const deep = S - WT - IN + 0.5;
+  for (const s of [-1, 1]) {
+    for (const [x0, x1] of s > 0 ? [[-S + WT, -3.5], [3.5, S - WT]] : [[-S + WT, S - WT]]) g.add(box(x1 - x0, 0.45, deep, GRANITE, (x0 + x1) / 2, y + CH, s * (IN + deep / 2 - 0.25)));
+    g.add(box(deep, 0.45, 2 * (IN - 0.25), GRANITE, s * (IN + deep / 2 - 0.25), y + CH, 0));
+  }
+  // The gateway over the opening, between the two ends of the front walk.
+  g.add(at(trabeateGate(8, 5.2, 3, 3.4, 3.8, { m: GRANITE }), 0, y, S - 0.5), at(pidaRoof(8, 3, 3, 0.55, GRANITE, GRANITE), 0, y + 5.2, S - 0.5));
+  if (!detail.low) {
+    const niches = new THREE.Group();
+    for (const [a, len] of [[0, 2 * (S - WT)], [Math.PI / 2, 2 * (S - WT)], [-Math.PI / 2, 2 * (S - WT)]]) {
+      for (let t = -len / 2 + 2; t < len / 2 - 1.5; t += 3) niches.add(onFace(at(templeNiche(1.1, 1.6, GRANITE, { figure: figure(1.3, GRANITE, 'seated'), crown: false }), 0, y + 0.9, 0), a, -(S - WT), t));
+    }
+    g.add(mergeByMaterial(niches));
+  }
+  return g;
+}
+
+// Vindhyagiri's height at (x, z): a granite dome 40 m high and about 80 m round, its outline
+// irregular, level on top (under the 40 m enclosure) and spreading at its foot, its flanks rippled like sheet rock, the foot sinking
+// under the plain. Read by the stair here and the shrubs in js/details/gommateshwara.js.
+export function vindhyagiri(x, z) {
+  const H = 40, u = Math.min(1, Math.max(0, (Math.hypot(x, z) + 7 * fbm(x, z, { scale: 0.012, octaves: 2 }) * smooth(30, 45, Math.hypot(x, z)) - 29) / 55));
+  let y = H * Math.pow(1 - u * u, 1.1);
+  y += smooth(0.5, 4, y) * (1 - smooth(H - 3, H - 0.4, y)) * 1.6 * fbm(x, z, { scale: 0.04, octaves: 3 });
+  return y - 0.4 * (1 - smooth(0, 3, y));
+}
+
 export function buildGommateshwara() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  // Vindhyagiri: a bare granite hill, with steps cut up its face
+  // Vindhyagiri: a bare granite dome, with steps cut up its face and boulders lying on its flanks.
   const H = 40;
-  const hill = mesh(new THREE.SphereGeometry(80, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), HILL);
-  hill.scale.y = H / 80;
-  g.add(hill, box(300, 0.2, 300, mat('#7d8c5a', 0.95)));
+  g.add(box(300, 0.2, 300, mat('#7d8c5a', 0.95)));
+  g.add(heightField(200, 200, detail.low ? 110 : 170, vindhyagiri, { rock: ['#958d7f', '#8e8678'], cover: '#8f8a6e', steep: 0.96, band: 400 }));
+  const R = rng(13), stones = [];
+  for (let k = 0; k < 60 && stones.length < 26; k++) {
+    const a = R() * Math.PI * 2, r = 34 + R() * 42, x = Math.sin(a) * r, z = Math.cos(a) * r, sz = 1 + R() * 2.4;
+    if (Math.abs(x) < 16 && z > 12) continue; // clear of the stair
+    stones.push([x, vindhyagiri(x, z) - sz * 0.3, z, sz * 1.3, sz, sz * 1.1, R() * 6.28]);
+  }
+  g.add(inst(new THREE.IcosahedronGeometry(0.5, 1).translate(0, 0.5, 0), stones, HILL));
   // The Vindhyagiri stair, cut in the rock: a steep flight up the foot of the hill, then a switchback
   // of six legs with a landing at each turn, some 250 treads to the gateway of the enclosure. Each
-  // tread reaches from below the hill's faceted surface to just above its curve, and none is lower
-  // than the one before it.
-  const ground = (x, z) => H * Math.sqrt(Math.max(0, 1 - (x * x + z * z) / 6400)), TOP = H + 0.5, treads = [];
+  // tread reaches from below the rock to just above it, and none is lower than the one before it.
+  const ground = (x, z) => Math.max(0, vindhyagiri(x, z)), TOP = H + 0.5, treads = [];
   const nodes = [[4, 86], [4, 70.5], ...[0, 1, 2, 3, 4].map((i) => [i % 2 ? 10 : -10, 62 - i * 8.6]), [0, 20.6]];
   let top = 0;
   const put = (x, z, w, d, ry) => {
@@ -82,11 +132,7 @@ export function buildGommateshwara() {
   g.add(inst(unitBox(), treads, GRANITE));
   // The hilltop enclosure, with pillared cloisters round the statue
   f.add(box(40, 1, 40, GRANITE, 0, H - 0.5, 0));
-  const walls = [];
-  // The cloister wall, open in the middle of the front where the stair arrives.
-  aroundRect(36, 36, 3).forEach(([x, z, ry]) => { if (!(z > 0 && Math.abs(x) < 3.5)) walls.push([x, H + 0.5, z, 3, 4.5, 2.2, ry]); });
-  f.add(inst(unitBox(), walls, GRANITE));
-  for (const x of [-14, 14]) f.add(at(chhatri(2.2, 6, GRANITE), x, H + 5, 18));
+  f.add(cloister(H));
   // The 17.4 m monolith of Bahubali
   f.add(at(bahubali(), 0, H + 0.5, -4));
   addDetails(f, g);

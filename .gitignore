@@ -1,3 +1,4 @@
 .vercel
 .tools
 .claude
+tools/node_modules

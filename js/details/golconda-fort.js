@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { mat, at, onFace } from '../helpers.js';
 import { archRing, rosette, chhajja, arcadeScreen, mergeByMaterial } from './components.js';
 import { towerDetail } from './forts.js';
-import { RINGS, ringPoint, hillRadius, hillY } from '../monuments/golconda-fort.js';
+import { RINGS, ringPoint, hillRadius, hillY, hillSurface } from '../monuments/golconda-fort.js';
 import { trees, shrubs, lampPosts, asiBoard, scatter, along } from './realism.js';
 
 // Golconda, finer detail. The granite bastions on every ring of wall are banded and slit, as are
@@ -39,7 +39,7 @@ export function addDetails(f, g) {
   g.add(trees(plain, { kind: 'neem', seed: 3 }));
   const slope = scatter(60, [-120, 120, -120, 120], { seed: 4, gap: 6 }).filter(([x, z]) => { const q = Math.hypot(x, z) / hillRadius(Math.atan2(z, x)); return q > 0.32 && q < 0.86 && !RINGS.some((w) => Math.abs(q - w) < 0.06); });
   // Each bush sits on the slope of the hill.
-  g.add(shrubs(slope.map(([x, z]) => [x, z, 2.2, hillY(x, z) - 0.3]), { dry: true, seed: 5 }));
+  g.add(shrubs(slope.map(([x, z]) => [x, z, 2.2, hillSurface(x, z) - 0.3]), { dry: true, seed: 5 }));
   g.add(lampPosts([...along(6, [-7, 128], [-7, 200]), ...along(6, [7, 128], [7, 200])]));
   g.add(asiBoard('Golconda Fort', 14, 150, 0));
 }

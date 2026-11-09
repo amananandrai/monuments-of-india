@@ -1,39 +1,39 @@
 import * as THREE from 'three';
 import { mat, cyl, at } from '../helpers.js';
 import { jharokha, merlonGeo, placeAll, aroundCircle, beltCourse, mergeByMaterial } from './components.js';
-import { towerDetail } from './forts.js';
 import { trees, scatter } from './realism.js';
 import { camels as camelHerd } from './animals.js';
+import { H, bastions, trikuta } from '../monuments/jaisalmer-fort.js';
+import { detail } from '../detail.js';
 
 // Jaisalmer, finer detail. Each of the 99 bastions has a moulded course below its crown and a ring
-// of merlons on top; the gate's towers are banded and slit; and the palace front over the town is
-// hung with tiers of jharokhas under curved bangla roofs, as on the havelis of the golden city.
-// Dimensions follow js/monuments/jaisalmer-fort.js.
+// of merlons on top; and the Raj Mahal's front over the Dussehra Chowk is hung with tiers of
+// jharokhas under curved bangla roofs, as on the havelis of the golden city. Dimensions follow
+// js/monuments/jaisalmer-fort.js: the bastions 5.5 in radius from H - 3, 16 m tall; the palace
+// 56 × 26 × 22 at pal, its front at pal.z + 11.
 const GOLD = mat('#d9a85a', 0.85), GOLD_DARK = mat('#b8873f', 0.9);
-function architecture(f) {
-  const d = new THREE.Group(), H = 22, RX = 92, RZ = 54, mg = merlonGeo(0.9, 1.1, 0.5), list = [];
-  for (let k = 0; k < 99; k++) {
-    if (k >= 24 && k <= 26) continue;
-    const a = (k / 99) * Math.PI * 2, x = Math.cos(a) * RX, z = Math.sin(a) * RZ, top = H + 13 + (k % 3) * 0.25;
-    d.add(cyl(4.15, 4.15, 0.45, GOLD_DARK, x, H + 9.5, z, 12));
-    for (const [px, py, pz, ry] of aroundCircle(3.55, 9, top, k * 0.3)) list.push([x + px, py, z + pz, ry]);
-  }
+function architecture(f, pal) {
+  const d = new THREE.Group(), mg = merlonGeo(1.1, 1.3, 0.6), list = [];
+  bastions().forEach(([x, z], k) => {
+    const top = H - 3 + 16 + (k % 3) * 0.25;
+    d.add(cyl(5.75, 5.75, 0.5, GOLD_DARK, x, H + 9, z, 12));
+    for (const [px, py, pz, ry] of aroundCircle(4.9, 11, top, k * 0.3)) list.push([x + px, py, z + pz, ry]);
+  });
   d.add(placeAll(mg, list, GOLD));
-  for (const s of [-1, 1]) d.add(at(towerDetail(3.67, 3.4, 14, GOLD, GOLD_DARK, { seg: 12, courses: [], slits: [0.3, 0.7] }), s * 7.53, H, RZ + 1.96));
-  // The palace (30 × 20 × 16 at (-20, H, 10)): three tiers of jharokhas on its front and a course
-  // between each.
-  for (let r = 0; r < 3; r++) {
-    for (let k = 0; k < 6; k++) d.add(at(jharokha(2.2, 2.8, GOLD, { d: 1.1, trim: GOLD_DARK }), -20 - 12.5 + k * 5, H + 5 + r * 5, 18.02));
-    d.add(beltCourse(30, 16, H + 4 + r * 5, 0.35, 0.18, GOLD_DARK).translateX(-20).translateZ(10));
+  // The palace front: tiers of jharokhas (five on desktops, three on phones), a course between each.
+  const tiers = detail.low ? 3 : 5;
+  for (let r = 0; r < tiers; r++) {
+    for (let k = 0; k < 10; k++) d.add(at(jharokha(2.2, 2.8, GOLD, { d: 1.1, trim: GOLD_DARK }), pal.x - 24.3 + k * 5.4, H + 4 + r * 4.4, pal.z + 11.02));
+    d.add(beltCourse(56, 22, H + 3 + r * 4.4, 0.35, 0.18, GOLD_DARK).translateX(pal.x).translateZ(pal.z));
   }
   mergeByMaterial(d);
   f.add(d);
 }
 
 // Jaisalmer, the golden fort of the Thar: camels in their saddle cloths on the sand below the hill,
-// and khejri and kair trees dotting the desert.
-export function addDetails(f, g) {
-  architecture(f);
-  g.add(camelHerd([[60, 110, -2.2], [66, 116, -2.0], [-80, 96, 1.1], [-74, 104, 1.3], [120, 40, -1.5], [-130, 30, 0.6]]));
-  g.add(trees(scatter(40, [-290, 290, -290, 290], { seed: 3, gap: 22 }).filter(([x, z]) => Math.hypot(x / 125, z / 75) > 1.1), { kind: 'mango', seed: 3, h: 6 }));
+// and khejri and kair trees dotting the desert round it.
+export function addDetails(f, g, pal) {
+  architecture(f, pal);
+  g.add(camelHerd([[300, 300, -2.2], [306, 306, -2.0], [-340, 280, 1.1], [-334, 288, 1.3], [430, 60, -1.5], [-440, 40, 0.6]]));
+  g.add(trees(scatter(60, [-700, 700, -560, 560], { seed: 3, gap: 30 }).filter(([x, z]) => trikuta(x, z) < 0.2), { kind: 'mango', seed: 3, h: 6 }));
 }
