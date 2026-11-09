@@ -467,7 +467,7 @@ q.addEventListener('input', () => {
   });
   $('q-empty').hidden = !!list.querySelector('.grp:not([hidden])');
 });
-$('sub').textContent = `${MONUMENTS.length} landmarks modelled in 3D at their real proportions. Pick one on the map or from the list, then drag to walk around it.`;
+$('sub').textContent = `${MONUMENTS.length} landmarks modelled in 3D, almost all at their real proportions. Pick one on the map or from the list, then drag to walk around it.`;
 
 function renderInfo(mo) {
   $('p-place').textContent = mo.place;
@@ -481,6 +481,9 @@ function renderInfo(mo) {
   $('p-material').textContent = mo.material;
   const ul = $('p-facts');
   ul.replaceChildren(...mo.facts.map((t) => { const li = document.createElement('li'); li.textContent = t; return li; }));
+  // Where a model departs from true scale to fit the view, the plaque says so.
+  $('p-scale').textContent = mo.scaleNote ? `Scale: ${mo.scaleNote}` : '';
+  $('p-scale').hidden = !mo.scaleNote;
 }
 // On phones the plaque sits below the model as a collapsed bar; tapping it reveals the details.
 const plaque = $('plaque'), pToggle = $('p-toggle');

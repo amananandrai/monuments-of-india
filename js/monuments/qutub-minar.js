@@ -2,10 +2,18 @@ import * as THREE from 'three';
 import { M, mesh, box, cyl, ring, group, at, chhatri } from '../helpers.js';
 import { addDetails } from '../details/qutub-minar.js';
 
+// Storey radii at base and top, and heights (m). Base slab 1.2 m + 71.3 m of shaft = 72.5 m.
+export const TIERS = (() => {
+  const hs = [28.7, 14.9, 11.4, 7.9, 8.4], total = hs.reduce((a, b) => a + b, 0), R0 = 7.16, R1 = 1.375;
+  let acc = 0;
+  return hs.map((h) => { const rb = R0 - (R0 - R1) * acc / total; acc += h; return [rb, R0 - (R0 - R1) * acc / total, h]; });
+})();
+
 export function buildQutub() {
   const g = new THREE.Group();
   g.add(box(26, 1.2, 26, M.redLight));
-  const tiers = [[7.15, 5.7, 29, M.red, 0], [5.7, 4.6, 15, M.red, 1], [4.6, 3.6, 11.5, M.red, 2], [3.6, 2.95, 8, M.marble, 3], [2.95, 2.4, 8.5, M.marble, 4]];
+  // 72.5 m from the ground, tapering evenly from 14.32 m across at the base to 2.75 m at the top.
+  const tiers = TIERS.map(([rb, rt, h], i) => [rb, rt, h, i < 3 ? M.red : M.marble, i]);
   let y = 1.2;
   for (const [rb, rt, h, m, i] of tiers) {
     const geo = new THREE.CylinderGeometry(rt, rb, h, 144, 6);
@@ -31,7 +39,10 @@ export function buildQutub() {
       g.add(ring(rt + 1.4, 0.8, i < 3 ? M.red : M.marbleShade, y, 48));
     }
   }
-  g.add(at(chhatri(2.1, 5, M.red, M.marble), 0, y, 0));
+  // The top today is a plain parapet. Major Smith's cupola of 1828 was taken down in 1848 and set
+  // on the lawn to the south-east, where it stands as "Smith's Folly".
+  g.add(cyl(TIERS[4][1] + 0.35, TIERS[4][1] + 0.35, 0.5, M.marbleShade, 0, y, 0, 32), ring(TIERS[4][1] + 0.3, 0.9, M.marble, y + 0.5, 32));
+  g.add(at(chhatri(2.1, 5, M.red, M.marble), 34, 0.9, 30), box(6, 0.9, 6, M.redLight, 34, 0, 30));
   // The minar is what the camera frames; the court, the ruins and the lawns are its setting.
   const f = new THREE.Group();
   f.add(...g.children);

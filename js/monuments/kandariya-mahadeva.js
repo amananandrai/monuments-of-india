@@ -19,10 +19,11 @@ export function buildKandariya() {
   // The sculpted figures run round the walls, leaving the doorway clear.
   for (const y of [5.4, 7.4]) aroundRect(22.4, 40.4, 1.2).forEach(([x, z, ry]) => { if (!(z > 20 && Math.abs(x) < 2.6)) figs.push([x, y, z - 4, 0.7, 1.5, 0.35, ry]); });
   f.add(figureRow(figs, Sd, { poses: ['standing', 'dancer', 'standing', 'musician'] }), box(23, 0.46, 41, Sd, 0, 11, -4));
-  // Roofs rising in steps from the entrance porch to the main tower
+  // Roofs rising in steps from the entrance porch to the main tower. Khajuraho's amalakas and
+  // kalashas are carved sandstone, not gilded.
   [[22, 9, 4, 3], [12, 13, 5, 4], [1, 17, 6, 5]].forEach(([z, w0, n, br]) => {
     const r = pidaRoof(w0, w0 * 0.42, n, 0.85, S, Sd);
-    f.add(at(r, 0, 11.5, z), at(bell(br * 0.7, S), 0, 11.5 + r.userData.top, z), at(kalash(br * 0.45), 0, 11.5 + r.userData.top + br * 0.72, z));
+    f.add(at(r, 0, 11.5, z), at(bell(br * 0.7, S), 0, 11.5 + r.userData.top, z), at(kalash(br * 0.45, S), 0, 11.5 + r.userData.top + br * 0.72, z));
   });
   // The entrance porch: open between four pillars, with a garland arch (torana) across its front,
   // the doorway into the hall at its back, and steps down to the platform.
@@ -44,19 +45,19 @@ export function buildKandariya() {
   f.add(mergeByMaterial(porch));
   // Main shikhara wrapped in tiers of smaller spires, like a range of peaks
   const tz = -15, ty = 11.5, prof = (t) => 1 - 0.7 * Math.pow(t, 1.3);
-  f.add(at(shikhara(15, 19, S, prof, 20), 0, ty, tz));
+  f.add(at(shikhara(15, 19, S, prof, 20, S), 0, ty, tz));
   for (const a of FACES) {
-    const u = onFace(at(shikhara(9, 13.5, S, prof, 12), 0, ty, 0), a, 6.5);
+    const u = onFace(at(shikhara(9, 13.5, S, prof, 12, S), 0, ty, 0), a, 6.5);
     u.position.z += tz;
     f.add(u);
   }
   for (let k = 0; k < 8; k++) {
-    const a = (k / 8) * Math.PI * 2 + Math.PI / 8, u = onFace(at(shikhara(6, 8.5, S, prof, 8), 0, ty, 0), a, 9.5);
+    const a = (k / 8) * Math.PI * 2 + Math.PI / 8, u = onFace(at(shikhara(6, 8.5, S, prof, 8, S), 0, ty, 0), a, 9.5);
     u.position.z += tz;
     f.add(u);
   }
   for (let k = 0; k < 12; k++) {
-    const a = (k / 12) * Math.PI * 2, u = onFace(at(shikhara(3.6, 5, S, prof, 6), 0, ty, 0), a, 11.8);
+    const a = (k / 12) * Math.PI * 2, u = onFace(at(shikhara(3.6, 5, S, prof, 6, S), 0, ty, 0), a, 11.8);
     u.position.z += tz;
     f.add(u);
   }

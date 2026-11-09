@@ -2,19 +2,20 @@ import * as THREE from 'three';
 import { M, at, onFace, FACES, inst, unitBox } from '../helpers.js';
 import { chhajja, railing, bracketGeo, placeAll, mergeByMaterial } from './components.js';
 import { trees, asiBoard, scatter } from './realism.js';
+import { LEVELS, GAP, H } from '../monuments/panch-mahal.js';
 
 // Panch Mahal, finer detail. From photographs: every one of the 176 columns stands on a moulded
 // base and carries a bracket capital; each storey's floor projects as a sloping eave all round;
 // and the storeys were closed by pierced screens (jali) between their outer columns, here as a
-// railing along the edge of each floor. Dimensions follow js/monuments/panch-mahal.js.
+// railing along the edge of each floor. Dimensions follow js/monuments/panch-mahal.js (LEVELS).
 function architecture(f) {
   const d = new THREE.Group(), Rd = M.red, Rl = M.redLight;
-  const levels = [[12, 7], [8, 7], [5, 4], [4, 3], [2, 2]], gap = 3.6, h = 4.2, bases = [], caps = [], br = [];
+  const gap = GAP, h = H, bases = [], caps = [], br = [];
   let y = 1.2;
-  levels.forEach(([nx, nz], li) => {
+  LEVELS.forEach(([nx, nz, cx, cz], li) => {
     const w = (nx - 1) * gap, dd = (nz - 1) * gap;
     for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) {
-      const x = -w / 2 + i * gap, z = -dd / 2 + j * gap;
+      const x = cx - w / 2 + i * gap, z = cz - dd / 2 + j * gap;
       bases.push([x, y, z, 1.0, 0.45, 1.0]);
       caps.push([x, y + h - 0.4, z, 1.0, 0.4, 1.0]);
       if (i === 0 || i === nx - 1) br.push([x + (i ? 0.35 : -0.35), y + h, z, i ? Math.PI / 2 : -Math.PI / 2]);
@@ -22,8 +23,14 @@ function architecture(f) {
     }
     for (const a of FACES) {
       const long = Math.abs(Math.sin(a)) < 0.5, len = long ? w + 2.6 : dd + 2.6, dist = (long ? dd : w) / 2 + 1.3;
-      d.add(onFace(at(chhajja(len, 0.9, 0.4, 0.12, Rl), 0, y + h + 0.5, 0), a, dist));
-      if (li > 0) d.add(onFace(at(railing(len - 1.2, 0.9, 0.18, Rd, gap), 0, y, 0), a, dist - 0.75));
+      const e = onFace(at(chhajja(len, 0.9, 0.4, 0.12, Rl), 0, y + h + 0.5, 0), a, dist);
+      e.position.x += cx; e.position.z += cz;
+      d.add(e);
+      if (li > 0) {
+        const r = onFace(at(railing(len - 1.2, 0.9, 0.18, Rd, gap), 0, y, 0), a, dist - 0.75);
+        r.position.x += cx; r.position.z += cz;
+        d.add(r);
+      }
     }
     y += h + 1;
   });

@@ -2,15 +2,16 @@ import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, surface } from '../helpers.js';
 import { bracketGeo, placeAll, aroundCircle, mergeByMaterial, windowFrame } from './components.js';
 import { trees, asiBoard, scatter, along } from './realism.js';
+import { TIERS } from '../monuments/qutub-minar.js';
 
 // The Qutub Minar, finer detail. From photographs and descriptions: under every balcony is a ring
 // of stalactite (muqarnas) corbelling, here a deep ring of carved brackets; the first three storeys are girdled by bands of Quranic inscription carved in the red
 // sandstone, between the moulded bands the builder makes; small arched doorways open onto each
-// balcony. Dimensions follow js/monuments/qutub-minar.js.
+// balcony. Dimensions follow js/monuments/qutub-minar.js (its TIERS).
 const LETTERS = surface(mat('#b86b4f', 0.85), 'script');
 function architecture(g) {
   const d = new THREE.Group();
-  const tiers = [[7.15, 5.7, 29], [5.7, 4.6, 15], [4.6, 3.6, 11.5], [3.6, 2.95, 8], [2.95, 2.4, 8.5]];
+  const tiers = TIERS;
   let y = 1.2;
   tiers.forEach(([rb, rt, h], i) => {
     const r = (t) => rb - (rb - rt) * t;

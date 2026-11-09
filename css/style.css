@@ -263,6 +263,13 @@ details.facts summary {
   font-size: 12.5px;
   font-weight: 500;
 }
+p.scale-note {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.4;
+}
 details.facts ul {
   margin: 6px 0 0;
   padding-left: 18px;

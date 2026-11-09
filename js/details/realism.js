@@ -266,10 +266,20 @@ function palms(items) {
 // Spots are [x, z, size?, y?]. flowers: a colour for flowering bushes (bougainvillea, marigold
 // beds, saffron).
 const flowerMats = new Map();
+// A flowering shrub is a dark green bush with its blooms as a smaller, muted cap on top: a bush
+// wholly in a saturated flower colour reads as a plastic blob from the garden paths.
 export function shrubs(spots, { seed = 2, y = 0, size = 1.2, dry = false, flowers = null } = {}) {
   const R = rng(seed);
-  if (flowers && !flowerMats.has(flowers)) flowerMats.set(flowers, surface(mat(flowers, 0.9), 'foliage'));
-  return copies(crownGeo(5, seed + 4), flowers ? flowerMats.get(flowers) : dry ? FOLIAGE_DRY : FOLIAGE, spots.map(([x, z, s, yy]) => { const k = (s || size) * (0.8 + R() * 0.4); return [x, (yy ?? y) + k * 0.35, z, [k, k * 0.6, k], R() * 6.28]; }));
+  const places = spots.map(([x, z, s, yy]) => { const k = (s || size) * (0.8 + R() * 0.4); return [x, (yy ?? y) + k * 0.35, z, [k, k * 0.6, k], R() * 6.28]; });
+  if (!flowers) return copies(crownGeo(5, seed + 4), dry ? FOLIAGE_DRY : FOLIAGE, places);
+  if (!flowerMats.has(flowers)) {
+    const c = new THREE.Color(flowers).lerp(new THREE.Color('#3d6331'), 0.35);
+    flowerMats.set(flowers, surface(mat('#' + c.getHexString(), 0.95), 'foliage'));
+  }
+  const g = new THREE.Group();
+  g.add(copies(crownGeo(5, seed + 4), FOLIAGE_DARK, places.map(([x, yy, z, [k], ry]) => [x, yy - k * 0.08, z, [k * 0.85, k * 0.5, k * 0.85], ry])));
+  g.add(copies(crownGeo(5, seed + 5), flowerMats.get(flowers), places.map(([x, yy, z, [k], ry]) => [x, yy + k * 0.16, z, [k * 0.62, k * 0.3, k * 0.62], ry + 1.3])));
+  return g;
 }
 
 /* ---------- street furniture ---------- */
