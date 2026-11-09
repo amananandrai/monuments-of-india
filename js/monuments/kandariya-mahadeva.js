@@ -45,7 +45,8 @@ export function buildKandariya() {
   f.add(mergeByMaterial(porch));
   // Main shikhara wrapped in tiers of smaller spires, like a range of peaks
   const tz = -15, ty = 11.5, prof = (t) => 1 - 0.7 * Math.pow(t, 1.3);
-  f.add(at(shikhara(15, 19, S, prof, 20, S), 0, ty, tz));
+  // The main spire rises 31 m from the ground to its kalash, carved in stone like the amalaka.
+  f.add(at(shikhara(15, 17.5, S, prof, 20, S, 0.5), 0, ty, tz));
   for (const a of FACES) {
     const u = onFace(at(shikhara(9, 13.5, S, prof, 12, S), 0, ty, 0), a, 6.5);
     u.position.z += tz;

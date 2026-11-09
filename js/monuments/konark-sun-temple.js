@@ -36,12 +36,12 @@ export function buildKonark() {
   }
   let y = B + 12;
   [[29, 22], [20, 14], [13, 8]].forEach(([w0, w1], i) => {
-    const r = pidaRoof(w0, w1, 4, 0.75, K, Kd);
+    const r = pidaRoof(w0, w1, 4, 0.66, K, Kd);
     f.add(at(r, 0, y, jz));
     y += r.userData.top;
     if (i < 2) {
       const tw = w1 - 2.5;
-      f.add(box(tw, 2.6, tw, Kd, 0, y, jz));
+      f.add(box(tw, 1.8, tw, Kd, 0, y, jz));
       // The musicians and dancers who stand on the terraces of the roof, drum or cymbals in hand:
       // five to a side on desktops, three on phones (js/detail.js).
       const ks = detail.low ? [-1, 0, 1] : [-2, -1, 0, 1, 2], gap = detail.low ? tw / 3.2 : tw / 5.6;
@@ -50,13 +50,13 @@ export function buildKonark() {
         s.position.z += jz;
         f.add(s);
       }
-      y += 2.6;
+      y += 1.8;
     }
   });
   f.add(at(bell(4.2, K), 0, y, jz));
   const am = mesh(new THREE.SphereGeometry(3, 24, 8), flat(K), 0, y + 4.4 + 1.2, jz);
   am.scale.y = 0.4;
-  f.add(am, at(kalash(1.8, K), 0, y + 6.8, jz));
+  f.add(am, at(kalash(1.3, K), 0, y + 6.8, jz));
   // Ruined base of the collapsed main tower, and the roofless Natamandira in front
   const dz = zc - L / 2 + 16;
   f.add(box(26, 7, 26, Kd, 0, B, dz), box(18, 3, 13, K, -2, B + 7, dz + 3), box(9, 2, 8, Kd, 5, B + 10, dz - 4));

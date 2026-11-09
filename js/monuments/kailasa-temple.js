@@ -31,7 +31,7 @@ function vimana(w, tiers, th, m, md) {
   g.add(box(r * 1.2, th * 0.5, r * 1.2, md, 0, y));
   const dome = mesh(new THREE.SphereGeometry(r, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), flat(m), 0, y + th * 0.5, 0);
   dome.rotation.y = Math.PI / 8;
-  g.add(dome, at(kalash(r * 0.6, m), 0, y + th * 0.5 + r, 0));
+  g.add(dome, at(kalash(r * 0.4, m), 0, y + th * 0.5 + r, 0));
   return g;
 }
 

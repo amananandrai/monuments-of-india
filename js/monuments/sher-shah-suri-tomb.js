@@ -30,12 +30,13 @@ export function buildSherShahSuri() {
   g.add(f);
   // The square artificial lake and the causeway to the tomb
   g.add(box(260, 0.15, 260, M.grass), sheet(200, 200, M.lake, 0, 0.3, 0), box(8, 1.2, 70, SHADE, 0, 0, 66));
-  // Stepped square platform with corner pavilions, rising from the water
+  // Stepped square platform with corner pavilions, rising from the water: the terrace the tomb's
+  // 37.5 m are measured from. The dome is crowned by an amalaka (replacing a lost kiosk, 1882).
   f.add(box(80, 4, 80, SHADE), box(66, 4, 66, STONE, 0, 4));
   for (const x of [-30, 30]) for (const z of [-30, 30]) f.add(at(chhatri(3.4, 10, STONE), x, 8, z));
   // The octagonal tomb in three tiers under its broad dome
   f.add(at(octStorey(22, 13, STONE, 2.6), 0, 8, 0), at(octStorey(17, 7, STONE, 2), 0, 21, 0), cyl(14, 14, 3, STONE, 0, 28, 0, 32));
-  f.add(at(hemi(14, STONE, 40), 0, 31, 0), cyl(1.6, 2.4, 2.4, STONE, 0, 44.6, 0, 12), at(finial(4), 0, 46.8, 0));
+  f.add(at(hemi(14, STONE, 40), 0, 31, 0), cyl(1.6, 2.4, 2.4, STONE, 0, 44.6, 0, 12), at(finial(2), 0, 46.8, 0));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.55, 0.3, 1.25] };
 }

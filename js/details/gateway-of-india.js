@@ -127,7 +127,7 @@ export function addGatewayDetails(f, { p, b }) {
     for (const z of [-4.2, 4.2]) d.add(at(gatewayTurret(0.9, 12.6, m, { balcony: false, kiosk: 3.4 }), s * 17.8, b, z));
   }
   // The four turrets of the central hall.
-  for (const x of [-8.6, 8.6]) for (const z of [-6.6, 6.6]) d.add(at(gatewayTurret(1.45, b + 21.4 - p, m), x, p, z));
+  for (const x of [-8.6, 8.6]) for (const z of [-6.6, 6.6]) d.add(at(gatewayTurret(1.45, b + 21.4 - p, m, { kiosk: 2.2 }), x, p, z));
   f.add(mergeByMaterial(d));
 }
 

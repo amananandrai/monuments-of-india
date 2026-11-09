@@ -16,6 +16,7 @@ npx playwright install chromium   # once, if Playwright has no browser yet
 
 | `node check-heights.mjs [id ...]` | Each model's height against the real figure in its `refs` (`js/data.js`): up to 15% over (spires and flags) and 5% under. A building on a hill gives `refs.base`; `refs.top: 'rock'` compares the hill's height (the module's exported `H`). Exits 1 if any is out. |
 | `node shoot-views.mjs [id ...] [--size WxH] [--view x,y,z] [--zoom z] [--target x,y,z]` | Renders each monument's home view to `tools/views/<id>.png` (git-ignored), to compare with reference photographs. The options override the builder's preset, to try a new one. |
+| `node probe-top.mjs id ...` | Lists the topmost meshes of each monument (top, bottom, width, colour, geometry), to find what makes a model too tall. |
 
 With no ids, a check runs over all 101 monuments.
 

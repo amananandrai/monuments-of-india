@@ -55,12 +55,17 @@ function finialGeo() {
 // The palace is a screen one room deep: a pierced front with a jharokha canopy on every window,
 // a back screen with fewer windows, and the floor, roof and ends that close the room.
 const T = 0.55, D = 1.6;
+// The five storeys, [width, height]: the whole stands about 15 m over the street to its crown, the
+// upper storeys low (one narrow room deep) under the small domed pavilions of the crown.
+export const FLOORS = [[46, 3.2], [46, 2.7], [30, 2.7], [20, 2.7], [11, 2.7]];
+// The crown's pavilions: the middle one and the two beside it, their bases' heights.
+export const CROWN = { mid: 1.0, side: 0.7 };
 
 export function buildHawaMahal() {
   const P = M.hawa, L = M.hawaLight, g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   g.add(box(100, 0.2, 14, M.asphalt, 0, 0, 12), box(100, 0.3, 4, M.path, 0, 0, 3.5));
-  const floors = [[46, 3.6], [46, 3.0], [30, 3.0], [20, 3.0], [11, 3.0]];
+  const floors = FLOORS;
   const domes = [], posts = [], banglas = [], finials = [], corbels = [], cusps = [], bays = [], panes = [];
   let y = 0;
   floors.forEach(([w, h], fi) => {
@@ -122,8 +127,8 @@ export function buildHawaMahal() {
     const next = floors[fi + 1], y0 = floors.slice(0, fi + 1).reduce((t, [, hh]) => t + hh, 0);
     if (next && next[0] < w) for (const s of [-1, 1]) f.add(at(guldasta(1.6, 0.14, L), s * (w / 2 - 0.3), y0 + 0.8, 0.1));
   });
-  f.add(box(3.4, 1.4, 2.1, P, 0, y, -D / 2), at(hemi(1.1, L, 16), 0, y + 1.4, -D / 2), at(finial(2), 0, y + 2.5, -D / 2));
-  for (const x of [-3.8, 3.8]) f.add(box(2, 0.9, 2, P, x, y, -D / 2), at(hemi(0.9, L, 12), x, y + 0.9, -D / 2), at(finial(1.3), x, y + 1.75, -D / 2));
+  f.add(box(3.4, CROWN.mid, 2.1, P, 0, y, -D / 2), at(hemi(1.1, L, 16), 0, y + CROWN.mid, -D / 2), at(finial(1.1), 0, y + CROWN.mid + 1.1, -D / 2));
+  for (const x of [-3.8, 3.8]) f.add(box(2, CROWN.side, 2, P, x, y, -D / 2), at(hemi(0.9, L, 12), x, y + CROWN.side, -D / 2), at(finial(0.8), x, y + CROWN.side + 0.85, -D / 2));
   // Behind the screen, the palace it fronts (the real Hawa Mahal is a screen on the side of the
   // City Palace's zenana): a paved court, ranges of two storeys round it with arcades on the court
   // side, an open pavilion at its middle, and the ramps (not stairs) that climb to the upper

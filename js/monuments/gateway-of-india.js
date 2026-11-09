@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, box, cyl, at, archWall, hemi, finial, sheet } from '../helpers.js';
+import { M, box, at, archWall, hemi, finial, sheet } from '../helpers.js';
 import { addGatewayDetails } from '../details/gateway-of-india.js';
 import { addDetails } from '../details/gateway-of-india.js';
 
@@ -15,9 +15,10 @@ export function buildGateway() {
   for (const sx of [-1, 1]) f.add(at(archWall(14 - 2 * t, 19.2, t, 5.2, 11, false, m), sx * (9 - t / 2), p, 0).rotateY(Math.PI / 2));
   f.add(box(19, 2.6, 15, m, 0, b + 18));
   f.add(box(19.8, 0.78, 15.8, M.plaster, 0, b + 20.6));
-  f.add(cyl(5, 5, 2, m, 0, b + 21.4, 0, 32));
-  f.add(at(hemi(5, m), 0, b + 23.4, 0));
-  f.add(at(finial(3.5), 0, b + 28.2, 0));
+  // The central dome is low, hidden behind the parapets from the street: a shallow cap on the roof.
+  const dome = at(hemi(5, m), 0, b + 21.4, 0);
+  dome.scale.y = 0.5;
+  f.add(dome, at(finial(1.6), 0, b + 23.9, 0));
   for (const s of [-1, 1]) {
     // Each side hall is three thin arched faces, left open where it meets the central hall, so the
     // central hall's side arch leads through into it.

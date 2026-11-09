@@ -152,17 +152,17 @@ One commit each. Check the budget after each.
 of the excess is a flag or finial over the measured top (Jagannath's flag adds about 9 m); measure
 each in the browser before rescaling, and keep the kalash or flag above the stated height.
 
-- [ ] Gateway of India: 33.2 m against 26 m.
-- [ ] Hawa Mahal: 20.1 m against 15 m.
-- [ ] Sher Shah Suri's tomb: 50.8 m against 37 m.
-- [ ] Rumi Darwaza: 23.9 m against 18 m.
-- [ ] Jagannath: 82.6 m against 65 m (with the Nila Chakra and flags).
-- [ ] Sanchi: 21 m against 16.5 m (with the umbrellas).
-- [ ] Kailasa: 38.1 m against 30 m.
-- [ ] Kandariya: 36.9 m against 31 m.
-- [ ] Konark (the Jagamohana): 46 m against 39 m.
-- [ ] Buland Darwaza: 63.9 m against 54 m.
-- [ ] Kirti Mandir: 28.3 m against 24 m.
+- [x] Gateway of India: 33.2 m against 26 m. Now 29.1 m: the central dome is a low cap hidden behind the parapets, and the turret kiosks are smaller.
+- [x] Hawa Mahal: 20.1 m against 15 m. Now 17.2 m: the upper storeys are 2.7 m (one narrow room deep), and the crown's pavilions are lower.
+- [x] Sher Shah Suri's tomb: 50.8 m against 37 m. Now 40.8 m above its 8 m terrace (the 37.5 m is measured from the terrace); a smaller amalaka finial.
+- [x] Rumi Darwaza: 23.9 m against 18 m. Now 20.4 m: a smaller hood and kiosk over the arch.
+- [x] Jagannath: 82.6 m against 65 m (with the Nila Chakra and flags). Now 70.8 m with the flags (the Nila Chakra's top at 67 m): a smaller kalash under a 3.5 m wheel, shorter flag masts.
+- [x] Sanchi: 21 m against 16.5 m (with the umbrellas). Now the 16.5 m is the dome alone (sources say so), which the model matches; refs now allow for the harmika and umbrellas above it.
+- [x] Kailasa: 38.1 m against 30 m. Now 36.7 m against 32.6 m (Wikipedia: the vimana's top above the court; refs and the info card updated): a smaller kalash.
+- [x] Kandariya: 36.9 m against 31 m. Now 33.7 m: the main spire 1.5 m shorter, its stone kalash half the size.
+- [x] Konark (the Jagamohana): 46 m against 39 m. Now 42.1 m: lower pida tiers and terraces, a smaller kalash.
+- [x] Buland Darwaza: 63.9 m against 54 m. Now 59.6 m with the kiosks' finials: smaller kiosks along the top (the parapet stays at 52 m).
+- [x] Kirti Mandir: 28.3 m against 24 m. Now 25.3 m: a shorter shikhara and smaller kalash.
 
 ## Checking a task
 
