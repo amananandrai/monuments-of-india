@@ -30,10 +30,10 @@ Suggested order: T1, T2 and T3 first (checks that keep the rest honest, and the 
 
 The budget count and the flicker scan used so far live outside the repo. Put them in so any change can be checked.
 
-- [ ] `tools/check-budgets.mjs`: builds every monument headless at both levels (Playwright with the local three.js, as `video/` already depends on) and fails if any is over 600k / 300k. Prints the top ten of each level.
-- [ ] `tools/check-flicker.mjs`: builds each monument as `js/main.js` does (`naturalize`, `separateCoplanar`, `blendIntoLand`), buckets triangles by plane, and reports overlapping same-facing faces of different materials without a depth offset, keeping only those a short ray off the face shows to be uncovered and not inside a solid. Takes monument ids, or all.
+- [x] `tools/check-budgets.mjs`: builds every monument headless at both levels (Playwright with the local three.js, as `video/` already depends on) and fails if any is over 600k / 300k. Prints the top ten of each level.
+- [x] `tools/check-flicker.mjs`: builds each monument as `js/main.js` does (`naturalize`, `separateCoplanar`, `blendIntoLand`), buckets triangles by plane, and reports overlapping same-facing faces of different materials without a depth offset, keeping only those a short ray off the face shows to be uncovered and not inside a solid. Takes monument ids, or all.
 - [ ] `tools/check-heights.mjs` (with T13): compares each model's height with its `refs`.
-- [ ] A short `tools/README.md`: how to run them, and that they need `npm i` in `tools/` (three, playwright).
+- [x] A short `tools/README.md`: how to run them, and that they need `npm i` in `tools/` (three, playwright).
 
 ### T2. Jama Masjid: open cloisters and the north and south stairs
 

@@ -1,0 +1,15 @@
+{
+  "name": "monuments-of-india-tools",
+  "private": true,
+  "type": "module",
+  "description": "Headless checks for the models: triangle budgets, flickering faces, heights.",
+  "scripts": {
+    "budgets": "node check-budgets.mjs",
+    "flicker": "node check-flicker.mjs",
+    "heights": "node check-heights.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0",
+    "three": "0.160.0"
+  }
+}
