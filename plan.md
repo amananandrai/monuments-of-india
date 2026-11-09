@@ -51,9 +51,9 @@ Files: `js/monuments/gommateshwara.js`, `js/details/figures.js` (`bahubaliBody`,
 
 Today the figure is stocky with short legs, and two onion-domed Mughal chhatris (`chhatri(2.2, 6, ...)` at `x = ±14, z = 18`) stand in the enclosure. The real Bahubali is slender with broad shoulders and arms hanging almost to the knees, and stands in a pillared cloister.
 
-- [ ] Re-proportion the body in `bahubaliField`: longer legs (about half the height to the crotch), narrower waist, broad shoulders, arms reaching to just above the knees. Keep the height (17.4 m figure), the creepers, the anthills, the face and the curls, and move them with the limbs.
-- [ ] Replace the chhatris with a pillared cloister round the inside of the enclosure wall (a colonnade with a flat roof and a parapet, the stair's opening kept) and a small gateway pavilion over the opening.
-- [ ] Check the statue mesh build time: it is one of the slowest first opens. Keep the SDF resolution as it is.
+- [x] Re-proportion the body in `bahubaliField`: longer legs (about half the height to the crotch), narrower waist, broad shoulders, arms reaching to just above the knees. Keep the height (17.4 m figure), the creepers, the anthills, the face and the curls, and move them with the limbs.
+- [x] Replace the chhatris with a pillared cloister round the inside of the enclosure wall (a colonnade with a flat roof and a parapet, the stair's opening kept) and a small gateway pavilion over the opening.
+- [x] Check the statue mesh build time: it is one of the slowest first opens. Keep the SDF resolution as it is.
 
 ### T4. Flicker, second pass
 
