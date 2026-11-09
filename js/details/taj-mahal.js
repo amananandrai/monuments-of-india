@@ -132,7 +132,13 @@ export function addTajDetails(f, { P, s, c, H }) {
   d.add(at(crescentFinial(10.5), 0, dy + R * 1.83, 0));
   f.add(mergeByMaterial(d));
   // Minarets at the corners of the plinth.
-  for (const x of [-42, 42]) for (const z of [-42, 42]) f.add(at(tajMinaret(Math.atan2(x, z)), x, P, z));
+  // Each minaret leans slightly outwards, away from the tomb (about 0.5°: built so, it is said, to
+  // fall clear of the dome in an earthquake), tilted about its foot.
+  for (const x of [-42, 42]) for (const z of [-42, 42]) {
+    const m = at(tajMinaret(Math.atan2(x, z)), x, P, z), lean = THREE.MathUtils.degToRad(0.5), r = Math.SQRT1_2;
+    m.rotateOnWorldAxis(new THREE.Vector3(z / 42 * r, 0, -x / 42 * r), lean);
+    f.add(m);
+  }
 }
 
 // A minaret on the plinth, standing on y = 0, its door side facing `out`.
