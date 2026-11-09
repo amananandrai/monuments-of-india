@@ -31,9 +31,12 @@ export function buildKashiVishwanath() {
     f.add(at(range(CD - 7.4, 9, 7).rotateY(-s * Math.PI / 2), s * (CW / 2 - 3.5), ch, cz + 3.7));
     for (const z of [cz - CD / 2 + 3.5, cz + CD / 2 - 3.5]) f.add(at(chhatri(2.2, 6, CHUNAR), s * (CW / 2 - 3.5), ch + 9.6, z));
   }
-  // The shrine: its tall spire and the dome of its hall sheathed in gold (the gift of Maharaja
-  // Ranjit Singh), on a white marble body.
-  f.add(at(nagaraTemple({ w: 13, h: 25, m: M.marble, shade: M.marbleShade, spireM: GOLD, plinth: 1.6, urus: 4, halls: [[13, 8, 0, 'dome']] }), 0, ch, cz - 6));
+  // The shrine: its spire and the dome of its hall sheathed in gold (the gift of Maharaja Ranjit
+  // Singh), on a white marble body. The spire is modest, standing among the arcades rather than over
+  // them, and banded by its storeys; the shrine stands on a plain block in the paved court. Beside
+  // it, the smaller white spire of the Annapurna shrine.
+  f.add(at(nagaraTemple({ w: 11, h: 15, m: M.marble, shade: M.marbleShade, spireM: GOLD, plinth: 1.6, urus: 4, halls: [[12, 7, 0, 'dome']], base: null, spireBands: 5 }), 0, ch, cz - 6));
+  f.add(at(nagaraTemple({ w: 6, h: 9, m: M.marble, shade: M.marbleShade, plinth: 1.2, urus: 0, halls: [], apron: 3, base: null }), -18, ch, cz - 8));
   // Steps down from the chowk to the plaza, and the plaza between lower arcaded ranges.
   for (let k = 0; k < 10; k++) f.add(box(40, ch - k * 0.8, 1.6, SHADE, 0, 0, cz + CD / 2 + 0.8 + k * 1.6));
   for (const s of [-1, 1]) f.add(at(range(70, 7, 10).rotateY(-s * Math.PI / 2), s * 26, 0, 46));
