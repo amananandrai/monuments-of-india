@@ -57,12 +57,10 @@ Today the figure is stocky with short legs, and two onion-domed Mughal chhatris 
 
 ### T4. Flicker, second pass
 
-Run `tools/check-flicker.mjs` on all monuments and fix what is left. Known after PR 30:
+Run `tools/check-flicker.mjs` on all monuments and fix what is left.
 
-- [ ] Cellular Jail: the watchtower's wall faces against its trim (about 100 m² at `y ≈ 13`).
-- [ ] Shaded trim flush with walls at CSMT, Gol Gumbaz, Victoria Memorial, Cooch Behar, Itmad-ud-Daulah, Safdarjung's tomb, Bibi ka Maqbara, Ranakpur and Mehrangarh: lift each band 2 to 3 cm, or stop it short of the face it meets.
-- [ ] Vittala, Rani ki Vav (the floor ledge at `y ≈ 0.6`), Hawa Mahal (the street front at `y ≈ 0.6`) and the 0.2 m pavement against a few house steps.
-- [ ] Ignore the three known false alarms unless the check is improved: Ajanta's band ends, the Golden Temple ranges' backs, Vivekananda's diagonal faces.
+- [x] A second pass at load, `separateMerged` in `js/coplanar.js` (called after `separateCoplanar` in `js/main.js`): for merged, instanced and turned parts, which the first pass cannot see, it finds meshes of different materials with overlapping faces in one plane and draws the smaller a layer in front. Instanced sculpture and trees are skipped. Under 0.3 s per monument.
+- [x] Cellular Jail, CSMT, Gol Gumbaz, Victoria Memorial, Cooch Behar, Itmad-ud-Daulah, Safdarjung, Bibi ka Maqbara, Ranakpur, Mehrangarh, Vittala, Rani ki Vav, Hawa Mahal and the rest: `tools/check-flicker.mjs` reports no visible clashes on any of the 101 monuments.
 
 ### T5. Terrain for the remaining hills
 

@@ -9,7 +9,7 @@ import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { nightState, V, box } from './helpers.js';
 import { attachSurface, surface, waterTime, landColor, reflection } from './surface.js';
 import { blendIntoLand, siteLand } from './landscape.js';
-import { separateCoplanar } from './coplanar.js';
+import { separateCoplanar, separateMerged } from './coplanar.js';
 import { frameBox } from './framing.js';
 import { batchStatic } from './batch.js';
 import { upgradeTrees } from './details/realism.js';
@@ -238,6 +238,8 @@ function getBuilt(i) {
     naturalize(r.group);
     // Faces that share a plane get different depth offsets, so they don't flicker.
     separateCoplanar(r.group, 0.005);
+    // The same for merged, instanced and turned parts, which the pass above cannot separate.
+    separateMerged(r.group);
     blendIntoLand(r);
     // The box the home view frames, measured on the separate parts, before any are merged.
     r.frame = frameBox(r.focus);

@@ -1,6 +1,6 @@
 // Finds faces that flicker (z-fight): two triangles of different materials lying in one plane,
 // facing the same way and overlapping, with no depth offset between them. Each monument is built
-// as js/main.js builds it (naturalize, separateCoplanar, blendIntoLand), so what the site already
+// as js/main.js builds it (naturalize, separateCoplanar, separateMerged, blendIntoLand), so what the site already
 // separates is not reported. A clash is kept only if it can be seen: from a few points on it, a
 // short ray off the face must be neither covered within 3 cm nor start inside a solid.
 //   node check-flicker.mjs [id ...] [--min 1] [--same]
@@ -12,14 +12,14 @@ import { openPage, PRELUDE } from './lib/browser.mjs';
 
 // The scan, evaluated in the page for a batch of monuments (args.ids).
 const SCAN = `
-  const { separateCoplanar } = await import('/js/coplanar.js');
+  const { separateCoplanar, separateMerged } = await import('/js/coplanar.js');
   const { naturalize } = await import('/js/naturalize.js');
   const { blendIntoLand, siteLand } = await import('/js/landscape.js');
   const out = {};
   const A = new THREE.Vector3(), B = new THREE.Vector3(), C = new THREE.Vector3(), N = new THREE.Vector3(), E = new THREE.Vector3(), W = new THREE.Matrix4(), I = new THREE.Matrix4();
   for (const id of args.ids) {
     const r = await build(id, 'high');
-    r.land = siteLand(r); naturalize(r.group); separateCoplanar(r.group, 0.005); blendIntoLand(r);
+    r.land = siteLand(r); naturalize(r.group); separateCoplanar(r.group, 0.005); separateMerged(r.group); blendIntoLand(r);
     r.group.updateMatrixWorld(true);
     const buckets = new Map(), names = [];
     r.group.traverse((o) => {

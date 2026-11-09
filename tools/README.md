@@ -16,9 +16,9 @@ npx playwright install chromium   # once, if Playwright has no browser yet
 
 With no ids, a check runs over all 101 monuments.
 
-Reading a flicker report: the overlap is measured on bounding boxes, so a large diagonal face can be
-over-counted, and a face hidden behind an open-backed part can slip through the visibility test. Three
-reports are known false alarms: Ajanta's band ends, the Golden Temple ranges' backs and Vivekananda's
-diagonal faces. Look at a clash in the browser (the `near` point) before fixing it. The usual fixes:
-lift an overlay 2 to 5 cm off its face, stop a band 2 cm short of the face above it, or give the
-overlay's material a depth offset (as `M.recess` in `js/helpers.js` has).
+Reading a flicker report: the site itself separates clashing faces at load (`separateCoplanar` and
+`separateMerged` in `js/coplanar.js`), and the check runs the same passes, so it reports only what
+those cannot fix (for example two parts of one merged mesh). The overlap is measured on bounding
+boxes, so a large diagonal face can be over-counted. Look at a clash in the browser (the `near`
+point) before fixing it. The usual fixes: lift an overlay 2 to 5 cm off its face, or stop a band 2 cm
+short of the face above it.
