@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, rng, inst, unitBox, aroundRect, surface } from '../helpers.js';
+import { M, mat, box, at, rng, inst, unitBox, aroundRect, surface, cyl, hemi } from '../helpers.js';
 import { addDetails } from '../details/nalanda-mahavihara.js';
 
 // The brick is old and weathered: a dull red-brown, darker in the lower courses, not new orange.
@@ -39,6 +39,15 @@ function vihara(size, R) {
   return g;
 }
 
+// A votive stupa h high to the top of its base: two square steps, a moulding, and a dome on a
+// drum if it still has one.
+function votive(h, dome) {
+  const g = new THREE.Group();
+  g.add(box(3.4, h * 0.6, 3.4, BRICK), box(3.7, 0.25, 3.7, BRICK_DARK, 0, h * 0.6), box(2.8, h * 0.4, 2.8, BRICK, 0, h * 0.6 + 0.25), box(3.1, 0.2, 3.1, BRICK_DARK, 0, h + 0.25));
+  if (dome) g.add(cyl(1.25, 1.3, 0.5, BRICK, 0, h + 0.45, 0, 16), at(hemi(1.2, BRICK, 16), 0, h + 0.95, 0));
+  return g;
+}
+
 export function buildNalanda() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(23);
   g.add(f);
@@ -58,7 +67,8 @@ export function buildNalanda() {
   t.add(box(8, 3.4, 8, BRICK, -1, y, 0), box(4, 2, 5, BRICK_DARK, 1.5, y + 3.4, 1));
   f.add(at(t, 20, 0, 10));
   // Votive stupas round the temple
-  for (let i = 0; i < 10; i++) f.add(box(3.4, 1.5 + R() * 3, 3.4, BRICK, 20 + (R() - 0.5) * 70, 0, -30 + R() * 16));
+  // (each a square base in two steps under a brick dome, some domes fallen; see votive below)
+  for (let i = 0; i < 10; i++) f.add(at(votive(1.5 + R() * 3, i % 3 !== 2), 20 + (R() - 0.5) * 70, 0, -30 + R() * 16));
   addDetails(f, g);
   // Framed on the monument itself, closer than its grounds would set.
   return { group: g, focus: f, view: [0.85, 0.5, 1.15], zoom: 0.65 };
