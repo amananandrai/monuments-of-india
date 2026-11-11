@@ -19,7 +19,7 @@ export function buildTaj() {
   const top = P + H;
   f.add(cyl(14, 14, 7, M.marble, 0, top, 0, 48));
   f.add(cyl(14.6, 14.6, 0.8, M.marbleShade, 0, top + 6.2, 0, 48));
-  f.add(at(onionDome(14.5, M.marble), 0, top + 7, 0));
+  f.add(at(onionDome(14.5, M.marble, { crown: false, neck: false }), 0, top + 7, 0));
   // The pishtaqs, alcoves, calligraphy, inlay, parapets, guldastas, lotus crown and finial, the
   // chhatris and the minarets: see js/details/taj-mahal.js.
   addTajDetails(f, { P, s, c, H });
