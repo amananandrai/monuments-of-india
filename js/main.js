@@ -43,9 +43,13 @@ try {
 }
 // Ambient occlusion is skipped on phone-sized screens, where it costs too much.
 const fancy = !matchMedia('(max-width: 760px)').matches;
-renderer.setPixelRatio(Math.min(devicePixelRatio, fancy ? 1.5 : 2));
+// Sharpness: up to two device pixels per CSS pixel. Desktops used to stop at 1.5, to leave room for
+// ambient occlusion; now they start at 2 and paceQuality() steps down if the frames come too slowly.
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+// (Since the shadow box began to follow the view, see fitShadow(): the map is redrawn when the
+// view moves to another step of zoom or another place, still not every frame.)
 // The shadows are drawn once per monument, not every frame: the sun and the shadow box are fixed to
 // the monument and nothing in the scene moves, so orbiting the camera never changes them.
 // setEnvironment() asks for a new shadow map when a monument is shown.
@@ -391,21 +395,43 @@ function setEnvironment(h) {
   controls.maxDistance = Math.max(dist * 1.15, Math.min(dist * 3, h.reach * 0.85));
   controls.maxPolarAngle = Math.PI / 2 - h.minEl;
   SUN_DIR.copy(h.sun);
-  sun.position.copy(target).addScaledVector(SUN_DIR, radius * 3);
-  sun.target.position.copy(target);
   const sc = sun.shadow.camera;
-  sc.left = sc.bottom = -radius * 1.4;
-  sc.right = sc.top = radius * 1.4;
   sc.near = radius * 0.5;
   sc.far = radius * 6;
-  sc.updateProjectionMatrix();
   sun.shadow.bias = -0.0004;
-  sun.shadow.normalBias = radius * 0.0012;
-  renderer.shadowMap.needsUpdate = true;
+  shadowFit.extent = 0;
+  fitShadow();
   // Scale the occlusion radius to the monument: a kiosk and a 700 m bridge need very different reaches.
   gtao.updateGtaoMaterial({ radius: THREE.MathUtils.clamp(radius * 0.04, 0.8, 24), thickness: 1, distanceExponent: 1, scale: 1.1 });
   flood.position.copy(target).addScaledVector(V(0.35, 0.3, 1).normalize(), radius * 3);
   flood.target.position.copy(target);
+}
+
+// The shadow map follows the view. Its box was fixed at 1.4 times the monument's radius, so on a
+// large site a texel of the map was most of a metre and carving cast no shadow. Now the box is as
+// wide as the view needs: three-quarters of the camera's distance from the point it looks at,
+// between an eighth of the monument's radius and the old 1.4 times. Zooming in on a doorway gives
+// it the whole map; pulling back gives the site its shadows as before. So that shadows do not
+// crawl as the camera moves, the box changes in steps (its size by a quarter at a time, its centre
+// on a grid of a quarter of its size) and the map is redrawn only when a step is crossed.
+const shadowFit = { extent: 0, cx: NaN, cy: NaN, cz: NaN };
+function fitShadow() {
+  if (!home) return;
+  const d = camera.position.distanceTo(controls.target), r = home.radius;
+  const want = THREE.MathUtils.clamp(d * 0.75, r * 0.125, r * 1.4);
+  const extent = Math.min(r * 1.4, r * 0.125 * Math.pow(1.25, Math.ceil(Math.log(want / (r * 0.125)) / Math.log(1.25) - 1e-6)));
+  const g = extent / 4, t = controls.target;
+  const cx = Math.round(t.x / g) * g, cy = Math.round(t.y / g) * g, cz = Math.round(t.z / g) * g;
+  if (extent === shadowFit.extent && cx === shadowFit.cx && cy === shadowFit.cy && cz === shadowFit.cz) return;
+  Object.assign(shadowFit, { extent, cx, cy, cz });
+  sun.position.set(cx, cy, cz).addScaledVector(SUN_DIR, r * 3);
+  sun.target.position.set(cx, cy, cz);
+  const sc = sun.shadow.camera;
+  sc.left = sc.bottom = -extent;
+  sc.right = sc.top = extent;
+  sc.updateProjectionMatrix();
+  sun.shadow.normalBias = extent * 0.00086;
+  renderer.shadowMap.needsUpdate = true;
 }
 
 function flyTo(h, instant) {
@@ -469,6 +495,7 @@ async function select(i, instant = false) {
     home = computeHome(r);
   }
   setEnvironment(home);
+  pace.skip = 90; pace.times = [];
   if (!(r.land ? siteGround && siteGround.equals(r.land) : !siteGround)) {
     siteGround = r.land;
     paintLand();
@@ -838,6 +865,31 @@ function resize() {
 new ResizeObserver(resize).observe(canvas);
 resize();
 
+// Hold the frame rate on desktops: the scene starts at full sharpness, and if frames come slower
+// than about 40 a second, measured over a second and a half of steady frames, it steps down (2,
+// 1.5, 1.25, 1 device pixels per CSS pixel) and stays there for the visit. Frames just after a
+// monument is shown or the window resized are left out, as are single long hitches. Phones are
+// left alone: they have no occlusion pass to pay for.
+const QUALITY = [2, 1.5, 1.25, 1].filter((q) => q <= Math.min(devicePixelRatio, 2) + 1e-6);
+const pace = { last: 0, times: [], skip: 60 };
+function paceQuality(now) {
+  const dt = now - pace.last;
+  pace.last = now;
+  if (!fancy || QUALITY.length < 2 || document.hidden) return;
+  if (pace.skip > 0) { pace.skip--; return; }
+  if (dt > 250) return;
+  pace.times.push(dt);
+  if (pace.times.length < 90) return;
+  const median = pace.times.sort((a, b) => a - b)[45];
+  pace.times = [];
+  const at = QUALITY.findIndex((q) => q <= renderer.getPixelRatio() + 1e-6);
+  if (median > 25 && at >= 0 && at < QUALITY.length - 1) {
+    renderer.setPixelRatio(QUALITY[at + 1]);
+    resize();
+    pace.skip = 60;
+  }
+}
+
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 function loop(now) {
   requestAnimationFrame(loop);
@@ -850,9 +902,11 @@ function loop(now) {
     if (k >= 1) tween = null;
   }
   controls.update();
+  fitShadow();
   sky.position.copy(camera.position);
   if (mirror) renderReflection();
   composer.render();
+  paceQuality(now);
   if (firstFrame) { firstFrame = false; statusEl.hidden = true; }
 }
 
