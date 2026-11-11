@@ -47,7 +47,9 @@ jobs:
         working-directory: tools
         run: |
           npm ci
-          npx playwright install --with-deps chromium
+          # The GitHub runner already has Chromium's libraries. --with-deps also
+          # apt-installs a set of fonts, and that apt step failed on a DNS blip.
+          npx playwright install chromium
 
       - name: Render every home view
         working-directory: tools
