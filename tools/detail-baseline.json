@@ -1,0 +1,911 @@
+[
+ {
+  "id": "capitol-complex",
+  "tris": 3788,
+  "all": 19588,
+  "area": 76034,
+  "perM2": 0.03,
+  "piece": 760,
+  "plain": 0.997
+ },
+ {
+  "id": "thiksey-monastery",
+  "tris": 6700,
+  "all": 123974,
+  "area": 12213,
+  "perM2": 0.35,
+  "piece": 240,
+  "plain": 0.994
+ },
+ {
+  "id": "tawang-monastery",
+  "tris": 7528,
+  "all": 167826,
+  "area": 18002,
+  "perM2": 0.29,
+  "piece": 264,
+  "plain": 0.99
+ },
+ {
+  "id": "key-monastery",
+  "tris": 8016,
+  "all": 185888,
+  "area": 36358,
+  "perM2": 0.15,
+  "piece": 367,
+  "plain": 0.985
+ },
+ {
+  "id": "jallianwala-bagh",
+  "tris": 2756,
+  "all": 73304,
+  "area": 8457,
+  "perM2": 0.3,
+  "piece": 260,
+  "plain": 0.983
+ },
+ {
+  "id": "howrah-bridge",
+  "tris": 4520,
+  "all": 338890,
+  "area": 35732,
+  "perM2": 0.08,
+  "piece": 489,
+  "plain": 0.983
+ },
+ {
+  "id": "bandra-worli-sea-link",
+  "tris": 2276,
+  "all": 167002,
+  "area": 19884,
+  "perM2": 0.07,
+  "piece": 520,
+  "plain": 0.977
+ },
+ {
+  "id": "mehrangarh-fort",
+  "tris": 93896,
+  "all": 270484,
+  "area": 240400,
+  "perM2": 0.24,
+  "piece": 286,
+  "plain": 0.962
+ },
+ {
+  "id": "new-parliament-house",
+  "tris": 83844,
+  "all": 118840,
+  "area": 20368,
+  "perM2": 3.12,
+  "piece": 80,
+  "plain": 0.957
+ },
+ {
+  "id": "chittorgarh-fort",
+  "tris": 30496,
+  "all": 129970,
+  "area": 44675,
+  "perM2": 0.46,
+  "piece": 208,
+  "plain": 0.957
+ },
+ {
+  "id": "daulatabad-fort",
+  "tris": 10956,
+  "all": 118550,
+  "area": 18086,
+  "perM2": 0.39,
+  "piece": 226,
+  "plain": 0.956
+ },
+ {
+  "id": "fort-aguada",
+  "tris": 4688,
+  "all": 94692,
+  "area": 8909,
+  "perM2": 0.36,
+  "piece": 237,
+  "plain": 0.951
+ },
+ {
+  "id": "jaisalmer-fort",
+  "tris": 102932,
+  "all": 584840,
+  "area": 154246,
+  "perM2": 0.46,
+  "piece": 208,
+  "plain": 0.948
+ },
+ {
+  "id": "national-war-memorial",
+  "tris": 520,
+  "all": 49948,
+  "area": 1492,
+  "perM2": 0.26,
+  "piece": 279,
+  "plain": 0.945
+ },
+ {
+  "id": "golconda-fort",
+  "tris": 28156,
+  "all": 115966,
+  "area": 38022,
+  "perM2": 0.47,
+  "piece": 205,
+  "plain": 0.944
+ },
+ {
+  "id": "bekal-fort",
+  "tris": 12660,
+  "all": 59400,
+  "area": 12334,
+  "perM2": 0.63,
+  "piece": 179,
+  "plain": 0.917
+ },
+ {
+  "id": "dhamek-stupa",
+  "tris": 6256,
+  "all": 72794,
+  "area": 5132,
+  "perM2": 0.87,
+  "piece": 151,
+  "plain": 0.912
+ },
+ {
+  "id": "ajanta-caves",
+  "tris": 49392,
+  "all": 293010,
+  "area": 50078,
+  "perM2": 0.67,
+  "piece": 172,
+  "plain": 0.91
+ },
+ {
+  "id": "agra-fort",
+  "tris": 30688,
+  "all": 53756,
+  "area": 41233,
+  "perM2": 0.5,
+  "piece": 199,
+  "plain": 0.898
+ },
+ {
+  "id": "city-palace-udaipur",
+  "tris": 108368,
+  "all": 217574,
+  "area": 54404,
+  "perM2": 1.4,
+  "piece": 120,
+  "plain": 0.896
+ },
+ {
+  "id": "buland-darwaza",
+  "tris": 58882,
+  "all": 131032,
+  "area": 57218,
+  "perM2": 0.81,
+  "piece": 157,
+  "plain": 0.895
+ },
+ {
+  "id": "shaheed-minar",
+  "tris": 2008,
+  "all": 21128,
+  "area": 885,
+  "perM2": 1.55,
+  "piece": 114,
+  "plain": 0.893
+ },
+ {
+  "id": "india-gate",
+  "tris": 48980,
+  "all": 78472,
+  "area": 6690,
+  "perM2": 5.18,
+  "piece": 62,
+  "plain": 0.89
+ },
+ {
+  "id": "jagannath-puri-temple",
+  "tris": 83140,
+  "all": 303584,
+  "area": 12098,
+  "perM2": 4.84,
+  "piece": 64,
+  "plain": 0.884
+ },
+ {
+  "id": "rashtrapati-bhavan",
+  "tris": 30900,
+  "all": 79820,
+  "area": 31739,
+  "perM2": 0.59,
+  "piece": 184,
+  "plain": 0.883
+ },
+ {
+  "id": "omkareshwar-temple",
+  "tris": 56356,
+  "all": 517542,
+  "area": 10085,
+  "perM2": 3.24,
+  "piece": 79,
+  "plain": 0.878
+ },
+ {
+  "id": "red-fort",
+  "tris": 15996,
+  "all": 283110,
+  "area": 13775,
+  "perM2": 0.82,
+  "piece": 156,
+  "plain": 0.869
+ },
+ {
+  "id": "amber-fort",
+  "tris": 115040,
+  "all": 304552,
+  "area": 16084,
+  "perM2": 5.29,
+  "piece": 61,
+  "plain": 0.856
+ },
+ {
+  "id": "akshardham",
+  "tris": 53534,
+  "all": 395410,
+  "area": 22823,
+  "perM2": 1.55,
+  "piece": 114,
+  "plain": 0.841
+ },
+ {
+  "id": "basilica-of-bom-jesus",
+  "tris": 27536,
+  "all": 50146,
+  "area": 8952,
+  "perM2": 2.14,
+  "piece": 97,
+  "plain": 0.834
+ },
+ {
+  "id": "rani-ki-vav",
+  "tris": 160620,
+  "all": 172322,
+  "area": 33959,
+  "perM2": 3.12,
+  "piece": 80,
+  "plain": 0.829
+ },
+ {
+  "id": "konark-sun-temple",
+  "tris": 368172,
+  "all": 545902,
+  "area": 12313,
+  "perM2": 22.78,
+  "piece": 30,
+  "plain": 0.818
+ },
+ {
+  "id": "grishneshwar-temple",
+  "tris": 52240,
+  "all": 149232,
+  "area": 4690,
+  "perM2": 7.49,
+  "piece": 52,
+  "plain": 0.818
+ },
+ {
+  "id": "nalanda-mahavihara",
+  "tris": 28840,
+  "all": 38814,
+  "area": 27439,
+  "perM2": 0.7,
+  "piece": 169,
+  "plain": 0.818
+ },
+ {
+  "id": "tirumala-venkateswara-temple",
+  "tris": 44244,
+  "all": 303508,
+  "area": 11109,
+  "perM2": 2.55,
+  "piece": 89,
+  "plain": 0.812
+ },
+ {
+  "id": "kargil-war-memorial",
+  "tris": 1780,
+  "all": 60984,
+  "area": 1287,
+  "perM2": 1.15,
+  "piece": 132,
+  "plain": 0.812
+ },
+ {
+  "id": "kedarnath-temple",
+  "tris": 8108,
+  "all": 152988,
+  "area": 1530,
+  "perM2": 3.01,
+  "piece": 81,
+  "plain": 0.808
+ },
+ {
+  "id": "csmt",
+  "tris": 93088,
+  "all": 506032,
+  "area": 17620,
+  "perM2": 3.9,
+  "piece": 72,
+  "plain": 0.803
+ },
+ {
+  "id": "gwalior-fort",
+  "tris": 24624,
+  "all": 166924,
+  "area": 11134,
+  "perM2": 1.3,
+  "piece": 124,
+  "plain": 0.801
+ },
+ {
+  "id": "hazratbal-shrine",
+  "tris": 31024,
+  "all": 56884,
+  "area": 8277,
+  "perM2": 2.83,
+  "piece": 84,
+  "plain": 0.799
+ },
+ {
+  "id": "chennakesava-temple",
+  "tris": 48964,
+  "all": 82302,
+  "area": 6054,
+  "perM2": 5.14,
+  "piece": 62,
+  "plain": 0.798
+ },
+ {
+  "id": "cooch-behar-palace",
+  "tris": 166656,
+  "all": 254558,
+  "area": 33458,
+  "perM2": 3.5,
+  "piece": 76,
+  "plain": 0.784
+ },
+ {
+  "id": "kirti-mandir",
+  "tris": 11840,
+  "all": 107364,
+  "area": 3018,
+  "perM2": 3,
+  "piece": 82,
+  "plain": 0.781
+ },
+ {
+  "id": "hidimba-devi-temple",
+  "tris": 6644,
+  "all": 51356,
+  "area": 741,
+  "perM2": 4.57,
+  "piece": 66,
+  "plain": 0.776
+ },
+ {
+  "id": "kandariya-mahadeva",
+  "tris": 120848,
+  "all": 178398,
+  "area": 3322,
+  "perM2": 22.03,
+  "piece": 30,
+  "plain": 0.773
+ },
+ {
+  "id": "chota-imambara",
+  "tris": 11704,
+  "all": 61662,
+  "area": 6390,
+  "perM2": 1.4,
+  "piece": 120,
+  "plain": 0.773
+ },
+ {
+  "id": "jama-masjid",
+  "tris": 59252,
+  "all": 413388,
+  "area": 31628,
+  "perM2": 1.44,
+  "piece": 118,
+  "plain": 0.771
+ },
+ {
+  "id": "kailasa-temple",
+  "tris": 103372,
+  "all": 190530,
+  "area": 11989,
+  "perM2": 6.46,
+  "piece": 56,
+  "plain": 0.77
+ },
+ {
+  "id": "trimbakeshwar-temple",
+  "tris": 53412,
+  "all": 296196,
+  "area": 8628,
+  "perM2": 3.65,
+  "piece": 74,
+  "plain": 0.761
+ },
+ {
+  "id": "gommateshwara",
+  "tris": 79180,
+  "all": 193842,
+  "area": 3423,
+  "perM2": 16.03,
+  "piece": 35,
+  "plain": 0.749
+ },
+ {
+  "id": "rumi-darwaza",
+  "tris": 10374,
+  "all": 33174,
+  "area": 2756,
+  "perM2": 2.83,
+  "piece": 84,
+  "plain": 0.747
+ },
+ {
+  "id": "bara-imambara",
+  "tris": 53294,
+  "all": 111464,
+  "area": 17082,
+  "perM2": 2.38,
+  "piece": 92,
+  "plain": 0.747
+ },
+ {
+  "id": "brihadeeswara-temple",
+  "tris": 170132,
+  "all": 189690,
+  "area": 22312,
+  "perM2": 5.65,
+  "piece": 60,
+  "plain": 0.741
+ },
+ {
+  "id": "taj-mahal",
+  "tris": 167196,
+  "all": 311122,
+  "area": 37275,
+  "perM2": 3.14,
+  "piece": 80,
+  "plain": 0.739
+ },
+ {
+  "id": "kamakhya-temple",
+  "tris": 22088,
+  "all": 108578,
+  "area": 4700,
+  "perM2": 2.96,
+  "piece": 82,
+  "plain": 0.734
+ },
+ {
+  "id": "baidyanath-temple",
+  "tris": 118096,
+  "all": 555614,
+  "area": 9873,
+  "perM2": 6.44,
+  "piece": 56,
+  "plain": 0.73
+ },
+ {
+  "id": "akbars-tomb",
+  "tris": 91248,
+  "all": 199628,
+  "area": 23737,
+  "perM2": 2.84,
+  "piece": 84,
+  "plain": 0.726
+ },
+ {
+  "id": "kashi-vishwanath-temple",
+  "tris": 76432,
+  "all": 511126,
+  "area": 21486,
+  "perM2": 2.63,
+  "piece": 87,
+  "plain": 0.726
+ },
+ {
+  "id": "golden-temple",
+  "tris": 14892,
+  "all": 199600,
+  "area": 2820,
+  "perM2": 3.86,
+  "piece": 72,
+  "plain": 0.722
+ },
+ {
+  "id": "rumtek-monastery",
+  "tris": 13732,
+  "all": 78228,
+  "area": 8089,
+  "perM2": 1.13,
+  "piece": 133,
+  "plain": 0.719
+ },
+ {
+  "id": "humayuns-tomb",
+  "tris": 83952,
+  "all": 120818,
+  "area": 24344,
+  "perM2": 2.58,
+  "piece": 88,
+  "plain": 0.719
+ },
+ {
+  "id": "victoria-memorial",
+  "tris": 242516,
+  "all": 280012,
+  "area": 21292,
+  "perM2": 7.6,
+  "piece": 51,
+  "plain": 0.717
+ },
+ {
+  "id": "padmanabhaswamy-temple",
+  "tris": 63016,
+  "all": 338832,
+  "area": 11842,
+  "perM2": 3.67,
+  "piece": 74,
+  "plain": 0.709
+ },
+ {
+  "id": "mysore-palace",
+  "tris": 69700,
+  "all": 215260,
+  "area": 20267,
+  "perM2": 2.75,
+  "piece": 85,
+  "plain": 0.705
+ },
+ {
+  "id": "soniji-ki-nasiyan",
+  "tris": 25204,
+  "all": 49118,
+  "area": 6132,
+  "perM2": 2.22,
+  "piece": 95,
+  "plain": 0.702
+ },
+ {
+  "id": "bibi-ka-maqbara",
+  "tris": 66648,
+  "all": 108494,
+  "area": 12556,
+  "perM2": 3.83,
+  "piece": 72,
+  "plain": 0.699
+ },
+ {
+  "id": "meenakshi-temple",
+  "tris": 442228,
+  "all": 596740,
+  "area": 66033,
+  "perM2": 4.49,
+  "piece": 67,
+  "plain": 0.694
+ },
+ {
+  "id": "charminar",
+  "tris": 106336,
+  "all": 290296,
+  "area": 19983,
+  "perM2": 3.85,
+  "piece": 72,
+  "plain": 0.689
+ },
+ {
+  "id": "mallikarjuna-temple",
+  "tris": 105824,
+  "all": 352424,
+  "area": 14473,
+  "perM2": 4.53,
+  "piece": 66,
+  "plain": 0.686
+ },
+ {
+  "id": "gol-gumbaz",
+  "tris": 87836,
+  "all": 106622,
+  "area": 26838,
+  "perM2": 2.53,
+  "piece": 89,
+  "plain": 0.681
+ },
+ {
+  "id": "itmad-ud-daulah",
+  "tris": 18258,
+  "all": 55054,
+  "area": 4447,
+  "perM2": 2.84,
+  "piece": 84,
+  "plain": 0.675
+ },
+ {
+  "id": "shikharji",
+  "tris": 20268,
+  "all": 231600,
+  "area": 3155,
+  "perM2": 3.6,
+  "piece": 75,
+  "plain": 0.674
+ },
+ {
+  "id": "safdarjung-tomb",
+  "tris": 59640,
+  "all": 93520,
+  "area": 13680,
+  "perM2": 3.22,
+  "piece": 79,
+  "plain": 0.672
+ },
+ {
+  "id": "laxmi-vilas-palace",
+  "tris": 247932,
+  "all": 462188,
+  "area": 55642,
+  "perM2": 3.33,
+  "piece": 78,
+  "plain": 0.672
+ },
+ {
+  "id": "old-parliament-house",
+  "tris": 53692,
+  "all": 135424,
+  "area": 34723,
+  "perM2": 0.91,
+  "piece": 148,
+  "plain": 0.668
+ },
+ {
+  "id": "dilwara-temples",
+  "tris": 79628,
+  "all": 116076,
+  "area": 21437,
+  "perM2": 2.09,
+  "piece": 98,
+  "plain": 0.642
+ },
+ {
+  "id": "ram-mandir",
+  "tris": 214752,
+  "all": 357968,
+  "area": 17177,
+  "perM2": 8.38,
+  "piece": 49,
+  "plain": 0.635
+ },
+ {
+  "id": "parshvanath-temple-khajuraho",
+  "tris": 80432,
+  "all": 207874,
+  "area": 2493,
+  "perM2": 21.24,
+  "piece": 31,
+  "plain": 0.626
+ },
+ {
+  "id": "sher-shah-suri-tomb",
+  "tris": 74280,
+  "all": 101108,
+  "area": 15825,
+  "perM2": 3.48,
+  "piece": 76,
+  "plain": 0.623
+ },
+ {
+  "id": "gateway-of-india",
+  "tris": 78828,
+  "all": 120606,
+  "area": 6535,
+  "perM2": 8.6,
+  "piece": 48,
+  "plain": 0.617
+ },
+ {
+  "id": "cellular-jail",
+  "tris": 45324,
+  "all": 83598,
+  "area": 24553,
+  "perM2": 1.31,
+  "piece": 124,
+  "plain": 0.602
+ },
+ {
+  "id": "somnath-temple",
+  "tris": 69632,
+  "all": 132838,
+  "area": 7682,
+  "perM2": 5.63,
+  "piece": 60,
+  "plain": 0.595
+ },
+ {
+  "id": "statue-of-unity",
+  "tris": 109028,
+  "all": 266438,
+  "area": 51570,
+  "perM2": 1.49,
+  "piece": 116,
+  "plain": 0.566
+ },
+ {
+  "id": "qutb-shahi-tombs",
+  "tris": 130288,
+  "all": 217740,
+  "area": 35083,
+  "perM2": 2.99,
+  "piece": 82,
+  "plain": 0.561
+ },
+ {
+  "id": "vittala-temple-hampi",
+  "tris": 326430,
+  "all": 508404,
+  "area": 16254,
+  "perM2": 13.02,
+  "piece": 39,
+  "plain": 0.549
+ },
+ {
+  "id": "bhimashankar-temple",
+  "tris": 11696,
+  "all": 222420,
+  "area": 1112,
+  "perM2": 6.19,
+  "piece": 57,
+  "plain": 0.546
+ },
+ {
+  "id": "vivekananda-rock-memorial",
+  "tris": 100656,
+  "all": 128982,
+  "area": 3969,
+  "perM2": 18.58,
+  "piece": 33,
+  "plain": 0.473
+ },
+ {
+  "id": "mahabodhi-temple",
+  "tris": 184896,
+  "all": 201892,
+  "area": 3138,
+  "perM2": 41.97,
+  "piece": 22,
+  "plain": 0.466
+ },
+ {
+  "id": "hawa-mahal",
+  "tris": 81218,
+  "all": 102570,
+  "area": 9834,
+  "perM2": 6.3,
+  "piece": 56,
+  "plain": 0.432
+ },
+ {
+  "id": "palitana-temples",
+  "tris": 116384,
+  "all": 269444,
+  "area": 39492,
+  "perM2": 1.64,
+  "piece": 110,
+  "plain": 0.424
+ },
+ {
+  "id": "ramappa-temple",
+  "tris": 30996,
+  "all": 61814,
+  "area": 1489,
+  "perM2": 12.14,
+  "piece": 41,
+  "plain": 0.421
+ },
+ {
+  "id": "shore-temple",
+  "tris": 20136,
+  "all": 186336,
+  "area": 1095,
+  "perM2": 14.4,
+  "piece": 37,
+  "plain": 0.397
+ },
+ {
+  "id": "mahakaleshwar-temple",
+  "tris": 56648,
+  "all": 381344,
+  "area": 5319,
+  "perM2": 6.26,
+  "piece": 57,
+  "plain": 0.389
+ },
+ {
+  "id": "ranakpur-jain-temple",
+  "tris": 77180,
+  "all": 136028,
+  "area": 15730,
+  "perM2": 2.74,
+  "piece": 85,
+  "plain": 0.387
+ },
+ {
+  "id": "ramanathaswamy-temple",
+  "tris": 140228,
+  "all": 192270,
+  "area": 34084,
+  "perM2": 2.5,
+  "piece": 90,
+  "plain": 0.367
+ },
+ {
+  "id": "nageshwar-temple",
+  "tris": 211100,
+  "all": 367680,
+  "area": 4132,
+  "perM2": 32.61,
+  "piece": 25,
+  "plain": 0.339
+ },
+ {
+  "id": "tipu-sultan-gumbaz",
+  "tris": 12652,
+  "all": 43710,
+  "area": 3714,
+  "perM2": 2.44,
+  "piece": 91,
+  "plain": 0.305
+ },
+ {
+  "id": "sanchi-stupa",
+  "tris": 93608,
+  "all": 118966,
+  "area": 3359,
+  "perM2": 21.93,
+  "piece": 30,
+  "plain": 0.255
+ },
+ {
+  "id": "lotus-temple",
+  "tris": 19224,
+  "all": 84640,
+  "area": 7609,
+  "perM2": 1.82,
+  "piece": 105,
+  "plain": 0.144
+ },
+ {
+  "id": "panch-mahal",
+  "tris": 16792,
+  "all": 21770,
+  "area": 2935,
+  "perM2": 3.39,
+  "piece": 77,
+  "plain": 0.103
+ },
+ {
+  "id": "qutub-minar",
+  "tris": 25600,
+  "all": 58698,
+  "area": 2998,
+  "perM2": 6.35,
+  "piece": 56,
+  "plain": 0
+ }
+]
