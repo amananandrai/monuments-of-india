@@ -37,6 +37,468 @@ download.
 - **Links:** open any monument directly with its hash, for example
   [`#taj-mahal`](https://monuments-of-india-nu.vercel.app/#taj-mahal).
 
+<!-- gallery:start -->
+
+Home view of every model. [A GitHub Action](.github/workflows/screenshots.yml) renders these again when the models change and commits the new pictures here. They are the plain studio views from `tools/shoot-views.mjs` (the built model, its trees and water), so a run stays within a few minutes. The site's own shadows, photo textures and haze are the `--site` pictures described in [`tools/README.md`](tools/README.md).
+
+### Andaman and Nicobar (1)
+
+![Cellular Jail](assets/views/cellular-jail.png)
+
+*Cellular Jail — Port Blair, Andaman Islands*
+
+### Andhra Pradesh (2)
+
+![Tirumala Venkateswara Temple](assets/views/tirumala-venkateswara-temple.png)
+
+*Tirumala Venkateswara Temple — Tirumala, Andhra Pradesh*
+
+![Mallikarjuna Temple](assets/views/mallikarjuna-temple.png)
+
+*Mallikarjuna Temple — Srisailam, Andhra Pradesh*
+
+### Arunachal Pradesh (1)
+
+![Tawang Monastery](assets/views/tawang-monastery.png)
+
+*Tawang Monastery — Tawang, Arunachal Pradesh*
+
+### Assam (1)
+
+![Kamakhya Temple](assets/views/kamakhya-temple.png)
+
+*Kamakhya Temple — Nilachal Hill, Guwahati*
+
+### Bihar (3)
+
+![Mahabodhi Temple](assets/views/mahabodhi-temple.png)
+
+*Mahabodhi Temple — Bodh Gaya, Bihar*
+
+![Nalanda Mahavihara](assets/views/nalanda-mahavihara.png)
+
+*Nalanda Mahavihara — Nalanda, Bihar*
+
+![Sher Shah Suri’s Tomb](assets/views/sher-shah-suri-tomb.png)
+
+*Sher Shah Suri’s Tomb — Sasaram, Bihar*
+
+### Chandigarh (1)
+
+![Capitol Complex, Chandigarh](assets/views/capitol-complex.png)
+
+*Capitol Complex, Chandigarh — Sector 1, Chandigarh*
+
+### Delhi (12)
+
+![Qutub Minar](assets/views/qutub-minar.png)
+
+*Qutub Minar — Mehrauli, Delhi*
+
+![India Gate](assets/views/india-gate.png)
+
+*India Gate — Kartavya Path, New Delhi*
+
+![Lotus Temple](assets/views/lotus-temple.png)
+
+*Lotus Temple — Kalkaji, New Delhi*
+
+![Red Fort](assets/views/red-fort.png)
+
+*Red Fort — Old Delhi*
+
+![Old Parliament House](assets/views/old-parliament-house.png)
+
+*Old Parliament House — Sansad Marg, New Delhi*
+
+![Rashtrapati Bhavan](assets/views/rashtrapati-bhavan.png)
+
+*Rashtrapati Bhavan — Raisina Hill, New Delhi*
+
+![Humayun’s Tomb](assets/views/humayuns-tomb.png)
+
+*Humayun’s Tomb — Nizamuddin, New Delhi*
+
+![Jama Masjid](assets/views/jama-masjid.png)
+
+*Jama Masjid — Chandni Chowk, Old Delhi*
+
+![New Parliament House](assets/views/new-parliament-house.png)
+
+*New Parliament House — Sansad Marg, New Delhi*
+
+![Swaminarayan Akshardham](assets/views/akshardham.png)
+
+*Swaminarayan Akshardham — New Delhi*
+
+![Safdarjung’s Tomb](assets/views/safdarjung-tomb.png)
+
+*Safdarjung’s Tomb — Lodhi Road, New Delhi*
+
+![National War Memorial](assets/views/national-war-memorial.png)
+
+*National War Memorial — Kartavya Path, New Delhi*
+
+### Goa (2)
+
+![Basilica of Bom Jesus](assets/views/basilica-of-bom-jesus.png)
+
+*Basilica of Bom Jesus — Old Goa, Goa*
+
+![Fort Aguada](assets/views/fort-aguada.png)
+
+*Fort Aguada — Candolim, Goa*
+
+### Gujarat (7)
+
+![Statue of Unity](assets/views/statue-of-unity.png)
+
+*Statue of Unity — Ekta Nagar, Gujarat*
+
+![Rani ki Vav](assets/views/rani-ki-vav.png)
+
+*Rani ki Vav — Patan, Gujarat*
+
+![Somnath Temple](assets/views/somnath-temple.png)
+
+*Somnath Temple — Prabhas Patan, Gujarat*
+
+![Nageshwar Temple](assets/views/nageshwar-temple.png)
+
+*Nageshwar Temple — Dwarka, Gujarat*
+
+![Palitana Temples](assets/views/palitana-temples.png)
+
+*Palitana Temples — Shatrunjaya hill, Gujarat*
+
+![Laxmi Vilas Palace](assets/views/laxmi-vilas-palace.png)
+
+*Laxmi Vilas Palace — Vadodara, Gujarat*
+
+![Kirti Mandir](assets/views/kirti-mandir.png)
+
+*Kirti Mandir — Porbandar, Gujarat*
+
+### Himachal Pradesh (2)
+
+![Hidimba Devi Temple](assets/views/hidimba-devi-temple.png)
+
+*Hidimba Devi Temple — Manali, Himachal Pradesh*
+
+![Key Monastery](assets/views/key-monastery.png)
+
+*Key Monastery — Spiti Valley, Himachal Pradesh*
+
+### Jammu and Kashmir (1)
+
+![Hazratbal Shrine](assets/views/hazratbal-shrine.png)
+
+*Hazratbal Shrine — Srinagar, Jammu and Kashmir*
+
+### Jharkhand (2)
+
+![Baidyanath Temple](assets/views/baidyanath-temple.png)
+
+*Baidyanath Temple — Deoghar, Jharkhand*
+
+![Shikharji](assets/views/shikharji.png)
+
+*Shikharji — Parasnath Hill, Jharkhand*
+
+### Karnataka (6)
+
+![Gol Gumbaz](assets/views/gol-gumbaz.png)
+
+*Gol Gumbaz — Vijayapura, Karnataka*
+
+![Mysore Palace](assets/views/mysore-palace.png)
+
+*Mysore Palace — Mysuru, Karnataka*
+
+![Chennakesava Temple](assets/views/chennakesava-temple.png)
+
+*Chennakesava Temple — Somanathapura, Karnataka*
+
+![Vittala Temple, Hampi](assets/views/vittala-temple-hampi.png)
+
+*Vittala Temple, Hampi — Hampi, Karnataka*
+
+![Gommateshwara Statue](assets/views/gommateshwara.png)
+
+*Gommateshwara Statue — Shravanabelagola, Karnataka*
+
+![Tipu Sultan’s Gumbaz](assets/views/tipu-sultan-gumbaz.png)
+
+*Tipu Sultan’s Gumbaz — Srirangapatna, Karnataka*
+
+### Kerala (2)
+
+![Padmanabhaswamy Temple](assets/views/padmanabhaswamy-temple.png)
+
+*Padmanabhaswamy Temple — Thiruvananthapuram, Kerala*
+
+![Bekal Fort](assets/views/bekal-fort.png)
+
+*Bekal Fort — Kasaragod, Kerala*
+
+### Ladakh (2)
+
+![Thiksey Monastery](assets/views/thiksey-monastery.png)
+
+*Thiksey Monastery — Near Leh, Ladakh*
+
+![Kargil War Memorial](assets/views/kargil-war-memorial.png)
+
+*Kargil War Memorial — Dras, Ladakh*
+
+### Madhya Pradesh (6)
+
+![Sanchi Stupa](assets/views/sanchi-stupa.png)
+
+*Sanchi Stupa — Sanchi, Madhya Pradesh*
+
+![Kandariya Mahadeva Temple](assets/views/kandariya-mahadeva.png)
+
+*Kandariya Mahadeva Temple — Khajuraho, Madhya Pradesh*
+
+![Gwalior Fort](assets/views/gwalior-fort.png)
+
+*Gwalior Fort — Gwalior, Madhya Pradesh*
+
+![Mahakaleshwar Temple](assets/views/mahakaleshwar-temple.png)
+
+*Mahakaleshwar Temple — Ujjain, Madhya Pradesh*
+
+![Omkareshwar Temple](assets/views/omkareshwar-temple.png)
+
+*Omkareshwar Temple — Mandhata island, Madhya Pradesh*
+
+![Parshvanath Temple, Khajuraho](assets/views/parshvanath-temple-khajuraho.png)
+
+*Parshvanath Temple, Khajuraho — Khajuraho, Madhya Pradesh*
+
+### Maharashtra (10)
+
+![Gateway of India](assets/views/gateway-of-india.png)
+
+*Gateway of India — Apollo Bunder, Mumbai*
+
+![Chhatrapati Shivaji Maharaj Terminus](assets/views/csmt.png)
+
+*Chhatrapati Shivaji Maharaj Terminus — Fort, Mumbai*
+
+![Kailasa Temple, Ellora](assets/views/kailasa-temple.png)
+
+*Kailasa Temple, Ellora — Ellora, Maharashtra*
+
+![Bandra–Worli Sea Link](assets/views/bandra-worli-sea-link.png)
+
+*Bandra–Worli Sea Link — Mumbai, Maharashtra*
+
+![Bibi Ka Maqbara](assets/views/bibi-ka-maqbara.png)
+
+*Bibi Ka Maqbara — Chhatrapati Sambhajinagar, Maharashtra*
+
+![Bhimashankar Temple](assets/views/bhimashankar-temple.png)
+
+*Bhimashankar Temple — Sahyadri hills, Maharashtra*
+
+![Trimbakeshwar Temple](assets/views/trimbakeshwar-temple.png)
+
+*Trimbakeshwar Temple — Trimbak, Nashik*
+
+![Grishneshwar Temple](assets/views/grishneshwar-temple.png)
+
+*Grishneshwar Temple — Verul, near Ellora*
+
+![Ajanta Caves](assets/views/ajanta-caves.png)
+
+*Ajanta Caves — Ajanta, Maharashtra*
+
+![Daulatabad Fort](assets/views/daulatabad-fort.png)
+
+*Daulatabad Fort — Near Chhatrapati Sambhajinagar, Maharashtra*
+
+### Odisha (2)
+
+![Jagannath Puri Temple](assets/views/jagannath-puri-temple.png)
+
+*Jagannath Puri Temple — Puri, Odisha*
+
+![Konark Sun Temple](assets/views/konark-sun-temple.png)
+
+*Konark Sun Temple — Konark, Odisha*
+
+### Punjab (2)
+
+![Golden Temple](assets/views/golden-temple.png)
+
+*Golden Temple — Amritsar, Punjab*
+
+![Jallianwala Bagh](assets/views/jallianwala-bagh.png)
+
+*Jallianwala Bagh — Amritsar, Punjab*
+
+### Rajasthan (9)
+
+![Hawa Mahal](assets/views/hawa-mahal.png)
+
+*Hawa Mahal — Jaipur, Rajasthan*
+
+![Dilwara Temples](assets/views/dilwara-temples.png)
+
+*Dilwara Temples — Mount Abu, Rajasthan*
+
+![Ranakpur Jain Temple](assets/views/ranakpur-jain-temple.png)
+
+*Ranakpur Jain Temple — Ranakpur, Rajasthan*
+
+![Amber Fort](assets/views/amber-fort.png)
+
+*Amber Fort — Amer, Jaipur*
+
+![Soniji Ki Nasiyan](assets/views/soniji-ki-nasiyan.png)
+
+*Soniji Ki Nasiyan — Ajmer, Rajasthan*
+
+![Mehrangarh Fort](assets/views/mehrangarh-fort.png)
+
+*Mehrangarh Fort — Jodhpur, Rajasthan*
+
+![Chittorgarh Fort](assets/views/chittorgarh-fort.png)
+
+*Chittorgarh Fort — Chittorgarh, Rajasthan*
+
+![Jaisalmer Fort](assets/views/jaisalmer-fort.png)
+
+*Jaisalmer Fort — Jaisalmer, Rajasthan*
+
+![City Palace, Udaipur](assets/views/city-palace-udaipur.png)
+
+*City Palace, Udaipur — Udaipur, Rajasthan*
+
+### Sikkim (1)
+
+![Rumtek Monastery](assets/views/rumtek-monastery.png)
+
+*Rumtek Monastery — Near Gangtok, Sikkim*
+
+### Tamil Nadu (5)
+
+![Brihadeeswara Temple](assets/views/brihadeeswara-temple.png)
+
+*Brihadeeswara Temple — Thanjavur, Tamil Nadu*
+
+![Meenakshi Temple](assets/views/meenakshi-temple.png)
+
+*Meenakshi Temple — Madurai, Tamil Nadu*
+
+![Shore Temple](assets/views/shore-temple.png)
+
+*Shore Temple — Mahabalipuram, Tamil Nadu*
+
+![Ramanathaswamy Temple](assets/views/ramanathaswamy-temple.png)
+
+*Ramanathaswamy Temple — Rameswaram, Tamil Nadu*
+
+![Vivekananda Rock Memorial](assets/views/vivekananda-rock-memorial.png)
+
+*Vivekananda Rock Memorial — Kanyakumari, Tamil Nadu*
+
+### Telangana (4)
+
+![Charminar](assets/views/charminar.png)
+
+*Charminar — Hyderabad, Telangana*
+
+![Ramappa Temple](assets/views/ramappa-temple.png)
+
+*Ramappa Temple — Palampet, Telangana*
+
+![Golconda Fort](assets/views/golconda-fort.png)
+
+*Golconda Fort — Hyderabad, Telangana*
+
+![Qutb Shahi Tombs](assets/views/qutb-shahi-tombs.png)
+
+*Qutb Shahi Tombs — Hyderabad, Telangana*
+
+### Uttar Pradesh (12)
+
+![Taj Mahal](assets/views/taj-mahal.png)
+
+*Taj Mahal — Agra, Uttar Pradesh*
+
+![Ram Mandir](assets/views/ram-mandir.png)
+
+*Ram Mandir — Ayodhya, Uttar Pradesh*
+
+![Buland Darwaza](assets/views/buland-darwaza.png)
+
+*Buland Darwaza — Fatehpur Sikri, Uttar Pradesh*
+
+![Panch Mahal](assets/views/panch-mahal.png)
+
+*Panch Mahal — Fatehpur Sikri, Uttar Pradesh*
+
+![Bara Imambara](assets/views/bara-imambara.png)
+
+*Bara Imambara — Lucknow, Uttar Pradesh*
+
+![Rumi Darwaza](assets/views/rumi-darwaza.png)
+
+*Rumi Darwaza — Lucknow, Uttar Pradesh*
+
+![Chota Imambara](assets/views/chota-imambara.png)
+
+*Chota Imambara — Lucknow, Uttar Pradesh*
+
+![Itmad-ud-Daulah’s Tomb](assets/views/itmad-ud-daulah.png)
+
+*Itmad-ud-Daulah’s Tomb — Agra, Uttar Pradesh*
+
+![Akbar’s Tomb](assets/views/akbars-tomb.png)
+
+*Akbar’s Tomb — Sikandra, Agra*
+
+![Agra Fort](assets/views/agra-fort.png)
+
+*Agra Fort — Agra, Uttar Pradesh*
+
+![Kashi Vishwanath Temple](assets/views/kashi-vishwanath-temple.png)
+
+*Kashi Vishwanath Temple — Varanasi, Uttar Pradesh*
+
+![Dhamek Stupa](assets/views/dhamek-stupa.png)
+
+*Dhamek Stupa — Sarnath, Uttar Pradesh*
+
+### Uttarakhand (1)
+
+![Kedarnath Temple](assets/views/kedarnath-temple.png)
+
+*Kedarnath Temple — Kedarnath, Uttarakhand*
+
+### West Bengal (4)
+
+![Howrah Bridge](assets/views/howrah-bridge.png)
+
+*Howrah Bridge — Kolkata, West Bengal*
+
+![Victoria Memorial](assets/views/victoria-memorial.png)
+
+*Victoria Memorial — Maidan, Kolkata*
+
+![Cooch Behar Palace](assets/views/cooch-behar-palace.png)
+
+*Cooch Behar Palace — Cooch Behar, West Bengal*
+
+![Shaheed Minar](assets/views/shaheed-minar.png)
+
+*Shaheed Minar — Maidan, Kolkata*
+
+<!-- gallery:end -->
+
 ## States and monuments
 
 Each entry gives the place, the dates, the architectural style and the main material, as shown on

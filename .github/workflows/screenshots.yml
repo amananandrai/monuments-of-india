@@ -1,0 +1,79 @@
+# Renders a home view of every monument and commits the pictures into the README gallery.
+# The plain renderer (tools/shoot-views.mjs) is used rather than --site: a full site shot of
+# all 101 models is about an hour on a CPU runner, and this finishes in a few minutes.
+# The commit is marked [skip ci], and this file's path filters ignore assets/views and
+# README.md, so the commit does not start another run.
+name: Monument screenshots
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'js/**'
+      - 'index.html'
+      - 'css/**'
+      - 'tools/shoot-views.mjs'
+      - 'tools/lib/**'
+      - 'tools/update-readme-gallery.mjs'
+      - '.github/workflows/screenshots.yml'
+  pull_request:
+    paths:
+      - 'js/**'
+      - 'index.html'
+      - 'css/**'
+      - 'tools/shoot-views.mjs'
+      - 'tools/lib/**'
+      - 'tools/update-readme-gallery.mjs'
+      - '.github/workflows/screenshots.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: monument-screenshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  shoot:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out the branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tools/package-lock.json
+
+      - name: Install the renderer
+        working-directory: tools
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Render every home view
+        working-directory: tools
+        run: node shoot-views.mjs --size 800x450 --out ../assets/views
+
+      - name: Update the README gallery
+        working-directory: tools
+        run: node update-readme-gallery.mjs
+
+      - name: Commit the pictures
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/views README.md
+          if git diff --staged --quiet; then
+            echo "Screenshots already match the models."
+            exit 0
+          fi
+          git commit -m "Update monument screenshots [skip ci]"
+          git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
