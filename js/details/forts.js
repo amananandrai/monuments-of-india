@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, at, onFace, archWall, rise, hemi, finial } from '../helpers.js';
+import { M, mesh, box, cyl, at, onFace, archWall, rise, hemi, finial, inst, unitBox, unitCyl } from '../helpers.js';
+import { detail } from '../detail.js';
 import { archRing, hood, merlons, mergeByMaterial } from './components.js';
 import { doorLeaves, interior } from './doorways.js';
 import { pierced } from './mughal.js';
@@ -108,5 +109,65 @@ export function towerDetail(rb, rt, h, m, trim = m, { n = 8, seg = 24, courses =
 export function slitRow(len, n, y, w, h) {
   const g = new THREE.Group();
   for (let k = 0; k < n; k++) g.add(box(w, h, 0.05, M.recess, -len / 2 + ((k + 0.5) / n) * len, y, 0.02));
+  return g;
+}
+
+/* ---------- ramparts ---------- */
+// A merlon one unit wide, high and deep with a pointed head, standing on y = 0: few triangles, as
+// a long wall carries hundreds of them.
+function plainMerlon() {
+  const sh = new THREE.Shape();
+  sh.moveTo(-0.5, 0); sh.lineTo(0.5, 0); sh.lineTo(0.5, 0.62); sh.lineTo(0, 1); sh.lineTo(-0.5, 0.62); sh.closePath();
+  return new THREE.ExtrudeGeometry(sh, { depth: 1, bevelEnabled: false }).translate(0, 0, -0.5);
+}
+
+// The battlements of a curtain wall built as a run of plain lengths, each [x, y, z, len, h, t, ry]
+// as given to inst() (the hill forts' walls: Mehrangarh, Jaisalmer, Chittorgarh). On the outer edge
+// of each length's top (the side away from `centre`): a parapet course, pointed merlons along it,
+// and below it a projecting string course and a row of arrow slits; on the inner edge, the low kerb
+// of the wall walk. All instanced. size scales the parts (1: merlons 1.1 m wide and 1.3 high).
+// On phones: merlons twice as far apart, and no slits or kerb.
+export function rampart(segs, m, { trim = m, size = 1, centre = [0, 0], course = true, slits = true, kerb = true, every = 1 } = {}) {
+  const g = new THREE.Group(), low = detail.low, s = size;
+  const parapets = [], merlons = [], courses = [], loops = [], kerbs = [];
+  const pitch = 1.9 * s * (low ? 2 : 1) * every;
+  for (const [mx, y, mz, len, h, t, ry = 0] of segs) {
+    const ux = Math.cos(ry), uz = -Math.sin(ry);
+    let nx = Math.sin(ry), nz = Math.cos(ry);
+    if (nx * (mx - centre[0]) + nz * (mz - centre[1]) < 0) { nx = -nx; nz = -nz; }
+    const top = y + h, o = t / 2, put = (out, along = 0) => [mx + nx * out + ux * along, mz + nz * out + uz * along];
+    const [px, pz] = put(o - 0.25 * s);
+    parapets.push([px, top, pz, len, 0.7 * s, 0.5 * s, ry]);
+    const n = Math.max(1, Math.round(len / pitch));
+    for (let k = 0; k < n; k++) {
+      const along = ((k + 0.5) / n - 0.5) * len, [x, z] = put(o - 0.25 * s, along);
+      merlons.push([x, top + 0.7 * s, z, 1.1 * s, 1.3 * s, 0.5 * s, ry]);
+      if (slits && !low && k % 2 === 0) { const [lx, lz] = put(o + 0.02, along); loops.push([lx, top - 4.2 * s, lz, 0.24 * s, 1.6 * s, 0.06, ry]); }
+    }
+    if (course) { const [cx, cz] = put(o + 0.1); courses.push([cx, top - 1.5 * s, cz, len, 0.4 * s, 0.3, ry]); }
+    if (kerb && !low) { const [kx, kz] = put(-o + 0.2 * s); kerbs.push([kx, top, kz, len, 0.5 * s, 0.4 * s, ry]); }
+  }
+  const add = (geo, list, mm, shadow) => { if (!list.length) return; const im = inst(geo, list, mm); im.castShadow = shadow; g.add(im); };
+  add(unitBox(), parapets, m, true);
+  add(plainMerlon(), merlons, m, true);
+  add(unitBox(), courses, trim, false);
+  add(unitBox(), loops, M.recess, false);
+  add(unitBox(), kerbs, m, false);
+  return g;
+}
+
+// The crowns of round bastions, [x, top, z, r] each: a projecting cornice under the top and a ring
+// of merlons round it. size as in rampart().
+export function bastionCrowns(list, m, { trim = m, size = 1, seg = 16 } = {}) {
+  const g = new THREE.Group(), merlons = [], cornices = [], s = size, step = detail.low ? 2 : 1;
+  for (const [x, top, z, r] of list) {
+    cornices.push([x, top - 1.3 * s, z, 2 * r + 0.5 * s, 0.45 * s, 2 * r + 0.5 * s]);
+    const n = Math.max(6, Math.round((2 * Math.PI * r) / (1.9 * s)));
+    for (let k = 0; k < n; k += step) {
+      const a = (k / n) * Math.PI * 2;
+      merlons.push([x + Math.sin(a) * (r - 0.3 * s), top, z + Math.cos(a) * (r - 0.3 * s), 1.1 * s, 1.3 * s, 0.5 * s, a]);
+    }
+  }
+  g.add(inst(unitCyl(seg), cornices, trim), inst(plainMerlon(), merlons, m));
   return g;
 }

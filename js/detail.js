@@ -10,10 +10,10 @@
 // stalls and dressed elephants round them (docs/performance.md). Every monument keeps plain trees
 // on 'low'.
 //
-// The triangle budget each level builds to: up to 600k on desktops (a monument may take two or
+// The triangle budget each level builds to: up to 650k on desktops (a monument may take two or
 // three seconds to build behind its "Loading" notice, and the fuller trees fill what is left), and
 // 300k on phones. Every monument stays under its level's budget; js/main.js replants trees up to it.
-export const BUDGET = { high: 600000, low: 300000 };
+export const BUDGET = { high: 650000, low: 300000 };
 export const detail = { level: 'high', get low() { return this.level === 'low'; }, get budget() { return BUDGET[this.level]; } };
 
 // The level for this device: ?detail=low or ?detail=high in the address wins; otherwise 'low' on

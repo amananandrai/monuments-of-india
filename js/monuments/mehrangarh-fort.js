@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mat, box, cyl, at, rng, chhatri, inst, unitBox, unitCyl, surface } from '../helpers.js';
-import { fortGate } from '../details/forts.js';
+import { fortGate, rampart, bastionCrowns } from '../details/forts.js';
 import { heightField, rough, smooth } from '../details/terrain.js';
 import { townHouses } from '../details/realism.js';
 import { addDetails } from '../details/mehrangarh-fort.js';
@@ -80,8 +80,11 @@ export function buildMehrangarh() {
     bands.push([mx + nx * (WT / 2 + 0.15), H + wh - 3, mz + nz * (WT / 2 + 0.15), len, 0.7, 0.3, ry]);
   }
   f.add(inst(unitBox(), segs, SAND), inst(unitBox(), bands, SAND_LIGHT));
+  // Battlements along the wall's top: a parapet, merlons, arrow slits and the wall walk's kerb.
+  f.add(rampart(segs, SAND, { size: 1.5, course: false }));
   // The bastions, round, rising a little above the walls from the rock at the cliff's edge.
   f.add(inst(unitCyl(16), bastions().map(([x, z]) => [x, H - 14, z, 17, 48, 17]), SAND));
+  f.add(bastionCrowns(bastions().map(([x, z]) => [x, H + 34, z, 8.5]), SAND, { trim: SAND_LIGHT, size: 1.5 }));
   // Jayapol, the gatehouse on the south side, its passage ending at the inner door.
   const gp = wallPoint(Math.PI / 2);
   f.add(at(fortGate(12, 16, 8, 4.6, 8, { m: SAND, trim: SAND_LIGHT, through: false }), 0, H, gp.z));

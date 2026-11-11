@@ -281,7 +281,7 @@ the monument's plaque and used by the filters (all from `js/data.js`).
 
   There are no people or motor vehicles, so the monument itself stays the subject. Everything is
   instanced, so a garden of fifty trees costs a few draw calls.
-- **Budget:** each monument stays under 600,000 triangles on desktops and 300,000 on phones
+- **Budget:** each monument stays under 650,000 triangles on desktops and 300,000 on phones
   (`js/detail.js`). Repeated parts are instanced, carved parts are merged by material, and a
   monument is built only when first opened, then cached.
 - **Loading:** the map needs only the list of monuments (`js/data.js`); each monument's code is

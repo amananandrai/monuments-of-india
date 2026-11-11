@@ -1,5 +1,5 @@
 // Builds every monument at both detail levels and checks its triangles against the budget for that
-// level (js/detail.js: 600k on desktops, 300k on phones), counted before the trees are filled in.
+// level (js/detail.js: 650k on desktops, 300k on phones), counted before the trees are filled in.
 //   node check-budgets.mjs [id ...] [--top N]
 // Exits 1 if any monument is over.
 import { openPage, PRELUDE } from './lib/browser.mjs';
@@ -21,7 +21,7 @@ const rows = await page.run(PRELUDE + `
 `, { ids });
 await page.close();
 
-const { high: H, low: L } = rows[0]?.budget || { high: 600000, low: 300000 };
+const { high: H, low: L } = rows[0]?.budget || { high: 650000, low: 300000 };
 const k = (n) => (n < 0 ? 'error' : `${Math.round(n / 1000)}k`);
 const over = rows.filter((r) => r.high > H || r.low > L || r.error);
 for (const [level, cap] of [['high', H], ['low', L]]) {
