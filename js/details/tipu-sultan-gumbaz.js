@@ -45,6 +45,13 @@ function architecture(f) {
   mq.add(box(24, 0.8, 15, WHITE), box(20, 7, 11, WHITE, 0, 0.8, -1), box(20.6, 0.5, 11.6, WHITE, 0, 7.8, -1));
   for (let k = -1; k <= 1; k++) mq.add(at(windowFrame(3, 5, WHITE), k * 5.4, 1, 4.51));
   mq.add(at(merlons(19.4, 0.5, 0.7, 0.25, WHITE, 0.6), 0, 8.3, 4.2));
+  // Windows on its other three sides, so none is a bare wall.
+  const body = at(new THREE.Group(), 0, 0.8, -1);
+  for (const [ang, len, dist] of [[Math.PI, 20, 5.5], [Math.PI / 2, 11, 10], [-Math.PI / 2, 11, 10]]) {
+    const n = Math.round(len / 5.5);
+    for (let k = 0; k < n; k++) body.add(onFace(at(windowFrame(1.6, 3.4, WHITE, { screen: jali(WHITE) }), 0, 1.6, 0), ang, dist + 0.01, -len / 2 + (k + 0.5) * (len / n)));
+  }
+  mq.add(body);
   for (const x of [-11, 11]) mq.add(at(guldasta(15, 0.75, WHITE), x, 0.8, 4.5));
   s.add(mq);
   // The graves, east of the tomb: a platform 16 × 22 with three rows of plain cenotaphs.
