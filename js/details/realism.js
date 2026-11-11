@@ -740,3 +740,28 @@ export function scatterGround(r, budget) {
   r.group.add(g);
   return extra;
 }
+
+/* ---------- traffic ---------- */
+// Vehicles on a road that runs along x: lanes is a list of [z, dir] (dir +1 drives towards +x),
+// from x0 to x1, about `gap` metres apart in each lane, standing on y. Cars in a few colours, with
+// the share of `taxis` (yellow, as in Kolkata) and `buses` asked for. Each is a body and a darker
+// cabin, instanced; phones get every other one. Marked as dressing, so they never set the framing.
+const CABIN = surface(mat('#2a3138', 0.35, 0.2), 'none'), BODY = surface(mat('#ffffff', 0.5, 0.1), 'none');
+export function traffic(lanes, x0, x1, { y = 0, gap = 26, seed = 1, taxis = 0, buses = 0.1, colours = ['#e8e6e1', '#b9bcc0', '#3c4046', '#8c2f2a', '#2f4f7a', '#d9d2c0'] } = {}) {
+  const R = rng(seed), bodies = [], cabins = [], cols = [], g = new THREE.Group();
+  for (const [z, dir] of lanes) {
+    for (let x = x0 + R() * gap; x < x1; x += gap * (0.6 + R() * 0.9)) {
+      const r = R(), bus = r < buses, taxi = !bus && r < buses + taxis, ry = dir > 0 ? 0 : Math.PI;
+      if (detail.low && R() < 0.5) continue;
+      const [l, h, w] = bus ? [10.5, 2.9, 2.5] : [4.2, 1.0, 1.75];
+      bodies.push([x, y, z, [l, h, w], ry]);
+      cols.push(bus ? (R() < 0.5 ? '#2b5fa8' : '#c23b2e') : taxi ? '#f2c21a' : colours[Math.floor(R() * colours.length)]);
+      // The cabin: a strip of glazing along a bus, a lower glass house on a car.
+      cabins.push(bus ? [x, y + 1.5, z, [l * 0.94, 0.9, w * 1.02], ry] : [x - dir * 0.2, y + 1.0, z, [l * 0.52, 0.55, w * 0.9], ry]);
+    }
+  }
+  if (!bodies.length) return g;
+  const unit = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0);
+  g.add(copies(unit, BODY, bodies, cols), copies(unit, CABIN, cabins));
+  return g;
+}
