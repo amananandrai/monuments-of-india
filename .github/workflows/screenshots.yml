@@ -1,4 +1,4 @@
-# Renders a home view of every monument and commits the pictures into the README gallery.
+# Renders a home view of every monument and commits the pictures into the README state list.
 # The plain renderer (tools/shoot-views.mjs) is used rather than --site: a full site shot of
 # all 101 models is about an hour on a CPU runner, and this finishes in a few minutes.
 # The commit is marked [skip ci], and this file's path filters ignore assets/views and
@@ -62,7 +62,7 @@ jobs:
         working-directory: tools
         run: node shoot-views.mjs --size 800x450 --out ../assets/views
 
-      - name: Update the README gallery
+      - name: Update the README list
         working-directory: tools
         run: node update-readme-gallery.mjs
 
