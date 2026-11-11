@@ -1,12 +1,14 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, hemi } from '../helpers.js';
 import { railingRing, windowFrame, mergeByMaterial } from './components.js';
 import { trees, boats, asiBoard, scatter } from './realism.js';
 
 // Fort Aguada, finer detail. The Portuguese laterite walls carry a rounded cordon a little below
 // the parapet, with embrasures for the guns along it; the lighthouse of 1864 has a gallery railing
-// round its lantern, a door and small windows up its shaft. Dimensions follow js/monuments/fort-aguada.js.
-const LAT_DARK = mat('#7d4530', 0.95), WHITE_ = mat('#eeeae2', 0.8);
+// round its lantern, a door and small windows up its shaft, and a moulded band at each floor. A
+// domed sentry box (guarita) hangs over the point of each bastion, the walls stand on a spreading
+// foot, and the block over the great cistern is arcaded. Dimensions follow js/monuments/fort-aguada.js.
+const LAT = mat('#9b5b3f', 0.95), TILE = mat('#a9523a', 0.8), LAT_DARK = mat('#7d4530', 0.95), WHITE_ = mat('#eeeae2', 0.8);
 function architecture(f) {
   const d = new THREE.Group(), H = 24;
   const pts = [[-50, -34], [40, -40], [60, -4], [44, 34], [-30, 40], [-60, 6]];
@@ -37,6 +39,26 @@ function architecture(f) {
   const door = at(new THREE.Group(), 18, H, 10);
   door.add(onFace(at(windowFrame(1.2, 2.4, LAT_DARK, { shape: 'round', frame: 0.18 }), 0, 0.15, 0), Math.PI * 0.75, 3.95));
   d.add(door);
+  // Sentry boxes over the points of the bastions: a round turret on a corbel, with a slit and a dome.
+  pts.forEach(([x, z]) => {
+    const l = Math.hypot(x, z), sx = x * (1 + 6.4 / l), sz = z * (1 + 6.4 / l), ang = Math.atan2(x, z);
+    d.add(cyl(1.25, 0.3, 1.6, LAT_DARK, sx, H + 5.4, sz, 12), cyl(1.25, 1.25, 2.6, LAT, sx, H + 7, sz, 12), cyl(1.45, 1.45, 0.25, LAT_DARK, sx, H + 9.6, sz, 12));
+    d.add(at(hemi(1.3, LAT, 12), sx, H + 9.85, sz), cyl(0.08, 0.14, 0.6, LAT_DARK, sx, H + 11.1, sz, 6));
+    d.add(at(onFace(box(0.3, 0.9, 0.06, M.recess, 0, H + 7.9, 0), ang, 1.26), sx, 0, sz));
+  });
+  // The walls' spreading foot, and the block over the cistern: an arcade of round arches down
+  // each long side under a tiled eave.
+  pts.forEach(([x0, z0], i) => {
+    const [x1, z1] = pts[(i + 1) % pts.length], len = Math.hypot(x1 - x0, z1 - z0), ry = Math.atan2(-(z1 - z0), x1 - x0);
+    const mx = (x0 + x1) / 2, mz = (z0 + z1) / 2, l = Math.hypot(mx, mz);
+    if (i === 3) return;
+    const c = box(len - 8, 1.4, 1, LAT_DARK, mx * (1 + 2.6 / l), H - 0.4, mz * (1 + 2.6 / l));
+    c.rotation.y = ry;
+    d.add(c);
+  });
+  for (const s of [-1, 1]) for (let k = 0; k < 6; k++) d.add(at(windowFrame(2.4, 2.3, LAT_DARK, { shape: 'round', frame: 0.25 }), -4 - 10.5 + k * 4.2, H + 0.65, s * 9.02).rotateY(s > 0 ? 0 : Math.PI));
+  d.add(box(27.4, 0.3, 19.4, TILE, -4, H + 3, 0));
+  for (const y of [3.5, 7, 10.5]) d.add(cyl(4 - (y / 14) * 0.8 + 0.12, 4 - (y / 14) * 0.8 + 0.12, 0.3, LAT_DARK, 18, H + y, 10, 20));
   mergeByMaterial(d);
   f.add(d);
 }
