@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, photo } from '../helpers.js';
 import { dentils, windowFrame, sunburst, lettering, panel, frieze, mergeByMaterial } from './components.js';
 import { pinnacle } from './sculpture.js';
 import { trees, shrubs, lampPosts, asiBoard, scatter, along } from './realism.js';
@@ -9,7 +9,7 @@ import { trees, shrubs, lampPosts, asiBoard, scatter, along } from './realism.js
 // course runs under the cornice along the nave; pilaster strips divide the nave's side walls between
 // its windows; the bell tower opens in round-arched belfry windows on every face.
 // Dimensions follow js/monuments/bom-jesus.js: the facade at z = 12.2, its tiers 8 high.
-const BASALT = mat('#8a847a', 0.85);
+const BASALT = photo(mat('#8a847a', 0.85), 'blocks');
 function architecture(f) {
   const d = new THREE.Group(), fz = 12.2;
   for (const x of [-12, -4.3, 4.3, 12]) for (const y of [0, 8, 16]) {
@@ -51,7 +51,7 @@ function sculpture(f) {
 
 // The Basilica of Bom Jesus in Old Goa: coconut palms and bougainvillea round the lawns, the stone
 // cross on its pedestal before the church, and lamps along the square.
-const LATERITE = mat('#9b5b3f', 0.95), LIME = mat('#ece6da', 0.85);
+const LATERITE = photo(mat('#9b5b3f', 0.95), 'laterite'), LIME = mat('#ece6da', 0.85);
 export function addDetails(f, g) {
   architecture(f);
   sculpture(f);

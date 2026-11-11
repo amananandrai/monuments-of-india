@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, hemi } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, hemi, photo } from '../helpers.js';
 import { railingRing, windowFrame, mergeByMaterial } from './components.js';
 import { trees, boats, asiBoard, scatter } from './realism.js';
 
@@ -8,7 +8,7 @@ import { trees, boats, asiBoard, scatter } from './realism.js';
 // round its lantern, a door and small windows up its shaft, and a moulded band at each floor. A
 // domed sentry box (guarita) hangs over the point of each bastion, the walls stand on a spreading
 // foot, and the block over the great cistern is arcaded. Dimensions follow js/monuments/fort-aguada.js.
-const LAT = mat('#9b5b3f', 0.95), TILE = mat('#a9523a', 0.8), LAT_DARK = mat('#7d4530', 0.95), WHITE_ = mat('#eeeae2', 0.8);
+const LAT = photo(mat('#9b5b3f', 0.95), 'laterite'), TILE = mat('#a9523a', 0.8), LAT_DARK = photo(mat('#7d4530', 0.95), 'laterite'), WHITE_ = mat('#eeeae2', 0.8);
 function architecture(f) {
   const d = new THREE.Group(), H = 24;
   const pts = [[-50, -34], [40, -40], [60, -4], [44, 34], [-30, 40], [-60, 6]];
@@ -65,7 +65,7 @@ function architecture(f) {
 
 // Fort Aguada: iron cannon on the ramparts looking out to sea, coconut palms and cashew scrub on
 // the headland, and fishing boats in the Mandovi's mouth.
-const IRON = mat('#2a2826', 0.55, 0.5), WOOD = mat('#4a3424', 0.85);
+const IRON = mat('#2a2826', 0.55, 0.5), WOOD = photo(mat('#4a3424', 0.85), 'timber');
 function cannon() {
   const g = new THREE.Group(), barrel = mesh(new THREE.CylinderGeometry(0.22, 0.32, 2.6, 12).rotateX(Math.PI / 2), IRON, 0, 0.75, 0.3);
   g.add(barrel, cyl(0.36, 0.36, 0.2, IRON, 0, 0.55, -1.0, 12));

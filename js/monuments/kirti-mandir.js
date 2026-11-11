@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, shikhara, nagaraProfile, hemi, chhatri, finial, surface } from '../helpers.js';
+import { M, mat, box, at, shikhara, nagaraProfile, hemi, chhatri, finial, surface, photo } from '../helpers.js';
 import { arcadeSkin } from '../details/mughal.js';
 import { steps } from '../details/doorways.js';
 import { addDetails } from '../details/kirti-mandir.js';
@@ -7,7 +7,7 @@ import { addDetails } from '../details/kirti-mandir.js';
 const CREAM = mat('#ecd9bd', 0.85);
 const SHADE = mat('#c9ad87', 0.9);
 
-const WALL = surface(mat('#eae2c6', 0.9), 'none'), BAND = surface(mat('#c9d6d0', 0.85), 'none'), WOOD = mat('#5a3a24', 0.8), WOOD_LIGHT = mat('#7b5434', 0.8), DARK = mat('#2a211b', 0.8);
+const WALL = surface(mat('#eae2c6', 0.9), 'none'), BAND = surface(mat('#c9d6d0', 0.85), 'none'), WOOD = photo(mat('#5a3a24', 0.8), 'timber'), WOOD_LIGHT = photo(mat('#7b5434', 0.8), 'timber'), DARK = mat('#2a211b', 0.8);
 
 // The three-storey haveli where Gandhi was born: whitewashed walls with pale painted bands at each
 // floor, a front of dark timber (door frames, shuttered windows, posts), a carved wooden balcony

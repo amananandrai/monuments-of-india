@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet, ellipseWall } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet, ellipseWall, photo } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
 import { addDetails } from '../details/bekal-fort.js';
 
-const LATERITE = mat('#8f4e36', 0.95);
-const LATERITE_DARK = mat('#6e3a27', 0.95);
+const LATERITE = photo(mat('#8f4e36', 0.95), 'laterite');
+const LATERITE_DARK = photo(mat('#6e3a27', 0.95), 'laterite');
 
 // A keyhole-shaped fort on a headland, with the sea on three sides.
 export function buildBekal() {

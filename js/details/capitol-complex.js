@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, at, M, box, cyl, surface } from '../helpers.js';
+import { mat, at, M, box, cyl, surface, photo } from '../helpers.js';
 import { mergeByMaterial } from './components.js';
 import { HC } from '../monuments/capitol-complex.js';
 import { trees, along } from './realism.js';
@@ -12,7 +12,7 @@ import { trees, along } from './realism.js';
 // and the Geometric Hill on the esplanade, and the esplanade's paving joints. Dimensions follow js/monuments/capitol-complex.js:
 // the Assembly 64 square and 16 high at the origin; the High Court 90 × 18 × 30, turned to face
 // south at (60, 0, HC).
-const CONCRETE = mat('#b3aea4', 0.95), CONCRETE_DARK = mat('#8f8a80', 0.95);
+const CONCRETE = photo(mat('#b3aea4', 0.95), 'concrete'), CONCRETE_DARK = photo(mat('#8f8a80', 0.95), 'concrete');
 const GLASS = surface(mat('#3e4246', 0.4, 0.2), 'none'), JOINT = surface(mat('#77736b', 0.95), 'none');
 const ENAMEL = ['#d23a2a', '#f2c230', '#2f5d9a', '#3d8a4f', '#f1ede4', '#1f1f22'].map((c) => mat(c, 0.35));
 function architecture(f, g) {

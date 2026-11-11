@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, cyl, at } from '../helpers.js';
+import { mat, cyl, at, photo } from '../helpers.js';
 import { jharokha, merlonGeo, placeAll, aroundCircle, beltCourse, mergeByMaterial } from './components.js';
 import { trees, scatter } from './realism.js';
 import { camels as camelHerd } from './animals.js';
@@ -11,7 +11,7 @@ import { detail } from '../detail.js';
 // jharokhas under curved bangla roofs, as on the havelis of the golden city. Dimensions follow
 // js/monuments/jaisalmer-fort.js: the bastions 5.5 in radius from H - 3, 16 m tall; the palace
 // 56 × 26 × 22 at pal, its front at pal.z + 11.
-const GOLD = mat('#d9a85a', 0.85), GOLD_DARK = mat('#b8873f', 0.9);
+const GOLD = photo(mat('#d9a85a', 0.85), 'rubble'), GOLD_DARK = photo(mat('#b8873f', 0.9), 'rubble');
 function architecture(f, pal) {
   const d = new THREE.Group(), mg = merlonGeo(1.1, 1.3, 0.6), list = [];
   bastions().forEach(([x, z], k) => {

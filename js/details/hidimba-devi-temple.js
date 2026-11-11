@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, onFace, FACES, surface } from '../helpers.js';
+import { M, mat, mesh, box, at, onFace, FACES, surface, photo } from '../helpers.js';
 import { frieze, beltCourse, mergeByMaterial } from './components.js';
 import { garland } from './realism.js';
 import { yaks } from './animals.js';
@@ -13,7 +13,7 @@ import { yaks } from './animals.js';
 // in a stone-flagged court, built against the rock it shelters. Dimensions follow
 // js/monuments/hidimba-devi-temple.js: the stone walls 11 square from 1.2 to 7.2.
 const CARVED = surface(mat('#6d5034', 0.85), 'frieze'), FLAGS = mat('#8f8b84', 0.95), ROCK = mat('#77746e', 0.95, 0, { flatShading: true });
-const WOOD = mat('#6d5034', 0.85), HORN = mat('#d8c9a6', 0.6);
+const WOOD = photo(mat('#6d5034', 0.85), 'timber'), HORN = mat('#d8c9a6', 0.6);
 function architecture(f) {
   const d = new THREE.Group();
   d.add(beltCourse(11, 11, 6.2, 0.8, 0.06, frieze(WOOD)), beltCourse(11, 11, 1.2, 0.5, 0.12, WOOD));

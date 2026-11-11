@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { box, at, flag, mat, rng, onFace, FACES } from '../helpers.js';
+import { box, at, flag, mat, rng, onFace, FACES, photo } from '../helpers.js';
 import { jharokha, chhajja, beltCourse, mergeByMaterial } from './components.js';
 import { towerDetail } from './forts.js';
 import { shrubs } from './realism.js';
@@ -11,7 +11,7 @@ import { detail } from '../detail.js';
 // over a deep eave on the Phool Mahal front. Dimensions follow js/monuments/mehrangarh-fort.js: the
 // rock's top at H, the walls 24 to 32 m high from it, the bastions 8.5 in radius from H - 14 rising 48 m;
 // the palace ranges [x, z, w, h, d] below.
-const SAND = mat('#b9774f', 0.9), SAND_LIGHT = mat('#cf9a6e', 0.85);
+const SAND = photo(mat('#b9774f', 0.9), 'rubble'), SAND_LIGHT = photo(mat('#cf9a6e', 0.85), 'rubble');
 const PALACES = [[130, 16, 72, 40, 22], [146, -12, 52, 34, 24], [166, 0, 14, 36, 50]];
 function architecture(f) {
   const d = new THREE.Group();

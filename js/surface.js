@@ -19,6 +19,8 @@ export const reflection = { map: { value: null }, matrix: { value: new THREE.Mat
 
 // Photo textures (CC0, Poly Haven) are registered by key and blended in by triplanar projection.
 export const PHOTOS = {};
+// Sets are fetched when a material that wants one is first drawn: js/textures.js puts its loader here.
+export const photoRequest = { load: null };
 const surfaced = new Set();
 export function photoLoaded(key) { surfaced.forEach((m) => { if (m.userData.photoKey === key) m.needsUpdate = true; }); }
 
@@ -31,6 +33,10 @@ uniform sampler2D sPhoto;
 uniform vec3 sPhotoAvg;
 uniform float sPhotoScale;
 uniform float sPhotoMix;
+#ifdef SURF_NR
+uniform sampler2D sNR; // normal x, y in red and green; roughness in blue
+uniform float sNRRough; // the roughness map's average
+#endif
 #endif
 float sHash(vec3 p) { p = fract(p * 0.1031); p += dot(p, p.zyx + 31.32); return fract((p.x + p.y) * p.z); }
 float sNoise(vec3 p) {
@@ -257,7 +263,18 @@ const PATTERN = /* glsl */ `
   sPw /= (sPw.x + sPw.y + sPw.z);
   vec3 sPc = texture2D(sPhoto, sp.zy * sPhotoScale).rgb * sPw.x + texture2D(sPhoto, sp.xz * sPhotoScale).rgb * sPw.y + texture2D(sPhoto, sp.xy * sPhotoScale).rgb * sPw.z;
   diffuseColor.rgb *= mix(vec3(1.0), sPc / max(sPhotoAvg, vec3(0.02)), sPhotoMix);
+#ifdef SURF_NR
+  // The photo's own normal and roughness maps, projected the same way: the tangent normals are
+  // swung onto the surface's normal along each axis and blended, and the roughness varies about
+  // the material's own by the map's departure from its average.
+  vec3 sNa = texture2D(sNR, sp.zy * sPhotoScale).rgb, sNb = texture2D(sNR, sp.xz * sPhotoScale).rgb, sNc = texture2D(sNR, sp.xy * sPhotoScale).rgb;
+  vec2 sTa = sNa.xy * 2.0 - 1.0, sTb = sNb.xy * 2.0 - 1.0, sTc = sNc.xy * 2.0 - 1.0;
+  vec3 sNw = normalize(vec3(sn.x, sTa.y + sn.y, sTa.x + sn.z) * sPw.x + vec3(sTb.x + sn.x, sn.y, sTb.y + sn.z) * sPw.y + vec3(sTc.x + sn.x, sTc.y + sn.y, sn.z) * sPw.z);
+  sRough += (dot(vec3(sNa.b, sNb.b, sNc.b), sPw) - sNRRough) * 0.6 * sPhotoMix;
+  sH *= 0.3;
+#else
   sH = dot(sPc, vec3(0.333)) * 2.5 + sH * 0.3;
+#endif
   sTint = mix(sTint, 1.0, 0.7);
 #endif
 #if SURF_KIND == 1 || SURF_KIND == 2 || SURF_KIND == 3 || SURF_KIND == 11 || SURF_KIND == 12 || SURF_KIND == 13 || SURF_KIND == 16 || SURF_KIND == 17
@@ -344,6 +361,11 @@ function patch(shader, kind, bump, photo, wave, edge, reflect) {
     shader.uniforms.sTime = waterTime;
     shader.uniforms.sWave = { value: new THREE.Vector3(...wave) };
   }
+  if (photo && photo.nr) {
+    shader.defines.SURF_NR = 1;
+    shader.uniforms.sNR = { value: photo.nr };
+    shader.uniforms.sNRRough = { value: photo.rough };
+  }
   if (photo) {
     shader.defines.SURF_PHOTO = 1;
     shader.uniforms.sPhoto = { value: photo.texture };
@@ -373,7 +395,10 @@ function patch(shader, kind, bump, photo, wave, edge, reflect) {
     .replace('#include <opaque_fragment>', WATER_REFLECT + '\n#include <opaque_fragment>')
     .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n  roughnessFactor = clamp(roughnessFactor + sRough, 0.05, 1.0);')
     .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\n' + (kind === KINDS.water ? WATER_NORMAL
-      : `  normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`));
+      : `#ifdef SURF_NR
+  normal = normalize(mix(normal, normalize((viewMatrix * vec4(sNw, 0.0)).xyz) * faceDirection, sPhotoMix * (0.3 + 0.7 * sNear)));
+#endif
+  normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`));
 }
 
 const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0, calligraphy: 0.2, pietra: 0.3, reliefs: 1.4, banded: 1.0 };
@@ -395,10 +420,11 @@ export function attachSurface(m) {
   surfaced.add(m);
   const photo = () => (m.userData.photoKey && PHOTOS[m.userData.photoKey]) || null;
   m.onBeforeCompile = (shader) => {
-    const kind = guess(m);
+    const kind = guess(m), key = m.userData.photoKey;
+    if (kind !== 'none' && key && !PHOTOS[key] && photoRequest.load) photoRequest.load(key);
     if (kind !== 'none') patch(shader, KINDS[kind], BUMP[kind], photo(), m.userData.wave, m.userData.patch, m.userData.reflect);
   };
-  m.customProgramCacheKey = () => 'surf:' + guess(m) + (photo() ? ':' + m.userData.photoKey : '') + (m.userData.patch ? ':patch' : '') + (m.userData.reflect ? ':reflect' : '');
+  m.customProgramCacheKey = () => 'surf:' + guess(m) + (photo() ? ':' + m.userData.photoKey + (photo().nr ? ':nr' : '') : '') + (m.userData.patch ? ':patch' : '') + (m.userData.reflect ? ':reflect' : '');
   return m;
 }
 

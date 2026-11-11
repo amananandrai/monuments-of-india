@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { M, mat, box, at, group, starPrism, pidaRoof, kalash, inst, unitCyl, surface } from '../helpers.js';
+import { M, mat, box, at, group, starPrism, pidaRoof, kalash, inst, unitCyl, surface, photo } from '../helpers.js';
 import { templeDoorway, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { nandi } from '../details/animals.js';
 import { figure, instances, kutaGeo } from '../details/sculpture.js';
 import { addDetails } from '../details/ramappa-temple.js';
 
-const DOLERITE = mat('#4d4a47', 0.8);
+const DOLERITE = photo(mat('#4d4a47', 0.8), 'blocks');
 const SAND = mat('#b49a7c', 0.9);
 const BRICK = surface(mat('#c99878', 0.95), 'brick');
 

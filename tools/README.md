@@ -22,6 +22,11 @@ npx playwright install chromium   # once, if Playwright has no browser yet
 
 With no ids, a check runs over all 101 monuments.
 
+`python3 pack-textures.py [slug ...]` fetches photo textures from Poly Haven into `assets/textures`
+(the 1K diffuse map, and a 512 px map of the normals and roughness) and prints the average colour
+and roughness that `js/textures.js` records for each set. It needs Pillow and network access to
+`dl.polyhaven.org`.
+
 Reading a flicker report: the site itself separates clashing faces at load (`separateCoplanar` and
 `separateMerged` in `js/coplanar.js`), and the check runs the same passes, so it reports only what
 those cannot fix (for example two parts of one merged mesh). The overlap is measured on bounding

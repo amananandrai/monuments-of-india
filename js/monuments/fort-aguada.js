@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet, photo } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
 import { heightField, rough, smooth } from '../details/terrain.js';
 import { addDetails } from '../details/fort-aguada.js';
 
-const LATERITE = mat('#9b5b3f', 0.95);
-const LATERITE_DARK = mat('#7d4530', 0.95);
+const LATERITE = photo(mat('#9b5b3f', 0.95), 'laterite');
+const LATERITE_DARK = photo(mat('#7d4530', 0.95), 'laterite');
 const WHITE = mat('#eeeae2', 0.8);
 
 export function buildFortAguada() {

@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, hipRoof } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, hipRoof, photo } from '../helpers.js';
 import { mergeByMaterial } from '../details/components.js';
 import { classicalDoor, oculus } from '../details/colonial.js';
 import { addDetails } from '../details/bom-jesus.js';
 
-const LATERITE = mat('#9b5b3f', 0.95);
-const BASALT = mat('#8a847a', 0.85);
+const LATERITE = photo(mat('#9b5b3f', 0.95), 'laterite');
+const BASALT = photo(mat('#8a847a', 0.85), 'blocks');
 const TILE = mat('#b5523b', 0.8);
 
 function gableRoof(w, d, h, m) {

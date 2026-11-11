@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, hemi, finial, guldasta, archWall, inst, unitBox } from '../helpers.js';
+import { M, mat, box, cyl, at, onFace, hemi, finial, guldasta, archWall, inst, unitBox, photo } from '../helpers.js';
 import { archRing, rosette, chhajja, arcadeScreen, mergeByMaterial } from './components.js';
 import { towerDetail, rampart, bastionCrowns } from './forts.js';
 import { RINGS, ringPoint, hillRadius, hillY, hillSurface } from '../monuments/golconda-fort.js';
@@ -12,7 +12,7 @@ import { trees, shrubs, lampPosts, asiBoard, scatter, along } from './realism.js
 // long stair climbs from the Fateh Darwaza to the Bala Hissar, through a small gate in each ring
 // of wall; and half-way up stands the mosque of Taramati, three arches between two minarets.
 // Dimensions follow js/monuments/golconda-fort.js.
-const GRANITE = mat('#9a917f', 0.9), TRIM = mat('#b5ac98', 0.9), PAV = mat('#d9d1c0', 0.85);
+const GRANITE = photo(mat('#9a917f', 0.9), 'rubble'), TRIM = photo(mat('#b5ac98', 0.9), 'rubble'), PAV = mat('#d9d1c0', 0.85);
 function architecture(f) {
   const d = new THREE.Group(), H = 60;
   for (const q of RINGS) {

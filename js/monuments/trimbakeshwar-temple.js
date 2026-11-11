@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, kalash, flag, shikhara } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, rng, kalash, flag, shikhara, photo } from '../helpers.js';
 import { townHouses } from '../details/realism.js';
 import { nagaraTemple, bhumijaRows, trabeateGate, wallWithGaps } from '../details/temples.js';
 import { steps } from '../details/doorways.js';
@@ -7,7 +7,7 @@ import { instances, miniSpireGeo } from '../details/sculpture.js';
 import { heightField, rough, smooth } from '../details/terrain.js';
 import { addDetails } from '../details/trimbakeshwar-temple.js';
 
-const BASALT = mat('#3d3a37', 0.8);
+const BASALT = photo(mat('#3d3a37', 0.8), 'blocks');
 const SHADE = mat('#2c2a28', 0.85);
 
 // The town of Trimbak round the temple (js/details/realism.js, townHouses), both levels: old houses

@@ -221,8 +221,10 @@ the monument's plaque and used by the filters (all from `js/data.js`).
 - **Stone, brick and earth:** surfaces are generated in the shader from world position
   (`js/surface.js`): masonry with block joints, marble veining, brick courses, rock, earth, carved
   friezes, incised names, pierced jali screens and glazed tiles, each with bump, weathering and a
-  slight per-piece tint. The best-known monuments also carry CC0 photo detail, projected triplanar and
-  tinted to each model's own colour (`js/textures.js`).
+  slight per-piece tint. Most stones also carry CC0 photo detail, projected triplanar and tinted to
+  each model's own colour, with the photo's normal and roughness maps on desktops, so the stone
+  catches the light as a rough surface (`js/textures.js`). Each set of maps is fetched the first
+  time a monument that uses it is opened.
 - **Landscape:** a sky with haze, distant hills, the sun and drifting clouds, and land that runs out to
   the horizon. Each monument's lawns and pavements fade into the land at their open edges, and seas
   and long rivers carry on to the horizon (`js/landscape.js`). Where a site's outer ground is
@@ -342,7 +344,9 @@ deploys to production.
 
 - **Photo textures** in `assets/textures` are from [Poly Haven](https://polyhaven.com) (CC0):
   marble_01, red_sandstone_wall, sandstone_blocks_08, plastered_stone_wall, plastered_wall_02,
-  granite_wall and rock_face_03.
+  granite_wall, rock_face_03, coral_fort_wall_03, stone_brick_wall_001, rough_block_wall,
+  concrete_wall_008 and weathered_brown_planks. `tools/pack-textures.py` fetches them and packs
+  each one's normal and roughness maps into `<name>_nr.jpg`.
 - **Map data:** state boundaries and India's outline come from
   [Natural Earth](https://www.naturalearthdata.com) (public domain), using its India point-of-view
   boundaries, simplified into `js/india-map.js`.

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, onFace, curvedBand } from '../helpers.js';
+import { M, mat, box, at, onFace, curvedBand, photo } from '../helpers.js';
 import { mergeByMaterial } from './components.js';
 import { towerDetail, rampart, bastionCrowns } from './forts.js';
 import { trees, shrubs, boats, asiBoard, scatter } from './realism.js';
@@ -10,7 +10,7 @@ import { trees, shrubs, boats, asiBoard, scatter } from './realism.js';
 // Merlons crest the round wall, the neck walls and the bastions; and the broad ramp by which guns
 // were hauled up climbs the observation tower from the landward side.
 // Dimensions follow js/monuments/bekal-fort.js: the round wall R = 70, 3 thick, from H = 8 to 15.
-const LATERITE = mat('#8f4e36', 0.95), LATERITE_DARK = mat('#6e3a27', 0.95);
+const LATERITE = photo(mat('#8f4e36', 0.95), 'laterite'), LATERITE_DARK = photo(mat('#6e3a27', 0.95), 'laterite');
 function architecture(f) {
   const d = new THREE.Group(), R = 70, H = 8, from = 5.445, to = 10.26, pts = [];
   for (let k = 0; k <= 120; k++) { const a = from + ((to - from) * k) / 120; pts.push([Math.cos(a) * R, -Math.sin(a) * R, Math.cos(a), -Math.sin(a)]); }

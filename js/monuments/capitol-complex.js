@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, lathe, at, inst, unitBox, unitCyl, doubleSided } from '../helpers.js';
+import { M, mat, mesh, box, cyl, lathe, at, inst, unitBox, unitCyl, doubleSided, photo } from '../helpers.js';
 import { addDetails } from '../details/capitol-complex.js';
 
-const CONCRETE = mat('#b3aea4', 0.95);
-const CONCRETE_DARK = mat('#8f8a80', 0.95);
+const CONCRETE = photo(mat('#b3aea4', 0.95), 'concrete');
+const CONCRETE_DARK = photo(mat('#8f8a80', 0.95), 'concrete');
 const PYLONS = [mat('#3d8a4f', 0.7), mat('#e2b22f', 0.7), mat('#c2402f', 0.7)];
 
 function palaceOfAssembly() {

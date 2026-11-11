@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, at, onFace, starPrism } from '../helpers.js';
+import { mat, at, onFace, starPrism, photo } from '../helpers.js';
 import { mouldings, frieze, templeNiche, idol, mergeByMaterial } from './components.js';
 import { trees, shrubs, asiBoard, scatter } from './realism.js';
 
@@ -8,7 +8,7 @@ import { trees, shrubs, asiBoard, scatter } from './realism.js';
 // in niches on its outer faces; the hall's pillars are lathe-turned, with ringed bases and
 // capitals (the bracket figures, madanikas, are carved figures in the builder). Dimensions follow js/monuments/ramappa-temple.js: platform B = 3,
 // the sanctum 12 square at z = -10, the hall's pillars 3 apart.
-const DOLERITE = mat('#4d4a47', 0.8);
+const DOLERITE = photo(mat('#4d4a47', 0.8), 'blocks');
 function architecture(f) {
   const d = new THREE.Group(), B = 3;
   d.add(at(starPrism(20, 19.08, 16.55, 0.7, frieze(DOLERITE)), 0, 2.0, -2));

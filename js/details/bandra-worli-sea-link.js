@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mesh, cyl, at, M, box, mat, rng, inst, unitBox, surface } from '../helpers.js';
+import { mesh, cyl, at, M, box, mat, rng, inst, unitBox, surface, photo } from '../helpers.js';
 import { mergeByMaterial } from './components.js';
 import { lampPosts, boats, traffic } from './realism.js';
 import { detail } from '../detail.js';
@@ -12,7 +12,7 @@ import { detail } from '../detail.js';
 // the deck. Dimensions follow js/monuments/bandra-worli-sea-link.js: the deck at y = 20; the main mast 128
 // high with 14 cables a side over 250 m spans, and the Worli mast 76 high at x = 600 with 10 a side
 // over 150 m.
-const CONCRETE = mat('#c9c6bf', 0.85), RED = mat('#d0302a', 0.4, 0, { emissive: '#7a1410' });
+const CONCRETE = photo(mat('#c9c6bf', 0.85), 'concrete'), RED = mat('#d0302a', 0.4, 0, { emissive: '#7a1410' });
 const PAINT = surface(mat('#eeeae0', 0.7), 'none');
 function architecture(f) {
   const d = new THREE.Group(), deckY = 20;

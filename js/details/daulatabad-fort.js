@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, hemi, finial, archWall, inst, unitBox, unitCyl, surface } from '../helpers.js';
+import { M, mat, box, cyl, at, onFace, hemi, finial, archWall, inst, unitBox, unitCyl, surface, photo } from '../helpers.js';
 import { bracketGeo, placeAll, aroundCircle, railingRing, windowFrame, mergeByMaterial } from './components.js';
 import { towerDetail, rampart, bastionCrowns } from './forts.js';
 import { arcadeSkin, cellRow } from './mughal.js';
@@ -15,7 +15,7 @@ import { trees, shrubs, asiBoard, scatter } from './realism.js';
 // in blue tiles; and the white Baradari stands on the hill below the summit.
 // Dimensions follow js/monuments/daulatabad-fort.js.
 const WHITE = mat('#e4ddd0', 0.85), TILE_ = surface(mat('#3f78a8', 0.5), 'none');
-const STONE = mat('#8e8172', 0.9), SAND = mat('#c9b48a', 0.85);
+const STONE = photo(mat('#8e8172', 0.9), 'rubble'), SAND = mat('#c9b48a', 0.85);
 function architecture(f) {
   const ga = 1.2;
   const d = new THREE.Group(), cm = at(new THREE.Group(), 40, 0, 96);
