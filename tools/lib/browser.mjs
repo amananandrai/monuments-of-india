@@ -36,6 +36,8 @@ export async function openPage({ gl = false } = {}) {
   const newPage = async (options = {}) => {
     const p = await browser.newPage(options);
     p.on('pageerror', (e) => console.error('page error:', e.message));
+    // Shader compile errors and failed loads arrive as console errors, not page errors.
+    p.on('console', (m) => { if (m.type() === 'error') console.error('console error:', m.text().slice(0, 400)); });
     await p.route(/cdn\.jsdelivr\.net\/npm\/three@0\.160\.0\/(.*)/, (route) => {
       const rel = route.request().url().replace(/.*three@0\.160\.0\//, '');
       route.fulfill({ path: path.join(THREE_DIR, rel), contentType: 'text/javascript' });
