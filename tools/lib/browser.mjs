@@ -1,7 +1,8 @@
 // A headless page that can import the site's modules: the repository is served from a local
 // static server, three.js comes from tools/node_modules instead of the CDN (the page's import map
 // names cdn.jsdelivr.net), and run(code, args) evaluates an async function body in the page with
-// `args` in scope. Nothing is written to the repository.
+// `args` in scope. newPage() opens further pages the same way, for the site's own index.html (at
+// `origin`). Nothing is written to the repository.
 import { chromium } from 'playwright';
 import http from 'node:http';
 import fs from 'node:fs';
@@ -11,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../..');
 const THREE_DIR = path.resolve(HERE, '../node_modules/three');
-const TYPES = { '.js': 'text/javascript', '.mjs': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml' };
+const TYPES = { '.js': 'text/javascript', '.css': 'text/css', '.mjs': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml' };
 const PAGE = `<!doctype html><meta charset="utf-8"><script type="importmap">{ "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
   "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script><body></body>`;
@@ -30,14 +31,23 @@ export async function openPage({ gl = false } = {}) {
     });
   }).listen(0);
   const browser = await chromium.launch(gl ? { args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] } : {});
-  const page = await browser.newPage();
-  page.on('pageerror', (e) => console.error('page error:', e.message));
-  await page.route(/cdn\.jsdelivr\.net\/npm\/three@0\.160\.0\/(.*)/, (route) => {
-    const rel = route.request().url().replace(/.*three@0\.160\.0\//, '');
-    route.fulfill({ path: path.join(THREE_DIR, rel), contentType: 'text/javascript' });
-  });
-  await page.goto(`http://127.0.0.1:${server.address().port}/__tools.html`);
+  const origin = `http://127.0.0.1:${server.address().port}`;
+  // A page with three.js served from node_modules (and, for the site itself, no web fonts).
+  const newPage = async (options = {}) => {
+    const p = await browser.newPage(options);
+    p.on('pageerror', (e) => console.error('page error:', e.message));
+    await p.route(/cdn\.jsdelivr\.net\/npm\/three@0\.160\.0\/(.*)/, (route) => {
+      const rel = route.request().url().replace(/.*three@0\.160\.0\//, '');
+      route.fulfill({ path: path.join(THREE_DIR, rel), contentType: 'text/javascript' });
+    });
+    await p.route(/fonts\.(googleapis|gstatic)\.com/, (route) => route.abort());
+    return p;
+  };
+  const page = await newPage();
+  await page.goto(`${origin}/__tools.html`);
   return {
+    // The site itself (index.html) at `${origin}/#id`, in pages of its own: see shoot-views.mjs --site.
+    origin, newPage,
     run: (body, args = {}) => page.evaluate(({ body, args }) => new Function('args', `return (async () => { ${body} })();`)(args), { body, args }),
     close: async () => { await browser.close(); server.close(); },
   };

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { townHouses, houseRow } from '../details/realism.js';
 import { mat, box, at, rng, inst, unitBox, unitCyl, chhatri } from '../helpers.js';
-import { fortGate } from '../details/forts.js';
+import { fortGate, rampart } from '../details/forts.js';
 import { miniSpireGeo } from '../details/sculpture.js';
 import { heightField, rough, smooth, fbm } from '../details/terrain.js';
 import { addDetails } from '../details/jaisalmer-fort.js';
@@ -69,9 +69,14 @@ export function buildJaisalmer() {
   g.add(heightField(940, 620, detail.low ? 140 : 220, trikuta, { rock: ['#c49c62', '#b48c55', '#cfa96e'], cover: '#d6b47c', steep: 0.8, band: 6 }));
   // The upper wall, 10 m high, and its bastions, 13 m and round, on the cliff's edge; the lower
   // outer wall, 7 m high, round the talus below them.
-  f.add(inst(unitBox(), wallRing(0.97, 12, 3, () => H - 2, 0.03), GOLD));
+  const upper = wallRing(0.97, 12, 3, () => H - 2, 0.03), lower = wallRing(1.22, 9, 2.4, (x, z) => trikuta(x, z) - 2, 0.06);
+  f.add(inst(unitBox(), upper, GOLD));
+  // Battlements on both walls: parapets and merlons, with string courses and arrow slits on the
+  // upper one (the lower wall's merlons are set wider apart, and phones leave its crest plain).
+  f.add(rampart(upper, GOLD, { trim: GOLD_DARK, kerb: false }));
+  if (!detail.low) f.add(rampart(lower, GOLD_DARK, { course: false, slits: false, kerb: false, every: 1.5 }));
   f.add(inst(unitCyl(12), bastions().map(([x, z], k) => [x, H - 3, z, 11, 16 + (k % 3) * 0.25, 11]), GOLD));
-  f.add(inst(unitBox(), wallRing(1.22, 9, 2.4, (x, z) => trikuta(x, z) - 2, 0.06), GOLD_DARK));
+  f.add(inst(unitBox(), lower, GOLD_DARK));
   // The way up: a road climbing the talus from the desert to the gates, along the slope from the
   // east, with Ganesh Pol and Suraj Pol on it below the Akhey Pol at the top.
   const road = [], [gx, gz] = onOutline(GATE_A, 0.97), N = 70;

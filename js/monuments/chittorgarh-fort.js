@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { M, mat, box, at, chhatri, onFace, FACES, archPanel, hemi, inst, unitBox, unitCyl } from '../helpers.js';
 import { heightField, rough, smooth, fbm } from '../details/terrain.js';
 import { detail } from '../detail.js';
-import { fortGate } from '../details/forts.js';
+import { fortGate, rampart, bastionCrowns } from '../details/forts.js';
 import { addDetails } from '../details/chittorgarh-fort.js';
 
 const STONE = mat('#c8b28c', 0.9);
@@ -58,6 +58,8 @@ export function buildChittorgarh() {
     if (run > 60) { towers.push([mx, H - 2, mz, 7, 10, 7]); run = 0; }
   }
   f.add(inst(unitBox(), segs, STONE), inst(unitCyl(12), towers, STONE));
+  // Battlements on the walls and the bastions: parapets, merlons, string courses and arrow slits.
+  f.add(rampart(segs, STONE, { trim: RUIN, size: 0.8, kerb: false }), bastionCrowns(towers.map(([x, y, z, w, h]) => [x, y + h, z, w / 2]), STONE, { trim: RUIN, size: 0.8, seg: 12 }));
   f.add(at(fortGate(16, 11, 7, 4.5, 7.5, { m: STONE, trim: RUIN, towers: { r: 3, h: 12, cap: 'dome', seg: 16 } }), RAMPOL, H, rimZ(RAMPOL)));
   // The way up: a road in switchbacks up the south face from the plain to the Ram Pol, through
   // the seven gates (pols): Padan Pol at its foot, then one at each turn.

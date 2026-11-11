@@ -29,6 +29,7 @@ detail.level = chooseDetail();
 const stage = document.getElementById('stage');
 const canvas = document.getElementById('scene');
 const statusEl = document.getElementById('status');
+const statusText = document.getElementById('status-text'), progressEl = document.getElementById('progress'), progressBar = document.getElementById('progress-bar');
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let renderer;
@@ -37,7 +38,7 @@ try {
   // canvas only ever receives the finished image, a single full-screen quad.
   renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
 } catch (e) {
-  statusEl.textContent = 'Your browser could not start WebGL, which this page needs to draw the 3D models.';
+  showStatus('Your browser could not start WebGL, which this page needs to draw the 3D models.');
   throw e;
 }
 // Ambient occlusion is skipped on phone-sized screens, where it costs too much.
@@ -241,6 +242,36 @@ applyTheme();
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
 new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class', 'style'] });
 
+/* ---------- status and loading progress ---------- */
+// The notice over the scene: a line of text and, while a monument loads, a progress bar under it.
+// (Function declarations, so the WebGL check at the top of the file can call showStatus.)
+function showStatus(text, withBar = false) {
+  statusText.textContent = text;
+  progressEl.classList.remove('is-waiting');
+  progressEl.hidden = !withBar;
+  if (!withBar) progressEl.removeAttribute('aria-valuenow');
+  statusEl.hidden = false;
+}
+// Move the bar to fraction p over ms milliseconds (0: at once). A monument is built in a few long
+// steps that hold the page's main thread, so the bar is sent towards the end of each step as the
+// step starts: the browser carries a transform's transition on without the main thread, and the
+// bar keeps moving while the model is built.
+function setProgress(p, ms = 0) {
+  progressBar.style.transitionDuration = `${ms}ms`;
+  // Read the layout, so a bar set back to zero starts from zero and does not slide backwards.
+  if (!ms) void progressBar.offsetWidth;
+  progressBar.style.transform = `scaleX(${p})`;
+  // Reading the style back starts the transition now, not at the next frame, which a long step may delay.
+  void getComputedStyle(progressBar).transform;
+  progressEl.setAttribute('aria-valuenow', String(Math.round(p * 100)));
+}
+// Let the browser paint (the notice, the bar's new target) before the next long step. The timer
+// covers a tab in the background, where animation frames do not run.
+const paintNow = () => new Promise((done) => {
+  const t = setTimeout(done, 80);
+  requestAnimationFrame(() => { clearTimeout(t); setTimeout(done, 0); });
+});
+
 /* ---------- framing & switching ---------- */
 const built = new Map();
 let current = -1, home = null, tween = null;
@@ -248,34 +279,56 @@ let current = -1, home = null, tween = null;
 // A monument is built the first time it is opened: its module is fetched, the model built and
 // finished (fuller trees, natural colour, depth offsets, the land round it), then kept. The promise
 // is kept too, so asking twice while it loads builds it once.
-const loading = new Map();
+const loading = new Map(), progress = new Map();
+// The steps of a first open: the share of the bar each ends at, and about how long it takes (the
+// bar's travel time; a step that ends sooner hands the bar on from wherever it has reached).
+// The last step is the first frame: the model's shaders are compiled, its shadows drawn and its
+// geometry sent to the graphics card, which can take as long as building it.
+const STEPS = { fetch: [0.1, 500], build: [0.5, 2400], plant: [0.6, 700], colour: [0.7, 600], depth: [0.78, 500], land: [0.85, 400], draw: [1, 1200] };
 function getBuilt(i) {
   if (built.has(i)) return Promise.resolve(built.get(i));
-  if (!loading.has(i)) loading.set(i, MONUMENTS[i].build().then((r) => {
-    r.focus = r.focus || r.group;
-    // The colour of the land round the site, read before the seas are extended over it.
-    r.land = siteLand(r);
-    // On desktops, grass tufts and stones on the open ground round it (js/details/realism.js), then
-    // fuller trees, each while the monument has triangles to spare under the desktop budget
-    // (js/detail.js). Phones keep plain trees and bare ground.
-    if (!detail.low) { scatterGround(r, detail.budget); upgradeTrees(r.group, detail.budget); }
-    naturalize(r.group);
-    // Faces that share a plane get different depth offsets, so they don't flicker.
-    separateCoplanar(r.group, 0.005);
-    // The same for merged, instanced and turned parts, which the pass above cannot separate.
-    separateMerged(r.group);
-    blendIntoLand(r);
-    // The box the home view frames, measured on the separate parts, before any are merged.
-    r.frame = frameBox(r.focus);
-    // Monuments of many separate parts are merged into a few draw calls (js/batch.js).
-    if (r.batch) { batchStatic(r.focus); if (r.focus !== r.group) batchStatic(r.group, r.focus); }
-    r.mirror = findMirror(r.group);
-    r.group.visible = false;
-    scene.add(r.group);
-    built.set(i, r);
-    loading.delete(i);
-    return r;
-  }));
+  if (!loading.has(i)) loading.set(i, (async () => {
+    const m = MONUMENTS[i];
+    const step = (name) => {
+      progress.set(i, STEPS[name]);
+      if (wanted === i && !statusEl.hidden) setProgress(...STEPS[name]);
+      return paintNow();
+    };
+    try {
+      await step('fetch');
+      const mod = await m.load();
+      await step('build');
+      const r = mod[m.fn]();
+      r.focus = r.focus || r.group;
+      // The colour of the land round the site, read before the seas are extended over it.
+      r.land = siteLand(r);
+      // On desktops, grass tufts and stones on the open ground round it (js/details/realism.js), then
+      // fuller trees, each while the monument has triangles to spare under the desktop budget
+      // (js/detail.js). Phones keep plain trees and bare ground.
+      if (!detail.low) { await step('plant'); scatterGround(r, detail.budget); upgradeTrees(r.group, detail.budget); }
+      await step('colour');
+      naturalize(r.group);
+      await step('depth');
+      // Faces that share a plane get different depth offsets, so they don't flicker.
+      separateCoplanar(r.group, 0.005);
+      // The same for merged, instanced and turned parts, which the pass above cannot separate.
+      separateMerged(r.group);
+      await step('land');
+      blendIntoLand(r);
+      // The box the home view frames, measured on the separate parts, before any are merged.
+      r.frame = frameBox(r.focus);
+      // Monuments of many separate parts are merged into a few draw calls (js/batch.js).
+      if (r.batch) { batchStatic(r.focus); if (r.focus !== r.group) batchStatic(r.group, r.focus); }
+      r.mirror = findMirror(r.group);
+      r.group.visible = false;
+      scene.add(r.group);
+      built.set(i, r);
+      return r;
+    } finally {
+      loading.delete(i);
+      progress.delete(i);
+    }
+  })());
   return loading.get(i);
 }
 // Fetch a monument's code ahead of a likely click (hover, or the next and previous in the list),
@@ -368,28 +421,40 @@ function flyTo(h, instant) {
 controls.addEventListener('start', () => { tween = null; });
 
 
-let wanted = -1;
+let wanted = -1, firstFrame = false;
 async function select(i, instant = false) {
   wanted = i;
   items.forEach((el, k) => el.setAttribute('aria-current', String(k === i)));
   items[i].scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
   if (i === current) return;
   // While a monument loads for the first time, say so; the one before stays in view.
-  const slow = !built.has(i) && setTimeout(() => { if (wanted !== i) return; statusEl.textContent = `Loading ${MONUMENTS[i].name}…`; statusEl.hidden = false; }, 120);
+  const slow = !built.has(i) && setTimeout(() => {
+    if (wanted !== i) return;
+    showStatus(`Loading ${MONUMENTS[i].name}…`, true);
+    // The bar starts from zero and heads for the step the build has reached.
+    setProgress(0);
+    if (progress.has(i)) setProgress(...progress.get(i));
+  }, 120);
   let r;
   try {
     r = await getBuilt(i);
   } catch (e) {
     clearTimeout(slow);
-    if (wanted === i) { statusEl.textContent = `${MONUMENTS[i].name} could not be loaded. Check the connection and try again.`; statusEl.hidden = false; }
-    loading.delete(i);
+    if (wanted === i) showStatus(`${MONUMENTS[i].name} could not be loaded. Check the connection and try again.`);
     console.error(e);
     return;
   }
   clearTimeout(slow);
   // The visitor moved on while this one loaded: leave it built, show nothing.
   if (wanted !== i) return;
-  statusEl.hidden = true;
+  // A notice on screen stays through the first frame, which is slow (STEPS.draw), and the bar runs
+  // to its end meanwhile; the render loop takes the notice down once that frame is drawn.
+  if (!statusEl.hidden && !progressEl.hidden) {
+    setProgress(...STEPS.draw);
+    await paintNow();
+    if (wanted !== i) return;
+    firstFrame = true;
+  } else statusEl.hidden = true;
   built.forEach((b, k) => { b.group.visible = k === i; });
   const first = current === -1;
   current = i;
@@ -425,7 +490,13 @@ const $ = (id) => document.getElementById(id);
 // Day or night: follows the device until the visitor picks one, which is then remembered.
 const themeBtn = $('theme');
 const isNight = () => getComputedStyle(document.documentElement).getPropertyValue('--scene-mode').trim() === 'night';
-const syncThemeBtn = () => themeBtn.setAttribute('aria-pressed', String(isNight()));
+// The button names the scene it switches to: "Night" with a moon by day, "Day" with a sun by night.
+const syncThemeBtn = () => {
+  const to = isNight() ? 'Day' : 'Night';
+  themeBtn.querySelector('.label').textContent = to;
+  themeBtn.setAttribute('aria-label', `Switch to the ${to.toLowerCase()} scene`);
+  themeBtn.dataset.to = to.toLowerCase();
+};
 themeBtn.addEventListener('click', () => {
   const t = isNight() ? 'light' : 'dark';
   document.documentElement.dataset.theme = t;
@@ -665,6 +736,7 @@ function showMap(push = false) {
   mode = 'map';
   // A monument still loading is not shown when it arrives.
   wanted = -1;
+  firstFrame = false;
   statusEl.hidden = true;
   stage.classList.add('is-map');
   items.forEach((el) => el.setAttribute('aria-current', 'false'));
@@ -781,6 +853,7 @@ function loop(now) {
   sky.position.copy(camera.position);
   if (mirror) renderReflection();
   composer.render();
+  if (firstFrame) { firstFrame = false; statusEl.hidden = true; }
 }
 
 route();

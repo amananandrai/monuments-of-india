@@ -1,9 +1,18 @@
 // Renders each monument from its home view (as js/main.js frames it: frameBox, the builder's view
 // and zoom, a 38° lens) to tools/views/<id>.png, to set beside a reference photograph.
-//   node shoot-views.mjs [id ...] [--size 960x600] [--view x,y,z] [--zoom z] [--target x,y,z]
+//   node shoot-views.mjs [id ...] [--size 960x600] [--view x,y,z] [--zoom z] [--target x,y,z] [--out dir]
 // --view, --zoom and --target override the builder's, to try an angle before writing it into the builder.
 // Plain lighting (a sun and a sky light); the site's own look (shadows, haze, weathering) is not
 // reproduced, only the framing.
+//
+//   node shoot-views.mjs --site [id ...] [--size 960x600] [--night] [--back] [--level high|low] [--out dir]
+// With --site, the pictures come from the site itself (index.html, with its shadows, occlusion,
+// surfaces, haze and trees), to judge the detail and to keep before and after a change:
+//   <id>-site.png        the home view
+//   <id>-site-close.png  zoomed in as far as the site allows, where plain walls show
+//   <id>-site-back.png   the opposite side (with --back)
+// The plaque and the buttons are hidden; --night shoots the night scene. Software rendering is slow:
+// allow 20 to 60 seconds a monument. --out names another folder (for example views/before).
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,11 +20,44 @@ import { openPage, PRELUDE } from './lib/browser.mjs';
 
 const argv = process.argv.slice(2), opt = (k) => (argv.includes(k) ? argv[argv.indexOf(k) + 1] : null);
 const [W, H] = (opt('--size') || '960x600').split('x').map(Number);
-const ids = argv.filter((a, i) => !a.startsWith('--') && !['--size', '--view', '--zoom', '--target'].includes(argv[i - 1]));
-const out = path.join(path.dirname(fileURLToPath(import.meta.url)), 'views');
+const ids = argv.filter((a, i) => !a.startsWith('--') && !['--size', '--view', '--zoom', '--target', '--out', '--level'].includes(argv[i - 1]));
+const out = opt('--out') ? path.resolve(opt('--out')) : path.join(path.dirname(fileURLToPath(import.meta.url)), 'views');
 fs.mkdirSync(out, { recursive: true });
 const page = await openPage({ gl: true });
 const all = ids.length ? ids : await page.run(PRELUDE + 'return MONUMENTS.map((m) => m.id);');
+if (argv.includes('--site')) {
+  // The site's sidebar is 300 px wide; the canvas beside it comes out at the size asked for.
+  const level = opt('--level') || 'high', pause = (p, ms) => p.waitForTimeout(ms);
+  let failed = 0;
+  for (const id of all) {
+    const p = await page.newPage({ viewport: { width: W + 300, height: H } });
+    p.setDefaultTimeout(300000);
+    try {
+      await p.emulateMedia({ reducedMotion: 'reduce', colorScheme: 'light' });
+      await p.addInitScript((t) => { try { localStorage.setItem('theme', t); } catch (e) { /* no storage */ } }, argv.includes('--night') ? 'dark' : 'light');
+      await p.goto(`${page.origin}/index.html?detail=${level}#${id}`);
+      await p.waitForFunction(() => document.getElementById('status').hidden && !document.getElementById('stage').classList.contains('is-map'));
+      await p.addStyleTag({ content: '.plaque, .toolbar, .hint { visibility: hidden !important; }' });
+      const canvas = p.locator('#scene'), bb = await canvas.boundingBox(), cx = bb.x + bb.width / 2, cy = bb.y + bb.height / 2;
+      const shot = async (name) => { await pause(p, 2500); await canvas.screenshot({ path: path.join(out, `${id}-site${name}.png`) }); };
+      await shot('');
+      if (argv.includes('--back')) {
+        // Dragging across half the canvas's height turns the view half way round.
+        await p.mouse.move(cx - bb.height / 4, cy); await p.mouse.down(); await p.mouse.move(cx + bb.height / 4, cy, { steps: 12 }); await p.mouse.up();
+        await shot('-back');
+        await p.mouse.move(cx + bb.height / 4, cy); await p.mouse.down(); await p.mouse.move(cx - bb.height / 4, cy, { steps: 12 }); await p.mouse.up();
+      }
+      await p.mouse.move(cx, cy);
+      for (let k = 0; k < 24; k++) { await p.mouse.wheel(0, -300); await pause(p, 60); }
+      await shot('-close');
+      process.stdout.write('.');
+    } catch (e) { failed++; console.error(`\n${id}: ${e.message.split('\n')[0]}`); }
+    await p.close();
+  }
+  await page.close();
+  console.log(`\n${all.length - failed} of ${all.length} monuments shot from the site, in ${out}`);
+  process.exit(failed ? 1 : 0);
+}
 for (const id of all) {
   const png = await page.run(PRELUDE + `
     const { frameBox } = await import('/js/framing.js');

@@ -3,6 +3,7 @@ import { M, mat, mesh, box, cyl, at, group, rng, inst, unitBox, hipRoof, onFace 
 import { tibetanPortico, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { mountainRing, heightField, rough, smooth } from '../details/terrain.js';
+import { quarters } from '../details/tibetan.js';
 import { addDetails } from '../details/tawang-monastery.js';
 
 const WHITE = mat('#efece4', 0.85);
@@ -20,6 +21,11 @@ function tibetan(w, h, d, floors, doorX = null) {
     const x = -w / 2 + (k + 0.5) * (w / n), y = 1 + fl * ((h * 0.85) / floors);
     if (doorX !== null && fl < 2 && Math.abs(x - doorX) < 3) continue;
     g.add(onFace(box(1.2, 1.6, 0.2, WINDOW, 0, y), 0, d / 2, x));
+  }
+  // The sides have their windows too, so neither is a blank wall.
+  const m = Math.max(1, Math.floor(d / 3.4));
+  for (const a of [Math.PI / 2, -Math.PI / 2]) for (let fl = 0; fl < floors; fl++) for (let k = 0; k < m; k++) {
+    g.add(onFace(box(1.2, 1.6, 0.2, WINDOW, 0, 1 + fl * ((h * 0.85) / floors)), a, w / 2, -d / 2 + (k + 0.5) * (d / m)));
   }
   return g;
 }
@@ -83,6 +89,8 @@ export function buildTawang() {
   f.add(at(tibetan(10, 7, 9, 2, 0), kx, spurBase(kx, 0, 10, 9), 0).rotateY(Math.PI / 2), box(0.2, 4, 3.4, WINDOW, kx + 5.01, spurBase(kx, 0, 10, 9), 0));
   f.add(inst(unitBox(), blocks, WHITE));
   f.add(inst(unitBox(), blocks.map(([x, y, z, sx, sy, sz, ry]) => [x, y + sy, z, sx + 0.2, 0.7, sz + 0.2, ry]), MAROON));
+  // Windows, doors, beam ends and roofs for the houses (js/details/tibetan.js).
+  f.add(quarters(blocks, { cap: 0.7 }));
   // Prayer-flag lines strung from the courtyard poles
   for (const x of [-20, 20]) {
     f.add(cyl(0.12, 0.12, 10, WINDOW, x, T, 20, 6));

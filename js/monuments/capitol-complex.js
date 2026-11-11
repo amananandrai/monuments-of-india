@@ -9,14 +9,15 @@ const PYLONS = [mat('#3d8a4f', 0.7), mat('#e2b22f', 0.7), mat('#c2402f', 0.7)];
 function palaceOfAssembly() {
   const g = new THREE.Group();
   g.add(box(64, 16, 64, CONCRETE), box(64.6, 1, 64.6, CONCRETE_DARK, 0, 16));
-  // Portico: pilotis carrying an upturned, gutter-shaped roof
+  // Portico: blade piers carrying an upturned, gutter-shaped roof
   const s = new THREE.Shape();
   s.moveTo(-30, 0); s.lineTo(30, 0); s.lineTo(34, 7); s.quadraticCurveTo(0, -1, -34, 7); s.closePath();
   const roof = new THREE.ExtrudeGeometry(s, { depth: 12, bevelEnabled: false, curveSegments: 16 });
   roof.translate(0, 0, -6);
   g.add(mesh(roof, CONCRETE, 0, 17, 38));
+  // Eight thin blade piers, set edge-on to the front, carry the trough.
   const cols = [];
-  for (let x = -26; x <= 26; x += 8.6) cols.push([x, 0, 40, 1.2, 17, 1.2]);
+  for (let k = 0; k < 8; k++) cols.push([-26.25 + k * 7.5, 0, 38, 0.7, 17, 10]);
   g.add(inst(unitBox(), cols, CONCRETE));
   // The hyperboloid tower over the assembly chamber, cut off at a slant, with its pyramid skylight
   g.add(at(lathe([[11, 0], [8.4, 6], [7.6, 11], [8.2, 16], [9.6, 20]], CONCRETE, 40), 6, 16, -4));

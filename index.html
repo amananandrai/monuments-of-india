@@ -23,8 +23,9 @@
       <button class="btn filter-btn-mobile" id="mobile-filter-btn" type="button" aria-label="Search and filter monuments" aria-expanded="false">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 3h13M3.5 8h9M6 13h4"/></svg>
       </button>
-      <button class="btn theme-btn" id="theme" type="button" aria-pressed="false">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 9.6A5.8 5.8 0 0 1 6.4 2.5a5.8 5.8 0 1 0 7.1 7.1z"/></svg>
+      <button class="btn theme-btn" id="theme" type="button" data-to="night" aria-label="Switch to the night scene">
+        <svg class="i-night" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 9.6A5.8 5.8 0 0 1 6.4 2.5a5.8 5.8 0 1 0 7.1 7.1z"/></svg>
+        <svg class="i-day" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.2v1.6M8 13.2v1.6M1.2 8h1.6M13.2 8h1.6M3.2 3.2l1.1 1.1M11.7 11.7l1.1 1.1M3.2 12.8l1.1-1.1M11.7 4.3l1.1-1.1"/></svg>
         <span class="label">Night</span>
       </button>
       <p class="hi" lang="hi">भारत के स्मारक</p>
@@ -61,7 +62,12 @@
   <main class="stage is-map" id="stage">
     <canvas id="scene" aria-label="3D model of the selected monument"></canvas>
     <div class="mapview" id="mapview"></div>
-    <div class="status" id="status">Loading the 3D engine…</div>
+    <div class="status" id="status">
+      <div class="status-box">
+        <p class="status-text" id="status-text" role="status">Loading the 3D engine…</p>
+        <div class="progress is-waiting" id="progress" role="progressbar" aria-labelledby="status-text" aria-valuemin="0" aria-valuemax="100"><span id="progress-bar"></span></div>
+      </div>
+    </div>
 
     <div class="toolbar">
       <button class="btn" id="to-map" type="button">

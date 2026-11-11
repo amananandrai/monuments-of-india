@@ -3,6 +3,7 @@ import { M, mat, mesh, box, cyl, at, rng, hipRoof, TIBETAN, inst, unitBox } from
 import { tibetanDoor } from '../details/doorways.js';
 import { heightField, fbm, smooth } from '../details/terrain.js';
 import { detail } from '../detail.js';
+import { quarters } from '../details/tibetan.js';
 import { addDetails } from '../details/key-monastery.js';
 
 
@@ -65,6 +66,8 @@ export function buildKeyMonastery() {
     blocks.push([Math.cos(a) * r, base, Math.sin(a) * r, w, h, d, -a + Math.PI / 2 + (R() - 0.5) * 0.4]);
   }
   f.add(inst(unitBox(), blocks, TIBETAN.white), inst(unitBox(), blocks.map(([x, y, z, w, h, d, ry]) => [x, y + h, z, w + 0.3, 0.6, d + 0.3, ry]), TIBETAN.maroon));
+  // Windows, doors, beam ends and roofs for the houses (js/details/tibetan.js).
+  f.add(quarters(blocks, { cap: 0.6 }));
   f.add(at(tibetanDoor(1.4, 2.4), 0, H - 4, 5));
   f.add(box(10, 6, 10, TIBETAN.white, 0, H - 4, 0), box(10.3, 0.7, 10.3, TIBETAN.maroon, 0, H + 2, 0), at(hipRoof(11, 11, 3, M.gild), 0, H + 2.7, 0), cyl(0.3, 0.7, 2, M.gild, 0, H + 5.6, 0, 8));
   addDetails(f, g);
