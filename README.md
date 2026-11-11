@@ -1,5 +1,10 @@
 # Monuments of India
 
+[![Live site](https://img.shields.io/badge/live_site-vercel.app-000000?logo=vercel&logoColor=white)](https://monuments-of-india-nu.vercel.app)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![three.js](https://img.shields.io/badge/three.js-0.160-000000?logo=threedotjs&logoColor=white)](https://threejs.org/)
+[![Monuments](https://img.shields.io/badge/monuments-101-b45309)](https://monuments-of-india-nu.vercel.app)
+
 **Live site: https://monuments-of-india-nu.vercel.app**
 
 101 Indian landmarks across 26 states and union territories, modelled in interactive 3D with
@@ -339,6 +344,10 @@ npx serve .
 
 Hosted on Vercel at https://monuments-of-india-nu.vercel.app as a static site. Every push to `main`
 deploys to production.
+
+## License
+
+The code is [MIT](LICENSE). Textures, map data and fonts keep the licenses named below.
 
 ## Credits
 
