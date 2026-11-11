@@ -1,7 +1,9 @@
 # Renders a home view of every monument and commits the pictures into the README state list.
-# Runs only when a monument's own JavaScript changes: js/monuments or js/details.
-# A README edit, a test, CSS, or the page shell does not start it. Run it by hand with
-# workflow_dispatch when a shared file (js/surface.js, js/main.js, and the like) changes the look.
+# Runs only when a monument's own JavaScript changes (js/monuments or js/details), or when
+# this workflow file changes. A README edit, a test, CSS, or the page shell does not start it.
+# Run it by hand with workflow_dispatch when a shared file (js/surface.js, js/main.js, and
+# the like) changes the look. Re-running an older failed job uses that job's workflow file,
+# which still installed extra fonts; start a new run from main instead.
 # The plain renderer (tools/shoot-views.mjs) is used rather than --site: a full site shot of
 # all 101 models is about an hour on a CPU runner, and this finishes in a few minutes.
 # The commit is marked [skip ci]. Those paths are not listed below, so the commit does not
@@ -15,6 +17,7 @@ on:
     paths: &monument-js
       - 'js/monuments/**'
       - 'js/details/**'
+      - '.github/workflows/screenshots.yml'
   pull_request:
     paths: *monument-js
 
@@ -47,9 +50,20 @@ jobs:
         working-directory: tools
         run: |
           npm ci
-          # The GitHub runner already has Chromium's libraries. --with-deps also
-          # apt-installs a set of fonts, and that apt step failed on a DNS blip.
-          npx playwright install chromium
+          # ubuntu-latest already has Chromium's shared libraries (libnss3, libgbm1,
+          # and the rest). Do not pass --with-deps: that also apt-installs extra fonts
+          # from security.ubuntu.com, and a DNS failure there ended the run before
+          # a single picture.
+          ok=0
+          for attempt in 1 2 3; do
+            if npx playwright install chromium; then
+              ok=1
+              break
+            fi
+            echo "Chromium download failed (attempt ${attempt} of 3). Retrying."
+            sleep $((attempt * 15))
+          done
+          test "$ok" = 1
 
       - name: Render every home view
         working-directory: tools
