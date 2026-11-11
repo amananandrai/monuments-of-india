@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, FACES, lathe, surface, tricolour, hemi, finial, chhatri, inst, unitBox, unitCyl } from '../helpers.js';
-import { chhajja, bracketGeo, placeAll, alongFace, windowFrame, railing, jali, aroundCircle, petalRing, star, mouldings, frieze, panel, dentils, mergeByMaterial } from './components.js';
+import { chhajja, bracketGeo, placeAll, alongFace, windowFrame, railing, jali, aroundCircle, petalRing, star, mouldings, frieze, panel, dentils, columnTrim, mergeByMaterial } from './components.js';
 import { instances, elephantGeo } from './sculpture.js';
 import { trees, lampPosts, along } from './realism.js';
 import { COPPER } from '../monuments/rashtrapati-bhavan.js';
@@ -144,7 +144,7 @@ function secretariat(s) {
   // The loggia on the avenue side: cream columns between the pavilions, under a deep eave.
   const cols = [];
   for (let z = Z0 + 30; z <= Z1 - 30; z += 4) cols.push([s * 47.2, 8, z, 1.1, 12, 1.1]);
-  g.add(inst(unitCyl(12), cols, Cr), box(2.4, 0.6, L - 54, Bf, s * 47.6, 19.6, ZC));
+  g.add(inst(unitCyl(12), cols, Cr), columnTrim(cols, Cr, { capM: Bf }), box(2.4, 0.6, L - 54, Bf, s * 47.6, 19.6, ZC));
   // Windows: deep reveals in the cream storeys and smaller ones in the red base, on both long faces.
   const win = [];
   for (const side of [-1, 1]) {

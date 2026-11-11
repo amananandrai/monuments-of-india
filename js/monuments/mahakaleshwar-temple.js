@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, at, inst, unitCyl, aroundRect, kalash, flag, rng } from '../helpers.js';
 import { nagaraTemple, bhumijaRows } from '../details/temples.js';
+import { columnTrim } from '../details/components.js';
 import { instances, miniSpireGeo } from '../details/sculpture.js';
 import { townHouses } from '../details/realism.js';
 import { addDetails } from '../details/mahakaleshwar-temple.js';
@@ -49,7 +50,7 @@ export function buildMahakaleshwar() {
   // Courtyard colonnade, and the Koti Teerth tank beside the temple
   const cols = [];
   aroundRect(90, 100, 3).forEach(([x, z]) => cols.push([x, 0, z, 0.8, 5, 0.8]));
-  f.add(inst(unitCyl(8), cols, SHADE));
+  f.add(inst(unitCyl(8), cols, SHADE), columnTrim(cols, SHADE));
   for (const s of [-1, 1]) f.add(box(92, 0.8, 4, SHADE, 0, 5, s * 50), box(4, 0.8, 102, SHADE, s * 45, 5, 0));
   f.add(box(26, 1, 22, SHADE, -28, 0, -14), box(22, 1.1, 18, M.water, -28, 0, -14));
   // The temple has three levels, one shrine above another: Mahakaleshwar in the lowest, which is

@@ -65,6 +65,14 @@ float sWaterH(vec2 p, float fw) {
   return h * sWave.x * sWave.z;
 }
 #endif
+// The openings of a pierced stone screen (jali): octagons on a 22 cm grid with a small diamond
+// between each four, the pattern of Mughal and Rajput screens. 1 in an opening, 0 on the stone.
+float sJaliHole(vec2 uv) {
+  vec2 p = abs(fract(uv / 0.22) - 0.5);
+  float oct = step(max(p.x, p.y), 0.34) * step(p.x + p.y, 0.47);
+  float dia = step(1.0 - p.x - p.y, 0.13);
+  return max(oct, dia);
+}
 // Face coordinates: horizontal faces use (x, z); walls use their horizontal axis and height.
 vec2 sFaceUV(vec3 p, vec3 n) { vec3 a = abs(n); return a.y > 0.7 ? p.xz : vec2(a.x > a.z ? p.z : p.x, p.y); }
 // Running-bond joints for blocks of size s: returns 1 on a joint, 0 on the face of a block.
@@ -91,8 +99,7 @@ vec3 sPerturb(vec3 surf_pos, vec3 surf_norm, vec2 dHdxy, float faceDirection) {
 const JALI_CUT = /* glsl */ `
 #if SURF_KIND == 6
   {
-    vec2 jc = fract(sFaceUV(vSurfPos, normalize(vSurfNormal)) / 0.22);
-    if (length(fwidth(vSurfPos)) < 0.04 && min(min(jc.x, 1.0 - jc.x), min(jc.y, 1.0 - jc.y)) > 0.16) discard;
+    if (length(fwidth(vSurfPos)) < 0.04 && sJaliHole(sFaceUV(vSurfPos, normalize(vSurfNormal))) > 0.5) discard;
   }
 #endif`;
 
@@ -130,8 +137,7 @@ const PATTERN = /* glsl */ `
 #elif SURF_KIND == 6
   // Up close the holes are cut out (see JALI_CUT); further away, where they would shimmer, the
   // screen darkens by the share of it that is open.
-  vec2 c = fract(sFaceUV(sp, sn) / 0.22);
-  float hole = step(0.16, min(min(c.x, 1.0 - c.x), min(c.y, 1.0 - c.y)));
+  float hole = sJaliHole(sFaceUV(sp, sn));
   float sFar = smoothstep(0.04, 0.08, sFw);
   sTint = mix(mix(1.0, 0.55, hole), 0.75, sFar);
   sH = -hole * (1.0 - sFar);

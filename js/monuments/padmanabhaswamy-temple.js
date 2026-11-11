@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, at, hipRoof, inst, unitCyl, aroundRect, kalash } from '../helpers.js';
 import { gopuram, wallWithGaps, dwajasthambha } from '../details/temples.js';
+import { columnTrim } from '../details/components.js';
 import { addDetails } from '../details/padmanabhaswamy-temple.js';
 
 const STONE = ['#d9d2c2', '#bdb4a2', '#e6dece', '#a99f8c'];
@@ -20,7 +21,7 @@ export function buildPadmanabhaswamy() {
   // The pillared corridor (sheeveli pura) round the inner shrine
   const cols = [];
   aroundRect(74, 96, 2.6).forEach(([x, z]) => cols.push([x, 1.2, z, 0.9, 5, 0.9]));
-  f.add(box(80, 1.2, 102, M.granite), inst(unitCyl(8), cols, M.granite));
+  f.add(box(80, 1.2, 102, M.granite), inst(unitCyl(8), cols, M.granite), columnTrim(cols, M.granite, { capM: M.graniteDark }));
   for (const s of [-1, 1]) f.add(box(80, 0.8, 6, M.graniteDark, 0, 6.2, s * 48), box(6, 0.8, 102, M.graniteDark, s * 37, 6.2, 0));
   // Sanctum under tiered Kerala copper roofs, and the gold flagstaff in front
   f.add(box(34, 7, 46, LIME, 0, 1.2, -10), at(hipRoof(38, 50, 8, COPPER), 0, 8.2, -10));

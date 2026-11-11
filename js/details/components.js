@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { M, mat, mesh, box, cyl, lathe, at, surface, doubleSided, rise, ONION, ellipseWall, ribbed, finial } from '../helpers.js';
+import { M, mat, mesh, box, cyl, lathe, at, surface, doubleSided, rise, ONION, ellipseWall, ribbed, finial, inst, unitBox, unitCyl } from '../helpers.js';
 import { attachSurface } from '../surface.js';
 
 // Fine architectural parts shared by the detail modules: mouldings, arch rings, niches, roundels,
@@ -717,4 +717,20 @@ export function cuspedArchGeo(aw, h, t = 0.3) {
     archCache.set(key, new THREE.ExtrudeGeometry(s, { depth: t, bevelEnabled: false }).translate(0, 0, -t / 2));
   }
   return archCache.get(key);
+}
+
+/* ---------- plain colonnades ---------- */
+// Bases and capitals for a colonnade built as bare instanced shafts, [x, y, z, sx, sy, sz] each as
+// given to inst(): under every shaft a square plinth and a round moulding, and at its head a
+// necking ring under a square abacus (in capM). Instanced, three meshes for any number of columns.
+export function columnTrim(list, m, { capM = m } = {}) {
+  const g = new THREE.Group(), plinths = [], rings = [], caps = [];
+  for (const [x, y, z, sx, sy, sz] of list) {
+    const d = Math.max(sx, sz), bh = Math.min(0.5, sy * 0.05), ch = Math.min(0.6, sy * 0.06);
+    plinths.push([x, y, z, d * 1.5, bh, d * 1.5]);
+    rings.push([x, y + bh, z, d * 1.28, bh * 0.6, d * 1.28], [x, y + sy - ch * 1.7, z, d * 1.3, ch * 0.7, d * 1.3]);
+    caps.push([x, y + sy - ch, z, d * 1.6, ch, d * 1.6]);
+  }
+  g.add(inst(unitBox(), plinths, m), inst(unitCyl(12), rings, m), inst(unitBox(), caps, capM));
+  return g;
 }

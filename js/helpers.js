@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { attachSurface, surface } from './surface.js';
+import { detail } from './detail.js';
 export { surface };
 
 export const mat = (color, roughness = 0.85, metalness = 0, extra = {}) =>
@@ -247,8 +248,18 @@ export function archPanel(aw, ah, pointed, m, depth = 0.3) {
 
 export const ONION = [[0.86, 0], [0.98, 0.18], [1.06, 0.45], [1.0, 0.75], [0.8, 1.05], [0.5, 1.32], [0.22, 1.58], [0.06, 1.78], [0, 1.85]];
 
-export function onionDome(r, m) {
-  return lathe(ONION.map(([a, b]) => [a * r, b * r]), m, 48);
+// The bulbous dome. A dome of any size (r of 1.5 m or more; 4 m on phones) is finished as built ones are: a
+// moulded neck where it springs from its drum, and at its crown the inverted lotus (mahapadma)
+// from which the finial rises, its rim scalloped into petals. Both ride on the dome's own mesh, so
+// callers that move, scale or rib the dome carry them along; { crown: false } or { neck: false }
+// leaves one off where a monument models its own.
+const DOME_NECK = [[0.86, -0.02], [0.925, 0.0], [0.945, 0.05], [0.925, 0.1], [0.885, 0.125]];
+const DOME_CROWN = [[0.3, 1.5], [0.335, 1.525], [0.325, 1.56], [0.25, 1.62], [0.15, 1.71], [0.085, 1.8], [0.05, 1.87], [0, 1.875]];
+export function onionDome(r, m, { crown = r >= (detail.low ? 4 : 1.5), neck = r >= (detail.low ? 4 : 1.5) } = {}) {
+  const o = lathe(ONION.map(([a, b]) => [a * r, b * r]), m, 48);
+  if (neck) o.add(lathe(DOME_NECK.map(([a, b]) => [a * r, b * r]), m, 32));
+  if (crown) o.add(ribbed(lathe(DOME_CROWN.map(([a, b]) => [a * r, b * r]), m, 32), 16, 0.1));
+  return o;
 }
 
 export function hemi(r, m, seg = 32) {
@@ -277,10 +288,14 @@ export function chhatri(r, h, m, domeM = m) {
   const g = new THREE.Group();
   g.add(cyl(r * 1.05, r * 1.05, h * 0.06, m));
   for (let i = 0; i < 8; i++) {
-    const a = (i / 8) * Math.PI * 2;
-    g.add(cyl(r * 0.07, r * 0.07, h * 0.38, m, Math.cos(a) * r * 0.82, h * 0.06, Math.sin(a) * r * 0.82, 6));
+    const a = (i / 8) * Math.PI * 2, x = Math.cos(a) * r * 0.82, z = Math.sin(a) * r * 0.82;
+    g.add(cyl(r * 0.07, r * 0.07, h * 0.38, m, x, h * 0.06, z, 6));
+    // Each column on a moulded base under a spreading capital (full detail only).
+    if (!detail.low) g.add(cyl(r * 0.085, r * 0.115, h * 0.03, m, x, h * 0.06, z, 6), cyl(r * 0.125, r * 0.075, h * 0.03, m, x, h * 0.41, z, 6));
   }
   g.add(cyl(r * 1.0, r * 1.25, h * 0.07, m, 0, h * 0.44));
+  // The eave's drip edge, and the low drum the dome springs from.
+  if (!detail.low) g.add(cyl(r * 1.27, r * 1.27, h * 0.012, m, 0, h * 0.428), cyl(r * 0.9, r * 0.9, h * 0.025, m, 0, h * 0.51 - h * 0.012));
   g.add(at(onionDome(r * 0.95, domeM), 0, h * 0.51, 0));
   g.add(at(finial(r * 0.9), 0, h * 0.51 + r * 1.72, 0));
   return g;
