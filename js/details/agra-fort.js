@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, box, at, onFace, curvedBand } from '../helpers.js';
+import { M, mat, box, cyl, at, onFace, curvedBand, chhatri, onionDome, finial } from '../helpers.js';
 import { archRing, archSlab, panel, frieze, jali, merlons, chhajja, rosette, windowFrame, mergeByMaterial } from './components.js';
-import { towerDetail } from './forts.js';
+import { towerDetail, rampart } from './forts.js';
 import { trees, shrubs, lampPosts, asiBoard, fountains, along } from './realism.js';
 
 // Agra Fort, finer detail. From photographs of the fort:
@@ -13,6 +13,12 @@ import { trees, shrubs, lampPosts, asiBoard, fountains, along } from './realism.
 // - the Khas Mahal's marble pavilions open in cusped arches with a carved dado below and a sloping
 //   eave above; the octagonal Musamman Burj is screened with jali on every face under an eave;
 // - the Diwan-i-Am's front is a row of cusped arches on its columns under a parapet.
+// - a lower outer wall runs round the foot of the great wall, above the moat, with merlons of its own;
+// - the Jahangiri Mahal, the red sandstone palace south of the Khas Mahal: a long front panelled in
+//   blind arches outlined in white marble, a tall arched portal, an eave on brackets, and an
+//   octagonal tower crowned by a chhatri at each end;
+// - the Moti Masjid, the white marble mosque north of the Diwan-i-Am: an arcaded front under three
+//   bulbous domes, with a row of kiosks along its parapet.
 // Dimensions follow js/monuments/agra-fort.js.
 const MOAT = mat('#5f7a45', 0.95);
 const Rd = M.red, Rl = M.redLight, Mb = M.marble;
@@ -65,6 +71,49 @@ function architecture(f) {
     d.add(at(archRing(2.6, 7.4, true, 0.3, 0.2, M.lime, false), x, 1.2, 72));
   }
   d.add(at(merlons(53, 0.7, 0.9, 0.3, M.lime, 0.4), 0, 10.6, 73.6));
+  // The outer wall: lower, 7 m out from the great wall's face, crested with merlons.
+  for (const [k0, k1] of [[0, 41], [45, 60]]) {
+    d.add(curvedBand(arc(k0, k1), 9, 10.6, 0, 9, Rd));
+    const segs = [];
+    for (let k = k0; k < k1; k++) {
+      const t = ((k + 0.5) / 60) * Math.PI, r = R + 9.8;
+      segs.push([Math.cos(t) * r, 0, Math.sin(t) * r, (Math.PI * r) / 60 + 0.1, 9, 1.6, Math.atan2(Math.cos(t), Math.sin(t)) ]);
+    }
+    f.add(rampart(segs, Rd, { trim: Rl, size: 0.8, kerb: false }));
+  }
+  // The Jahangiri Mahal at (-78, 34), 46 × 13 × 30, its front to the west court (+z).
+  const jm = at(new THREE.Group(), -78, 0, 34);
+  jm.add(box(46, 13, 30, Rd), box(47, 0.8, 31, Rl, 0, 13, 0), box(12, 16, 3, Rd, 0, 0, 15.5), box(12.6, 0.8, 3.6, Rl, 0, 16, 15.5));
+  jm.add(at(archSlab(5, 11, true, M.recess, 0.06), 0, 0.6, 17.03), at(archRing(5, 11, true, 0.5, 0.2, Mb), 0, 0.6, 17.03), at(panel(10.6, 13.4, 0.2, Mb, frieze(Rd)), 0, 1.2, 17.01));
+  for (const sx of [-1, 1]) {
+    for (let k = 0; k < 3; k++) for (const y of [1.2, 7.2]) {
+      const x = sx * (9.5 + k * 4.6);
+      jm.add(at(archSlab(2.6, 4.6, true, M.recess, 0.05), x, y, 15.03), at(archRing(2.6, 4.6, true, 0.22, 0.1, Mb), x, y, 15.03));
+    }
+    jm.add(cyl(3.2, 3.4, 17, Rd, sx * 23, 0, 15, 8), cyl(3.5, 3.5, 0.5, Rl, sx * 23, 12.6, 15, 8), at(chhatri(2.6, 6, Rd, Mb), sx * 23, 17, 15));
+  }
+  jm.add(at(chhajja(46.8, 1.6, 0.6, 0.16, Rl), 0, 12.9, 15), at(merlons(45, 0.7, 0.9, 0.3, Rd, 0.4), 0, 13.8, 14.6));
+  for (const x of [-4, 4]) jm.add(at(chhatri(1.4, 3.6, Rd, Mb), x, 16.8, 15.5));
+  // Its sides and back: the same blind arches in two tiers, so no face is a bare wall.
+  for (const [a, len, dist] of [[Math.PI / 2, 30, 23], [-Math.PI / 2, 30, 23], [Math.PI, 46, 15]]) {
+    const n = Math.floor(len / 5);
+    for (let k = 0; k < n; k++) for (const y of [1.2, 7.2]) {
+      const lat = -len / 2 + (k + 0.5) * (len / n);
+      jm.add(onFace(at(archSlab(2.6, 4.6, true, M.recess, 0.05), 0, y, 0), a, dist + 0.03, lat), onFace(at(archRing(2.6, 4.6, true, 0.22, 0.1, Mb), 0, y, 0), a, dist + 0.03, lat));
+    }
+  }
+  d.add(jm);
+  // The Moti Masjid at (62, 74): a marble prayer hall 40 × 9 × 16 on a red plinth, seven arches in
+  // its front, three bulbous domes and a row of kiosks along the parapet.
+  const mm = at(new THREE.Group(), 62, 0, 74);
+  mm.rotation.y = Math.PI;
+  mm.add(box(48, 3, 26, Rd), box(40, 9, 16, Mb, 0, 3, -3), box(40.6, 0.6, 16.6, Mb, 0, 12, -3));
+  for (let k = -3; k <= 3; k++) mm.add(at(archSlab(3.6, 6.4, true, M.recess, 0.05), k * 5.4, 3.3, 5.03), at(archRing(3.6, 6.4, true, 0.3, 0.14, Mb), k * 5.4, 3.3, 5.03));
+  mm.add(at(chhajja(40.6, 1.4, 0.5, 0.14, Mb), 0, 11.9, 5));
+  for (const [x, r] of [[-12, 3.4], [0, 4.4], [12, 3.4]]) mm.add(cyl(r, r, 1.4, Mb, x, 12.6, -3, 24), at(onionDome(r, Mb), x, 14, -3), at(finial(r * 0.7), x, 14 + r * 1.75, -3));
+  for (let k = -3; k <= 3; k++) mm.add(at(chhatri(0.9, 2.6, Mb), k * 5.4, 12.6, 4.4));
+  for (const x of [-19, 19]) for (const z of [4, -10]) mm.add(at(chhatri(1.5, 4.4, Mb), x, 12.6, z));
+  d.add(mm);
   mergeByMaterial(d);
   f.add(d);
 }
