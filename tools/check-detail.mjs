@@ -51,7 +51,9 @@ const rows = await page.run(PRELUDE + `
       r.focus.traverse((o) => {
         if (!o.isMesh || !o.visible || o.userData.dressing || natural(o.material)) return;
         box.setFromObject(o);
-        if (box.isEmpty() || box.max.y - Math.max(0, box.min.y) < 2.5) return;
+        // An instanced part is kept whatever its height: its box spans every instance, and a wall's
+        // merlons or a row of windows on level ground would otherwise be left out as ground-level.
+        if (box.isEmpty() || (!o.isInstancedMesh && box.max.y - Math.max(0, box.min.y) < 2.5)) return;
         if (o.isInstancedMesh) for (let k = 0; k < o.count; k++) { o.getMatrixAt(k, m4); measure(o.geometry, m4.premultiply(o.matrixWorld), row); }
         else measure(o.geometry, o.matrixWorld, row);
       });
