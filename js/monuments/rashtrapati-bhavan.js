@@ -1,5 +1,8 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, group, at, hemi, finial, chhatri } from '../helpers.js';
+import { M, mat, mesh, box, cyl, group, at, hemi, finial, chhatri } from '../helpers.js';
+// The dome's copper sheathing, weathered to a dark grey-brown.
+export const COPPER = mat('#57514a', 0.5, 0.55);
+
 import { addDetails } from '../details/rashtrapati-bhavan.js';
 
 export function buildRashtrapatiBhavan() {
@@ -17,9 +20,10 @@ export function buildRashtrapatiBhavan() {
   for (let k = 0; k < 5; k++) f.add(box(60, 10 - k * 2, 3, Rd, 0, 0, 43.5 + k * 3));
   for (let k = 0; k < 12; k++) f.add(cyl(1.3, 1.4, 13, Cr, -27.5 + k * 5, 10, 38, 16));
   f.add(box(64, 2.4, 8, Cr, 0, 23, 37), box(66, 0.8, 9, M.buff, 0, 25.4, 37));
-  // The great dome on its drum, with a railing band like the one at Sanchi
+  // The great dome on its drum, with a railing band like the one at Sanchi. The dome is sheathed in
+  // copper, long since weathered dark.
   f.add(cyl(15, 15, 5, Cr, 0, 22.6, 0, 48), cyl(15.6, 15.6, 1.4, Rd, 0, 27.6, 0, 48));
-  f.add(at(hemi(14.5, Cr, 48), 0, 29, 0), cyl(1.4, 2, 2.4, Cr, 0, 43.2, 0, 16));
+  f.add(at(hemi(14.5, COPPER, 48), 0, 29, 0), cyl(1.4, 2, 2.4, COPPER, 0, 43.2, 0, 16));
   const col = group(box(7, 6, 7, Rd), cyl(1.3, 1.7, 30, Cr, 0, 6, 0, 16), at(mesh(new THREE.SphereGeometry(1.6, 16, 12), M.bronze), 0, 37.2, 0), at(finial(4), 0, 38.6, 0));
   g.add(at(col, 0, 0, 120));
   addDetails(f, g);
