@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { M, mat, box, at, chhatri, onFace, FACES, archPanel, hemi, inst, unitBox, unitCyl } from '../helpers.js';
+import { M, mat, box, at, chhatri, onFace, FACES, archPanel, hemi, inst, unitBox, unitCyl, photo } from '../helpers.js';
 import { heightField, rough, smooth, fbm } from '../details/terrain.js';
 import { detail } from '../detail.js';
 import { fortGate, rampart, bastionCrowns } from '../details/forts.js';
 import { addDetails } from '../details/chittorgarh-fort.js';
 
-const STONE = mat('#c8b28c', 0.9);
-const RUIN = mat('#a8916d', 0.95);
+const STONE = photo(mat('#c8b28c', 0.9), 'rubble');
+const RUIN = photo(mat('#a8916d', 0.95), 'rubble');
 
 // The nine-storey Vijay Stambh (Tower of Victory), about 37 m.
 function vijayStambh() {

@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, hemi, finial, ellipseWall, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, hemi, finial, ellipseWall, inst, unitBox, photo } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
 import { heightField, rough, smooth } from '../details/terrain.js';
 import { addDetails } from '../details/daulatabad-fort.js';
 
-const STONE = mat('#8e8172', 0.9);
+const STONE = photo(mat('#8e8172', 0.9), 'rubble');
 const TILE = mat('#3f78a8', 0.5);
 
 // The Chand Minar, a tapering victory tower with balconies.

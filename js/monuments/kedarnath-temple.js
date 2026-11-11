@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, group, rng, hipRoof, kalash, flag } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, group, rng, hipRoof, kalash, flag, photo } from '../helpers.js';
 import { templeDoorway, templePorch, grandStair } from '../details/doorways.js';
 import { statue } from '../details/sculpture.js';
 import { mergeByMaterial } from '../details/components.js';
@@ -8,8 +8,8 @@ import { mountainRing } from '../details/terrain.js';
 import { addDetails } from '../details/kedarnath-temple.js';
 import { townHouses, houseRow } from '../details/realism.js';
 
-const STONE = mat('#8e8a82', 0.9);
-const STONE_DARK = mat('#6f6b64', 0.9);
+const STONE = photo(mat('#8e8a82', 0.9), 'blocks');
+const STONE_DARK = photo(mat('#6f6b64', 0.9), 'blocks');
 const SLOPE = mat('#6b7356', 0.95, 0, { flatShading: true });
 const ROCK = mat('#7d7a74', 0.95, 0, { flatShading: true });
 

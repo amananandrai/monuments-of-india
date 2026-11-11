@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, at, onFace, surface } from '../helpers.js';
+import { M, mat, mesh, at, onFace, surface, photo } from '../helpers.js';
 import { mouldings, templeNiche, idol, pilasters, windowFrame, railing, mergeByMaterial } from './components.js';
 import { scatter } from './realism.js';
 import { horse } from './animals.js';
@@ -11,7 +11,7 @@ import { horse } from './animals.js';
 // the edge of the platform. Dimensions follow js/monuments/kedarnath-temple.js:
 // the sanctum 12 square from y 2 to 11 at z = -9; the hall 14 square at z = 5; the coursed tower
 // 11 wide and 13 high from y = 11.6, its width falling straight to half at the top.
-const STONE = mat('#8e8a82', 0.9), STONE_DARK = mat('#6f6b64', 0.9);
+const STONE = photo(mat('#8e8a82', 0.9), 'blocks'), STONE_DARK = photo(mat('#6f6b64', 0.9), 'blocks');
 const STEEL = surface(mat('#9aa0a4', 0.45, 0.6), 'none');
 function architecture(f) {
   const d = new THREE.Group(), s = at(new THREE.Group(), 0, 2, -9);

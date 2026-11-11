@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 import { townHouses, houseRow } from '../details/realism.js';
-import { mat, box, at, rng, inst, unitBox, unitCyl, chhatri } from '../helpers.js';
+import { mat, box, at, rng, inst, unitBox, unitCyl, chhatri, photo } from '../helpers.js';
 import { fortGate, rampart } from '../details/forts.js';
 import { miniSpireGeo } from '../details/sculpture.js';
 import { heightField, rough, smooth, fbm } from '../details/terrain.js';
 import { addDetails } from '../details/jaisalmer-fort.js';
 import { detail } from '../detail.js';
 
-const GOLD = mat('#d9a85a', 0.85);
-const GOLD_DARK = mat('#b8873f', 0.9);
+const GOLD = photo(mat('#d9a85a', 0.85), 'rubble');
+const GOLD_DARK = photo(mat('#b8873f', 0.9), 'rubble');
 const SAND = mat('#e3c48d', 0.95);
 
 // The golden fort on Trikuta hill at its real size: about 460 × 230 m on top of a hill 76 m high,

@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import { mat, box, cyl, at, rng, chhatri, inst, unitBox, unitCyl, surface } from '../helpers.js';
+import { mat, box, cyl, at, rng, chhatri, inst, unitBox, unitCyl, surface, photo } from '../helpers.js';
 import { fortGate, rampart, bastionCrowns } from '../details/forts.js';
 import { heightField, rough, smooth } from '../details/terrain.js';
 import { townHouses } from '../details/realism.js';
 import { addDetails } from '../details/mehrangarh-fort.js';
 import { detail } from '../detail.js';
 
-const SAND = mat('#b9774f', 0.9);
-const SAND_LIGHT = mat('#cf9a6e', 0.85);
+const SAND = photo(mat('#b9774f', 0.9), 'rubble');
+const SAND_LIGHT = photo(mat('#cf9a6e', 0.85), 'rubble');
 
 // Mehrangarh on Bhakurcheeta, the rocky ridge above Jodhpur, at its real height: the rock rises
 // H = 120 m above the city and the fort runs about 420 m along its top (north is +x here), its walls

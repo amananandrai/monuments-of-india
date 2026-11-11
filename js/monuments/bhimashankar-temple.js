@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, lathe, doubleSided } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, rng, lathe, doubleSided, photo } from '../helpers.js';
 import { nagaraTemple } from '../details/temples.js';
 import { trees as plantTrees } from '../details/realism.js';
 import { mountainRing } from '../details/terrain.js';
 import { addDetails } from '../details/bhimashankar-temple.js';
 
-const BASALT = mat('#4f4a45', 0.85);
+const BASALT = photo(mat('#4f4a45', 0.85), 'blocks');
 const SHADE = mat('#3b3734', 0.9);
 
 export function buildBhimashankar() {

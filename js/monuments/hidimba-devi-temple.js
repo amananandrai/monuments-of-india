@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { mat, box, cyl, at, rng, hipRoof, finial } from '../helpers.js';
+import { mat, box, cyl, at, rng, hipRoof, finial, photo } from '../helpers.js';
 import { templeDoorway, steps } from '../details/doorways.js';
 import { trees as plantTrees } from '../details/realism.js';
 import { addDetails } from '../details/hidimba-devi-temple.js';
 
 const STONE = mat('#8d8a85', 0.95);
-const WOOD = mat('#6d5034', 0.85);
+const WOOD = photo(mat('#6d5034', 0.85), 'timber');
 const SHINGLE = mat('#5e5246', 0.9);
 const BRASS = mat('#b98b3c', 0.35, 0.7);
 

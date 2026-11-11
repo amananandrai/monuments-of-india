@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, onFace, FACES } from '../helpers.js';
+import { M, mat, box, at, onFace, FACES, photo } from '../helpers.js';
 import { chhajja, petalRing, rosette, templeNiche, windowFrame, merlons, mergeByMaterial } from './components.js';
 import { trees, shrubs, lampPosts, scatter, along, cityAround } from './realism.js';
 
@@ -10,7 +10,7 @@ import { trees, shrubs, lampPosts, scatter, along, cityAround } from './realism.
 // its side walls as on its front.
 // Dimensions follow js/monuments/kirti-mandir.js: the hall 36 × 20.6 and 9 high on a 1 m base,
 // its arcade front at z = 11; the tower block 9 square at (0, 10.8, -2).
-const WOOD = mat('#5a3a24', 0.8);
+const WOOD = photo(mat('#5a3a24', 0.8), 'timber');
 const CREAM = mat('#ecd9bd', 0.85), SHADE = mat('#c9ad87', 0.9);
 function architecture(f) {
   const d = new THREE.Group();

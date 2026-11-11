@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, box, at, chhatri, onFace, FACES } from '../helpers.js';
+import { mat, box, at, chhatri, onFace, FACES, photo } from '../helpers.js';
 import { frieze, beltCourse, pilasters, jharokha, windowFrame, chhajja, mergeByMaterial } from './components.js';
 import { towerDetail } from './forts.js';
 import { trees, shrubs, asiBoard, scatter } from './realism.js';
@@ -11,7 +11,7 @@ import { H, VS, KS, PP, RAMPOL, rimZ } from '../monuments/chittorgarh-fort.js';
 // the Ram Pol are banded and slit, and Padmini's palace has arched windows under an eave.
 // Dimensions follow js/monuments/chittorgarh-fort.js: the plateau top at H, the places at VS, KS, PP
 // and RAMPOL.
-const STONE_ = mat('#c8b28c', 0.9), RUIN_ = mat('#a8916d', 0.95);
+const STONE_ = photo(mat('#c8b28c', 0.9), 'rubble'), RUIN_ = photo(mat('#a8916d', 0.95), 'rubble');
 function architecture(f) {
   const d = new THREE.Group();
   // Vijay Stambh at VS: nine storeys 3.6 high from y = 3, w = 10 - 0.25 i.
@@ -50,7 +50,7 @@ function architecture(f) {
 
 // Chittorgarh: the Kirti Stambh, the older Jain tower of fame, near the east end of the plateau;
 // dry scrub and khejri trees over the plateau; and the ASI board.
-const STONE = mat('#c8b28c', 0.9), RUIN = mat('#a8916d', 0.95);
+const STONE = photo(mat('#c8b28c', 0.9), 'rubble'), RUIN = photo(mat('#a8916d', 0.95), 'rubble');
 export function addDetails(f, g) {
   architecture(f);
   const ks = KS;

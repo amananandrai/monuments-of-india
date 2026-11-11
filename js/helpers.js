@@ -3,6 +3,15 @@ import { attachSurface, surface } from './surface.js';
 import { detail } from './detail.js';
 export { surface };
 
+// Give a material a photo texture set (js/textures.js) by key: 'laterite', 'blocks', 'rubble',
+// 'concrete', 'timber', or one of the older sets. Timber takes the jointless 'carved' surface
+// unless the material already has one, so planks are not crossed by masonry joints.
+export function photo(m, key) {
+  m.userData.photoKey = key;
+  if (key === 'timber' && !m.userData.surface) m.userData.surface = 'carved';
+  return m;
+}
+
 export const mat = (color, roughness = 0.85, metalness = 0, extra = {}) =>
   attachSurface(new THREE.MeshStandardMaterial({ color, roughness, metalness, envMapIntensity: 0.7, ...extra }));
 

@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, onFace, archPanel, archWall, hemi, finial, ellipseWall, curvedBand, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, rng, onFace, archPanel, archWall, hemi, finial, ellipseWall, curvedBand, inst, unitBox, photo } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
 import { heightField, fbm, smooth } from '../details/terrain.js';
 import { detail } from '../detail.js';
 import { addDetails } from '../details/golconda-fort.js';
 
-const GRANITE = mat('#9a917f', 0.9);
+const GRANITE = photo(mat('#9a917f', 0.9), 'rubble');
 const BOULDER = mat('#8c8270', 0.95, 0, { flatShading: true });
 
 // The hill's outline wanders: its foot lies at hillRadius(a) from the summit in direction a, and
