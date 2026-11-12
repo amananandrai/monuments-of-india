@@ -131,5 +131,5 @@ export function addDetails(f, g) {
   for (const x of [-15, 15]) g.add(box(5, 0.3, 200, M.water, x, 0.02, 90));
   g.add(stalls([[-20, 30, Math.PI / 2], [20, 46, -Math.PI / 2], [-20, 70, Math.PI / 2], [20, 96, -Math.PI / 2]], { awnings: ['#f2f2f2'], goods: ['#e26a9c', '#f2d23a', '#7a3f8f'] }));
   g.add(lampPosts([...along(10, [-9.5, 14], [-9.5, 185]), ...along(10, [9.5, 14], [9.5, 185])]));
-  g.add(trees([...along(12, [-58, 14], [-58, 185]), ...along(12, [58, 14], [58, 185])], { kind: 'mango', seed: 6 }));
+  g.add(trees([...along(12, [-58, 14], [-58, 185]), ...along(12, [58, 14], [58, 185])], { kind: 'jamun', seed: 6 }));
 }

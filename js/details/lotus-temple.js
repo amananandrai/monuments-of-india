@@ -33,10 +33,12 @@ export function addDetails(f, g) {
     const t = k * 40 * deg, s = Math.sin(t), c = Math.cos(t);
     for (const d of [48, 62, 76]) for (const o of [-3.6, 3.6]) lamps.push([s * d + c * o, c * d - s * o]);
     const t2 = t + 20 * deg;
-    for (let d = 64; d < 82; d += 3) hedges.push([Math.sin(t2) * d, Math.cos(t2) * d, 1.6]);
+    // One low band of flowering hedge in each wedge.
+    for (const o of [-4, 0, 4]) hedges.push([Math.sin(t2) * 70 + Math.cos(t2) * o, Math.cos(t2) * 70 - Math.sin(t2) * o, 1]);
   }
   g.add(lampPosts(lamps), shrubs(hedges, { flowers: '#d0306f', seed: 4 }));
   const ring = [];
-  for (let k = 0; k < 36; k++) { const a = (k / 36) * Math.PI * 2 + 0.05; ring.push([Math.sin(a) * 82, Math.cos(a) * 82]); }
+  // Half as many trees as before, at the lawn's edge (it ends at 85 m), so the petals stay in view.
+  for (let k = 0; k < 18; k++) { const a = (k / 18) * Math.PI * 2 + 0.05; ring.push([Math.sin(a) * 82, Math.cos(a) * 82]); }
   g.add(trees(ring, { kind: 'ashoka', seed: 5 }));
 }

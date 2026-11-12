@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { M, mesh, box, cyl, at, hemi, shikhara, rng, instBoxes, torana } from '../helpers.js';
 import { mughalDoorway } from '../details/mughal.js';
 import { steps } from '../details/doorways.js';
+import { trees as plantTrees } from '../details/realism.js';
 import { addDetails } from '../details/mahabodhi-temple.js';
 
 export function buildMahabodhi() {
@@ -30,8 +31,10 @@ export function buildMahabodhi() {
   gate.scale.setScalar(0.62);
   f.add(at(gate, 0, 0, 18));
   // The Bodhi tree behind the temple, and votive stupas in the courtyard
-  f.add(cyl(1.1, 1.7, 10, M.wood, 0, 0, -28, 10));
-  for (let i = 0; i < 10; i++) f.add(at(mesh(new THREE.IcosahedronGeometry(5 + R() * 2.5, 1), M.leaf), (R() - 0.5) * 12, 11 + R() * 6, -28 + (R() - 0.5) * 12));
+  // The tree is one peepal, 18 m tall, west of the temple (it is dressing, beside the framed group).
+  g.add(plantTrees([[0, -28]], { kind: 'peepal', seed: 7, h: 18 }));
+  // (Forty draws the old tree used, so the votive stupas below stay where they were.)
+  for (let i = 0; i < 40; i++) R();
   for (let i = 0; i < 12; i++) {
     const x = (R() < 0.5 ? -1 : 1) * (22 + R() * 12), z = (R() - 0.5) * 60;
     f.add(cyl(1.3, 1.5, 1, S, x, 0, z, 16), at(hemi(1.3, S, 16), x, 1, z), cyl(0.1, 0.1, 1.2, S, x, 2.2, z, 6));

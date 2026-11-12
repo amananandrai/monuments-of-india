@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { M, mesh, at } from '../helpers.js';
 import { templeNiche, idol, medallion, mergeByMaterial } from './components.js';
-import { prayerFlags } from './realism.js';
 import { lamp } from './doorways.js';
 
 // The Mahabodhi Temple, finer detail. From photographs: the faces of the great tower are covered in
@@ -41,10 +40,8 @@ function architecture(f) {
   f.add(d);
 }
 
-// The Mahabodhi Temple at Bodh Gaya: prayer flags strung across the courtyard, and butter lamps lit
-// on the steps.
+// The Mahabodhi Temple at Bodh Gaya: butter lamps lit on the steps.
 export function addDetails(f, g) {
   architecture(f);
-  for (const [a, b] of [[[0, 30, 0], [-18, 2.6, -18]], [[0, 30, 0], [18, 2.6, -18]], [[0, 30, 0], [-18, 2.6, 18]], [[0, 30, 0], [18, 2.6, 18]], [[-18, 2.6, -18], [0, 18, -28]], [[18, 2.6, -18], [0, 18, -28]]]) f.add(prayerFlags(a, b, { sag: 2, size: 0.45 }));
   for (let k = 0; k < 6; k++) f.add(at(lamp(0.9), -2.2 + k * 0.9, 5, 13.6));
 }

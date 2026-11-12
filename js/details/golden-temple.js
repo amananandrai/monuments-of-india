@@ -67,7 +67,8 @@ export function addDetails(f, g) {
     cl.rotation.y = -Math.PI / 2;
     g.add(cl, box(0.1, 1, 1, GOLD, -96, 34.4, z));
   }
-  g.add(trees([[60, -72], [-70, 70], [72, 68]], { kind: 'mango', seed: 8, h: 9, y: 0.8 }));
+  // The old ber trees, on the parikrama (the sarovar is 150 m square, the walk 75 to 100 out).
+  g.add(trees([[88, -60], [-88, 62], [62, 88]], { kind: 'ber', seed: 8, h: 5, y: 0.8 }));
   const lamps = [];
   for (let t = -72; t <= 72; t += 18) lamps.push([t, -76], [t, 76], [-76, t], [76, t]);
   g.add(lampPosts(lamps, { y: 0.8, h: 3.6 }));

@@ -22,7 +22,7 @@ export function buildBhimashankar() {
     const a = R() * Math.PI * 2, d = 32 + Math.pow(R(), 0.8) * 130;
     trees.push([Math.cos(a) * d, Math.sin(a) * d, 11 + R() * 7]);
   }
-  g.add(plantTrees(trees.slice(0, 110), { kind: 'mango', seed: 15 }), plantTrees(trees.slice(110), { kind: 'neem', seed: 16 }));
+  g.add(plantTrees(trees.slice(0, 110), { kind: 'teak', seed: 15 }), plantTrees(trees.slice(110), { kind: 'neem', seed: 16 }));
   // The dark basalt temple, and the great bell hung in its own frame
   f.add(box(40, 0.4, 44, M.path), at(nagaraTemple({ w: 8, h: 13, m: BASALT, shade: SHADE, plinth: 1.5, urus: 4, halls: [[11, 6, 4]] }), 0, 0, -8));
   // The great bell (cast in 1729) in its frame of dark stone: two square piers on moulded bases, a
