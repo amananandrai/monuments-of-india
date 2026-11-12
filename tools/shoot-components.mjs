@@ -1,8 +1,8 @@
-// Pictures of the shared parts, one each, for docs/architecture.md, docs/realism.md and
-// docs/components.md: a dome, a chhatri, a pillar, each kind of tree, a boat, and so on.
+// Pictures of the shared parts, one each, for architecture.md, realism.md and
+// components.md: a dome, a chhatri, a pillar, each kind of tree, a boat, and so on.
 //   node shoot-components.mjs [name ...] [--size 640x420] [--out dir]
 // Each part is built on its own, on a plain floor, framed by its own size and drawn by the plain
-// renderer (a sun and a sky light, as shoot-views.mjs without --site). Written to docs/img/<name>.jpg.
+// renderer (a sun and a sky light, as shoot-views.mjs without --site). Written to img/<name>.jpg.
 // Run it by hand when a shared part changes its look; no workflow runs it.
 // A part that fails to build is reported and skipped, and the run exits 1.
 import fs from 'node:fs';
@@ -13,7 +13,7 @@ import { openPage, PRELUDE } from './lib/browser.mjs';
 const argv = process.argv.slice(2), opt = (k) => (argv.includes(k) ? argv[argv.indexOf(k) + 1] : null);
 const [W, H] = (opt('--size') || '640x420').split('x').map(Number);
 const only = argv.filter((a, i) => !a.startsWith('--') && !['--size', '--out'].includes(argv[i - 1]));
-const out = opt('--out') ? path.resolve(opt('--out')) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../docs/img');
+const out = opt('--out') ? path.resolve(opt('--out')) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../img');
 fs.mkdirSync(out, { recursive: true });
 
 // The parts, in the page: name → a function returning an object, or [object, options]. Options:

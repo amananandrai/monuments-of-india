@@ -6,7 +6,7 @@ heading links to the guide that says what the part takes and where it lives.
 The pictures are drawn by `node tools/shoot-components.mjs`, each part on its own in plain light.
 On the site the same parts carry shadows, photo textures and weathering.
 
-[Back to the README](../README.md) · [States and monuments](monuments.md) · [How it is drawn](how-it-is-drawn.md)
+[Back to the README](README.md) · [States and monuments](monuments.md) · [How it is drawn](how-it-is-drawn.md)
 
 ## Architecture
 

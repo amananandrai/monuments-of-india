@@ -7,7 +7,7 @@ file (`js/details/<monument>.js`) calls the kit from its `addDetails(f, g)`.
 For the buildings themselves (domes, kiosks, pillars, arches) see [architecture.md](architecture.md).
 Every picture on this page is on one page in [components.md](components.md).
 
-[Back to the README](../README.md) · [States and monuments](monuments.md) · [How it is drawn](how-it-is-drawn.md)
+[Back to the README](README.md) · [States and monuments](monuments.md) · [How it is drawn](how-it-is-drawn.md)
 
 ## How the kit works
 
