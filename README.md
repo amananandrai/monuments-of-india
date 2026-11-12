@@ -557,8 +557,14 @@ are the `--site` pictures described in [`tools/README.md`](tools/README.md).
 - **Setting:** every monument has its own file in `js/details/` (named after it, as in
   `js/details/taj-mahal.js`) that adds what stands round it, built from a shared kit
   (`js/details/realism.js`):
-  - the trees and shrubs of its region: neem, banyan, mango, ashoka, coconut palms, deodars and
-    cypress avenues. Where a monument has triangles to spare, `upgradeTrees` replants them as
+  - the trees and shrubs of its region, twenty-one kinds from one planter: neem, banyan, mango,
+    ashoka, coconut palms, deodars and cypress avenues; jamun on Delhi's avenues, peepal at Bodh
+    Gaya and Sarnath, chinar in Kashmir, poplar and willow in Ladakh, firs in the eastern
+    Himalaya, teak and sal in the forests, tamarind in the south, casuarina on the coast, and
+    the small dry trees of desert and scrub (ber, babul, khejri, dhok). The ceremonial lawns
+    (India Gate, the Taj, Victoria, the National War Memorial, both Parliaments) stay mown;
+    elsewhere low grass tufts and stones lie on the open ground. Where a monument has triangles
+    to spare, `upgradeTrees` replants them as
     fuller trees: limbs with separate leaf clumps, palms with leafleted fronds, deodars in
     drooping tiers;
   - flags and garlands: the tricolour (a rippling cloth with the Ashoka Chakra), the Nishan Sahibs,
@@ -568,7 +574,8 @@ are the `--site` pictures described in [`tools/README.md`](tools/README.md).
   - boats, shikaras and houseboats on the water, and stalls outside the temple gates;
   - animals: temple elephants, the deer at Sarnath and Sikandra, yaks, camels and ponies.
 
-  There are no people or motor vehicles, so the monument itself stays the subject. Everything is
+  There are no people, and no motor vehicles except the traffic on the Howrah Bridge and the
+  Bandra–Worli Sea Link, so the monument itself stays the subject. Everything is
   instanced, so a garden of fifty trees costs a few draw calls.
 - **Budget:** each monument stays under 650,000 triangles on desktops and 300,000 on phones
   (`js/detail.js`). Repeated parts are instanced, carved parts are merged by material, and a
