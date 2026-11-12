@@ -140,7 +140,7 @@ const KINDS = {
   dhok: { h: 5, plain: [0.46, 0.34, 0.52], full: [0.44, 0.48, 4], leaf: FOLIAGE_DRY },
   palm: { h: 13, leaf: FROND },
   deodar: { h: 18, leaf: FOLIAGE_DARK, tiers: [[0.42, 0.36, 0.2], [0.33, 0.32, 0.42], [0.22, 0.28, 0.62], [0.12, 0.22, 0.8]], full: [0.42, 7, 9] },
-  cypress: { h: 10, leaf: FOLIAGE_DARK, tiers: [[0.18, 0.92, 0.1]], full: [0.16, 4, 6] },
+  cypress: { h: 10, leaf: FOLIAGE_DARK, tiers: [[0.18, 0.92, 0.1]], full: [0.17, 5, 0], flame: true },
   fir: { h: 12, leaf: FOLIAGE_DARK, tiers: [[0.3, 0.34, 0.2], [0.24, 0.3, 0.42], [0.16, 0.26, 0.62], [0.09, 0.2, 0.8]], full: [0.3, 6, 7] },
   casuarina: { h: 12, leaf: FOLIAGE_DARK, tiers: [[0.2, 0.26, 0.22], [0.17, 0.24, 0.4], [0.13, 0.22, 0.58], [0.08, 0.24, 0.76]], full: [0.2, 9, 5], thin: true },
 };
@@ -227,6 +227,13 @@ function fullGeo(kind, seed) {
     // The conifers: whorls of drooping boughs up a mast. The casuarina's are thin and many, so it
     // reads as feathery, not as a solid cone.
     const [rad, tiers, n] = K.full, thin = !!K.thin;
+    if (K.flame) {
+      // The cypress: a dense, tapering flame of foliage close round a short trunk, built of
+      // leaf clumps one over another (its old whorls of thin boughs read as a bare mast).
+      bark.push(limbGeo(V3(0, 0, 0), V3(0, 0.3, 0), 0.02, 0.012, 6));
+      const base = crownGeo(5, seed), widths = [0.82, 1, 0.9, 0.66, 0.38];
+      for (let t = 0; t < tiers; t++) leaf.push(plainGeo(base.clone().scale(rad * widths[t], 0.17, rad * widths[t]).translate((R() - 0.5) * 0.02, 0.2 + t * 0.165, (R() - 0.5) * 0.02)));
+    } else {
     bark.push(limbGeo(V3(0, 0, 0), V3(0, 0.95, 0), thin ? 0.016 : 0.025, 0.006, 7));
     for (let t = 0; t < tiers; t++) {
       const y = (thin ? 0.3 : 0.18) + (t / tiers) * (thin ? 0.62 : 0.72), r = rad * (1 - t / (tiers + 1));
@@ -238,6 +245,7 @@ function fullGeo(kind, seed) {
       if (!thin) leaf.push(plainGeo(new THREE.ConeGeometry(r * 0.45, 0.14, 7).translate(0, y + 0.06, 0)));
     }
     if (thin) leaf.push(plainGeo(new THREE.ConeGeometry(0.03, 0.12, 5).translate(0, 0.94, 0)));
+    }
   } else {
     // The broadleaf, the dry umbrella and the column: a trunk that leans and bends, limbs out to
     // the crown's clumps. Every kind has its own row in KINDS; none borrows another's layout.

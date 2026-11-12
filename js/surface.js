@@ -7,7 +7,7 @@ import * as THREE from 'three';
 // patches of soot and age; strongest on brick, about half on marble, none on gilt) and a small
 // per-object tint so that repeated pieces don't look cloned. Water is its own kind: moving ripples
 // that tilt the normal, so the sky reflects in a broken, shifting band instead of a flat sheen.
-export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13, calligraphy: 14, pietra: 15, reliefs: 16, banded: 17 };
+export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13, calligraphy: 14, pietra: 15, reliefs: 16, banded: 17, paving: 18 };
 
 // Seconds since the page opened, shared by every water material; main.js advances it each frame.
 export const waterTime = { value: 0 };
@@ -18,6 +18,15 @@ export const landColor = { value: new THREE.Color() };
 export const reflection = { map: { value: null }, matrix: { value: new THREE.Matrix4() }, on: { value: 0 } };
 
 // Photo textures (CC0, Poly Haven) are registered by key and blended in by triplanar projection.
+// The shade a building casts on the ground at its foot, so a wall does not meet a lawn or a
+// pavement along a hard line. main.js draws the shown monument once from straight above into `map`
+// (each texel the height of the highest thing there, 0 to 1 over SHADE_SPAN metres); a surface that
+// faces up is then darkened where the blurred map stands well above it: at the foot of a wall,
+// under an eave, in the corner of a court, on a terrace beside a tower. box is the map's footprint
+// in the world (min x, min z, width, depth).
+export const SHADE_SPAN = 8;
+export const groundShade = { map: { value: null }, box: { value: new THREE.Vector4(0, 0, 1, 1) }, on: { value: 0 } };
+
 export const PHOTOS = {};
 // Sets are fetched when a material that wants one is first drawn: js/textures.js puts its loader here.
 export const photoRequest = { load: null };
@@ -49,6 +58,11 @@ float sFbm(vec3 p) { float a = 0.5, s = 0.0; for (int i = 0; i < 4; i++) { s += 
 #ifdef SURF_PATCH
 uniform vec4 sPatchB, sPatchF; // footprint (min x, min z, max x, max z); fade margins (min x, max x, min z, max z)
 uniform vec3 sLand;
+#endif
+#if SURF_KIND != 9
+uniform sampler2D sShadeMap;
+uniform vec4 sShadeBox;
+uniform float sShadeOn;
 #endif
 #if SURF_KIND == 9
 uniform float sTime;
@@ -249,6 +263,17 @@ const PATTERN = /* glsl */ `
   sTint = 0.9 + 0.16 * big + 0.05 * (sHash(vec3(sCell, 3.0)) - 0.5) - 0.18 * j;
   sCol = mix(vec3(1.0), vec3(0.58, 0.66, 0.78), band);
   sH = big * 0.3 - j * 0.8;
+#elif SURF_KIND == 18
+  // Paving: flagstones in courses 70 cm deep, 1.1 m long with every third course of half-length
+  // stones, the courses shifted so no joint runs on; each stone its own tone. Further off the
+  // joints go, then the stones' tones, leaving an even, slightly mottled floor.
+  vec2 uv = sFaceUV(sp, sn);
+  float row = floor(uv.y / 0.7), wdt = mod(row, 3.0) < 0.5 ? 0.55 : 1.1, xo = uv.x + row * 0.37;
+  vec2 fp = vec2(fract(xo / wdt) * wdt, fract(uv.y / 0.7) * 0.7);
+  float j = (1.0 - smoothstep(0.012, 0.04, min(min(fp.x, wdt - fp.x), min(fp.y, 0.7 - fp.y)))) * sNear;
+  float tone = (sHash(vec3(floor(xo / wdt), row, 5.0)) - 0.5) * (1.0 - smoothstep(0.08, 0.3, sFw));
+  sTint = 0.95 + 0.18 * tone + 0.12 * (sFbm(sp * 0.25) - 0.5) + 0.05 * (sNoise(sp * 5.0) - 0.5) - 0.24 * j;
+  sH = sNoise(sp * 6.0) * 0.3 + tone * 0.5 - j;
 #elif SURF_KIND == 9
   // Broad patches of slightly darker and lighter water, as wind and depth vary, and wind slicks:
   // rough and glassy streaks a few hundred metres long that break up the sky's reflection.
@@ -303,6 +328,19 @@ const PATTERN = /* glsl */ `
   sTint *= 0.95 + 0.1 * vSurfVar;
 #endif
   diffuseColor.rgb *= sTint * sCol;
+#if SURF_KIND != 9
+  // The building's shade on the ground at its foot (groundShade, above).
+  if (sShadeOn > 0.5 && sn.y > 0.6) {
+    vec2 sSuv = vec2((sp.x - sShadeBox.x) / sShadeBox.z, 1.0 - (sp.z - sShadeBox.y) / sShadeBox.w);
+    if (sSuv.x > 0.0 && sSuv.x < 1.0 && sSuv.y > 0.0 && sSuv.y < 1.0) {
+      float sAt = sp.y / ${SHADE_SPAN.toFixed(1)};
+      // Two fixed levels of the map's mipmaps are the blur: a tight one and a wide one. (A level is
+      // asked for outright: a bias would be swallowed, the map being drawn far larger than itself.)
+      float sOver = max(texture2DLodEXT(sShadeMap, sSuv, 3.0).r - sAt, 0.7 * (texture2DLodEXT(sShadeMap, sSuv, 5.0).r - sAt));
+      diffuseColor.rgb *= 1.0 - 0.3 * smoothstep(0.03, 0.38, sOver);
+    }
+  }
+#endif
   float sKeep = 1.0;
 #ifdef SURF_PATCH
   // Fade into the open land over the margin of each open edge. Noise moves the edge in and out, so
@@ -350,6 +388,11 @@ function patch(shader, kind, bump, photo, wave, edge, reflect) {
     shader.uniforms.sPatchB = { value: new THREE.Vector4(...edge.bounds) };
     shader.uniforms.sPatchF = { value: new THREE.Vector4(...edge.fade) };
     shader.uniforms.sLand = landColor;
+  }
+  if (kind !== KINDS.water) {
+    shader.uniforms.sShadeMap = groundShade.map;
+    shader.uniforms.sShadeBox = groundShade.box;
+    shader.uniforms.sShadeOn = groundShade.on;
   }
   if (kind === KINDS.water) {
     if (reflect) {
@@ -401,7 +444,7 @@ function patch(shader, kind, bump, photo, wave, edge, reflect) {
   normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`));
 }
 
-const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0, calligraphy: 0.2, pietra: 0.3, reliefs: 1.4, banded: 1.0 };
+const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0, calligraphy: 0.2, pietra: 0.3, reliefs: 1.4, banded: 1.0, paving: 0.9 };
 
 // Choose a surface for a material from its look, unless one was set with surface().
 function guess(m) {

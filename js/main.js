@@ -8,7 +8,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { nightState, V, box } from './helpers.js';
-import { attachSurface, surface, waterTime, landColor, reflection } from './surface.js';
+import { attachSurface, surface, waterTime, landColor, reflection, groundShade, SHADE_SPAN } from './surface.js';
 import { blendIntoLand, siteLand } from './landscape.js';
 import { separateCoplanar, separateMerged } from './coplanar.js';
 import { frameBox } from './framing.js';
@@ -480,6 +480,67 @@ function keepClear(force = false) {
   }
 }
 
+// The ground shade (js/surface.js, groundShade): the monument drawn once from straight above, each
+// texel the height of the highest part of the building there. Trees and other dressing are left
+// out (they cast real shadows), as is terrain. Drawn when a monument is shown; its mipmaps are the
+// blur the surface shader reads.
+const shadeRT = new THREE.WebGLRenderTarget(512, 512, { generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter, magFilter: THREE.LinearFilter });
+groundShade.map.value = shadeRT.texture;
+const shadeCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 100);
+shadeCam.layers.set(1);
+const shadeMat = new THREE.ShaderMaterial({
+  fog: false,
+  vertexShader: `varying float vY;
+    void main() {
+      #include <begin_vertex>
+      #include <project_vertex>
+      vec4 wp = vec4(transformed, 1.0);
+      #ifdef USE_INSTANCING
+        wp = instanceMatrix * wp;
+      #endif
+      vY = (modelMatrix * wp).y;
+    }`,
+  fragmentShader: `varying float vY; void main() { gl_FragColor = vec4(vec3(clamp(vY / ${SHADE_SPAN.toFixed(1)}, 0.0, 1.0)), 1.0); }`,
+});
+function bakeGroundShade(r) {
+  const box = r.frame;
+  if (!box || box.isEmpty()) { groundShade.on.value = 0; return; }
+  if (!r.shaders) {
+    r.shaders = [];
+    r.focus.traverse((o) => {
+      const m = o.material;
+      if (!o.isMesh || !o.visible || o.userData.dressing || !m || Array.isArray(m) || m.transparent || m.vertexColors || m.flatShading) return;
+      if (m.userData.surface === 'water' || m.userData.surface === 'foliage') return;
+      r.shaders.push(o);
+    });
+  }
+  const size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
+  const hx = size.x * 0.6 + 8, hz = size.z * 0.6 + 8, top = box.max.y + 10;
+  shadeCam.left = -hx; shadeCam.right = hx; shadeCam.top = hz; shadeCam.bottom = -hz;
+  shadeCam.near = 1; shadeCam.far = top - Math.min(0, box.min.y) + 20;
+  shadeCam.position.set(c.x, top, c.z);
+  shadeCam.up.set(0, 0, -1);
+  shadeCam.lookAt(c.x, 0, c.z);
+  shadeCam.updateProjectionMatrix();
+  r.shaders.forEach((o) => o.layers.enable(1));
+  const shadowDue = renderer.shadowMap.needsUpdate, was = renderer.getClearColor(new THREE.Color()), wasA = renderer.getClearAlpha(), shown = r.group.visible;
+  renderer.shadowMap.needsUpdate = false;
+  r.group.visible = true;
+  scene.overrideMaterial = shadeMat;
+  renderer.setRenderTarget(shadeRT);
+  renderer.setClearColor(0x000000, 1);
+  renderer.clear();
+  renderer.render(scene, shadeCam);
+  renderer.setRenderTarget(null);
+  renderer.setClearColor(was, wasA);
+  scene.overrideMaterial = null;
+  r.group.visible = shown;
+  renderer.shadowMap.needsUpdate = shadowDue;
+  r.shaders.forEach((o) => o.layers.disable(1));
+  groundShade.box.value.set(c.x - hx, c.z - hz, 2 * hx, 2 * hz);
+  groundShade.on.value = 1;
+}
+
 function flyTo(h, instant) {
   if (instant || reduceMotion) {
     camera.position.copy(h.pos);
@@ -543,6 +604,7 @@ async function select(i, instant = false) {
     home = computeHome(r);
   }
   setEnvironment(home);
+  bakeGroundShade(r);
   pace.skip = 90; pace.times = [];
   if (!(r.land ? siteGround && siteGround.equals(r.land) : !siteGround)) {
     siteGround = r.land;

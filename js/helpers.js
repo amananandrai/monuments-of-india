@@ -49,7 +49,7 @@ export const M = {
   river: water('#4b5847', [4, 0.9, 0.05]),
   lake: water('#24505a', [5, 0.4, 0.035]),
   grass: mat('#6b8a4c', 0.95),
-  path: mat('#cdbd9c', 0.95),
+  path: surface(mat('#cdbd9c', 0.95), 'paving'),
   bank: mat('#7d7059', 0.95),
   stoneDark: mat('#2d2a2a', 0.8),
   wood: surface(mat('#5b4330', 0.8), 'ground'),
