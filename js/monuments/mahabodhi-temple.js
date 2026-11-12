@@ -9,6 +9,9 @@ export function buildMahabodhi() {
   const S = M.bodh, g = new THREE.Group(), f = new THREE.Group(), R = rng(11);
   g.add(f);
   g.add(box(80, 0.3, 90, M.path, 0, 0, -6));
+  // The lotus pond south of the railing (south is -x here): a stone-rimmed tank 30 × 36.
+  g.add(box(30, 0.3, 36, M.water, -62, 0, -6));
+  for (const [w, d, x, z] of [[34, 2, -62, -25], [34, 2, -62, 13], [2, 36, -78, -6], [2, 36, -46, -6]]) g.add(box(w, 0.55, d, S, x, 0, z));
   f.add(box(28, 5, 28, S), box(17, 8, 17, S, 0, 5, 0));
   // The east porch's pointed doorway, a landing and steps down from the terrace
   f.add(box(8, 7, 6, S, 0, 5, 11), at(mughalDoorway(3, 5, { m: S, depth: 0.7 }), 0, 5, 14), box(4.6, 5, 0.8, S, 0, 0, 14.4), at(steps(3, 5, 10, S), 0, 0, 14.8));

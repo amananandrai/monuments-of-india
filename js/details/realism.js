@@ -5,7 +5,8 @@ import { detail } from '../detail.js';
 
 // The setting round a monument, shared by every file in js/details: trees and shrubs, heritage
 // lamp posts, benches, the blue board of the Archaeological Survey of India, marigold garlands,
-// prayer flags, boats, bollards with chains, stalls, and fountain jets. There are no people or
+// prayer flags, boats, bollards with chains, stalls, and fountain jets. There are no people. The
+// Howrah Bridge and the Bandra-Worli Sea Link carry traffic (traffic(), below); nowhere else has
 // motor vehicles. Everything here is instanced, so a garden of fifty trees costs a few draw calls
 // and a few thousand triangles. Places are lists of [x, z] (or [x, y, z] where it says so); `seed` makes the
 // variation repeatable.
@@ -118,6 +119,7 @@ const trunkGeo = new THREE.CylinderGeometry(0.11, 0.2, 1, 7).translate(0, 0.5, 0
 //   willow    medium, pale, the crown drooping       poplar    a tall pale column (Ladakh)
 //   ber, babul, khejri, dhok   the small dry trees of desert, scrub and thorn forest
 //   palm      a coconut palm     deodar   a Himalayan cedar     cypress   the dark spire of a charbagh
+//   fir       the deodar's tiers, narrower and shorter (the eastern Himalaya)
 //   casuarina the feathery, thin-tiered tree of the coast
 const KINDS = {
   neem: { h: 9, plain: [0.42, 0.36, 0.55], full: [0.42, 0.5, 4], leaf: FOLIAGE },
@@ -139,6 +141,7 @@ const KINDS = {
   palm: { h: 13, leaf: FROND },
   deodar: { h: 18, leaf: FOLIAGE_DARK, tiers: [[0.42, 0.36, 0.2], [0.33, 0.32, 0.42], [0.22, 0.28, 0.62], [0.12, 0.22, 0.8]], full: [0.42, 7, 9] },
   cypress: { h: 10, leaf: FOLIAGE_DARK, tiers: [[0.18, 0.92, 0.1]], full: [0.16, 4, 6] },
+  fir: { h: 12, leaf: FOLIAGE_DARK, tiers: [[0.3, 0.34, 0.2], [0.24, 0.3, 0.42], [0.16, 0.26, 0.62], [0.09, 0.2, 0.8]], full: [0.3, 6, 7] },
   casuarina: { h: 12, leaf: FOLIAGE_DARK, tiers: [[0.2, 0.26, 0.22], [0.17, 0.24, 0.4], [0.13, 0.22, 0.58], [0.08, 0.24, 0.76]], full: [0.2, 9, 5], thin: true },
 };
 const barks = new Map();

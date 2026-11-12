@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { at } from '../helpers.js';
 import { mergeByMaterial } from './components.js';
 import { dharmaWheel, shabkhep, parapetDiscs } from './tibetan.js';
-import { prayerFlags } from './realism.js';
+import { prayerFlags, trees, scatter } from './realism.js';
 import { yaks } from './animals.js';
 import { spurY } from '../monuments/tawang-monastery.js';
 
@@ -31,5 +31,7 @@ export function addDetails(f, g) {
   const T = 24;
   for (const [a, b] of [[[0, T + 25, -18], [-40, T + 1, 34]], [[0, T + 25, -18], [40, T + 1, 34]], [[-30, T + 6, -10], [30, T + 6, -10]], [[0, T + 25, -18], [0, T + 1, 30]]]) f.add(prayerFlags(a, b, { sag: 3, size: 0.6 }));
   // Yaks on the spur below the gate, each on the ground where it stands.
+  // Firs on the ridge above the monastery, uphill of the compound's west wall (x = -80).
+  g.add(trees(scatter(12, [-150, -96, -26, 26], { seed: 8, gap: 8 }).map(([x, z]) => [x, z, null, spurY(x, z) - 0.3]), { kind: 'fir', seed: 8 }));
   for (const [x, z, ry] of [[132, 10, 0.4], [140, -6, 1.6], [150, 14, 2.2], [158, -12, 0.9]]) g.add(yaks([[x, z, ry]], { y: spurY(x, z) + 0.1 }));
 }

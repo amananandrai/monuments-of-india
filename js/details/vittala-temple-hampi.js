@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, cyl, at, onFace, FACES, pidaRoof } from '../helpers.js';
+import { M, mat, cyl, at, onFace, FACES, pidaRoof, sheet } from '../helpers.js';
 import { chhajja, mouldings, templeNiche, pilasters, mergeByMaterial } from './components.js';
 import { figureFrieze, haraRow, kuta, figure, instances, kuduGeo } from './sculpture.js';
 import { trees, asiBoard, scatter } from './realism.js';
@@ -84,10 +84,13 @@ function architecture(f) {
   f.add(d, instances(kuduGeo(), kd.map(([x, y, z, a, b, c, r]) => [x, y, z + 76, a, b, c, r]), STUCCO));
 }
 
-// The Vittala temple at Hampi: coconut palms and banana groves among the boulders, and the ASI
+// The Vittala temple at Hampi: the Tungabhadra beyond the boulders, coconut palms on its bank, and the ASI
 // board.
 export function addDetails(f, g) {
   architecture(f);
-  g.add(trees(scatter(40, [-140, 140, -140, 140], { seed: 4, gap: 14 }).filter(([x, z]) => (Math.abs(x) > 58 || Math.abs(z) > 82)), { kind: 'palm', seed: 4 }));
+  // The Tungabhadra, north of the compound (which ends at z = -76), running on east and west,
+  // and the palms along its near bank. It lies on the land beside the framed group.
+  g.add(sheet(900, 70, M.river, 0, 0.14, -165));
+  g.add(trees(scatter(14, [-150, 150, -126, -108], { seed: 4, gap: 12 }), { kind: 'palm', seed: 4 }));
   g.add(asiBoard('Vittala Temple, Hampi', 10, 90, 0, { line2: 'WORLD HERITAGE SITE' }));
 }
