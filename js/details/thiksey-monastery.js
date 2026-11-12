@@ -32,5 +32,5 @@ export function addDetails(f, g) {
   const H = 48;
   for (let k = 0; k < 6; k++) { const a = Math.PI * 0.2 + k * 0.13; f.add(prayerFlags([-4, H + 8, 0], [Math.cos(a) * 40, H * (1 - 40 / 62) + 4, Math.sin(a) * 40], { sag: 2.5, size: 0.6 })); }
   along(7, [-30, 66], [30, 66]).forEach(([x, z]) => g.add(at(chorten(1.2), x, 0, z)));
-  g.add(trees([...along(14, [100, -180], [100, 180]), ...along(14, [140, -180], [140, 180])], { kind: 'ashoka', seed: 4, h: 14 }));
+  g.add(trees(along(10, [100, -170], [100, 170]), { kind: 'poplar', seed: 4, h: 12 }), trees(along(8, [140, -160], [140, 160]), { kind: 'willow', seed: 5, h: 9 }));
 }

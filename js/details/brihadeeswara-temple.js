@@ -56,6 +56,7 @@ export function addDetails(f, g) {
   g.add(tusker);
   g.add(garland([-2.2, 7.6, 70.9], [2.2, 7.6, 70.9], { sag: 0.5, strands: 3 }));
   for (const x of [-2.8, 2.8]) g.add(at(lamp(1.6), x, 1, 72));
-  g.add(trees([...along(9, [-32, -40], [-32, 100]), ...along(9, [32, -40], [32, 100])], { kind: 'palm', seed: 4 }));
+  // Palms outside the prakara wall (it stands at x = ±47): the court itself is stone.
+  g.add(trees([...along(9, [-56, -40], [-56, 100]), ...along(9, [56, -40], [56, 100])], { kind: 'palm', seed: 4 }));
   g.add(asiBoard('Brihadisvara Temple', 10, 104, 0, { line2: 'GREAT LIVING CHOLA TEMPLES' }));
 }

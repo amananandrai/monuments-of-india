@@ -17,8 +17,8 @@ export function buildChotaImambara() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   g.add(box(160, 0.15, 190, M.grass, 0, 0, 30));
-  // Forecourt with its long water channel, entered through a gateway
-  f.add(box(7, 0.5, 70, M.water, 0, 0, 30), box(11, 0.4, 72, SHADE, 0, 0, 30));
+  // Forecourt with its basin on the axis before the hall, entered through a gateway
+  f.add(box(7, 0.5, 24, M.water, 0, 0, 18), box(11, 0.4, 26, SHADE, 0, 0, 18));
   f.add(box(30, 12, 8, WHITE, 0, 0, 72), onFace(iwan(8, 10, { m: WHITE, trim: SHADE, shade: SHADE, depth: 1.4, frame: 1.2, top: 1.2 }), 0, 76));
   for (const x of [-15, 15]) f.add(at(guldasta(14, 0.8, WHITE), x, 0, 76));
   // The imambara: white arcaded hall with a band of black calligraphy and a ribbed, gilded dome

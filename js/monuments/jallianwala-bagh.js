@@ -48,10 +48,10 @@ export function buildJallianwala() {
   // The old houses of Amritsar that close the garden in, their backs to it.
   g.add(townHouses(houses, { seed: 31, paint: ['#b8a58a', '#c9a77e', '#a98f72', '#d2b48c', '#e0cfb0'] }));
   f.add(box(W - 10, 0.2, D - 10, M.grass), box(5, 0.3, 30, M.path, 0, 0, D / 2 + 7));
-  // The memorial with its reflecting pool, the Martyrs' Well, and a bullet-marked wall
-  f.add(box(28, 0.6, 28, mat('#d9cbb2', 0.85), 0, 0.2, -6), box(24, 0.7, 24, M.water, 0, 0.2, -6), box(10, 1.6, 10, RED, 0, 0.8, -6), at(flame(9.1, RED), 0, 2.4, -6));
-  // Four stone lanterns flank the pylon, at the corners of the pool's rim.
-  for (const [x, z] of [[-13.1, -19.1], [13.1, -19.1], [-13.1, 7.1], [13.1, 7.1]]) f.add(box(1.4, 2.6, 1.4, mat('#d9cbb2', 0.85), x, 0, z), box(1.8, 0.4, 1.8, mat('#d9cbb2', 0.85), x, 2.6, z));
+  // The memorial on the lawn (its top at y = 0.2), the Martyrs' Well, and a bullet-marked wall
+  f.add(box(10, 1.6, 10, RED, 0, 0.2, -6), at(flame(9.1, RED), 0, 1.8, -6));
+  // Four stone lanterns flank the pylon, on the lawn a few metres out from its corners.
+  for (const [x, z] of [[-10, -16], [10, -16], [-10, 4], [10, 4]]) f.add(box(1.4, 2.6, 1.4, mat('#d9cbb2', 0.85), x, 0, z), box(1.8, 0.4, 1.8, mat('#d9cbb2', 0.85), x, 2.6, z));
   const well = ring(3.6, 1.6, mat('#d9cbb2', 0.85), 0, 20);
   well.position.x = -36;
   well.position.z = 20;

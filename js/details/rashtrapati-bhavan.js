@@ -170,7 +170,7 @@ export function addDetails(f, g) {
   architecture(f);
   sculpture(f, g);
   f.add(at(tricolour(10), 0, 45.6, 0));
-  g.add(trees([...along(8, [-38, 70], [-38, 200]), ...along(8, [38, 70], [38, 200])], { kind: 'neem', seed: 5 }));
+  g.add(trees([...along(8, [-38, 70], [-38, 200]), ...along(8, [38, 70], [38, 200])], { kind: 'jamun', seed: 5 }));
   g.add(lampPosts([...along(8, [-20, 70], [-20, 200]), ...along(8, [20, 70], [20, 200])]));
   g.add(box(240, 0.2, 170, M.path, 0, 0, 295), mergeByMaterial(new THREE.Group().add(secretariat(-1), secretariat(1))));
   g.add(lampPosts([...along(10, [-20, 215], [-20, 370]), ...along(10, [20, 215], [20, 370])]));

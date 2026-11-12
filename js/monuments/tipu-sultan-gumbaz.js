@@ -10,10 +10,10 @@ export function buildTipuGumbaz() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(103);
   g.add(f);
   g.add(box(180, 0.15, 180, M.grass), box(8, 0.25, 80, M.path, 0, 0, 45));
-  // Avenue of cypress trees
+  // The avenue: neem, in two rows
   const trees = [];
-  for (let k = 0; k < 10; k++) for (const s of [-1, 1]) trees.push([s * 10, 20 + k * 7, 12 + R() * 3]);
-  g.add(plantTrees(trees, { kind: 'cypress', seed: 103 }));
+  for (let k = 0; k < 10; k++) for (const s of [-1, 1]) trees.push([s * 10, 20 + k * 7, 8 + R() * 2]);
+  g.add(plantTrees(trees, { kind: 'neem', seed: 103 }));
   // Plinth, the colonnade of dark granite pillars, the white tomb and its onion dome
   f.add(box(34, 2, 34, WHITE), box(30.8, 0.8, 30.8, WHITE, 0, 12));
   const cols = [];

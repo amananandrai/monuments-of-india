@@ -46,7 +46,7 @@ function ujjain() {
 export function buildMahakaleshwar() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(150, 0.2, 150, M.path), box(70, 0.4, 20, M.water, -20, 0, -62));
+  g.add(box(150, 0.2, 150, M.path));
   // Courtyard colonnade, and the Koti Teerth tank beside the temple
   const cols = [];
   aroundRect(90, 100, 3).forEach(([x, z]) => cols.push([x, 0, z, 0.8, 5, 0.8]));

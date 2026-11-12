@@ -89,13 +89,13 @@ export function addDetails(f, g) {
     const t = a0 + ((k + 0.5) / 70) * (a1 - a0), x = Math.cos(t) * R, z = -Math.sin(t) * R * 0.8, l = Math.hypot(x, z), d = 6 + ((k * 37) % 45);
     top.push([x + (x / l) * d, z + (z / l) * d]);
   }
-  g.add(trees(top, { kind: 'mango', seed: 7, y: H + 3, h: 9 }));
+  g.add(trees(top, { kind: 'teak', seed: 7, y: H + 3, h: 11 }));
   g.add(shrubs(top.map(([x, z], k) => [x + Math.sin(k) * 4, z + Math.cos(k) * 4, 2.4]), { y: H + 3, dry: true, seed: 8 }));
   // The valley floor inside the horseshoe, either side of the river
   const valley = scatter(26, [-50, 50, -40, 140], { seed: 9, gap: 9, avoid: [[-11, 11, -60, 200]] }).filter(([x, z]) => z > 10 || Math.hypot(x, z / 0.8) < 48);
   g.add(trees(valley, { kind: 'neem', seed: 10, y: 0.2 }));
   // The teak forest running on across the plateau, back from the cliff's own band of trees.
   const plateau = scatter(160, [-420, 420, -420, 520], { seed: 11, gap: 18 }).filter(([x, z]) => openDistance(x, z) > 75);
-  g.add(trees(plateau, { kind: 'mango', seed: 12, y: H + 1.2, h: 9 }));
+  g.add(trees(plateau, { kind: 'teak', seed: 12, y: H + 1.2, h: 11 }));
   g.add(asiBoard('Ajanta Caves', 16, 70, -Math.PI / 2, { line2: 'WORLD HERITAGE SITE' }));
 }

@@ -57,7 +57,8 @@ export function buildAmberFort() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // Maota Lake with the Kesar Kyari garden, below the hill
-  g.add(box(160, 0.4, 60, M.water, 0, 0, 70), box(26, 1.2, 26, SAND_DARK, 0, 0, 66));
+  // (M.lake, so the fort is mirrored in it: it is the site's one large sheet of water.)
+  g.add(box(160, 0.4, 60, M.lake, 0, 0, 70), box(26, 1.2, 26, SAND_DARK, 0, 0, 66));
   for (const x of [-6, 6]) for (const z of [-6, 6]) g.add(box(9, 1.4, 9, M.grass, x, 0, 66 + z));
   // The palace's terraces, built up on a spur of the ridge
   const terraces = [[200, 10, 70, 0], [170, 22, 60, -40], [150, 34, 50, -80]];

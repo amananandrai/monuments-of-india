@@ -3,7 +3,8 @@ import { M, mat, mesh, box, cyl, at, onFace, kalingaProfile } from '../helpers.j
 import { mouldings, frieze, templeNiche, idol, pilasters, mergeByMaterial } from './components.js';
 import { figureFrieze, figure } from './sculpture.js';
 import { lion } from './animals.js';
-import { garland } from './realism.js';
+import { garland, cityAround } from './realism.js';
+import { detail } from '../detail.js';
 
 // Jagannath, Puri, finer detail. From photographs and descriptions of the Kalinga rekha deula: the
 // base of the sanctum is a stack of mouldings (pabhaga) with carved bands; on each outer face a
@@ -68,4 +69,7 @@ export function addDetails(f, g, { B = 4.5, TH = 30, gateZ = 104 } = {}) {
   g.add(box(4, 1.5, 4, STONE, 0, 0, az), cyl(0.85, 1, 10, STONE, 0, 1.5, az, 16), cyl(1.3, 0.8, 1.2, STONE, 0, 11.5, az, 16));
   g.add(cyl(0.45, 0.5, 1.2, STONE, 0, 12.7, az, 10), at(cyl(0.38, 0.45, 0.4, STONE, 0, 0, 0, 10), 0, 13.9, az + 0.15));
   g.add(garland([-3.4, 6.6, gateZ + 5.3], [3.4, 6.6, gateZ + 5.3], { sag: 0.6, strands: 3 }));
+  // Puri's streets outside the Meghanada wall: two rows of houses on every side, a street's width
+  // back from it, with the Grand Road left open before the Lion Gate.
+  g.add(cityAround([-72, 72, -88, gateZ + 4], { rows: 2, gap: 12, storeys: [2, 4], seed: 23, every: detail.low ? 2 : 1, keep: [[-16, 16, gateZ, 600]], paint: ['#e9d9b8', '#f1e6cf', '#d9c7a8', '#e7b9b0', '#cfd8d4', '#d6b06a'] }));
 }

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, at, onionDome } from '../helpers.js';
+import { M, mesh, box, cyl, at, onionDome, mown } from '../helpers.js';
 import { addTajDetails } from '../details/taj-mahal.js';
 import { addDetails } from '../details/taj-mahal.js';
 
@@ -28,7 +28,7 @@ export function buildTaj() {
   // raised marble pool (al-Hawd al-Kawthar) where the channels cross.
   const G0 = 60, GL = 300, GW = 300, gc = G0 + GL / 2;
   // The lawn runs 40 m past the side walls, so its fade into the open land happens outside them.
-  g.add(box(GW + 80, 0.15, GL, M.grass, 0, 0, gc));
+  g.add(mown(box(GW + 80, 0.15, GL, M.grass, 0, 0, gc)));
   // The cross channel sits 2 cm lower than the long one, so their walks and water never share a
   // plane: the coplanar pass would otherwise lift one walk over the other channel's water.
   for (const [w, d, x, z, dy] of [[12, GL, 0, gc, 0], [GW, 12, 0, gc, -0.02]]) g.add(box(w, 0.3 + dy, d, M.path, x, 0, z), box(w > d ? w : w - 4, 0.35 + dy, w > d ? d - 4 : d, M.water, x, 0, z));

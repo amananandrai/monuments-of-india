@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, ring, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, ring, inst, unitBox, mown } from '../helpers.js';
 import { trees as plantTrees } from '../details/realism.js';
 import { addDetails } from '../details/national-war-memorial.js';
 
@@ -10,7 +10,7 @@ const LIGHT = mat('#d9d2c4', 0.8);
 export function buildNationalWarMemorial() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(300, 0.15, 300, M.grass));
+  g.add(mown(box(300, 0.15, 300, M.grass)));
   // Rakshak Chakra: the outer ring of trees
   const trees = [];
   for (let k = 0; k < 90; k++) {

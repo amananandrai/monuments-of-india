@@ -35,10 +35,10 @@ function architecture(f) {
 }
 
 // The Qutb Shahi tombs at Hyderabad: the restored heritage park round them, with lawns, hedges,
-// palms and neem trees, and lamps along the walks.
+// neem trees on the lawns, and lamps along the walks.
 export function addDetails(f, g) {
   architecture(f);
-  g.add(trees(scatter(40, [-125, 125, -105, 105], { seed: 3, gap: 13, avoid: [[-25, 25, -25, 25], [-80, -40, -40, 0], [36, 76, -44, -4], [-58, -22, 32, 68], [22, 58, 36, 72], [-106, -74, 24, 56], [72, 108, 4, 36], [-24, 24, -80, -58]] }), { kind: 'palm', seed: 3 }));
+  g.add(trees(scatter(40, [-125, 125, -105, 105], { seed: 3, gap: 13, avoid: [[-25, 25, -25, 25], [-80, -40, -40, 0], [36, 76, -44, -4], [-58, -22, 32, 68], [22, 58, 36, 72], [-106, -74, 24, 56], [72, 108, 4, 36], [-24, 24, -80, -58]] }), { kind: 'neem', seed: 3 }));
   g.add(shrubs(along(20, [-110, -95], [110, -95]).map(([x, z]) => [x, z, 1.2]), { seed: 4 }));
   g.add(lampPosts([...along(8, [-6, -55], [-6, 100]), ...along(8, [6, -55], [6, 100])]));
 }

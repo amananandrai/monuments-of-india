@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, surface, box, cyl, lathe, group, at, archWall, barrelVault } from '../helpers.js';
+import { M, mat, surface, box, cyl, lathe, group, at, archWall, barrelVault, mown } from '../helpers.js';
 import { addIndiaGateDetails, addCanopyDetails } from '../details/india-gate.js';
 import { addDetails } from '../details/india-gate.js';
 
@@ -55,7 +55,7 @@ export function buildIndiaGate() {
   addCanopyDetails(c);
   g.add(at(c, 0, 0, 70));
   g.add(box(18, 0.2, 260, M.path, 0, 0, 60));
-  for (const x of [-34, 34]) g.add(box(48, 0.15, 260, M.grass, x, 0, 60));
+  for (const x of [-34, 34]) g.add(mown(box(48, 0.15, 260, M.grass, x, 0, 60)));
   addDetails(f, g);
   // Framed a little wider than the default, so the attic and the bowl on top stay in view.
   return { group: g, focus: f, zoom: 1.18 };

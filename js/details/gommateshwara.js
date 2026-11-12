@@ -37,5 +37,6 @@ export function addDetails(f, g) {
   const rock = scatter(30, [-75, 75, -75, 75], { seed: 5, gap: 7 }).filter(([x, z]) => { const r = Math.hypot(x, z); return r > 26 && r < 72 && !(Math.abs(x) < 14 && z > 15); });
   g.add(shrubs(rock.map(([x, z]) => [x, z, 2, vindhyagiri(x, z) - 0.3]), { dry: true, seed: 5 }));
   g.add(trees(scatter(30, [-145, 145, -145, 145], { seed: 6, gap: 14 }).filter(([x, z]) => Math.hypot(x, z) > 88), { kind: 'palm', seed: 6 }));
+  g.add(trees(scatter(30, [-145, 145, -145, 145], { seed: 16, gap: 14 }).filter(([x, z]) => Math.hypot(x, z) > 88).slice(0, 8), { kind: 'tamarind', seed: 7 }));
   g.add(asiBoard('Gommateshwara, Shravanabelagola', 11, 88, 0));
 }

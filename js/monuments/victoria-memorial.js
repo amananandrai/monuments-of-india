@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, lathe, at, onFace, FACES, hemi, group, doubleSided } from '../helpers.js';
+import { M, mesh, box, cyl, lathe, at, onFace, FACES, hemi, group, doubleSided, mown } from '../helpers.js';
 import { figure } from '../details/sculpture.js';
 import { mergeByMaterial } from '../details/components.js';
 import { steps } from '../details/doorways.js';
@@ -9,7 +9,7 @@ import { addDetails } from '../details/victoria-memorial.js';
 export function buildVictoriaMemorial() {
   const Mb = M.marble, Sh = M.marbleShade, g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(240, 0.15, 260, M.grass, 0, 0, 40));
+  g.add(mown(box(240, 0.15, 260, M.grass, 0, 0, 40)));
   for (const s of [-1, 1]) g.add(box(16, 0.4, 90, M.water, s * 24, 0, 110), box(19, 0.3, 93, Mb, s * 24, 0, 110));
   g.add(box(12, 0.2, 200, M.path, 0, 0, 70));
   // Terrace and the main block, with projecting corner pavilions

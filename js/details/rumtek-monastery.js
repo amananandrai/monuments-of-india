@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { M, mat, cyl, box, at, hipRoof, tibetanBlock, TIBETAN, lathe } from '../helpers.js';
 import { mergeByMaterial } from './components.js';
 import { dharmaWheel, shabkhep, parapetDiscs } from './tibetan.js';
-import { prayerFlags, copies } from './realism.js';
+import { prayerFlags, copies, trees, around } from './realism.js';
 
 // Rumtek, finer detail. From photographs: the Dharma wheel and its two deer stand over the front
 // of the gilded roof; gilded discs are set along the maroon parapet bands; and each window of the
@@ -44,6 +44,8 @@ function architecture(f) {
 // with long vertical prayer flags round the court, and strings of flags from the main temple.
 export function addDetails(f, g) {
   architecture(f);
+  // A loose ring of firs round the monastery, clear of the court, the way in and the terrace behind.
+  g.add(trees(around(18, 66, 0, 0, 0.2).filter(([x, z]) => !(z > 30 && Math.abs(x) < 16) && !(z < -40 && Math.abs(x) < 54)).map(([x, z], i) => [x * (1 + (i % 3) * 0.08), z * (1 + (i % 3) * 0.08)]), { kind: 'fir', seed: 9 }));
   const wheels = [];
   for (const s of [-1, 1]) for (let k = -12; k <= 12; k++) wheels.push([k * 2.2, 0.8, s * 28.6, 1, 0], [s * 28.6, 0.8, k * 2.2, 1, Math.PI / 2]);
   const geo = new THREE.CylinderGeometry(0.35, 0.35, 0.9, 12).translate(0, 0.45, 0);

@@ -55,11 +55,11 @@ export function addDetails(f, g) {
     e.rotation.y = -Math.PI / 2;
     f.add(e);
   });
-  g.add(shrubs([[-6, 60], [6, 60], [-6, 72], [6, 72], [-3, 63], [3, 69], [-9, 66], [9, 66]].map(([x, z]) => [x, z, 2.2]), { y: 1.4, flowers: '#f08a1c' }));
+  // (The Kesar Kyari's beds are the low grass squares on the island, in the builder.)
   // Scrub on the hillsides either side of the fort
   for (const [x0, x1, z0, z1, y] of [[-100, -84, -34, 34, 10], [84, 100, -34, 34, 10], [-85, -72, -70, -12, 22], [72, 85, -70, -12, 22], [-75, -52, -104, -58, 34], [52, 75, -104, -58, 34]]) {
     const spots = scatter(6, [x0, x1, z0, z1], { seed: x0 * 3 + y, gap: 5 });
-    g.add(trees(spots, { kind: 'mango', seed: y, y, h: 6 }), shrubs(spots.map(([x, z]) => [x + 2.5, z - 2, 2]), { y, dry: true, seed: y + 1 }));
+    g.add(trees(spots, { kind: 'dhok', seed: y, y, h: 5 }), shrubs(spots.map(([x, z]) => [x + 2.5, z - 2, 2]), { y, dry: true, seed: y + 1 }));
   }
   g.add(lampPosts(along(8, [-75, 39.5], [75, 39.5])));
   // Dry scrub scattered up the ridge to the crest, each bush set on the ground where it stands.

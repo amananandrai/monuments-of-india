@@ -1,15 +1,15 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, hemi, surface, inst, unitBox } from '../helpers.js';
-import { railing, mergeByMaterial } from './components.js';
+import { mergeByMaterial } from './components.js';
 import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
 
 // Jallianwala Bagh, finer detail. From photographs: the base of the flame memorial is lettered on
-// its faces; a low railing edges the reflecting pool; and on the preserved wall the bullet marks
+// its faces; and on the preserved wall the bullet marks
 // of 13 April 1919 are each outlined in a white painted square; the garden walls have piers and a
 // coping; a canopy stands over the Martyrs' Well; and the Amar Jyoti and the firing-point pyramid
 // stand beside the walk from the lane. Dimensions follow
-// js/monuments/jallianwala-bagh.js: the garden 200 × 135 inside its walls, the pool 24 square
-// at (0, -6), the base 10 square and 1.6 high,
+// js/monuments/jallianwala-bagh.js: the garden 200 × 135 inside its walls, the memorial's base
+// 10 square and 1.6 high at (0, -6), standing on the lawn (y = 0.2),
 // the wall 16 × 4 × 1.2 at (40, 0, 26).
 const STONE = mat('#d9cbb2', 0.85), RED_ = mat('#a5473a', 0.85), PAVE = mat('#c2b59c', 0.95), BRICK_ = surface(mat('#8c5a45', 0.95), 'brick');
 const FLAME = surface(mat('#ffb347', 0.4, 0, { emissive: '#ff7a1a', emissiveIntensity: 1.5 }), 'none');
@@ -17,16 +17,10 @@ const LETTERS = surface(mat('#e8dcc4', 0.8), 'script'), WHITE = mat('#f2efe8', 0
 function architecture(f) {
   const d = new THREE.Group();
   for (const [x, z, ry] of [[0, -0.98, 0], [0, -11.02, Math.PI], [4.98 + 0.04, -6, Math.PI / 2], [-5.02, -6, -Math.PI / 2]]) {
-    const b = box(7, 0.8, 0.04, LETTERS, 0, 1.2, 0);
-    b.position.set(x, 1.2, z);
+    const b = box(7, 0.8, 0.04, LETTERS, 0, 0.6, 0);
+    b.position.set(x, 0.6, z);
     b.rotation.y = ry;
     d.add(b);
-  }
-  for (const [x, z, ry, len] of [[0, 6.3, 0, 26], [0, -18.3, 0, 26], [12.3, -6, Math.PI / 2, 24], [-12.3, -6, Math.PI / 2, 24]]) {
-    const r = railing(len, 0.8, 0.12, mat('#3a3633', 0.5, 0.4), 2, mat('#3a3633', 0.5, 0.4));
-    r.position.set(x, 0.8, z);
-    r.rotation.y = ry;
-    d.add(r);
   }
   // Bullet marks on the wall's face towards the garden (z = 25.4).
   const holes = [[-5.5, 1.2], [-4.1, 2.3], [-3.2, 0.9], [-1.6, 2.8], [-0.4, 1.6], [0.9, 2.2], [2.1, 1.1], [3.4, 2.6], [4.6, 1.5], [5.8, 2.9], [-6.4, 3.0], [1.7, 3.2]];
@@ -46,7 +40,7 @@ function architecture(f) {
   f.add(inst(unitBox(), piers, BRICK_));
   // The paved walk from the lane to the memorial, and steps round the pylon's base.
   d.add(box(5, 0.26, 58, PAVE, 0, 0, 37.5));
-  for (let k = 0; k < 3; k++) d.add(box(13.6 - k * 1.2, 0.3, 13.6 - k * 1.2, RED_, 0, 0.9 + k * 0.3, -6));
+  for (let k = 0; k < 3; k++) d.add(box(13.6 - k * 1.2, 0.3, 13.6 - k * 1.2, RED_, 0, 0.2 + k * 0.3, -6));
   // The Martyrs' Well (at -36, 20): a canopy of red sandstone over it, eight columns carrying a
   // ring beam, a deep eave and a low dome.
   const well = at(new THREE.Group(), -36, 0, 20);
