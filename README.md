@@ -638,6 +638,13 @@ deploys to production.
 
 The code is [MIT](LICENSE). Textures, map data and fonts keep the licenses named below.
 
+## Component guides
+
+- [docs/architecture.md](docs/architecture.md): the parts the buildings are made of (domes, kiosks,
+  pillars, arches, eaves, temple towers, fort gates), what each takes and where it lives.
+- [docs/realism.md](docs/realism.md): what stands round them (trees, shrubs, lamps, flags, boats,
+  stalls, towns, traffic, animals).
+
 ## Credits
 
 - **Photo textures** in `assets/textures` are from [Poly Haven](https://polyhaven.com) (CC0):
