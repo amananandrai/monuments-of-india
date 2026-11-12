@@ -10,8 +10,9 @@ const LIME = mat('#e7dfcd', 0.85);
 export function buildRamanathaswamy() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  // Rameswaram island in the sea
-  g.add(sheet(1400, 1400, M.sea, 0, 0.3, 0), box(320, 0.5, 300, mat('#dcc9a3', 0.95), 0, 0, 0));
+  // The temple stands in the town, back from the shore: the sea lies east of it (+z), its edge
+  // 80 m beyond the outer wall (z = 95), and runs on to the horizon.
+  g.add(sheet(1400, 500, M.sea, 0, 0.3, 425), box(320, 0.5, 300, mat('#dcc9a3', 0.95), 0, 0, 0));
   // Outer walls and the great gopurams on east and west
   const W = 140, D = 190;
   for (const s of [-1, 1]) f.add(wallWithGaps('x', W, 8, 3, LIME, [[0, s > 0 ? 29 : 25]], 0, s * D / 2), wallWithGaps('z', D, 8, 3, LIME, [[20, 15]], s * W / 2, 0));

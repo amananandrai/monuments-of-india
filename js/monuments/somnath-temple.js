@@ -10,7 +10,8 @@ export function buildSomnath() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // The Arabian Sea behind, and the sea wall with its arrow pillar
-  g.add(sheet(600, 300, M.sea, 0, 0.3, -190), box(160, 0.2, 140, M.path, 0, 0, 10));
+  // (The paving stops at the sea wall: it used to run 20 m on under the sea, and the two showed as a seam.)
+  g.add(sheet(600, 300, M.sea, 0, 0.3, -190), box(160, 0.2, 118, M.path, 0, 0, 21));
   f.add(box(110, 3, 4, SHADE, 0, 0, -38));
   f.add(cyl(0.8, 1, 9, STONE, 30, 3, -38, 10), cyl(0, 0.9, 2.4, M.gild, 30, 12, -38, 8));
   // The temple in Chalukya (Maru-Gurjara) style. Prabhashankar Sompura's project note calls it a

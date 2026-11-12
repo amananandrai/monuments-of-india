@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, FACES, surface, hemi, ribbed, kalash, finial } from '../helpers.js';
 import { D, archRing, keystone, sunburst, rosette, lettering, dentils, chhajja, petalRing, mergeByMaterial } from './components.js';
-import { trees, lampPosts, stalls, along } from './realism.js';
+import { trees, lampPosts, along } from './realism.js';
 import { statue } from './sculpture.js';
 
 // India Gate, finer detail (Lutyens, 1921–31). From photographs and descriptions of the arch:
@@ -125,11 +125,9 @@ export function addCanopyDetails(c) {
   c.add(at(statue(8, mat('#2e2e33', 0.3), 'leader', STONE), 0, 1, 0).rotateY(Math.PI));
 }
 
-// Kartavya Path round the gate: the long canals either side of the lawns, ice-cream carts, lamps,
-// and the jamun trees along the avenue.
+// Kartavya Path round the gate: lawn up to the piers, lamps, and the jamun trees along the avenue.
+// (The avenue's canals lie west of the arch, outside this model.)
 export function addDetails(f, g) {
-  for (const x of [-15, 15]) g.add(box(5, 0.3, 200, M.water, x, 0.02, 90));
-  g.add(stalls([[-20, 30, Math.PI / 2], [20, 46, -Math.PI / 2], [-20, 70, Math.PI / 2], [20, 96, -Math.PI / 2]], { awnings: ['#f2f2f2'], goods: ['#e26a9c', '#f2d23a', '#7a3f8f'] }));
   g.add(lampPosts([...along(10, [-9.5, 14], [-9.5, 185]), ...along(10, [9.5, 14], [9.5, 185])]));
   g.add(trees([...along(12, [-58, 14], [-58, 185]), ...along(12, [58, 14], [58, 185])], { kind: 'jamun', seed: 6 }));
 }

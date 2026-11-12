@@ -28,7 +28,7 @@ function backWing(len, h, d) {
 export function buildCoochBehar() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(300, 0.15, 260, M.grass, 0, 0, 40), box(60, 0.5, 30, M.water, -70, 0, 80), box(10, 0.25, 120, M.path, 0, 0, 80));
+  g.add(box(300, 0.15, 260, M.grass, 0, 0, 40), box(10, 0.25, 120, M.path, 0, 0, 80));
   // Two storeys of round-arched arcades 1.6 m deep in brick, open onto verandahs, between white
   // pilasters and cornices
   const W = 120, D = 30, H = 18, dd = 1.6, pil = [], cells = [];
