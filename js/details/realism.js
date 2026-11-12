@@ -660,7 +660,8 @@ export function cityAround([x0, x1, z0, z1], {
 // Town houses, as in the old streets round a temple: spots are [x, z, w, d, storeys, ry, y?], each a
 // painted block w × d of 3.2 m storeys with its front (+z before ry) on the street. Dark windows run
 // in bays on every storey, front and back, with a door in the middle of the front; a balcony slab
-// sits under each upper storey, and the flat roof has a parapet and, often, a black water tank.
+// sits under each upper storey, and the flat roof has a parapet and, often, a black water tank
+// (`tanks`: the share of flat roofs that carry one, 0.7 unless a town asks for fewer).
 // roof: 'pitched' for a gabled roof of painted sheet iron instead (hill towns), coloured from `roofs`;
 // trim: the colour of the roof slabs, floor bands, balconies and steps. fine: the desktop finish
 // below (false for distant rows, where the triangles show least).
@@ -671,7 +672,7 @@ export function cityAround([x0, x1, z0, z1], {
 const HOUSE_PAINT = ['#e9d9b8', '#d98c5f', '#9fc3c9', '#e7b9b0', '#c9d6a3', '#f1e6cf', '#d6b06a', '#b9a7cf'];
 const SIGNS = ['#c2512a', '#2f5d9a', '#e3b23c', '#3c8a5a', '#b3262e', '#f4f1ea'];
 let houseGeos = null;
-export function townHouses(spots, { seed = 1, y: y0 = 0, paint = HOUSE_PAINT, trim = '#efe9dc', roof = 'flat', roofs = ['#8a3b2a', '#2f5d9a', '#3c7a4f', '#7a7f84'], fine = !detail.low } = {}) {
+export function townHouses(spots, { tanks: tankShare = 0.7, seed = 1, y: y0 = 0, paint = HOUSE_PAINT, trim = '#efe9dc', roof = 'flat', roofs = ['#8a3b2a', '#2f5d9a', '#3c7a4f', '#7a7f84'], fine = !detail.low } = {}) {
   if (!houseGeos) houseGeos = {
     body: new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0),
     win: new THREE.BoxGeometry(1.1, 1.5, 0.1).translate(0, 0.75, 0),
@@ -723,7 +724,7 @@ export function townHouses(spots, { seed = 1, y: y0 = 0, paint = HOUSE_PAINT, tr
       }
       if (roof === 'flat' && n > 1 && R() < 0.6) { const [mx, mz] = P(w * 0.25, -d * 0.2); trims.push([mx, y + h, mz, [Math.min(2.6, w * 0.3), 2.6, Math.min(2.6, d * 0.3)], ry]); }
     }
-    if (roof === 'flat' && R() < 0.7) { const [tx, tz] = P((R() - 0.5) * w * 0.5, -d * 0.2); tanks.push([tx, y + h, tz, 1, 0]); }
+    if (roof === 'flat' && R() < tankShare) { const [tx, tz] = P((R() - 0.5) * w * 0.5, -d * 0.2); tanks.push([tx, y + h, tz, 1, 0]); }
   }
   const g = new THREE.Group().add(
     copies(houseGeos.body, TINTED, bodies, tints),
@@ -762,11 +763,14 @@ export function scatterGround(r, budget) {
   }
   r.group.updateMatrixWorld(true);
   const focus = new Set(); r.focus.traverse((o) => focus.add(o));
-  const targets = [], green = (m) => { const h = m.color.getHSL({}); return h.h > 0.17 && h.h < 0.45 && h.s > 0.12; };
+  const targets = [], covers = [], green = (m) => { const h = m.color.getHSL({}); return h.h > 0.17 && h.h < 0.45 && h.s > 0.12; };
   r.group.traverse((o) => {
     if (!o.isMesh || o.isInstancedMesh || !o.visible || focus.has(o) || Array.isArray(o.material) || !o.material.isMeshStandardMaterial) return;
     const g = o.geometry, n = (g.index ? g.index.count : g.attributes.position.count) / 3;
-    if (n < 20000 && green(o.material) && o.material.userData.surface !== 'water') targets.push(o);
+    if (n < 20000 && green(o.material) && o.material.userData.surface !== 'water') { if (!o.userData.mown) targets.push(o); return; }
+    // Paving, paths and plinths lying on the ground: a tuft under one of these would poke through it.
+    const cb = new THREE.Box3().setFromObject(o);
+    if (cb.max.y - cb.min.y < 1.5 && cb.min.y < 1 && (cb.max.x - cb.min.x) * (cb.max.z - cb.min.z) > 4) covers.push(cb);
   });
   if (!targets.length) return 0;
   const b = new THREE.Box3().setFromObject(r.focus), c = b.getCenter(new THREE.Vector3()), s = b.getSize(new THREE.Vector3());
@@ -779,7 +783,12 @@ export function scatterGround(r, budget) {
     if (!hit || !hit.face) continue;
     nw.copy(hit.face.normal).transformDirection(hit.object.matrixWorld);
     if (nw.y < 0.9) continue;
-    for (let i = 0, n = 2 + Math.floor(R() * 4); i < n; i++) tufts.push([hit.point.x + (R() - 0.5) * 2.4, hit.point.y - 0.02, hit.point.z + (R() - 0.5) * 2.4, 0.7 + R() * 0.8, R() * 6.28]);
+    // Not within 4 m of the monument itself (its plinths often share the lawn's green), nor under
+    // a pavement or path that lies over the grass.
+    const p = hit.point;
+    if (p.x > b.min.x - 4 && p.x < b.max.x + 4 && p.z > b.min.z - 4 && p.z < b.max.z + 4) continue;
+    if (covers.some((cb) => p.x > cb.min.x - 1.2 && p.x < cb.max.x + 1.2 && p.z > cb.min.z - 1.2 && p.z < cb.max.z + 1.2 && cb.max.y > p.y + 0.02)) continue;
+    for (let i = 0, n = 2 + Math.floor(R() * 4); i < n; i++) tufts.push([hit.point.x + (R() - 0.5) * 2.4, hit.point.y - 0.02, hit.point.z + (R() - 0.5) * 2.4, 0.25 + R() * 0.2, R() * 6.28]);
     if (R() < 0.3) stones.push([hit.point.x + (R() - 0.5) * 2, hit.point.y - 0.06, hit.point.z + (R() - 0.5) * 2, 0.4 + R() * 0.7, R() * 6.28]);
   }
   const per = (geo) => (geo.index ? geo.index.count : geo.attributes.position.count) / 3, extra = tufts.length * per(tuftGeo) + stones.length * per(stoneGeo);

@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { M, box, cyl, group, at, hemi, inst, unitBox, unitCyl } from '../helpers.js';
+import { M, box, cyl, group, at, hemi, inst, unitBox, unitCyl, mown } from '../helpers.js';
 import { addOldParliamentDetails } from '../details/old-parliament-house.js';
 import { addDetails } from '../details/old-parliament-house.js';
 
 export function buildOldParliament() {
   const Rd = M.red, Bf = M.buff, g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(cyl(135, 135, 0.15, M.grass, 0, 0, 0, 64));
+  g.add(mown(cyl(135, 135, 0.15, M.grass, 0, 0, 0, 64)));
   f.add(cyl(88, 89, 2, M.redLight, 0, 0, 0, 96), cyl(85, 85, 8, Rd, 0, 2, 0, 96));
   const wins = [], cols = [];
   for (let k = 0; k < 72; k++) { const a = (k / 72) * Math.PI * 2; wins.push([Math.sin(a) * 85.05, 3.5, Math.cos(a) * 85.05, 2.4, 4, 0.3, a]); }

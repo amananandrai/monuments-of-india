@@ -434,6 +434,52 @@ function fitShadow() {
   renderer.shadowMap.needsUpdate = true;
 }
 
+// Keep the close camera out of the masonry. The orbit's nearest distance (minDistance) is a sphere
+// round the target, and cannot follow a doorway: at India Gate it reached into the piers. So when
+// the camera is close, a ray is cast from it towards the target against the monument:
+// - if the first face it meets is the back of a solid (the camera is inside one), the camera steps
+//   back out along the ray until it is not;
+// - if a wall stands within 1.5 m in front of it, the camera backs off to 1.5 m, so the face of a
+//   wall never fills the frame.
+// A monument with nothing in the way (a statue, a bridge) still comes as close as minDistance.
+// The models are large meshes with no search structure, so the ray is cast only within reach of
+// the building (under 0.6 of the home distance) and at most ten times a second.
+const clear = { ray: new THREE.Raycaster(), dir: new THREE.Vector3(), n: new THREE.Vector3(), at: 0 };
+function keepClear(force = false) {
+  const r = built.get(current);
+  if (!r || !home || tween) return;
+  const now = performance.now();
+  if (!force && now - clear.at < 100) return;
+  if (camera.position.distanceTo(controls.target) > home.dist * 0.6) return;
+  clear.at = now;
+  if (!r.solid) {
+    r.solid = [];
+    r.focus.traverse((o) => { if (o.isMesh && !o.isInstancedMesh && o.visible && !o.userData.dressing && !Array.isArray(o.material) && !o.material.transparent) r.solid.push(o); });
+    r.solidMats = [...new Set(r.solid.map((o) => o.material))].filter((m) => m.side === THREE.FrontSide);
+  }
+  for (let pass = 0; pass < 8; pass++) {
+    const dist = clear.dir.subVectors(controls.target, camera.position).length();
+    if (dist < 1e-3) return;
+    clear.dir.divideScalar(dist);
+    clear.ray.set(camera.position, clear.dir);
+    clear.ray.far = dist;
+    // Both faces of every single-sided material for this one cast (nothing is drawn meanwhile),
+    // so that the back of a wall is met from inside it.
+    r.solidMats.forEach((m) => { m.side = THREE.DoubleSide; });
+    const hit = clear.ray.intersectObjects(r.solid, false)[0];
+    r.solidMats.forEach((m) => { m.side = THREE.FrontSide; });
+    if (!hit || !hit.face) return;
+    clear.n.copy(hit.face.normal).transformDirection(hit.object.matrixWorld);
+    if (r.solidMats.includes(hit.object.material) && clear.n.dot(clear.dir) > 0.05) {
+      // Inside a solid: out along the ray, past the face behind the camera, a step at a time.
+      camera.position.addScaledVector(clear.dir, -Math.max(0.8, dist * 0.1));
+      continue;
+    }
+    if (hit.distance < 1.5) camera.position.addScaledVector(clear.dir, -(1.5 - hit.distance));
+    return;
+  }
+}
+
 function flyTo(h, instant) {
   if (instant || reduceMotion) {
     camera.position.copy(h.pos);
@@ -445,6 +491,8 @@ function flyTo(h, instant) {
   tween = { t0: performance.now(), dur: 1100, fromPos: camera.position.clone(), fromTarget: controls.target.clone(), toPos: h.pos, toTarget: h.target };
 }
 controls.addEventListener('start', () => { tween = null; });
+controls.addEventListener('change', () => keepClear());
+controls.addEventListener('end', () => keepClear(true));
 
 
 let wanted = -1, firstFrame = false;

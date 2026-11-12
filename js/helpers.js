@@ -135,6 +135,9 @@ export function doubleSided(m) {
 
 export const lathe = (pts, m, seg = 40) => mesh(new THREE.LatheGeometry(pts.map(([r, y]) => new THREE.Vector2(r, y)), seg), m);
 
+// Mark a lawn as mown: a ceremonial lawn, kept clipped, on which scatterGround drops no tufts.
+export function mown(o) { o.userData.mown = true; return o; }
+
 export function group(...kids) { const g = new THREE.Group(); kids.forEach((k) => g.add(k)); return g; }
 
 export function at(o, x = 0, y = 0, z = 0) { o.position.set(x, y, z); return o; }

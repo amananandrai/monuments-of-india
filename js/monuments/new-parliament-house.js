@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, group, at, onFace, FACES, inst, unitBox, wheel } from '../helpers.js';
+import { M, mesh, box, cyl, group, at, onFace, FACES, inst, unitBox, wheel, mown } from '../helpers.js';
 import { lion } from '../details/animals.js';
 import { mergeByMaterial } from '../details/components.js';
 import { interior, doorLeaves, steps } from '../details/doorways.js';
@@ -9,7 +9,7 @@ import { addDetails } from '../details/new-parliament-house.js';
 export function buildNewParliament() {
   const Rd = M.red, Bf = M.buff, g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(cyl(130, 130, 0.15, M.grass, 0, 0, 0, 64));
+  g.add(mown(cyl(130, 130, 0.15, M.grass, 0, 0, 0, 64)));
   // Triangular plan with chamfered corners; built from world (x, z) points
   const R = 74, c = 20, V3 = [0, 1, 2].map((i) => { const a = Math.PI / 2 + (i * 2 * Math.PI) / 3; return [Math.cos(a) * R, Math.sin(a) * R]; });
   const poly = [];
