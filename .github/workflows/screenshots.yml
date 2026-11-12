@@ -1,5 +1,5 @@
 # Redraws the home view of a monument when that monument's own code changes, and commits the
-# picture (assets/views/<id>.png) and the state list (docs/monuments.md).
+# picture (assets/views/<id>.png) and the state list (monuments.md).
 #
 # What starts it:
 # - a push to main, or a pull request, that changes a monument's own file: js/monuments/<name>.js
@@ -8,7 +8,7 @@
 # - js/data.js, where the list's names, places and dates live: the list is rewritten, and no
 #   picture is redrawn unless a monument's file changed too.
 # What does not: a shared part (js/details/realism.js, components.js and the others listed
-# below), js/surface.js, js/main.js, CSS, the README, the docs, or this file. Those change many
+# below), js/surface.js, js/main.js, CSS, the README, the guides, or this file. Those change many
 # monuments or none. When one changes the look, run this workflow by hand ("Run workflow"): with
 # the ids box empty it redraws all 101, or name the ones to redraw.
 #
@@ -145,7 +145,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/views docs/monuments.md
+          git add assets/views monuments.md
           if git diff --staged --quiet; then
             echo "Pictures and list already match the models."
             exit 0

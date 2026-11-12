@@ -6,7 +6,7 @@ pass it, and which file it lives in.
 For what stands round the buildings (trees, boats, flags) see [realism.md](realism.md). Every
 picture on this page is on one page in [components.md](components.md).
 
-[Back to the README](../README.md) · [States and monuments](monuments.md) · [How it is drawn](how-it-is-drawn.md)
+[Back to the README](README.md) · [States and monuments](monuments.md) · [How it is drawn](how-it-is-drawn.md)
 
 ## How a monument is put together
 
@@ -272,5 +272,5 @@ node check-budgets.mjs <id>     # triangles, against 650,000 on desktops and 300
 node check-flicker.mjs <id>     # faces that share a plane
 node check-heights.mjs <id>     # the model's height against the real one
 node shoot-views.mjs <id>       # a picture of the home view
-node shoot-components.mjs       # the pictures on this page (docs/img), after a shared part changes
+node shoot-components.mjs       # the pictures on this page (img/), after a shared part changes
 ```

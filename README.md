@@ -16,7 +16,7 @@ download.
 | :---: | :---: | :---: |
 | [Taj Mahal](https://monuments-of-india-nu.vercel.app/#taj-mahal) | [Meenakshi Temple](https://monuments-of-india-nu.vercel.app/#meenakshi-temple) | [Golden Temple](https://monuments-of-india-nu.vercel.app/#golden-temple) |
 
-All 101, state by state, with a picture of each: **[States and monuments](docs/monuments.md)**.
+All 101, state by state, with a picture of each: **[States and monuments](monuments.md)**.
 
 ## Contents
 
@@ -83,8 +83,8 @@ All 101, state by state, with a picture of each: **[States and monuments](docs/m
 - **A static site with no build step:** `index.html`, `css/style.css` and ES modules in `js/`.
 - **One file per monument** in `js/monuments/`, and one for its finer detail and setting in
   `js/details/`. A monument's code is fetched only when it is opened.
-- **Shared parts** in `js/helpers.js` and `js/details/`: see [Architecture](docs/architecture.md)
-  and [The setting](docs/realism.md).
+- **Shared parts** in `js/helpers.js` and `js/details/`: see [Architecture](architecture.md)
+  and [The setting](realism.md).
 - **Procedural surfaces** in `js/surface.js`, generated in the shader from world position, with
   CC0 photo textures and their normal and roughness maps over them (`js/textures.js`).
 - **Sculpted figures:** statues and temple animals are grown from signed distance fields and
@@ -95,31 +95,31 @@ All 101, state by state, with a picture of each: **[States and monuments](docs/m
 - **Hosting:** Vercel. **Video:** a [HyperFrames](https://hyperframes.heygen.com) project in `video/`.
 
 How surfaces, water, landscape, lighting and the camera work is in
-[How it is drawn](docs/how-it-is-drawn.md).
+[How it is drawn](how-it-is-drawn.md).
 
 ## Documentation
 
 | Page | What it covers |
 | --- | --- |
-| [States and monuments](docs/monuments.md) | All 101 monuments by state: place, dates, style, material, a link to the 3D view and a picture of each |
-| [Components](docs/components.md) | Every shared part in pictures, on one page |
-| [Architecture](docs/architecture.md) | The parts the buildings are made of: domes, kiosks, pillars, arches, doors and windows, eaves, temple towers, fort gates. What each takes and where it lives |
-| [The setting](docs/realism.md) | What stands round them: the 21 kinds of tree, shrubs, lamps, flags, boats, stalls, towns, traffic and animals |
-| [How it is drawn](docs/how-it-is-drawn.md) | Surfaces, landscape, water, sculpture, lighting, the camera, and what differs on phones |
+| [States and monuments](monuments.md) | All 101 monuments by state: place, dates, style, material, a link to the 3D view and a picture of each |
+| [Components](components.md) | Every shared part in pictures, on one page |
+| [Architecture](architecture.md) | The parts the buildings are made of: domes, kiosks, pillars, arches, doors and windows, eaves, temple towers, fort gates. What each takes and where it lives |
+| [The setting](realism.md) | What stands round them: the 21 kinds of tree, shrubs, lamps, flags, boats, stalls, towns, traffic and animals |
+| [How it is drawn](how-it-is-drawn.md) | Surfaces, landscape, water, sculpture, lighting, the camera, and what differs on phones |
 | [Model checks](tools/README.md) | The headless checks and picture tools in `tools/` |
 | [Video](video/README.md) | Rendering the film of all 101 monuments |
 
 ## Components at a glance
 
-A few of the shared parts. All of them are in [Components](docs/components.md).
+A few of the shared parts. All of them are in [Components](components.md).
 
-| ![Onion dome](docs/img/onion-dome.jpg) | ![Chhatri](docs/img/chhatri.jpg) | ![Carved pillars](docs/img/carved-pillar.jpg) |
+| ![Onion dome](img/onion-dome.jpg) | ![Chhatri](img/chhatri.jpg) | ![Carved pillars](img/carved-pillar.jpg) |
 | :---: | :---: | :---: |
-| [Dome](docs/architecture.md#domes) | [Chhatri](docs/architecture.md#kiosks-and-turrets) | [Pillars](docs/architecture.md#pillars-and-columns) |
-| ![Iwan](docs/img/iwan.jpg) | ![Gopuram](docs/img/gopuram.jpg) | ![Fort gate](docs/img/fort-gate.jpg) |
-| [Arches and doors](docs/architecture.md#arches-doors-and-windows) | [Temple towers](docs/architecture.md#temples-jsdetailstemplesjs) | [Forts](docs/architecture.md#forts-jsdetailsfortsjs) |
-| ![Trees](docs/img/trees-broadleaf.jpg) | ![Boats](docs/img/boats.jpg) | ![Elephants](docs/img/elephants.jpg) |
-| [Trees](docs/realism.md#trees) | [Boats](docs/realism.md#boats) | [Animals](docs/realism.md#animals) |
+| [Dome](architecture.md#domes) | [Chhatri](architecture.md#kiosks-and-turrets) | [Pillars](architecture.md#pillars-and-columns) |
+| ![Iwan](img/iwan.jpg) | ![Gopuram](img/gopuram.jpg) | ![Fort gate](img/fort-gate.jpg) |
+| [Arches and doors](architecture.md#arches-doors-and-windows) | [Temple towers](architecture.md#temples-jsdetailstemplesjs) | [Forts](architecture.md#forts-jsdetailsfortsjs) |
+| ![Trees](img/trees-broadleaf.jpg) | ![Boats](img/boats.jpg) | ![Elephants](img/elephants.jpg) |
+| [Trees](realism.md#trees) | [Boats](realism.md#boats) | [Animals](realism.md#animals) |
 
 ## Run locally
 

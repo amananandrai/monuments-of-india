@@ -3,7 +3,7 @@
 How the site turns code into stone, light and landscape: surfaces, water, sculpture, lighting and
 what changes between desktops and phones.
 
-[Back to the README](../README.md) · [Architecture](architecture.md) · [The setting](realism.md) · [Components](components.md) · [States and monuments](monuments.md)
+[Back to the README](README.md) · [Architecture](architecture.md) · [The setting](realism.md) · [Components](components.md) · [States and monuments](monuments.md)
 
 - **Stone, brick and earth:** surfaces are generated in the shader from world position
   (`js/surface.js`): masonry with block joints, marble veining, brick courses, rock, earth, carved
