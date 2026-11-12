@@ -9,7 +9,8 @@
 // With --site, the pictures come from the site itself (index.html, with its shadows, occlusion,
 // surfaces, haze and trees), to judge the detail and to keep before and after a change:
 //   <id>-site.png        the home view
-//   <id>-site-close.png  zoomed in as far as the site allows, where plain walls show
+//   <id>-site-close.png  zoomed in as far as the site allows, where plain walls show (--ticks N
+//                        zooms in by N wheel steps instead of the full 24, for a middle distance)
 //   <id>-site-back.png   the opposite side (with --back)
 // The plaque and the buttons are hidden; --night shoots the night scene. Software rendering is slow:
 // allow 20 to 60 seconds a monument. --out names another folder (for example views/before).
@@ -20,14 +21,14 @@ import { openPage, PRELUDE } from './lib/browser.mjs';
 
 const argv = process.argv.slice(2), opt = (k) => (argv.includes(k) ? argv[argv.indexOf(k) + 1] : null);
 const [W, H] = (opt('--size') || '960x600').split('x').map(Number);
-const ids = argv.filter((a, i) => !a.startsWith('--') && !['--size', '--view', '--zoom', '--target', '--out', '--level'].includes(argv[i - 1]));
+const ids = argv.filter((a, i) => !a.startsWith('--') && !['--size', '--view', '--zoom', '--target', '--out', '--level', '--ticks'].includes(argv[i - 1]));
 const out = opt('--out') ? path.resolve(opt('--out')) : path.join(path.dirname(fileURLToPath(import.meta.url)), 'views');
 fs.mkdirSync(out, { recursive: true });
 const page = await openPage({ gl: true });
 const all = ids.length ? ids : await page.run(PRELUDE + 'return MONUMENTS.map((m) => m.id);');
 if (argv.includes('--site')) {
   // The site's sidebar is 300 px wide; the canvas beside it comes out at the size asked for.
-  const level = opt('--level') || 'high', pause = (p, ms) => p.waitForTimeout(ms);
+  const level = opt('--level') || 'high', pause = (p, ms) => p.waitForTimeout(ms), ticks = Number(opt('--ticks') ?? 24);
   let failed = 0;
   for (const id of all) {
     const p = await page.newPage({ viewport: { width: W + 300, height: H } });
@@ -48,7 +49,7 @@ if (argv.includes('--site')) {
         await p.mouse.move(cx + bb.height / 4, cy); await p.mouse.down(); await p.mouse.move(cx - bb.height / 4, cy, { steps: 12 }); await p.mouse.up();
       }
       await p.mouse.move(cx, cy);
-      for (let k = 0; k < 24; k++) { await p.mouse.wheel(0, -300); await pause(p, 60); }
+      for (let k = 0; k < ticks; k++) { await p.mouse.wheel(0, -300); await pause(p, 60); }
       await shot('-close');
       process.stdout.write('.');
     } catch (e) { failed++; console.error(`\n${id}: ${e.message.split('\n')[0]}`); }
