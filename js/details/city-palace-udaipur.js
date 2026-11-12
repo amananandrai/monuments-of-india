@@ -54,6 +54,6 @@ export function addDetails(f, g) {
   g.add(boats([[-80, 60, 0.3], [-30, 95, 1.2], [90, 110, -0.5], [120, 60, 2.3], [-120, 130, 0.9], [-10, 150, 1.8], [75, 205, 0.2]], { y: 0.3, size: 1.8, canopy: true, colours: ['#f4f1ea', '#e8d9b0', '#c2512a'] }));
   // On the ridge behind the palace the trees stand on its slope (js/monuments/city-palace-udaipur.js,
   // 16 m along the palace and falling away behind).
-  g.add(trees(scatter(40, [-380, 380, -230, -70], { seed: 3, gap: 16 }).map(([x, z]) => [x, z, null, ridge(x, z) - 0.3]), { kind: 'mango', seed: 3, h: 8 }));
+  g.add(trees(scatter(40, [-380, 380, -230, -70], { seed: 3, gap: 16 }).map(([x, z]) => [x, z, null, ridge(x, z) - 0.3]), { kind: 'dhok', seed: 3, h: 6 }));
   f.add(shrubs(along(14, [-120, 9.5], [120, 9.5]).map(([x, z]) => [x, z, 1.6]), { y: 14, flowers: '#d0306f', seed: 4 }));
 }

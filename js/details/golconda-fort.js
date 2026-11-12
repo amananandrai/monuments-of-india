@@ -66,7 +66,7 @@ function architecture(f) {
 export function addDetails(f, g) {
   architecture(f);
   const plain = scatter(40, [-240, 240, -240, 240], { seed: 3, gap: 16 }).filter(([x, z]) => Math.hypot(x, z) > 125);
-  g.add(trees(plain, { kind: 'neem', seed: 3 }));
+  g.add(trees(plain.filter((_, i) => i % 2 === 0), { kind: 'neem', seed: 3 }), trees(plain.filter((_, i) => i % 2 === 1), { kind: 'babul', seed: 4 }));
   const slope = scatter(60, [-120, 120, -120, 120], { seed: 4, gap: 6 }).filter(([x, z]) => { const q = Math.hypot(x, z) / hillRadius(Math.atan2(z, x)); return q > 0.32 && q < 0.86 && !RINGS.some((w) => Math.abs(q - w) < 0.06); });
   // Each bush sits on the slope of the hill.
   g.add(shrubs(slope.map(([x, z]) => [x, z, 2.2, hillSurface(x, z) - 0.3]), { dry: true, seed: 5 }));

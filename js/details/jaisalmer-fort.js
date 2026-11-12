@@ -35,5 +35,6 @@ function architecture(f, pal) {
 export function addDetails(f, g, pal) {
   architecture(f, pal);
   g.add(camelHerd([[300, 300, -2.2], [306, 306, -2.0], [-340, 280, 1.1], [-334, 288, 1.3], [430, 60, -1.5], [-440, 40, 0.6]]));
-  g.add(trees(scatter(60, [-700, 700, -560, 560], { seed: 3, gap: 30 }).filter(([x, z]) => trikuta(x, z) < 0.2), { kind: 'mango', seed: 3, h: 6 }));
+  // (About 25 khejri, low and sparse: the Thar is not an orchard.)
+  g.add(trees(scatter(60, [-700, 700, -560, 560], { seed: 3, gap: 30 }).filter(([x, z]) => trikuta(x, z) < 0.2).slice(0, 25), { kind: 'khejri', seed: 3, h: 5 }));
 }

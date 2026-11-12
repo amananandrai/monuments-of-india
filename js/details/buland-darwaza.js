@@ -24,6 +24,7 @@ function architecture(f) {
 // steps and round the mosque behind, and the ASI board.
 export function addDetails(f, g) {
   architecture(f);
-  g.add(trees(scatter(22, [-125, 125, -210, 115], { seed: 6, gap: 15, avoid: [[-70, 70, -25, 45], [-92, 78, -152, -8]] }), { kind: 'neem', seed: 6 }));
+  // (A few dhok only: Fatehpur's ridge is bare.)
+  g.add(trees(scatter(22, [-125, 125, -210, 115], { seed: 6, gap: 15, avoid: [[-70, 70, -25, 45], [-92, 78, -152, -8]] }).slice(0, 8), { kind: 'dhok', seed: 6 }));
   g.add(asiBoard('Buland Darwaza, Fatehpur Sikri', 30, 60, 0, { line2: 'WORLD HERITAGE SITE' }));
 }

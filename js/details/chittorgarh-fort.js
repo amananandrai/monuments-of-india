@@ -60,6 +60,6 @@ export function addDetails(f, g) {
   for (let i = 0; i < 6; i++) { const w = 6.2 - i * 0.3; f.add(box(w, 3.1, w, STONE, ks[0], y, ks[1]), box(w + 1, 0.3, w + 1, RUIN, ks[0], y + 2.8, ks[1])); y += 3.1; }
   f.add(at(chhatri(2.4, 4.5, STONE), ks[0], y, ks[1]));
   const plateau = scatter(110, [-300, 300, -55, 55], { seed: 3, gap: 9 }).filter(([x, z]) => (x / 300) ** 4 + (z / 55) ** 4 < 0.8 && Math.hypot(x - VS[0], z - VS[1]) > 12 && Math.hypot(x - PP[0], z - PP[1]) > 26 && Math.hypot(x - KS[0], z - KS[1]) > 10 && !(x > -240 && x < -160 && z > -32 && z < 26) && Math.abs(x - RAMPOL) > 14);
-  g.add(trees(plateau.slice(0, 44), { kind: 'mango', seed: 4, y: H, h: 7 }), shrubs(plateau.slice(44).map(([x, z]) => [x, z, 2]), { y: H, dry: true, seed: 5 }));
+  g.add(trees(plateau.slice(0, 20), { kind: 'khejri', seed: 4, y: H, h: 6 }), shrubs(plateau.slice(20).map(([x, z]) => [x, z, 2]), { y: H, dry: true, seed: 5 }));
   g.add(asiBoard('Chittorgarh Fort', -96, 250, 0, { line2: 'HILL FORTS OF RAJASTHAN' }));
 }
