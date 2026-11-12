@@ -3,7 +3,10 @@
 Every monument is built in code from shared parts. This page lists them: what each one is, what you
 pass it, and which file it lives in.
 
-For what stands round the buildings (trees, boats, flags) see [realism.md](realism.md).
+For what stands round the buildings (trees, boats, flags) see [realism.md](realism.md). Every
+picture on this page is on one page in [components.md](components.md).
+
+[Back to the README](../README.md) · [States and monuments](monuments.md) · [How it is drawn](how-it-is-drawn.md)
 
 ## How a monument is put together
 
@@ -58,6 +61,10 @@ for (const a of FACES) d.add(onFace(at(windowFrame(2, 4.2, M.cream, { shape: 'fl
 
 ## Domes
 
+| ![Onion dome with its neck, lotus crown and finial](img/onion-dome.jpg) | ![Lotus dome: ribs, a cup of petals, a crescent](img/lotus-dome.jpg) |   |
+| :---: | :---: | :---: |
+| Onion dome with its neck, lotus crown and finial | Lotus dome: ribs, a cup of petals, a crescent |   |
+
 | Part | File | What it is |
 | --- | --- | --- |
 | `onionDome(r, m)` | helpers | The bulbous dome. From 1.5 m radius up it has a moulded neck and an inverted lotus at its crown |
@@ -70,6 +77,12 @@ for (const a of FACES) d.add(onFace(at(windowFrame(2, 4.2, M.cream, { shape: 'fl
 
 ## Kiosks and turrets
 
+| ![Chhatri](img/chhatri.jpg) | ![Mughal chhatri](img/mughal-chhatri.jpg) | ![Guldastas](img/guldasta.jpg) |
+| :---: | :---: | :---: |
+| Chhatri | Mughal chhatri | Guldastas |
+| ![Minaret](img/minaret.jpg) | ![Jharokha](img/jharokha.jpg) |   |
+| Minaret | Jharokha |   |
+
 | Part | File | What it is |
 | --- | --- | --- |
 | `chhatri(r, h, m, domeM)` | helpers | The domed kiosk on eight columns that stands on Mughal and Rajput roofs |
@@ -80,6 +93,12 @@ for (const a of FACES) d.add(onFace(at(windowFrame(2, 4.2, M.cream, { shape: 'fl
 | `banglaRoof(w, d, rise, m)` | components | The curved roof of Bengal, as on jharokhas and pavilions |
 
 ## Pillars and columns
+
+| ![Classical columns, plain and Corinthian](img/column.jpg) | ![Carved temple pillars](img/carved-pillar.jpg) | ![Cluster pillar](img/cluster-pillar.jpg) |
+| :---: | :---: | :---: |
+| Classical columns, plain and Corinthian | Carved temple pillars | Cluster pillar |
+| ![Yali pillar](img/yali-pillar.jpg) | ![Column trim on bare shafts](img/column-trim.jpg) |   |
+| Yali pillar | Column trim on bare shafts |   |
 
 | Part | File | What it is |
 | --- | --- | --- |
@@ -92,6 +111,14 @@ for (const a of FACES) d.add(onFace(at(windowFrame(2, 4.2, M.cream, { shape: 'fl
 | `entablature(len, h, m)`, `corinthianCapital(r, m)` | sculpture | What a classical colonnade carries |
 
 ## Arches, doors and windows
+
+| ![Arch wall with its ring](img/arch.jpg) | ![Iwan](img/iwan.jpg) | ![Niche](img/niche.jpg) |
+| :---: | :---: | :---: |
+| Arch wall with its ring | Iwan | Niche |
+| ![Window with a jali screen](img/window-jali.jpg) | ![Classical door](img/classical-door.jpg) | ![Gothic window](img/gothic-window.jpg) |
+| Window with a jali screen | Classical door | Gothic window |
+| ![Temple doorway](img/temple-doorway.jpg) |   |   |
+| Temple doorway |   |   |
 
 | Part | File | What it is |
 | --- | --- | --- |
@@ -113,6 +140,10 @@ for (const a of FACES) d.add(onFace(at(windowFrame(2, 4.2, M.cream, { shape: 'fl
 | `interior(w, h)` | doorways | The dim room seen through an open door |
 
 ## Walls, eaves and parapets
+
+| ![Chhajja on brackets](img/chhajja.jpg) | ![Merlons](img/merlons.jpg) | ![Railing](img/railing.jpg) |
+| :---: | :---: | :---: |
+| Chhajja on brackets | Merlons | Railing |
 
 | Part | File | What it is |
 | --- | --- | --- |
@@ -144,6 +175,12 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 
 ## Temples (`js/details/temples.js`)
 
+| ![Shikhara](img/shikhara.jpg) | ![Nagara temple](img/nagara-temple.jpg) | ![Dravida vimana](img/dravida-vimana.jpg) |
+| :---: | :---: | :---: |
+| Shikhara | Nagara temple | Dravida vimana |
+| ![Gopuram](img/gopuram.jpg) | ![Mandap](img/mandap.jpg) | ![Temple niche with an image](img/temple-niche.jpg) |
+| Gopuram | Mandap | Temple niche with an image |
+
 | Part | What it is |
 | --- | --- |
 | `nagaraTemple({ w, h, m, halls, … })` | A whole North Indian temple: sanctum, curved spire and halls stepping out in front |
@@ -162,6 +199,10 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 
 ## Forts (`js/details/forts.js`)
 
+| ![Fort gate](img/fort-gate.jpg) | ![Rampart and a crowned bastion](img/rampart.jpg) |   |
+| :---: | :---: | :---: |
+| Fort gate | Rampart and a crowned bastion |   |
+
 | Part | What it is |
 | --- | --- |
 | `fortGate(w, h, d, archW, archH, { towers, iwan })` | A gatehouse with a real passage through it, guard niches and spiked leaves |
@@ -170,6 +211,10 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | `rampart(…)`, `bastionCrowns(…)` | Battlements, as above |
 
 ## Tibetan monasteries (`js/details/tibetan.js`)
+
+| ![Monks' houses](img/tibetan-houses.jpg) | ![Dharma wheel and a victory banner](img/dharma-wheel.jpg) |   |
+| :---: | :---: | :---: |
+| Monks' houses | Dharma wheel and a victory banner |   |
 
 | Part | What it is |
 | --- | --- |
@@ -183,12 +228,20 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 
 ## Stairs (`js/details/doorways.js`)
 
+| ![Grand stair](img/grand-stair.jpg) |   |   |
+| :---: | :---: | :---: |
+| Grand stair |   |   |
+
 | Part | What it is |
 | --- | --- |
 | `steps(width, rise, n, m)` | A plain flight |
 | `grandStair(rise, width, m, shade, { n, landing })` | A broad stair between side walls, with a landing and guardians |
 
 ## Sculpture
+
+| ![Figure frieze](img/figure-frieze.jpg) | ![Statue, urn and pinnacle](img/statue.jpg) |   |
+| :---: | :---: | :---: |
+| Figure frieze | Statue, urn and pinnacle |   |
 
 | Part | File | What it is |
 | --- | --- | --- |
@@ -219,4 +272,5 @@ node check-budgets.mjs <id>     # triangles, against 650,000 on desktops and 300
 node check-flicker.mjs <id>     # faces that share a plane
 node check-heights.mjs <id>     # the model's height against the real one
 node shoot-views.mjs <id>       # a picture of the home view
+node shoot-components.mjs       # the pictures on this page (docs/img), after a shared part changes
 ```

@@ -5,6 +5,9 @@ Everything that stands round a monument, and is not the monument, comes from one
 file (`js/details/<monument>.js`) calls the kit from its `addDetails(f, g)`.
 
 For the buildings themselves (domes, kiosks, pillars, arches) see [architecture.md](architecture.md).
+Every picture on this page is on one page in [components.md](components.md).
+
+[Back to the README](../README.md) · [States and monuments](monuments.md) · [How it is drawn](how-it-is-drawn.md)
 
 ## How the kit works
 
@@ -37,6 +40,12 @@ g.add(trees(scatter(26, [-95, 95, -75, 75], { seed: 21, gap: 14, avoid: [[-36, 3
 
 ## Trees
 
+| ![Broadleaf: neem, mango, jamun, tamarind, teak, sal](img/trees-broadleaf.jpg) | ![Wide: banyan, peepal, chinar, willow](img/trees-wide.jpg) | ![Dry: ber, babul, khejri, dhok](img/trees-dry.jpg) |
+| :---: | :---: | :---: |
+| Broadleaf: neem, mango, jamun, tamarind, teak, sal | Wide: banyan, peepal, chinar, willow | Dry: ber, babul, khejri, dhok |
+| ![Columns and conifers: ashoka, poplar, cypress, casuarina, fir, deodar](img/trees-columns.jpg) | ![Coconut palms](img/palms.jpg) |   |
+| Columns and conifers: ashoka, poplar, cypress, casuarina, fir, deodar | Coconut palms |   |
+
 `trees(spots, { kind, seed, y, h })` plants every kind. `h` is the height in metres (each tree
 varies by 15% either way); `y` lifts the whole planting onto a terrace.
 
@@ -67,6 +76,10 @@ new mesh function.
 
 ## Shrubs, hedges and flower beds
 
+| ![Clipped, flowering and dry shrubs](img/shrubs.jpg) |   |   |
+| :---: | :---: | :---: |
+| Clipped, flowering and dry shrubs |   |   |
+
 `shrubs(spots, { seed, y, size, dry, flowers })`. Spots are `[x, z, size?, y?]`.
 
 - Plain: clipped green bushes, for hedges and lawn borders.
@@ -88,6 +101,10 @@ It keeps clear of:
 
 ## Lamps and street furniture
 
+| ![Lamp posts, a bench, bollards with a chain](img/lamp-posts.jpg) | ![The ASI board](img/asi-board.jpg) | ![Fountain jets](img/fountains.jpg) |
+| :---: | :---: | :---: |
+| Lamp posts, a bench, bollards with a chain | The ASI board | Fountain jets |
+
 | Part | What it is |
 | --- | --- |
 | `lampPosts(spots, { h, y })` | Heritage lamp posts: a fluted iron post, a scrolled arm and a glass lantern. Lit at night |
@@ -99,6 +116,10 @@ It keeps clear of:
 
 ## Flags and garlands
 
+| ![Prayer flags](img/prayer-flags.jpg) | ![The tricolour and a saffron pennant](img/flags.jpg) | ![Marigold garlands](img/garland.jpg) |
+| :---: | :---: | :---: |
+| Prayer flags | The tricolour and a saffron pennant | Marigold garlands |
+
 | Part | What it is |
 | --- | --- |
 | `prayerFlags(a, b, { sag, size })` | A string of Tibetan prayer flags in five colours from point `a` to point `b` (`[x, y, z]`) |
@@ -107,6 +128,12 @@ It keeps clear of:
 | `tricolour(h, w)` (in `js/helpers.js`) | The national flag on a mast, with the Ashoka Chakra |
 
 ## Boats
+
+| ![Country boats, one with a hood](img/boats.jpg) | ![Ferry launches](img/launches.jpg) | ![A cargo ship](img/ships.jpg) |
+| :---: | :---: | :---: |
+| Country boats, one with a hood | Ferry launches | A cargo ship |
+| ![Houseboats](img/houseboats.jpg) |   |   |
+| Houseboats |   |   |
 
 | Part | What it is |
 | --- | --- |
@@ -119,10 +146,18 @@ It keeps clear of:
 
 ## Stalls
 
+| ![Stalls and umbrellas](img/stalls.jpg) |   |   |
+| :---: | :---: | :---: |
+| Stalls and umbrellas |   |   |
+
 `stalls(spots, { awnings, goods })`: market stalls under coloured awnings, with heaps of goods.
 Spots are `[x, z, turn]`. They stand outside temple gates and in Laad Bazaar at Charminar.
 
 ## Towns
+
+| ![Town houses](img/town-houses.jpg) |   |   |
+| :---: | :---: | :---: |
+| Town houses |   |   |
 
 | Part | What it is |
 | --- | --- |
@@ -137,11 +172,21 @@ g.add(cityAround([-72, 72, -88, 108], { rows: 2, gap: 12, storeys: [2, 4], seed:
 
 ## Traffic
 
+| ![Traffic: cars, taxis and buses](img/traffic.jpg) |   |   |
+| :---: | :---: | :---: |
+| Traffic: cars, taxis and buses |   |   |
+
 `traffic(lanes, x0, x1, { y, gap, taxis, buses })` puts vehicles on a road running along x. Each
 lane is `[z, direction]`. Only the Howrah Bridge and the Bandra–Worli Sea Link use it; there are
 no motor vehicles anywhere else, and no people at all, so that the monument stays the subject.
 
 ## Animals
+
+| ![Nandi](img/nandi.jpg) | ![Elephants, plain and dressed](img/elephants.jpg) | ![Horse and lion](img/horse-lion.jpg) |
+| :---: | :---: | :---: |
+| Nandi | Elephants, plain and dressed | Horse and lion |
+| ![Deer](img/deer.jpg) | ![Yaks and camels](img/yaks-camels.jpg) |   |
+| Deer | Yaks and camels |   |
 
 From `js/details/animals.js`. The larger animals are sculpted as one continuous skin and meshed in
 the browser, so they are heavier than the rest of the kit.
