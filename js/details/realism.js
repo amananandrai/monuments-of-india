@@ -14,6 +14,8 @@ const plain = (c, r = 0.85, m = 0, extra = {}) => surface(mat(c, r, m, extra), '
 const FOLIAGE = surface(mat('#4f7a3a', 0.95), 'foliage');
 const FOLIAGE_DARK = surface(mat('#3d6331', 0.95), 'foliage');
 const FOLIAGE_DRY = surface(mat('#6f7f3e', 0.95), 'foliage');
+// The pale green of chinar, poplar and willow.
+const FOLIAGE_PALE = surface(mat('#7a9a4c', 0.95), 'foliage');
 const BARK = plain('#5b4636', 0.9);
 const PALM_BARK = plain('#7a6a55', 0.9);
 const FROND = plain('#5d8a37', 0.85, 0, { side: THREE.DoubleSide });
@@ -102,24 +104,63 @@ function crownGeo(lobes = 7, seed = 3) {
 }
 const trunkGeo = new THREE.CylinderGeometry(0.11, 0.2, 1, 7).translate(0, 0.5, 0);
 
-// Trees at the places ([x, z] or [x, z, height]). kind: 'neem' (a broad, rounded shade tree),
-// 'banyan' (wider and lower), 'ashoka' (the tall, narrow mast tree lining Indian avenues),
-// 'mango' (dense and dark), 'palm' (a coconut palm), 'deodar' (a Himalayan cedar) or 'cypress'.
+// What each kind of tree is. Four silhouettes cover them: the broadleaf (a trunk into a rounded
+// crown), the dry umbrella (a short tree with a low, wide, sparse crown), the column, and the
+// tiered conifer. For each: its default height in metres; its plain form, [crown radius, crown
+// height, trunk] as fractions of the tree's height (conifers: their tiers instead); its full form,
+// [crown radius, trunk, limbs] (fullGeo); its leaf; and whether it drops aerial roots or droops.
+//   neem      a broad, rounded shade tree            banyan    wider and lower, with aerial roots
+//   mango     dense and dark                         ashoka    the tall, narrow mast tree of avenues
+//   jamun     darker and narrower than mango         tamarind  a wide dark crown on a long trunk
+//   peepal    wider than tall, the crown starting low (the bodhi tree); no aerial roots
+//   chinar    a very wide pale crown on a thick trunk (Kashmir)
+//   teak      a tall straight trunk, the crown held high       sal   the same, a little narrower
+//   willow    medium, pale, the crown drooping       poplar    a tall pale column (Ladakh)
+//   ber, babul, khejri, dhok   the small dry trees of desert, scrub and thorn forest
+//   palm      a coconut palm     deodar   a Himalayan cedar     cypress   the dark spire of a charbagh
+//   casuarina the feathery, thin-tiered tree of the coast
+const KINDS = {
+  neem: { h: 9, plain: [0.42, 0.36, 0.55], full: [0.42, 0.5, 4], leaf: FOLIAGE },
+  banyan: { h: 11, plain: [0.62, 0.3, 0.45], full: [0.6, 0.42, 5], leaf: FOLIAGE, roots: true },
+  ashoka: { h: 12, plain: [0.17, 0.62, 0.3], full: [0.16, 0.25, 3], leaf: FOLIAGE_DARK, column: true },
+  mango: { h: 8, plain: [0.4, 0.38, 0.45], full: [0.4, 0.45, 4], leaf: FOLIAGE_DARK },
+  jamun: { h: 10, plain: [0.32, 0.4, 0.45], full: [0.32, 0.45, 4], leaf: FOLIAGE_DARK },
+  tamarind: { h: 11, plain: [0.42, 0.34, 0.55], full: [0.42, 0.52, 5], leaf: FOLIAGE_DARK },
+  peepal: { h: 14, plain: [0.66, 0.36, 0.34], full: [0.62, 0.32, 5], leaf: FOLIAGE, bark: '#8a7c68' },
+  chinar: { h: 14, plain: [0.64, 0.36, 0.4], full: [0.6, 0.38, 5], leaf: FOLIAGE_PALE, thick: 1.5 },
+  teak: { h: 14, plain: [0.36, 0.3, 0.68], full: [0.36, 0.62, 4], leaf: FOLIAGE },
+  sal: { h: 14, plain: [0.3, 0.3, 0.68], full: [0.3, 0.62, 4], leaf: FOLIAGE_DARK },
+  willow: { h: 9, plain: [0.46, 0.44, 0.42], full: [0.44, 0.42, 5], leaf: FOLIAGE_PALE, droop: true },
+  poplar: { h: 16, plain: [0.2, 0.66, 0.26], full: [0.19, 0.22, 3], leaf: FOLIAGE_PALE, column: true },
+  ber: { h: 5, plain: [0.6, 0.24, 0.6], full: [0.56, 0.55, 4], leaf: FOLIAGE_DRY, sparse: 0.8 },
+  babul: { h: 6, plain: [0.62, 0.18, 0.7], full: [0.6, 0.66, 5], leaf: FOLIAGE_DRY, flat: 0.5 },
+  khejri: { h: 6, plain: [0.5, 0.2, 0.68], full: [0.5, 0.62, 4], leaf: FOLIAGE_DRY, flat: 0.6, sparse: 0.7 },
+  dhok: { h: 5, plain: [0.46, 0.34, 0.52], full: [0.44, 0.48, 4], leaf: FOLIAGE_DRY },
+  palm: { h: 13, leaf: FROND },
+  deodar: { h: 18, leaf: FOLIAGE_DARK, tiers: [[0.42, 0.36, 0.2], [0.33, 0.32, 0.42], [0.22, 0.28, 0.62], [0.12, 0.22, 0.8]], full: [0.42, 7, 9] },
+  cypress: { h: 10, leaf: FOLIAGE_DARK, tiers: [[0.18, 0.92, 0.1]], full: [0.16, 4, 6] },
+  casuarina: { h: 12, leaf: FOLIAGE_DARK, tiers: [[0.2, 0.26, 0.22], [0.17, 0.24, 0.4], [0.13, 0.22, 0.58], [0.08, 0.24, 0.76]], full: [0.2, 9, 5], thin: true },
+};
+const barks = new Map();
+const barkOf = (k) => { if (!k.bark) return BARK; if (!barks.has(k.bark)) barks.set(k.bark, plain(k.bark, 0.9)); return barks.get(k.bark); };
+
+// Trees at the places ([x, z] or [x, z, height, ground]), of a kind in KINDS above.
 export function trees(spots, { kind = 'neem', seed = 1, y = 0, h = null } = {}) {
   const g = new THREE.Group(), R = rng(seed + 11);
   // Spots are [x, z, height?, ground?]: the tree's own height, and the ground it stands on (on a hill).
-  const items = spots.map(([x, z, hh, gy]) => ({ x, z, gy: (gy ?? 0) + y, s: (hh || h || { neem: 9, banyan: 11, ashoka: 12, mango: 8, palm: 13, deodar: 18, cypress: 10 }[kind]) * (0.85 + R() * 0.3), ry: R() * 6.28 }));
+  const K = KINDS[kind];
+  if (!K) throw new Error(`trees(): no kind '${kind}'`);
+  const items = spots.map(([x, z, hh, gy]) => ({ x, z, gy: (gy ?? 0) + y, s: (hh || h || K.h) * (0.85 + R() * 0.3), ry: R() * 6.28 }));
   if (kind === 'palm') return tag(palms(items), items, kind, seed);
-  if (kind === 'deodar' || kind === 'cypress') {
-    const tiers = kind === 'deodar' ? [[0.42, 0.36, 0.2], [0.33, 0.32, 0.42], [0.22, 0.28, 0.62], [0.12, 0.22, 0.8]] : [[0.18, 0.92, 0.1]];
-    const c = mergeGeometries(tiers.map(([r, hh, at0]) => new THREE.ConeGeometry(r, hh, 9, 1).translate(0, at0 + hh / 2, 0)));
-    g.add(copies(trunkGeo, BARK, items.map((t) => [t.x, t.gy, t.z, [t.s * 0.12, t.s * 0.3, t.s * 0.12], t.ry])));
-    g.add(copies(c, FOLIAGE_DARK, items.map((t) => [t.x, t.gy, t.z, t.s, t.ry])));
+  if (K.tiers) {
+    const c = mergeGeometries(K.tiers.map(([r, hh, at0]) => new THREE.ConeGeometry(r, hh, 9, 1).translate(0, at0 + hh / 2, 0)));
+    const tw = K.thin ? 0.07 : 0.12;
+    g.add(copies(trunkGeo, BARK, items.map((t) => [t.x, t.gy, t.z, [t.s * tw, t.s * (K.thin ? 0.5 : 0.3), t.s * tw], t.ry])));
+    g.add(copies(c, K.leaf, items.map((t) => [t.x, t.gy, t.z, t.s, t.ry])));
     return tag(g, items, kind, seed);
   }
   // Crown size and height as fractions of the tree's height: [radius, height, trunk]
-  const [cr, ch, tr] = { neem: [0.42, 0.36, 0.55], banyan: [0.62, 0.3, 0.45], ashoka: [0.17, 0.62, 0.3], mango: [0.4, 0.38, 0.45] }[kind];
-  const leaf = kind === 'mango' || kind === 'ashoka' ? FOLIAGE_DARK : FOLIAGE;
+  const [cr, ch, tr] = K.plain, leaf = K.leaf, girth = 0.17 * (K.thick || 1);
   // The trunk runs up into the crown, whose underside is flattened. Each tree takes one of three
   // forms of its kind, so a row is not a row of clones: its own crown shape (lobes and seed), a
   // little broader and lower or narrower and taller, the trunk shorter or longer.
@@ -127,7 +168,7 @@ export function trees(spots, { kind = 'neem', seed = 1, y = 0, h = null } = {}) 
   forms.forEach(([w, hh, tt, lobes], f) => {
     const mine = items.filter((_, i) => (i + seed) % 3 === f);
     if (!mine.length) return;
-    g.add(copies(trunkGeo, BARK, mine.map((t) => [t.x, t.gy, t.z, [t.s * 0.17, t.s * (tr * tt + ch * hh * 0.3), t.s * 0.17], t.ry])));
+    g.add(copies(trunkGeo, barkOf(K), mine.map((t) => [t.x, t.gy, t.z, [t.s * girth, t.s * (tr * tt + ch * hh * 0.3), t.s * girth], t.ry])));
     g.add(copies(crownGeo(lobes, seed + f * 17), leaf, mine.map((t) => [t.x, t.gy + t.s * (tr * tt + ch * hh * 0.4), t.z, [t.s * cr * w, t.s * ch * hh * 0.6, t.s * cr * w], t.ry])));
   });
   return tag(g, items, kind, seed);
@@ -139,8 +180,9 @@ function tag(g, items, kind, seed) { g.userData.trees = { items, kind, seed }; r
 
 // Each kind as two geometries of unit height (bark and leaves), instanced at every tree with its
 // own height and turn. Broadleaf trees: a trunk that leans and bends, three to five limbs, and a
-// crown of separate leaf clumps at the limbs' ends (the banyan also drops aerial roots); the palm:
-// a ringed trunk and arching fronds with leaflets; the deodar and cypress: drooping tiers.
+// crown of separate leaf clumps at the limbs' ends (the banyan also drops aerial roots, the willow
+// droops); the palm: a ringed trunk and arching fronds with leaflets; the deodar, cypress and
+// casuarina: drooping tiers. What differs between kinds is in KINDS, above trees().
 const fullGeos = new Map();
 function limbGeo(a, b, r1, r2, n = 6) {
   const g = new THREE.CylinderGeometry(r2, r1, a.distanceTo(b), n, 1, true);
@@ -153,7 +195,7 @@ const plainGeo = (g) => { const n = g.index ? g.toNonIndexed() : g; for (const k
 function fullGeo(kind, seed) {
   const key = kind + ':' + seed;
   if (fullGeos.has(key)) return fullGeos.get(key);
-  const R = rng(seed * 7 + 3), V3 = (x, y, z) => new THREE.Vector3(x, y, z), bark = [], leaf = [];
+  const R = rng(seed * 7 + 3), V3 = (x, y, z) => new THREE.Vector3(x, y, z), bark = [], leaf = [], K = KINDS[kind];
   if (kind === 'palm') {
     const pts = [V3(0, 0, 0), V3(0.05, 0.35, 0), V3(0.13, 0.7, 0), V3(0.2, 1, 0)], curve = new THREE.CatmullRomCurve3(pts);
     for (let k = 0; k < 14; k++) {
@@ -178,36 +220,44 @@ function fullGeo(kind, seed) {
       leaf.push(fg);
     }
     for (const a of [0, 2.1, 4.2]) leaf.push(plainGeo(new THREE.SphereGeometry(0.02, 6, 4).translate(0.2 + Math.cos(a) * 0.03, 0.975, Math.sin(a) * 0.03)));
-  } else if (kind === 'deodar' || kind === 'cypress') {
-    bark.push(limbGeo(V3(0, 0, 0), V3(0, 0.95, 0), 0.025, 0.006, 7));
-    const tiers = kind === 'deodar' ? 7 : 4;
+  } else if (K.tiers) {
+    // The conifers: whorls of drooping boughs up a mast. The casuarina's are thin and many, so it
+    // reads as feathery, not as a solid cone.
+    const [rad, tiers, n] = K.full, thin = !!K.thin;
+    bark.push(limbGeo(V3(0, 0, 0), V3(0, 0.95, 0), thin ? 0.016 : 0.025, 0.006, 7));
     for (let t = 0; t < tiers; t++) {
-      const y = 0.18 + (t / tiers) * 0.72, r = (kind === 'deodar' ? 0.42 : 0.16) * (1 - t / (tiers + 1)), n = kind === 'deodar' ? 9 : 6;
+      const y = (thin ? 0.3 : 0.18) + (t / tiers) * (thin ? 0.62 : 0.72), r = rad * (1 - t / (tiers + 1));
       for (let k = 0; k < n; k++) {
-        const a = (k / n) * Math.PI * 2 + t * 0.4, g = new THREE.ConeGeometry(r * 0.32, r * 1.05, 5, 1);
-        g.rotateZ(-Math.PI / 2 - 0.35).scale(1, 0.55, 1).translate(r * 0.5, y + 0.02, 0).rotateY(a);
+        const a = (k / n) * Math.PI * 2 + t * (thin ? 0.9 : 0.4), g = new THREE.ConeGeometry(r * (thin ? 0.16 : 0.32), r * (thin ? 1.25 : 1.05), thin ? 4 : 5, 1);
+        g.rotateZ(-Math.PI / 2 - (thin ? 0.15 : 0.35)).scale(1, 0.55, 1).translate(r * 0.5, y + 0.02, 0).rotateY(a);
         leaf.push(plainGeo(g));
       }
-      leaf.push(plainGeo(new THREE.ConeGeometry(r * 0.45, 0.14, 7).translate(0, y + 0.06, 0)));
+      if (!thin) leaf.push(plainGeo(new THREE.ConeGeometry(r * 0.45, 0.14, 7).translate(0, y + 0.06, 0)));
     }
+    if (thin) leaf.push(plainGeo(new THREE.ConeGeometry(0.03, 0.12, 5).translate(0, 0.94, 0)));
   } else {
-    const [cr, tr, limbs, droop] = { neem: [0.42, 0.5, 4, 0], banyan: [0.6, 0.42, 5, 1], ashoka: [0.16, 0.25, 3, 0], mango: [0.4, 0.45, 4, 0] }[kind] || [0.4, 0.5, 4, 0];
-    const lean = V3((R() - 0.5) * 0.06, tr, (R() - 0.5) * 0.06), mid = V3(lean.x * 0.4, tr * 0.5, lean.z * 0.4);
-    bark.push(limbGeo(V3(0, 0, 0), mid, 0.055, 0.045, 7), limbGeo(mid, lean, 0.045, 0.035, 7));
+    // The broadleaf, the dry umbrella and the column: a trunk that leans and bends, limbs out to
+    // the crown's clumps. Every kind has its own row in KINDS; none borrows another's layout.
+    const [cr, tr, limbs] = K.full, col = !!K.column, thick = K.thick || 1, flat = K.flat || 0.72, sparse = K.sparse || 1;
+    const lean = V3((R() - 0.5) * 0.06, tr, (R() - 0.5) * 0.06), mid = V3(lean.x * 0.4 + (K.flat ? (R() - 0.5) * 0.08 : 0), tr * 0.5, lean.z * 0.4);
+    bark.push(limbGeo(V3(0, 0, 0), mid, 0.055 * thick, 0.045 * thick, 7), limbGeo(mid, lean, 0.045 * thick, 0.035 * thick, 7));
     const ends = [];
     for (let k = 0; k < limbs; k++) {
-      const a = (k / limbs) * Math.PI * 2 + R() * 0.6, out = cr * (0.55 + R() * 0.3), up = kind === 'ashoka' ? 0.5 : 0.18 + R() * 0.12;
+      const a = (k / limbs) * Math.PI * 2 + R() * 0.6, out = cr * (0.55 + R() * 0.3), up = col ? 0.5 : K.flat ? 0.1 + R() * 0.05 : 0.18 + R() * 0.12;
       const e = V3(lean.x + Math.cos(a) * out, tr + up, lean.z + Math.sin(a) * out);
-      bark.push(limbGeo(lean, e, 0.03, 0.012, 5));
+      bark.push(limbGeo(lean, e, 0.03 * thick, 0.012, 5));
       ends.push(e);
     }
-    ends.push(V3(lean.x, tr + (kind === 'ashoka' ? 0.62 : 0.34), lean.z));
+    ends.push(V3(lean.x, tr + (col ? 0.62 : K.flat ? 0.16 : 0.34), lean.z));
     const base = crownGeo(6, seed);
     ends.forEach((e, k) => {
-      const s = (k === ends.length - 1 ? 1.15 : 0.85 + R() * 0.3) * (kind === 'ashoka' ? 0.12 : cr * 0.62);
-      leaf.push(plainGeo(base.clone().scale(s, s * (kind === 'ashoka' ? 2.6 : 0.72), s).translate(e.x, e.y + s * 0.15, e.z)));
+      const s = (k === ends.length - 1 ? 1.15 : 0.85 + R() * 0.3) * (col ? cr * 0.75 : cr * 0.62) * sparse;
+      leaf.push(plainGeo(base.clone().scale(s, s * (col ? 2.6 : flat), s).translate(e.x, e.y + s * 0.15, e.z)));
+      // A drooping crown (the willow): a longer, narrower clump hanging under each limb's end.
+      if (K.droop && k < ends.length - 1) leaf.push(plainGeo(new THREE.IcosahedronGeometry(1, 1).scale(s * 0.55, s * 1.3, s * 0.55).translate(e.x * 1.08, e.y - s * 0.75, e.z * 1.08)));
     });
-    if (droop) for (let k = 0; k < 7; k++) {
+    // Aerial roots: the banyan's alone.
+    if (K.roots) for (let k = 0; k < 7; k++) {
       const a = R() * Math.PI * 2, d = cr * (0.4 + R() * 0.5), x = Math.cos(a) * d, z = Math.sin(a) * d;
       bark.push(limbGeo(V3(x, tr + 0.12, z), V3(x, 0, z), 0.008, 0.012, 4));
     }
@@ -219,12 +269,12 @@ function fullGeo(kind, seed) {
 }
 // Each tree takes one of three of the kind's forms (the geometry's own seed), so a row varies.
 function fullTrees({ items, kind, seed }) {
-  const g = new THREE.Group(), leafM = kind === 'palm' ? FROND : kind === 'mango' || kind === 'ashoka' || kind === 'deodar' || kind === 'cypress' ? FOLIAGE_DARK : FOLIAGE;
+  const g = new THREE.Group(), K = KINDS[kind], leafM = K.leaf;
   for (let f = 0; f < 3; f++) {
     const mine = items.filter((_, i) => (i + seed) % 3 === f);
     if (!mine.length) continue;
     const geo = fullGeo(kind, (seed + f) % 4), place = mine.map((t) => [t.x, t.gy, t.z, t.s, t.ry]);
-    g.add(copies(geo.bark, kind === 'palm' ? PALM_BARK : BARK, place), copies(geo.leaf, leafM, place));
+    g.add(copies(geo.bark, kind === 'palm' ? PALM_BARK : barkOf(K), place), copies(geo.leaf, leafM, place));
   }
   return g;
 }
