@@ -1,4 +1,4 @@
-import { INDIA, project } from './india-map.js';
+import { INDIA, CLAIMS, project } from './india-map.js';
 
 export const TYPES = {
   sacred: 'Temples & shrines',
@@ -20,7 +20,7 @@ export function createMap(root, items, { onSelect }) {
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   root.innerHTML = `
     <svg class="map-svg" role="group" aria-label="Map of India with monument locations" preserveAspectRatio="xMidYMid meet">
-      <g class="states"></g><path class="outline"></path><g class="pins"></g>
+      <defs></defs><g class="claims"></g><g class="states"></g><path class="outline"></path><g class="pins"></g>
     </svg>
     <div class="maphead">
       <h2>Explore by map</h2>
@@ -35,10 +35,38 @@ export function createMap(root, items, { onSelect }) {
   const resetBtn = root.querySelector('#map-reset');
 
   const statesG = svg.querySelector('.states');
+  const byState = new Map();
   for (const s of INDIA.states) {
     const p = el('path', { d: s.d, class: 'state' });
     p.appendChild(el('title')).textContent = s.name;
     statesG.appendChild(p);
+    byState.set(s.name, [p]);
+  }
+  // The rest of Jammu and Kashmir and Ladakh, inside India's official boundary but beyond the
+  // lines of control: the outline masked to each union territory's boxes, less every state's shape
+  // (so a translucent highlight never stacks on the state above it).
+  const defs = svg.querySelector('defs'), claimsG = svg.querySelector('.claims');
+  const allStates = INDIA.states.map((s) => s.d).join(' ');
+  Object.entries(CLAIMS).forEach(([name, boxes], k) => {
+    const mask = el('mask', { id: `claim-${k}`, maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: INDIA.width, height: INDIA.height });
+    boxes.forEach(([x0, y0, x1, y1]) => mask.appendChild(el('rect', { x: x0, y: y0, width: x1 - x0, height: y1 - y0, fill: '#fff' })));
+    mask.appendChild(el('path', { d: allStates, fill: '#000' }));
+    // A mask hides but still takes the pointer; the clip to the same boxes keeps hovers apart.
+    const clip = el('clipPath', { id: `claim-clip-${k}` });
+    boxes.forEach(([x0, y0, x1, y1]) => clip.appendChild(el('rect', { x: x0, y: y0, width: x1 - x0, height: y1 - y0 })));
+    defs.append(mask, clip);
+    const p = el('path', { d: INDIA.outline, class: 'state claim', mask: `url(#claim-${k})`, 'clip-path': `url(#claim-clip-${k})` });
+    p.appendChild(el('title')).textContent = name;
+    claimsG.appendChild(p);
+    byState.get(name)?.push(p);
+  });
+  // A union territory and its claimed area light up together.
+  for (const parts of byState.values()) {
+    if (parts.length < 2) continue;
+    parts.forEach((p) => {
+      p.addEventListener('pointerenter', () => parts.forEach((q) => q.classList.add('lit')));
+      p.addEventListener('pointerleave', () => parts.forEach((q) => q.classList.remove('lit')));
+    });
   }
   svg.querySelector('.outline').setAttribute('d', INDIA.outline);
 

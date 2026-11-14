@@ -3,3 +3,4 @@
 .claude
 tools/node_modules
 tools/views
+.env

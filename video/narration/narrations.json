@@ -1,0 +1,507 @@
+{
+  "qutub-minar": {
+    "travel": "Our journey across India begins in the capital, Delhi.",
+    "story": "Here rises the Qutub Minar, seventy-two and a half metres of red sandstone and marble. Qutb ud-Din Aibak began it in 1199, and his successor Iltutmish completed it some twenty years later. Close by stands an iron pillar more than sixteen hundred years old that has barely rusted.",
+    "details": "Its five storeys taper towards the sky, each ringed by a carved balcony. Lower down, bands of fluted stone alternate with Quranic inscriptions."
+  },
+  "gateway-of-india": {
+    "travel": "We travel south-west, to the shores of the Arabian Sea at Mumbai.",
+    "story": "The Gateway of India was built to mark the arrival of King George the Fifth and Queen Mary in 1911, yet when they landed, they saw only a cardboard model. It took eleven years to complete. In February 1948, the last British troops left India through this very arch.",
+    "details": "Four turrets crown its yellow basalt, and at its heart a great arch, twenty-six metres high, frames the sea, its latticework inspired by Gujarati design."
+  },
+  "taj-mahal": {
+    "travel": "North now, to Agra, on the banks of the Yamuna.",
+    "story": "Emperor Shah Jahan built the Taj Mahal as a tomb for his beloved wife, Mumtaz Mahal. Some twenty thousand artisans laboured for over twenty years, from 1632 to 1653. Its four minarets lean slightly outward, so that in an earthquake they would fall away from the tomb.",
+    "details": "The great onion dome is ringed by four marble chhatris. Below, deep arches framed in black calligraphy are inlaid with flowers of precious stone."
+  },
+  "charminar": {
+    "travel": "Heading south to the Deccan plateau, we reach Hyderabad.",
+    "story": "The Charminar was built in 1591 by Muhammad Quli Qutb Shah, the founder of the city, and legend says it marks the end of a deadly plague. A small mosque hides on its top floor. Around it, the bangle stalls of Laad Bazaar still glitter.",
+    "details": "Its four minarets, fifty-six metres tall, end in small domes over carved balconies. Below, four grand arches open onto the bustling streets."
+  },
+  "ram-mandir": {
+    "travel": "North-east to Ayodhya, on the banks of the Sarayu.",
+    "story": "The Ram Mandir was designed by the Sompura family, temple architects for fifteen generations. It rose in about four years and was consecrated on the twenty-second of January, 2024. Remarkably, the main structure was built without any iron or steel.",
+    "details": "Its Nagara spires climb in pink sandstone above pillared halls. Three storeys rest on nearly four hundred carved pillars, each covered with figures of gods."
+  },
+  "brihadeeswara-temple": {
+    "travel": "Far to the south, we reach Thanjavur in Tamil Nadu.",
+    "story": "The Brihadeeswara Temple is the masterpiece of the Chola emperor Rajaraja the First. It was completed in about seven years, by 1010, entirely in granite, though no granite quarry lies near the town. More than a thousand years on, worship continues here every day.",
+    "details": "Its vimana rises in thirteen tiers to sixty-six metres, crowned by a capstone thought to weigh eighty tonnes. Below, its walls are lined with carved niches and guardian figures."
+  },
+  "india-gate": {
+    "travel": "Back in the capital, at the end of Kartavya Path.",
+    "story": "India Gate was designed by Edwin Lutyens as the All India War Memorial, and took ten years to build. It honours the soldiers of the British Indian Army who died between 1914 and 1921. For fifty years, an eternal flame burned beneath its arch.",
+    "details": "A shallow dome crowns its forty-two metre arch. Across its red and buff sandstone, more than 13,000 names are carved."
+  },
+  "statue-of-unity": {
+    "travel": "West to Gujarat, beside the Narmada river.",
+    "story": "The Statue of Unity depicts Sardar Vallabhbhai Patel, who united the princely states into one nation. At one hundred and eighty-two metres, it is the tallest statue in the world. Sculpted by Ram V. Sutar, it was built in under four years, and unveiled on Patel's birthday in 2018.",
+    "details": "Its bronze skin captures the folds of his shawl and the lines of his face. Inside its chest, a viewing gallery looks out over the dam."
+  },
+  "howrah-bridge": {
+    "travel": "We cross the country east, to Kolkata.",
+    "story": "Howrah Bridge spans the Hooghly. Completed in 1943, it was built without a single nut or bolt; its 26,500 tonnes of steel are joined entirely by rivets. Today it is one of the busiest bridges on earth, renamed Rabindra Setu in 1965 after Rabindranath Tagore.",
+    "details": "Its two great towers carry the cantilever arms high above the water. Below, its main span of four hundred and fifty-seven metres crosses the river without a single pier."
+  },
+  "jagannath-puri-temple": {
+    "travel": "South along the Bay of Bengal, to Puri in Odisha.",
+    "story": "The Jagannath Temple was built in the twelfth century by King Anantavarman Chodaganga Deva. Every day, a priest climbs its tower to change the flag at the summit. The English word juggernaut comes from the giant chariots of its Rath Yatra.",
+    "details": "Its curving Kalinga tower, sixty-five metres high, is crowned by the wheel of Vishnu. Below it, stepped roofs cover the halls where pilgrims gather."
+  },
+  "golden-temple": {
+    "travel": "Far to the north-west, to Amritsar in Punjab.",
+    "story": "Guru Arjan, the fifth Sikh Guru, built the Golden Temple, and in 1604 installed the holy Adi Granth within. Its four doorways welcome people of every faith, and its kitchen serves free meals to tens of thousands every day.",
+    "details": "Its gilded dome is shaped like an inverted lotus, ringed by small domed kiosks. Below, the marble storeys rise from the shimmering pool, reached by a single causeway."
+  },
+  "hawa-mahal": {
+    "travel": "South to Rajasthan, and the pink city of Jaipur.",
+    "story": "The Hawa Mahal, the Palace of Winds, was built in 1799 by Maharaja Sawai Pratap Singh. Its architect, Lal Chand Ustad, shaped its façade like the crown of Lord Krishna. Though five storeys high, it is barely one room deep.",
+    "details": "Small domed kiosks crown its pyramid of windows. Below, nine hundred and fifty-three latticed jharokhas let the royal women watch the street unseen."
+  },
+  "konark-sun-temple": {
+    "travel": "East again, to the coast of Odisha at Konark.",
+    "story": "Around 1250, King Narasimhadeva the First built a temple to Surya, the Sun god, as a colossal stone chariot drawn by seven horses. Tradition says twelve hundred artisans worked for twelve years. Sailors once called it the Black Pagoda.",
+    "details": "Its pyramid roof rises in three tiers of carved figures. And at its base, twenty-four great wheels work as sundials; the shadows of their spokes tell the time."
+  },
+  "meenakshi-temple": {
+    "travel": "Deep into Tamil Nadu, to the temple city of Madurai.",
+    "story": "The Meenakshi Temple is dedicated to the goddess Meenakshi and her consort Sundareswarar. Rebuilt by the Nayak rulers in the sixteenth and seventeenth centuries, it holds a hall of nearly a thousand carved pillars.",
+    "details": "Its fourteen gopurams are covered with thousands of painted figures of gods, animals and demons. The tallest soars fifty-two metres above the old city."
+  },
+  "lotus-temple": {
+    "travel": "Back north to Delhi.",
+    "story": "The Lotus Temple is a Baháʼí House of Worship, open to people of every faith. Designed by Fariborz Sahba, it took six years to build, opening in 1986. Inside, there are no idols and no sermons, only silence.",
+    "details": "Its twenty-seven petals are clad in marble from Greece, the same source as the Parthenon. Grouped in threes, they form nine sides, ringed by nine pools."
+  },
+  "gol-gumbaz": {
+    "travel": "South to Vijayapura in Karnataka.",
+    "story": "The Gol Gumbaz holds the tomb of Sultan Muhammad Adil Shah, and took thirty years to build. Inside, in its famous whispering gallery, a single whisper echoes again and again around the vast dome.",
+    "details": "Its dome, about forty-four metres across, is one of the largest ever raised without internal supports. Four seven-storey towers, each crowned by a small dome, guard its corners."
+  },
+  "mysore-palace": {
+    "travel": "Further south, to Mysuru.",
+    "story": "The Mysore Palace is the seat of the Wadiyar dynasty. When the old wooden palace burned down in 1897, Henry Irwin designed this replacement, which took fifteen years to complete. During Dasara, nearly one lakh bulbs turn it to gold.",
+    "details": "Domes of pink marble crown its towers, blending Hindu, Mughal, Rajput and Gothic styles. Below, rows of arches open along its grey granite façade."
+  },
+  "sanchi-stupa": {
+    "travel": "North into the heart of India, to Sanchi in Madhya Pradesh.",
+    "story": "Emperor Ashoka built the first stupa here in the third century before the common era, over relics of the Buddha. Later rulers doubled it in size and clad it in stone.",
+    "details": "A stone parasol crowns its great dome. Below, four carved gateways tell the Buddha's life, yet he never appears in human form, only as a wheel, a tree or footprints."
+  },
+  "mahabodhi-temple": {
+    "travel": "East to Bihar, and Bodh Gaya.",
+    "story": "Here, beneath the Bodhi tree, Siddhartha Gautama attained enlightenment. Emperor Ashoka built the first shrine, and the present tower rose in the Gupta period, fifteen centuries ago. A descendant of the original tree still grows beside it.",
+    "details": "Its pyramid tower of brick rises fifty-five metres, crowned by a stupa finial. At its base, four smaller towers stand at the corners, echoing the main spire."
+  },
+  "red-fort": {
+    "travel": "West, back to Old Delhi.",
+    "story": "Shah Jahan built the Red Fort when he moved his capital from Agra. It took nine years, and was designed by Ustad Ahmad Lahauri, the architect of the Taj Mahal. Every Independence Day since 1947, the national flag has been raised here.",
+    "details": "Chhatris and pavilions crown its gateways. Below, its red sandstone walls, two and a half kilometres long, are cut with arched gates and battlements."
+  },
+  "old-parliament-house": {
+    "travel": "Nearby, on Sansad Marg.",
+    "story": "The Old Parliament House was designed by Edwin Lutyens and Herbert Baker, and opened in 1927 after six years of work. In its domed Central Hall, the Constitution of India was framed, and India's freedom proclaimed at midnight in August 1947.",
+    "details": "Its circular form is crowned by a low dome. Around it, one hundred and forty-four sandstone columns ring the verandah."
+  },
+  "rashtrapati-bhavan": {
+    "travel": "Up the road to Raisina Hill.",
+    "story": "Rashtrapati Bhavan, once the Viceroy's House, is now the residence of the President of India. Edwin Lutyens designed it, and it took seventeen years to build, using some seven hundred million bricks. It holds three hundred and forty rooms.",
+    "details": "Its great dome blends a classical form with the stupa at Sanchi. Below, a long colonnade of Dholpur sandstone columns stretches across its façade."
+  },
+  "humayuns-tomb": {
+    "travel": "Across Delhi to Nizamuddin.",
+    "story": "Humayun's Tomb was commissioned by the emperor's widow, Empress Bega Begum, and designed by the Persian architect Mirak Mirza Ghiyas. It was the first great garden-tomb of the subcontinent, and the model for the Taj Mahal.",
+    "details": "A double dome of white marble crowns it, flanked by small chhatris. Below, tall arches of red sandstone are outlined in white marble."
+  },
+  "jama-masjid": {
+    "travel": "Into the lanes of Chandni Chowk.",
+    "story": "The Jama Masjid is the last great work of Shah Jahan. More than five thousand workers spent six years building it. Facing the Red Fort, its courtyard can hold about 25,000 worshippers.",
+    "details": "Three marble domes, striped in black, crown the prayer hall, flanked by two minarets forty metres tall. Below, broad arches open onto the vast courtyard."
+  },
+  "new-parliament-house": {
+    "travel": "Back to Sansad Marg.",
+    "story": "The New Parliament House was built in under three years and inaugurated in May 2023. Its triangular plan was designed by Bimal Patel. The Lok Sabha is themed on the peacock, and the Rajya Sabha on the lotus.",
+    "details": "A bronze National Emblem, six and a half metres tall, crowns its roof. Below, its sandstone walls are lined with tall, slender columns."
+  },
+  "dilwara-temples": {
+    "travel": "South-west to the Aravalli hills, and Mount Abu.",
+    "story": "The Dilwara Temples are five Jain shrines of white marble. The oldest was built in 1031 by Vimal Shah, a minister of the Chaulukya king; the others followed over two centuries. From outside, a plain wall hides all their beauty.",
+    "details": "Inside, the domed ceilings hang down in delicate lotus pendants. The marble pillars and arches are carved so finely they seem translucent."
+  },
+  "akshardham": {
+    "travel": "North again to Delhi, on the banks of the Yamuna.",
+    "story": "Swaminarayan Akshardham was built in just five years by thousands of artisans and volunteers, and opened in 2005. Following ancient texts, its main monument uses no steel at all.",
+    "details": "Nine carved domes crown it, above two hundred and thirty-four pillars and 20,000 sculpted figures. It rests on a plinth of one hundred and forty-eight stone elephants."
+  },
+  "kandariya-mahadeva": {
+    "travel": "South to Khajuraho, in Madhya Pradesh.",
+    "story": "The Kandariya Mahadeva Temple was built by the Chandela kings around 1030. Its sandstone blocks are locked together without mortar. Of some eighty-five temples once built here, about twenty-five survive.",
+    "details": "Its tower is wrapped in eighty-four smaller spires, rising like the peaks of Mount Kailash. Below, more than eight hundred sculptures cover its walls."
+  },
+  "ranakpur-jain-temple": {
+    "travel": "West to a quiet valley of the Aravallis, at Ranakpur.",
+    "story": "This Jain temple was begun in 1437 by the merchant Dharna Shah and dedicated to Adinatha. The work is said to have taken some fifty years. Open on all four sides, it holds twenty-nine halls.",
+    "details": "Domes and spires rise across its roofs. Beneath them stand 1,444 carved marble pillars, and it is said that no two are alike."
+  },
+  "chennakesava-temple": {
+    "travel": "South to Karnataka, and the village of Somanathapura.",
+    "story": "In 1258, Somanatha, a commander of the Hoysala king, built the Chennakesava Temple. It is carved from soapstone, soft when quarried and hardening over time, which allowed astonishing detail.",
+    "details": "Three star-shaped towers rise from a star-shaped platform. Around the base run friezes of elephants, horsemen and scenes from the epics."
+  },
+  "victoria-memorial": {
+    "travel": "Across India to Kolkata, once the capital of British India.",
+    "story": "Conceived by Lord Curzon and designed by William Emerson, the Victoria Memorial took fifteen years to build. It is clad in white Makrana marble, the same stone as the Taj Mahal.",
+    "details": "On top of its dome, a bronze Angel of Victory turns with the wind. Below, corner towers and arched porches frame its marble halls."
+  },
+  "csmt": {
+    "travel": "West to Mumbai once more.",
+    "story": "Chhatrapati Shivaji Maharaj Terminus took ten years to build and opened as Victoria Terminus in 1887. Designed by Frederick William Stevens, it still serves millions of passengers every day.",
+    "details": "A statue of Progress crowns its central dome. Below, Gothic arches, gargoyles, stained glass and carved peacocks blend Europe with India."
+  },
+  "kailasa-temple": {
+    "travel": "Inland to Ellora, for one of the greatest feats of architecture.",
+    "story": "The Kailasa Temple was not built, but carved, out of a single basalt cliff, under the Rashtrakuta king Krishna the First in the eighth century. Sculptors worked from the top down, removing some 200,000 tonnes of rock.",
+    "details": "Its pyramidal tower rises from the pit, with halls and stone bridges. Around its base, life-size elephants seem to carry the whole temple."
+  },
+  "vittala-temple-hampi": {
+    "travel": "South to Hampi, the ruined capital of the Vijayanagara Empire.",
+    "story": "Among giant granite boulders stands the Vittala Temple, the empire's finest jewel. In its courtyard, a stone chariot shrine to Garuda appears today on India's fifty rupee note.",
+    "details": "Its towers rise over pillared halls. In the main hall, fifty-six slender granite pillars ring with musical notes when tapped."
+  },
+  "padmanabhaswamy-temple": {
+    "travel": "To the south-western tip, and Thiruvananthapuram.",
+    "story": "In the Padmanabhaswamy Temple, Vishnu reclines on the serpent Anantha, in an image so large it is seen through three doors. In 2011, vaults beneath the temple revealed one of the greatest treasures ever found.",
+    "details": "Its seven-tiered gopuram rises over a sacred tank. Within, a long corridor of carved granite pillars surrounds the shrine."
+  },
+  "basilica-of-bom-jesus": {
+    "travel": "North up the coast to Old Goa.",
+    "story": "The Basilica of Bom Jesus took eleven years to build, and was completed by the Jesuits in 1605. It holds the remains of Saint Francis Xavier, in a silver casket on a tomb sent from Florence.",
+    "details": "Its Baroque gable rises in carved tiers. Below, columns and arched doorways stand out in red laterite, bare since its plaster was stripped."
+  },
+  "kamakhya-temple": {
+    "travel": "Far to the north-east, to Assam and the Brahmaputra.",
+    "story": "On Nilachal Hill stands the Kamakhya Temple, one of the most revered Shakti Peethas. Rebuilt in 1565 under the Koch dynasty, its sanctum holds no idol, only a natural spring flowing over stone.",
+    "details": "Its beehive-shaped dome, found nowhere else, crowns the shrine. Below, carved panels of gods and goddesses line its stone walls."
+  },
+  "tawang-monastery": {
+    "travel": "Higher still, into the mountains of Arunachal Pradesh.",
+    "story": "Tawang Monastery was founded in 1681 at the wish of the fifth Dalai Lama. At about three thousand metres, it is the largest Buddhist monastery in India. The sixth Dalai Lama was born in this very valley.",
+    "details": "Golden finials crown its assembly hall. Inside rises a gilded Buddha, eight metres tall, among rows of painted wooden pillars."
+  },
+  "amber-fort": {
+    "travel": "West to the hills above Jaipur.",
+    "story": "Amber Fort was begun in 1592 by Raja Man Singh the First, a general of the emperor Akbar, and enlarged over two centuries. In its Sheesh Mahal, thousands of tiny mirrors make a single candle fill the room with stars.",
+    "details": "Chhatris and domed pavilions crown its ramparts. Below, its honey-coloured walls blend Rajput and Mughal arches above Maota Lake."
+  },
+  "rani-ki-vav": {
+    "travel": "South-west to Patan, in Gujarat.",
+    "story": "Rani ki Vav, the Queen's Stepwell, was built in the eleventh century in memory of King Bhima the First. Floods buried it in silt for centuries, which kept its carvings remarkably fresh. It appears on the hundred rupee note.",
+    "details": "Pillared pavilions mark each of its seven levels. Down its walls, more than five hundred sculptures show the avatars of Vishnu."
+  },
+  "ramappa-temple": {
+    "travel": "South-east to Palampet, in Telangana.",
+    "story": "The Ramappa Temple was begun in 1213 by a general of the Kakatiya kings, and is said to have taken forty years. Rarely for an Indian temple, it is named after its chief sculptor. Its foundation rests on a bed of sand that cushions it against earthquakes.",
+    "details": "Its tower is built of bricks so light they float on water. Below, polished black pillars and bracket figures of dancers adorn the hall."
+  },
+  "kedarnath-temple": {
+    "travel": "North into the Himalaya, to Kedarnath.",
+    "story": "At three thousand five hundred metres stands Kedarnath, one of the twelve Jyotirlingas of Shiva. Snow buries it for half the year. In the floods of 2013, a huge boulder lodged behind the temple and shielded it.",
+    "details": "Its spire rises above a pyramid roof. Below, its walls of massive grey stone slabs have stood against centuries of mountain winter."
+  },
+  "hazratbal-shrine": {
+    "travel": "North-west to Kashmir, and the shore of Dal Lake.",
+    "story": "The Hazratbal Shrine houses the Moi-e-Muqaddas, a relic revered as a hair of the Prophet Muhammad. The present shrine took eleven years to build, and was completed in 1979.",
+    "details": "Its white marble dome, the only one on a mosque in Srinagar, is matched by a single minaret. Below, arched windows look out over the lake."
+  },
+  "shore-temple": {
+    "travel": "Down to the Coromandel coast, at Mahabalipuram.",
+    "story": "The Shore Temple was built by the Pallava king Narasimhavarman the Second in the early eighth century, one of the oldest structural stone temples in South India. When the tsunami of 2004 drew back the sea, ruins of other structures briefly appeared.",
+    "details": "Its two pyramidal towers rise in stepped tiers. Along its walls, rows of seated Nandi bulls keep watch."
+  },
+  "gwalior-fort": {
+    "travel": "North to Gwalior, in Madhya Pradesh.",
+    "story": "Emperor Babur called Gwalior Fort the pearl among the forts of India. Between 1486 and 1516, Raja Man Singh Tomar built the Man Mandir palace here. A temple inscription inside contains one of the oldest written zeros in the world.",
+    "details": "Domed towers crown the palace walls. Below, glazed tiles of blue, green and yellow show ducks, elephants and banana trees."
+  },
+  "nalanda-mahavihara": {
+    "travel": "East to Bihar, and the ruins of Nalanda.",
+    "story": "Founded in the fifth century under the Gupta kings, Nalanda was one of the world's first residential universities. Scholars came from China, Korea and Tibet. When invaders burned its library, it is said the manuscripts smouldered for months.",
+    "details": "The stepped Sariputta Stupa rises over the ruins. Below, its brick terraces are set with small votive towers and stucco niches."
+  },
+  "tirumala-venkateswara-temple": {
+    "travel": "South to the Tirumala hills of Andhra Pradesh.",
+    "story": "The temple of Venkateswara, a form of Vishnu, was expanded by dynasties over seven centuries. It is one of the most visited places of worship in the world, and many pilgrims offer their hair here.",
+    "details": "The vimana over its sanctum, the Ananda Nilayam, is covered in gold. Below, gopurams and pillared halls ring the shrine."
+  },
+  "capitol-complex": {
+    "travel": "North to Chandigarh, India's first planned city after independence.",
+    "story": "Le Corbusier designed the Capitol Complex, built over fourteen years from 1951. The Open Hand Monument symbolises the city: open to give, open to receive.",
+    "details": "A sculpted funnel and a tilted pyramid crown the Palace of Assembly. Below, bold columns and sun-breakers of raw concrete shade its walls."
+  },
+  "hidimba-devi-temple": {
+    "travel": "Into the Himalaya of Himachal Pradesh, to Manali.",
+    "story": "The Hidimba Devi Temple was built in 1553 by Maharaja Bahadur Singh over a cave shrine to Hidimba, the wife of Bhima in the Mahabharata. It stands in a forest of tall deodar cedars.",
+    "details": "Three tiers of wooden shingle roofs rise to a gleaming brass cone. Below, its stone and wood walls are richly carved."
+  },
+  "bandra-worli-sea-link": {
+    "travel": "Down to the west coast once more, to Mumbai.",
+    "story": "The Bandra Worli Sea Link was built over nine years and opened in 2009. Stretching five and a half kilometres across Mahim Bay, it cut a journey of nearly an hour to about ten minutes.",
+    "details": "Its pylons rise about one hundred and twenty-eight metres. From them, fans of steel cables hold up the eight-lane deck."
+  },
+  "buland-darwaza": {
+    "travel": "North to Fatehpur Sikri, Akbar's red sandstone city.",
+    "story": "The Buland Darwaza, the Gate of Magnificence, was built to celebrate Akbar's victory in Gujarat. An inscription quotes Jesus: the world is a bridge; pass over it, but build no house upon it.",
+    "details": "Small chhatris line its crown. Below, its great arch rises about fifty-four metres above a broad flight of steps."
+  },
+  "panch-mahal": {
+    "travel": "Within the same palace.",
+    "story": "The Panch Mahal is a pavilion built to catch the breeze, like the wind-catchers of Persia. Akbar's grand capital was abandoned only about fourteen years after it was built, perhaps for lack of water.",
+    "details": "Five storeys, each smaller than the one below, rise to a single domed kiosk. Below, one hundred and seventy-six carved columns hold it up."
+  },
+  "bara-imambara": {
+    "travel": "East to Lucknow, the city of the Nawabs.",
+    "story": "Nawab Asaf-ud-Daula built the Bara Imambara during the famine of 1784, to give work to his people. Legend says nobles quietly dismantled the work by night, so they too could earn with dignity. Above it lies the maze of the Bhool Bhulaiya.",
+    "details": "Turrets and small domes crown its roofline. Within, a central hall fifty metres long is vaulted without a single beam."
+  },
+  "rumi-darwaza": {
+    "travel": "Right next door.",
+    "story": "The Rumi Darwaza was built in the same year by Nawab Asaf-ud-Daula. Often called the Turkish Gate, it is said to be modelled on the Sublime Porte of Istanbul. It became the very symbol of Lucknow.",
+    "details": "An ornate crown blooms like a flower, topped by an eight-sided kiosk. Below, its arch rises eighteen metres."
+  },
+  "chota-imambara": {
+    "travel": "Across Lucknow.",
+    "story": "The Chota Imambara was built in 1838 by Nawab Muhammad Ali Shah as his own tomb. It is called the Palace of Lights, for its glittering chandeliers and gilded mirrors. Two small replicas of the Taj Mahal stand in its garden.",
+    "details": "A golden dome and slender minarets crown it. Below, black Quranic calligraphy runs along its white façade."
+  },
+  "itmad-ud-daulah": {
+    "travel": "West, back to Agra.",
+    "story": "Empress Nur Jahan built this tomb for her father, Itmad-ud-Daulah, between 1622 and 1628. It was the first Mughal tomb faced entirely in white marble, and is fondly called the Baby Taj.",
+    "details": "A canopied pavilion crowns its roof, with four short towers at the corners. Below, its walls are inlaid with coloured stone, a rehearsal for the Taj Mahal."
+  },
+  "akbars-tomb": {
+    "travel": "Just outside Agra, to Sikandra.",
+    "story": "Akbar began his own tomb, and his son Jahangir completed it in 1613, after eight years of work. Blackbuck still graze in its gardens.",
+    "details": "Five storeys rise in tiers of chhatris to a white marble terrace open to the sky. Its gateway carries four white marble minarets, the first on a Mughal gateway."
+  },
+  "agra-fort": {
+    "travel": "Back to the banks of the Yamuna.",
+    "story": "Akbar rebuilt Agra Fort from 1565, and chronicles say four thousand builders worked every day for eight years. His grandson Shah Jahan spent his final years imprisoned here by his own son, gazing across the river at the Taj Mahal.",
+    "details": "Marble pavilions and domes crown its ramparts. Below, red sandstone walls two and a half kilometres long are cut with massive gates."
+  },
+  "bibi-ka-maqbara": {
+    "travel": "South to Maharashtra, and Chhatrapati Sambhajinagar.",
+    "story": "Prince Azam Shah built the Bibi Ka Maqbara for his mother, the wife of Aurangzeb. Its architect, Ata-ullah, was the son of the Taj Mahal's chief designer, and it is called the Taj of the Deccan.",
+    "details": "Only the dome is marble, flanked by four minarets. Below, basalt walls are finished with fine lime plaster."
+  },
+  "safdarjung-tomb": {
+    "travel": "North again to Delhi, on Lodhi Road.",
+    "story": "Safdarjung's Tomb was built in 1754 by Nawab Shuja-ud-Daula for his father, prime minister of the Mughal empire. It is often called the last great garden tomb of the Mughals.",
+    "details": "A bulbous white dome crowns it, with towers at the corners. Below, arched niches face a charbagh garden divided by water channels."
+  },
+  "somnath-temple": {
+    "travel": "West to the shore of the Arabian Sea, at Prabhas Patan.",
+    "story": "The Somnath Temple is revered as the first of the twelve Jyotirlingas. Destroyed and rebuilt many times, it was raised again after independence, led by Sardar Patel, and consecrated in 1951. An arrow pillar marks that no land lies between here and the South Pole.",
+    "details": "Its shikhara rises in clustered spires to a golden pot and flag. Below, its sandstone walls are carved with rows of figures."
+  },
+  "mallikarjuna-temple": {
+    "travel": "South-east to Andhra Pradesh, deep in the Nallamala forest.",
+    "story": "On Srisailam hill above the Krishna river, the Mallikarjuna Temple is both a Jyotirlinga and a Shakti Peetha, sacred to Shiva and the goddess Bhramaramba.",
+    "details": "Its gopurams, raised by the Vijayanagara rulers, tower above the walls. Below, the high stone walls are carved with friezes of gods, hunters and animals."
+  },
+  "mahakaleshwar-temple": {
+    "travel": "North to Ujjain, one of India's oldest cities.",
+    "story": "The Mahakaleshwar Temple holds the only Jyotirlinga that faces south. Rebuilt by the Marathas in the eighteenth century, it is famous for the Bhasma Aarti, offered with sacred ash before every dawn.",
+    "details": "Its spire rises over three levels. The top shrine opens only once a year, on Nag Panchami."
+  },
+  "omkareshwar-temple": {
+    "travel": "West along the Narmada river, to Mandhata island.",
+    "story": "The island is said to be shaped like the sacred syllable Om. With Mamleshwar across the river, Omkareshwar is worshipped as a single Jyotirlinga. Pilgrims cross by bridge or boat to bathe at its ghats.",
+    "details": "Its white spire rises above the riverbank. Below, stone steps descend to the water."
+  },
+  "bhimashankar-temple": {
+    "travel": "South-west to the Sahyadri hills of Maharashtra.",
+    "story": "Where the Bhima river rises stands the Bhimashankar Temple. The forest around it is a wildlife sanctuary, home of the Indian giant squirrel.",
+    "details": "Its Nagara spire rises in black basalt. Below, a hall added by Nana Phadnavis in the eighteenth century joins the older shrine."
+  },
+  "kashi-vishwanath-temple": {
+    "travel": "North-east to Varanasi, on the Ganga.",
+    "story": "The present Kashi Vishwanath Temple was built in 1780 by the Maratha queen Ahilyabai Holkar. Since 2021, a grand corridor links it directly to the ghats of the sacred river.",
+    "details": "In 1835, Maharaja Ranjit Singh covered its spire and dome in gold. Below, carved stone walls surround the sanctum."
+  },
+  "trimbakeshwar-temple": {
+    "travel": "South-west to Nashik, where the Godavari river is born.",
+    "story": "The Trimbakeshwar Temple was built by the Peshwa Balaji Bajirao over thirty-one years. Its lingam has three faces, for Brahma, Vishnu and Shiva. Every twelve years, the town hosts the Kumbh Mela.",
+    "details": "Its black basalt spire is carved with tier upon tier of miniature towers. Below, its walls carry figures of gods, animals and dancers."
+  },
+  "baidyanath-temple": {
+    "travel": "East to Deoghar, in Jharkhand.",
+    "story": "Baba Baidyanath Dham is a complex of twenty-two temples, both a Jyotirlinga and a Shakti Peetha. In the month of Shravan, millions of pilgrims walk over a hundred kilometres carrying Ganga water here.",
+    "details": "Its main spire is crowned not by a trident, but by a five-pointed panchashula. Below, smaller shrines cluster around it."
+  },
+  "nageshwar-temple": {
+    "travel": "Far west, to the Saurashtra coast near Dwarka.",
+    "story": "Nageshwar means lord of serpents, and devotees pray here for protection from poisons.",
+    "details": "Its spire rises in pink stone. In the garden, a seated statue of Shiva, twenty-five metres tall, is visible from far across the coast."
+  },
+  "ramanathaswamy-temple": {
+    "travel": "To the very south, and Rameswaram island.",
+    "story": "Tradition says Rama worshipped Shiva here before crossing to Lanka. Inside, pilgrims bathe in the waters of twenty-two sacred wells.",
+    "details": "Gopurams tower over its gates. Within, pillared corridors about one point two kilometres long are the longest of any Hindu temple."
+  },
+  "grishneshwar-temple": {
+    "travel": "North to Verul, beside the Ellora Caves.",
+    "story": "The Grishneshwar Temple is counted as the last of the twelve Jyotirlingas. It was rebuilt in the eighteenth century by queen Ahilyabai Holkar, who restored temples across India.",
+    "details": "Its five-tiered spire rises in red basalt. Below, its walls are carved with the ten avatars of Vishnu."
+  },
+  "dhamek-stupa": {
+    "travel": "North-east to Sarnath, near Varanasi.",
+    "story": "Here the Buddha gave his first sermon. The Dhamek Stupa was built around the year 500. At Sarnath was found Ashoka's lion capital, now the National Emblem of India.",
+    "details": "Its brick cylinder rises forty-three metres. Below, the stone drum is carved with bands of flowers and geometric patterns."
+  },
+  "ajanta-caves": {
+    "travel": "South-west into the Deccan, to Ajanta.",
+    "story": "Thirty Buddhist caves were cut into this horseshoe-shaped cliff over some seven centuries. Forgotten for a thousand years, they were rediscovered in 1819 by a British officer hunting a tiger.",
+    "details": "Carved façades and horseshoe windows open in the rock. Inside, murals of natural pigment are among the finest paintings of the ancient world."
+  },
+  "rumtek-monastery": {
+    "travel": "Far north-east to Sikkim.",
+    "story": "Rumtek is the seat in exile of the Karmapa, head of the Karma Kagyu school of Tibetan Buddhism. The sixteenth Karmapa rebuilt it in the 1960s, modelled on Tsurphu Monastery in Tibet.",
+    "details": "Golden finials crown its roofs. Below, painted eaves and colourful windows frame the prayer hall."
+  },
+  "thiksey-monastery": {
+    "travel": "North-west to the high desert of Ladakh.",
+    "story": "Thiksey Monastery is often compared to the Potala Palace in Lhasa, and is one of the largest in Ladakh. Its statue of the future Buddha is about fifteen metres tall.",
+    "details": "Twelve storeys of white and red buildings climb the hill. At the top, the red assembly halls crown the monastery."
+  },
+  "key-monastery": {
+    "travel": "South-east to the Spiti Valley, a cold mountain desert.",
+    "story": "Key Monastery was founded about a thousand years ago, and is the largest in Spiti. Raided and rebuilt many times, it guards ancient murals and scriptures.",
+    "details": "At its summit sits the main temple. Below, whitewashed buildings are piled up the conical hill like a fortress."
+  },
+  "gommateshwara": {
+    "travel": "South to Shravanabelagola, in Karnataka.",
+    "story": "The statue of the Jain saint Bahubali was carved from a single block of granite around 983. Pilgrims climb more than six hundred steps to reach it. Every twelve years, it is bathed in milk, saffron and flowers.",
+    "details": "His serene face looks out over the plain. Below, vines carved in stone climb his legs, showing how long he stood in meditation."
+  },
+  "palitana-temples": {
+    "travel": "North-west to Gujarat, and Shatrunjaya hill.",
+    "story": "More than eight hundred Jain temples crown this hill, built over some nine hundred years. Pilgrims climb more than 3,000 steps. The hill is left empty at night; not even the priests stay.",
+    "details": "Spires and domes rise in clusters of white marble. Below, carved pillars and gateways lead from shrine to shrine."
+  },
+  "shikharji": {
+    "travel": "East to Parasnath Hill, the highest point in Jharkhand.",
+    "story": "Jain tradition holds that twenty of the twenty-four Tirthankaras attained liberation here, among them Parshvanatha. Pilgrims walk a barefoot circuit of about twenty-seven kilometres.",
+    "details": "A small shrine, a tonk, crowns each peak along the ridge. Below, white marble temples gather on the slopes."
+  },
+  "parshvanath-temple-khajuraho": {
+    "travel": "West, back to Khajuraho.",
+    "story": "The largest Jain temple at Khajuraho was built under the Chandela kings in the tenth century. Originally dedicated to Adinatha, it received an image of Parshvanatha in 1860.",
+    "details": "Its spire rises in clustered tiers. Below, bands of graceful sculpture, among Khajuraho's finest, wrap around the shrine."
+  },
+  "soniji-ki-nasiyan": {
+    "travel": "West to Ajmer, in Rajasthan.",
+    "story": "Soniji Ki Nasiyan was built by the Soni family over thirty years. Its Swarna Nagari hall holds a gilded model of the Jain universe, said to use over a thousand kilograms of gold.",
+    "details": "Its red sandstone façade is crowned by small domes. Below, carved arches lead into the golden hall."
+  },
+  "mehrangarh-fort": {
+    "travel": "West into the Thar desert, to Jodhpur.",
+    "story": "Mehrangarh Fort was founded by Rao Jodha in 1459. Rudyard Kipling called it the work of angels, fairies and giants. Below it spreads the Blue City, its houses washed in indigo.",
+    "details": "Latticed windows and balconies crown its palaces. Below, walls up to thirty-six metres high still bear the scars of cannonballs."
+  },
+  "chittorgarh-fort": {
+    "travel": "South-east to Chittorgarh.",
+    "story": "Spread over two hundred and eighty hectares, this is one of the largest forts in India, a place of legend, of Rani Padmini and the poet-saint Meera Bai.",
+    "details": "Around 1448, Rana Kumbha raised the nine-storey Vijay Stambh, the Tower of Victory. Below, massive gates guard the climb to the plateau."
+  },
+  "jaisalmer-fort": {
+    "travel": "Deep into the Thar Desert, to Jaisalmer.",
+    "story": "Founded in 1156 by Rawal Jaisal, this is one of the few living forts in the world; thousands of people still live inside. Its yellow stone glows gold at sunset, giving it the name Sonar Qila.",
+    "details": "Turrets and carved balconies crown its walls. Below, ninety-nine bastions ring the hill."
+  },
+  "golconda-fort": {
+    "travel": "South-east, back to Hyderabad.",
+    "story": "The Qutb Shahi sultans turned Golconda into a granite citadel from 1518. It was the world's great diamond market; the Koh-i-Noor and the Hope Diamond are both believed to come from its mines.",
+    "details": "The Bala Hissar pavilion crowns the summit. Below, at the entrance gate, a single handclap can be heard at the very top."
+  },
+  "daulatabad-fort": {
+    "travel": "West to Daulatabad, in Maharashtra.",
+    "story": "Built as Devagiri by the Yadava kings, its only way up runs through a pitch-dark spiral tunnel. In 1327, Sultan Muhammad bin Tughlaq moved his capital here from Delhi.",
+    "details": "The tall Chand Minar was added in 1435. Below, the hill's sides were cut away to sheer cliffs above a moat."
+  },
+  "city-palace-udaipur": {
+    "travel": "North to Udaipur, the city of lakes.",
+    "story": "The City Palace was begun in 1559 by Maharana Udai Singh the Second, founder of the city, and added to over four hundred years. On the lake before it, the Lake Palace seems to float.",
+    "details": "Domed towers and cupolas crown its roofline. Below, a façade about two hundred and forty-four metres long rises from Lake Pichola."
+  },
+  "laxmi-vilas-palace": {
+    "travel": "South-west to Vadodara, in Gujarat.",
+    "story": "Maharaja Sayajirao Gaekwad the Third completed the Laxmi Vilas Palace in 1890. It is said to be four times the size of Buckingham Palace, and the royal family still lives here.",
+    "details": "Domes and a tall clock tower crown it in the Indo-Saracenic style. Below, arcades of sandstone and marble run along its front."
+  },
+  "fort-aguada": {
+    "travel": "South to Goa.",
+    "story": "The Portuguese built Fort Aguada in 1612 to guard the Mandovi river against the Dutch. Its name comes from the freshwater spring within, which supplied passing ships.",
+    "details": "Its lighthouse, built in 1864, is one of the oldest in Asia. Below, thick laterite walls slope down to the sea."
+  },
+  "bekal-fort": {
+    "travel": "Further down the coast, to Kerala.",
+    "story": "Bekal Fort was built around 1650 by Shivappa Nayaka of the Keladi dynasty. Washed by the sea on three sides, it is the largest fort in Kerala, made famous by the film song Tu Hi Re.",
+    "details": "A tall round observation tower rises at its centre. Below, keyhole-shaped laterite walls curve along the shore."
+  },
+  "cooch-behar-palace": {
+    "travel": "Across the country to northern West Bengal.",
+    "story": "The Cooch Behar Palace was built in 1887 for Maharaja Nripendra Narayan, inspired by Buckingham Palace. It was the childhood home of Gayatri Devi, who became the Maharani of Jaipur.",
+    "details": "A tall metal dome rises over the Durbar Hall. Below, two storeys of classical arches stretch along the brick façade."
+  },
+  "sher-shah-suri-tomb": {
+    "travel": "West to Sasaram, in Bihar.",
+    "story": "Sher Shah Suri drove the emperor Humayun out of India. In five years of rule, he rebuilt the Grand Trunk Road and introduced the silver rupiya, the ancestor of today's rupee.",
+    "details": "His tomb rises in three octagonal tiers to a broad dome ringed by chhatris. Below, it stands in an artificial lake, reached by a causeway."
+  },
+  "cellular-jail": {
+    "travel": "Across the Bay of Bengal, to the Andaman Islands.",
+    "story": "The British spent ten years building the Cellular Jail, to hold freedom fighters in solitary confinement. It was dreaded as Kala Pani, the black waters. Today it is a National Memorial.",
+    "details": "A central watchtower rises at its heart. Below, wings of six hundred and ninety-three cells radiated out, so no prisoner could see another."
+  },
+  "shaheed-minar": {
+    "travel": "North-west, back to Kolkata.",
+    "story": "Built in 1828 to honour a British general, the Shaheed Minar was renamed in 1969 for the martyrs of India's freedom struggle. Its grounds have long hosted great political rallies.",
+    "details": "A Turkish cupola and two balconies crown its Syrian-style column. Below, it rests on an Egyptian-style base."
+  },
+  "tipu-sultan-gumbaz": {
+    "travel": "South-west to Srirangapatna, in Karnataka.",
+    "story": "Tipu Sultan built the Gumbaz for his parents, Hyder Ali and Fatima Begum. Tipu himself was buried here after he fell defending Srirangapatna in 1799.",
+    "details": "A white dome rises above minarets. Below, dark granite pillars ring the tomb, its walls painted in tiger stripes."
+  },
+  "qutb-shahi-tombs": {
+    "travel": "North, back to Hyderabad.",
+    "story": "Near Golconda Fort lie the tombs of the Qutb Shahi sultans. Seven kings of the dynasty rest here with their families, in about thirty tombs.",
+    "details": "Each is crowned by a great dome. Below, the granite cubes stand on raised terraces, ringed by arcades."
+  },
+  "vivekananda-rock-memorial": {
+    "travel": "To Kanyakumari, the southern tip, where three seas meet.",
+    "story": "On a rock offshore stands the memorial, built in 1970 where Swami Vivekananda meditated in 1892. Beside it rises the statue of the poet Thiruvalluvar, one hundred and thirty-three feet tall, one foot for each chapter of the Thirukkural.",
+    "details": "Its hall is crowned by a dome in temple style. Below, pillars and a carved porch face the open sea."
+  },
+  "jallianwala-bagh": {
+    "travel": "Far north, back to Amritsar.",
+    "story": "On the thirteenth of April, 1919, British troops fired on an unarmed crowd here, blocking the only exit. In protest, Rabindranath Tagore gave up his knighthood.",
+    "details": "The flame-shaped memorial rises in red sandstone. Below, walls still marked by bullets are preserved in the garden."
+  },
+  "kargil-war-memorial": {
+    "travel": "North into Ladakh, to Dras.",
+    "story": "In one of the coldest inhabited places on earth stands the memorial to the soldiers who fell in the Kargil War of 1999. It faces Tololing, one of the peaks recaptured in the war.",
+    "details": "A giant national flag flies above it. Below, a pink sandstone wall carries the names of the fallen."
+  },
+  "national-war-memorial": {
+    "travel": "South to Delhi, beside India Gate.",
+    "story": "Opened in 2019, the National War Memorial honours more than 25,000 soldiers who died for independent India. Its four circles stand for immortality, bravery, sacrifice and protection.",
+    "details": "An obelisk rises at its heart, where an eternal flame burns. Below, the names of the fallen are inscribed on granite tablets."
+  },
+  "kirti-mandir": {
+    "travel": "Our final stop: Porbandar, on the coast of Gujarat.",
+    "story": "Kirti Mandir stands beside the house where Mahatma Gandhi was born, on the second of October, 1869. It also honours Kasturba, his wife.",
+    "details": "Its tower is seventy-nine feet tall, one foot for each year of his life. And here, where the Father of the Nation began his journey, ours across India comes to an end."
+  }
+}

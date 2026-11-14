@@ -139,8 +139,10 @@ budgets, flicker, heights against `refs`, the filter groups, and renders of the 
 
 ## Video
 
-`video/` holds a [HyperFrames](https://hyperframes.heygen.com) project that renders all 101
-monuments, five seconds each, as an 8 min 25 s film at 1920×1080, using the site's own models. See
+`video/` holds a [HyperFrames](https://hyperframes.heygen.com) project that renders an hour-long
+documentary journey across India at 1920×1080, using the site's own models. For each monument it
+plays a 3D map flight to its location, a drone orbit and close-ups of its domes, spires and pillars.
+A narrator voiced by [Sarvam AI](https://www.sarvam.ai/) text-to-speech tells the story. See
 [`video/README.md`](video/README.md) to render it.
 
 ## Deploy
@@ -158,6 +160,7 @@ deploys to production.
 - **Map data:** state boundaries and India's outline come from
   [Natural Earth](https://www.naturalearthdata.com) (public domain), using its India point-of-view
   boundaries, simplified into `js/india-map.js`.
+- **Narration voice:** [Sarvam AI](https://www.sarvam.ai/) Bulbul text-to-speech.
 - **Fonts:** Rozha One and Hind on the site; the video adds Noto faces for each Indian script (all
   SIL Open Font License).
 
