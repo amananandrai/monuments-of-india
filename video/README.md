@@ -77,7 +77,7 @@ node tools/generate-narration.mjs
 
 Put any music you have the rights to at `video/assets/audio/monuments-theme.mp3`. It loops under the voice at low volume, fading in and out. Without it, the film has narration only.
 
-### 5. Preview, then render
+### 5. Preview
 
 From `video/`:
 
@@ -85,15 +85,61 @@ From `video/`:
 npm run dev       # the HyperFrames preview in your browser, to scrub through the film
 npm run check     # lint, timing and layout checks
 npx hyperframes@0.8.210 snapshot --at 10,40,90   # a few stills, to look at before a long render
-npm run render    # the whole film -> video/renders/monuments-of-india.mp4
 ```
 
-Every script runs `npm run sync` first. It copies in the site's models, textures and fonts and regenerates the compositions from the timeline, and it reports any missing sound file. `npm run render` uses all your CPU cores by default. Add `--workers 2` to the render command in `package.json` to leave some free.
+### 6. Render, with progress and timing
+
+In VS Code, open a terminal (<kbd>Ctrl</kbd>+<kbd>`</kbd>), go to `video/`, and run a short trial first:
+
+```bash
+cd video
+npm run render:test
+```
+
+It renders the first 30 seconds to `renders/test-30s.mp4` (a few minutes), measures the speed on your machine, and projects how long the whole film will take. For example, a 6-second trial (`npm run render:test -- --test 6`) on a laptop with integrated graphics printed:
+
+```
+[14:56:46] Capturing frames
+[14:57:03] Encoding video
+[14:57:10] Done in 1m 10s: renders/test-6s.mp4
+  captured 180 frames at 7.8 fps on average
+  the whole film is 1,03,173 frames: at this speed a full render takes about 3h 42m
+```
+
+Then render the whole film:
+
+```bash
+npm run render
+```
+
+An hour of 3D wears a browser out: a single unbroken capture stalled after about two hours. So `render.mjs` renders the film in **10-minute segments** (HyperFrames' segmented capture), each with a fresh browser, and HyperFrames joins the segments, with the sound, into one MP4. Finished segments are kept in `renders/.hf-segments/` until the film is done:
+
+- If a run fails, `render.mjs` starts it again on its own and carries on from the last finished segment, up to five times.
+- If you stop it (<kbd>Ctrl</kbd>+<kbd>C</kbd>) or the computer restarts, run `npm run render` again: it reuses the finished segments and captures only the rest.
+
+It keeps one live line in the terminal with frames captured, speed and time left, and notes each segment:
+
+```
+[17:38:09] Segment 1 captured (1 of 6 done)
+[17:38:21] Fresh browser for the next segment
+[18:51:40] Capturing 33,480 / 1,03,173 frames (32.5%) · 7.4 fps · elapsed 1h 15m · left ~2h 37m
+```
+
+- The full HyperFrames output goes to `renders/render.log`. A summary (time, frames, speed, attempts) is saved to `renders/render-stats.json` (`render-stats-test.json` for a trial).
+- `npm run render -- --workers 3` sets the number of parallel browsers (default 2). On an integrated GPU, 2 is usually fastest; many workers can stall on the GPU. `-- --segment 5` makes the segments 5 minutes long.
+- `npm run render:test -- --test 120` runs a longer trial. `-- --quality standard` sets a lower quality.
+- <kbd>Ctrl</kbd>+<kbd>C</kbd> stops the render and every browser it started.
+- A full render takes hours (about 7 frames a second on a laptop with integrated graphics, so roughly four hours). Keep the computer plugged in and turn off sleep until it finishes.
+
+HyperFrames can also render in Docker (`--docker`), but the container draws WebGL in software, without your GPU, which is far slower for a 3D film like this one; render on the host.
+
+Every script syncs first: it copies in the site's models, textures and fonts, regenerates the compositions from the timeline, and reports any missing sound file. It uses screenshot capture, because HyperFrames' faster capture mode fails its own self-check on this WebGL scene.
 
 ## Files
 
 - `narration/`: the script, the pronunciation list, the takes chosen after checking, and the generated timeline.
 - `../tools/generate-narration.mjs`, `../tools/check-narration.mjs`, `../tools/lib/narration.mjs`: voicing, timing and checking the narration with Sarvam AI.
+- `render.mjs`: runs the render (`npm run render`, `npm run render:test`) and reports its progress, speed and time left.
 - `sync-site.mjs`: copies the site's models, textures and fonts in, and writes `compositions/timing.js`, the title cards, the dips and `index.html` from the timeline. Run by every npm script.
 - `compositions/tour.js`, `tour.html`: the 3D map flight, the orbit and the close-ups, drawn from timeline time alone.
 - `compositions/titles-01.html` … `titles-11.html`: journey captions, title and facts cards and name tags, ten monuments per file (generated).
