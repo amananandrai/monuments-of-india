@@ -6,3 +6,9 @@ assets/textures/
 assets/fonts/
 renders/
 .hyperframes/
+.waveform-cache/
+# Sound is made locally, not committed: the narration is voiced by tools/generate-narration.mjs (with
+# its clip cache), and the background score is your own file. See README.md.
+assets/audio/
+narration/samples/
+narration/check-report.json

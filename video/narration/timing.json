@@ -1,0 +1,3442 @@
+{
+  "voice": "aditya",
+  "model": "bulbul:v3",
+  "pace": 1,
+  "total": 3439.11,
+  "slots": [
+    {
+      "index": 1,
+      "id": "qutub-minar",
+      "start": 0,
+      "duration": 42.12,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          28.03
+        ],
+        "details": [
+          28.03,
+          42.12
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.58
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 21.08
+        },
+        "details": {
+          "at": 28.03,
+          "duration": 12.29
+        }
+      }
+    },
+    {
+      "index": 2,
+      "id": "gateway-of-india",
+      "start": 42.12,
+      "duration": 41.43,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          27.43
+        ],
+        "details": [
+          27.43,
+          41.43
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.52
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 20.48
+        },
+        "details": {
+          "at": 27.43,
+          "duration": 12.2
+        }
+      }
+    },
+    {
+      "index": 3,
+      "id": "taj-mahal",
+      "start": 83.55,
+      "duration": 42.54,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          29.14
+        ],
+        "details": [
+          29.14,
+          42.54
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.01
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 22.19
+        },
+        "details": {
+          "at": 29.14,
+          "duration": 11.61
+        }
+      }
+    },
+    {
+      "index": 4,
+      "id": "charminar",
+      "start": 126.09,
+      "duration": 39.98,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          26.41
+        ],
+        "details": [
+          26.41,
+          39.98
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.75
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 19.46
+        },
+        "details": {
+          "at": 26.41,
+          "duration": 11.78
+        }
+      }
+    },
+    {
+      "index": 5,
+      "id": "ram-mandir",
+      "start": 166.07,
+      "duration": 38.36,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          24.53
+        ],
+        "details": [
+          24.53,
+          38.36
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.24
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 17.58
+        },
+        "details": {
+          "at": 24.53,
+          "duration": 12.03
+        }
+      }
+    },
+    {
+      "index": 6,
+      "id": "brihadeeswara-temple",
+      "start": 204.43,
+      "duration": 40.32,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          26.32
+        ],
+        "details": [
+          26.32,
+          40.32
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.44
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 19.37
+        },
+        "details": {
+          "at": 26.32,
+          "duration": 12.2
+        }
+      }
+    },
+    {
+      "index": 7,
+      "id": "india-gate",
+      "start": 244.75,
+      "duration": 37.76,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          26.41
+        ],
+        "details": [
+          26.41,
+          37.76
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.24
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 19.46
+        },
+        "details": {
+          "at": 26.41,
+          "duration": 9.56
+        }
+      }
+    },
+    {
+      "index": 8,
+      "id": "statue-of-unity",
+      "start": 282.51,
+      "duration": 39.47,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          28.45
+        ],
+        "details": [
+          28.45,
+          39.47
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.58
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 21.5
+        },
+        "details": {
+          "at": 28.45,
+          "duration": 9.22
+        }
+      }
+    },
+    {
+      "index": 9,
+      "id": "howrah-bridge",
+      "start": 321.98,
+      "duration": 45.37,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          30.86
+        ],
+        "details": [
+          30.86,
+          45.37
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.82
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 23.91
+        },
+        "details": {
+          "at": 30.86,
+          "duration": 12.71
+        }
+      }
+    },
+    {
+      "index": 10,
+      "id": "jagannath-puri-temple",
+      "start": 367.35,
+      "duration": 36.48,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          23.68
+        ],
+        "details": [
+          23.68,
+          36.48
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.16
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 16.73
+        },
+        "details": {
+          "at": 23.68,
+          "duration": 11.01
+        }
+      }
+    },
+    {
+      "index": 11,
+      "id": "golden-temple",
+      "start": 403.83,
+      "duration": 38.36,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          23.42
+        ],
+        "details": [
+          23.42,
+          38.36
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.41
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 16.47
+        },
+        "details": {
+          "at": 23.42,
+          "duration": 13.14
+        }
+      }
+    },
+    {
+      "index": 12,
+      "id": "hawa-mahal",
+      "start": 442.19,
+      "duration": 38.96,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          24.96
+        ],
+        "details": [
+          24.96,
+          38.96
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.01
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 18.01
+        },
+        "details": {
+          "at": 24.96,
+          "duration": 12.2
+        }
+      }
+    },
+    {
+      "index": 13,
+      "id": "konark-sun-temple",
+      "start": 481.15,
+      "duration": 40.75,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          25.89
+        ],
+        "details": [
+          25.89,
+          40.75
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.67
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 18.94
+        },
+        "details": {
+          "at": 25.89,
+          "duration": 13.06
+        }
+      }
+    },
+    {
+      "index": 14,
+      "id": "meenakshi-temple",
+      "start": 521.9,
+      "duration": 34.35,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.65
+        ],
+        "details": [
+          22.65,
+          34.35
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.84
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.7
+        },
+        "details": {
+          "at": 22.65,
+          "duration": 9.9
+        }
+      }
+    },
+    {
+      "index": 15,
+      "id": "lotus-temple",
+      "start": 556.25,
+      "duration": 38.28,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          23.93
+        ],
+        "details": [
+          23.93,
+          38.28
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 1.79
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 16.98
+        },
+        "details": {
+          "at": 23.93,
+          "duration": 12.54
+        }
+      }
+    },
+    {
+      "index": 16,
+      "id": "gol-gumbaz",
+      "start": 594.53,
+      "duration": 37,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.05
+        ],
+        "details": [
+          22.05,
+          37
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.47
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.1
+        },
+        "details": {
+          "at": 22.05,
+          "duration": 13.14
+        }
+      }
+    },
+    {
+      "index": 17,
+      "id": "mysore-palace",
+      "start": 631.53,
+      "duration": 39.47,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          25.21
+        ],
+        "details": [
+          25.21,
+          39.47
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.13
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 18.26
+        },
+        "details": {
+          "at": 25.21,
+          "duration": 12.46
+        }
+      }
+    },
+    {
+      "index": 18,
+      "id": "sanchi-stupa",
+      "start": 671,
+      "duration": 34.86,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          19.32
+        ],
+        "details": [
+          19.32,
+          34.86
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.69
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 12.37
+        },
+        "details": {
+          "at": 19.32,
+          "duration": 13.74
+        }
+      }
+    },
+    {
+      "index": 19,
+      "id": "mahabodhi-temple",
+      "start": 705.86,
+      "duration": 36.65,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          23.59
+        ],
+        "details": [
+          23.59,
+          36.65
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.3
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 16.64
+        },
+        "details": {
+          "at": 23.59,
+          "duration": 11.26
+        }
+      }
+    },
+    {
+      "index": 20,
+      "id": "red-fort",
+      "start": 742.51,
+      "duration": 37.93,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          23.59
+        ],
+        "details": [
+          23.59,
+          37.93
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.22
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 16.64
+        },
+        "details": {
+          "at": 23.59,
+          "duration": 12.54
+        }
+      }
+    },
+    {
+      "index": 21,
+      "id": "old-parliament-house",
+      "start": 780.44,
+      "duration": 37.25,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          26.66
+        ],
+        "details": [
+          26.66,
+          37.25
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.9
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 19.71
+        },
+        "details": {
+          "at": 26.66,
+          "duration": 8.79
+        }
+      }
+    },
+    {
+      "index": 22,
+      "id": "rashtrapati-bhavan",
+      "start": 817.69,
+      "duration": 38.79,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          25.89
+        ],
+        "details": [
+          25.89,
+          38.79
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.13
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 18.94
+        },
+        "details": {
+          "at": 25.89,
+          "duration": 11.09
+        }
+      }
+    },
+    {
+      "index": 23,
+      "id": "humayuns-tomb",
+      "start": 856.48,
+      "duration": 35.46,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.99
+        ],
+        "details": [
+          22.99,
+          35.46
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.73
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 16.04
+        },
+        "details": {
+          "at": 22.99,
+          "duration": 10.67
+        }
+      }
+    },
+    {
+      "index": 24,
+      "id": "jama-masjid",
+      "start": 891.94,
+      "duration": 34.52,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.6
+        ],
+        "details": [
+          20.6,
+          34.52
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.39
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.65
+        },
+        "details": {
+          "at": 20.6,
+          "duration": 12.12
+        }
+      }
+    },
+    {
+      "index": 25,
+      "id": "new-parliament-house",
+      "start": 926.46,
+      "duration": 34.01,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          21.46
+        ],
+        "details": [
+          21.46,
+          34.01
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 1.45
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 14.51
+        },
+        "details": {
+          "at": 21.46,
+          "duration": 10.75
+        }
+      }
+    },
+    {
+      "index": 26,
+      "id": "dilwara-temples",
+      "start": 960.47,
+      "duration": 38.45,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          25.47
+        ],
+        "details": [
+          25.47,
+          38.45
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.67
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 18.52
+        },
+        "details": {
+          "at": 25.47,
+          "duration": 11.18
+        }
+      }
+    },
+    {
+      "index": 27,
+      "id": "akshardham",
+      "start": 998.92,
+      "duration": 35.12,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.35
+        ],
+        "details": [
+          20.35,
+          35.12
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.24
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.4
+        },
+        "details": {
+          "at": 20.35,
+          "duration": 12.97
+        }
+      }
+    },
+    {
+      "index": 28,
+      "id": "kandariya-mahadeva",
+      "start": 1034.04,
+      "duration": 34.61,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          21.03
+        ],
+        "details": [
+          21.03,
+          34.61
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.73
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 14.08
+        },
+        "details": {
+          "at": 21.03,
+          "duration": 11.78
+        }
+      }
+    },
+    {
+      "index": 29,
+      "id": "ranakpur-jain-temple",
+      "start": 1068.65,
+      "duration": 36.48,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.4
+        ],
+        "details": [
+          22.4,
+          36.48
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.35
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.45
+        },
+        "details": {
+          "at": 22.4,
+          "duration": 12.29
+        }
+      }
+    },
+    {
+      "index": 30,
+      "id": "chennakesava-temple",
+      "start": 1105.13,
+      "duration": 34.44,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.4
+        ],
+        "details": [
+          22.4,
+          34.44
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.58
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.45
+        },
+        "details": {
+          "at": 22.4,
+          "duration": 10.24
+        }
+      }
+    },
+    {
+      "index": 31,
+      "id": "victoria-memorial",
+      "start": 1139.57,
+      "duration": 32.05,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.09
+        ],
+        "details": [
+          20.09,
+          32.05
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.1
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.14
+        },
+        "details": {
+          "at": 20.09,
+          "duration": 10.15
+        }
+      }
+    },
+    {
+      "index": 32,
+      "id": "csmt",
+      "start": 1171.62,
+      "duration": 35.29,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.31
+        ],
+        "details": [
+          22.31,
+          35.29
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 1.71
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.36
+        },
+        "details": {
+          "at": 22.31,
+          "duration": 11.18
+        }
+      }
+    },
+    {
+      "index": 33,
+      "id": "kailasa-temple",
+      "start": 1206.91,
+      "duration": 34.52,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          23.33
+        ],
+        "details": [
+          23.33,
+          34.52
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.01
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 16.38
+        },
+        "details": {
+          "at": 23.33,
+          "duration": 9.39
+        }
+      }
+    },
+    {
+      "index": 34,
+      "id": "vittala-temple-hampi",
+      "start": 1241.43,
+      "duration": 33.51,
+      "shots": {
+        "map": [
+          0,
+          6.27
+        ],
+        "orbit": [
+          6.27,
+          21.73
+        ],
+        "details": [
+          21.73,
+          33.51
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 5.12
+        },
+        "story": {
+          "at": 6.52,
+          "duration": 14.51
+        },
+        "details": {
+          "at": 21.73,
+          "duration": 9.98
+        }
+      }
+    },
+    {
+      "index": 35,
+      "id": "padmanabhaswamy-temple",
+      "start": 1274.94,
+      "duration": 31.7,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          21.29
+        ],
+        "details": [
+          21.29,
+          31.7
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.58
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 14.34
+        },
+        "details": {
+          "at": 21.29,
+          "duration": 8.62
+        }
+      }
+    },
+    {
+      "index": 36,
+      "id": "basilica-of-bom-jesus",
+      "start": 1306.64,
+      "duration": 35.63,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.31
+        ],
+        "details": [
+          22.31,
+          35.63
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.05
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.36
+        },
+        "details": {
+          "at": 22.31,
+          "duration": 11.52
+        }
+      }
+    },
+    {
+      "index": 37,
+      "id": "kamakhya-temple",
+      "start": 1342.27,
+      "duration": 35.2,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.4
+        ],
+        "details": [
+          22.4,
+          35.2
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.1
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.45
+        },
+        "details": {
+          "at": 22.4,
+          "duration": 11.01
+        }
+      }
+    },
+    {
+      "index": 38,
+      "id": "tawang-monastery",
+      "start": 1377.47,
+      "duration": 33.84,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.48
+        ],
+        "details": [
+          22.48,
+          33.84
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.75
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.53
+        },
+        "details": {
+          "at": 22.48,
+          "duration": 9.56
+        }
+      }
+    },
+    {
+      "index": 39,
+      "id": "amber-fort",
+      "start": 1411.31,
+      "duration": 35.29,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.99
+        ],
+        "details": [
+          22.99,
+          35.29
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 1.88
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 16.04
+        },
+        "details": {
+          "at": 22.99,
+          "duration": 10.5
+        }
+      }
+    },
+    {
+      "index": 40,
+      "id": "rani-ki-vav",
+      "start": 1446.6,
+      "duration": 34.95,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          24.02
+        ],
+        "details": [
+          24.02,
+          34.95
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.9
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 17.07
+        },
+        "details": {
+          "at": 24.02,
+          "duration": 9.13
+        }
+      }
+    },
+    {
+      "index": 41,
+      "id": "ramappa-temple",
+      "start": 1481.55,
+      "duration": 37,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          25.47
+        ],
+        "details": [
+          25.47,
+          37
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.56
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 18.52
+        },
+        "details": {
+          "at": 25.47,
+          "duration": 9.73
+        }
+      }
+    },
+    {
+      "index": 42,
+      "id": "kedarnath-temple",
+      "start": 1518.55,
+      "duration": 35.89,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          23.25
+        ],
+        "details": [
+          23.25,
+          35.89
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.24
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 16.3
+        },
+        "details": {
+          "at": 23.25,
+          "duration": 10.84
+        }
+      }
+    },
+    {
+      "index": 43,
+      "id": "hazratbal-shrine",
+      "start": 1554.44,
+      "duration": 31.28,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          19.24
+        ],
+        "details": [
+          19.24,
+          31.28
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.58
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 12.29
+        },
+        "details": {
+          "at": 19.24,
+          "duration": 10.24
+        }
+      }
+    },
+    {
+      "index": 44,
+      "id": "shore-temple",
+      "start": 1585.72,
+      "duration": 34.86,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          24.87
+        ],
+        "details": [
+          24.87,
+          34.86
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.5
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 17.92
+        },
+        "details": {
+          "at": 24.87,
+          "duration": 8.19
+        }
+      }
+    },
+    {
+      "index": 45,
+      "id": "gwalior-fort",
+      "start": 1620.58,
+      "duration": 37.08,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.74
+        ],
+        "details": [
+          22.74,
+          37.08
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.65
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.79
+        },
+        "details": {
+          "at": 22.74,
+          "duration": 12.54
+        }
+      }
+    },
+    {
+      "index": 46,
+      "id": "nalanda-mahavihara",
+      "start": 1657.66,
+      "duration": 36.82,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          25.38
+        ],
+        "details": [
+          25.38,
+          36.82
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.9
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 18.43
+        },
+        "details": {
+          "at": 25.38,
+          "duration": 9.64
+        }
+      }
+    },
+    {
+      "index": 47,
+      "id": "tirumala-venkateswara-temple",
+      "start": 1694.48,
+      "duration": 31.88,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          19.84
+        ],
+        "details": [
+          19.84,
+          31.88
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.41
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 12.89
+        },
+        "details": {
+          "at": 19.84,
+          "duration": 10.24
+        }
+      }
+    },
+    {
+      "index": 48,
+      "id": "capitol-complex",
+      "start": 1726.36,
+      "duration": 31.46,
+      "shots": {
+        "map": [
+          0,
+          6.87
+        ],
+        "orbit": [
+          6.87,
+          19.68
+        ],
+        "details": [
+          19.68,
+          31.46
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 5.72
+        },
+        "story": {
+          "at": 7.12,
+          "duration": 11.86
+        },
+        "details": {
+          "at": 19.68,
+          "duration": 9.98
+        }
+      }
+    },
+    {
+      "index": 49,
+      "id": "hidimba-devi-temple",
+      "start": 1757.82,
+      "duration": 33.5,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.99
+        ],
+        "details": [
+          22.99,
+          33.5
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.41
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 16.04
+        },
+        "details": {
+          "at": 22.99,
+          "duration": 8.7
+        }
+      }
+    },
+    {
+      "index": 50,
+      "id": "bandra-worli-sea-link",
+      "start": 1791.32,
+      "duration": 30.94,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.26
+        ],
+        "details": [
+          20.26,
+          30.94
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.07
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.31
+        },
+        "details": {
+          "at": 20.26,
+          "duration": 8.87
+        }
+      }
+    },
+    {
+      "index": 51,
+      "id": "buland-darwaza",
+      "start": 1822.26,
+      "duration": 30.77,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.94
+        ],
+        "details": [
+          20.94,
+          30.77
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.61
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.99
+        },
+        "details": {
+          "at": 20.94,
+          "duration": 8.02
+        }
+      }
+    },
+    {
+      "index": 52,
+      "id": "panch-mahal",
+      "start": 1853.03,
+      "duration": 31.88,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          19.92
+        ],
+        "details": [
+          19.92,
+          31.88
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 1.62
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 12.97
+        },
+        "details": {
+          "at": 19.92,
+          "duration": 10.15
+        }
+      }
+    },
+    {
+      "index": 53,
+      "id": "bara-imambara",
+      "start": 1884.91,
+      "duration": 35.89,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          24.27
+        ],
+        "details": [
+          24.27,
+          35.89
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.67
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 17.32
+        },
+        "details": {
+          "at": 24.27,
+          "duration": 9.81
+        }
+      }
+    },
+    {
+      "index": 54,
+      "id": "rumi-darwaza",
+      "start": 1920.8,
+      "duration": 30.68,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.18
+        ],
+        "details": [
+          20.18,
+          30.68
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 1.96
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.23
+        },
+        "details": {
+          "at": 20.18,
+          "duration": 8.7
+        }
+      }
+    },
+    {
+      "index": 55,
+      "id": "chota-imambara",
+      "start": 1951.48,
+      "duration": 34.86,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          25.13
+        ],
+        "details": [
+          25.13,
+          34.86
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 1.11
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 18.18
+        },
+        "details": {
+          "at": 25.13,
+          "duration": 7.94
+        }
+      }
+    },
+    {
+      "index": 56,
+      "id": "itmad-ud-daulah",
+      "start": 1986.34,
+      "duration": 36.74,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          23.59
+        ],
+        "details": [
+          23.59,
+          36.74
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 1.96
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 16.64
+        },
+        "details": {
+          "at": 23.59,
+          "duration": 11.35
+        }
+      }
+    },
+    {
+      "index": 57,
+      "id": "akbars-tomb",
+      "start": 2023.08,
+      "duration": 30.17,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          17.79
+        ],
+        "details": [
+          17.79,
+          30.17
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.73
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 10.84
+        },
+        "details": {
+          "at": 17.79,
+          "duration": 10.58
+        }
+      }
+    },
+    {
+      "index": 58,
+      "id": "agra-fort",
+      "start": 2053.25,
+      "duration": 37,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          24.44
+        ],
+        "details": [
+          24.44,
+          37
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.13
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 17.49
+        },
+        "details": {
+          "at": 24.44,
+          "duration": 10.75
+        }
+      }
+    },
+    {
+      "index": 59,
+      "id": "bibi-ka-maqbara",
+      "start": 2090.25,
+      "duration": 31.19,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.35
+        ],
+        "details": [
+          20.35,
+          31.19
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.18
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.4
+        },
+        "details": {
+          "at": 20.35,
+          "duration": 9.05
+        }
+      }
+    },
+    {
+      "index": 60,
+      "id": "safdarjung-tomb",
+      "start": 2121.44,
+      "duration": 32.81,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.52
+        ],
+        "details": [
+          20.52,
+          32.81
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.82
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.57
+        },
+        "details": {
+          "at": 20.52,
+          "duration": 10.5
+        }
+      }
+    },
+    {
+      "index": 61,
+      "id": "somnath-temple",
+      "start": 2154.25,
+      "duration": 38.53,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          26.49
+        ],
+        "details": [
+          26.49,
+          38.53
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.01
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 19.54
+        },
+        "details": {
+          "at": 26.49,
+          "duration": 10.24
+        }
+      }
+    },
+    {
+      "index": 62,
+      "id": "mallikarjuna-temple",
+      "start": 2192.78,
+      "duration": 32.49,
+      "shots": {
+        "map": [
+          0,
+          6.1
+        ],
+        "orbit": [
+          6.1,
+          18.65
+        ],
+        "details": [
+          18.65,
+          32.49
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.95
+        },
+        "story": {
+          "at": 6.35,
+          "duration": 11.61
+        },
+        "details": {
+          "at": 18.65,
+          "duration": 12.03
+        }
+      }
+    },
+    {
+      "index": 63,
+      "id": "mahakaleshwar-temple",
+      "start": 2225.27,
+      "duration": 30.68,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          21.97
+        ],
+        "details": [
+          21.97,
+          30.68
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.93
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.02
+        },
+        "details": {
+          "at": 21.97,
+          "duration": 6.91
+        }
+      }
+    },
+    {
+      "index": 64,
+      "id": "omkareshwar-temple",
+      "start": 2255.95,
+      "duration": 29.29,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          21.29
+        ],
+        "details": [
+          21.29,
+          29.29
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.01
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 14.34
+        },
+        "details": {
+          "at": 21.29,
+          "duration": 5.97
+        }
+      }
+    },
+    {
+      "index": 65,
+      "id": "bhimashankar-temple",
+      "start": 2285.24,
+      "duration": 27.61,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          16.59
+        ],
+        "details": [
+          16.59,
+          27.61
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.24
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 9.64
+        },
+        "details": {
+          "at": 16.59,
+          "duration": 9.22
+        }
+      }
+    },
+    {
+      "index": 66,
+      "id": "kashi-vishwanath-temple",
+      "start": 2312.85,
+      "duration": 31.62,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.94
+        ],
+        "details": [
+          20.94,
+          31.62
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.99
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.99
+        },
+        "details": {
+          "at": 20.94,
+          "duration": 8.87
+        }
+      }
+    },
+    {
+      "index": 67,
+      "id": "trimbakeshwar-temple",
+      "start": 2344.47,
+      "duration": 34.78,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.14
+        ],
+        "details": [
+          22.14,
+          34.78
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.18
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.19
+        },
+        "details": {
+          "at": 22.14,
+          "duration": 10.84
+        }
+      }
+    },
+    {
+      "index": 68,
+      "id": "baidyanath-temple",
+      "start": 2379.25,
+      "duration": 33.07,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.74
+        ],
+        "details": [
+          22.74,
+          33.07
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.13
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.79
+        },
+        "details": {
+          "at": 22.74,
+          "duration": 8.53
+        }
+      }
+    },
+    {
+      "index": 69,
+      "id": "nageshwar-temple",
+      "start": 2412.32,
+      "duration": 25.9,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          13.78
+        ],
+        "details": [
+          13.78,
+          25.9
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.67
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 6.83
+        },
+        "details": {
+          "at": 13.78,
+          "duration": 10.33
+        }
+      }
+    },
+    {
+      "index": 70,
+      "id": "ramanathaswamy-temple",
+      "start": 2438.22,
+      "duration": 28.63,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          16.76
+        ],
+        "details": [
+          16.76,
+          28.63
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.65
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 9.81
+        },
+        "details": {
+          "at": 16.76,
+          "duration": 10.07
+        }
+      }
+    },
+    {
+      "index": 71,
+      "id": "grishneshwar-temple",
+      "start": 2466.85,
+      "duration": 28.72,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          18.56
+        ],
+        "details": [
+          18.56,
+          28.72
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.33
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 11.61
+        },
+        "details": {
+          "at": 18.56,
+          "duration": 8.36
+        }
+      }
+    },
+    {
+      "index": 72,
+      "id": "dhamek-stupa",
+      "start": 2495.57,
+      "duration": 32.05,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.77
+        ],
+        "details": [
+          20.77,
+          32.05
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.16
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.82
+        },
+        "details": {
+          "at": 20.77,
+          "duration": 9.47
+        }
+      }
+    },
+    {
+      "index": 73,
+      "id": "ajanta-caves",
+      "start": 2527.62,
+      "duration": 32.3,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.18
+        ],
+        "details": [
+          20.18,
+          32.3
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.07
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.23
+        },
+        "details": {
+          "at": 20.18,
+          "duration": 10.33
+        }
+      }
+    },
+    {
+      "index": 74,
+      "id": "rumtek-monastery",
+      "start": 2559.92,
+      "duration": 32.47,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          23.59
+        ],
+        "details": [
+          23.59,
+          32.47
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.39
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 16.64
+        },
+        "details": {
+          "at": 23.59,
+          "duration": 7.08
+        }
+      }
+    },
+    {
+      "index": 75,
+      "id": "thiksey-monastery",
+      "start": 2592.39,
+      "duration": 28.04,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          18.81
+        ],
+        "details": [
+          18.81,
+          28.04
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.33
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 11.86
+        },
+        "details": {
+          "at": 18.81,
+          "duration": 7.42
+        }
+      }
+    },
+    {
+      "index": 76,
+      "id": "key-monastery",
+      "start": 2620.43,
+      "duration": 28.21,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          18.38
+        ],
+        "details": [
+          18.38,
+          28.21
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.84
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 11.43
+        },
+        "details": {
+          "at": 18.38,
+          "duration": 8.02
+        }
+      }
+    },
+    {
+      "index": 77,
+      "id": "gommateshwara",
+      "start": 2648.64,
+      "duration": 36.06,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          24.1
+        ],
+        "details": [
+          24.1,
+          36.06
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.9
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 17.15
+        },
+        "details": {
+          "at": 24.1,
+          "duration": 10.15
+        }
+      }
+    },
+    {
+      "index": 78,
+      "id": "palitana-temples",
+      "start": 2684.7,
+      "duration": 31.02,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.35
+        ],
+        "details": [
+          20.35,
+          31.02
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.01
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.4
+        },
+        "details": {
+          "at": 20.35,
+          "duration": 8.87
+        }
+      }
+    },
+    {
+      "index": 79,
+      "id": "shikharji",
+      "start": 2715.72,
+      "duration": 31.53,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.26
+        ],
+        "details": [
+          20.26,
+          31.53
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.58
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.31
+        },
+        "details": {
+          "at": 20.26,
+          "duration": 9.47
+        }
+      }
+    },
+    {
+      "index": 80,
+      "id": "parshvanath-temple-khajuraho",
+      "start": 2747.25,
+      "duration": 31.36,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          19.24
+        ],
+        "details": [
+          19.24,
+          31.36
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.05
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 12.29
+        },
+        "details": {
+          "at": 19.24,
+          "duration": 10.33
+        }
+      }
+    },
+    {
+      "index": 81,
+      "id": "soniji-ki-nasiyan",
+      "start": 2778.61,
+      "duration": 30.25,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.26
+        ],
+        "details": [
+          20.26,
+          30.25
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.3
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.31
+        },
+        "details": {
+          "at": 20.26,
+          "duration": 8.19
+        }
+      }
+    },
+    {
+      "index": 82,
+      "id": "mehrangarh-fort",
+      "start": 2808.86,
+      "duration": 34.09,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.14
+        ],
+        "details": [
+          22.14,
+          34.09
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.99
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.19
+        },
+        "details": {
+          "at": 22.14,
+          "duration": 10.15
+        }
+      }
+    },
+    {
+      "index": 83,
+      "id": "chittorgarh-fort",
+      "start": 2842.95,
+      "duration": 29.74,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          18.21
+        ],
+        "details": [
+          18.21,
+          29.74
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.13
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 11.26
+        },
+        "details": {
+          "at": 18.21,
+          "duration": 9.73
+        }
+      }
+    },
+    {
+      "index": 84,
+      "id": "jaisalmer-fort",
+      "start": 2872.69,
+      "duration": 31.53,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.4
+        ],
+        "details": [
+          22.4,
+          31.53
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.41
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.45
+        },
+        "details": {
+          "at": 22.4,
+          "duration": 7.34
+        }
+      }
+    },
+    {
+      "index": 85,
+      "id": "golconda-fort",
+      "start": 2904.22,
+      "duration": 32.9,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.05
+        ],
+        "details": [
+          22.05,
+          32.9
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.16
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.1
+        },
+        "details": {
+          "at": 22.05,
+          "duration": 9.05
+        }
+      }
+    },
+    {
+      "index": 86,
+      "id": "daulatabad-fort",
+      "start": 2937.12,
+      "duration": 31.36,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.69
+        ],
+        "details": [
+          20.69,
+          31.36
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.9
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.74
+        },
+        "details": {
+          "at": 20.69,
+          "duration": 8.87
+        }
+      }
+    },
+    {
+      "index": 87,
+      "id": "city-palace-udaipur",
+      "start": 2968.48,
+      "duration": 32.47,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.35
+        ],
+        "details": [
+          20.35,
+          32.47
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.16
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.4
+        },
+        "details": {
+          "at": 20.35,
+          "duration": 10.33
+        }
+      }
+    },
+    {
+      "index": 88,
+      "id": "laxmi-vilas-palace",
+      "start": 3000.95,
+      "duration": 30.77,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          19.15
+        ],
+        "details": [
+          19.15,
+          30.77
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.65
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 12.2
+        },
+        "details": {
+          "at": 19.15,
+          "duration": 9.81
+        }
+      }
+    },
+    {
+      "index": 89,
+      "id": "fort-aguada",
+      "start": 3031.72,
+      "duration": 29.57,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          18.73
+        ],
+        "details": [
+          18.73,
+          29.57
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 1.28
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 11.78
+        },
+        "details": {
+          "at": 18.73,
+          "duration": 9.05
+        }
+      }
+    },
+    {
+      "index": 90,
+      "id": "bekal-fort",
+      "start": 3061.29,
+      "duration": 32.39,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          21.12
+        ],
+        "details": [
+          21.12,
+          32.39
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.22
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 14.17
+        },
+        "details": {
+          "at": 21.12,
+          "duration": 9.47
+        }
+      }
+    },
+    {
+      "index": 91,
+      "id": "cooch-behar-palace",
+      "start": 3093.68,
+      "duration": 31.28,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          21.03
+        ],
+        "details": [
+          21.03,
+          31.28
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.47
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 14.08
+        },
+        "details": {
+          "at": 21.03,
+          "duration": 8.45
+        }
+      }
+    },
+    {
+      "index": 92,
+      "id": "sher-shah-suri-tomb",
+      "start": 3124.96,
+      "duration": 32.81,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          19.66
+        ],
+        "details": [
+          19.66,
+          32.81
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.65
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 12.71
+        },
+        "details": {
+          "at": 19.66,
+          "duration": 11.35
+        }
+      }
+    },
+    {
+      "index": 93,
+      "id": "cellular-jail",
+      "start": 3157.77,
+      "duration": 34.52,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.48
+        ],
+        "details": [
+          22.48,
+          34.52
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.01
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.53
+        },
+        "details": {
+          "at": 22.48,
+          "duration": 10.24
+        }
+      }
+    },
+    {
+      "index": 94,
+      "id": "shaheed-minar",
+      "start": 3192.29,
+      "duration": 31.19,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          20.52
+        ],
+        "details": [
+          20.52,
+          31.19
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.9
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 13.57
+        },
+        "details": {
+          "at": 20.52,
+          "duration": 8.87
+        }
+      }
+    },
+    {
+      "index": 95,
+      "id": "tipu-sultan-gumbaz",
+      "start": 3223.48,
+      "duration": 29.49,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          18.04
+        ],
+        "details": [
+          18.04,
+          29.49
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.33
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 11.09
+        },
+        "details": {
+          "at": 18.04,
+          "duration": 9.64
+        }
+      }
+    },
+    {
+      "index": 96,
+      "id": "qutb-shahi-tombs",
+      "start": 3252.97,
+      "duration": 27.18,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          16.93
+        ],
+        "details": [
+          16.93,
+          27.18
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.82
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 9.98
+        },
+        "details": {
+          "at": 16.93,
+          "duration": 8.45
+        }
+      }
+    },
+    {
+      "index": 97,
+      "id": "vivekananda-rock-memorial",
+      "start": 3280.15,
+      "duration": 34.35,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          24.44
+        ],
+        "details": [
+          24.44,
+          34.35
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.27
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 17.49
+        },
+        "details": {
+          "at": 24.44,
+          "duration": 8.11
+        }
+      }
+    },
+    {
+      "index": 98,
+      "id": "jallianwala-bagh",
+      "start": 3314.5,
+      "duration": 28.55,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          18.56
+        ],
+        "details": [
+          18.56,
+          28.55
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 3.07
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 11.61
+        },
+        "details": {
+          "at": 18.56,
+          "duration": 8.19
+        }
+      }
+    },
+    {
+      "index": 99,
+      "id": "kargil-war-memorial",
+      "start": 3343.05,
+      "duration": 29.32,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          19.49
+        ],
+        "details": [
+          19.49,
+          29.32
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.82
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 12.54
+        },
+        "details": {
+          "at": 19.49,
+          "duration": 8.02
+        }
+      }
+    },
+    {
+      "index": 100,
+      "id": "national-war-memorial",
+      "start": 3372.37,
+      "duration": 34.61,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          22.65
+        ],
+        "details": [
+          22.65,
+          34.61
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 2.65
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 15.7
+        },
+        "details": {
+          "at": 22.65,
+          "duration": 10.15
+        }
+      }
+    },
+    {
+      "index": 101,
+      "id": "kirti-mandir",
+      "start": 3406.98,
+      "duration": 32.13,
+      "shots": {
+        "map": [
+          0,
+          6
+        ],
+        "orbit": [
+          6,
+          17.7
+        ],
+        "details": [
+          17.7,
+          32.13
+        ]
+      },
+      "lines": {
+        "travel": {
+          "at": 0.8,
+          "duration": 4.01
+        },
+        "story": {
+          "at": 6.25,
+          "duration": 10.75
+        },
+        "details": {
+          "at": 17.7,
+          "duration": 12.63
+        }
+      }
+    }
+  ]
+}
