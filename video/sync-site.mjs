@@ -483,6 +483,10 @@ if (existsSync(join(here, VOICE_TRACK))) audio.push(`      <audio
       ></audio>`);
 else console.warn(`note: no ${VOICE_TRACK}: run node tools/generate-narration.mjs from the repository root to voice the narration`);
 const audioTags = audio.length ? audio.join('\n') + '\n' : '';
+// A trial render (render.mjs --test) plays only the opening seconds: the root timeline is cut short,
+// everything beneath it unchanged. Run sync again without it to restore the whole film.
+const filmEnd = process.env.HF_RENDER_SECONDS ? Math.min(total, Number(process.env.HF_RENDER_SECONDS)) : total;
+if (filmEnd < total) console.warn(`note: index.html cut to the first ${filmEnd} s for a trial render`);
 
 writeFileSync(join(here, 'index.html'), `<!doctype html>
 ${GENERATED}
@@ -510,7 +514,7 @@ ${GENERATED}
   </head>
   <body>
     <!-- A journey across India: ${N} monuments in ${Math.floor(total / 60)} min ${Math.round(total % 60)} s, each a 3D map flight, a drone orbit and close-ups, voiced by Sarvam (${TIMING.voice}). -->
-    <div id="root" data-composition-id="main" data-start="0" data-duration="${total}" data-width="1920" data-height="1080">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="${filmEnd}" data-width="1920" data-height="1080">
 ${audioTags}      <div
         id="tour"
         data-composition-id="tour"

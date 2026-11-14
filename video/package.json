@@ -6,7 +6,8 @@
     "sync": "node sync-site.mjs",
     "dev": "npm run sync && npx --yes hyperframes@0.8.210 preview",
     "check": "npm run sync && npx --yes hyperframes@0.8.210 check",
-    "render": "npm run sync && npx --yes hyperframes@0.8.210 render --quality delivery --output renders/monuments-of-india.mp4",
+    "render": "node render.mjs",
+    "render:test": "node render.mjs --test 30",
     "publish": "npx --yes hyperframes@0.8.210 publish"
   },
   "devDependencies": {
