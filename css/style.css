@@ -314,6 +314,9 @@ p.scale-note {
   font-style: italic;
   line-height: 1.4;
 }
+.p-timeline { margin: 10px 0 0; font-size: 13px; }
+.p-timeline a { color: var(--accent); font-weight: 600; text-decoration: none; }
+.p-timeline a:hover, .p-timeline a:focus-visible { text-decoration: underline; }
 details.facts ul {
   margin: 6px 0 0;
   padding-left: 18px;
