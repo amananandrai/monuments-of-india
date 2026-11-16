@@ -22,6 +22,7 @@ All 101, state by state, with a picture of each: **[States and monuments](monume
 
 - [Features](#features)
 - [Using the site](#using-the-site)
+- [India through time](#india-through-time)
 - [Technology](#technology)
 - [Documentation](#documentation)
 - [Components at a glance](#components-at-a-glance)
@@ -75,6 +76,24 @@ All 101, state by state, with a picture of each: **[States and monuments](monume
   remembers your choice. At night, floodlights and festival lights come on and stars fill the sky.
 - **Links:** open any monument directly with its hash, for example
   [`#taj-mahal`](https://monuments-of-india-nu.vercel.app/#taj-mahal).
+
+## India through time
+
+[`timeline.html`](timeline.html) is a first version of a second view of the site: a map of the
+subcontinent with a year slider, from the Indus cities to the Republic.
+
+- **Thirteen eras**, each with a short history: who held power, what changed on the map, key dates.
+- **Border snapshots** for the Mauryas (250 BCE), the Guptas (c. 400), the Delhi Sultanate (1236),
+  the Mughals (1605), British India (1939), 1947 and today; named regions or cities for the three
+  earliest eras. Three eras have no borders yet.
+- **A pin for every monument standing by the chosen year**, which opens its 3D model. Each
+  monument's `year` is in `js/data.js`.
+- **Direct links** by year, such as `timeline.html#1605`.
+
+The historical borders are approximate: they are drawn by eye in `tools/build-timeline-map.py`,
+after the maps in C. Collin Davies, *An Historical Atlas of the Indian Peninsula* (1949), and cut
+to Natural Earth's coastline. That script writes `js/timeline-map.js`; the eras and their text are
+in `js/timeline-data.js`, and the page's code in `js/timeline.js`.
 
 ## Technology
 
