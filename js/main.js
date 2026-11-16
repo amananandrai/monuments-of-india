@@ -853,6 +853,29 @@ function setPlaqueOpen(open) {
 pToggle.addEventListener('click', () => setPlaqueOpen(!plaque.classList.contains('is-open')));
 plaque.querySelector('.p-head').addEventListener('click', (e) => { if (!e.target.closest('.p-toggle') && pToggle.offsetParent) pToggle.click(); });
 
+// Collapse the sidebar, or hide the details card, so the monument is seen in full. Both choices are remembered.
+const appEl = document.querySelector('.app'), sideToggle = $('side-toggle'), detailsToggle = $('details-toggle');
+const stageEl = $('stage');
+function setSideCollapsed(c, save) {
+  appEl.classList.toggle('side-collapsed', c);
+  sideToggle.setAttribute('aria-expanded', String(!c));
+  sideToggle.setAttribute('aria-label', c ? 'Expand the sidebar' : 'Collapse the sidebar');
+  if (save) try { localStorage.setItem('side', c ? 'collapsed' : 'open'); } catch (e) { /* not remembered */ }
+}
+function setDetailsHidden(h, save) {
+  stageEl.classList.toggle('hide-plaque', h);
+  detailsToggle.setAttribute('aria-pressed', String(h));
+  detailsToggle.setAttribute('aria-label', h ? 'Show the details card' : 'Hide the details card');
+  detailsToggle.querySelector('.label').textContent = h ? 'Show details' : 'Hide details';
+  if (save) try { localStorage.setItem('details', h ? 'hidden' : 'shown'); } catch (e) { /* not remembered */ }
+}
+sideToggle.addEventListener('click', () => setSideCollapsed(!appEl.classList.contains('side-collapsed'), true));
+detailsToggle.addEventListener('click', () => setDetailsHidden(!stageEl.classList.contains('hide-plaque'), true));
+try {
+  setSideCollapsed(localStorage.getItem('side') === 'collapsed');
+  setDetailsHidden(localStorage.getItem('details') === 'hidden');
+} catch (e) { /* storage unavailable */ }
+
 /* ---------- views: the map home and a monument's 3D scene ---------- */
 let mode = 'map';
 const map = createMap($('mapview'), MONUMENTS, { onSelect: (id) => showMonument(byId.get(id), { push: true }) });

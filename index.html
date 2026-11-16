@@ -17,7 +17,7 @@
 <body>
 
 <div class="app">
-  <aside class="side">
+  <aside class="side" id="side">
     <header class="masthead">
       <h1>Monuments of India</h1>
       <button class="btn filter-btn-mobile" id="mobile-filter-btn" type="button" aria-label="Search and filter monuments" aria-expanded="false">
@@ -69,6 +69,10 @@
       </div>
     </div>
 
+    <button class="btn side-toggle" id="side-toggle" type="button" aria-expanded="true" aria-controls="side" aria-label="Collapse the sidebar">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><path d="M6 2.5v11"/><path class="i-chev" d="M11.5 6 9.5 8l2 2"/></svg>
+    </button>
+
     <div class="toolbar">
       <button class="btn" id="to-map" type="button">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 3.5 5.5 2l5 1.5 4-1.5v10.5l-4 1.5-5-1.5-4 1.5zM5.5 2v10.5M10.5 3.5V14"/></svg>
@@ -79,6 +83,10 @@
       </button>
       <button class="btn" id="next" type="button" aria-label="Next monument">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg>
+      </button>
+      <button class="btn" id="details-toggle" type="button" aria-pressed="false" aria-controls="plaque" aria-label="Hide the details card">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><path d="M1.5 9.5h13"/></svg>
+        <span class="label">Hide details</span>
       </button>
       <button class="btn" id="rotate" type="button" aria-pressed="true">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 8a5.5 5.5 0 1 1-1.8-4.1"/><path d="M12 1.5v2.8H9.2"/></svg>
