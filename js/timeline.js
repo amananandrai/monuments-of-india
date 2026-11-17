@@ -42,6 +42,7 @@ svg.innerHTML = `
     <pattern id="hatch-a" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line class="hatch a" x1="0" y1="0" x2="0" y2="6"/></pattern>
     <pattern id="hatch-b" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line class="hatch b" x1="0" y1="0" x2="0" y2="6"/></pattern>
     <pattern id="hatch-c" width="6" height="6" patternUnits="userSpaceOnUse"><line class="hatch c" x1="0" y1="0" x2="6" y2="0"/></pattern>
+    <pattern id="hatch-d" width="6" height="6" patternUnits="userSpaceOnUse"><line class="hatch d" x1="0" y1="0" x2="0" y2="6"/></pattern>
   </defs>
   <path class="land" d="${TMAP.land}"/>
   <g id="tl-fills"></g>

@@ -5,12 +5,13 @@
   --p-a: #b8590c;
   --p-b: #2c8452;
   --p-c: #2d6aa6;
+  --p-d: #8a4bab;
   --river: #9db9cf;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --p-a: #f2a03d; --p-b: #55c98f; --p-c: #66a8e6; --river: #3b4a66; }
+  :root:not([data-theme="light"]) { --p-a: #f2a03d; --p-b: #55c98f; --p-c: #66a8e6; --p-d: #c48ae6; --river: #3b4a66; }
 }
-:root[data-theme="dark"] { --p-a: #f2a03d; --p-b: #55c98f; --p-c: #66a8e6; --river: #3b4a66; }
+:root[data-theme="dark"] { --p-a: #f2a03d; --p-b: #55c98f; --p-c: #66a8e6; --p-d: #c48ae6; --river: #3b4a66; }
 
 .tl {
   height: 100%;
@@ -43,11 +44,13 @@
 .polity.a .tint { fill: var(--p-a); stroke: var(--p-a); }
 .polity.b .tint { fill: var(--p-b); stroke: var(--p-b); }
 .polity.c .tint { fill: var(--p-c); stroke: var(--p-c); }
+.polity.d .tint { fill: var(--p-d); stroke: var(--p-d); }
 .polity .hatched { pointer-events: none; }
 .hatch { stroke-width: 1.1; opacity: 0.5; }
 .hatch.a { stroke: var(--p-a); }
 .hatch.b { stroke: var(--p-b); }
 .hatch.c { stroke: var(--p-c); }
+.hatch.d { stroke: var(--p-d); }
 
 .lab {
   font-family: var(--font-body);
