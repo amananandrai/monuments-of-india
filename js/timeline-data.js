@@ -2,7 +2,8 @@
 //
 // An era's `map` says what is drawn for it: `fills` are shapes from js/timeline-map.js, `labels` are
 // names placed at [lat, lng]. `kind` picks a label's look: 'in' a region inside the main power,
-// 'out' a neighbour, 'city' a capital or site with a dot ('city-left' puts its name on the left). An era without `map` has no borders yet.
+// 'out' a neighbour, 'city' a capital or site with a dot ('city-left' puts its name on the left). A fill's
+// second field picks its colour and hatch, 'a' to 'd'.
 // The histories are short summaries from general reference works; the borders are approximate.
 
 export const ERAS = [
@@ -13,11 +14,12 @@ export const ERAS = [
     dates: ['Cities at their height c. 2600–1900 BCE', 'Cities abandoned by c. 1300 BCE'],
     lead: null, leadNote: 'No 3D model yet. Planned: the Great Bath of Mohenjo-daro.',
     map: {
-      title: 'Major Harappan cities', certainty: 'Sites from excavation reports; no borders are known.',
-      fills: [],
+      title: 'The Harappan world, c. 2600–1900 BCE', certainty: 'The spread of excavated mature Harappan sites, from Sutkagen Dor on the Makran coast to Manda, Alamgirpur and Bhagatrav; the trading post of Shortugai and late Harappan Daimabad, often given as the southern limit, are left out. A culture area: no borders or kingdoms are known.',
+      fills: [['harappan-2500bce', 'a', 'Mature Harappan sites']],
       labels: [
         ['Harappa', 30.63, 72.86, 'city'], ['Mohenjo-daro', 27.33, 68.14, 'city'], ['Dholavira', 23.89, 70.21, 'city'],
         ['Lothal', 22.52, 72.25, 'city'], ['Rakhigarhi', 29.29, 76.11, 'city'], ['Kalibangan', 29.47, 74.13, 'city-left'],
+        ['Sutkagen Dor', 25.51, 61.97, 'city'], ['Indus cities', 31.6, 69.6, 'main'],
       ],
     },
   },
@@ -28,8 +30,8 @@ export const ERAS = [
     dates: ['Rigveda composed c. 1500–1000 BCE', 'Later Vedic texts and early Upanishads c. 1000–600 BCE'],
     lead: null, leadNote: 'No 3D model yet. Planned: a falcon-shaped fire altar, rebuilt from the ritual texts.',
     map: {
-      title: 'Regions named in the Vedic texts', certainty: 'Regions placed roughly; no borders are known.',
-      fills: [],
+      title: 'The lands of the Vedic texts', certainty: 'Approximate. Areas, not borders: the rivers of the Rigveda’s river hymn (10.75), from the Kubha to the Ganga, and the Kuru, Panchala and Kosala lands of the later texts, and Videha beyond the Sadanira (Gandak).',
+      fills: [['rigvedic', 'a', 'Land of the Rigveda, c. 1500–1000 BCE'], ['later-vedic', 'b', 'Later Vedic lands, c. 1000–600 BCE']],
       labels: [
         ['Sapta Sindhu', 31.0, 73.3, 'in'], ['Kuru', 29.2, 77.0, 'in'], ['Panchala', 28.0, 79.5, 'in'],
         ['Kosala', 27.0, 82.4, 'in'], ['Videha', 26.4, 85.8, 'in'],
@@ -43,9 +45,10 @@ export const ERAS = [
     dates: ['The Buddha and Mahavira, 6th–5th c. BCE', 'Alexander in the Punjab, 327–325 BCE'],
     lead: null, leadNote: 'No 3D model yet. Planned: the cyclopean walls of Rajagriha, Magadha’s first capital.',
     map: {
-      title: 'The sixteen great states, c. 500 BCE', certainty: 'Names placed after the “Ancient India c. 500 B.C.” map in Davies’ atlas; borders are not drawn.',
-      fills: [],
+      title: 'Magadha under the Nandas and Alexander’s conquests, c. 325 BCE', certainty: 'Approximate. The Nanda realm from the Greek accounts of the Prasii and Gangaridai (east of the Beas, where Alexander turned back) and the Hathigumpha inscription in Kalinga; Alexander’s conquests after Arrian. The sixteen states’ names are placed after the “Ancient India c. 500 B.C.” map in Davies’ atlas.',
+      fills: [['nanda-325bce', 'a', 'Magadha under the Nandas'], ['alexander-325bce', 'b', 'Alexander’s conquests']],
       labels: [
+        ['Nanda Magadha', 22.4, 82.6, 'main'], ['Alexander’s conquests', 29.0, 70.3, 'main'],
         ['Gandhara', 34.0, 72.5, 'in'], ['Kamboja', 35.3, 70.3, 'in'], ['Kuru', 29.2, 77.0, 'in'], ['Matsya', 27.1, 76.0, 'in'],
         ['Surasena', 27.6, 77.9, 'in'], ['Panchala', 28.3, 79.6, 'in'], ['Kosala', 27.6, 81.8, 'in'], ['Malla', 27.2, 84.3, 'in'],
         ['Vajji', 26.2, 86.0, 'in'], ['Kasi', 24.9, 83.1, 'in'], ['Vatsa', 25.7, 81.0, 'in'], ['Chedi', 24.4, 79.2, 'in'],
@@ -73,8 +76,18 @@ export const ERAS = [
     id: 'kushan', name: 'Kushans, Satraps and Satavahanas', short: 'Kushans & Satavahanas', start: -185, end: 320, span: 'c. 185 BCE–320 CE',
     powers: 'Shungas, Indo-Greeks and Sakas; the Kushans under Kanishka; the Satavahanas; Cholas, Cheras and Pandyas in the south.',
     change: 'The north-west passes to dynasties from Central Asia. The Deccan unites under the Satavahanas. Sea trade with Rome grows.',
-    dates: ['Kanishka’s reign, c. 127–150 CE'],
+    dates: ['Kanishka’s reign, c. 127–150 CE', 'Rudradaman’s Junagadh inscription, 150 CE'],
     lead: 'ajanta-caves',
+    map: {
+      title: 'Kushans, Western Satraps and Satavahanas, c. 150 CE', certainty: 'Approximate. Kanishka’s realm from finds at Peshawar, Mathura and Sarnath and the cities his Rabatak inscription names, as far as Pataliputra (Champa, also named, is left out); the Satraps from the lands Rudradaman’s Junagadh inscription lists; the Satavahanas from the Nasik inscription of Gautami Balashri and finds up to Amaravati. Joppen’s map of the 2nd century (1914), drawn before Rabatak was found, stops Kanishka at the Yamuna.',
+      fills: [['kushan-150', 'a', 'Kushan Empire'], ['satraps-150', 'b', 'Western Satraps'], ['satavahana-150', 'c', 'Satavahanas']],
+      labels: [
+        ['Kushan Empire', 31.6, 71.0, 'main'], ['Western Satraps', 24.3, 73.3, 'main'], ['Satavahanas', 18.0, 77.6, 'main'],
+        ['Purushapura', 34.01, 71.58, 'city'], ['Mathura', 27.49, 77.67, 'city'], ['Ujjain', 23.18, 75.78, 'city'], ['Pratishthana', 19.48, 75.38, 'city-left'],
+        ['Kalinga', 20.6, 85.0, 'out'], ['Cholas', 11.2, 79.3, 'out'], ['Cheras', 10.4, 76.2, 'out'], ['Pandyas', 9.3, 78.1, 'out'],
+        ['Simhala', 7.8, 80.7, 'out'], ['Parthians', 30.5, 61.5, 'out'],
+      ],
+    },
   },
   {
     id: 'gupta', name: 'Gupta Empire', short: 'Gupta', start: 320, end: 550, span: 'c. 320–550 CE',
@@ -83,11 +96,11 @@ export const ERAS = [
     dates: ['Chandragupta I crowned, c. 320', 'Western Satraps conquered, c. 400', 'Aryabhata writes, 499'],
     lead: 'mahabodhi-temple',
     map: {
-      title: 'The Gupta Empire, c. 400 CE', certainty: 'Approximate. Drawn by eye after “The Gupta Empire at the close of the fourth century” in Davies’ atlas (probable boundary under Chandragupta II).',
-      fills: [['gupta-400', 'a', 'Gupta Empire']],
+      title: 'The Gupta Empire, c. 400 CE', certainty: 'Approximate. Drawn by eye after “The Gupta Empire at the close of the fourth century” in Davies’ atlas (probable boundary under Chandragupta II). The Vakatakas, ruled then by his daughter Prabhavatigupta, from their copper-plate grants.',
+      fills: [['gupta-400', 'a', 'Gupta Empire'], ['vakataka-400', 'b', 'Vakatakas, allied by marriage']],
       labels: [
         ['Gupta Empire', 25.0, 79.6, 'main'], ['Pataliputra', 25.61, 85.14, 'city'], ['Ujjain', 23.18, 75.78, 'city'],
-        ['Vakatakas', 20.2, 78.4, 'out'], ['Pallavas', 12.9, 79.4, 'out'], ['Kamarupa', 26.3, 91.8, 'out'], ['Kashmir', 34.2, 75.0, 'out'],
+        ['Vakatakas', 20.2, 78.4, 'in'], ['Pallavas', 12.9, 79.4, 'out'], ['Kamarupa', 26.3, 91.8, 'out'], ['Kashmir', 34.2, 75.0, 'out'],
         ['Nepal', 28.0, 85.2, 'out'], ['Cholas', 11.6, 79.6, 'out'], ['Pandyas', 9.3, 78.1, 'out'], ['Cheras', 10.5, 75.7, 'out'], ['Simhala', 7.8, 80.7, 'out'],
       ],
     },
@@ -96,8 +109,18 @@ export const ERAS = [
     id: 'regional', name: 'Regional kingdoms', short: 'Regional kingdoms', start: 550, end: 1206, span: 'c. 550–1206',
     powers: 'Harsha at Kannauj; Chalukyas, Pallavas, Rashtrakutas, Palas and Pratiharas; the Cholas under Rajaraja I and Rajendra I.',
     change: 'No single empire. Three powers contest Kannauj, the Cholas hold the south and Sri Lanka, and Ghaznavid and Ghurid armies enter from the north-west.',
-    dates: ['Harsha’s reign, 606–647', 'Mahmud of Ghazni’s raids, 1000–1027', 'Second battle of Tarain, 1192'],
+    dates: ['Harsha’s reign, 606–647', 'Sulaiman the merchant describes the three kingdoms, 851', 'Mahmud of Ghazni’s raids, 1000–1027', 'Second battle of Tarain, 1192'],
     lead: 'brihadeeswara-temple',
+    map: {
+      title: 'The struggle for Kannauj, c. 850', certainty: 'Approximate. The three powers that the Arab merchant Sulaiman described in 851: the Pratiharas under Mihira Bhoja (from the Himalayan foothills to the Narmada; inscriptions at Pehowa, Dausa and Gwalior; Saurashtra’s grants date from his son’s reign), the Palas under Devapala and the Rashtrakutas under Amoghavarsha.',
+      fills: [['pratihara-850', 'a', 'Gurjara-Pratiharas'], ['pala-850', 'b', 'Palas'], ['rashtrakuta-850', 'c', 'Rashtrakutas']],
+      labels: [
+        ['Pratiharas', 28.2, 74.6, 'main'], ['Palas', 24.4, 87.6, 'main'], ['Rashtrakutas', 18.6, 76.2, 'main'],
+        ['Kannauj', 27.05, 79.92, 'city'], ['Manyakheta', 17.2, 77.13, 'city-left'], ['Kashmir', 34.2, 75.0, 'out'], ['Shahis', 34.4, 70.4, 'out'],
+        ['Arab Sindh', 26.0, 68.4, 'out'], ['Kamarupa', 26.3, 92.0, 'out'], ['Eastern Chalukyas', 18.0, 82.4, 'out'],
+        ['Pallavas', 12.7, 79.4, 'out'], ['Pandyas', 9.5, 78.0, 'out'], ['Cheras', 10.3, 76.3, 'out'], ['Simhala', 7.8, 80.7, 'out'],
+      ],
+    },
   },
   {
     id: 'sultanate', name: 'Delhi Sultanate', short: 'Delhi Sultanate', start: 1206, end: 1526, span: '1206–1526',
@@ -122,12 +145,12 @@ export const ERAS = [
     dates: ['First battle of Panipat, 1526', 'Battle of Talikota, 1565', 'Shivaji crowned, 1674', 'Death of Aurangzeb, 1707'],
     lead: 'taj-mahal',
     map: {
-      title: 'The Mughal Empire at the death of Akbar, 1605', certainty: 'Approximate. Drawn by eye after “The Mughal Empire at the death of Akbar (1605)” in Davies’ atlas.',
-      fills: [['mughal-1605', 'a', 'Mughal Empire']],
+      title: 'The Mughal Empire and the Deccan sultanates, 1605', certainty: 'Approximate. Drawn by eye after “The Mughal Empire at the death of Akbar (1605)” in Davies’ atlas, with the Deccan sultanates south of the Mughal line, checked against Joppen’s “India in 1605” (1914).',
+      fills: [['mughal-1605', 'a', 'Mughal Empire'], ['ahmadnagar-1605', 'b', 'Ahmadnagar'], ['bijapur-1605', 'c', 'Bijapur'], ['golconda-1605', 'd', 'Golconda']],
       labels: [
         ['Mughal Empire', 26.6, 77.6, 'main'], ['Agra', 27.18, 78.01, 'city'], ['Kabul', 34.53, 69.17, 'city'], ['Bengal', 24.0, 89.2, 'in'],
-        ['Gujarat', 22.7, 72.2, 'in'], ['Gondwana', 21.4, 81.6, 'out'], ['Ahmadnagar', 18.8, 75.2, 'out'], ['Bijapur', 16.6, 75.8, 'out'],
-        ['Golconda', 17.1, 79.1, 'out'], ['Polygars', 10.6, 78.2, 'out'], ['Goa (Portuguese)', 15.3, 73.3, 'out'],
+        ['Gujarat', 22.7, 72.2, 'in'], ['Gondwana', 21.4, 81.6, 'out'], ['Ahmadnagar', 18.7, 74.6, 'in'], ['Bijapur', 16.6, 75.8, 'in'],
+        ['Golconda', 17.1, 79.1, 'in'], ['Chandragiri', 13.6, 79.3, 'out'], ['Polygars', 10.6, 78.2, 'out'], ['Goa (Portuguese)', 15.3, 73.3, 'out'],
       ],
     },
   },
@@ -137,6 +160,16 @@ export const ERAS = [
     change: 'Mughal power shrinks to Delhi. The Company grows from Bengal to the whole subcontinent through war, treaty and annexation.',
     dates: ['Battle of Plassey, 1757', 'Third battle of Panipat, 1761', 'Fall of Mysore, 1799', 'Punjab annexed, 1849', 'Revolt of 1857'],
     lead: 'trimbakeshwar-temple',
+    map: {
+      title: 'The Company, the Marathas and the Nizam, c. 1805', certainty: 'Approximate. After the treaties of 1799–1805: Mysore partitioned, the Carnatic and Tanjore taken, Awadh’s cession of 1801, Bassein (1802), Deogaon and Surji-Anjangaon (1803); checked against Joppen’s “India in 1805” (1914). The Sikh states are Ranjit Singh’s kingdom west of the Sutlej and the chiefs east of it. Bombay and other small holdings are not drawn.',
+      fills: [['company-1805', 'a', 'East India Company'], ['maratha-1805', 'b', 'Maratha states'], ['hyderabad-1805', 'c', 'The Nizam of Hyderabad'], ['sikh-1805', 'd', 'Sikh states']],
+      labels: [
+        ['East India Company', 24.0, 86.6, 'main'], ['Maratha states', 22.6, 76.4, 'main'], ['Hyderabad', 18.2, 78.4, 'main'], ['Madras Presidency', 11.0, 78.8, 'in'],
+        ['Sikh states', 30.6, 75.6, 'in'], ['Lahore', 31.55, 74.34, 'city-left'], ['Calcutta', 22.57, 88.36, 'city'], ['Delhi', 28.61, 77.21, 'city-left'], ['Pune', 18.52, 73.86, 'city-left'],
+        ['Awadh', 27.0, 81.4, 'out'], ['Mysore', 12.9, 76.8, 'out'], ['Rajput states', 26.6, 73.4, 'out'], ['Sindh', 26.0, 68.4, 'out'],
+        ['Afghans', 33.0, 66.0, 'out'], ['Nepal', 28.8, 82.6, 'out'], ['Travancore', 9.0, 76.9, 'out'], ['Kutch', 23.5, 69.6, 'out'],
+      ],
+    },
   },
   {
     id: 'crown', name: 'British Crown rule', short: 'Crown rule', start: 1858, end: 1947, span: '1858–1947',
