@@ -79,7 +79,7 @@ export const ERAS = [
     dates: ['Kanishka’s reign, c. 127–150 CE', 'Rudradaman’s Junagadh inscription, 150 CE'],
     lead: 'ajanta-caves',
     map: {
-      title: 'Kushans, Western Satraps and Satavahanas, c. 150 CE', certainty: 'Approximate. Kanishka’s realm from finds at Peshawar, Mathura and Sarnath and the cities his Rabatak inscription names, as far as Pataliputra (Champa, also named, is left out); the Satraps from the lands Rudradaman’s Junagadh inscription lists; the Satavahanas from the Nasik inscription of Gautami Balashri and finds up to Amaravati.',
+      title: 'Kushans, Western Satraps and Satavahanas, c. 150 CE', certainty: 'Approximate. Kanishka’s realm from finds at Peshawar, Mathura and Sarnath and the cities his Rabatak inscription names, as far as Pataliputra (Champa, also named, is left out); the Satraps from the lands Rudradaman’s Junagadh inscription lists; the Satavahanas from the Nasik inscription of Gautami Balashri and finds up to Amaravati. Joppen’s map of the 2nd century (1914), drawn before Rabatak was found, stops Kanishka at the Yamuna.',
       fills: [['kushan-150', 'a', 'Kushan Empire'], ['satraps-150', 'b', 'Western Satraps'], ['satavahana-150', 'c', 'Satavahanas']],
       labels: [
         ['Kushan Empire', 31.6, 71.0, 'main'], ['Western Satraps', 24.3, 73.3, 'main'], ['Satavahanas', 18.0, 77.6, 'main'],
@@ -145,7 +145,7 @@ export const ERAS = [
     dates: ['First battle of Panipat, 1526', 'Battle of Talikota, 1565', 'Shivaji crowned, 1674', 'Death of Aurangzeb, 1707'],
     lead: 'taj-mahal',
     map: {
-      title: 'The Mughal Empire and the Deccan sultanates, 1605', certainty: 'Approximate. Drawn by eye after “The Mughal Empire at the death of Akbar (1605)” in Davies’ atlas, with the Deccan sultanates south of the Mughal line.',
+      title: 'The Mughal Empire and the Deccan sultanates, 1605', certainty: 'Approximate. Drawn by eye after “The Mughal Empire at the death of Akbar (1605)” in Davies’ atlas, with the Deccan sultanates south of the Mughal line, checked against Joppen’s “India in 1605” (1914).',
       fills: [['mughal-1605', 'a', 'Mughal Empire'], ['ahmadnagar-1605', 'b', 'Ahmadnagar'], ['bijapur-1605', 'c', 'Bijapur'], ['golconda-1605', 'd', 'Golconda']],
       labels: [
         ['Mughal Empire', 26.6, 77.6, 'main'], ['Agra', 27.18, 78.01, 'city'], ['Kabul', 34.53, 69.17, 'city'], ['Bengal', 24.0, 89.2, 'in'],
@@ -161,11 +161,11 @@ export const ERAS = [
     dates: ['Battle of Plassey, 1757', 'Third battle of Panipat, 1761', 'Fall of Mysore, 1799', 'Punjab annexed, 1849', 'Revolt of 1857'],
     lead: 'trimbakeshwar-temple',
     map: {
-      title: 'The Company, the Marathas and the Nizam, c. 1805', certainty: 'Approximate. After the treaties of 1799–1805: Mysore partitioned, the Carnatic and Tanjore taken, Awadh’s cession of 1801, Bassein (1802), Deogaon and Surji-Anjangaon (1803). Bombay and other small holdings are not drawn.',
-      fills: [['company-1805', 'a', 'East India Company'], ['maratha-1805', 'b', 'Maratha states'], ['hyderabad-1805', 'c', 'The Nizam of Hyderabad'], ['sikh-1805', 'd', 'Ranjit Singh’s kingdom']],
+      title: 'The Company, the Marathas and the Nizam, c. 1805', certainty: 'Approximate. After the treaties of 1799–1805: Mysore partitioned, the Carnatic and Tanjore taken, Awadh’s cession of 1801, Bassein (1802), Deogaon and Surji-Anjangaon (1803); checked against Joppen’s “India in 1805” (1914). The Sikh states are Ranjit Singh’s kingdom west of the Sutlej and the chiefs east of it. Bombay and other small holdings are not drawn.',
+      fills: [['company-1805', 'a', 'East India Company'], ['maratha-1805', 'b', 'Maratha states'], ['hyderabad-1805', 'c', 'The Nizam of Hyderabad'], ['sikh-1805', 'd', 'Sikh states']],
       labels: [
         ['East India Company', 24.0, 86.6, 'main'], ['Maratha states', 22.6, 76.4, 'main'], ['Hyderabad', 18.2, 78.4, 'main'], ['Madras Presidency', 11.0, 78.8, 'in'],
-        ['Sikhs', 31.9, 74.0, 'in'], ['Calcutta', 22.57, 88.36, 'city'], ['Delhi', 28.61, 77.21, 'city-left'], ['Pune', 18.52, 73.86, 'city-left'],
+        ['Sikh states', 30.6, 75.6, 'in'], ['Lahore', 31.55, 74.34, 'city-left'], ['Calcutta', 22.57, 88.36, 'city'], ['Delhi', 28.61, 77.21, 'city-left'], ['Pune', 18.52, 73.86, 'city-left'],
         ['Awadh', 27.0, 81.4, 'out'], ['Mysore', 12.9, 76.8, 'out'], ['Rajput states', 26.6, 73.4, 'out'], ['Sindh', 26.0, 68.4, 'out'],
         ['Afghans', 33.0, 66.0, 'out'], ['Nepal', 28.8, 82.6, 'out'], ['Travancore', 9.0, 76.9, 'out'], ['Kutch', 23.5, 69.6, 'out'],
       ],

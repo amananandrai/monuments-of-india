@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Builds js/timeline-map.js: the base map and the border snapshots of the timeline page.
 
+Sources checked against include C. Joppen, Historical Atlas of India (1914, public domain:
+archive.org/details/historicalatlaso00jopprich), plates 2, 3, 5, 6, 18, 27 and 28.
+
 Needs shapely, and three Natural Earth files (public domain) in the folder given as the argument:
   ne_50m_land.geojson, ne_50m_rivers_lake_centerlines.geojson, ne_10m_admin_0_countries_ind.geojson
 from https://github.com/nvkelso/natural-earth-vector/tree/master/geojson
@@ -217,8 +220,11 @@ ROUGH.update({
     'hyderabad-1805': [(75.4, 21.1), (76.0, 21.4), (77.5, 21.4), (78.8, 21.3), (79.0, 20.5), (79.2, 19.0), (80.5, 18.4),
                        (81.3, 17.6), (81.0, 17.0), (80.2, 16.5), (79.0, 15.9), (78.0, 15.9), (77.0, 16.0), (76.3, 16.0),
                        (76.4, 16.6), (76.0, 17.5), (75.3, 18.5), (74.6, 19.5), (74.8, 20.4)],
-    # Ranjit Singh's kingdom of Lahore, before its conquests of Multan, Kashmir and Peshawar.
-    'sikh-1805': [(72.7, 32.7), (74.4, 32.8), (75.4, 32.1), (75.3, 31.2), (74.6, 30.8), (73.6, 30.9), (72.7, 31.5)],
+    # The Sikh states, from the Jhelum to the Yamuna, as Joppen's "India in 1805" (1914) colours
+    # them: Ranjit Singh's kingdom west of the Sutlej, and the cis-Sutlej chiefs. Multan and
+    # Kashmir were still Afghan, Bahawalpur independent.
+    'sikh-1805': [(72.0, 33.3), (73.5, 33.3), (74.8, 32.8), (75.8, 32.2), (76.6, 31.2), (77.4, 30.6), (77.5, 29.9),
+                  (76.5, 29.6), (75.5, 29.8), (74.4, 30.3), (73.4, 30.6), (72.5, 31.2), (71.8, 32.1)],
     # The Vakatakas under Prabhavatigupta, Chandragupta II's daughter, c. 400: Vidarbha and the
     # western Deccan as far as Ajanta.
     'vakataka-400': [(73.6, 21.8), (76.5, 22.8), (78.5, 23.0), (80.5, 23.2), (82.4, 22.2), (82.4, 20.3), (81.0, 18.6),
@@ -226,12 +232,14 @@ ROUGH.update({
     # The Deccan sultanates in 1605, after Akbar took Khandesh, Berar and Ahmadnagar fort: Malik
     # Ambar's Nizam Shahi kingdom, Bijapur to the Tungabhadra, Golconda to the Godavari delta and
     # beyond. After the same Davies map of 1605.
-    'ahmadnagar-1605': [(72.4, 20.3), (74.5, 20.6), (76.0, 20.5), (77.6, 20.0), (78.0, 19.0), (77.2, 18.2), (76.0, 17.8),
+    # Ahmadnagar is the narrow western remnant Joppen's "India in 1605" (1914) shows, the Mughals
+    # holding the fort and its province.
+    'ahmadnagar-1605': [(72.4, 20.3), (74.5, 20.6), (75.6, 20.3), (76.4, 19.4), (76.6, 18.4), (76.0, 17.8),
                         (74.8, 17.6), (73.8, 17.5), (72.6, 17.5)],
     'golconda-1605': [(77.3, 19.6), (79.5, 19.9), (81.0, 19.3), (82.5, 18.9), (84.7, 19.0), (84.7, 18.2), (83.5, 17.1),
                       (82.3, 16.2), (81.0, 15.3), (80.5, 15.4), (79.5, 15.6), (78.5, 15.9), (77.5, 16.2), (77.0, 16.8),
                       (76.9, 17.8)],
-    'bijapur-1605': [(72.6, 17.8), (74.0, 18.0), (75.5, 18.0), (77.0, 18.0), (77.4, 17.2), (77.4, 16.2), (77.0, 15.4),
+    'bijapur-1605': [(72.6, 17.8), (74.0, 18.0), (75.5, 18.0), (76.5, 18.6), (77.3, 18.6), (77.5, 18.0), (77.4, 17.2), (77.4, 16.2), (77.0, 15.4),
                      (76.0, 14.8), (75.0, 14.7), (74.0, 14.7), (73.4, 15.5), (72.8, 16.8)],
 })
 
@@ -246,6 +254,7 @@ CUT = {
     'company-1805': ['awadh-1805', 'mysore-1805'],
     'maratha-1805': ['company-1805', 'hyderabad-1805', 'awadh-1805', 'mysore-1805'],
     'hyderabad-1805': ['company-1805'],
+    'sikh-1805': ['company-1805'],
     'vakataka-400': ['gupta-400'],
     'ahmadnagar-1605': ['mughal-1605'],
     'golconda-1605': ['mughal-1605', 'ahmadnagar-1605'],
