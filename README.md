@@ -77,39 +77,13 @@ All 101, state by state, with a picture of each: **[States and monuments](monume
 - **Links:** open any monument directly with its hash, for example
   [`#taj-mahal`](https://monuments-of-india-nu.vercel.app/#taj-mahal).
 
-## India through time
+## Historical Atlas of India
 
-[`timeline.html`](timeline.html) is a first version of a second view of the site: a map of the
-subcontinent with a year slider, from the Indus cities to the Republic.
-
-- **Thirteen eras**, each with a short history: who held power, what changed on the map, key dates.
-- **A border snapshot for every era**: the Harappan world, the lands of the Vedic texts, the
-  Nandas and Alexander (c. 325 BCE), the Mauryas (250 BCE), the Kushans, Western Satraps and
-  Satavahanas (c. 150), the Guptas and Vakatakas (c. 400), the struggle for Kannauj (c. 850), the
-  Delhi Sultanate (1236), the Mughals and the Deccan sultanates (1605), the Company, the Marathas
-  and the Nizam (c. 1805), and the provinces and princely states of 1939 and 1947. Rival powers
-  of the same date are drawn beside the main one.
-- **The Republic in three maps**, which change as the slider moves: Republic Day 1950 (Part A,
-  B, C and D states), after the States Reorganisation Act of 1956, and today's 28 states and 8
-  union territories. Every province, state and union territory is named.
-- **A pin for every monument standing by the chosen year**, which opens its 3D model. Each
-  monument's `year` is in `js/data.js`.
-- **Direct links** by year, such as `timeline.html#1605`.
-
-The historical borders are approximate: they are drawn by eye in `tools/build-timeline-map.py`,
-after the maps in C. Collin Davies, *An Historical Atlas of the Indian Peninsula* (1949) and the
-evidence each era rests on (excavated sites, inscriptions such as Rudradaman's at Junagadh, and
-treaties), and cut to Natural Earth's coastline. Each shape names its sources in that script, and
-each era's card says how certain its map is. That script writes `js/timeline-map.js`; the eras and their text are
-in `js/timeline-data.js`, and the page's code in `js/timeline.js`.
-
-The maps from 1939 on are built from data, not drawn by eye. `tools/build-state-maps.py` puts
-together the provinces and states of 1939, 1947, 1950, 1956 and today from 2011 census districts
-([DataMeet India](https://github.com/datameet/maps), CC BY 4.0), which follow the old lines
-closely, and Natural Earth for Pakistan, Bangladesh and Kashmir. The princely states inside the
-old provinces are traced by `tools/trace-princely-states.py` from "The Indian Empire in 1914" in
-C. Joppen's *Historical Atlas of India* (1914, public domain, [archive.org](https://archive.org/details/historicalatlaso00jopprich)),
-georeferenced to its printed grid and read by colour. Both write to `tools/data/`.
+The eras on a map now have a site of their own: the [Historical Atlas of India](https://historical-atlas-of-india.vercel.app)
+([repository](https://github.com/amananandrai/historical-atlas-of-india)), a map of the subcontinent
+with a year slider from the Indus cities to the Republic. Each monument's plaque here links to its
+year there, and the atlas pins every monument, linking back to its 3D model. The atlas reads each
+monument's `year` from `js/data.js`.
 
 ## Technology
 

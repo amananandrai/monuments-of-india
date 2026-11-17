@@ -2,9 +2,9 @@
 // (and the detail modules it needs) and build() runs it. The list itself carries only the facts, so
 // the map comes up without fetching every model's code first.
 
-// `year` places a monument on the timeline page (timeline.html): the year it was finished, the year it
-// was begun where the work is given as "from" a date, and a rough year for those dated by century.
-// Negative years are BCE.
+// `year` places a monument on the Historical Atlas of India (https://historical-atlas-of-india.vercel.app), which reads this list with
+// its tools/sync-monuments.mjs: the year it was finished, the year it was begun where the work is given
+// as "from" a date, and a rough year for those dated by century. Negative years are BCE.
 export const MONUMENTS = [
   { id: 'qutub-minar', state: 'Delhi', lat: 28.5245, lng: 77.1855, type: 'memorial', name: 'Qutub Minar', local: 'क़ुतुब मीनार', lang: 'hi', place: 'Mehrauli, Delhi', built: '1199–1220', year: 1220, stat: ['Height', '72.5 m'], style: 'Indo-Islamic', material: 'Red sandstone and marble', refs: { height: 72.5, source: 'https://en.wikipedia.org/wiki/Qutb_Minar' }, load: () => import('./monuments/qutub-minar.js'), fn: 'buildQutub',
     facts: ['Begun by Qutb ud-Din Aibak and completed by his successor Iltutmish; Firoz Shah Tughlaq later rebuilt the top storeys.', 'Its five storeys taper from a 14.3 m base to 2.7 m at the top, each ringed by a projecting balcony.', 'The Qutb complex has been a UNESCO World Heritage Site since 1993.'] },

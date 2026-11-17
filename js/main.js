@@ -842,10 +842,11 @@ function renderInfo(mo) {
   // Where a model departs from true scale to fit the view, the plaque says so.
   $('p-scale').textContent = mo.scaleNote ? `Scale: ${mo.scaleNote}` : '';
   $('p-scale').hidden = !mo.scaleNote;
-  // The timeline page opens at the year the monument was finished (timeline.html#1653).
+  // The Historical Atlas of India, a site of its own, opens at the year the monument was finished
+  // (https://historical-atlas-of-india.vercel.app/#1653).
   const when = mo.year < 0 ? `${-mo.year} BCE` : mo.year < 1000 ? `${mo.year} CE` : `${mo.year}`;
-  $('p-timeline').href = `timeline.html#${mo.year}`;
-  $('p-timeline').textContent = `See India in ${when} on the timeline →`;
+  $('p-timeline').href = `https://historical-atlas-of-india.vercel.app/#${mo.year}`;
+  $('p-timeline').textContent = `See India in ${when} in the Historical Atlas →`;
 }
 // On phones the plaque sits below the model as a collapsed bar; tapping it reveals the details.
 const plaque = $('plaque'), pToggle = $('p-toggle');
