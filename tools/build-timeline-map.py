@@ -119,7 +119,8 @@ ROUGH = {
 ROUGH.update({
     # The spread of mature Harappan sites, c. 2600–1900 BCE: Sutkagen Dor on the Makran coast,
     # Manda on the Chenab, Alamgirpur in the Doab and Bhagatrav near the Narmada. Outliers such as
-    # Shortugai on the Oxus and late Daimabad in the Deccan are left out. A culture area, not a border.
+    # Shortugai on the Oxus and Daimabad in the Deccan (often given as the southern limit, but its
+    # Harappan phase is late) are left out. A culture area, not a border.
     'harappan-2500bce': [(61.2, 24.9), (61.5, 25.9), (62.8, 26.5), (64.5, 27.7), (66.0, 28.9), (67.3, 30.0), (68.6, 31.3),
                          (70.0, 32.6), (71.5, 33.6), (72.8, 33.9), (74.2, 33.3), (75.2, 32.9), (76.4, 31.5), (77.3, 30.4),
                          (77.9, 29.3), (77.4, 28.4), (76.2, 27.8), (74.5, 27.6), (73.2, 27.2), (72.0, 26.6), (71.0, 25.8),
@@ -146,24 +147,30 @@ ROUGH.update({
     'alexander-325bce': [(68.4, 35.4), (71.5, 36.0), (73.6, 35.0), (74.9, 33.5), (75.8, 32.2), (75.4, 31.0), (73.6, 30.0),
                          (72.0, 28.5), (71.0, 27.0), (70.1, 25.4), (69.3, 23.6), (67.0, 23.6), (67.0, 26.0), (67.8, 28.5),
                          (68.7, 30.5), (68.9, 32.5), (68.3, 34.0)],
-    # c. 150 CE. The Kushans under Kanishka: his Rabatak inscription and finds from Peshawar,
-    # Mathura and Sarnath. Rabatak also names cities further east; the line stops at Varanasi.
+    # c. 150 CE. The Kushans under Kanishka: finds from Peshawar, Mathura and Sarnath, and the cities
+    # his Rabatak inscription names, Saketa, Kausambi and Pataliputra. Champa, which it also names,
+    # may have lain just beyond his rule and is left out.
     'kushan-150': [(62.0, 32.0), (63.0, 36.0), (64.5, 39.6), (70.0, 39.6), (74.0, 38.0), (75.5, 36.5), (76.5, 34.6),
-                   (77.6, 32.6), (78.6, 31.0), (80.0, 29.6), (82.0, 27.9), (83.6, 26.6), (83.4, 25.1), (82.0, 24.7),
-                   (80.5, 24.9), (79.0, 25.4), (77.8, 26.1), (76.8, 26.4), (75.5, 26.9), (74.0, 27.8), (72.5, 28.1),
-                   (71.0, 27.6), (70.0, 27.3), (68.8, 27.1), (67.5, 27.1), (66.5, 27.9), (65.0, 29.4), (63.0, 30.4)],
+                   (77.6, 32.6), (78.6, 31.0), (80.0, 29.6), (82.0, 27.9), (84.0, 27.2), (85.7, 26.6), (85.8, 25.3),
+                   (84.4, 24.9), (82.0, 24.7), (80.5, 24.9), (79.0, 25.4), (77.8, 26.1), (76.8, 26.4), (75.5, 26.9),
+                   (74.0, 27.9), (73.0, 29.0), (71.8, 29.6), (70.5, 29.3), (69.3, 28.9), (68.0, 28.6), (66.8, 28.6),
+                   (65.0, 29.4), (63.0, 30.4)],
     # The Western Satraps under Rudradaman: the lands his Junagadh inscription (150 CE) lists, from
-    # Sindhu-Sauvira and Kachchha to Surashtra, Avanti, Anupa and Aparanta (the north Konkan).
-    'satraps-150': [(66.5, 24.8), (67.0, 27.5), (68.8, 27.6), (70.0, 27.8), (71.0, 28.0), (72.5, 28.4), (73.5, 27.6),
+    # Sindhu-Sauvira (the lower Indus, glossed as reaching towards Multan) and Kachchha to
+    # Surashtra, Maru, Avanti, Anupa and Aparanta (the north Konkan).
+    'satraps-150': [(66.5, 24.8), (66.6, 28.4), (68.5, 29.0), (70.0, 29.6), (71.6, 30.0), (73.3, 29.4), (73.8, 27.8),
                     (75.0, 26.6), (76.5, 25.5), (77.6, 24.5), (77.9, 23.3), (77.2, 22.0), (75.6, 21.3), (74.2, 20.6),
                     (73.6, 19.7), (72.4, 19.4), (70.0, 20.0), (68.0, 22.0), (67.0, 23.5)],
     # The Satavahanas after Gautamiputra Satakarni (Nasik inscription of Gautami Balashri): the
-    # Deccan from Pratishthana to the Krishna delta, with Banavasi in the south-west.
+    # Deccan from Pratishthana to Amaravati and the Krishna delta, with Sannati and the Kolhapur coins
+    # in the south-west. Banavasi, often shown as theirs, was the Chutus' capital and is left out.
     'satavahana-150': [(72.4, 19.4), (73.4, 20.5), (75.0, 21.2), (77.0, 21.8), (79.0, 22.1), (80.6, 21.6), (82.0, 20.5),
-                       (83.4, 19.1), (84.6, 18.4), (83.0, 16.8), (81.5, 15.6), (80.4, 14.6), (79.0, 14.0), (77.5, 14.2),
-                       (76.0, 14.4), (74.8, 14.5), (73.6, 14.8), (72.9, 16.5)],
+                       (83.4, 19.1), (84.6, 18.4), (83.0, 16.8), (81.5, 15.6), (80.4, 14.6), (79.0, 14.6), (77.6, 15.2),
+                       (76.4, 15.6), (75.0, 15.6), (73.8, 15.8), (72.9, 16.8)],
     # c. 850: the three powers that the Arab merchant Sulaiman described in 851 and that fought over
-    # Kannauj. The Pratiharas under Mihira Bhoja (inscriptions from Pehowa to Gwalior and Saurashtra)...
+    # Kannauj. The Pratiharas under Mihira Bhoja: the Himalayan foothills to the Narmada, east of the
+    # Sutlej (inscriptions from Pehowa, Dausa and Gwalior). Saurashtra is shown as theirs, though
+    # its feudatory grants date from his son Mahendrapala...
     'pratihara-850': [(72.6, 30.6), (75.5, 31.2), (77.0, 30.9), (78.6, 30.1), (80.6, 28.6), (82.6, 27.4), (84.1, 26.6),
                       (84.4, 25.5), (83.0, 24.4), (81.5, 23.9), (79.5, 23.7), (78.0, 22.9), (76.0, 22.4), (74.0, 21.9),
                       (72.6, 21.2), (71.5, 20.3), (69.5, 21.4), (68.8, 22.6), (70.0, 23.6), (71.0, 24.6), (71.0, 26.6),
@@ -178,14 +185,17 @@ ROUGH.update({
                         (72.4, 18.5), (72.1, 20.5)],
     # c. 1805, after the treaties of 1799–1805: Mysore partitioned, the Carnatic and Tanjore taken,
     # Awadh's cession (1801), Bassein (1802) and the Maratha war treaties of Deogaon and
-    # Surji-Anjangaon (1803). The Company in two parts: Bengal, Bihar, Benares, the Doab, Delhi and
-    # the Orissa coast; and the Madras Presidency. Awadh and Mysore are cut out of it below.
+    # Surji-Anjangaon (1803). The Company: Bengal, Bihar, Benares, the Doab, Delhi, Agra, part of
+    # Bundelkhand and the Orissa coast; districts in Gujarat; and the Madras Presidency. Awadh and Mysore are cut out of it below.
     'company-1805': [
         [(76.8, 28.7), (77.3, 30.3), (78.0, 30.2), (79.0, 29.4), (80.2, 28.9), (81.0, 28.6), (82.0, 27.9), (83.5, 27.5),
          (84.3, 27.4), (85.5, 27.1), (86.8, 26.6), (88.0, 26.5), (89.0, 26.3), (89.9, 26.3), (90.5, 25.4), (91.8, 25.3),
          (92.5, 24.9), (92.4, 23.6), (92.4, 21.0), (90.0, 20.8), (88.0, 20.8), (87.0, 19.9), (86.0, 19.1), (85.0, 19.1),
          (84.9, 20.0), (85.3, 20.8), (85.7, 21.6), (86.2, 22.1), (85.2, 22.8), (84.0, 23.1), (83.4, 24.0), (82.4, 24.6), (81.8, 25.1),
-         (80.5, 25.5), (79.5, 26.1), (78.8, 26.5), (78.0, 26.8), (77.4, 27.5), (76.9, 28.1)],
+         (81.6, 25.0), (80.8, 24.9), (80.0, 25.0), (79.3, 25.4), (79.0, 26.2), (78.0, 26.8), (77.4, 27.5),
+         (76.9, 28.1)],
+        # Broach, Surat and Kaira in Gujarat, from Surji-Anjangaon (1803) and the Gaekwad (1805).
+        [(72.4, 23.1), (73.2, 23.0), (73.4, 22.2), (73.3, 21.0), (72.6, 20.9), (72.2, 21.6)],
         [(85.6, 19.0), (85.2, 19.3), (84.4, 19.3), (83.5, 18.8), (82.5, 18.3), (82.0, 17.7), (81.3, 17.3), (80.6, 16.8),
          (80.0, 16.3), (79.0, 15.9), (78.0, 15.9), (77.0, 16.0), (76.2, 15.5), (75.8, 14.9), (75.0, 14.8), (74.6, 15.0),
          (74.0, 15.1), (73.6, 14.8), (74.4, 12.5), (75.3, 10.6), (76.2, 10.3), (76.6, 10.3), (77.0, 9.6), (77.3, 8.8),

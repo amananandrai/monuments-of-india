@@ -14,7 +14,7 @@ export const ERAS = [
     dates: ['Cities at their height c. 2600–1900 BCE', 'Cities abandoned by c. 1300 BCE'],
     lead: null, leadNote: 'No 3D model yet. Planned: the Great Bath of Mohenjo-daro.',
     map: {
-      title: 'The Harappan world, c. 2600–1900 BCE', certainty: 'The spread of excavated mature Harappan sites, from Sutkagen Dor on the Makran coast to Manda, Alamgirpur and Bhagatrav; outliers such as Shortugai are left out. A culture area: no borders or kingdoms are known.',
+      title: 'The Harappan world, c. 2600–1900 BCE', certainty: 'The spread of excavated mature Harappan sites, from Sutkagen Dor on the Makran coast to Manda, Alamgirpur and Bhagatrav; the trading post of Shortugai and late Harappan Daimabad, often given as the southern limit, are left out. A culture area: no borders or kingdoms are known.',
       fills: [['harappan-2500bce', 'a', 'Mature Harappan sites']],
       labels: [
         ['Harappa', 30.63, 72.86, 'city'], ['Mohenjo-daro', 27.33, 68.14, 'city'], ['Dholavira', 23.89, 70.21, 'city'],
@@ -30,7 +30,7 @@ export const ERAS = [
     dates: ['Rigveda composed c. 1500–1000 BCE', 'Later Vedic texts and early Upanishads c. 1000–600 BCE'],
     lead: null, leadNote: 'No 3D model yet. Planned: a falcon-shaped fire altar, rebuilt from the ritual texts.',
     map: {
-      title: 'The lands of the Vedic texts', certainty: 'Approximate. Areas, not borders: the rivers of the Rigveda’s river hymn (10.75), from the Kubha to the Ganga, and the Kuru, Panchala, Kosala and Videha lands of the later texts, east to the Sadanira (Gandak).',
+      title: 'The lands of the Vedic texts', certainty: 'Approximate. Areas, not borders: the rivers of the Rigveda’s river hymn (10.75), from the Kubha to the Ganga, and the Kuru, Panchala and Kosala lands of the later texts, and Videha beyond the Sadanira (Gandak).',
       fills: [['rigvedic', 'a', 'Land of the Rigveda, c. 1500–1000 BCE'], ['later-vedic', 'b', 'Later Vedic lands, c. 1000–600 BCE']],
       labels: [
         ['Sapta Sindhu', 31.0, 73.3, 'in'], ['Kuru', 29.2, 77.0, 'in'], ['Panchala', 28.0, 79.5, 'in'],
@@ -79,7 +79,7 @@ export const ERAS = [
     dates: ['Kanishka’s reign, c. 127–150 CE', 'Rudradaman’s Junagadh inscription, 150 CE'],
     lead: 'ajanta-caves',
     map: {
-      title: 'Kushans, Western Satraps and Satavahanas, c. 150 CE', certainty: 'Approximate. Kanishka’s realm from his Rabatak inscription and finds at Peshawar, Mathura and Sarnath (Rabatak names cities further east); the Satraps from the lands Rudradaman’s Junagadh inscription lists; the Satavahanas from the Nasik inscription of Gautami Balashri.',
+      title: 'Kushans, Western Satraps and Satavahanas, c. 150 CE', certainty: 'Approximate. Kanishka’s realm from finds at Peshawar, Mathura and Sarnath and the cities his Rabatak inscription names, as far as Pataliputra (Champa, also named, is left out); the Satraps from the lands Rudradaman’s Junagadh inscription lists; the Satavahanas from the Nasik inscription of Gautami Balashri and finds up to Amaravati.',
       fills: [['kushan-150', 'a', 'Kushan Empire'], ['satraps-150', 'b', 'Western Satraps'], ['satavahana-150', 'c', 'Satavahanas']],
       labels: [
         ['Kushan Empire', 31.6, 71.0, 'main'], ['Western Satraps', 24.3, 73.3, 'main'], ['Satavahanas', 18.0, 77.6, 'main'],
@@ -112,7 +112,7 @@ export const ERAS = [
     dates: ['Harsha’s reign, 606–647', 'Sulaiman the merchant describes the three kingdoms, 851', 'Mahmud of Ghazni’s raids, 1000–1027', 'Second battle of Tarain, 1192'],
     lead: 'brihadeeswara-temple',
     map: {
-      title: 'The struggle for Kannauj, c. 850', certainty: 'Approximate. The three powers that the Arab merchant Sulaiman described in 851: the Pratiharas under Mihira Bhoja (inscriptions from Pehowa to Gwalior and Saurashtra), the Palas under Devapala and the Rashtrakutas under Amoghavarsha.',
+      title: 'The struggle for Kannauj, c. 850', certainty: 'Approximate. The three powers that the Arab merchant Sulaiman described in 851: the Pratiharas under Mihira Bhoja (from the Himalayan foothills to the Narmada; inscriptions at Pehowa, Dausa and Gwalior; Saurashtra’s grants date from his son’s reign), the Palas under Devapala and the Rashtrakutas under Amoghavarsha.',
       fills: [['pratihara-850', 'a', 'Gurjara-Pratiharas'], ['pala-850', 'b', 'Palas'], ['rashtrakuta-850', 'c', 'Rashtrakutas']],
       labels: [
         ['Pratiharas', 28.2, 74.6, 'main'], ['Palas', 24.4, 87.6, 'main'], ['Rashtrakutas', 18.6, 76.2, 'main'],
@@ -161,7 +161,7 @@ export const ERAS = [
     dates: ['Battle of Plassey, 1757', 'Third battle of Panipat, 1761', 'Fall of Mysore, 1799', 'Punjab annexed, 1849', 'Revolt of 1857'],
     lead: 'trimbakeshwar-temple',
     map: {
-      title: 'The Company, the Marathas and the Nizam, c. 1805', certainty: 'Approximate. After the treaties of 1799–1805: Mysore partitioned, the Carnatic and Tanjore taken, Awadh’s cession of 1801, Bassein (1802), Deogaon and Surji-Anjangaon (1803). Bombay, Surat and other small holdings are not drawn.',
+      title: 'The Company, the Marathas and the Nizam, c. 1805', certainty: 'Approximate. After the treaties of 1799–1805: Mysore partitioned, the Carnatic and Tanjore taken, Awadh’s cession of 1801, Bassein (1802), Deogaon and Surji-Anjangaon (1803). Bombay and other small holdings are not drawn.',
       fills: [['company-1805', 'a', 'East India Company'], ['maratha-1805', 'b', 'Maratha states'], ['hyderabad-1805', 'c', 'The Nizam of Hyderabad'], ['sikh-1805', 'd', 'Ranjit Singh’s kingdom']],
       labels: [
         ['East India Company', 24.0, 86.6, 'main'], ['Maratha states', 22.6, 76.4, 'main'], ['Hyderabad', 18.2, 78.4, 'main'], ['Madras Presidency', 11.0, 78.8, 'in'],
