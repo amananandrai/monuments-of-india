@@ -74,24 +74,36 @@ const pins = MONUMENTS.map((m) => {
   return { m, a, circle: a.firstChild };
 }).sort((p, q) => p.m.year - q.m.year);
 
-let shownEra = -1;
-function drawEra(i) {
-  if (i === shownEra) return;
-  shownEra = i;
-  const map = ERAS[i].map;
+// An era has one map, or several (`maps`), each from its year `from` on: the Republic is drawn as it
+// was on Republic Day 1950, after the States Reorganisation Act of 1956, and today.
+const mapsOf = (e) => e.maps || (e.map ? [e.map] : []);
+const mapAt = (e, year) => mapsOf(e).reduce((cur, m) => ((m.from ?? e.start) <= year ? m : cur), null);
+const keyG = $('tl-key');
+
+let shownMap;
+function drawMap(map) {
+  if (map === shownMap) return;
+  shownMap = map;
   fillsG.replaceChildren();
   labelsG.replaceChildren();
-  // India's boundary today stays as a dashed reference, unless the snapshot is drawn from it.
-  todayPath.style.display = map && map.fills.some(([s]) => s === 'india') ? 'none' : '';
+  keyG.replaceChildren();
+  keyG.hidden = !(map && map.key);
+  // India's boundary today stays as a dashed reference, unless the map is drawn from it.
+  todayPath.style.display = map && (map.units || map.fills.some(([s]) => s === 'india')) ? 'none' : '';
   if (!map) return;
-  for (const [shape, cls, name] of map.fills) {
+  // `units` names a set of provinces and states from js/timeline-map.js, each with its label point.
+  const units = (map.units && TMAP.units[map.units]) || [];
+  const fills = [...(map.fills || []), ...units.map(([shape, cls, name, note]) => [shape, cls, note && note !== name ? `${name} (${note})` : name])];
+  for (const [shape, cls, name] of fills) {
     const g = el('g', { class: `polity ${cls}` });
     g.appendChild(el('path', { class: 'tint', d: TMAP.shapes[shape] }));
     g.appendChild(el('path', { class: 'hatched', d: TMAP.shapes[shape], fill: `url(#hatch-${cls})` }));
     g.appendChild(el('title', {}, name));
     fillsG.appendChild(g);
   }
-  for (const [name, lat, lng, kind] of map.labels) {
+  const unitLabels = units.filter((u) => u.length > 4 && !(map.unlabelled || []).includes(u[2]))
+    .map(([, cls, name, , lat, lng]) => [name, lat, lng, (map.unitKinds || {})[cls] || 'unit']);
+  for (const [name, lat, lng, kind] of [...unitLabels, ...(map.labels || [])]) {
     const [x, y] = project(lat, lng);
     if (kind.startsWith('city')) {
       const left = kind === 'city-left';
@@ -99,8 +111,8 @@ function drawEra(i) {
       labelsG.appendChild(el('text', { class: 'lab city', x: x + (left ? -5.5 : 5.5), y: y + 3.4, 'text-anchor': left ? 'end' : 'start' }, name));
       continue;
     }
-    // A long name on the main power breaks into two lines.
-    const words = name.split(' '), two = kind === 'main' && name.length > 16;
+    // A long name breaks into two lines.
+    const words = name.split(' '), two = words.length > 1 && name.length > (kind === 'main' ? 16 : 14);
     const t = el('text', { class: `lab ${kind}`, x, y, 'text-anchor': 'middle' });
     if (two) {
       const half = Math.ceil(words.length / 2);
@@ -108,6 +120,11 @@ function drawEra(i) {
       t.appendChild(el('tspan', { x, dy: '1.15em' }, words.slice(half).join(' ')));
     } else t.textContent = name;
     labelsG.appendChild(t);
+  }
+  for (const [cls, text] of map.key || []) {
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="swatch ${cls}"></span>${esc(text)}`;
+    keyG.appendChild(li);
   }
 }
 
@@ -139,9 +156,6 @@ function drawCard(i) {
   $('c-powers').textContent = e.powers;
   $('c-change').textContent = e.change;
   $('c-dates').innerHTML = e.dates.map((d) => `<li>${esc(d)}</li>`).join('');
-  $('c-map').innerHTML = e.map
-    ? `<strong>${esc(e.map.title)}.</strong> ${esc(e.map.certainty)}`
-    : '<strong>Borders for this era are not drawn yet.</strong> The dashed line is India’s boundary today, for reference.';
   const lead = e.lead && byId.get(e.lead);
   $('c-lead').innerHTML = lead
     ? `<a class="lead" href="index.html#${lead.id}">
@@ -149,11 +163,26 @@ function drawCard(i) {
          <span class="lead-text"><strong>${esc(lead.name)}</strong><span>${esc(lead.place)} · ${esc(lead.built)}</span><span class="go">Open the 3D model →</span></span>
        </a>`
     : `<p class="lead-none">${esc(e.leadNote || '')}</p>`;
-  const built = MONUMENTS.filter((m) => m.year >= e.start && m.year < e.end && m.id !== e.lead).sort((a, b) => a.year - b.year);
+  const last = i === ERAS.length - 1;
+  const built = MONUMENTS.filter((m) => m.year >= e.start && (m.year < e.end || (last && m.year === e.end)) && m.id !== e.lead).sort((a, b) => a.year - b.year);
   $('c-built-wrap').hidden = !built.length;
   $('c-built-title').textContent = `Also built in this era (${built.length})`;
   $('c-built').innerHTML = built.map((m) => `<li><a href="index.html#${m.id}">${esc(m.name)}</a> <span>${esc(m.built)}</span></li>`).join('');
   $('tl-card').scrollTop = 0;
+}
+
+// The note under the era's history says what the map shows, and which other maps the era has.
+let shownNote;
+function drawMapNote(era, map) {
+  if (map === shownNote && map) return;
+  shownNote = map;
+  const maps = mapsOf(era);
+  const others = maps.length > 1
+    ? ` <span class="more">This era has ${maps.length} maps: ${maps.map((m) => `<a href="#${m.from ?? era.start}"${m === map ? ' aria-current="true"' : ''}>${m.from ?? era.start}</a>`).join(', ')}. Move the slider to change map.</span>`
+    : '';
+  $('c-map').innerHTML = map
+    ? `<strong>${esc(map.title)}.</strong> ${esc(map.certainty)}${others}`
+    : '<strong>Borders for this era are not drawn yet.</strong> The dashed line is India’s boundary today, for reference.';
 }
 
 /* ---------- the slider ---------- */
@@ -171,7 +200,9 @@ function show(pos, { url = true, exact } = {}) {
   $('tl-era').textContent = era.name;
   range.setAttribute('aria-valuetext', `${formatYear(year)}, ${era.name}`);
   bandEls.forEach((b, k) => { b.classList.toggle('on', k === i); b.setAttribute('aria-pressed', k === i); });
-  drawEra(i);
+  const map = mapAt(era, year);
+  drawMap(map);
+  drawMapNote(era, map);
   const standing = drawPins(year, era);
   $('tl-standing').textContent = standing === 1 ? '1 monument standing' : `${standing} monuments standing`;
   drawCard(i);
@@ -181,7 +212,8 @@ function show(pos, { url = true, exact } = {}) {
 }
 
 // A band or the arrows open an era at its last year, so all of the era's monuments are on the map.
-const openEra = (i) => show(i * STEP + STEP - 1);
+// The last era runs to this year, which is the very end of the slider.
+const openEra = (i) => show(i === ERAS.length - 1 ? MAX : i * STEP + STEP - 1);
 
 range.addEventListener('input', () => { stop(); show(+range.value); });
 bands.addEventListener('click', (ev) => {
