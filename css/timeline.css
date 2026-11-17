@@ -65,6 +65,36 @@
 .lab.in { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
 .lab.out { font-size: 11px; font-weight: 500; fill: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
 .lab.city { font-size: 11px; font-weight: 500; }
+.lab.state { font-size: 11px; font-weight: 600; font-style: italic; }
+.lab.unit { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; }
+
+.tl-key {
+  position: absolute;
+  left: 20px;
+  top: 16px;
+  margin: 0;
+  padding: 8px 12px;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 12px;
+  color: var(--muted);
+  display: grid;
+  gap: 3px;
+  max-width: 260px;
+}
+.tl-key li { display: flex; align-items: center; gap: 8px; }
+.tl-key .swatch { width: 14px; height: 10px; flex: none; border: 1.5px solid; border-radius: 2px; }
+.tl-key .swatch.a { border-color: var(--p-a); background: color-mix(in srgb, var(--p-a) 25%, transparent); }
+.tl-key .swatch.b { border-color: var(--p-b); background: color-mix(in srgb, var(--p-b) 25%, transparent); }
+.tl-key .swatch.c { border-color: var(--p-c); background: color-mix(in srgb, var(--p-c) 25%, transparent); }
+.tl-key .swatch.d { border-color: var(--p-d); background: color-mix(in srgb, var(--p-d) 25%, transparent); }
+.mapnote .more { display: block; margin-top: 6px; color: var(--muted); }
+.mapnote .more a { color: var(--accent); }
+.mapnote .more a[aria-current] { font-weight: 600; color: inherit; text-decoration: none; }
 .city-dot { fill: var(--fg); stroke: var(--land); stroke-width: 1; }
 
 .tl-map .pin circle { opacity: 0.55; transition: r 0.2s; }
@@ -182,5 +212,6 @@
   .tl-year { font-size: 26px; }
   .tl-era { display: none; }
   .tl-legend { display: none; }
+  .tl-key { top: 10px; left: 10px; font-size: 10px; padding: 5px 8px; gap: 1px; max-width: 46%; }
   .tl-head h1 { font-size: 22px; }
 }

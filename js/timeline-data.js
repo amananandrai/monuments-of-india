@@ -1,7 +1,8 @@
 // The timeline page's eras and border snapshots (timeline.html). Years below zero are BCE.
 //
 // An era's `map` says what is drawn for it: `fills` are shapes from js/timeline-map.js, `labels` are
-// names placed at [lat, lng]. `kind` picks a label's look: 'in' a region inside the main power,
+// names placed at [lat, lng]. `kind` picks a label's look: 'in' a region inside the main power, 'state' a
+// princely state (in italics),
 // 'out' a neighbour, 'city' a capital or site with a dot ('city-left' puts its name on the left). A fill's
 // second field picks its colour and hatch, 'a' to 'd'.
 // The histories are short summaries from general reference works; the borders are approximate.
@@ -178,10 +179,16 @@ export const ERAS = [
     dates: ['Congress founded, 1885', 'Capital moved to Delhi, 1911', 'Salt March, 1930', 'Quit India, 1942'],
     lead: 'csmt',
     map: {
-      title: 'British India and the princely states, 1939', certainty: 'Outer boundary only, from the modern borders of India, Pakistan and Bangladesh. Provinces and princely states are not drawn.',
-      fills: [['british-india-1939', 'a', 'British India and the princely states']],
+      title: 'British provinces and princely states, 1939', certainty: 'Provinces built from 2011 census districts (DataMeet, CC BY 4.0), which follow the old lines closely, and Natural Earth for Pakistan and Bangladesh. Inside the provinces, the patchwork of states is traced from “The Indian Empire in 1914” in Joppen’s Historical Atlas of India (1914, public domain); a strip along 80° E lost in the binding of the scan is filled in from both sides. State borders barely changed between 1914 and 1939. Province names are upright, state names in italics.',
+      units: '1939', unitKinds: { a: 'in' }, unlabelled: ['Ajmer-Merwara'],
+      key: [['a', 'British provinces'], ['b', 'Princely states']],
       labels: [
-        ['British India and the princely states', 23.2, 79.0, 'main'], ['New Delhi', 28.61, 77.21, 'city'], ['Nepal', 28.2, 84.2, 'out'], ['Bhutan', 27.45, 90.5, 'out'],
+        ['Jammu and Kashmir', 34.3, 76.4, 'state'], ['Rajputana', 26.4, 73.0, 'state'], ['Gwalior', 25.9, 77.6, 'state'],
+        ['Central India', 23.4, 76.4, 'state'], ['Hyderabad', 17.6, 78.2, 'state'], ['Mysore', 13.0, 76.4, 'state'],
+        ['Travancore', 9.1, 77.0, 'state'], ['Kathiawar', 22.25, 70.9, 'state'], ['Baroda', 22.5, 73.5, 'state'],
+        ['Kalat', 28.3, 65.9, 'state'], ['Bahawalpur', 29.0, 71.8, 'state'], ['Patiala', 30.3, 75.9, 'state'],
+        ['Eastern States', 22.0, 83.6, 'state'], ['Bastar', 19.2, 81.6, 'state'], ['Manipur', 24.7, 93.9, 'state'],
+        ['New Delhi', 28.61, 77.21, 'city'], ['Nepal', 28.4, 83.6, 'out'], ['Bhutan', 27.45, 90.5, 'out'],
         ['Burma', 21.5, 96.2, 'out'], ['Ceylon', 7.8, 80.7, 'out'], ['Afghanistan', 33.6, 66.0, 'out'], ['Tibet', 31.5, 87.0, 'out'],
       ],
     },
@@ -193,11 +200,18 @@ export const ERAS = [
     dates: ['Independence, 15 August 1947', 'Hyderabad joins India, 1948', 'Constitution in force, 26 January 1950'],
     lead: 'red-fort',
     map: {
-      title: 'The Indian Union and Pakistan, 1947', certainty: 'Modern boundaries as India draws them (Natural Earth), not the lines of 1947: princely states were still joining.',
-      fills: [['india', 'a', 'India'], ['pakistan', 'b', 'Pakistan'], ['bangladesh', 'b', 'East Pakistan']],
+      title: 'On the eve of independence, 15 August 1947', certainty: 'The provinces of the two dominions, with Punjab and Bengal divided along the Radcliffe Line (drawn as today’s border) and Sylhet joined to East Bengal, and the princely states, most of which had not yet acceded: Hyderabad, Junagadh and Kashmir had not chosen. Provinces from 2011 census districts (DataMeet, CC BY 4.0) and Natural Earth; the states from Joppen’s map of 1914, as for 1939.',
+      units: '1947', unitKinds: { a: 'in', c: 'in' }, unlabelled: ['Ajmer-Merwara'],
+      key: [['a', 'Provinces of India'], ['c', 'Provinces of Pakistan'], ['b', 'Princely states']],
       labels: [
-        ['India', 22.6, 79.0, 'main'], ['West Pakistan', 29.3, 68.3, 'main'], ['East Pakistan', 24.3, 90.2, 'in'], ['New Delhi', 28.61, 77.21, 'city'],
-        ['Karachi', 24.86, 67.01, 'city'], ['Nepal', 28.2, 84.2, 'out'], ['Bhutan', 27.45, 90.5, 'out'], ['Burma', 21.5, 96.2, 'out'], ['Ceylon', 7.8, 80.7, 'out'],
+        ['Jammu and Kashmir', 34.3, 76.4, 'state'], ['Rajputana', 26.4, 73.0, 'state'], ['Gwalior', 25.9, 77.6, 'state'],
+        ['Central India', 23.4, 76.4, 'state'], ['Hyderabad', 17.6, 78.2, 'state'], ['Mysore', 13.0, 76.4, 'state'],
+        ['Travancore', 9.1, 77.0, 'state'], ['Kathiawar', 22.25, 70.9, 'state'], ['Baroda', 22.5, 73.5, 'state'],
+        ['Kalat', 28.3, 65.9, 'state'], ['Bahawalpur', 29.0, 71.8, 'state'], ['Patiala', 30.3, 75.9, 'state'],
+        ['Eastern States', 22.0, 83.6, 'state'], ['Bastar', 19.2, 81.6, 'state'], ['Manipur', 24.7, 93.9, 'state'],
+        ['Junagadh', 21.2, 70.5, 'state'], ['New Delhi', 28.61, 77.21, 'city'], ['Karachi', 24.86, 67.01, 'city'],
+        ['Nepal', 28.4, 83.6, 'out'], ['Bhutan', 27.45, 90.5, 'out'], ['Burma', 21.5, 96.2, 'out'], ['Ceylon', 7.8, 80.7, 'out'],
+        ['Afghanistan', 33.6, 66.0, 'out'], ['Tibet', 31.5, 87.0, 'out'], ['Goa (Portuguese)', 15.3, 73.3, 'out'],
       ],
     },
   },
@@ -205,16 +219,31 @@ export const ERAS = [
     id: 'republic', name: 'Republic of India', short: 'Republic', start: 1950, end: new Date().getFullYear(), span: '1950–today',
     powers: 'Elected governments under the Constitution.',
     change: 'States are redrawn on language lines, Goa and Sikkim join, and new states are carved out of old ones.',
-    dates: ['States Reorganisation Act, 1956', 'Goa joins, 1961', 'Bangladesh independent, 1971', 'Telangana formed, 2014', 'Ladakh a union territory, 2019'],
+    dates: ['Republic Day, 26 January 1950', 'States Reorganisation Act, 1 November 1956', 'Goa joins, 1961', 'Bangladesh independent, 1971', 'Sikkim joins, 1975', 'Telangana formed, 2014', 'Ladakh a union territory, 2019'],
     lead: 'capitol-complex',
-    map: {
-      title: 'India and its neighbours today', certainty: 'Modern boundaries as India draws them (Natural Earth). State borders are not drawn.',
-      fills: [['india', 'a', 'India'], ['pakistan', 'b', 'Pakistan'], ['bangladesh', 'c', 'Bangladesh']],
-      labels: [
-        ['India', 22.6, 79.0, 'main'], ['Pakistan', 29.3, 68.3, 'main'], ['Bangladesh', 24.3, 90.2, 'in'], ['New Delhi', 28.61, 77.21, 'city'],
-        ['Nepal', 28.2, 84.2, 'out'], ['Bhutan', 27.45, 90.5, 'out'], ['Myanmar', 21.5, 96.2, 'out'], ['Sri Lanka', 7.8, 80.7, 'out'],
-      ],
-    },
+    maps: [
+      {
+        from: 1950, title: 'Republic Day, 26 January 1950', certainty: 'The Constitution’s four kinds of state: Part A, the former provinces; Part B, unions of princely states and Hyderabad, Mysore and Kashmir; Part C, chief commissioners’ provinces and small unions; Part D, the Andaman and Nicobar Islands. Built from 2011 census districts (DataMeet, CC BY 4.0), which follow these lines closely; Charkhi Dadri and other small pieces of PEPSU are left in the Punjab. Goa, Daman and Diu (Portuguese), Pondicherry (French) and Sikkim (a protectorate) were not yet part of India.',
+        units: '1950', unitKinds: { a: 'in', b: 'state', c: 'unit', d: 'unit' }, unlabelled: ['Delhi', 'Ajmer', 'Coorg'],
+        key: [['a', 'Part A: former provinces'], ['b', 'Part B: former princely states'], ['c', 'Part C: small states'], ['d', 'Part D: Andaman and Nicobar']],
+        labels: [['New Delhi', 28.61, 77.21, 'city'], ['Pakistan', 29.3, 68.3, 'out'], ['Nepal', 28.4, 83.6, 'out'], ['Bhutan', 27.45, 90.5, 'out'], ['Burma', 21.5, 96.2, 'out'],
+          ['Ceylon', 7.8, 80.7, 'out'], ['Tibet', 31.5, 87.0, 'out'], ['East Pakistan', 24.3, 90.2, 'out'], ['Goa (Portuguese)', 15.3, 73.3, 'out'], ['Sikkim', 28.15, 88.3, 'out']],
+      },
+      {
+        from: 1956, title: 'After the States Reorganisation Act, 1 November 1956', certainty: 'States redrawn on language lines: 14 states and 6 union territories. Built from 2011 census districts (DataMeet, CC BY 4.0). Changes since: Bombay split into Gujarat and Maharashtra (1960), Goa (1961), Nagaland (1963), Haryana and Himachal (1966), Meghalaya, Manipur and Tripura (1972), Sikkim (1975), Mizoram and Arunachal (1987), Chhattisgarh, Jharkhand and Uttarakhand (2000), Telangana (2014).',
+        units: '1956', unitKinds: { a: 'in', c: 'unit' }, unlabelled: ['Delhi'],
+        key: [['a', 'States'], ['c', 'Union territories']],
+        labels: [['New Delhi', 28.61, 77.21, 'city'], ['Pakistan', 29.3, 68.3, 'out'], ['Nepal', 28.4, 83.6, 'out'], ['Bhutan', 27.45, 90.5, 'out'], ['Burma', 21.5, 96.2, 'out'],
+          ['Ceylon', 7.8, 80.7, 'out'], ['Tibet', 31.5, 87.0, 'out'], ['East Pakistan', 24.3, 90.2, 'out'], ['Goa (Portuguese)', 15.3, 73.3, 'out'], ['Sikkim', 28.15, 88.3, 'out']],
+      },
+      {
+        from: 2020, title: 'India today: 28 states and 8 union territories', certainty: 'Since 26 January 2020, when Dadra and Nagar Haveli and Daman and Diu were joined; Jammu and Kashmir and Ladakh became union territories in 2019. Built from 2011 census districts (DataMeet, CC BY 4.0), with Telangana and Ladakh from their districts, and Kashmir as India draws it (Natural Earth).',
+        units: 'today', unitKinds: { a: 'in', c: 'unit' }, unlabelled: ['Delhi', 'Goa', 'Sikkim', 'Tripura', 'Meghalaya', 'Mizoram', 'Manipur', 'Nagaland'],
+        key: [['a', 'States'], ['c', 'Union territories']],
+        labels: [['New Delhi', 28.61, 77.21, 'city'], ['Pakistan', 29.3, 68.3, 'out'], ['Nepal', 28.4, 83.6, 'out'], ['Bhutan', 27.45, 90.5, 'out'],
+          ['Myanmar', 21.5, 96.2, 'out'], ['Sri Lanka', 7.8, 80.7, 'out'], ['Bangladesh', 24.0, 90.2, 'out'], ['China', 31.5, 87.0, 'out']],
+      },
+    ],
   },
 ];
 

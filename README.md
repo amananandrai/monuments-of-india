@@ -87,8 +87,11 @@ subcontinent with a year slider, from the Indus cities to the Republic.
   Nandas and Alexander (c. 325 BCE), the Mauryas (250 BCE), the Kushans, Western Satraps and
   Satavahanas (c. 150), the Guptas and Vakatakas (c. 400), the struggle for Kannauj (c. 850), the
   Delhi Sultanate (1236), the Mughals and the Deccan sultanates (1605), the Company, the Marathas
-  and the Nizam (c. 1805), British India (1939), 1947 and today. Rival powers of the same date are
-  drawn beside the main one.
+  and the Nizam (c. 1805), and the provinces and princely states of 1939 and 1947. Rival powers
+  of the same date are drawn beside the main one.
+- **The Republic in three maps**, which change as the slider moves: Republic Day 1950 (Part A,
+  B, C and D states), after the States Reorganisation Act of 1956, and today's 28 states and 8
+  union territories. Every province, state and union territory is named.
 - **A pin for every monument standing by the chosen year**, which opens its 3D model. Each
   monument's `year` is in `js/data.js`.
 - **Direct links** by year, such as `timeline.html#1605`.
@@ -99,6 +102,14 @@ evidence each era rests on (excavated sites, inscriptions such as Rudradaman's a
 treaties), and cut to Natural Earth's coastline. Each shape names its sources in that script, and
 each era's card says how certain its map is. That script writes `js/timeline-map.js`; the eras and their text are
 in `js/timeline-data.js`, and the page's code in `js/timeline.js`.
+
+The maps from 1939 on are built from data, not drawn by eye. `tools/build-state-maps.py` puts
+together the provinces and states of 1939, 1947, 1950, 1956 and today from 2011 census districts
+([DataMeet India](https://github.com/datameet/maps), CC BY 4.0), which follow the old lines
+closely, and Natural Earth for Pakistan, Bangladesh and Kashmir. The princely states inside the
+old provinces are traced by `tools/trace-princely-states.py` from "The Indian Empire in 1914" in
+C. Joppen's *Historical Atlas of India* (1914, public domain, [archive.org](https://archive.org/details/historicalatlaso00jopprich)),
+georeferenced to its printed grid and read by colour. Both write to `tools/data/`.
 
 ## Technology
 
