@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { attachSurface } from './surface.js';
 
 // Sculpting with signed distance fields, for statues and animals. A figure is a function giving the
@@ -133,6 +134,20 @@ export function normalAt(f, [x, y, z]) {
   return [gx / gl, gy / gl, gz / gl];
 }
 
+// Lay a curve on the skin of field f: each point [x, y, z] moved onto the surface, or `offset`
+// outside it (a tube of radius r with offset < r stands in relief, half sunk into the stone).
+// Creepers, sacred threads, hems and straps follow the body instead of floating beside it.
+export const onSkin = (f, pts, offset = 0) => pts.map((p) => snap(f, p, offset));
+
+// A matrix that sets a part flat on the skin of f near p: its +y along the outward normal, its +z
+// along `dir` (made tangent to the surface), its origin `offset` out from the surface.
+export function skinMatrix(f, p, dir, offset = 0, scale = [1, 1, 1]) {
+  const q = snap(f, p, offset), n = new THREE.Vector3(...normalAt(f, q));
+  const z = new THREE.Vector3(...dir).addScaledVector(n, -n.dot(new THREE.Vector3(...dir))).normalize();
+  const x = new THREE.Vector3().crossVectors(n, z).normalize();
+  return new THREE.Matrix4().makeBasis(x.multiplyScalar(scale[0]), n.clone().multiplyScalar(scale[1]), z.multiplyScalar(scale[2])).setPosition(...q);
+}
+
 /* ---------- meshing ---------- */
 
 // Surface nets over the box lo..hi with cells h wide. Space is first sampled every B cells, and
@@ -210,8 +225,12 @@ export function surfaceNets(f, lo, hi, h) {
 // Darken the crevices: at each vertex, step out along the normal and see how soon the field comes
 // back towards the surface (ambient occlusion from a distance field). reach is how far to look;
 // the vertex colour runs from `deep` in the deepest folds to white in the open.
-export function bakeCavities(geo, f, reach, deep = [0.45, 0.42, 0.4]) {
-  const p = geo.attributes.position, n = geo.attributes.normal, col = new Float32Array(p.count * 3);
+//
+// wear (0 to 1): how much the ridges are rubbed lighter, as the edges of folds, brows and knuckles
+// are worn smooth and pale on old stone and bronze. A ridge is where the field curves outward
+// sharply: its Laplacian, sampled at the scale `edge`, is high (1 / edge for a ridge of that radius).
+export function bakeCavities(geo, f, reach, deep = [0.45, 0.42, 0.4], { wear = 0, edge = reach * 0.5 } = {}) {
+  const p = geo.attributes.position, n = geo.attributes.normal, col = new Float32Array(p.count * 3), e = edge * 0.5;
   for (let i = 0; i < p.count; i++) {
     const x = p.getX(i), y = p.getY(i), z = p.getZ(i), nx = n.getX(i), ny = n.getY(i), nz = n.getZ(i);
     let occ = 0, w = 1;
@@ -221,20 +240,45 @@ export function bakeCavities(geo, f, reach, deep = [0.45, 0.42, 0.4]) {
       w *= 0.6;
     }
     const a = Math.min(1, Math.max(0, 1 - occ * 1.6)), ao = a * a * (3 - 2 * a);
-    col.set([deep[0] + (1 - deep[0]) * ao, deep[1] + (1 - deep[1]) * ao, deep[2] + (1 - deep[2]) * ao], i * 3);
+    let c = [deep[0] + (1 - deep[0]) * ao, deep[1] + (1 - deep[1]) * ao, deep[2] + (1 - deep[2]) * ao];
+    if (wear > 0) {
+      const lap = (f(x + e, y, z) + f(x - e, y, z) + f(x, y + e, z) + f(x, y - e, z) + f(x, y, z + e) + f(x, y, z - e) - 6 * f(x, y, z)) / (e * e);
+      const ridge = Math.min(1, Math.max(0, (lap * edge * 0.5 - 0.6) / 1.4));
+      c = c.map((v) => v + (1.12 - v) * wear * ridge);
+    }
+    col.set(c, i * 3);
   }
   geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
   return geo;
 }
 
 // Mesh a figure once and keep it: build() returns { f, lo, hi } (the field and its bounds); h is
-// the cell size; reach and deep set the cavity shading (reach 0 for none).
+// the cell size; reach and deep set the cavity shading (reach 0 for none), wear the rubbed ridges.
+//
+// split: { region, h, lo, hi } meshes the part of the figure inside `region` (a field, negative
+// inside: an ellipsoid round a head, so the seam crosses the neck squarely) on its own, finer grid
+// of cell h within the box lo..hi, and the rest on the main grid, as one geometry. The two parts
+// overlap by 1.5 coarse cells either side of the region's surface; across it each in turn is drawn
+// a quarter of a coarse cell inside the skin, so the other covers its cut edge, and they cross
+// over in one line.
 const cache = new Map();
-export function sculpt(key, build, { h, reach = h * 6, deep } = {}) {
+export function sculpt(key, build, { h, reach = h * 6, deep, wear = 0, split = null } = {}) {
   if (!cache.has(key)) {
     const { f, lo, hi } = build();
-    const geo = surfaceNets(f, lo, hi, h);
-    if (reach > 0) bakeCavities(geo, f, reach, deep);
+    let geo;
+    if (!split) {
+      geo = surfaceNets(f, lo, hi, h);
+      if (reach > 0) bakeCavities(geo, f, reach, deep, { wear });
+    } else {
+      const ov = 1.5 * h, inset = 0.25 * h, R = split.region;
+      const fineSide = (c) => { const t = Math.min(1, Math.max(0, 0.5 - c / ov)); return t * t * (3 - 2 * t); };
+      const fc = (x, y, z) => { const c = R(x, y, z); return smax(f(x, y, z) + inset * fineSide(c), -c - ov, h * 0.3); };
+      const ff = (x, y, z) => { const c = R(x, y, z); return smax(f(x, y, z) + inset * (1 - fineSide(c)), c - ov, split.h * 0.3); };
+      const coarse = surfaceNets(fc, lo, hi, h), fine = surfaceNets(ff, split.lo, split.hi, split.h);
+      // Each part's shading at its own scale: the head's folds are a few of its cells deep.
+      if (reach > 0) { bakeCavities(coarse, f, reach, deep, { wear }); bakeCavities(fine, f, split.h * 6, deep, { wear }); }
+      geo = mergeGeometries([coarse, fine]);
+    }
     cache.set(key, geo);
   }
   return cache.get(key);
@@ -248,7 +292,8 @@ export function statueMaterial(m) {
     const c = attachSurface(m.clone());
     c.vertexColors = true;
     delete c.userData.photoKey;
-    c.userData.surface = m.metalness >= 0.35 || m.userData.surface === 'none' ? 'none' : 'carved';
+    // Bronze cast in plates keeps its plates; other metal is plain, and stone is carved.
+    c.userData.surface = m.userData.surface === 'plates' ? 'plates' : m.metalness >= 0.35 || m.userData.surface === 'none' ? 'none' : 'carved';
     // Dark stone in sculpture is basalt or granite rubbed with oil: glossy, so its form shows in
     // the sky it reflects rather than vanishing into black.
     const hsl = c.color.getHSL({});

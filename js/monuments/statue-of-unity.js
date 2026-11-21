@@ -1,36 +1,31 @@
 import * as THREE from 'three';
 import { heightField, ridged, fbm, smooth } from '../details/terrain.js';
 import { detail } from '../detail.js';
-import { M, V, mat, mesh, box, at, ellipsoid, capsule, tube, smoothLathe, sheet, face, fingers, inst, unitBox } from '../helpers.js';
-import { patelBody } from '../details/figures.js';
+import { M, V, mat, mesh, box, at, ellipsoid, capsule, tube, smoothLathe, sheet, fingers, inst, unitBox } from '../helpers.js';
+import { patelBody, patelSurface } from '../details/figures.js';
+import { onSkin } from '../sdf.js';
+import { surface } from '../surface.js';
 import { addDetails } from '../details/statue-of-unity.js';
 
 // Sardar Patel, walking forward a step in dhoti, kurta, bandi and a shawl over the shoulders, arms
-// at his sides. The body is one cast skin (js/details/figures.js); the finer folds, the buttons, the
-// hands and the features of the face are added here. All in the statue's own units (177.4 to the
+// at his sides. The body and head are one cast skin (js/details/figures.js); the finer folds of the
+// shawl, the placket and buttons, the cuffs, hands and sandals are added here, the folds and placket
+// laid on the skin (onSkin). The bronze is cast in plates (the 'plates' surface). All in the
+// statue's own units (177.4 to the
 // crown), scaled to 182 m at the end.
 const SLIT = mat('#2a221c', 0.6, 0.3);
+// The statue's bronze, its cladding cast in plates.
+const PLATED = surface(M.bronze.clone(), 'plates');
 function patel(B) {
-  const s = new THREE.Group();
+  const s = new THREE.Group(), F = patelSurface();
   s.add(patelBody(B));
-  // The kasta: the dhoti's front pleats falling in a fan between the legs.
-  for (let i = -2; i <= 2; i++) {
-    const x = i * 1.2;
-    s.add(tube([[x * 0.6, 84, 10.4], [x * 0.85, 60, 11.2], [x * 1.1, 40, 10.6 - Math.abs(i) * 0.3], [x * 1.3, 18, 8.4]], 0.95 - Math.abs(i) * 0.1, B, 40, 8));
-  }
   // The bandi's placket down the chest, with its buttons, under the shawl's opening.
-  s.add(tube([[0, 141.5, 13.6], [0, 136, 15.6], [0, 127, 16.2]], 0.7, B, 24, 8));
-  for (const [y, z] of [[139, 14.9], [135.5, 15.8], [132, 16.1]]) s.add(ellipsoid(0.65, 0.65, 0.45, B, 0, y, z));
+  s.add(tube(onSkin(F, [[0, 141.5, 13.6], [0, 136, 15.6], [0, 131.5, 16.2], [0, 127, 16.2]], 0.3), 0.7, B, 24, 8));
+  for (const [x, y, z] of onSkin(F, [[0, 139, 20], [0, 135.5, 20], [0, 132, 20], [0, 128.5, 20]], 0.55)) s.add(ellipsoid(0.65, 0.65, 0.45, B, x, y, z));
   // The windows of the viewing gallery, a slit across the chest (the gallery is at 153 m).
-  for (let x = -6.6; x <= 6.61; x += 2.2) if (Math.abs(x) > 0.5) s.add(box(1.6, 1.9, 1.2, SLIT, x, 122.5, 15.55));
-  // Folds of the shawl's end where it is thrown across the chest from the right shoulder.
-  for (const [pts, r] of [
-    [[[15.2, 137.0, 9.6], [5.8, 126.5, 16.2], [-6.8, 114.5, 15.4], [-15.4, 103.5, 10.8], [-15.8, 92.5, 6.6]], 1.8],
-    [[[18.0, 142.0, 5.4], [9.2, 134.0, 14.6], [-3.8, 122.5, 15.0], [-13.2, 111.5, 11.6]], 1.5],
-  ]) s.add(tube(pts, r, B, 48, 10));
+  for (const x of [-3.6, -1.6, 1.6, 3.6]) { const [, , z] = onSkin(F, [[x, 123.4, 20]], 0)[0]; s.add(box(1.4, 1.9, 1.2, SLIT, x, 122.5, z - 0.5)); }
   for (const side of [-1, 1]) {
-    // A crease at the elbow, the sleeve's cuff, the thumb, and fingers curling towards the thigh.
-    s.add(tube([[side * 20.5, 112.5, 5.2], [side * 24.0, 110.5, 5.6], [side * 25.6, 108.5, 1.5]], 0.8, B, 20, 8));
+    // The sleeve's cuff under the shawl's hem, the thumb, and fingers curling towards the thigh.
     const cuff = ellipsoid(4.9, 1.3, 4.5, B, side * 22.3, 88.6, 3.8);
     cuff.rotation.z = side * 0.08;
     s.add(cuff, capsule(V(side * 21.0, 86.2, 6.0), V(side * 19.9, 82.2, 7.1), 1.2, B, 0.9));
@@ -39,22 +34,7 @@ function patel(B) {
     const fz = side > 0 ? 6.4 : 3.0;
     s.add(ellipsoid(5.4, 0.8, 9.4, B, side * 7.8, 0.8, fz + 0.5), tube([[side * 7.8 - 4.6, 1.5, fz - 0.6], [side * 7.8, 4.3, fz + 0.6], [side * 7.8 + 4.6, 1.5, fz - 0.6]], 0.65, B, 16, 6));
   }
-  // Head: the bare crown, heavy brow and broad jaw of the 1949 portrait, clean-shaven.
-  const rx = 10.2, ry = 11.8, rz = 10.8, head = new THREE.Group();
-  head.add(face(rx, ry, rz, B, { jaw: 0.2 }));
-  // Features laid on the face's surface: z at (x, y) on the head's ellipsoid, plus a lift.
-  const Z = (x, y, lift = 0) => rz * Math.sqrt(Math.max(0, 1 - (x / rx) ** 2 - (y / ry) ** 2)) + lift;
-  const P = (pts, lift) => pts.map(([x, y]) => [x, y, Z(x, y, lift)]);
-  head.add(tube(P([[-5.8, 2.4], [-2.4, 2.9], [0, 2.5], [2.4, 2.9], [5.8, 2.4]], 0.25), 0.9, B, 32, 10));          // the heavy brow
-  for (const side of [-1, 1]) {
-    head.add(tube(P([[side * 5.0, 1.2], [side * 3.4, 1.6], [side * 1.9, 1.0]], 0.05), 0.42, B, 16, 6));          // heavy upper lids
-    head.add(tube(P([[side * 4.8, -0.2], [side * 3.4, -0.6], [side * 2.1, -0.2]], 0.0), 0.32, B, 16, 6));        // pouches under the eyes
-    head.add(tube(P([[side * 1.9, -1.9], [side * 3.3, -4.3], [side * 3.8, -6.9]], -0.12), 0.38, B, 20, 6));       // the deep folds from nose to mouth
-    head.add(tube([[side * (rx - 0.3), 2.6, -0.2], [side * (rx + 0.35), 0.2, -1.4], [side * (rx - 0.2), -3.2, -0.2]], 0.5, B, 16, 6), ellipsoid(1.4, 3.4, 2.4, B, side * (rx - 0.4), -0.5, -0.4));  // ears
-  }
-  head.add(tube(P([[-3.1, -4.9], [-1.2, -4.5], [0, -4.6], [1.2, -4.5], [3.1, -4.9]], 0.05), 0.5, B, 24, 6));      // the set, downturned mouth
-  // The full, broad jaw of his later years comes from the face itself (jaw: 0.2).
-  s.add(at(head, 0, 163.6, 1.0));
+  // The head is part of the cast skin (js/details/figures.js): the 1949 portrait, clean-shaven.
   s.scale.setScalar(182 / 177.4);
   return s;
 }
@@ -76,7 +56,7 @@ export function buildStatue() {
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) f.add(box(10.4, 21, 10.4, STONE_DARK, sx * 37, 0, sz * 37));
   f.add(smoothLathe([[25.6, 55.6], [24.8, 56.6], [22.4, 57.3], [20.4, 58.0], [0.1, 58.0]], M.marbleShade, 64));
   for (let st = 0; st < 8; st++) f.add(box(30, 1.1, 2, M.marbleShade, 0, st * 1.1, 49 - st * 1.0));
-  f.add(at(patel(M.bronze), 0, 58, 0));
+  f.add(at(patel(PLATED), 0, 58, 0));
   // Sadhu Bet: the island's rock round the lawn, falling to the river; the causeway to the bank.
   g.add(box(160, 0.3, 160, M.grass));
   const isl = new THREE.LatheGeometry([[150, -4], [138, 0.5], [118, 0.2], [100, 0.1]].map(([r, y]) => new THREE.Vector2(r, y)), 48), ip = isl.attributes.position;
