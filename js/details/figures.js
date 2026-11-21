@@ -468,8 +468,12 @@ export const bahubaliBody = (m) => body(detail.low ? 'bahubali-coarse' : 'bahuba
 
 // Thiruvalluvar at Kanyakumari, in the coordinates of thiruvalluvar() in
 // vivekananda-rock-memorial.js: the robe in folds from the pedestal up, its end thrown across the
-// chest, the right hand raised and the left holding the palm-leaf book. The head, beard, fingers
-// and book are meshes.
+// chest, the right hand raised and the left holding the palm-leaf book. The head, beard and hands
+// are carved in the field, as on the Statue of Unity: an old sage's face (its brow, eyes under
+// heavy lids, a long nose, the lines from nose to mouth), the moustache over the lips, the full
+// beard combed in strands to the chest, the hair combed back over the skull into a knot bound on
+// the crown, the raised right hand with three fingers lifted (the little finger and the thumb
+// folded), and the left hand's fingers curled over the book. The book is a mesh.
 function thiruvalluvarField() {
   const robe = lathe([[4.4, 12.4], [4.6, 16.4], [4.0, 22.4], [3.7, 27.4], [4.0, 32.4], [4.5, 36.4], [2.6, 38.4], [0.1, 38.7]], { sz: 0.72, folds: 18, amp: 0.07, from: 12.4, to: 30.4 });
   const b = blend([
@@ -478,11 +482,84 @@ function thiruvalluvarField() {
     [mirrorX(E([4, 36.4, 0], [1.6, 1.5, 1.4])), 0.8],
     [cone([4.2, 36.2, 0], [5.2, 31.2, 1.6], 1.05, 0.9), 0.5],
     [cone([5.2, 31.2, 1.6], [5.0, 35.6, 3.6], 0.9, 0.7), 0.3],
-    [E([5.0, 36.4, 3.9], [0.5, 1.0, 0.75]), 0.2],
+    [E([5.0, 36.45, 3.85], [0.78, 0.95, 0.32]), 0.2],
     [cone([-4.2, 36.2, 0], [-4.8, 31.2, 1.4], 1.05, 0.9), 0.5],
     [cone([-4.8, 31.2, 1.4], [-3.2, 29.6, 3.6], 0.9, 0.7), 0.3],
     [cone([0, 37.4, 0], [0, 38.8, 0.3], 1.25, 1.2), 0.6],
   ]);
-  return { f: flatBase(b, 12.4), lo: [-6.6, 12.2, -4.2], hi: [7, 40.4, 5.8] };
+  // The hands. The right, raised, palm forward: the index, middle and ring fingers straight up, the
+  // little finger folded down onto the palm and the thumb across it. The left holds the book (a
+  // bundle 3.4 long lying across the body at y 29.05 to 29.55, its front at z 4.3): the palm
+  // behind and below it, the four fingers curled over its top and down its front.
+  const raised = blend([
+    ...[[4.55, 1.15], [4.95, 1.3], [5.35, 1.15]].map(([x, L]) => [chain([[x, 37.3, 3.88, 0.19], [x, 37.3 + L * 0.55, 3.86, 0.175], [x, 37.3 + L, 3.8, 0.15]], 0.05), 0.07]),
+    [chain([[5.7, 37.2, 3.9, 0.16], [5.65, 37.0, 4.2, 0.15], [5.5, 36.8, 4.25, 0.14]], 0.05), 0.07],
+    [chain([[4.35, 36.1, 3.95, 0.2], [4.85, 36.55, 4.22, 0.18], [5.35, 36.75, 4.28, 0.16]], 0.05), 0.08],
+  ]);
+  const holding = blend([
+    [E([-3.25, 29.5, 3.45], [0.75, 0.6, 0.45]), 0],
+    ...[-3.75, -3.38, -3.02, -2.68].map((x, i) => [chain([[x, 29.75, 3.55, 0.17 - i * 0.01], [x, 29.82, 4.05, 0.16 - i * 0.01], [x, 29.62, 4.42, 0.15 - i * 0.01], [x, 29.3, 4.47, 0.14 - i * 0.01]], 0.04), 0.06]),
+    [chain([[-3.85, 29.55, 3.6, 0.18], [-3.95, 29.7, 4.0, 0.16]], 0.04), 0.06],
+  ]);
+  // The head, laid out as the Statue of Unity's (P scales its units): an old man's face.
+  const S = 0.235, P = (x, y, z) => [x * S, 40.8 + y * S * 1.08, 0.4 + z * S], k = (v) => v * S;
+  let head = blend([
+    [E(P(0, 1.4, -0.5), [9.8 * S, 10.8 * S * 1.08, 10.3 * S]), 0],
+    [E(P(0, -5.2, 1.4), [8.0 * S, 6.0 * S * 1.08, 7.8 * S]), k(3)],
+    [mirrorX(E(P(4.7, -2.4, 6.4), [3.4 * S, 3.2 * S, 3.0 * S])), k(1.6)],
+    [E(P(0, 2.7, 8.3), [6.9 * S, 1.5 * S, 2.2 * S]), k(1.6)],
+    [cone(P(0, 2.0, 9.4), P(0, -2.6, 12.1), k(1.0), k(1.5)), k(0.8)],
+    [E(P(0, -2.8, 11.6), [1.7 * S, 1.3 * S, 1.4 * S]), k(0.6)],
+    [mirrorX(E(P(1.45, -3.2, 10.3), [1.0 * S, 0.9 * S, 0.9 * S])), k(0.5)],
+    [mirrorX(E(P(9.9, -0.4, -0.6), [1.3 * S, 3.5 * S, 2.5 * S])), k(0.6)],
+  ]);
+  head = carve(head, mirrorX(E(P(3.4, 0.5, 9.2), [2.4 * S, 1.5 * S, 2.0 * S])), k(0.9));
+  head = blend([[head, 0],
+    // The eyes open under heavy lids: the eyeball between them, the lids thin at its middle.
+    [mirrorX(E(P(3.4, 0.25, 8.0), [1.9 * S, 1.15 * S, 1.6 * S])), k(0.2)],
+    [mirrorX(E(P(3.4, 1.3, 8.1), [2.2 * S, 0.5 * S, 1.4 * S])), k(0.25)],
+    [mirrorX(E(P(3.45, -0.85, 8.15), [1.9 * S, 0.32 * S, 0.95 * S])), k(0.3)],
+    [E(P(0, -5.6, 9.05), [2.4 * S, 0.7 * S, 1.0 * S]), k(0.5)]]);
+  head = carve(head, mirrorX(cone(P(1.95, -2.3, 9.95), P(3.9, -6.2, 8.6), k(0.33), k(0.33))), k(0.4));
+  // The iris, cut shallow in each eyeball, as carved stone shows the gaze.
+  head = carve(head, mirrorX(E(P(3.35, 0.25, 9.55), [0.6 * S, 0.6 * S, 0.3 * S])), k(0.1));
+  head = carve(head, mirrorX(E(P(10.6, -0.2, -0.2), [0.6 * S, 2.2 * S, 1.4 * S])), k(0.2));
+  // The moustache: two thick locks from under the nose sweeping down past the corners of the
+  // mouth into the beard.
+  const tache = mirrorX(chain([[0.1, 39.82, 2.86, 0.14], [0.5, 39.74, 2.7, 0.15], [0.85, 39.5, 2.42, 0.13], [1.0, 39.15, 2.2, 0.1]], 0.05));
+  // The beard, from the cheeks and jaw down to the chest in a full rounded mass, combed in
+  // strands that run down it.
+  const beardMass = blend([
+    [E([0, 38.45, 1.95], [1.6, 0.95, 1.05]), 0],
+    [mirrorX(E([1.4, 39.3, 1.25], [0.55, 1.0, 0.8])), 0.35],
+    // It hangs forward, clear of the robe on the chest.
+    [cone([0, 38.2, 2.35], [0, 36.6, 3.45], 1.25, 0.8), 0.55],
+    [E([0, 36.35, 3.5], [0.8, 0.5, 0.55]), 0.4],
+  ]);
+  // Strands down the beard, a little wavy, cut deeper towards its end.
+  const beard = (x, y, z) => beardMass(x, y, z) + (0.06 + 0.03 * Math.max(0, 38.5 - y)) * Math.sin(20 * Math.atan2(x, z - 0.4) + 1.4 * y + 0.4 * Math.sin(3 * y));
+  // The hair, combed back over the skull in strands from the hairline, and the knot bound on the
+  // crown.
+  const hairMass = blend([[E([0, 41.95, -0.45], [2.42, 2.45, 2.45]), 0], [E([0, 44.55, -0.65], [1.05, 0.95, 1.05]), 0.35], [torus([0, 44.0, -0.6], 0.92, 0.16), 0.1]]);
+  const hair = (x, y, z) => hairMass(x, y, z) + 0.035 * Math.sin(30 * Math.atan2(x, z + 0.5) + (y > 43.8 ? 3 * y : 0));
+  const headAll = blend([[head, 0], [tache, k(0.3)], [beard, 0.15], [hair, 0.12]]);
+  const headB = bounded(headAll, [0, 40.6, 0.6], 4.4, 2.0);
+  const handsF = (x, y, z) => (x > 3.5 ? raised(x, y, z) : x < -1.8 && y < 31 ? holding(x, y, z) : Infinity);
+  const all = (x, y, z) => smin(smin(b(x, y, z), handsF(x, y, z), 0.1), y > 34.8 ? headB(x, y, z) : Infinity, 0.2);
+  return { f: flatBase(all, 12.4), lo: [-6.6, 12.2, -4.2], hi: [7, 46, 5.8], head: headB, raised: bounded(raised, [5.0, 37.4, 3.9], 1.6, 1.5), holding: bounded(holding, [-3.2, 29.6, 4.0], 1.5, 1.5) };
 }
-export const thiruvalluvarBody = (m) => body('thiruvalluvar', thiruvalluvarField, 0.22, m);
+let thiruP = null;
+const thiruParts = () => (thiruP ||= thiruvalluvarField());
+// The head (with the beard's upper part and the hair) and both hands are meshed on fine cells;
+// the hands' regions are their own shapes grown a little, so each change of mesh falls in a crease
+// (the hand on the book), not across the robe.
+export const thiruvalluvarBody = (m) => body(detail.low ? 'thiruvalluvar-coarse' : 'thiruvalluvar', thiruvalluvarField, detail.low ? 0.3 : 0.22, m, undefined, {
+  split: [
+    // The head's region is an ellipsoid crossing the neck and the beard squarely below the chin and
+    // passing above the shoulders, as on the Statue of Unity; the beard's end lies on the robe in
+    // the body's own cells.
+    { region: E([0, 40.9, 0.9], [2.55, 3.75, 2.75]), h: detail.low ? 0.11 : 0.065, lo: [-2.9, 36.9, -2.2], hi: [2.9, 45.6, 4.0] },
+    { region: (x, y, z) => Math.min(9, thiruParts().raised(x, y, z) - 0.35), h: detail.low ? 0.12 : 0.07, lo: [3.8, 35.4, 3.2], hi: [6.3, 39.2, 4.9] },
+    { region: (x, y, z) => Math.min(9, thiruParts().holding(x, y, z) - 0.35), h: detail.low ? 0.12 : 0.07, lo: [-4.6, 28.6, 2.6], hi: [-2.1, 30.5, 5.1] },
+  ],
+});
