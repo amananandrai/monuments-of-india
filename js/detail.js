@@ -10,7 +10,8 @@
 // stalls and dressed elephants round them. Every monument keeps plain trees
 // on 'low'.
 //
-// The triangle budget each level builds to: up to 800k on desktops (a monument may take two or
+// The triangle budget each level builds to: up to 800k on desktops (a million where statues stand:
+// budgetFor) (a monument may take two or
 // three seconds to build behind its "Loading" notice) and 300k on phones. Every monument stays
 // under its level's budget (budgetFor). The budget is for the buildings: trees and ground cover are
 // planted only up to PLANT (detail.budget), 650k on desktops, so the extra goes to the architecture.
@@ -18,8 +19,14 @@ export const BUDGET = { high: 800000, low: 300000 };
 export const PLANT = { high: 650000, low: 300000 };
 export const detail = { level: 'high', get low() { return this.level === 'low'; }, get budget() { return PLANT[this.level]; } };
 // The budget a monument (an entry of js/data.js) is built to at a level ('high' or 'low').
+//
+// A monument whose subject is sculpture, or which carries large sculpted figures, may build to a
+// million triangles on desktops: a statue's face and hands are meshed finely, and the triangles go
+// there. Phones keep to 300k for every monument.
+export const STATUES = new Set(['statue-of-unity', 'india-gate', 'gateway-of-india', 'nageshwar-temple', 'gommateshwara', 'vivekananda-rock-memorial', 'kedarnath-temple', 'omkareshwar-temple', 'victoria-memorial', 'csmt', 'mysore-palace']);
+export const STATUE_BUDGET = 1000000;
 export function budgetFor(m, level = detail.level) {
-  return BUDGET[level];
+  return level === 'high' && m && STATUES.has(m.id) ? STATUE_BUDGET : BUDGET[level];
 }
 
 // The level for this device: ?detail=low or ?detail=high in the address wins; otherwise 'low' on
