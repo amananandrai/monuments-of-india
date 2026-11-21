@@ -43,7 +43,10 @@ what changes between desktops and phones.
   Queen Victoria enthroned with orb and sceptre, the allegories round its dome and over its porch,
   and the figures on its roofs; Progress with her torch and winged wheel on the dome of Victoria
   Terminus, the groups of Commerce and Agriculture over its wings, and its couchant lion and tiger.
-  On phones these allegories are the light kit's robed figures. Creepers, hems, curls and leaves are
+  On phones these allegories are the light kit's robed figures. Seated cross-legged figures are
+  sculpted the same way: Adi Shankaracharya in black stone at Kedarnath, on his lotus bud, and
+  Gajalakshmi between her elephants in the gable of Mysore Palace. Every statue is shown, with
+  what it is, in [Components](components.md#statues). Creepers, hems, curls and leaves are
   laid on the skin with `snap()` rather than placed by hand, so they never float. The Statue of
   Unity's bronze is cast in plates, Thiruvalluvar is built of granite blocks whose joints show, and
   free-standing stone weathers in deep rain streaks, all drawn by the surface shader at no cost in

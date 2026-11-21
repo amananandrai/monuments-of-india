@@ -18,7 +18,7 @@ const PED = surface(mat('#8f8a80', 0.85), 'masonry'), PED_DARK = mat('#6c6760', 
 // three fingers lifted and the left holding a palm-leaf manuscript. The 38 ft pedestal and 95 ft
 // figure stand for the 38 and 95 chapters of the three books of the Thirukkural. The pedestal is
 // the Alankara Mandapam, a square hall of granite whose roof is the terrace the statue stands on.
-function thiruvalluvar() {
+export function thiruvalluvar() {
   const g = new THREE.Group();
   g.add(alankaraMandapam());
   // The body as one carved skin: the robe in folds, the upper cloth across the chest, the arms and

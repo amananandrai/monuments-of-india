@@ -24,7 +24,7 @@ const HILL = mat('#9a917f', 0.95, 0, { flatShading: true });
 // arm), the scrolling creepers and snakes carved on the anthills, and the tight curls of his
 // hair. He stands on an open lotus. The field is drawn 19.35 m to the crown and scaled to the
 // statue's 17.4 m.
-function bahubali() {
+export function bahubali() {
   // The relief on the skin is in the body's own stone: its carved surface, without the marble's joints.
   const g = new THREE.Group(), G = RELIEF, F = bahubaliSurface();
   g.add(bahubaliBody(STATUE));

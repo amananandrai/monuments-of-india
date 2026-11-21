@@ -12,7 +12,7 @@ import { addDetails } from '../details/victoria-memorial.js';
 // ball on the lantern: a winged woman in drapery blown back, poised on her left foot, the right
 // leg trailing, the right hand raising a bugle to her lips and the left held out behind with a
 // wreath (js/details/figures.js). On phones, a robed figure from the light kit, with flat wings.
-function angelOfVictory() {
+export function angelOfVictory() {
   const g = new THREE.Group(), B = M.bronze;
   g.add(mesh(new THREE.SphereGeometry(0.55, 14, 10), B, 0, 0.3, 0));
   if (detail.low) {
@@ -34,7 +34,7 @@ function angelOfVictory() {
 // Queen Victoria (George Frampton), enthroned and aged, in the robes of the Star of India with the
 // collar of the order, a small crown and veil, the sceptre upright in her right hand and the orb in
 // her left (js/details/figures.js). On phones, the enthroned figure of the light kit.
-function queenVictoria() {
+export function queenVictoria() {
   if (detail.low) return figure(4.4, M.bronze, 'enthroned');
   const g = new THREE.Group(), B = M.bronze, fig = allegory('victoria', { seated: true, throne: true, mantle: true, head: 'queen', stout: true, right: 'throne', left: 'lap' }, B, 0.018);
   g.add(fig.mesh);

@@ -42,7 +42,7 @@ function turret(h, r) {
 // flowing classical robes, a star above her forehead, holding a copper-gilt torch aloft in her
 // right hand, the left hand on the winged wheel at her side (js/details/figures.js). On phones, a
 // robed figure from the light kit with the torch and wheel.
-function progress() {
+export function progress() {
   const g = new THREE.Group(), Mb = M.marble;
   if (detail.low) {
     g.add(figure(4.4, Mb, 'robed'), at(mesh(new THREE.ConeGeometry(0.22, 0.7, 8), M.gild), -0.55, 4.9, 0.2), cyl(0.05, 0.05, 1.4, Mb, -0.55, 3.6, 0.2, 6));
