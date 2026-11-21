@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { M, V, mat, box, cyl, at, inst, unitBox, unitCyl, kalash, archWall, chhatri, hemi, bulbPoints, surface } from '../helpers.js';
-import { rosette, petalRing, railing, archCurve, mergeByMaterial, archRing, archSlab, merlons } from '../parts/components.js';
+import { M, V, mat, box, cyl, at, onFace, FACES, inst, unitBox, unitCyl, kalash, archWall, chhatri, hemi, bulbPoints, surface } from '../helpers.js';
+import { rosette, petalRing, railing, archCurve, mergeByMaterial, archRing, archSlab, merlons, bracketGeo, placeAll, alongFace, chhajja } from '../parts/components.js';
 import { balustrade } from '../parts/colonial.js';
 import { trees, shrubs, scatter, along, fountains } from '../parts/realism.js';
 import { rideElephant, elephant, couchant } from '../parts/animals.js';
@@ -38,7 +38,15 @@ function architecture(f) {
   });
   for (const sx of [-1, 1]) cols.push([sx * 41.6, ARC_SILL, FZ + 0.35]);
   const H = 3.6;
-  d.add(inst(unitCyl(12), cols.map(([x, y, z]) => [x, y + 0.35, z, 0.6, H, 0.6]), G), inst(unitBox(), cols.flatMap(([x, y, z]) => [[x, y, z, 0.85, 0.35, 0.85], [x, y + H + 0.35, z, 0.95, 0.45, 0.95]]), L));
+  if (detail.low) d.add(inst(unitCyl(12), cols.map(([x, y, z]) => [x, y + 0.35, z, 0.6, H, 0.6]), G), inst(unitBox(), cols.flatMap(([x, y, z]) => [[x, y, z, 0.85, 0.35, 0.85], [x, y + H + 0.35, z, 0.95, 0.45, 0.95]]), L));
+  else {
+    // The columns as they are turned: a square plinth, a pot-shaped base, a shaft ringed at its
+    // third points and swelling a little, a spreading lotus capital and a square abacus; and over
+    // each, a carved bracket curling out to carry the cornice above the arches.
+    const turned = new THREE.LatheGeometry([[0.4, 0], [0.4, 0.035], [0.28, 0.05], [0.36, 0.09], [0.4, 0.14], [0.3, 0.2], [0.21, 0.225], [0.2, 0.24], [0.225, 0.5], [0.26, 0.515], [0.22, 0.53], [0.19, 0.84], [0.25, 0.855], [0.2, 0.87], [0.28, 0.93], [0.42, 0.975], [0.42, 1]].map(([r, y]) => new THREE.Vector2(r, y)), 16);
+    d.add(inst(turned, cols.map(([x, y, z]) => [x, y + 0.3, z, 1, H + 0.2, 1]), G), inst(unitBox(), cols.flatMap(([x, y, z]) => [[x, y, z, 0.95, 0.3, 0.95], [x, y + H + 0.5, z, 1.0, 0.3, 1.0]]), L));
+    d.add(placeAll(bracketGeo(2.3, 1.0, 0.42), cols.map(([x, , z]) => [x, 13.2, z - 0.25, 0]), L));
+  }
   // The balcony's railing along the foot of the arcade, and the parapet's balustrade.
   // (On phones the parapet is a pierced screen like the railing, not a row of balusters.)
   for (const [x0, x1] of [[-41.6, -5.4], [5.4, 41.6]]) {
@@ -88,6 +96,74 @@ function sculpture(f) {
   f.add(at(ga, 0, 22.3, FZ + 1.1));
 }
 
+// The carving, on desktops: what makes the palace's fronts dense. After photographs:
+// - the gallery over the great arches: a pilaster between every two windows, the windows closed
+//   with blue-green shutters under their lunettes, a deep eave on a row of small brackets, and urns
+//   along the balustrade;
+// - the ground floor's arches ringed in white;
+// - the four end towers: an octagonal shaft up each corner ending in a red spire, bracket courses
+//   under each storey's band, the top windows parted by colonnettes, a deep eave on brackets under
+//   the parapet and merlons along it;
+// - the central tower: colonnettes between its openings, bracket courses under its bands, a
+//   railing round each stage and four more gilt kiosks at its top.
+// All instanced or merged, so it costs triangles but few draw calls.
+function carving(f) {
+  const d = new THREE.Group(), L = M.lime, { CREAM, TAN, RED } = PALACE, TEAL = surface(mat('#3f7f78', 0.6), 'none'), b = 1;
+  const pil = [], caps = [], shut = [], dent = [], urns = [], rings = [];
+  for (const s of [-1, 1]) {
+    for (let i = 0; i <= 16; i++) {
+      const x = s * (12.6 + (i - 0.5) * 1.9);
+      pil.push([x, 13.75, FZ + 0.12, 0.26, 3.5, 0.2]);
+      caps.push([x, 17.0, FZ + 0.14, 0.4, 0.22, 0.3], [x, 13.7, FZ + 0.14, 0.4, 0.2, 0.3]);
+      if (i < 16) shut.push([s * (12.6 + i * 1.9), 13.85, FZ - 0.75, 1.2, 1.9, 0.05]);
+    }
+    for (let x = 11.2; x < 41.6; x += 0.8) dent.push([s * x, 16.75, FZ + 0.42, 0.2, 0.42, 0.66]);
+    d.add(at(chhajja(30.8, 1.0, 0.3, 0.12, L), s * 26.4, 17.3, FZ + 0.1));
+    for (let x = 12; x <= 40.5; x += 3.56) urns.push([s * x, 19.1, FZ + 0.05]);
+  }
+  const urnGeo = new THREE.LatheGeometry([[0, 0], [0.16, 0], [0.16, 0.05], [0.07, 0.1], [0.09, 0.16], [0.21, 0.3], [0.23, 0.4], [0.18, 0.52], [0.08, 0.58], [0.11, 0.63], [0.05, 0.74], [0, 0.8]].map(([r, y]) => new THREE.Vector2(r, y)), 10);
+  d.add(inst(urnGeo, urns.map(([x, y, z]) => [x, y, z, 1, 1, 1]), L));
+  const ring = archRing(1.9, 3.9, false, 0.16, 0.1, L).geometry;
+  for (let k = 0; k < 32; k++) { const cx = (k - 15.5) * 2.62; if (Math.abs(cx) > 3) rings.push([cx, b + 0.4, FZ + 0.02, 0]); }
+  d.add(placeAll(ring, rings, L));
+
+  // The end towers, each w wide and 9 deep about (cx, 19.5), 23.6 high from the plinth.
+  const shafts = [], spires = [], tdent = [], colon = [];
+  for (const s of [-1, 1]) for (const [cx, w] of [[s * 46.1, 8.4], [s * 60.8, 7.6]]) {
+    const t = at(new THREE.Group(), cx, b, 19.5);
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+      shafts.push([cx + sx * (w / 2), b, 19.5 + sz * 4.5, 0.75, 25.4, 0.75]);
+      spires.push([cx + sx * (w / 2), b + 25.4, 19.5 + sz * 4.5, 0.55, 1.5, 0.55]);
+    }
+    for (const a of FACES) {
+      const len = a === 0 || a === Math.PI ? w : 9, dist = (a === 0 || a === Math.PI ? 9 : w) / 2;
+      for (const y of [5.55, 16.95]) for (const [x, yy, z, ry] of alongFace(a, dist + 0.2, len - 1, Math.round(len / 0.7), y)) tdent.push([cx + x, b + yy, 19.5 + z, 0.2, 0.42, 0.5, ry]);
+      t.add(onFace(at(chhajja(len + 0.4, 1.1, 0.35, 0.14, L), 0, 23.3, 0), a, dist + 0.05));
+      t.add(placeAll(bracketGeo(0.9, 0.85, 0.22), alongFace(a, dist + 0.02, len - 0.6, Math.round(len / 0.95), 22.95), L));
+      t.add(onFace(at(merlons(len - 0.4, 0.5, 0.6, 0.2, L, 0.3), 0, 24.85, 0), a, dist + 0.05));
+    }
+    // Colonnettes either side of each of the three top windows and the two below.
+    for (const x of [-w * 0.3, 0, w * 0.3]) for (const k of [-1, 1]) colon.push([cx + x + k * 0.82, b + 18.6, 24.08, 0.16, 2.3, 0.16]);
+    for (const x of [-w / 4, w / 4]) for (const k of [-1, 1]) colon.push([cx + x + k * 0.98, b + 1, 24.08, 0.18, 2.75, 0.18]);
+    d.add(t);
+  }
+  d.add(inst(unitCyl(8), shafts, TAN), inst(new THREE.ConeGeometry(0.5, 1, 8).translate(0, 0.5, 0), spires, RED), inst(unitBox(), tdent, L), inst(unitCyl(8), colon, L));
+
+  // The central tower (about x = 0, z = 12): its lower stage 9.6 square from y 18, its upper 6.8
+  // square from y 28.
+  const tw = at(new THREE.Group(), 0, 0, 12);
+  for (const a of FACES) {
+    for (const [y, half, n] of [[22.38, 5.85, 13], [27.18, 5.85, 13], [32.38, 4.35, 9]]) for (const [x, yy, z, ry] of alongFace(a, half, half * 2 - 0.6, n, y)) tw.add(at(box(0.2, 0.42, 0.5, L), x, yy, z).rotateY(ry));
+    for (const k of [-2.75, -0.92, 0.92, 2.75]) for (const y of [18.8, 23.5]) tw.add(onFace(cyl(0.11, 0.11, 2.6, L, 0, y, 0, 8), a, 5.35, k));
+    for (const k of [-0.95, 0.95]) tw.add(onFace(cyl(0.1, 0.1, 2.4, L, 0, 28.8, 0, 8), a, 3.85, k));
+    tw.add(onFace(at(railing(8.6, 0.7, 0.14, L, 1.2), 0, 28.1, 0), a, 5.6), onFace(at(railing(7.6, 0.6, 0.12, L, 1.2), 0, 33.3, 0), a, 4.15));
+  }
+  for (const x of [-3.6, 3.6]) for (const z of [-3.6, 3.6]) tw.add(at(chhatri(0.5, 1.8, CREAM, M.gild), x, 33.3, z));
+  d.add(tw);
+  d.add(inst(unitBox(), pil, L), inst(unitBox(), caps, L), inst(unitBox(), shut, TEAL), inst(unitBox(), dent, L));
+  f.add(d);
+}
+
 // A domed kiosk; on phones a drum under a plain dome.
 const kiosk = (r, h, m) => (detail.low ? new THREE.Group().add(cyl(r * 0.85, r * 0.85, h * 0.45, m, 0, 0, 0, 8), at(hemi(r, m, 10), 0, h * 0.45, 0)) : chhatri(r, h, m, m));
 
@@ -131,6 +207,7 @@ function gate(g) {
 // golden howdah; palms to either side.
 export function addDetails(f, g) {
   architecture(f);
+  if (!detail.low) carving(f);
   sculpture(f);
   gate(g);
   // Fountains in round basins in the two lawns.

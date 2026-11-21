@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, V, mat, photo, box, cyl, mesh, lathe, at, onFace, ONION, onionDome, finial, chhatri, bulbPoints, ribbed } from '../helpers.js';
+import { M, V, mat, photo, surface, box, cyl, mesh, lathe, at, onFace, ONION, onionDome, finial, chhatri, bulbPoints, ribbed } from '../helpers.js';
 import { mergeByMaterial, jharokha } from '../parts/components.js';
 import { arcadeSkin } from '../parts/mughal.js';
 import { addDetails } from '../details/mysore-palace.js';
@@ -20,7 +20,7 @@ import { detail } from '../detail.js';
 // The arcade's bays: [centre x, width, height] of each arch, the sill of all at y 6.4.
 export const BAYS = [[-37, 9, 6.5], [-26.2, 9, 6.5], [-15.4, 9, 6.5], [-8, 4.4, 6.2], [0, 10.4, 7], [8, 4.4, 6.2], [15.4, 9, 6.5], [26.2, 9, 6.5], [37, 9, 6.5]];
 export const FZ = 24, ARC_SILL = 6.4;
-const CREAM = photo(mat('#e9d7a2', 0.82), 'plaster'), TAN = photo(mat('#c39b82', 0.85), 'granite'), RED = photo(mat('#a3202a', 0.55), 'plaster');
+const CREAM = photo(mat('#e9d7a2', 0.82), 'plaster'), TAN = photo(mat('#c39b82', 0.85), 'granite'), RED = surface(mat('#a3202a', 0.5), 'carved');
 const DOMEGREY = mat('#82786b', 0.45, 0.35), L = M.lime;
 export const PALACE = { CREAM, TAN, RED };
 
