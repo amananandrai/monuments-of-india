@@ -37,7 +37,13 @@ what changes between desktops and phones.
   under him. Three more modern statues are sculpted the same way, after photographs: Netaji at
   India Gate saluting in his INA uniform, cap and spectacles, in black granite; Shivaji at the
   Gateway of India on a prancing horse, his sword held low; and the Statue of Oneness at
-  Omkareshwar, the boy Shankaracharya walking with his staff and water pot, on a lotus. Creepers, hems, curls and leaves are
+  Omkareshwar, the boy Shankaracharya walking with his staff and water pot, on a lotus. The
+  allegories of the colonial buildings are sculpted women in classical drapery, standing, seated
+  or winged, holding their attributes: the Victoria Memorial's Angel of Victory with her bugle,
+  Queen Victoria enthroned with orb and sceptre, the allegories round its dome and over its porch,
+  and the figures on its roofs; Progress with her torch and winged wheel on the dome of Victoria
+  Terminus, the groups of Commerce and Agriculture over its wings, and its couchant lion and tiger.
+  On phones these allegories are the light kit's robed figures. Creepers, hems, curls and leaves are
   laid on the skin with `snap()` rather than placed by hand, so they never float. The Statue of
   Unity's bronze is cast in plates, Thiruvalluvar is built of granite blocks whose joints show, and
   free-standing stone weathers in deep rain streaks, all drawn by the surface shader at no cost in

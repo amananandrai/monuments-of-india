@@ -925,3 +925,272 @@ export const shankaraBody = (m) => body(detail.low ? 'shankara-coarse' : 'shanka
     { region: E([0.21, 0.73, 0.06], [0.036, 0.046, 0.042]), h: detail.low ? 0.009 : 0.005, lo: [0.17, 0.68, 0.015], hi: [0.25, 0.78, 0.105] },
   ],
 });
+
+
+
+/* ---------- the allegorical figures of the colonial buildings ---------- */
+
+// Women in classical drapery, as the allegories on the Victoria Memorial and Victoria Terminus are
+// carved and cast, in human units (feet at y = 0, about 1.74 to the crown when standing), facing +z.
+// Each arm is laid out from its shoulder by a pose: the elbow's and the wrist's offsets for the
+// right arm (-x), mirrored for the left. The hands are closed, so what they hold is a mesh, set by
+// the caller at hands.r / hands.l (dirs.r / dirs.l run from the elbow to the hand).
+const ARM_POSES = {
+  down: [[-0.035, -0.28, -0.01], [-0.025, -0.54, 0.05]],
+  raised: [[-0.11, 0.23, 0.02], [-0.08, 0.5, 0.05]],
+  forward: [[-0.045, -0.27, 0.05], [-0.01, -0.29, 0.31]],
+  chest: [[-0.045, -0.27, 0.03], [0.11, -0.19, 0.2]],
+  out: [[-0.2, -0.13, 0.1], [-0.41, -0.1, 0.27]],
+  lips: [[-0.03, -0.06, 0.25], [0.12, 0.12, 0.27]],
+  back: [[-0.11, -0.23, -0.12], [-0.23, -0.43, -0.3]],
+  lap: [[-0.06, -0.27, 0.06], [-0.03, -0.33, 0.33]],
+  holdUp: [[-0.12, -0.24, 0.08], [-0.16, -0.06, 0.22]],
+  cradle: [[-0.06, -0.26, 0.07], [0.13, -0.3, 0.22]],
+  throne: [[-0.08, -0.26, 0.0], [-0.09, -0.4, 0.24]],
+};
+// The upper body, its shoulders at (±0.17, sy, oz): waist, chest and bust, shoulders, neck, the head
+// and what covers it, and the arms in their poses. head: 'hair' (waved, drawn back to a knot),
+// 'queen' (a veil and a small crown) or 'helmet' (Britannia's, crested); stout: the fuller figure
+// and the face of age.
+function upperBody(sy, oz, { right = 'down', left = 'down', head = 'hair', stout = false } = {}) {
+  const dy = sy - 1.41, Y = (y) => y + dy, Z = (z) => z + oz, w = stout ? 1.2 : 1;
+  const parts = [
+    [E([0, Y(1.08), Z(0)], [0.135 * w, 0.09, 0.1 * w]), 0],
+    [E([0, Y(1.27), Z(0.0)], [0.16 * w, 0.13, 0.098 * w]), 0.06],
+    [mirrorX(E([0.06 * w, Y(1.285), Z(0.065 * w)], [0.05 * w, 0.045 * w, 0.04 * w])), 0.05],
+    [mirrorX(E([0.17, Y(1.405), Z(0)], [0.06, 0.055, 0.06])), 0.04],
+    // The slope from the neck to each shoulder.
+    [mirrorX(cone([0.03, Y(1.46), Z(-0.01)], [0.16, Y(1.42), Z(-0.005)], 0.05, 0.05)), 0.04],
+    [cone([0, Y(1.42), Z(0)], [0, Y(1.54), Z(0.015)], 0.05, 0.046), 0.03],
+  ];
+  const hands = {}, dirs = {};
+  for (const [side, pose] of [[-1, right], [1, left]]) {
+    const [e, wr] = ARM_POSES[pose], m = (v) => (side < 0 ? v : -v), sh = [side * 0.17, sy, Z(0)];
+    const elbow = [sh[0] + m(e[0]), sh[1] + e[1], sh[2] + e[2]], wrist = [sh[0] + m(wr[0]), sh[1] + wr[1], sh[2] + wr[2]];
+    const d = wrist.map((v, i) => v - elbow[i]), L = Math.hypot(...d), u = d.map((v) => v / L), hand = wrist.map((v, i) => v + u[i] * 0.055);
+    parts.push([cone(sh, elbow, 0.056, 0.046), 0.03], [cone(elbow, wrist, 0.044, 0.034), 0.015], [E(hand, [0.038, 0.046, 0.038]), 0.012]);
+    hands[side < 0 ? 'r' : 'l'] = hand;
+    dirs[side < 0 ? 'r' : 'l'] = u;
+  }
+  const S = 0.0076, P = (x, y, z) => [x * S, Y(1.628) + y * S * 1.05, Z(0.015) + z * S];
+  const faceF = face(P, S, { full: stout ? 1.8 : 0.2, age: stout ? 0.8 : 0, lids: 0.55 });
+  let top;
+  if (head === 'queen') {
+    // The veil falls from under the crown over the back of the head to the shoulders.
+    const veil = (x, y, z) => smax(E([0, Y(1.583), Z(-0.035)], [0.107, 0.16, 0.107])(x, y, z), (z - Z(0.03)) - (y - Y(1.683)) * 0.4, 0.01);
+    top = blend([[veil, 0], [torus([0, Y(1.718), Z(0)], 0.06, 0.012), 0.008], [E([0, Y(1.748), Z(0)], [0.04, 0.035, 0.04]), 0.01], [E([0, Y(1.793), Z(0)], [0.012, 0.016, 0.012]), 0.004]]);
+  } else if (head === 'helmet') {
+    // A helmet over the skull down to the brow, its crest from front to back.
+    const shell = (x, y, z) => smax(E([0, Y(1.673), Z(-0.01)], [0.094, 0.09, 0.102])(x, y, z), Y(1.608) - y, 0.01);
+    top = blend([[shell, 0], [chain([[0, Y(1.773), Z(0.07), 0.016], [0, Y(1.813), Z(-0.03), 0.02], [0, Y(1.763), Z(-0.13), 0.015]], 0.01), 0.01]]);
+  } else {
+    // Waved hair over the skull behind a line from the forehead to the nape, and a knot behind.
+    const cap = (x, y, z) => smax(E([0, Y(1.665), Z(-0.012)], [0.087, 0.085, 0.092])(x, y, z), (z - Z(0.04)) - (y - Y(1.688)) * 0.9, 0.01) + 0.0025 * Math.sin(Math.atan2(x, z - Z(0)) * 22 + y * 30);
+    top = blend([[cap, 0], [E([0, Y(1.643), Z(-0.1)], [0.045, 0.04, 0.035]), 0.01]]);
+  }
+  const headAll = (x, y, z) => smin(faceF(x, y, z), top(x, y, z), 0.006);
+  return { parts, hands, dirs, head: headAll, centre: [0, Y(1.645), Z(0)], Y, Z };
+}
+// A standing draped woman: the chiton to the feet in folds, the knee of the free leg pressing
+// through it and the toes showing at the hem, the himation laid across the front from the left
+// shoulder to the right hip, the hips swaying over the weight leg. flying: the Angel of Victory's
+// pose instead, the robe ending at mid-calf and blown back, the left foot planted, the right leg
+// trailing behind, the wings spread from her shoulder blades.
+function standingField(opts = {}) {
+  const { free = 1, flying = false } = opts, up = upperBody(1.41, 0, opts);
+  const parts = [...up.parts];
+  if (!flying) {
+    const robe = lathe([[0.25, 0.0], [0.235, 0.15], [0.2, 0.5], [0.185, 0.8], [0.17, 0.98], [0.14, 1.08], [0.0, 1.12]], { sz: 0.75, folds: 14, amp: 0.08, from: 0.0, to: 0.95 });
+    parts.push([robe, 0.04], [E([free * 0.085, 0.5, 0.1], [0.07, 0.1, 0.05]), 0.08], [mirrorX(E([0.09, 0.025, 0.21], [0.04, 0.025, 0.07])), 0.02]);
+  } else {
+    // The robe blown back: sheared backwards towards its hem, which stops above the ankles.
+    const robe0 = lathe([[0.22, 0.48], [0.2, 0.6], [0.185, 0.8], [0.17, 0.98], [0.14, 1.08], [0.0, 1.12]], { sz: 0.75, folds: 12, amp: 0.1, from: 0.48, to: 0.95 });
+    const robe = (x, y, z) => robe0(x, y, z + 0.4 * Math.max(0, Math.min(1, (1.0 - y) / 0.52)) ** 1.5);
+    parts.push([robe, 0.04],
+      [cone([0.08, 0.7, 0.0], [0.08, 0.36, 0.03], 0.06, 0.045), 0.03], [cone([0.08, 0.36, 0.03], [0.075, 0.075, 0.03], 0.045, 0.033), 0.02], [E([0.075, 0.035, 0.08], [0.034, 0.03, 0.085]), 0.02],
+      [cone([-0.08, 0.75, -0.08], [-0.09, 0.55, -0.24], 0.065, 0.048), 0.03], [cone([-0.09, 0.55, -0.24], [-0.09, 0.42, -0.55], 0.048, 0.034), 0.02], [E([-0.09, 0.4, -0.63], [0.032, 0.03, 0.085]), 0.02]);
+    // The wings: from each shoulder blade a leading edge rising up and out to the tip, and the
+    // flight feathers hanging from it, longest at the tip, sweeping down and back.
+    for (const sd of [-1, 1]) {
+      const root = [sd * 0.09, 1.36, -0.12], wrist = [sd * 0.42, 1.74, -0.3], tip = [sd * 0.6, 2.25, -0.42];
+      parts.push([chain([[...root, 0.045], [...wrist, 0.035], [...tip, 0.02]], 0.02), 0.03]);
+      const feathers = [];
+      for (let k = 0; k < 12; k++) {
+        const t = k / 11, a = t < 0.5 ? root.map((v, i) => v + (wrist[i] - v) * t * 2) : wrist.map((v, i) => v + (tip[i] - v) * (t - 0.5) * 2);
+        const len = 0.32 + 0.5 * t, b = [a[0] + sd * (0.04 + 0.12 * t), a[1] - len * 0.92, a[2] - len * 0.3];
+        feathers.push([slab(a, b, 0.075, 0.018, [sd * 0.35, 0, 1]), 0.02]);
+      }
+      parts.push([blend(feathers), 0.02]);
+    }
+  }
+  const body = blend(parts);
+  // The himation, laid on the front of the body in a band across it.
+  const band = toLine([[0.17, 1.45], [-0.05, 1.15], [-0.21, 0.92]]);
+  const cloth = (x, y, z) => { const r = body(x, y, z); return Math.max(band(x, y) - 0.085, r - 0.022, -r - 0.015, -z); };
+  const all = (x, y, z) => smin(smin(body(x, y, z), cloth(x, y, z), 0.01), y > 1.5 ? up.head(x, y, z) : Infinity, 0.012);
+  // The hips sway over the weight leg.
+  const f = (x, y, z) => all(x + free * 0.025 * Math.exp(-(((y - 0.95) / 0.3) ** 2)), y, z);
+  return { f: flatBase(f), lo: flying ? [-0.82, -0.01, -0.95] : [-0.75, -0.01, -0.5], hi: flying ? [0.82, 2.4, 0.5] : [0.75, 2.05, 0.6], hands: up.hands, dirs: up.dirs, centre: up.centre };
+}
+// A seated draped woman on a block of stone, or (throne) on a throne with a high back, arms and a
+// footstool: the lap over the thighs, the skirt falling from the knees to the feet in folds, the
+// toes showing; with `mantle`, a robe of state over the shoulders spreading over the throne to the
+// floor, open down the front, and the collar of an order on the shoulders. Shoulders at y 1.0.
+// child: a small child standing at her right knee; baby: an infant held in her left arm.
+function seatedField(opts = {}) {
+  const { throne = false, mantle = false, child = false, baby = false } = opts, up = upperBody(1.0, -0.05, { ...opts, stout: opts.stout });
+  const skirtCurtain = (x, y, z) => roundBox([0, 0.28, 0.42], [0.25, 0.25, 0.055], 0.045)(x, y, z) + 0.008 * Math.sin(x * 42) * Math.min(1, (0.5 - y) / 0.2);
+  const parts = [
+    ...up.parts,
+    [E([0, 0.55, -0.06], [0.2, 0.11, 0.18]), 0.06],
+    [mirrorX(cone([0.1, 0.55, -0.02], [0.11, 0.56, 0.38], 0.115, 0.095)), 0.06],
+    [skirtCurtain, 0.06],
+    [mirrorX(E([0.12, 0.035, 0.53], [0.04, 0.03, 0.08])), 0.02],
+    [roundBox([0, 0.235, -0.1], [0.28, 0.235, 0.26], 0.02), 0.01],
+  ];
+  if (throne) parts.push(
+    [roundBox([0, 0.92, -0.34], [0.31, 0.5, 0.05], 0.03), 0.02], [E([0, 1.42, -0.34], [0.22, 0.12, 0.05]), 0.03],
+    [mirrorX(roundBox([0.34, 0.62, -0.08], [0.04, 0.035, 0.26], 0.015)), 0.02], [mirrorX(roundBox([0.34, 0.31, 0.16], [0.035, 0.31, 0.035], 0.01)), 0.02],
+    [mirrorX(E([0.34, 0.67, 0.18], [0.05, 0.05, 0.05])), 0.01], [roundBox([0, 0.04, 0.47], [0.3, 0.04, 0.14], 0.01), 0.01]);
+  if (child) {
+    // A child of about four standing at her right knee, one hand on her lap.
+    const cx = -0.42, cz = 0.34;
+    for (const sx of [-1, 1]) parts.push([cone([cx + sx * 0.05, 0.03, cz], [cx + sx * 0.05, 0.38, cz], 0.045, 0.06), 0.02], [E([cx + sx * 0.05, 0.025, cz + 0.03], [0.035, 0.025, 0.06]), 0.015]);
+    parts.push([E([cx, 0.5, cz], [0.105, 0.15, 0.085]), 0.05], [cone([cx, 0.6, cz], [cx, 0.68, cz], 0.04, 0.038), 0.02], [E([cx, 0.75, cz + 0.01], [0.078, 0.084, 0.078]), 0.025], [cone([cx + 0.09, 0.6, cz], [-0.22, 0.56, 0.3], 0.034, 0.028), 0.02], [cone([cx - 0.09, 0.6, cz], [cx - 0.11, 0.4, cz + 0.03], 0.034, 0.028), 0.02]);
+  }
+  if (baby) parts.push([E([0.06, 0.75, 0.2], [0.11, 0.06, 0.065]), 0.03], [E([-0.07, 0.8, 0.22], [0.055, 0.055, 0.055]), 0.02]);
+  let body = blend(parts);
+  if (mantle) {
+    // The mantle: a solid of revolution behind and round her, opened down the front in a widening V
+    // so the lap and the bodice stand through it; and the collar on the shoulders, with the star.
+    const m0 = lathe([[0.1, 1.06], [0.23, 1.01], [0.3, 0.85], [0.35, 0.6], [0.39, 0.3], [0.43, 0.03]], { c: [0, -0.12], sz: 0.85, folds: 12, amp: 0.05, from: 0.03, to: 0.85 });
+    const open = (x, y, z) => Math.max(Math.abs(x) - (0.08 + (1.06 - y) * 0.2), -0.06 - z);
+    const m1 = (x, y, z) => smax(m0(x, y, z), -open(x, y, z), 0.02);
+    const collar = (x, y, z) => torus([0, 0.985, -0.035], 0.145, 0.013)(x, y, z) - 0.004 * Math.abs(Math.sin(Math.atan2(x, z + 0.035) * 14));
+    const b0 = body;
+    body = (x, y, z) => smin(smin(b0(x, y, z), m1(x, y, z), 0.02), Math.min(collar(x, y, z), E([0.08, 0.9, 0.065], [0.03, 0.03, 0.012])(x, y, z)), 0.006);
+  }
+  const all = (x, y, z) => smin(body(x, y, z), y > 1.1 ? up.head(x, y, z) : Infinity, 0.012);
+  return { f: flatBase(all), lo: [-0.6, -0.01, -0.5], hi: [0.6, 1.62, 0.66], hands: up.hands, dirs: up.dirs, centre: up.centre };
+}
+// An allegorical figure's body, meshed once for its key: standing (or flying) or seated, with the
+// head meshed on cells a third the size of the body's. Returns the mesh, and the hands' positions
+// and directions for the caller to set what they hold.
+export function allegory(key, opts, m, h = 0.016) {
+  const build = () => (opts.seated ? seatedField(opts) : standingField(opts));
+  const parts = build(), c = parts.centre, k = detail.low ? 1.6 : 1;
+  const o = body('allegory-' + key + (detail.low ? '-low' : ''), build, h * k, m, undefined, {
+    wear: 0.2, split: { region: E(c, [0.1, 0.12, 0.11]), h: (h * k) / 2.6, lo: [c[0] - 0.12, c[1] - 0.15, c[2] - 0.13], hi: [c[0] + 0.12, c[1] + 0.2, c[2] + 0.14] },
+  });
+  return { mesh: o, hands: parts.hands, dirs: parts.dirs };
+}
+
+// What the allegories hold, in human units, its grip at the origin and its main axis along +y:
+// torch (its flame in `gild`), sword (pointing down), scales, mirror, book (open), palette, brush,
+// square, column, trident, caduceus, ship, plough, cornucopia, sheaf, sickle, wreath, trumpet,
+// sceptre, orb, shield, wheel (winged), star.
+export function attribute(kind, m, gild = m) {
+  const g = new THREE.Group(), add = (...o) => (o.forEach((x) => g.add(x)), g);
+  const rod = (r, y0, y1, mm = m, seg = 8) => mesh(new THREE.CylinderGeometry(r, r, y1 - y0, seg).translate(0, (y0 + y1) / 2, 0), mm);
+  const ball = (r, x, y, z, mm = m) => mesh(new THREE.SphereGeometry(r, 10, 8), mm, x, y, z);
+  const tube = (pts, r, mm = m) => mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map((p) => new THREE.Vector3(...p))), pts.length * 6, r, 6, false), mm);
+  const flat = (shape, t, mm = m) => mesh(new THREE.ExtrudeGeometry(shape, { depth: t, bevelEnabled: false }).translate(0, 0, -t / 2), mm);
+  switch (kind) {
+    case 'torch': {
+      add(rod(0.022, -0.14, 0.24), mesh(new THREE.CylinderGeometry(0.06, 0.03, 0.08, 10).translate(0, 0.28, 0), m));
+      return add(mesh(new THREE.ConeGeometry(0.06, 0.24, 9).translate(0, 0.43, 0), gild), mesh(new THREE.ConeGeometry(0.035, 0.14, 7).translate(0.03, 0.5, 0.02), gild));
+    }
+    case 'sword': return add(mesh(new THREE.BoxGeometry(0.035, 0.72, 0.008).translate(0, -0.42, 0), m), mesh(new THREE.ConeGeometry(0.018, 0.06, 4).rotateX(Math.PI).translate(0, -0.81, 0), m), mesh(new THREE.BoxGeometry(0.17, 0.022, 0.03), m).translateY(-0.055), rod(0.016, -0.05, 0.07), ball(0.025, 0, 0.085, 0));
+    case 'scales': {
+      add(rod(0.01, 0, 0.16), mesh(new THREE.BoxGeometry(0.38, 0.014, 0.014).translate(0, 0.16, 0), m));
+      for (const sx of [-0.18, 0.18]) {
+        for (const dz of [-0.03, 0.03]) add(tube([[sx, 0.16, 0], [sx, 0.03, dz]], 0.003));
+        add(mesh(new THREE.SphereGeometry(0.055, 12, 6, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2).scale(1, 0.45, 1).translate(sx, 0.03, 0), m));
+      }
+      return g;
+    }
+    case 'mirror': return add(rod(0.012, -0.06, 0.06), mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.012, 18).rotateX(Math.PI / 2).translate(0, 0.14, 0), m));
+    case 'book': {
+      for (const s of [-1, 1]) { const p = mesh(new THREE.BoxGeometry(0.15, 0.012, 0.21), m); p.position.set(s * 0.075, 0.015, 0); p.rotation.z = -s * 0.25; add(p); }
+      return g;
+    }
+    case 'palette': return add(mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.012, 16).scale(1, 1, 0.7).rotateX(Math.PI / 2 - 0.3), m));
+    case 'brush': return add(rod(0.007, -0.05, 0.24), mesh(new THREE.ConeGeometry(0.012, 0.05, 6).translate(0, 0.265, 0), m));
+    case 'square': { const sh = new THREE.Shape(); sh.moveTo(0, 0); sh.lineTo(0.3, 0); sh.lineTo(0, 0.2); sh.closePath(); return add(flat(sh, 0.012)); }
+    case 'column': return add(rod(0.06, -0.02, 0.02, m, 12), rod(0.035, 0.02, 0.3, m, 12), mesh(new THREE.BoxGeometry(0.1, 0.03, 0.1).translate(0, 0.315, 0), m));
+    case 'trident': {
+      add(rod(0.012, -1.05, 1.0));
+      for (const x of [-0.07, 0, 0.07]) add(mesh(new THREE.ConeGeometry(0.014, 0.16, 6).translate(x, 1.1 + (x ? 0 : 0.03), 0), m));
+      return add(mesh(new THREE.BoxGeometry(0.16, 0.02, 0.02).translate(0, 1.02, 0), m));
+    }
+    case 'caduceus': {
+      add(rod(0.012, -0.3, 0.42), ball(0.025, 0, 0.44, 0));
+      for (const s of [-1, 1]) {
+        const pts = [];
+        for (let k = 0; k <= 16; k++) { const t = k / 16, a = s * t * Math.PI * 4; pts.push([Math.sin(a) * 0.035, -0.2 + t * 0.55, Math.cos(a) * 0.035 * s]); }
+        add(tube(pts, 0.008));
+        const wg = new THREE.Shape(); wg.moveTo(0, 0); wg.quadraticCurveTo(0.08, 0.06, 0.11, 0.0); wg.quadraticCurveTo(0.06, 0.0, 0, -0.02);
+        const w = flat(wg, 0.006); w.position.y = 0.4; w.scale.x = s; add(w);
+      }
+      return g;
+    }
+    case 'ship': {
+      const hull = new THREE.Shape(); hull.moveTo(-0.22, 0.05); hull.lineTo(0.22, 0.05); hull.quadraticCurveTo(0.2, -0.04, 0.12, -0.05); hull.lineTo(-0.14, -0.05); hull.quadraticCurveTo(-0.2, -0.02, -0.22, 0.05);
+      const h = flat(hull, 0.09); h.rotation.y = Math.PI / 2; add(h, rod(0.006, 0.05, 0.4));
+      const sail = mesh(new THREE.PlaneGeometry(0.2, 0.22).translate(0, 0.25, 0), doubleSidedMat(m)); sail.rotation.y = Math.PI / 2; return add(sail);
+    }
+    case 'plough': { const sh = new THREE.Shape(); sh.moveTo(0, -0.38); sh.lineTo(0.06, -0.12); sh.lineTo(-0.06, -0.12); sh.closePath(); return add(rod(0.016, -0.14, 0.1), flat(sh, 0.015)); }
+    case 'cornucopia': {
+      const pts = [];
+      for (let k = 0; k <= 12; k++) { const t = k / 12; pts.push(new THREE.Vector2(0.008 + 0.075 * t * t, t * 0.34)); }
+      const horn = mesh(new THREE.LatheGeometry(pts, 12), doubleSidedMat(m)); horn.rotation.z = 0.5;
+      add(horn);
+      for (const [x, y, z, r] of [[-0.18, 0.31, 0, 0.04], [-0.13, 0.35, 0.03, 0.035], [-0.2, 0.36, -0.03, 0.032], [-0.15, 0.3, -0.04, 0.03]]) add(ball(r, x, y, z));
+      return g;
+    }
+    case 'sheaf': {
+      for (let k = 0; k < 9; k++) { const a = (k / 9) * Math.PI * 2, r = k ? 0.035 : 0; add(rod(0.008, -0.22, 0.2).translateX(Math.cos(a) * r).translateZ(Math.sin(a) * r)); }
+      add(mesh(new THREE.TorusGeometry(0.045, 0.01, 6, 14).rotateX(Math.PI / 2), m));
+      for (let k = 0; k < 7; k++) { const a = (k / 7) * Math.PI * 2; add(mesh(new THREE.ConeGeometry(0.02, 0.1, 5).translate(Math.cos(a) * 0.04, 0.25, Math.sin(a) * 0.04), m)); }
+      return g;
+    }
+    case 'sickle': return add(rod(0.014, -0.08, 0.06), mesh(new THREE.TorusGeometry(0.09, 0.01, 4, 14, Math.PI * 1.2).translate(-0.09, 0.06, 0), m));
+    case 'wreath': {
+      add(mesh(new THREE.TorusGeometry(0.1, 0.018, 6, 20), m));
+      for (let k = 0; k < 14; k++) { const a = (k / 14) * Math.PI * 2; add(ball(0.02, Math.cos(a) * 0.1, Math.sin(a) * 0.1, 0.012)); }
+      return g;
+    }
+    case 'trumpet': return add(rod(0.012, 0, 0.75), mesh(new THREE.CylinderGeometry(0.075, 0.014, 0.16, 14, 1, true).translate(0, 0.83, 0), doubleSidedMat(m)));
+    case 'sceptre': return add(rod(0.012, -0.18, 0.5), ball(0.03, 0, 0.53, 0), mesh(new THREE.ConeGeometry(0.02, 0.07, 6).translate(0, 0.58, 0), m));
+    case 'orb': return add(ball(0.05, 0, 0.04, 0), rod(0.006, 0.08, 0.14), mesh(new THREE.BoxGeometry(0.05, 0.01, 0.01).translate(0, 0.12, 0), m));
+    case 'shield': {
+      add(mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.035, 24).rotateX(Math.PI / 2), m), ball(0.06, 0, 0, 0.025));
+      for (const r of [0.14, 0.26]) add(mesh(new THREE.TorusGeometry(r, 0.008, 4, 28), m).translateZ(0.02));
+      return g;
+    }
+    case 'wheel': {
+      add(mesh(new THREE.TorusGeometry(0.24, 0.025, 6, 28), m), mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.06, 10).rotateX(Math.PI / 2), m));
+      for (let k = 0; k < 8; k++) { const s = mesh(new THREE.BoxGeometry(0.016, 0.24, 0.016).translate(0, 0.12, 0), m); s.rotation.z = (k / 8) * Math.PI * 2; add(s); }
+      // A wing to each side of the hub.
+      for (const s of [-1, 1]) {
+        const wg = new THREE.Shape(); wg.moveTo(0, 0); wg.quadraticCurveTo(0.1, 0.12, 0.26, 0.16); wg.quadraticCurveTo(0.16, 0.06, 0.2, 0.0); wg.quadraticCurveTo(0.1, 0.02, 0, -0.03);
+        const w = flat(wg, 0.012); w.rotation.y = Math.PI / 2; w.scale.z = s; w.position.set(0, 0.02, 0); add(w);
+      }
+      return g;
+    }
+    case 'star': { const sh = new THREE.Shape(); for (let k = 0; k <= 10; k++) { const a = (k / 10) * Math.PI * 2 + Math.PI / 2, r = k % 2 ? 0.022 : 0.055; k ? sh.lineTo(Math.cos(a) * r, Math.sin(a) * r) : sh.moveTo(Math.cos(a) * r, Math.sin(a) * r); } return add(flat(sh, 0.012, gild)); }
+    default: return g;
+  }
+}
+const dsMats = new Map();
+const doubleSidedMat = (m) => { if (!dsMats.has(m)) { const c = m.clone(); c.side = THREE.DoubleSide; dsMats.set(m, c); } return dsMats.get(m); };
+// Set what a figure holds: `kind` at its hand (side 'r' or 'l'), its axis along `axis` (by default
+// straight up; 'arm' lays it along the forearm), turned about that axis by `spin`.
+export function hold(g, fig, side, kind, m, { axis = [0, 1, 0], spin = 0, offset = [0, 0, 0], gild = m } = {}) {
+  const a = attribute(kind, m, gild), ax = axis === 'arm' ? fig.dirs[side] : axis;
+  a.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(...ax).normalize());
+  a.rotateY(spin);
+  a.position.set(...fig.hands[side].map((v, i) => v + offset[i]));
+  g.add(a);
+  return a;
+}

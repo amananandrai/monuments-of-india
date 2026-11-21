@@ -274,11 +274,13 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 
 | Part | File | What it is |
 | --- | --- | --- |
-| `figure(h, m, pose)` | sculpture | A carved figure, standing or dancing |
+| `figure(h, m, pose)` | sculpture | A carved figure, standing or dancing; `'robed'` is a classical allegory in drapery, for the colonial buildings |
 | `guardian(h, m)` (figures) | doorways | A door guardian (dvarapala): a fierce face, tall crown, jewellery and a ribbed club; a large one on a desktop gets a finely meshed head |
 | `idol(h, m)` | components | A cheap standing image in relief, for rows of niches |
 | `guardian(h, m)` | figures | A door guardian |
 | `statue(h, m, pose)` | sculpture | A statue on a pedestal |
+| `allegory(key, opts, m, h)` | figures | A woman in classical drapery sculpted as one skin: standing, seated (on a block or a throne, with a mantle, a child, an infant) or winged; her arms in named poses, her head in hair, a veil and crown, or a helmet. Returns the mesh and where its hands are |
+| `hold(g, fig, side, kind, m, opts)`, `attribute(kind, m)` | figures | What an allegory holds, set at her hand: torch, sword, scales, mirror, book, palette, square, trident, caduceus, ship, plough, cornucopia, sheaf, sickle, wreath, trumpet, sceptre, orb, shield, winged wheel, star |
 | `figureFrieze(len, h, m, { kinds })` | sculpture | A band of figures, elephants or horses in relief |
 | `urn(h, m)`, `pinnacle(h, m)`, `gothicPinnacle(h, m)` | sculpture | Roofline ornaments |
 

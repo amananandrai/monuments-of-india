@@ -83,7 +83,8 @@ function crownMesh(r, h, x, y, z) {
 // crown, arms at the sides holding attributes), 'dancer' (the tribhanga, a sway at the hips, one
 // arm raised and the other across the body), 'seated' (cross-legged, hands in the lap: a Buddha or
 // a Jina), 'musician' (standing with a drum held before the body, as on the roof of Konark) or
-// 'leader' (a modern statue: standing, arms at the sides, in a long coat and a cap); and the
+// 'leader' (a modern statue: standing, arms at the sides, in a long coat and a cap), 'robed' (a
+// classical allegory: a woman in drapery to the feet, her hair in a knot, no crown); and the
 // surasundaris of Khajuraho's walls: 'mirror' (looking into a hand mirror), 'thorn' (drawing a thorn
 // from a lifted foot) and 'chauri' (an attendant with a fly-whisk over the shoulder).
 function figureParts(pose) {
@@ -109,6 +110,13 @@ function figureParts(pose) {
     for (const s of [-1, 1]) add(seg(V(s * 1.15, 4.4, 0), V(s * 1.3, 2.6, 0.5), 0.32, 0.28), seg(V(s * 1.3, 2.6, 0.5), V(s * 0.3, 1.8, 0.9), 0.28, 0.24));
     add(detail.low ? ball(0.75, 0, 5.4, 0.1) : headMesh(0.75, 0, 5.4, 0.1, 1.05), ball(0.45, 0, 6.2, 0));   // head, ushnisha
     add(ball(0.9, 0, 0.35, 0.6, 1.4, 0.35, 0.9));                         // lap
+    return g;
+  }
+  if (pose === 'robed') {
+    // A woman in a chiton to the feet, the arms at her sides, the hair drawn back to a knot.
+    add(seg(V(0, 0, 0), V(0, 4.9, 0), 1.45, 1.0, 10), ball(1.05, 0, 4.8, 0, 1.15, 0.6, 0.85), seg(V(0, 4.9, 0), V(0, 6.4, 0), 0.75, 0.95, 8), ball(0.95, 0, 6.5, 0.12, 1.25, 0.85, 0.8));
+    for (const s of [-1, 1]) add(ball(0.42, s * 1.15, 7.0, 0), seg(V(s * 1.15, 7.0, 0), V(s * 1.4, 5.3, 0.2), 0.32, 0.27), seg(V(s * 1.4, 5.3, 0.2), V(s * 1.3, 3.8, 0.6), 0.27, 0.22));
+    add(seg(V(0, 7.3, 0), V(0, 7.9, 0), 0.32, 0.32), detail.low ? ball(0.75, 0, 8.5, 0.1, 1, 1.12, 1) : headMesh(0.75, 0, 8.5, 0.1), ball(0.4, 0, 8.6, -0.65));
     return g;
   }
   const sway = { dancer: 0.45, mirror: -0.4, thorn: 0.3, chauri: 0.25 }[pose] || 0;

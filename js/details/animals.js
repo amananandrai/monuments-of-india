@@ -509,3 +509,51 @@ export function camels(spots, { y = 0, cloths = ['#b3262e', '#2f5d9a', '#e3b23c'
   });
   return g;
 }
+
+/* ---------- couchant lion and tiger ---------- */
+
+// The lion (for Britain) and the tiger (for India) that lie on the gate piers of Victoria Terminus,
+// carved by Thomas Earp in Bath stone: couchant, the body lying along the pier, the hind legs folded
+// under the haunches, the forelegs stretched out in front with the paws side by side, the head
+// raised and looking ahead, the tail curled along the right flank. 9 ft 6 in long and 5 ft 6 in
+// high (2.9 and 1.7 m); in metres here, facing +z, the paws' tips at z = 1.2. The lion has his
+// mane, rising in a ruff of locks round the face; the tiger a lower, flatter head with the ruff of
+// its cheeks, rounded ears, and stripes cut across its back and flanks.
+function couchantField(tiger) {
+  const mane = tiger ? null : (x, y, z) => E([0, 1.1, 0.52], [0.5, 0.56, 0.42])(x, y, z) + 0.035 * Math.sin(x * 22 + 1) * Math.sin(y * 20) * Math.sin(z * 19 + 2);
+  const hy = tiger ? 0.98 : 1.24, hz = tiger ? 0.88 : 0.86;
+  const body = blend([
+    [E([0, 0.48, -0.3], [0.4, 0.38, 0.85]), 0],
+    [mirrorX(E([0.28, 0.44, -0.78], [0.2, 0.34, 0.4])), 0.15],
+    [mirrorX(E([0.36, 0.1, -0.42], [0.11, 0.09, 0.26])), 0.08],
+    [E([0, 0.62, 0.38], [0.34, 0.42, 0.34]), 0.2],
+    // The forelegs stretched forward, and the paws with their toes.
+    [mirrorX(chain([[0.22, 0.42, 0.42, 0.14], [0.23, 0.14, 0.82, 0.1]], 0.05)), 0.1],
+    [mirrorX(E([0.23, 0.075, 1.02], [0.12, 0.075, 0.17])), 0.04],
+    // The neck and head.
+    [chain([[0, 0.75, 0.45, 0.24], [0, hy - 0.12, hz - 0.1, 0.2]], 0.08), 0.12],
+    [E([0, hy, hz], [0.25, 0.24, 0.26]), 0.06],
+    [E([0, hy - 0.12, hz + 0.24], [0.15, 0.12, 0.14]), 0.05],
+    [E([0, hy - 0.04, hz + 0.33], [0.075, 0.045, 0.045]), 0.02],
+    [E([0, hy + 0.1, hz + 0.16], [0.2, 0.05, 0.08]), 0.04],
+    [mirrorX(tiger ? E([0.18, hy + 0.2, hz - 0.08], [0.07, 0.07, 0.04]) : E([0.19, hy + 0.17, hz - 0.1], [0.065, 0.06, 0.04])), 0.02],
+    // The tail along the right flank, its tip curling forward.
+    [chain([[-0.25, 0.4, -1.1, 0.06], [-0.43, 0.14, -0.8, 0.05], [-0.45, 0.1, -0.15, 0.045], [-0.4, 0.13, 0.12, 0.05]], 0.04), 0.03],
+    ...(tiger ? [[mirrorX(E([0.19, hy - 0.09, hz + 0.02], [0.1, 0.13, 0.13])), 0.04]] : [[mane, 0.1], [E([-0.4, 0.15, 0.17], [0.07, 0.07, 0.09]), 0.02]]),
+  ]);
+  // The toes, the eyes and the line of the mouth; the tiger's stripes, cut shallow across it.
+  let f = body;
+  for (const sx of [-1, 1]) for (const dx of [-0.045, 0.045]) f = carve(f, E([sx * 0.23 + dx, 0.09, 1.15], [0.006, 0.05, 0.08]), 0.01);
+  f = carve(f, mirrorX(E([0.1, hy + 0.03, hz + 0.23], [0.035, 0.022, 0.03])), 0.01);
+  f = carve(f, E([0, hy - 0.2, hz + 0.3], [0.1, 0.012, 0.06]), 0.01);
+  if (tiger) {
+    const f0 = f;
+    f = (x, y, z) => { const d = f0(x, y, z), s = Math.sin(z * 11 + 2.5 * Math.sin(y * 3 + x * 2)); return y > 0.2 && z < 0.7 ? d + 0.012 * Math.max(0, s - 0.55) / 0.45 : d; };
+  }
+  return { f: flatBase(f), lo: [-0.65, -0.01, -1.25], hi: [0.65, 1.75, 1.25] };
+}
+// A couchant lion, or (tiger) tiger, about 2.9 m long, facing +z: meshed at 3 cm (5 cm on phones).
+export function couchant(m, { tiger = false } = {}) {
+  const key = (tiger ? 'tiger' : 'lion') + '-couchant' + (detail.low ? '-low' : '');
+  return figure(sculpt(key, () => couchantField(tiger), { h: detail.low ? 0.05 : 0.03, reach: 0.25, wear: 0.3 }), m);
+}
