@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, pidaRoof } from '../helpers.js';
-import { templeDoorway, doorFrame, guardian } from '../details/doorways.js';
+import { pranala, templeDoorway, doorFrame, guardian } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { nandi } from '../details/animals.js';
 import { kuta, shala } from '../details/sculpture.js';
@@ -20,6 +20,8 @@ export function buildBrihadeeswara() {
     g.add(onFace(at(mergeByMaterial(n), 0, 7, 0), a, 14.5));
   }
   g.add(box(31, 1.2, 31, d, 0, 16));
+  // The spout (pranala) that drains the sanctum, out through the north face of the base.
+  g.add(onFace(at(pranala(3.4, m, { drop: 2.8, size: 1.8 }), 0, 3.2, 0), -Math.PI / 2, 15.5, 0));
   let y = 17.2, w = 27.5;
   const tiers = 13, th = 2.9, w1 = 9.5, hara = new THREE.Group();
   for (let i = 0; i < tiers; i++) {

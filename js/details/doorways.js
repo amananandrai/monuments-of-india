@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, surface, pidaRoof, bell, kalash } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, surface, pidaRoof, bell, kalash, inst, unitBox } from '../helpers.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { detail } from '../detail.js';
 import { D, frieze, rosette, bracketGeo, chhajja } from './components.js';
 import { guardian } from './figures.js';
 import { elephant, lion, horse } from './animals.js';
@@ -150,9 +152,10 @@ export function doorFrame(w, h, { bands = 3, bw = 0.3, depth = 1.2, d0 = depth *
 // A temple doorway on a wall face: a stepped frame, a figure block in the middle of the lintel, a
 // hood above, timber leaves standing open with a dim sanctum and a lamp behind, a raised threshold
 // and a half-moon stone, and guardians at the foot of the frame. Sized by the opening w × h.
+// shakha (desktops): the carved jambs of a dvarashakha (shakhas below).
 export function templeDoorway(w, h, {
   m, bands = 3, bw = Math.min(0.42, Math.max(0.2, w * 0.17)), depth = null, guardians = true, guardianH = Math.min(1.8, h * 0.42),
-  hood = true, open = 1.2, moon = true, leafM = TIMBER,
+  hood = true, open = 1.2, moon = true, leafM = TIMBER, shakha = true,
 } = {}) {
   const g = new THREE.Group();
   const d0 = Math.max(0.55, (w / 2) * Math.sin(open) + 0.08), dep = Math.max(d0 + 0.15, depth || d0 + 0.45);
@@ -162,6 +165,7 @@ export function templeDoorway(w, h, {
   // The lintel's figure block (lalatabimba) and a carved rosette on it.
   g.add(box(bw * 1.8, bw * 1.3, 0.12, m, 0, h + (bands - 1) * bw - bw * 0.15, dep));
   g.add(at(rosette(bw * 0.45, m, 8), 0, h + (bands - 0.5) * bw - 0.05, dep + 0.12));
+  if (shakha && !detail.low && bands >= 2) g.add(shakhas(w, h, bands, bw, d0, dep, m));
   // Inside: the dim room, a lamp, the threshold, and the leaves standing open.
   g.add(at(interior(w * 0.999, h * 0.999), 0, 0, 0.012));
   g.add(at(lamp(Math.min(1.4, h / 3)), 0, 0.18, 0.28));
@@ -176,6 +180,75 @@ export function templeDoorway(w, h, {
   if (guardians) for (const s of [-1, 1]) g.add(at(guardian(guardianH, m), s * (outerW / 2 + guardianH * 0.21), 0, guardianH * 0.17));
   g.userData = { outerW: outerW + (guardians ? guardianH * 0.84 : 0), outerH: outerH + (hood ? 0.55 : 0), depth: dep };
   return g;
+}
+
+// The carved jambs of a temple door (dvarashakha), laid over the bands of doorFrame(w, h, { bands,
+// bw, d0, depth }): every other band (the carved ones) is filled up its jambs and across its lintel
+// with a column of little figures, each standing in a shallow niche; on the lintel of the
+// innermost carved band they sit in a row of nine (the navagrahas), leaving the middle to the
+// figure block; and at the foot of the innermost band stand the river goddesses, Ganga and Yamuna,
+// on their low pedestals. The figures are instanced.
+const FIG_GEO = mergeGeometries([new THREE.CylinderGeometry(0.28, 0.36, 0.62, 6).translate(0, 0.31, 0), new THREE.SphereGeometry(0.2, 8, 6).translate(0, 0.8, 0), new THREE.CylinderGeometry(0.33, 0.1, 0.12, 6).translate(0, 1.0, 0)].map((g) => g.toNonIndexed()));
+export function shakhas(w, h, bands, bw, d0, depth, m) {
+  const g = new THREE.Group(), niches = [], figs = [], step = bw * 1.35;
+  const dOf = (k) => d0 + ((depth - d0) * k) / Math.max(1, bands - 1);
+  for (let k = 1; k < bands; k += 2) {
+    const x = w / 2 + k * bw + bw / 2, jh = h + k * bw, z = dOf(k);
+    for (const s of [-1, 1]) for (let y = bw * 0.9; y + step <= jh - bw * 0.2; y += step) {
+      niches.push([s * x, y, z, bw * 0.74, step * 0.86, 0.04]);
+      figs.push([s * x, y + step * 0.06, z + 0.02, bw * 0.62, step * 0.72, bw * 0.3]);
+    }
+    // The lintel: nine figures on the innermost carved band, every other place on the outer ones.
+    const n = k === 1 ? 9 : Math.floor((w + 2 * k * bw) / step), span = w + 2 * k * bw - bw;
+    for (let i = 0; i < n; i++) {
+      const lx = -span / 2 + (i + 0.5) * (span / n);
+      if (Math.abs(lx) < bw * 1.1) continue;
+      niches.push([lx, jh + bw * 0.08, z, (span / n) * 0.82, bw * 0.84, 0.04]);
+      figs.push([lx, jh + bw * 0.12, z + 0.02, Math.min(bw * 0.6, (span / n) * 0.62), bw * 0.72, bw * 0.3]);
+    }
+  }
+  g.add(inst(unitBox(), niches, M.recess), inst(FIG_GEO, figs, m));
+  // Ganga and Yamuna at the foot of the innermost band, a third of the door's height.
+  const gh = h * 0.3, z0 = d0;
+  for (const s of [-1, 1]) {
+    const x = s * (w / 2 + bw / 2);
+    g.add(box(bw * 0.95, gh * 0.12, 0.3, m, x, 0, z0 + 0.15));
+    const fig = inst(FIG_GEO, [[x, gh * 0.12, z0 + 0.15, bw * 0.9, gh * 0.85, bw * 0.45]], m);
+    g.add(fig);
+  }
+  return g;
+}
+
+// A water spout (pranala) carrying the water of the sanctum's ablutions out through its wall: a
+// channelled trough `len` long projecting from the wall at z = 0 along +z, carried on a moulded
+// corbel, ending in the head of a makara (a crocodile-like beast) with open jaws, its snout curling
+// up into a trunk; under its mouth, on the ground `drop` below, a small stone basin. Its sill is at
+// y = 0. size scales the whole spout (1: a trough 0.55 wide), not its length or drop.
+export function pranala(len, m, { drop = 0, size = 1 } = {}) {
+  const o = new THREE.Group(), g = new THREE.Group(), u = 0.55;
+  len /= size;
+  drop /= size;
+  g.add(box(u, 0.14, len, m, 0, 0, len / 2));
+  for (const s of [-1, 1]) g.add(box(0.1, 0.24, len, m, s * (u / 2 - 0.05), 0.14, len / 2));
+  g.add(box(u * 0.9, 0.06, len - 0.1, M.recess, 0, 0.14, len / 2 - 0.05));
+  // The corbel under the trough at the wall: three steps out.
+  [[0.3, 0.55], [0.3, 0.38], [0.3, 0.2]].forEach(([hh, dd], i) => g.add(box(u * 1.1, hh, dd, m, 0, -0.3 * (i + 1), dd / 2)));
+  // The makara head: the skull, the long upper jaw curling up into a trunk, the lower jaw open
+  // beneath it, eyes, and ears laid back.
+  const H = at(new THREE.Group(), 0, 0.18, len);
+  const skull = mesh(new THREE.SphereGeometry(0.34, 10, 8), m);
+  skull.scale.set(1, 0.85, 1.15);
+  H.add(skull);
+  const jaw = mesh(new THREE.ConeGeometry(0.22, 0.7, 8).rotateX(Math.PI / 2), m, 0, 0.08, 0.55);
+  const low = mesh(new THREE.ConeGeometry(0.16, 0.5, 8).rotateX(Math.PI / 2 + 0.35), m, 0, -0.2, 0.42);
+  const curl = new THREE.CatmullRomCurve3([[0, 0.1, 0.8], [0, 0.16, 0.94], [0, 0.32, 1.0], [0, 0.46, 0.92], [0, 0.48, 0.8], [0, 0.4, 0.74]].map((p) => new THREE.Vector3(...p)));
+  const trunk = mesh(new THREE.TubeGeometry(curl, 12, 0.075, 6, false), m);
+  H.add(jaw, low, trunk, at(mesh(new THREE.SphereGeometry(0.075, 6, 5), m), 0, 0.4, 0.74));
+  for (const s of [-1, 1]) H.add(at(mesh(new THREE.SphereGeometry(0.07, 6, 5), M.recess), s * 0.22, 0.16, 0.26), at(mesh(new THREE.SphereGeometry(0.14, 6, 5).scale(0.5, 1, 1.4), m), s * 0.3, 0.2, -0.12));
+  g.add(H);
+  if (drop > 0) g.add(box(1.2, 0.35, 1.2, m, 0, -drop, len + 0.7), box(0.9, 0.06, 0.9, M.recess, 0, -drop + 0.31, len + 0.7));
+  g.scale.setScalar(size);
+  return o.add(g);
 }
 
 // An open porch (mukhamandapa) in front of a wall at z = 0: two free columns at the front and two

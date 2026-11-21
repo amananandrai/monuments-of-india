@@ -9,10 +9,11 @@ const BRICK = surface(mat('#a9583f', 0.85), 'brick');
 const WHITE = mat('#ece6da', 0.8);
 const METAL = mat('#8a9097', 0.45, 0.5);
 
-// Round-arched windows for a wall len long and h high: two storeys of them every 5 m.
+// Round-arched windows for a wall len long and h high: two storeys of them every 5 m, closed by
+// green louvred shutters below the arch (js/details/components.js, louvredShutter).
 function windowCells(len, h) {
   const n = Math.floor(len / 5), out = [];
-  for (let k = 0; k < n; k++) { const x = -len / 2 + (k + 0.5) * (len / n); out.push([x, 1.4, 2.2, 4.6, 'room'], [x, h / 2 + 1.8, 2.2, 4.6, 'room']); }
+  for (let k = 0; k < n; k++) { const x = -len / 2 + (k + 0.5) * (len / n); out.push([x, 1.4, 2.2, 4.6, 'shutters'], [x, h / 2 + 1.8, 2.2, 4.6, 'shutters']); }
   return out;
 }
 // A wing len long, h high and d deep (along x before turning), its foot at y = 0: brick with

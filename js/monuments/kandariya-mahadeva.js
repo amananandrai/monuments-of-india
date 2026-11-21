@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, at, onFace, FACES, kalash, bell, shikhara, pidaRoof, aroundRect } from '../helpers.js';
-import { templeDoorway, steps, grandStair } from '../details/doorways.js';
+import { pranala, templeDoorway, steps, grandStair } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { figureRow } from '../details/sculpture.js';
 import { addDetails } from '../details/kandariya-mahadeva.js';
@@ -14,6 +14,9 @@ export function buildKandariya() {
   f.add(at(grandStair(3, 8, Sd, S, { n: 15, landing: 0, cheek: 0.8 }), 0, 0, 32));
   // Moulded base and sculpted wall, with projecting balconies on the halls
   f.add(box(24, 2, 42, S, 0, 3, -4), box(22, 6, 40, S, 0, 5, -4));
+  // The spout (pranala) draining the sanctum, out through the north face of the base onto the
+  // jagati.
+  f.add(at(pranala(2, S, { drop: 1.5 }), -12, 4.5, -16).rotateY(-Math.PI / 2));
   for (const [z, d] of [[0, 9], [12.25, 7.5]]) f.add(box(29, 3.6, d, S, 0, 6, z), box(30.5, 0.6, d + 1.5, Sd, 0, 9.6, z));
   const figs = [];
   // The sculpted figures run round the walls, leaving the doorway clear.

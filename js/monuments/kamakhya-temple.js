@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, lathe, at, ribbed, kalash, hipRoof, FACES, onFace, sheet, flat } from '../helpers.js';
 import { heightField, fbm, smooth } from '../details/terrain.js';
 import { detail } from '../detail.js';
-import { templeDoorway } from '../details/doorways.js';
+import { pranala, templeDoorway } from '../details/doorways.js';
 import { mergeByMaterial, templeNiche, idol } from '../details/components.js';
 import { addDetails } from '../details/kamakhya-temple.js';
 
@@ -61,6 +61,8 @@ export function buildKamakhya() {
     s.position.z += -14;
     f.add(s);
   }
+  // The spout (pranala) draining the sanctum, out through the west face of its base.
+  f.add(at(pranala(2, STONE_DARK, { drop: 1.3 }), -11, T + 1.3, -8).rotateY(-Math.PI / 2));
   // Calantapa (antechamber) and the Natmandir hall with curved roofs
   f.add(box(12, 7, 10, STONE, 0, T, 2), at(dochala(14, 11, 6, STONE), 0, T + 7, 2));
   f.add(box(16, 6, 20, STONE, 0, T, 18), at(dochala(18, 21, 7, STONE_DARK), 0, T + 6, 18));

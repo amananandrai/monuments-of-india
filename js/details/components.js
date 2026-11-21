@@ -760,3 +760,24 @@ export function inlayBorder(w, h, band, base, inlay, { every = band * 2.2 } = {}
   }
   return g;
 }
+
+// Louvred shutters, as on the windows of colonial Bengal: two leaves closed across an opening w × h
+// from y = 0, standing `out` in front of z = 0, each a frame of stiles and rails round a panel of
+// angled slats about 14 cm apart, a middle rail at a third of the height; in green by default.
+const SHUTTER = surface(mat('#3f6b4f', 0.75), 'none');
+export function louvredShutter(w, h, m = SHUTTER, { out = 0.06 } = {}) {
+  const g = new THREE.Group(), lw = w / 2, st = Math.min(0.09, lw * 0.1), slats = [];
+  for (const s of [-1, 1]) {
+    const cx = s * lw / 2;
+    for (const x of [cx - lw / 2 + st / 2, cx + lw / 2 - st / 2]) g.add(box(st, h, 0.06, m, x, 0, out));
+    for (const y of [0, h / 3, h - st]) g.add(box(lw, st, 0.06, m, cx, y, out));
+    const n = Math.max(3, Math.round((h - 2 * st) / 0.14));
+    for (let k = 0; k < n; k++) {
+      const y = st + (k + 0.5) * ((h - 2 * st) / n);
+      if (Math.abs(y - h / 3 - st / 2) < 0.08) continue;
+      slats.push(new THREE.BoxGeometry(lw - 2 * st, 0.02, 0.09).rotateX(0.6).translate(cx, y, out));
+    }
+  }
+  g.add(mesh(mergeGeometries(slats.map((b) => b.toNonIndexed())), m));
+  return g;
+}
