@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mesh } from '../helpers.js';
-import { ellipsoid as E, cone, chain, blend, carve, mirrorX, flatBase, roundBox, lathe, snap, sculpt, statueMaterial, bounded, smin, smax, torus, turn } from '../sdf.js';
+import { ellipsoid as E, cone, chain, blend, carve, mirrorX, flatBase, roundBox, lathe, snap, sculpt, statueMaterial, bounded, smin, smax, torus, turn, slab } from '../sdf.js';
 import { detail } from '../detail.js';
 
 // Human figures in stone and bronze, each body sculpted as one skin from a signed distance field
@@ -658,5 +658,270 @@ export const thiruvalluvarBody = (m) => body(detail.low ? 'thiruvalluvar-coarse'
     // (The parts are laid out before the field is turned over, so they are looked up at -x.)
     { region: (x, y, z) => Math.min(9, thiruParts().raised(-x, y, z) - 0.35), h: detail.low ? 0.12 : 0.07, lo: [-4.4, 35.0, 3.3], hi: [-1.9, 38.9, 5.0] },
     { region: (x, y, z) => Math.min(9, thiruParts().holding(-x, y, z) - 0.35), h: detail.low ? 0.12 : 0.07, lo: [2.1, 28.6, 2.6], hi: [4.6, 30.5, 5.1] },
+  ],
+});
+
+/* ---------- statues of the twentieth and twenty-first centuries ---------- */
+
+// The distance in the x-y plane from (x, y) to a broken line through pts [[x, y], ...].
+function toLine(pts) {
+  return (x, y) => {
+    let d = Infinity;
+    for (let i = 0; i + 1 < pts.length; i++) {
+      const [ax, ay] = pts[i], [bx, by] = pts[i + 1], dx = bx - ax, dy = by - ay, t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy)));
+      d = Math.min(d, Math.hypot(x - ax - dx * t, y - ay - dy * t));
+    }
+    return d;
+  };
+}
+// A face laid out as the Statue of Unity's (in the units of its 10.2-wide skull, which P maps into
+// the figure's own): the skull, the jaw and chin, the cheeks, the brow, the nose and its wings, the
+// eyes in their sockets under their lids, the lips and the line between them, and the ears. full:
+// how round the cheeks and jaw are; age: deeper lids and the folds from nose to mouth; lids: how
+// low the upper lids come; tall: the skull's height (a child's is rounder).
+function face(P, S, { full = 0, age = 0, lids = 0.5, tall = 1 } = {}) {
+  const k = (v) => v * S;
+  let h = blend([
+    [E(P(0, 1.4, -0.5), [9.8 * S, 10.8 * S * 1.05 * tall, 10.3 * S]), 0],
+    [E(P(0, -5.2, 1.4), [(7.6 + full) * S, (5.8 + 0.3 * full) * S, (7.6 + 0.4 * full) * S]), k(3)],
+    [mirrorX(E(P(4.7 + 0.3 * full, -2.6 - 0.4 * full, 6.2), [(3.2 + 0.3 * full) * S, (3.0 + 0.3 * full) * S, 3.0 * S])), k(1.6)],
+    [E(P(0, 2.7, 8.3), [6.8 * S, 1.3 * S, 2.1 * S]), k(1.6)],
+    [cone(P(0, 2.0, 9.4), P(0, -2.4, 11.7), k(1.0), k(1.4)), k(0.8)],
+    [E(P(0, -2.6, 11.3), [1.7 * S, 1.3 * S, 1.35 * S]), k(0.6)],
+    [mirrorX(E(P(1.45, -3.0, 10.1), [1.0 * S, 0.9 * S, 0.9 * S])), k(0.5)],
+    [E(P(0, -8.4, 6.6), [3.1 * S, 2.1 * S, 2.5 * S]), k(1.5)],
+    [mirrorX(E(P(9.9, -0.4, -0.6), [1.3 * S, 3.5 * S, 2.5 * S])), k(0.6)],
+  ]);
+  h = carve(h, mirrorX(E(P(3.4, 0.5, 9.2), [2.4 * S, 1.5 * S, 2.0 * S])), k(0.9));
+  h = blend([[h, 0],
+    [mirrorX(E(P(3.4, 0.3, 7.8), [1.85 * S, 1.1 * S, 1.5 * S])), k(0.3)],
+    [mirrorX(E(P(3.4, 0.9 + lids * 0.6, 8.0), [2.2 * S, 0.5 * S, 1.4 * S])), k(0.3)],
+    [mirrorX(E(P(3.45, -0.9, 8.1), [1.9 * S, (0.35 + 0.2 * age) * S, 1.0 * S])), k(0.3)],
+    [E(P(0, -4.5, 9.4), [2.5 * S, 0.6 * S, 1.0 * S]), k(0.5)],
+    [E(P(0, -5.6, 9.0), [2.2 * S, 0.72 * S, 1.0 * S]), k(0.5)]]);
+  h = carve(h, E(P(0, -5.05, 9.95), [2.5 * S, 0.17 * S, 1.0 * S]), k(0.2));
+  h = carve(h, mirrorX(E(P(3.35, 0.2, 9.4), [0.6 * S, 0.6 * S, 0.3 * S])), k(0.1));
+  if (age) h = carve(h, mirrorX(cone(P(1.95, -2.3, 9.95), P(3.7, -6.4, 8.5), k(0.3), k(0.3))), k(0.4));
+  return carve(h, mirrorX(E(P(10.6, -0.2, -0.2), [0.6 * S, 2.2 * S, 1.4 * S])), k(0.2));
+}
+
+// Netaji Subhas Chandra Bose under the canopy at India Gate, carved from one block of black granite
+// (2022), after photographs: standing to attention in the uniform of the Indian National Army, the
+// right hand raised flat to the temple in salute, its elbow out at the shoulder's height, the left
+// hand closed at his side; the side cap worn tilted to the right; round spectacles (meshes,
+// netajiSpectacles()); the tunic to the top of the thighs, buttoned down the front, with a closed
+// collar, shoulder straps, two breast and two skirt pockets with flaps, and a belt with a square
+// buckle; breeches flaring wide over the thighs, and knee boots. Behind his calves stands the uncut
+// stone that holds him up, on a slab of the same block. In human units, 1.84 to the top of the cap,
+// facing +z on y = 0; netaji() scales him to the statue's 8.5 m.
+const NETAJI_HEAD = { S: 0.0088, y: 1.645, z: 0.014 };
+const netajiP = (x, y, z) => [x * NETAJI_HEAD.S, NETAJI_HEAD.y + y * NETAJI_HEAD.S * 1.05, NETAJI_HEAD.z + z * NETAJI_HEAD.S];
+function netajiField() {
+  const legs = mirrorX(blend([
+    [E([0.105, 0.045, 0.05], [0.05, 0.045, 0.13]), 0],
+    [cone([0.105, 0.06, -0.01], [0.11, 0.47, 0.0], 0.06, 0.07), 0.03],
+    [torus([0.11, 0.47, 0.0], 0.068, 0.009), 0.004],
+    // The breeches: from the knee up the thigh, and the wide flare standing out over it.
+    [cone([0.11, 0.49, 0.0], [0.105, 0.88, 0.0], 0.066, 0.095), 0.03],
+    [E([0.185, 0.71, -0.005], [0.1, 0.15, 0.095]), 0.07],
+  ]));
+  const jacket = lathe([[0.215, 0.765], [0.21, 0.8], [0.193, 0.9], [0.178, 0.98], [0.188, 1.06], [0.208, 1.2], [0.218, 1.32], [0.222, 1.4], [0.19, 1.46], [0.075, 1.5], [0.01, 1.505]], { sz: 0.64, folds: 10, amp: 0.02, from: 0.765, to: 0.95 });
+  const onJacket = (rx, ry, x0, y0, t) => (x, y, z) => Math.max(Math.abs(x - x0) - rx, Math.abs(y - y0) - ry, jacket(x, y, z) - t, -z);
+  // The four pockets, each with a flap across its top, and the placket down the front.
+  const pocketList = [[0.085, 1.27, 0.048, 0.052], [-0.085, 1.27, 0.048, 0.052], [0.11, 0.86, 0.06, 0.065], [-0.11, 0.86, 0.06, 0.065]].flatMap(([x0, y0, rx, ry]) => [onJacket(rx, ry, x0, y0, 0.006), onJacket(rx + 0.004, 0.013, x0, y0 + ry - 0.006, 0.011)]);
+  const pockets = (x, y, z) => { let d = Infinity; for (const q of pocketList) d = Math.min(d, q(x, y, z)); return d; };
+  const placket = onJacket(0.009, 0.25, 0, 1.22, 0.005);
+  const belt = (x, y, z) => torus([0, 0.98, 0], 0.18, 0.017)(x, y, z / 0.64) * 0.64;
+  const stone = (x, y, z) => roundBox([0, 0.27, -0.12], [0.2, 0.27, 0.09], 0.04)(x, y, z) + 0.008 * Math.sin(x * 60 + 1) * Math.sin(y * 50) * Math.sin(z * 70 + 2);
+  const b = blend([
+    [legs, 0],
+    [E([0, 0.86, 0], [0.15, 0.08, 0.1]), 0.04],
+    [jacket, 0.02],
+    [pockets, 0.004], [placket, 0.003], [belt, 0.004],
+    [roundBox([0, 0.98, 0.117], [0.026, 0.021, 0.008], 0.004), 0.003],
+    [torus([0, 1.49, 0.008], 0.07, 0.018), 0.006],
+    [mirrorX(E([0.19, 1.42, 0], [0.065, 0.058, 0.07])), 0.03],
+    [mirrorX(roundBox([0.145, 1.468, 0], [0.055, 0.007, 0.026], 0.005)), 0.005],
+    // The left arm at his side, the fist closed, the thumb over the fingers.
+    [cone([0.22, 1.41, 0], [0.248, 1.13, -0.01], 0.056, 0.05), 0.03],
+    [cone([0.248, 1.13, -0.01], [0.238, 0.88, 0.03], 0.048, 0.04), 0.015],
+    [torus([0.238, 0.885, 0.03], 0.043, 0.008), 0.004],
+    [E([0.235, 0.818, 0.035], [0.032, 0.052, 0.046]), 0.012],
+    [chain([[0.222, 0.845, 0.072, 0.012], [0.227, 0.81, 0.08, 0.011]], 0.005), 0.006],
+    // The right arm raised in salute: the elbow out at the shoulder's height, the forearm up to the
+    // temple, the hand held flat, its fingertips at the edge of the cap.
+    [cone([-0.22, 1.41, 0], [-0.45, 1.44, 0.07], 0.056, 0.05), 0.03],
+    [cone([-0.45, 1.44, 0.07], [-0.18, 1.63, 0.1], 0.048, 0.038), 0.015],
+    [slab([-0.185, 1.625, 0.1], [-0.088, 1.735, 0.092], 0.036, 0.011, [0.25, 0, 1]), 0.012],
+    [cone([0, 1.47, 0], [0, 1.56, 0.014], 0.06, 0.057), 0.02],
+    // The uncut stone behind the calves, and the slab under the boots.
+    [stone, 0.02],
+    [roundBox([0, 0.015, 0.0], [0.26, 0.015, 0.22], 0.005), 0.01],
+  ]);
+  // The head: a full round face, clean-shaven; the side cap, boat-shaped, creased along its top.
+  const head = face(netajiP, NETAJI_HEAD.S, { full: 2.2, lids: 0.4, tall: 0.96 });
+  // The side cap: two flat sides rising from a band round the head to a creased top, longer than
+  // the head front to back and pointed at each end, set low over the forehead and tilted down to
+  // the right.
+  const capShape = (x, y, z) => { const u = Math.max(0, Math.min(1, (y - 1.715) / 0.082)); return Math.max(Math.abs(x) - (0.086 - 0.06 * u * u), Math.abs(z) - (0.124 - 0.04 * u * u * u), 1.715 - y, y - 1.797 - 0.01 * (1 - (z / 0.12) ** 2)); };
+  const cap = turn((x, y, z) => capShape(x, y + 0.012, z) - 0.003, 'z', 0.2, [0, 1.73, 0]);
+  const all = (x, y, z) => smin(b(x, y, z), y > 1.55 ? smin(head(x, y, z), cap(x, y, z), 0.004) : Infinity, 0.012);
+  return { f: flatBase(all), lo: [-0.53, -0.01, -0.26], hi: [0.34, 1.86, 0.2] };
+}
+// The body on 1.2 cm cells (5.5 cm on the statue), the front of the tunic (its pockets and belt) on
+// 7 mm, and the head with the saluting hand, and the fist, on 5 mm (on phones 2, 1.2 and 0.9 cm).
+export const netajiBody = (m) => body(detail.low ? 'netaji-coarse' : 'netaji', netajiField, detail.low ? 0.02 : 0.012, m, undefined, {
+  wear: 0.2, split: [
+    { region: (x, y, z) => Math.min(E([0, 1.71, 0.02], [0.11, 0.14, 0.14])(x, y, z), E([-0.15, 1.69, 0.1], [0.065, 0.09, 0.045])(x, y, z)), h: detail.low ? 0.009 : 0.005, lo: [-0.22, 1.56, -0.13], hi: [0.12, 1.86, 0.17] },
+    { region: (x, y, z) => Math.max(Math.abs(x) - 0.185, Math.abs(y - 1.12) - 0.36, 0.03 - z), h: detail.low ? 0.012 : 0.007, lo: [-0.2, 0.75, 0.02], hi: [0.2, 1.49, 0.16] },
+    { region: E([0.236, 0.82, 0.035], [0.044, 0.075, 0.06]), h: detail.low ? 0.009 : 0.005, lo: [0.19, 0.74, -0.03], hi: [0.285, 0.9, 0.1] },
+  ],
+});
+// His round spectacles: two rims, the bridge and the arms back to the ears, in the figure's units.
+export function netajiSpectacles(m) {
+  const g = new THREE.Group(), P = netajiP, S = NETAJI_HEAD.S;
+  for (const sx of [-1, 1]) {
+    const c = P(sx * 3.4, 0.3, 10.7), rim = mesh(new THREE.TorusGeometry(2.9 * S, 0.004, 6, 28), m, ...c);
+    rim.rotation.y = sx * 0.12;
+    g.add(rim);
+    const arm = new THREE.CatmullRomCurve3([P(sx * 6.3, 0.6, 10.0), P(sx * 9.4, 0.7, 6.0), P(sx * 10.2, 0.5, 1.0)].map((q) => new THREE.Vector3(...q)));
+    g.add(mesh(new THREE.TubeGeometry(arm, 10, 0.0035, 5, false), m));
+  }
+  const bridge = new THREE.CatmullRomCurve3([P(-0.6, 0.8, 11.2), P(0, 1.2, 11.6), P(0.6, 0.8, 11.2)].map((q) => new THREE.Vector3(...q)));
+  g.add(mesh(new THREE.TubeGeometry(bridge, 6, 0.0035, 5, false), m));
+  return g;
+}
+
+// Chhatrapati Shivaji on horseback at Apollo Bunder (1961, in bronze), after photographs: the rider,
+// in human units with the point he sits on at the origin, facing +z, for shivaji() in
+// gateway-of-india details to set on the saddle of the prancing horse (animals.js) at 1.75 times
+// life. Upright in the saddle in a long-sleeved angarkha whose skirt spreads over his thighs and
+// hangs beside them, a sash at the waist and a baldric from the left shoulder to the right hip,
+// strings of pearls on the chest, boots in the stirrups; the left hand forward holding the reins,
+// the right held low behind his hip, gripping the sword (a mesh) whose blade points forward along
+// the horse's flank; a round shield slung on his back; his face with its hooked nose, upturned
+// moustache and pointed beard, under the Maratha turban with the plume rising from its top and a
+// tassel hanging behind.
+const SHIVAJI_HEAD = { S: 0.0082, y: 0.84, z: 0.02 };
+const shivajiP = (x, y, z) => [x * SHIVAJI_HEAD.S, SHIVAJI_HEAD.y + y * SHIVAJI_HEAD.S * 1.05, SHIVAJI_HEAD.z + z * SHIVAJI_HEAD.S];
+function shivajiField() {
+  const thigh = mirrorX(chain([[0.1, 0.06, 0.02, 0.085], [0.3, -0.2, 0.28, 0.066], [0.33, -0.62, 0.18, 0.05]], 0.03));
+  const boot = mirrorX(blend([[E([0.34, -0.665, 0.25], [0.042, 0.035, 0.11]), 0], [cone([0.33, -0.62, 0.18], [0.325, -0.44, 0.22], 0.052, 0.06), 0.02]]));
+  const torso = blend([
+    [E([0, 0.08, 0], [0.19, 0.11, 0.14]), 0],
+    [E([0, 0.3, 0], [0.18, 0.14, 0.13]), 0.08],
+    [E([0, 0.52, 0.01], [0.215, 0.16, 0.14]), 0.08],
+    [mirrorX(E([0.2, 0.62, 0], [0.075, 0.068, 0.075])), 0.05],
+    [mirrorX(cone([0.04, 0.68, 0], [0.18, 0.64, 0], 0.055, 0.05)), 0.04],
+    [cone([0, 0.66, 0], [0, 0.75, 0.015], 0.058, 0.055), 0.03],
+  ]);
+  // The angarkha's skirt over each thigh and hanging beside it below the knee, in folds.
+  const curtain = mirrorX(roundBox([0.35, -0.22, 0.04], [0.025, 0.24, 0.22], 0.02));
+  const skirt = (x, y, z) => smin(thigh(x, y, z) - 0.035, curtain(x, y, z) + 0.003 * Math.sin(z * 30 + y * 6), 0.06);
+  const sash = (x, y, z) => torus([0, 0.27, 0], 0.168, 0.024)(x, y, z / 0.75) * 0.75;
+  const across = toLine([[0.17, 0.66], [-0.18, 0.2]]);
+  const baldric = (x, y, z) => { const t = torso(x, y, z); return Math.max(across(x, y) - 0.022, t - 0.014, -t - 0.008); };
+  // Two strings of pearls hanging on the chest.
+  const pearls = blend([0.05, 0.1].map((dy) => [chain(Array.from({ length: 11 }, (_, i) => { const a = (i / 10 - 0.5) * 2.3; return [...snap(torso, [Math.sin(a) * 0.12, 0.665 - (0.03 + dy) * Math.cos(a), 0.2], 0.006), 0.009]; }), 0.004), 0]));
+  // The round shield on his back, domed, with its four bosses.
+  const shieldF = (x, y, z) => { let d = smax(E([0, 0.42, -0.14], [0.2, 0.2, 0.075])(x, y, z), z + 0.15, 0.004); for (const [bx, by] of [[0.07, 0.49], [-0.07, 0.49], [0.07, 0.35], [-0.07, 0.35]]) d = smin(d, E([bx, by, -0.205], [0.018, 0.018, 0.014])(x, y, z), 0.004); return d; };
+  const b = blend([
+    [torso, 0],
+    [skirt, 0.03],
+    [boot, 0.02],
+    [sash, 0.01],
+    [E([0.08, 0.19, 0.1], [0.03, 0.06, 0.02]), 0.01],
+    [baldric, 0.004],
+    [pearls, 0.004],
+    [shieldF, 0.01],
+    // The left arm forward, holding the reins over the horse's withers.
+    [cone([0.2, 0.63, 0], [0.26, 0.42, 0.12], 0.056, 0.048), 0.03],
+    [cone([0.26, 0.42, 0.12], [0.11, 0.42, 0.33], 0.048, 0.038), 0.015],
+    [E([0.09, 0.42, 0.37], [0.032, 0.035, 0.045]), 0.01],
+    // The right arm down and back, the fist at the hip gripping the sword's hilt.
+    [cone([-0.2, 0.63, 0], [-0.3, 0.4, -0.1], 0.056, 0.048), 0.03],
+    [cone([-0.3, 0.4, -0.1], [-0.335, 0.2, -0.13], 0.048, 0.038), 0.015],
+    [E([-0.335, 0.17, -0.13], [0.035, 0.045, 0.038]), 0.01],
+  ]);
+  const P = shivajiP, S = SHIVAJI_HEAD.S, k = (v) => v * S;
+  let head = face(P, S, { age: 0.6, lids: 0.6 });
+  // The hooked nose, the moustache turned up at its ends, and the pointed beard from the cheeks.
+  head = blend([[head, 0],
+    [cone(P(0, 2.6, 9.8), P(0, -1.2, 12.6), k(0.9), k(1.2)), k(0.6)],
+    [mirrorX(chain([[...P(0.4, -4.1, 11.0), k(0.75)], [...P(2.6, -4.3, 10.4), k(0.8)], [...P(5.2, -3.6, 8.9), k(0.55)], [...P(6.6, -2.0, 7.6), k(0.32)]], k(0.3))), k(0.3)],
+    [cone(P(0, -7.2, 7.6), P(0, -15.5, 9.4), k(5.4), k(1.0)), k(2.0)],
+    [mirrorX(E(P(6.4, -4.8, 4.6), [2.6 * S, 4.4 * S, 3.2 * S])), k(1.2)]]);
+  // The turban: wound in bands, wider at its top, a knot over the forehead, the plume rising from
+  // its crown and curling back, and the tassel hanging behind on the left.
+  const wound = blend([[E([0, 0.945, -0.01], [0.09, 0.062, 0.1]), 0], [E([0, 0.905, 0.0], [0.085, 0.034, 0.095]), 0.015], [E([0, 0.955, 0.075], [0.03, 0.035, 0.03]), 0.012]]);
+  const turban = (x, y, z) => wound(x, y, z) + 0.0025 * Math.sin(y * 260 + Math.atan2(x, z) * 2);
+  const plume = chain([[0, 0.99, 0.02, 0.012], [0, 1.045, 0.0, 0.01], [0, 1.07, -0.05, 0.008], [0, 1.06, -0.1, 0.006]], 0.006);
+  const tassel = blend([[chain([[0.06, 0.92, -0.08, 0.009], [0.07, 0.85, -0.095, 0.011]], 0.005), 0], [E([0.072, 0.83, -0.097], [0.018, 0.03, 0.018]), 0.008]]);
+  const headAll = blend([[head, 0], [turban, 0.006], [plume, 0.006], [tassel, 0.006]]);
+  const all = (x, y, z) => smin(b(x, y, z), y > 0.7 ? headAll(x, y, z) : Infinity, 0.012);
+  return { f: all, lo: [-0.46, -0.72, -0.3], hi: [0.46, 1.1, 0.45] };
+}
+// The rider on 1.2 cm cells (3.6 cm on the statue) and his head, beard and turban on 5 mm.
+export const shivajiBody = (m) => body(detail.low ? 'shivaji-coarse' : 'shivaji', shivajiField, detail.low ? 0.02 : 0.012, m, undefined, {
+  wear: 0.25, split: { region: E([0, 0.87, 0.02], [0.11, 0.15, 0.12]), h: detail.low ? 0.009 : 0.005, lo: [-0.12, 0.71, -0.11], hi: [0.12, 1.1, 0.15] },
+});
+
+// The Statue of Oneness at Omkareshwar (2023, in bronze): Adi Shankaracharya as a boy of twelve,
+// walking, after photographs. In boy's units (1.5 to the top of his head), facing +z on y = 0;
+// statueOfOneness() in omkareshwar-temple details scales him up. The lower robe falls in folds to the
+// ankles, pressed out by the left knee as it comes forward, the feet showing under the hem; the
+// upper cloth is wrapped over the left shoulder and across the body below the right arm, leaving
+// the right shoulder and arm bare, its end hanging at his left side; the right hand, before the
+// hip, grips the staff (a mesh) that crosses his body, and the left, at his side, holds the water
+// pot (a mesh); the head is shaven but for a small knot at the crown, the face calm and young, the
+// eyes lowered. The mala and the bands of rudraksha on the arms are meshes, laid on this skin.
+const SHANKARA_HEAD = { S: 0.0092, y: 1.352, z: 0.018 };
+const shankaraP = (x, y, z) => [x * SHANKARA_HEAD.S, SHANKARA_HEAD.y + y * SHANKARA_HEAD.S * 1.05, SHANKARA_HEAD.z + z * SHANKARA_HEAD.S];
+function shankaraField() {
+  const robe = lathe([[0.19, 0.065], [0.192, 0.2], [0.182, 0.45], [0.168, 0.7], [0.152, 0.86], [0.145, 0.92], [0.0, 0.95]], { sz: 0.7, folds: 16, amp: 0.05, from: 0.065, to: 0.8 });
+  const torso = blend([
+    [E([0, 0.92, 0], [0.135, 0.065, 0.09]), 0],
+    [E([0, 1.06, 0.005], [0.15, 0.12, 0.095]), 0.06],
+    [mirrorX(E([0.15, 1.17, 0], [0.056, 0.05, 0.056])), 0.05],
+    [mirrorX(cone([0.03, 1.215, 0], [0.14, 1.19, 0], 0.045, 0.045)), 0.04],
+  ]);
+  // The upper cloth: a shell on the torso below a line from under the right arm up over the left
+  // shoulder, in diagonal folds; and its end hanging at his left side.
+  const edge = (x, y) => y - (1.06 + (x + 0.15) * 0.8);
+  const cloth = (x, y, z) => { const t = torso(x, y, z); return Math.max(Math.abs(t - 0.009) - 0.009 + 0.001 * Math.sin((y - 0.8 * x) * 70), edge(x, y), 0.86 - y); };
+  const hang = (x, y, z) => roundBox([0.232, 0.76, 0.025], [0.016, 0.2, 0.05], 0.012)(x, y, z) + 0.004 * Math.sin(z * 90 + y * 8);
+  const b = blend([
+    [robe, 0],
+    [E([0.07, 0.43, 0.09], [0.075, 0.1, 0.06]), 0.06],
+    [E([-0.065, 0.02, 0.08], [0.03, 0.02, 0.075]), 0.015],
+    [E([0.07, 0.02, 0.16], [0.03, 0.02, 0.075]), 0.015],
+    [torso, 0.05],
+    [cloth, 0.006],
+    [hang, 0.02],
+    [cone([0, 1.18, 0], [0, 1.28, 0.012], 0.045, 0.042), 0.02],
+    // The right arm, bare, down to the elbow and forward to the hand before the hip.
+    [cone([-0.16, 1.17, 0], [-0.19, 0.95, -0.015], 0.04, 0.034), 0.025],
+    [cone([-0.19, 0.95, -0.015], [-0.105, 0.86, 0.15], 0.033, 0.026), 0.012],
+    [E([-0.095, 0.85, 0.165], [0.024, 0.034, 0.029]), 0.008],
+    // The left arm down at his side, the hand holding the pot's handle.
+    [cone([0.16, 1.17, 0], [0.195, 0.95, -0.01], 0.04, 0.034), 0.025],
+    [cone([0.195, 0.95, -0.01], [0.21, 0.76, 0.05], 0.033, 0.026), 0.012],
+    [E([0.21, 0.73, 0.06], [0.024, 0.034, 0.028]), 0.008],
+  ]);
+  const P = shankaraP, S = SHANKARA_HEAD.S;
+  const head = face(P, S, { full: 1.4, lids: 0.75, tall: 0.9 });
+  const knot = E([0, 1.445, -0.075], [0.016, 0.014, 0.016]);
+  const all = (x, y, z) => smin(b(x, y, z), y > 1.2 ? smin(head(x, y, z), knot(x, y, z), 0.008) : Infinity, 0.01);
+  return { f: flatBase(all), lo: [-0.28, -0.01, -0.14], hi: [0.28, 1.52, 0.27] };
+}
+let shankaraF = null;
+export const shankaraSurface = () => (shankaraF ||= shankaraField().f);
+// The figure on 1 cm cells (16 cm on the statue), the head on 4.5 mm and the hands on 5 mm (on
+// phones 1.9, 0.9 and 0.9 cm): it stands high on its hill, seen from afar.
+export const shankaraBody = (m) => body(detail.low ? 'shankara-coarse' : 'shankara', shankaraField, detail.low ? 0.019 : 0.01, m, undefined, {
+  split: [
+    { region: E([0, 1.37, 0.015], [0.11, 0.13, 0.11]), h: detail.low ? 0.009 : 0.0045, lo: [-0.12, 1.23, -0.1], hi: [0.12, 1.52, 0.13] },
+    { region: E([-0.098, 0.85, 0.162], [0.036, 0.046, 0.042]), h: detail.low ? 0.009 : 0.005, lo: [-0.14, 0.8, 0.115], hi: [-0.055, 0.9, 0.21] },
+    { region: E([0.21, 0.73, 0.06], [0.036, 0.046, 0.042]), h: detail.low ? 0.009 : 0.005, lo: [0.17, 0.68, 0.015], hi: [0.25, 0.78, 0.105] },
   ],
 });

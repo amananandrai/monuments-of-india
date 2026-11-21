@@ -282,7 +282,7 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | `figureFrieze(len, h, m, { kinds })` | sculpture | A band of figures, elephants or horses in relief |
 | `urn(h, m)`, `pinnacle(h, m)`, `gothicPinnacle(h, m)` | sculpture | Roofline ornaments |
 
-The great statues (Patel, Bahubali, Thiruvalluvar, the Nageshwar Shiva) are sculpted as one
+The great statues (Patel, Bahubali, Thiruvalluvar, the Nageshwar Shiva, and Netaji, Shivaji and the boy Shankaracharya of the Statue of Oneness) are sculpted as one
 continuous skin in `js/details/figures.js` and `js/sdf.js`. The tools for working on that skin:
 
 | Tool | File | What it does |
@@ -290,6 +290,7 @@ continuous skin in `js/details/figures.js` and `js/sdf.js`. The tools for workin
 | `sculpt(key, build, { h, split, wear })` | sdf | Meshes a field once and keeps it. `split: { region, h, lo, hi }` (or a list of them) meshes the part inside `region` (an ellipsoid round a head, or round the feet) on its own finer grid, the two parts crossing over without a seam; `wear` rubs the ridges pale |
 | `snap(f, p, offset)`, `onSkin(f, pts, offset)` | sdf | Moves a point, or every point of a curve, onto the skin or `offset` outside it: creepers, threads, hems and placket in relief |
 | `skinMatrix(f, p, dir, offset, scale)` | sdf | A matrix that lays a part flat on the skin, its length along `dir`: leaves and curls, instanced |
+| `slab(a, b, w, t, n)` | sdf | A flat rounded slab from a to b, its faces turned towards n: a hand held flat in salute |
 | `bakeCavities(geo, f, reach, deep, { wear })` | sdf | Darkens the crevices into vertex colours, and with `wear` lightens the ridges |
 | `surface(m, 'plates')` | surface | Bronze cast in plates: staggered joints worked out in space, so they run true over a curved body |
 | `surface(m, 'blocks')` | surface | A statue built of granite blocks (Thiruvalluvar): the plates' joints at a smaller size and darker, each block its own shade |

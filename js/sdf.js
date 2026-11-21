@@ -86,6 +86,15 @@ export function roundBox(c, b, r = 0) {
     return len(Math.max(qx, 0), Math.max(qy, 0), Math.max(qz, 0)) + Math.min(Math.max(qx, qy, qz), 0) - r;
   };
 }
+// A flat rounded slab from a to b (its length), w to each side of that line and t to each side
+// through it, its faces turned towards n: a hand held flat, a blade, a strap.
+export function slab(a, b, w, t, n, r = Math.min(w, t)) {
+  const ax = [b[0] - a[0], b[1] - a[1], b[2] - a[2]], L = len(...ax), u = ax.map((v) => v / L);
+  const d = n[0] * u[0] + n[1] * u[1] + n[2] * u[2], nn0 = n.map((v, i) => v - d * u[i]), nl = len(...nn0), nn = nn0.map((v) => v / nl);
+  const v = [u[1] * nn[2] - u[2] * nn[1], u[2] * nn[0] - u[0] * nn[2], u[0] * nn[1] - u[1] * nn[0]], c = a.map((x, i) => x + ax[i] / 2);
+  const box = roundBox([0, 0, 0], [w, L / 2, t], r);
+  return (x, y, z) => { const px = x - c[0], py = y - c[1], pz = z - c[2]; return box(px * v[0] + py * v[1] + pz * v[2], px * u[0] + py * u[1] + pz * u[2], px * nn[0] + py * nn[1] + pz * nn[2]); };
+}
 // A ring of radius R and thickness r round the y axis through c (turn it for other axes).
 export const torus = (c, R, r) => (x, y, z) => len(Math.hypot(x - c[0], z - c[2]) - R, y - c[1], 0) - r;
 

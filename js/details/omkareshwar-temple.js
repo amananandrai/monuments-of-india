@@ -1,31 +1,60 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, rng, strut, V, lathe, smoothLathe, capsule, ellipsoid, hemi } from '../helpers.js';
+import { mat, mesh, box, cyl, at, rng, strut, V, lathe, capsule, ellipsoid } from '../helpers.js';
+import { shankaraBody, shankaraSurface } from './figures.js';
+import { snap } from '../sdf.js';
+import { detail } from '../detail.js';
 import { trees, boats, scatter } from './realism.js';
 import { petalRing, mergeByMaterial } from './components.js';
 import { islandHeight } from '../monuments/omkareshwar-temple.js';
 
 // The Statue of Oneness (Ekatmata ki Pratima, unveiled 2023) on the crest of Mandhata island:
-// Adi Shankaracharya as a boy of twelve, 108 ft high in metal on a 54 ft pedestal, robed to the
-// ankles, his hair falling to his shoulders, a tall staff in his left hand. Here the pedestal and
-// figure are compressed with the rest of the island (figure 24, pedestal 9), keeping the 2:1
-// proportion of figure to pedestal. Faces south, over the ghats and the river.
-const METAL = mat('#8c8172', 0.55, 0.35), PLINTH = mat('#d9d2c4', 0.85);
+// Adi Shankaracharya as a boy of twelve, 108 ft high in bronze, walking, on a 54 ft pedestal whose
+// upper half is a lotus. Here the pedestal and figure are compressed with the rest of the island
+// (figure 24, pedestal 9), keeping the 2:1 proportion of figure to pedestal. After photographs:
+// the boy (js/details/figures.js) holds the staff across his body in his right hand, a bundle of
+// cloth tied at its top, and the water pot (kamandalu) in his left; a long rudraksha mala hangs to
+// his waist and bands of rudraksha ring his upper arms and wrists. Faces south, over the ghats and
+// the river.
+const BRONZE = mat('#b06a3e', 0.42, 0.55), PLINTH = mat('#d9d2c4', 0.85), LOTUS = mat('#e4dccd', 0.8);
 function statueOfOneness() {
-  const g = new THREE.Group(), P = 11, Mt = METAL;
-  // A terrace levelled into the hilltop, the lotus base and the drum of the pedestal.
-  g.add(cyl(12, 13, 4.5, PLINTH, 0, -2.5, 0, 32), cyl(8, 8.6, 1.4, PLINTH, 0, 2, 0, 32));
-  g.add(cyl(5.2, 5.6, 6.2, PLINTH, 0, 3.4, 0, 32), at(petalRing(5.2, 16, 2.4, 1.6, 0.9, Mt), 0, 9.4, 0), cyl(4.6, 4.6, 1.2, Mt, 0, 9.6, 0, 32));
-  // The robe from the ankles to the shoulders, with feet showing at its hem.
-  g.add(at(smoothLathe([[1.5, 0], [1.9, 0.4], [1.85, 4], [1.7, 9], [1.85, 13], [2.1, 16.5], [2.2, 18], [1.6, 19.6], [0.7, 20.2], [0, 20.3]], Mt), 0, P, 0));
-  for (const s of [-1, 1]) g.add(ellipsoid(0.45, 0.3, 0.8, Mt, s * 0.6, P + 0.2, 1.4));
-  // Arms: the right bent with the hand raised before the chest, the left hanging to grip the staff.
-  g.add(capsule(V(-2.0, P + 17.8, 0), V(-2.4, P + 13.4, 0.5), 0.55, Mt, 0.48), capsule(V(-2.4, P + 13.4, 0.5), V(-1.1, P + 15.2, 1.9), 0.48, Mt, 0.42));
-  g.add(capsule(V(2.0, P + 17.8, 0), V(2.6, P + 13.2, 0.3), 0.55, Mt, 0.48), capsule(V(2.6, P + 13.2, 0.3), V(2.9, P + 10.4, 0.9), 0.48, Mt, 0.4));
-  // The staff, taller than the boy, held in the left hand.
-  g.add(cyl(0.16, 0.16, 25, Mt, 3.0, P, 1.0, 8));
-  // Neck, head and the hair falling behind to the shoulders.
-  g.add(cyl(0.6, 0.7, 1.0, Mt, 0, P + 20.1, 0, 12), ellipsoid(1.15, 1.45, 1.25, Mt, 0, P + 22.2, 0.1));
-  g.add(at(hemi(1.3, Mt, 16), 0, P + 22.3, -0.1), ellipsoid(1.35, 1.6, 0.8, Mt, 0, P + 21.0, -0.7));
+  const g = new THREE.Group(), P = 11, B = BRONZE;
+  // A terrace levelled into the hilltop, a broad base, the drum of the pedestal, and the open
+  // lotus on it: two rings of petals round its heart, on which he stands.
+  g.add(cyl(12, 13, 4.5, PLINTH, 0, -2.5, 0, 32), cyl(8, 8.6, 1.4, PLINTH, 0, 2, 0, 32), cyl(5.6, 6.0, 3.4, PLINTH, 0, 3.4, 0, 32));
+  g.add(at(petalRing(5.9, 20, 3.4, 2.3, 0.85, LOTUS, 0.3), 0, 6.6, 0), at(petalRing(4.7, 16, 3.3, 2.1, 0.45, LOTUS, 0.3), 0, 7.4, 0), cyl(4.2, 4.6, 3.6, LOTUS, 0, 7.4, 0, 32));
+  // The boy, in his own units (1.5 to the top of his head), and what he holds and wears.
+  const fig = new THREE.Group(), F = shankaraSurface();
+  fig.add(shankaraBody(B));
+  // The staff, crossing in front of him from above his right shoulder to below his left knee,
+  // through his right fist; at its top a bundle of cloth tied on.
+  const top = V(-0.36, 1.68, 0.12), foot = V(0.1, 0.24, 0.2);
+  fig.add(capsule(foot, top, 0.0085, B), ellipsoid(0.02, 0.028, 0.02, B, -0.345, 1.64, 0.12), ellipsoid(0.012, 0.03, 0.01, B, -0.33, 1.6, 0.13));
+  // The water pot hanging from his left hand: a round belly, a narrow neck, the spout, and the
+  // handle arching up to his grip.
+  const pot = at(new THREE.Group(), 0.22, 0.585, 0.075);
+  pot.add(lathe([[0, 0], [0.035, 0.004], [0.055, 0.03], [0.058, 0.055], [0.045, 0.082], [0.02, 0.094], [0.024, 0.104], [0, 0.104]], B, 20));
+  pot.add(capsule(V(0, 0.06, 0.05), V(0, 0.1, 0.1), 0.007, B, 0.004));
+  const handle = mesh(new THREE.TorusGeometry(0.03, 0.004, 6, 16, Math.PI), B, 0, 0.104, 0);
+  handle.rotation.y = Math.PI / 2;
+  pot.add(handle);
+  fig.add(pot);
+  // The mala, its beads strung close from the sides of his neck to his waist, laid on the skin.
+  const beads = [];
+  for (let i = 0; i <= 72; i++) { const t = (i / 72) * 2 - 1; beads.push(snap(F, [0.085 * t, 1.21 - 0.33 * (1 - t * t), 0.16], 0.011)); }
+  const bead = new THREE.IcosahedronGeometry(0.0095, detail.low ? 0 : 1);
+  beads.forEach((q) => fig.add(mesh(bead, B, ...q)));
+  // Three bands of rudraksha round each upper arm and one at each wrist.
+  const band = (a, b, t, R) => {
+    const A = V(...a), d = V(...b).sub(A), c = A.clone().addScaledVector(d, t), o = mesh(new THREE.TorusGeometry(R, 0.0055, 6, 20), B, c.x, c.y, c.z);
+    o.quaternion.setFromUnitVectors(V(0, 0, 1), d.normalize());
+    fig.add(o);
+  };
+  for (const [a, b, R] of [[[-0.16, 1.17, 0], [-0.19, 0.95, -0.015], 0.039], [[0.16, 1.17, 0], [0.195, 0.95, -0.01], 0.039]]) for (const t of [0.45, 0.55, 0.65]) band(a, b, t, R);
+  band([-0.19, 0.95, -0.015], [-0.105, 0.86, 0.15], 0.82, 0.03);
+  band([0.195, 0.95, -0.01], [0.21, 0.76, 0.05], 0.82, 0.03);
+  fig.scale.setScalar(16);
+  fig.position.y = P;
+  g.add(fig);
   return mergeByMaterial(g);
 }
 
