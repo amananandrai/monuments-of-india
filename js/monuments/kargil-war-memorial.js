@@ -22,7 +22,6 @@ export function buildKargilMemorial() {
   f.add(ellipseWall(34, -26, Math.PI * 0.15 - 0.057, Math.PI * 0.85 + 0.057, 1.4, 0.6, 6.6, PINK));
   f.add(box(4, 3, 4, PINK, 0, 0.6, -6), cyl(0.6, 0.8, 2, mat('#ff8c2e', 0.4, 0, { emissive: '#ff6a00', emissiveIntensity: 2.4 }), 0, 3.6, -6, 10));
   f.add(at(bigFlag(40), -30, 0.6, 20));
-  for (let k = 0; k < 6; k++) f.add(box(2, 1.6, 1, mat('#4d5a3a', 0.8), -20 + k * 8, 0.6, 26));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.25, 0.3, 1.25] };
 }

@@ -505,28 +505,73 @@ export function launches(spots, { y = 0, hulls = ['#f4f1ea', '#f4f1ea', '#2f5d9a
   return g;
 }
 
-// Ships at anchor out in a harbour, at [x, z, ry], afloat at y: a cargo ship about 90 m long with a
-// dark hull and red boot-topping, its deck crane posts forward, and its white superstructure and
-// funnel aft. On desktops (js/detail.js) also the bridge windows, a mast on the superstructure and
-// derricks on the crane posts.
+// Ships at anchor out in a harbour, at [x, z, ry], afloat at y: a general cargo ship about 90 m
+// long, bow towards +z before ry. A dark hull with red boot-topping and a white sheer line, a raised
+// forecastle, four hatch covers on the well deck between two king posts, and the white
+// superstructure aft in four tiers under the bridge, its funnel banded in the line's colour with a
+// black top. On desktops (js/detail.js) also the window rows of each tier, the bridge wings, the
+// lifeboats in their davits, the railings, the hawse pipes and anchors, the hatch covers' ribs, a
+// foremast and a radar mast, and the derricks on the king posts.
 let shipGeos = null;
 export function ships(spots, { y = 0, hulls = ['#2b3a4a', '#3a2f2a'], funnels = ['#c2512a', '#e3b23c'] } = {}) {
   if (!shipGeos) {
-    const clean = (g) => { const n = g.index ? g.toNonIndexed() : g; for (const k of Object.keys(n.attributes)) if (k !== 'position' && k !== 'normal') n.deleteAttribute(k); return n; };
     const plan = (w, l0, l1, tip) => new THREE.Shape([[-w, l0], [w, l0], [w, l1], [w * 0.7, l1 + (tip - l1) * 0.6], [0, tip], [-w * 0.7, l1 + (tip - l1) * 0.6], [-w, l1]].map(([a, b]) => new THREE.Vector2(a, b)));
     const prism = (sh, h, y0) => new THREE.ExtrudeGeometry(sh, { depth: h, bevelEnabled: false }).rotateX(Math.PI / 2).translate(0, y0 + h, 0);
+    const B = (w, h, d, x, yy, z) => new THREE.BoxGeometry(w, h, d).translate(x, yy, z);
+    const C = (r0, r1, h, x, yy, z, n = 10) => new THREE.CylinderGeometry(r0, r1, h, n).translate(x, yy, z);
+    const DECK = 8.5, tiers = [[13, 2.6, 13, -35], [12, 2.6, 11, -35.5], [10.5, 2.6, 9, -36], [9, 2.6, 7, -36.5]];
+    const upper = [], windows = [];
+    tiers.forEach(([w, h, d, z], i) => {
+      upper.push(B(w, h, d, 0, DECK + h / 2 + i * h, z));
+      windows.push(B(w + 0.06, 0.7, d - 1.4, 0, DECK + i * h + 1.45, z), B(w - 1.4, 0.7, d + 0.06, 0, DECK + i * h + 1.45, z));
+    });
+    const top = DECK + tiers.length * 2.6;
+    // The bridge: wings out to the ship's sides at the top tier, its front glazed all across.
+    upper.push(B(14, 0.35, 2.4, 0, top - 0.2, -33.4), B(0.4, 1.1, 2.4, -6.8, top + 0.5, -33.4), B(0.4, 1.1, 2.4, 6.8, top + 0.5, -33.4));
+    windows.push(B(9.06, 0.9, 0.06, 0, top - 1.2, -33));
+    // The king posts with their crosstrees, the hatch coamings, the forecastle.
+    upper.push(...[19, -7].flatMap((z) => [B(1.4, 10, 1.4, 0, DECK + 5, z), B(7, 0.6, 0.8, 0, DECK + 9, z)]));
+    const hatches = [[-23, 7], [-14, 7], [-1, 7], [10, 8], [26.5, 8]].map(([z, l]) => B(9, 1.3, l, 0, DECK + 0.65, z));
     shipGeos = {
-      hull: clean(prism(plan(7, -45, 30, 46), 7, 1.5)),
-      boot: clean(prism(plan(7.05, -45.05, 30, 46.1), 2.6, -1)),
-      upper: mergeGeometries([new THREE.BoxGeometry(12, 4, 12).translate(0, 10.5, -34), new THREE.BoxGeometry(10, 3, 9).translate(0, 14, -34), new THREE.BoxGeometry(13, 0.4, 4).translate(0, 16.2, -30.5), new THREE.BoxGeometry(1.5, 9, 1.5).translate(0, 12.5, 20), new THREE.BoxGeometry(1.5, 9, 1.5).translate(0, 12.5, 0)].map(clean)),
-      funnel: clean(new THREE.CylinderGeometry(1.6, 1.9, 6, 12).translate(0, 18.5, -39)),
-      fine: mergeGeometries([new THREE.CylinderGeometry(0.2, 0.25, 9, 6).translate(0, 20.5, -32), ...[20, 0].flatMap((z) => [new THREE.CylinderGeometry(0.18, 0.18, 12, 6).rotateX(0.9).translate(0, 13, z + 4.5), new THREE.CylinderGeometry(0.18, 0.18, 12, 6).rotateX(-0.9).translate(0, 13, z - 4.5)])].map(clean)),
-      windows: clean(new THREE.BoxGeometry(10.08, 0.7, 9.08).translate(0, 15, -34)),
+      hull: plainGeo(prism(plan(7, -45, 30, 46), 7, 1.5)),
+      fo: plainGeo(prism(plan(7, 33, 33.01, 46), 2.2, DECK)),
+      boot: plainGeo(prism(plan(7.05, -45.05, 30, 46.1), 2.6, -1)),
+      sheer: plainGeo(prism(plan(7.04, -45.04, 30, 46.08), 0.28, 7.95)),
+      upper: mergeGeometries(upper.map(plainGeo)),
+      hatches: mergeGeometries(hatches.map(plainGeo)),
+      funnel: plainGeo(C(1.9, 2.2, 4.8, 0, top + 2.4, -40, 14)),
+      funnelTop: plainGeo(C(1.96, 1.92, 1.2, 0, top + 5.3, -40, 14)),
+      windows: mergeGeometries(windows.map(plainGeo)),
     };
+    // Desktop parts. The derricks: two booms on each king post, raised fore and aft; the foremast
+    // on the forecastle and the radar mast over the bridge; the anchors in their hawse pipes.
+    const fine = [];
+    for (const z of [19, -7]) for (const s of [-1, 1]) fine.push(new THREE.CylinderGeometry(0.16, 0.2, 13, 6).rotateX(s * 0.95).translate(0, DECK + 6.2, z + s * 5.3));
+    fine.push(C(0.22, 0.32, 12, 0, DECK + 2.2 + 6, 39, 6), B(3, 0.25, 0.25, 0, DECK + 10, 39), C(0.18, 0.26, 7, 0, top + 3.5, -35, 6), B(3.2, 0.2, 0.5, 0, top + 4.6, -35));
+    // Railings: a top rail and stanchions along the well deck and round the forecastle.
+    for (const s of [-1, 1]) {
+      fine.push(B(0.08, 0.08, 63, s * 6.9, DECK + 1.1, -0.5));
+      for (let z = -31.5; z <= 30.5; z += 2.5) fine.push(B(0.06, 1.1, 0.06, s * 6.9, DECK + 0.55, z));
+    }
+    // The hatch covers' ribs, across each cover.
+    hatches.forEach((h) => { h.computeBoundingBox(); const bb = h.boundingBox; for (let z = bb.min.z + 0.8; z < bb.max.z - 0.4; z += 1.6) fine.push(B(9.1, 0.18, 0.22, 0, DECK + 1.35, z)); });
+    const dark = [];
+    for (const s of [-1, 1]) dark.push(new THREE.CylinderGeometry(0.55, 0.55, 0.3, 10).rotateZ(Math.PI / 2).rotateY(s * 0.42).translate(s * 4.15, 6.8, 39.3), B(0.25, 1.5, 0.9, s * 4.3, 5.6, 39.1));
+    // Lifeboats in their davits either side of the second tier.
+    const boats = [], davits = [];
+    for (const s of [-1, 1]) {
+      boats.push(new THREE.SphereGeometry(1, 12, 6).scale(1.1, 0.75, 3.6).translate(s * 7.3, DECK + 4.6, -36));
+      boats.push(B(2.1, 0.5, 6.6, s * 7.3, DECK + 5.1, -36));
+      for (const z of [-38.4, -33.6]) davits.push(B(0.25, 3.4, 0.25, s * 6.4, DECK + 4.4, z), B(1.4, 0.25, 0.25, s * 6.9, DECK + 6.1, z));
+    }
+    shipGeos.fine = mergeGeometries([...fine, ...davits].map(plainGeo));
+    shipGeos.dark = mergeGeometries(dark.map(plainGeo));
+    shipGeos.boats = mergeGeometries(boats.map(plainGeo));
   }
   const p = spots.map(([x, z, ry = 0]) => [x, y, z, 1, ry]), G = shipGeos, g = new THREE.Group();
-  g.add(copies(G.hull, TINTED, p, hulls), copies(G.boot, plain('#8a2a22', 0.7), p), copies(G.upper, plain('#ece9e2', 0.7), p), copies(G.funnel, TINTED, p, funnels));
-  if (!detail.low) g.add(copies(G.fine, plain('#5a5f63', 0.5, 0.4), p), copies(G.windows, plain('#1d2a33', 0.3, 0.2), p));
+  g.add(copies(G.hull, TINTED, p, hulls), copies(G.fo, TINTED, p, hulls), copies(G.boot, plain('#8a2a22', 0.7), p), copies(G.sheer, plain('#ece9e2', 0.7), p));
+  g.add(copies(G.upper, plain('#ece9e2', 0.7), p), copies(G.hatches, plain('#4f5a3c', 0.7), p), copies(G.funnel, TINTED, p, funnels), copies(G.funnelTop, plain('#1c1c1c', 0.7), p));
+  if (!detail.low) g.add(copies(G.fine, plain('#8a8f93', 0.5, 0.4), p), copies(G.windows, plain('#1d2a33', 0.3, 0.2), p), copies(G.dark, plain('#202224', 0.6, 0.5), p), copies(G.boats, plain('#e8642c', 0.7), p));
   return g;
 }
 
@@ -556,18 +601,55 @@ export function prayerFlags(a, b, { sag = 0.6, size = 0.3 } = {}) {
   return g;
 }
 
-// Kashmiri houseboats moored at [x, z, ry]: a long cedar hull, a carved cabin with windows, and a
-// pitched roof.
+// Kashmiri houseboats moored at [x, z, ry], bow towards +z before ry: a long cedar hull, its bow
+// raked up out of the water, carrying a cabin of carved walnut-dark timber under a gabled roof, and
+// at the bow an open verandah under the same roof, where the guests sit, with a carved railing and
+// a fretted valance between its posts. The cabin's sides are lit by a row of windows; a carved band
+// runs under the eaves, and the gable over the verandah is filled with fretwork. On desktops
+// (js/detail.js) also the window frames and mullions, the balusters of the railing, the rail round
+// the roof's ridge walk and a name board over the verandah.
 let hbGeos = null;
 export function houseboats(spots, { y = 0 } = {}) {
-  if (!hbGeos) hbGeos = {
-    hull: new THREE.BoxGeometry(5, 1.2, 26).translate(0, 0.2, 0),
-    cabin: new THREE.BoxGeometry(4.6, 2.8, 20).translate(0, 2.2, -1),
-    roof: new THREE.CylinderGeometry(0.01, 3.4, 1.4, 4, 1).rotateY(Math.PI / 4).scale(1, 1, 4.4).translate(0, 4.3, -1),
-    windows: new THREE.BoxGeometry(4.65, 0.9, 17).translate(0, 2.4, -1),
-  };
-  const p = spots.map(([x, z, ry = 0]) => [x, y, z, 1, ry]);
-  return new THREE.Group().add(copies(hbGeos.hull, TIMBER, p), copies(hbGeos.cabin, plain('#8a5a36', 0.75), p), copies(hbGeos.roof, plain('#6d6a62', 0.8), p), copies(hbGeos.windows, plain('#2b2d33', 0.3, 0.3), p));
+  if (!hbGeos) {
+    const B = (w, h, d, x, yy, z) => new THREE.BoxGeometry(w, h, d).translate(x, yy, z);
+    // A side profile [along, up] extruded across the boat's width w, along running to +z.
+    const side = (pts, w) => new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(([a, b]) => new THREE.Vector2(a, b))), { depth: w, bevelEnabled: false }).translate(0, 0, -w / 2).rotateY(-Math.PI / 2);
+    const ROOF = 3.6, hull = side([[-12.6, -0.5], [11.6, -0.5], [13.4, 0.5], [14.2, 1.3], [13.8, 1.3], [13, 0.8], [-13.2, 0.8], [-13.6, 0.3]], 5);
+    // The gable: a triangle in section along the whole cabin and verandah, overhanging at the eaves.
+    const gable = new THREE.ExtrudeGeometry(new THREE.Shape([[-3.1, 0], [3.1, 0], [0, 1.5]].map(([a, b]) => new THREE.Vector2(a, b))), { depth: 24.4, bevelEnabled: false }).translate(0, ROOF, -12.2);
+    hbGeos = {
+      hull: plainGeo(hull),
+      cabin: mergeGeometries([B(4.6, 2.8, 18.6, 0, 2.2, -2.6), B(4.9, 0.25, 24, 0, ROOF - 0.12, 0)].map(plainGeo)),
+      roof: plainGeo(gable),
+      band: mergeGeometries([B(4.7, 0.42, 18.6, 0, ROOF - 0.46, -2.6), B(4.66, 0.2, 18.6, 0, 0.95, -2.6)].map(plainGeo)),
+      windows: plainGeo(B(4.66, 1.0, 16, 0, 2.15, -2.6)),
+      // The verandah's posts, its railing and the fretted valance under the eave at the front.
+      porch: mergeGeometries([
+        ...[-2.15, 2.15].flatMap((x) => [9.6, 12.3].map((z) => B(0.22, 2.75, 0.22, x, 2.18, z))),
+        ...[-2.15, 2.15].map((x) => B(0.12, 0.12, 5.6, x, 1.65, 9.6)), B(1.4, 0.12, 0.12, -1.5, 1.65, 12.3), B(1.4, 0.12, 0.12, 1.5, 1.65, 12.3),
+        B(4.5, 0.42, 0.12, 0, ROOF - 0.42, 12.3), ...[-2.15, 2.15].map((x) => B(0.12, 0.42, 5.4, x, ROOF - 0.42, 9.6)),
+      ].map(plainGeo)),
+      fret: plainGeo(new THREE.ShapeGeometry(new THREE.Shape([[-2.9, 0.06], [2.9, 0.06], [0, 1.42]].map(([a, b]) => new THREE.Vector2(a, b)))).translate(0, ROOF, 12.22)),
+    };
+    // Desktop parts: window frames and mullions on both sides, the railing's balusters, the ridge
+    // rail, and the name board over the verandah.
+    const frames = [], bal = [];
+    for (const s of [-1, 1]) {
+      for (let k = 0; k <= 8; k++) frames.push(B(0.06, 1.2, 0.18, s * 2.33, 2.15, -10.6 + k * 2));
+      frames.push(B(0.08, 0.1, 16.2, s * 2.34, 2.7, -2.6), B(0.12, 0.1, 16.2, s * 2.34, 1.6, -2.6));
+      for (let z = 7.4; z <= 12.2; z += 0.4) bal.push(B(0.07, 0.7, 0.07, s * 2.15, 1.25, z));
+    }
+    for (const x of [-2.15, -1.75, -1.35, -0.95, 0.95, 1.35, 1.75, 2.15]) bal.push(B(0.07, 0.7, 0.07, x, 1.25, 12.3));
+    frames.push(B(1.8, 0.45, 0.06, 0, ROOF + 0.55, 12.25));
+    hbGeos.frames = mergeGeometries(frames.map(plainGeo));
+    hbGeos.bal = mergeGeometries(bal.map(plainGeo));
+  }
+  const p = spots.map(([x, z, ry = 0]) => [x, y, z, 1, ry]), G = hbGeos, g = new THREE.Group();
+  const WALNUT = plain('#6a4a2e', 0.75), CEDAR = plain('#a8784a', 0.8), FRET = plain('#c89a62', 0.8, 0, { side: THREE.DoubleSide });
+  g.add(copies(G.hull, TIMBER, p), copies(G.cabin, WALNUT, p), copies(G.roof, plain('#6d6a62', 0.8), p), copies(G.band, CEDAR, p), copies(G.windows, plain('#2b2d33', 0.3, 0.3), p));
+  g.add(copies(G.porch, CEDAR, p), copies(G.fret, FRET, p));
+  if (!detail.low) g.add(copies(G.frames, CEDAR, p), copies(G.bal, CEDAR, p));
+  return g;
 }
 
 // Cane and cloth umbrellas on bamboo poles at [x, z], as the priests of the ghats sit under.
@@ -814,24 +896,66 @@ export function scatterGround(r, budget) {
 /* ---------- traffic ---------- */
 // Vehicles on a road that runs along x: lanes is a list of [z, dir] (dir +1 drives towards +x),
 // from x0 to x1, about `gap` metres apart in each lane, standing on y. Cars in a few colours, with
-// the share of `taxis` (yellow, as in Kolkata) and `buses` asked for. Each is a body and a darker
-// cabin, instanced; phones get every other one. Marked as dressing, so they never set the framing.
+// the shares of `taxis` (the yellow Ambassadors of Kolkata), `buses` and `trucks` asked for. Each
+// kind is drawn from its side profile: a car's three-box body with its glasshouse; the Ambassador's
+// rounded bonnet and boot under a tall glasshouse; a bus's long box with its band of windows and
+// its windscreen; a truck's cab and its high-sided wooden body, painted, under a tarpaulin. All
+// stand on wheels. On desktops (js/detail.js) also the head and tail lights, the bumpers and the
+// buses' destination boards. Phones get every other vehicle. Marked as dressing, so they never set
+// the framing.
 const CABIN = surface(mat('#2a3138', 0.35, 0.2), 'none'), BODY = surface(mat('#ffffff', 0.5, 0.1), 'none');
-export function traffic(lanes, x0, x1, { y = 0, gap = 26, seed = 1, taxis = 0, buses = 0.1, colours = ['#e8e6e1', '#b9bcc0', '#3c4046', '#8c2f2a', '#2f4f7a', '#d9d2c0'] } = {}) {
-  const R = rng(seed), bodies = [], cabins = [], cols = [], g = new THREE.Group();
+let carGeos = null;
+function vehicleGeos() {
+  if (carGeos) return carGeos;
+  // A side profile [along, up] extruded across the width w; along runs to +x, the front.
+  const side = (pts, w) => plainGeo(new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(([a, b]) => new THREE.Vector2(a, b))), { depth: w, bevelEnabled: false, curveSegments: 3 }).translate(0, 0, -w / 2));
+  const B = (w, h, d, x, y, z) => new THREE.BoxGeometry(w, h, d).translate(x, y, z);
+  const wheels = (xs, r, half, t = 0.24) => mergeGeometries(xs.flatMap((x) => [-1, 1].map((s) => plainGeo(new THREE.CylinderGeometry(r, r, t, 10).rotateX(Math.PI / 2).translate(x, r, s * half)))));
+  const lights = (xf, xr, y, half, h = 0.14) => [mergeGeometries([-1, 1].map((s) => plainGeo(B(0.06, h, 0.32, xf, y, s * half)))), mergeGeometries([-1, 1].map((s) => plainGeo(B(0.06, h, 0.3, xr, y, s * half))))];
+  // A saloon: bonnet, a raked windscreen, the roof, the rear window down to a short boot.
+  const car = side([[-2.1, 0.28], [2.1, 0.28], [2.15, 0.62], [2.0, 0.8], [0.9, 0.86], [-1.5, 0.86], [-2.05, 0.8], [-2.12, 0.6]], 1.74);
+  const carGlass = side([[-1.45, 0.85], [0.85, 0.85], [0.25, 1.34], [-1.05, 1.34]], 1.6);
+  const carRoof = side([[-1.02, 1.33], [0.22, 1.33], [0.17, 1.4], [-0.98, 1.4]], 1.62);
+  // The Ambassador: a rounded bonnet and boot, higher and shorter, an upright glasshouse.
+  const amb = side([[-2.15, 0.32], [2.15, 0.32], [2.2, 0.7], [2.05, 0.92], [1.4, 1.0], [0.8, 1.0], [-1.3, 1.0], [-1.95, 0.92], [-2.18, 0.66]], 1.66);
+  const ambGlass = side([[-1.35, 0.99], [0.75, 0.99], [0.4, 1.5], [-1.1, 1.5]], 1.56);
+  const ambRoof = side([[-1.12, 1.49], [0.42, 1.49], [0.3, 1.58], [-1.0, 1.58]], 1.58);
+  // A bus: a long box on its wheels, the windscreen and the band of side windows dark.
+  const bus = B(10.5, 2.6, 2.5, 0, 1.75, 0);
+  const busGlass = mergeGeometries([B(9.2, 0.95, 2.54, -0.5, 2.15, 0), B(0.06, 1.3, 2.2, 5.24, 2.05, 0)].map(plainGeo));
+  // A truck: the cab forward, the long wooden body behind it, a tarpaulin humped over its load.
+  const cab = side([[1.5, 0.55], [3.3, 0.55], [3.35, 1.5], [3.2, 2.6], [1.5, 2.6]], 2.3);
+  const cabGlass = B(0.06, 0.8, 2.0, 3.25, 2.05, 0);
+  const tray = B(5.4, 1.7, 2.5, -1.4, 1.5, 0);
+  const tarp = plainGeo(new THREE.CylinderGeometry(1.25, 1.25, 5.3, 8, 1, false, 0, Math.PI).rotateZ(Math.PI / 2).rotateX(Math.PI / 2).scale(1, 0.5, 1).translate(-1.4, 2.35, 0));
+  carGeos = {
+    car: { body: car, glass: carGlass, roof: carRoof, wheels: wheels([-1.35, 1.35], 0.31, 0.78), lights: lights(2.15, -2.12, 0.62, 0.62), bumpers: mergeGeometries([B(0.14, 0.14, 1.78, 2.17, 0.4, 0), B(0.14, 0.14, 1.78, -2.14, 0.4, 0)].map(plainGeo)) },
+    taxi: { body: amb, glass: ambGlass, roof: ambRoof, wheels: wheels([-1.4, 1.35], 0.34, 0.72), lights: lights(2.2, -2.18, 0.72, 0.58, 0.2), bumpers: mergeGeometries([B(0.16, 0.16, 1.72, 2.24, 0.42, 0), B(0.16, 0.16, 1.72, -2.22, 0.42, 0)].map(plainGeo)) },
+    bus: { body: bus, glass: busGlass, wheels: wheels([-3.2, 3.6], 0.5, 1.08, 0.3), lights: lights(5.26, -5.26, 0.8, 1.0, 0.22), bumpers: mergeGeometries([B(0.2, 0.3, 2.5, 5.3, 0.55, 0), B(0.08, 0.36, 1.6, 5.27, 2.86, 0)].map(plainGeo)) },
+    truck: { body: plainGeo(cab), tray: plainGeo(tray), tarp, glass: plainGeo(cabGlass), wheels: wheels([-2.8, -1.6, 2.4], 0.5, 1.02, 0.3), lights: lights(3.36, -4.12, 0.85, 0.95, 0.2), bumpers: mergeGeometries([B(0.18, 0.28, 2.4, 3.4, 0.6, 0), B(5.6, 0.35, 2.4, -1.2, 0.55, 0)].map(plainGeo)) },
+  };
+  return carGeos;
+}
+export function traffic(lanes, x0, x1, { y = 0, gap = 26, seed = 1, taxis = 0, buses = 0.1, trucks = 0.06, colours = ['#e8e6e1', '#b9bcc0', '#3c4046', '#8c2f2a', '#2f4f7a', '#d9d2c0'] } = {}) {
+  const R = rng(seed), K = { car: [], taxi: [], bus: [], truck: [] }, cols = { car: [], taxi: [], bus: [], truck: [] }, trays = [], g = new THREE.Group();
   for (const [z, dir] of lanes) {
     for (let x = x0 + R() * gap; x < x1; x += gap * (0.6 + R() * 0.9)) {
-      const r = R(), bus = r < buses, taxi = !bus && r < buses + taxis, ry = dir > 0 ? 0 : Math.PI;
+      const r = R(), kind = r < buses ? 'bus' : r < buses + trucks ? 'truck' : r < buses + trucks + taxis ? 'taxi' : 'car';
+      const c = R();
       if (detail.low && R() < 0.5) continue;
-      const [l, h, w] = bus ? [10.5, 2.9, 2.5] : [4.2, 1.0, 1.75];
-      bodies.push([x, y, z, [l, h, w], ry]);
-      cols.push(bus ? (R() < 0.5 ? '#2b5fa8' : '#c23b2e') : taxi ? '#f2c21a' : colours[Math.floor(R() * colours.length)]);
-      // The cabin: a strip of glazing along a bus, a lower glass house on a car.
-      cabins.push(bus ? [x, y + 1.5, z, [l * 0.94, 0.9, w * 1.02], ry] : [x - dir * 0.2, y + 1.0, z, [l * 0.52, 0.55, w * 0.9], ry]);
+      K[kind].push([x, y, z, 1, dir > 0 ? 0 : Math.PI]);
+      cols[kind].push(kind === 'bus' ? (c < 0.5 ? '#2b5fa8' : '#c23b2e') : kind === 'taxi' ? '#f2c21a' : kind === 'truck' ? ['#e07a1f', '#2f6db3', '#c23b2e', '#e0b21f'][Math.floor(c * 4)] : colours[Math.floor(c * colours.length)]);
+      if (kind === 'truck') trays.push(['#c27a2a', '#3c8a5a', '#d6b14a', '#b3262e'][Math.floor(R() * 4)]);
     }
   }
-  if (!bodies.length) return g;
-  const unit = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0);
-  g.add(copies(unit, BODY, bodies, cols), copies(unit, CABIN, cabins));
+  const G = vehicleGeos(), TYRE = plain('#1c1c1e', 0.8), HEAD = plain('#f4f1e0', 0.3, 0, { emissive: '#fff4d0', emissiveIntensity: 0.2 }), TAIL = plain('#b3262e', 0.4), CHROME = plain('#9a9ea2', 0.35, 0.6);
+  for (const kind of ['car', 'taxi', 'bus', 'truck']) {
+    const p = K[kind], V = G[kind];
+    if (!p.length) continue;
+    g.add(copies(V.body, BODY, p, cols[kind]), copies(V.glass, CABIN, p), copies(V.wheels, TYRE, p));
+    if (V.roof) g.add(copies(V.roof, BODY, p, cols[kind]));
+    if (V.tray) g.add(copies(V.tray, BODY, p, trays), copies(V.tarp, plain('#3d5a6e', 0.9), p));
+    if (!detail.low) g.add(copies(V.lights[0], HEAD, p), copies(V.lights[1], TAIL, p), copies(V.bumpers, kind === 'bus' ? plain('#2b2d2f', 0.6) : CHROME, p));
+  }
   return g;
 }

@@ -138,9 +138,9 @@ From [realism.md](realism.md).
 
 ### [Traffic](realism.md#traffic)
 
-| ![Traffic: cars, taxis and buses](img/traffic.jpg) |   |   |
+| ![Traffic: cars, taxis, buses and trucks](img/traffic.jpg) |   |   |
 | :---: | :---: | :---: |
-| Traffic: cars, taxis and buses |   |   |
+| Traffic: cars, taxis, buses and trucks |   |   |
 
 ### [Animals](realism.md#animals)
 

@@ -139,8 +139,8 @@ It keeps clear of:
 | --- | --- |
 | `boats(spots, { y, size, canopy, colours })` | Country boats; `canopy: true` gives them a curved hood |
 | `launches(spots, …)` | The ferry launches of Mumbai harbour |
-| `ships(spots, …)` | Cargo ships at anchor, with crane posts and a funnel |
-| `houseboats(spots)` | The houseboats of Dal Lake |
+| `ships(spots, …)` | Cargo ships at anchor: forecastle, hatch covers, king posts and derricks, a four-tier superstructure with bridge wings and lifeboats, a banded funnel |
+| `houseboats(spots)` | The houseboats of Dal Lake: a raked cedar hull, a walnut cabin with framed windows under a gabled roof, and a verandah at the bow with a carved railing and a fretted gable |
 
 `y` is the water's height, so a boat floats on its lake and not on the ground.
 
@@ -172,12 +172,14 @@ g.add(cityAround([-72, 72, -88, 108], { rows: 2, gap: 12, storeys: [2, 4], seed:
 
 ## Traffic
 
-| ![Traffic: cars, taxis and buses](img/traffic.jpg) |   |   |
+| ![Traffic: cars, taxis, buses and trucks](img/traffic.jpg) |   |   |
 | :---: | :---: | :---: |
-| Traffic: cars, taxis and buses |   |   |
+| Traffic: cars, taxis, buses and trucks |   |   |
 
-`traffic(lanes, x0, x1, { y, gap, taxis, buses })` puts vehicles on a road running along x. Each
-lane is `[z, direction]`. Only the Howrah Bridge and the Bandra–Worli Sea Link use it; there are
+`traffic(lanes, x0, x1, { y, gap, taxis, buses, trucks })` puts vehicles on a road running along x. Each
+lane is `[z, direction]`. Each kind is drawn from its side profile and stands on wheels: saloon cars,
+the yellow Ambassador taxis of Kolkata, buses with their window bands, and trucks with a painted
+wooden body under a tarpaulin; on desktops they also have head and tail lights and bumpers. Only the Howrah Bridge and the Bandra–Worli Sea Link use it; there are
 no motor vehicles anywhere else, and no people at all, so that the monument stays the subject.
 
 ## Animals
