@@ -1,37 +1,29 @@
 import * as THREE from 'three';
 import { heightField, ridged, fbm, smooth } from '../details/terrain.js';
 import { detail } from '../detail.js';
-import { M, V, mat, mesh, box, at, ellipsoid, capsule, tube, smoothLathe, sheet, fingers, inst, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, at, ellipsoid, tube, smoothLathe, sheet, inst, unitBox } from '../helpers.js';
 import { patelBody, patelSurface } from '../details/figures.js';
 import { onSkin } from '../sdf.js';
 import { surface } from '../surface.js';
 import { addDetails } from '../details/statue-of-unity.js';
 
 // Sardar Patel, walking forward a step in dhoti, kurta, bandi and a shawl over the shoulders, arms
-// at his sides. The body and head are one cast skin (js/details/figures.js); the finer folds of the
-// shawl, the bandi's buttons, the gallery windows, the cuffs and hands are added here, the
-// buttons and windows laid on the skin (onSkin). The bronze is cast in plates (the 'plates' surface). All in the
-// statue's own units (177.4 to the
-// crown), scaled to 182 m at the end.
+// at his sides. The body, head and hands are one cast skin (js/details/figures.js); the bandi's
+// buttons and the windows of the viewing gallery are added here, laid on the skin (onSkin). The
+// bronze, weathered to a dull olive-gold, is cast in plates (the 'plates' surface). All in the
+// statue's own units (175.4 to the crown), scaled to 182 m at the end.
 const SLIT = mat('#2a221c', 0.6, 0.3);
 // The statue's bronze, its cladding cast in plates.
-const PLATED = surface(M.bronze.clone(), 'plates');
+const PLATED = surface(mat('#7b6a48', 0.62, 0.45), 'plates');
 function patel(B) {
   const s = new THREE.Group(), F = patelSurface();
   s.add(patelBody(B));
   // The bandi's buttons down its placket (js/details/figures.js), and the windows of the viewing
-  // gallery, a slit across the chest.
+  // gallery, a row of slits across the chest from one edge of the shawl's opening to the other.
   for (const [x, y, z] of onSkin(F, [140.5, 134, 127.5, 121, 114.5, 108, 101.5, 95].map((y) => [0, y, 20]), 0.3)) s.add(ellipsoid(0.7, 0.7, 0.45, B, x, y, z));
-  for (const x of [-4.6, -2.6, 2.6, 4.6]) { const [, , z] = onSkin(F, [[x, 123.4, 20]], 0)[0]; s.add(box(1.4, 1.9, 1.2, SLIT, x, 122.5, z - 0.5)); }
-  for (const side of [-1, 1]) {
-    // The sleeve's cuff under the shawl's hem, the thumb, and fingers curling towards the thigh.
-    const cuff = ellipsoid(4.9, 1.3, 4.5, B, side * 22.3, 88.6, 3.8);
-    cuff.rotation.z = side * 0.08;
-    s.add(cuff, capsule(V(side * 21.0, 86.2, 6.0), V(side * 19.9, 82.2, 7.1), 1.2, B, 0.9));
-    s.add(fingers(V(side * 22.4, 79.4, 1.6), V(side * 22.4, 79.4, 5.6), V(-side * 0.6, -0.8, 0).normalize(), 2.5, 0.95, B));
-  }
-  // The head is part of the cast skin (js/details/figures.js): the 1949 portrait, clean-shaven.
-  s.scale.setScalar(182 / 177.4);
+  for (const x of [-7.4, -5.5, -3.6, -1.7, 1.7, 3.6, 5.5, 7.4]) { const [, , z] = onSkin(F, [[x, 128.4, 20]], 0)[0]; s.add(box(1.3, 1.9, 1.2, SLIT, x, 127.5, z - 0.5)); }
+  // The head and the fists are part of the cast skin (js/details/figures.js): the 1949 portrait, clean-shaven.
+  s.scale.setScalar(182 / 175.4);
   return s;
 }
 

@@ -300,8 +300,9 @@ export function statueMaterial(m) {
     const c = attachSurface(m.clone());
     c.vertexColors = true;
     delete c.userData.photoKey;
-    // Bronze cast in plates keeps its plates; other metal is plain, and stone is carved.
-    c.userData.surface = m.userData.surface === 'plates' ? 'plates' : m.metalness >= 0.35 || m.userData.surface === 'none' ? 'none' : 'carved';
+    // Bronze cast in plates keeps its plates, and a statue built of blocks its joints; other metal
+    // is plain, and stone is carved.
+    c.userData.surface = ['plates', 'blocks'].includes(m.userData.surface) ? m.userData.surface : m.metalness >= 0.35 || m.userData.surface === 'none' ? 'none' : 'carved';
     // Dark stone in sculpture is basalt or granite rubbed with oil: glossy, so its form shows in
     // the sky it reflects rather than vanishing into black.
     const hsl = c.color.getHSL({});

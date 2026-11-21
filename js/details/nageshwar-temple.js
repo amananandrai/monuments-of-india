@@ -1,21 +1,23 @@
 import * as THREE from 'three';
-import { V, mat, mesh, cyl, at, ellipsoid, capsule, tube, surface, doubleSided } from '../helpers.js';
+import { V, mat, mesh, cyl, at, ellipsoid, capsule, tube, lathe, surface, doubleSided } from '../helpers.js';
 import { shivaBody, shivaSurface } from './figures.js';
 import { detail } from '../detail.js';
 import { snap, normalAt } from '../sdf.js';
 import { mergeByMaterial } from './components.js';
 
 // The great seated Shiva in the Nageshwar temple garden, about 25 m tall, as photographs show it:
-// a figure in painted terracotta-orange concrete, seated cross-legged on a round drum draped in a
-// tiger skin whose head glares from the front. He has four arms: the front right raised in
+// a figure in painted terracotta-orange concrete, seated in the half lotus on a mound of rock draped
+// in a tiger skin whose head glares from the front. He has four arms: the front right raised in
 // blessing with the sacred syllable Om painted in red on the palm, the rear right gripping the
 // trishul (a serpent wound round its shaft), the rear left raising the damru, and the front left
-// resting on his knee with a rudraksha mala. A cobra is coiled round his neck and rises off his
-// right shoulder with its hood spread; three long rudraksha malas hang down his chest; coiled
-// snakes serve as his armlets; a tiger skin falls from his left shoulder down that side of his
-// chest and is wrapped round his hips, ending in a jagged hem. His hair is piled in a tall
-// jatamukuta with a crescent moon on its right, falling in locks to the shoulders; across his brow
-// runs a pale band of ash with the third eye. The parts are placed in the head and body frames of
+// resting on his knee with a rudraksha mala; thick anklets at both ankles. A cobra is coiled round
+// his neck, its hood raised upright off his right shoulder beside his ear and its tail hanging down
+// his chest; two long rudraksha malas hang in a V to his navel; coiled snakes serve as his armlets;
+// a tiger skin falls from his left shoulder over that half of his chest, and another is wrapped
+// round his hips, falling over his lap in rounded lobes. His hair is combed up into a tall knot
+// with a small crescent moon at its right, falling in locks behind his ears to the shoulders;
+// across his brow is painted a broad pale band of ash with the third eye upright at its middle, and
+// his eyes are painted under lowered lids. The parts are placed in the head and body frames of
 // an earlier study (H, B below) on the body sculpted in figures.js, and laid on its skin with
 // snap() so they neither float nor sink.
 
@@ -65,7 +67,25 @@ function textures() {
     x.beginPath(); x.arc(186, 44, 10, 0, Math.PI * 2); x.fill();
   });
   om.wrapS = om.wrapT = THREE.ClampToEdgeWrapping;
-  tex = { grain, fur, scales, om };
+  // The band of ash: pale blue-white, its three lines a shade darker.
+  const ash = canvas(256, 64, (x) => {
+    x.fillStyle = '#dbe7ee'; x.fillRect(0, 0, 256, 64);
+    x.fillStyle = '#b8ccd8';
+    for (const y of [15, 31, 47]) x.fillRect(0, y - 2, 256, 4);
+  });
+  ash.wrapS = ash.wrapT = THREE.ClampToEdgeWrapping;
+  // Hair combed in strands: long wavy lines running one way, light ridges and dark grooves.
+  const combed = canvas(256, 256, (x) => {
+    x.fillStyle = '#808080'; x.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 90; i++) {
+      const v = 40 + Math.floor(rnd() * 170), x0 = rnd() * 256, ph = rnd() * 6;
+      x.strokeStyle = `rgb(${v},${v},${v})`; x.lineWidth = 1.5 + rnd() * 2.5; x.beginPath();
+      for (let y = 0; y <= 256; y += 8) x.lineTo(x0 + 3 * Math.sin(y / 30 + ph), y);
+      x.stroke();
+    }
+  });
+  combed.repeat.set(10, 1);
+  tex = { grain, fur, scales, om, ash, combed };
   return tex;
 }
 let MAT = null;
@@ -76,19 +96,23 @@ function mats() {
     // Concrete painted a warm terracotta orange, matt, with a fine grain.
     body: plain('#e3a374', 0.72, 0.02, { bumpMap: t.grain, bumpScale: 0.015 }),
     hair: plain('#d2915f', 0.78, 0.02, { bumpMap: t.grain, bumpScale: 0.03 }),
+    combed: plain('#d2915f', 0.78, 0.02, { bumpMap: t.combed, bumpScale: 0.09 }),
     fur: plain('#d89463', 0.85, 0, { bumpMap: t.fur, bumpScale: 0.06 }),
     trim: plain('#cf8b5a', 0.7, 0.02),
     rudraksha: plain('#7a3826', 0.7, 0.04, { bumpMap: t.grain, bumpScale: 0.05 }),
     snake: plain('#9a4b30', 0.55, 0.06, { bumpMap: t.scales, bumpScale: 0.04 }),
     ventral: plain('#e9b58a', 0.6, 0.02),
-    ash: plain('#dfe9ee', 0.8, 0),
-    eye: plain('#c2410c', 0.4, 0),
     eyeWhite: new THREE.MeshStandardMaterial({ color: '#f1ebe1', roughness: 0.5, polygonOffset: true, polygonOffsetFactor: -2 }),
-    iris: new THREE.MeshStandardMaterial({ color: '#2a1a12', roughness: 0.4, polygonOffset: true, polygonOffsetFactor: -4 }),
+    iris: new THREE.MeshStandardMaterial({ color: '#6b5242', roughness: 0.4, polygonOffset: true, polygonOffsetFactor: -4 }),
+    pupil: new THREE.MeshStandardMaterial({ color: '#1d140f', roughness: 0.4, polygonOffset: true, polygonOffsetFactor: -6 }),
+    // Paint laid on the skin: the dark lines of the lids and brows, the band of ash, the third eye.
+    paint: new THREE.MeshStandardMaterial({ color: '#4a2a1c', roughness: 0.6, polygonOffset: true, polygonOffsetFactor: -1 }),
+    ashBand: new THREE.MeshStandardMaterial({ map: t.ash, roughness: 0.8, polygonOffset: true, polygonOffsetFactor: -2 }),
+    thirdEye: new THREE.MeshStandardMaterial({ color: '#7a2e1c', roughness: 0.5, polygonOffset: true, polygonOffsetFactor: -4 }),
     snakeEye: plain('#facc15', 0.4, 0, { emissive: '#eab308', emissiveIntensity: 0.6 }),
     tigerEye: plain('#e9d33a', 0.3, 0, { emissive: '#d8b80c', emissiveIntensity: 0.7 }),
     tongue: new THREE.MeshBasicMaterial({ color: '#dc2626' }),
-    moon: plain('#f1d6b8', 0.5, 0),
+    moon: plain('#cfe0ea', 0.5, 0),
     wood: plain('#c27a4c', 0.6, 0.02),
     parchment: plain('#efcfaa', 0.7, 0),
     cord: plain('#a3241c', 0.6, 0),
@@ -118,6 +142,26 @@ function girdle(f, y, R, n, off, tilt = 0) {
   for (let k = 0; k < n; k++) { const a = (k / n) * Math.PI * 2; pts.push(snap(f, [Math.sin(a) * R, y + Math.cos(a) * tilt, Math.cos(a) * R], off)); }
   return pts;
 }
+// A sheet laid on the skin `off` out from it: grid points p(u, v) (u, v from 0 to 1, nu by nv
+// cells), each started from in front of the body and snapped onto it; with uv coordinates.
+function skinSheet(f, p, nu, nv, off) {
+  const pos = [], uv = [], idx = [];
+  for (let j = 0; j <= nv; j++) for (let i = 0; i <= nu; i++) { pos.push(...snap(f, p(i / nu, j / nv, i, j), off)); uv.push(i / nu, 1 - j / nv); }
+  for (let j = 0; j < nv; j++) for (let i = 0; i < nu; i++) { const a = j * (nu + 1) + i, b = a + 1, c = a + nu + 1, d = c + 1; idx.push(a, c, b, b, c, d); }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  geo.setIndex(idx);
+  geo.computeVertexNormals();
+  return geo;
+}
+// An almond, w across and h from its middle to the top of its upper curve, its lower curve
+// shallower: an eye, or the third eye turned upright.
+function almond(w, h) {
+  const sh = new THREE.Shape();
+  sh.moveTo(-w, 0); sh.quadraticCurveTo(0, h * 2, w, 0); sh.quadraticCurveTo(0, -h * 1.3, -w, 0);
+  return new THREE.ShapeGeometry(sh, 12);
+}
 const closedTube = (pts, r, m, seg = 120) => mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(v3), true), seg, r, 8, true), m);
 
 /* ---------- the statue ---------- */
@@ -144,16 +188,16 @@ function coiledSnake(a, b, R, r, turns, T, { head = true } = {}) {
 export function mahayogiShiva() {
   const g = new THREE.Group(), T = mats(), S = T.body, f = shivaSurface();
 
-  // The seat: a round drum of rock, a tiger skin spread over its top and hanging down its front,
-  // where the tiger's head glares out between its spread forelegs.
-  g.add(cyl(8.0, 8.9, 4.4, T.base, 0, 0, 0, 48), cyl(8.15, 8.15, 0.5, T.fur, 0, 3.95, 0, 48));
+  // The seat: a rounded mound of rock spreading to its foot, a tiger skin spread over its top and
+  // hanging down its front, where the tiger's head glares out between its spread forelegs.
+  g.add(lathe([[10.4, 0], [10.2, 0.7], [9.6, 1.9], [8.8, 3.1], [8.25, 3.95], [8.0, 4.4], [0, 4.4]], T.base, 64), cyl(8.15, 8.15, 0.5, T.fur, 0, 3.95, 0, 48));
   const skin = new THREE.Group();
   for (const sd of [-1, 1]) {
-    const flap = ellipsoid(3.6, 1.7, 0.5, T.fur, sd * 3.7, 2.3, 7.65);
+    const flap = ellipsoid(3.6, 1.7, 0.5, T.fur, sd * 3.8, 2.4, 8.7);
     flap.rotation.set(0, sd * 0.45, sd * -0.12);
-    skin.add(flap, ellipsoid(0.9, 1.6, 0.4, T.fur, sd * 6.6, 1.5, 4.95).rotateY(sd * 0.9));
+    skin.add(flap, ellipsoid(0.9, 1.6, 0.4, T.fur, sd * 7.9, 1.5, 5.95).rotateY(sd * 0.9));
   }
-  const head = at(new THREE.Group(), 0, 2.3, 8.55);
+  const head = at(new THREE.Group(), 0, 2.3, 9.45);
   head.add(ellipsoid(1.75, 1.5, 0.9, T.fur, 0, 0, 0), ellipsoid(1.0, 0.75, 0.7, T.fur, 0, -0.55, 0.55), ellipsoid(0.32, 0.22, 0.2, T.trim, 0, -0.32, 1.18));
   for (const sd of [-1, 1]) head.add(ellipsoid(0.45, 0.42, 0.22, T.fur, sd * 1.25, 1.3, -0.1), ellipsoid(0.17, 0.1, 0.06, T.tigerEye, sd * 0.55, 0.35, 0.8), ellipsoid(0.28, 0.16, 0.18, T.trim, sd * 0.55, 0.52, 0.72));
   const ruff = mesh(new THREE.TorusGeometry(1.75, 0.35, 8, 28), T.fur, 0, 0.1, -0.15);
@@ -165,41 +209,43 @@ export function mahayogiShiva() {
   // The body as one carved skin
   g.add(shivaBody(S, { coarse: detail.low }));
 
-  // The tiger skin round the hips, with its jagged hem lying on the thighs, under a rolled edge.
-  g.add(ellipsoid(5.2, 1.85, 3.95, T.fur, 0, 7.6, 0.35), closedTube(girdle(f, 9.0, 4, 48, 0.2), 0.32, T.fur));
-  const hem = [];
-  for (let k = 0; k < 22; k++) {
-    const a = -1.3 + (k / 21) * 2.6, p = [Math.sin(a) * 5.1, 7.4, 0.35 + Math.cos(a) * 3.9];
-    const c = mesh(new THREE.ConeGeometry(0.42, 1.0 + (k % 3) * 0.3, 5), T.fur, p[0], p[1] - 0.4, p[2]);
-    c.rotation.set(Math.PI + Math.cos(a) * 0.35, 0, -Math.sin(a) * 0.35);
-    hem.push(c);
+  // The tiger skin wrapped round the hips under a thick rolled edge at the waist, falling over the
+  // lap in two layers of rounded, uneven lobes, as the carved fur ends.
+  g.add(ellipsoid(5.2, 1.85, 3.95, T.fur, 0, 7.6, 0.35), closedTube(girdle(f, 9.0, 4, 48, 0.2), 0.36, T.fur));
+  const lobeGeo = new THREE.SphereGeometry(1, 12, 6);
+  for (let k = 0; k < 17; k++) {
+    const a = -1.45 + (k / 16) * 2.9, w = 0.86 + 0.14 * Math.sin(k * 2.3);
+    const p = new THREE.Vector3(Math.sin(a) * 5.35, 7.55 - 0.15 * Math.abs(Math.sin(k * 1.7)), 0.35 + Math.cos(a) * 4.1), nrm = new THREE.Vector3(Math.sin(a) / 5.2, 0, Math.cos(a) / 3.95).normalize();
+    const lobe = mesh(lobeGeo, T.fur, ...p.toArray());
+    lobe.scale.set(w, 0.8 + 0.12 * Math.cos(k * 1.3), 0.18);
+    lobe.lookAt(p.clone().add(nrm));
+    lobe.rotateX(-0.45);
+    g.add(lobe);
   }
-  hem.forEach((c) => g.add(c));
-  // The tiger skin from the left shoulder (+x) down that side of the chest to the waist, laid on
-  // the skin, its lower edge jagged.
-  const nu = 10, nv = 14, pos = [], idx = [];
-  for (let j = 0; j <= nv; j++) for (let i = 0; i <= nu; i++) {
-    const u = i / nu, v = j / nv, x = 0.9 + u * 3.9, y = 17.2 - v * (6.4 + (j === nv ? (i % 2) * 0.6 : 0)) + Math.max(0, u - 0.6) * 0.8 * (1 - v);
-    // From just in front of the chest, so no point is drawn up onto the chin.
-    pos.push(...snap(f, [x, y, 4.2], 0.16));
-  }
-  for (let j = 0; j < nv; j++) for (let i = 0; i < nu; i++) { const a = j * (nu + 1) + i, b = a + 1, c = a + nu + 1, d = c + 1; idx.push(a, c, b, b, c, d); }
-  const sg = new THREE.BufferGeometry();
-  sg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-  sg.setAttribute('uv', new THREE.Float32BufferAttribute(Array.from({ length: (nu + 1) * (nv + 1) }, (_, k) => [(k % (nu + 1)) / nu, Math.floor(k / (nu + 1)) / nv]).flat(), 2));
-  sg.setIndex(idx);
-  sg.computeVertexNormals();
-  g.add(mesh(sg, doubleSided(T.fur)));
+  // The tiger skin from the left shoulder (+x) over that half of the chest to the waist, laid on the
+  // skin, its inner edge ragged down the middle of the chest and its lower edge jagged. Each point
+  // starts just in front of the chest, so none is drawn up onto the chin.
+  g.add(mesh(skinSheet(f, (u, v, i, j) => {
+    const x0 = 0.75 + 0.3 * Math.abs(Math.sin(v * 9.0)) + 0.15 * Math.sin(v * 23);
+    return [x0 + u * (5.1 - x0), 17.3 + 0.6 * u - v * (8.0 + 0.6 * u + (j === 18 ? (i % 2) * 0.5 : 0)) + Math.max(0, u - 0.6) * 0.8 * (1 - v), 4.2];
+  }, 12, 18, 0.24), doubleSided(T.fur)));
 
-  // Three long rudraksha malas from the neck, the longest to the navel.
-  for (const [drop, wide, n] of [[3.0, 2.6, 30], [4.4, 2.4, 38], [5.8, 2.2, 46]]) {
-    const pts = [];
-    for (let i = 0; i < n; i++) {
-      const a = (i / n) * Math.PI * 2;
-      pts.push(snap(f, [Math.sin(a) * wide, 17.5 - Math.max(0, Math.cos(a)) * drop, 0.1 + Math.cos(a) * 2.6], 0.3));
+  // Two long rudraksha malas from the neck, hanging in a V to the navel, their beads strung close,
+  // and a tassel of beads at the point of the longer.
+  const strand = (drop, r) => {
+    const path = [];
+    for (let i = 0; i <= 200; i++) {
+      const a = (i / 200 - 0.5) * Math.PI * 1.2, fr = Math.max(0, 1 - Math.abs(a) / (Math.PI * 0.62));
+      path.push(v3(snap(f, [Math.sin(a) * 2.5, 17.4 - drop * Math.pow(fr, 1.25), 0.1 + Math.cos(a) * 2.6], 0.3 + r)));
     }
-    g.add(beads(pts, 0.3, T.rudraksha));
-  }
+    const pts = [];
+    let run = 0;
+    for (let i = 1; i < path.length; i++) { run += path[i].distanceTo(path[i - 1]); if (run >= r * 1.6) { pts.push(path[i].toArray()); run = 0; } }
+    return { pts, tip: path[100] };
+  };
+  const long = strand(6.0, 0.4), short = strand(4.8, 0.36);
+  g.add(beads(long.pts, 0.4, T.rudraksha), beads(short.pts, 0.36, T.rudraksha));
+  g.add(beads([0.78, 1.5].map((d) => snap(f, long.tip.clone().add(v3([0, -d, 0])).toArray(), 0.3 + 0.42)), 0.42, T.rudraksha));
   // Snakes coiled round the front upper arms as armlets, and plain bangles at all four wrists.
   for (const [a, b] of [[[-4.9, 15.6, 0.2], [-6.6, 12.4, 1.6]], [[4.9, 15.6, 0.2], [6.4, 12.2, 1.4]]]) {
     const ax = v3(b).sub(v3(a)), c = v3(a).lerp(v3(b), 0.38);
@@ -218,29 +264,40 @@ export function mahayogiShiva() {
   for (let i = 0; i < 26; i++) { const t = i / 25; kmala.push(snap(f, [6.0 + t * 2.4, 7.4 - Math.sin(t * Math.PI) * 1.5 - t * 0.6, 5.9 - t * 0.9], 0.2)); }
   g.add(beads(kmala, 0.22, T.rudraksha));
 
-  // The cobra, coiled twice round the neck and rising off the right shoulder with its hood spread
+  // The cobra: its tail hanging from the left of the neck down the chest over the malas, its tip
+  // curling up at the belly; its body coiled twice round the neck; and its neck rising straight off
+  // the right shoulder to the hood, spread upright beside the head at the height of the ear, the
+  // head bent forward over it.
+  const tail = [[1.9, 10.95, 4], [1.55, 10.5, 4], [1.05, 10.8, 4], [0.95, 11.6, 4], [1.35, 13.0, 4], [2.0, 14.3, 4], [2.9, 15.3, 3.5]].map((q) => snap(f, q, 0.5));
   const coil = [[1.15, 5.15, 0.45], [0.85, 5.42, 0.52], [0, 5.55, 0.56], [-0.62, 5.62, 0.25], [-0.55, 5.68, -0.52], [0.55, 5.72, -0.5], [0.62, 5.78, 0.28], [0, 5.82, 0.52], [-0.68, 5.8, 0.38], [-0.98, 5.65, 0.42]]
     .map(([x, y, z]) => snap(f, B(x, y, z), 0.34));
-  coil.push(B(-1.16, 5.95, 0.58), B(-1.18, 6.28, 0.66));
-  const body = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(coil.map(v3)), 120, 0.34, 12, false);
+  const neckTop = [-3.8, 20.5, 1.25];
+  coil.unshift(...tail);
+  coil.push([-3.5, 18.1, 1.4], [-3.75, 19.4, 1.25], neckTop);
+  const body = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(coil.map(v3)), 180, 0.34, 12, false);
   const bp = body.attributes.position, centre = new THREE.Vector3(), pt = new THREE.Vector3(), curve = body.parameters.path;
   for (let i = 0; i < bp.count; i++) {
-    const t = Math.floor(i / 13) / 120;
-    if (t > 0.18) continue;
+    // The tail tapers to its tip; the neck narrows a little under the hood.
+    const t = Math.floor(i / 13) / 180, k = t < 0.2 ? 0.25 + 0.75 * (t / 0.2) : t > 0.94 ? 1 - 0.3 * ((t - 0.94) / 0.06) : 1;
+    if (k === 1) continue;
     curve.getPointAt(t, centre);
-    pt.fromBufferAttribute(bp, i).sub(centre).multiplyScalar(0.25 + 0.75 * (t / 0.18));
+    pt.fromBufferAttribute(bp, i).sub(centre).multiplyScalar(k);
     bp.setXYZ(i, centre.x + pt.x, centre.y + pt.y, centre.z + pt.z);
   }
   body.computeVertexNormals();
   g.add(mesh(body, T.snake));
   const hood = new THREE.Group();
-  hood.position.set(...B(-1.18, 6.28, 0.66));
-  hood.rotation.set(0.08, 0.32, 0);
-  hood.add(ellipsoid(0.36 * 1.18 * K, 0.36 * 1.35 * K, 0.36 * 0.26 * K, T.snake, 0, 0.12 * K, -0.04 * K));
-  hood.add(ellipsoid(0.28 * 0.92 * K, 0.28 * 1.22 * K, 0.28 * 0.22 * K, T.ventral, 0, 0.1 * K, 0.02 * K));
-  hood.add(ellipsoid(0.18 * 0.95 * K, 0.18 * 0.72 * K, 0.18 * 1.45 * K, T.snake, 0, 0.36 * K, 0.14 * K));
-  for (const x of [-0.12, 0.12]) hood.add(ellipsoid(0.032 * K, 0.032 * K, 0.032 * K, T.snakeEye, x * K, 0.4 * K, 0.24 * K));
+  hood.position.set(neckTop[0], neckTop[1] + 0.85, neckTop[2] - 0.05);
+  hood.rotation.set(0, 0.12, 0);
+  hood.add(ellipsoid(0.72, 1.5, 0.24, T.snake, 0, 0, 0));
+  hood.add(ellipsoid(0.48, 1.22, 0.18, T.ventral, 0, -0.08, 0.1));
+  const snout = ellipsoid(0.45, 0.33, 0.75, T.snake, 0, 1.3, 0.35);
+  snout.rotation.x = 0.35;
+  hood.add(snout);
+  for (const x of [-0.2, 0.2]) hood.add(ellipsoid(0.08, 0.08, 0.08, T.snakeEye, x, 1.42, 0.68));
   g.add(hood);
+  // Thick anklets at both ankles.
+  g.add(band([2.9, 5.85, 4.9], [9.8, 0.3, 1.4], 1.4, 0.24, T.trim), band([-2.9, 4.8, 5.3], [-9.6, -0.85, 2.0], 1.32, 0.24, T.trim));
 
   // The head (its face and ears carved in the body): round earrings, and the third eye on a pale
   // band of ash across the brow, laid on the forehead.
@@ -249,37 +306,62 @@ export function mahayogiShiva() {
     ring.rotation.y = Math.PI / 6;
     g.add(ring);
   }
-  for (const dy of [-0.21, 0, 0.21]) {
-    const ash = [];
-    for (let k = 0; k <= 16; k++) ash.push(snap(f, [-1.25 + (k / 16) * 2.5, 22.45 + dy, 4], 0.05));
-    g.add(tube(ash, 0.08, T.ash, 32, 6));
-  }
-  // The eyes, painted as on the statue: white almonds with dark irises, looking straight ahead.
+  // The band of ash painted across the brow from temple to temple, and the third eye painted
+  // upright at its middle.
+  const ashBand = mesh(skinSheet(f, (u, v) => [-1.75 + u * 3.5, 22.2 + (1 - v) * 0.58, 2.55 + 0.4 * Math.cos((u - 0.5) * 2.2)], 28, 4, 0.02), T.ashBand);
+  ashBand.castShadow = false;
+  g.add(ashBand);
+  const painted = (geo, m, p, lift) => {
+    const c = snap(f, p, lift), n = v3(normalAt(f, c)), o = mesh(geo, m, ...c);
+    o.lookAt(v3(c).add(n));
+    o.castShadow = false;
+    g.add(o);
+    return o;
+  };
+  painted(almond(0.075, 0.2).rotateZ(Math.PI / 2), T.thirdEye, [0, 22.49, 2.95], 0.03);
+  // The eyes, painted as on the statue: almond whites under lowered lids, light-brown irises half
+  // hidden by the upper lid, a dark line along it; and dark brows arched above.
+  // A disc of radius r at (cx, cy) in the eye's plane, cut off above by the upper lid's curve.
+  const underLid = (r, cx, cy, w, h) => {
+    const sh = new THREE.Shape();
+    for (let i = 0; i <= 24; i++) { const a = (i / 24) * Math.PI * 2, x = cx + Math.cos(a) * r, y = Math.min(cy + Math.sin(a) * r, h * (1 - (x / w) ** 2) - 0.008); i ? sh.lineTo(x, y) : sh.moveTo(x, y); }
+    return new THREE.ShapeGeometry(sh);
+  };
   for (const sd of [-1, 1]) {
-    const c = snap(f, [sd * 0.77, 21.3, 2.65], 0.015), n = v3(normalAt(f, c));
-    const white = mesh(new THREE.CircleGeometry(1, 20).scale(0.34, 0.165, 1), T.eyeWhite, ...c), iris = mesh(new THREE.CircleGeometry(0.1, 16), T.iris, ...v3(c).addScaledVector(n, 0.012).toArray());
-    for (const o of [white, iris]) { o.lookAt(v3(o.position.toArray()).add(n)); o.castShadow = false; g.add(o); }
+    painted(almond(0.4, 0.14), T.paint, [sd * 0.77, 21.32, 2.65], 0.012);
+    painted(almond(0.36, 0.115), T.eyeWhite, [sd * 0.77, 21.3, 2.65], 0.017);
+    painted(underLid(0.105, 0, 0.055, 0.36, 0.115), T.iris, [sd * 0.77, 21.3, 2.65], 0.022);
+    painted(underLid(0.045, 0, 0.055, 0.36, 0.115), T.pupil, [sd * 0.77, 21.3, 2.65], 0.026);
+    const brow = [];
+    for (let k = 0; k <= 10; k++) { const t = k / 10; brow.push(snap(f, [sd * (0.22 + t * 1.05), 21.84 + 0.12 * Math.sin(Math.PI * (0.25 + 0.75 * t)), 2.95 - 0.35 * t], 0.02)); }
+    g.add(tube(brow, 0.04, T.paint, 20, 5));
   }
-  const third = snap(f, [0, 22.45, 4], 0.06);
-  g.add(ellipsoid(0.13, 0.3, 0.09, T.eye, ...third));
 
-  // The jatamukuta: the hair over the skull, coiled up in rings to a tall knot, and locks falling
-  // to the shoulders and back
-  g.add(ellipsoid(2.35, 2.75, 2.45, T.hair, 0, 21.75, -0.15), ellipsoid(1.2, 1.3, 1.2, T.hair, 0, 24.4, 0.04), ellipsoid(0.7, 1.0, 0.7, T.hair, 0, 25.9, 0.04));
-  for (const [y, r, t] of [[0.78, 0.44, 0.15], [1.02, 0.35, 0.13], [1.24, 0.24, 0.11]]) {
-    const c = mesh(new THREE.TorusGeometry(r * K, t * K, 14, 36), T.hair, ...H(0, y, -0.08));
-    c.rotation.x = Math.PI / 2 - 0.08;
-    g.add(c);
+  // The jatamukuta: the hair over the skull, combed up from the hairline to a tall knot of strands
+  // twisted upwards and leaning forward at its tip, like a flame; and locks falling in waves behind
+  // the ears to the shoulders and back.
+  // The scalp's hair is combed up to the knot (its strands converge on the top, as the sphere's
+  // meridians do); the knot's run up it.
+  g.add(ellipsoid(2.35, 2.75, 2.45, T.combed, 0, 21.75, -0.15));
+  const knot = [[1.38, 0], [1.52, 0.6], [1.36, 1.3], [1.0, 2.0], [0.55, 2.55], [0.1, 2.85], [0, 2.9]];
+  g.add(at(lathe(knot, T.combed, 32), 0, 23.55, -0.05));
+  // Twisted strands lying on the knot, their ends turned forward at its tip.
+  const strands = detail.low ? 7 : 14;
+  for (let k = 0; k < strands; k++) {
+    const a0 = (k / strands) * Math.PI * 2, pts = [];
+    for (let i = 0; i <= 6; i++) { const t = i / 6, a = a0 + t * 1.1, y = t * 2.75, r = 0.06 + (t < 0.2 ? 1.38 + 0.7 * t : 1.52 - (1.45 * (t - 0.2)) / 0.8); pts.push([Math.sin(a) * r, 23.55 + y, -0.05 + Math.cos(a) * r + 0.35 * t * t * t]); }
+    g.add(tube(pts, 0.11, T.hair, 18, 6));
   }
-  [-2.6, -2.2, -1.8, -1.45, -1.1, 1.1, 1.45, 1.8, 2.2, 2.6, 3.0].forEach((a, i) => {
-    const sd = a < 0 ? -1 : 1, s = Math.sin(a), c = Math.cos(a);
-    const pts = [H(s * 0.55, 0.45, c * 0.55 - 0.1), H(s * 0.85, -0.25, c * 0.72 - 0.15), H(s * 1.25, -0.95, c * 0.78 - 0.12), H(s * 1.42 + sd * 0.1, -1.55 - (i % 3) * 0.2, c * 0.65)];
-    for (const j of [2, 3]) if (f(...pts[j]) < 0.3) pts[j] = snap(f, pts[j], 0.3);
-    g.add(tube(pts, 0.085 * K, T.hair, 28, 8));
+  [-2.6, -2.2, -1.8, 1.8, 2.2, 2.6, 3.0].forEach((a, i) => {
+    const sd = a < 0 ? -1 : 1, s = Math.sin(a), c = Math.cos(a), w = 0.08 * (i % 2 ? 1 : -1);
+    const pts = [H(s * 0.55, 0.45, c * 0.55 - 0.1), H(s * 0.85 + w, -0.25, c * 0.72 - 0.15), H(s * 1.25 - w, -0.95, c * 0.78 - 0.12), H(s * 1.36 + sd * 0.06 + w, -1.3, c * 0.72), H(s * 1.42 + sd * 0.1 - w, -1.6 - (i % 3) * 0.2, c * 0.65)];
+    for (const j of [2, 3, 4]) if (f(...pts[j]) < 0.3) pts[j] = snap(f, pts[j], 0.3);
+    g.add(tube(pts, 0.075 * K, T.hair, 28, 8));
   });
-  // The crescent moon on the right of the knot
+  // The crescent moon, small and pale, at the front of the knot on its right.
   const moon = new THREE.Group();
-  moon.position.set(...H(-0.52, 0.92, 0.25));
+  moon.position.set(-1.3, 23.85, 1.1);
+  moon.scale.setScalar(0.42);
   moon.rotation.set(0, -0.25, -0.45);
   for (let i = 0; i <= 28; i++) {
     const fr = i / 28, a = (fr - 0.5) * Math.PI * 1.35, r = (Math.sin(fr * Math.PI) * 0.075 + 0.008) * K;
@@ -293,7 +375,7 @@ export function mahayogiShiva() {
   // the damru raised in the rear left hand.
   g.add(at(trishul(T, 1.85), -8.75, 4.4, -0.6));
   g.add(coiledSnake([-8.75, 5.4, -0.6], [-8.75, 10.6, -0.6], 0.42, 0.2, 2.6, T));
-  const dm = at(damru(T, 2.6), 8.6, 18.6, -0.3);
+  const dm = at(damru(T, 3.2), 8.6, 18.6, -0.3);
   dm.rotation.set(Math.PI / 2 - 0.45, 0, 0.25);
   g.add(dm);
   return mergeByMaterial(g);
