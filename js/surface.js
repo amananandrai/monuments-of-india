@@ -7,7 +7,7 @@ import * as THREE from 'three';
 // patches of soot and age; strongest on brick, about half on marble, none on gilt) and a small
 // per-object tint so that repeated pieces don't look cloned. Water is its own kind: moving ripples
 // that tilt the normal, so the sky reflects in a broken, shifting band instead of a flat sheen.
-export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13, calligraphy: 14, pietra: 15, reliefs: 16, banded: 17, paving: 18, plates: 19, reeds: 20, copper: 21, giltsheet: 22, terracotta: 23, plaques: 24, scallop: 25, cladding: 26 };
+export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13, calligraphy: 14, pietra: 15, reliefs: 16, banded: 17, paving: 18, plates: 19, reeds: 20, copper: 21, giltsheet: 22, terracotta: 23, plaques: 24, scallop: 25, cladding: 26, blocks: 27 };
 
 // Seconds since the page opened, shared by every water material; main.js advances it each frame.
 export const waterTime = { value: 0 };
@@ -197,13 +197,19 @@ const PATTERN = /* glsl */ `
   float big = sFbm(sp * 0.35), fine = sNoise(sp * 9.0);
   sTint = 0.9 + 0.18 * big + 0.08 * (fine - 0.5);
   sH = fine * 0.35 + big * 0.25;
-#elif SURF_KIND == 19
+#elif SURF_KIND == 19 || SURF_KIND == 27
   // Cast bronze in plates, as the cladding of the Statue of Unity: plates about 3.2 m wide and 2.4 m
   // high in staggered courses, their joints fine dark lines, each plate's patina a shade different.
+  // Or (27) a statue built of granite blocks, as Thiruvalluvar's: blocks about 2.2 by 1.5 m, their
+  // joints darker and each block's stone a shade different.
   // The joints are worked out in space, not on a flat projection, so they run true over a curved
   // body: a joint plane x = c crosses the surface in a line whose width on the surface grows as the
   // surface turns towards it, so each axis's distance is divided by how far it lies along the skin.
+  #if SURF_KIND == 27
+  vec3 sPlSz = vec3(2.2, 1.5, 2.2), sPlQ = sp / sPlSz;
+  #else
   vec3 sPlSz = vec3(3.2, 2.4, 3.2), sPlQ = sp / sPlSz;
+  #endif
   float sPlRow = floor(sPlQ.y);
   sPlQ.xz += 0.5 * mod(sPlRow, 2.0);
   vec3 sPlCell = floor(sPlQ), sPlF = fract(sPlQ), sPlD = min(sPlF, 1.0 - sPlF) * sPlSz;
@@ -211,8 +217,13 @@ const PATTERN = /* glsl */ `
   float sPlJ = min(min(sPlD.x / sPlAl.x, sPlD.y / sPlAl.y), sPlD.z / sPlAl.z);
   float sPlSeam = (1.0 - smoothstep(0.015, 0.05, sPlJ)) * sNear;
   float sPlPat = sHash(sPlCell + 7.0);
-  sTint = (0.96 + 0.06 * sPlPat) * mix(1.0, 0.78, sPlSeam);
-  sH = -0.6 * sPlSeam;
+  #if SURF_KIND == 27
+  sTint = (0.92 + 0.14 * sPlPat) * mix(1.0, 0.62, sPlSeam);
+  sH = -0.8 * sPlSeam;
+  #else
+  sTint = (0.96 + 0.06 * sPlPat) * mix(1.0, 0.86, sPlSeam);
+  sH = -0.35 * sPlSeam;
+  #endif
   sRough = 0.06 * (sPlPat - 0.5);
 #elif SURF_KIND == 20
   // A penbey parapet: bundles of tamarisk twigs laid with their cut ends outwards and painted
@@ -565,7 +576,7 @@ function patch(shader, kind, bump, photo, wave, edge, reflect) {
   normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`));
 }
 
-const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0, calligraphy: 0.2, pietra: 0.3, reliefs: 1.4, banded: 1.0, paving: 0.9, plates: 0.5, reeds: 1.6, copper: 0.6, giltsheet: 0.5, terracotta: 1.3, plaques: 1.6, scallop: 1.5, cladding: 0.4 };
+const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0, calligraphy: 0.2, pietra: 0.3, reliefs: 1.4, banded: 1.0, paving: 0.9, plates: 0.5, reeds: 1.6, copper: 0.6, giltsheet: 0.5, terracotta: 1.3, plaques: 1.6, scallop: 1.5, cladding: 0.4, blocks: 0.6 };
 
 // Choose a surface for a material from its look, unless one was set with surface().
 function guess(m) {

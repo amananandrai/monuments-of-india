@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mesh } from '../helpers.js';
-import { ellipsoid as E, cone, chain, blend, carve, mirrorX, flatBase, roundBox, lathe, snap, sculpt, statueMaterial, bounded, smin, smax, torus } from '../sdf.js';
+import { ellipsoid as E, cone, chain, blend, carve, mirrorX, flatBase, roundBox, lathe, snap, sculpt, statueMaterial, bounded, smin, smax, torus, turn } from '../sdf.js';
 import { detail } from '../detail.js';
 
 // Human figures in stone and bronze, each body sculpted as one skin from a signed distance field
@@ -90,21 +90,25 @@ export function guardian(h, m) {
 
 /* ---------- the colossal statues ---------- */
 
-// The seated Shiva at Nageshwar, cross-legged on his seat, with four arms: the front right (-x)
+// The seated Shiva at Nageshwar, seated in the half lotus on his seat, with four arms: the front right (-x)
 // raised in blessing, the front left resting on the knee, the rear right gripping the trishul and
 // the rear left raising the damru; in the coordinates of mahayogiShiva() in nageshwar-temple.js.
 // The head and hands are carved in the field, as on the Statue of Unity: the face with its brow,
 // eyes under their lids, nose, lips and chin, and the ears; the raised palm with its four fingers
 // and thumb, the fingers of the left hand curling over the knee, and the rear hands closed round
-// the trishul and the damru; and the feet with their toes, lying sole up on the thighs. The hair,
-// the serpent and the ornaments are meshes.
+// the trishul and the damru; and the feet with their toes: the right foot lying sole up on the left
+// thigh by the resting hand, the left foot tucked under the right knee, its toes showing at the
+// front of the seat. The hair, the serpent and the ornaments are meshes.
 function shivaField() {
   const legs = mirrorX(blend([[cone([2.6, 6.6, 0], [6.2, 5.8, 3.2], 2.3, 1.9), 0], [E([5.9, 6.0, 3.1], [1.9, 1.7, 1.8]), 0.8]]));
+  // The shins cross in front: the left, from the left knee, passes low under the right to the
+  // tucked left foot; the right rises over it to the right foot on the left thigh.
   const shins = blend([
-    [cone([6.2, 5.6, 3.4], [-3.6, 5.4, 4.6], 1.7, 1.25), 0],
-    [cone([-6.2, 5.6, 3.6], [3.6, 5.2, 5.0], 1.7, 1.25), 0],
+    [cone([6.2, 5.6, 3.4], [-3.4, 4.75, 5.4], 1.7, 1.2), 0],
+    [cone([-6.2, 5.6, 3.6], [3.6, 5.9, 5.0], 1.7, 1.25), 0],
   ]);
-  // The feet, each lying sole up on the other thigh at the end of its crossed shin (padmasana):
+  // The feet, lying sole up at the end of each crossed shin, one on the left thigh and one under the
+  // right knee (the half lotus, ardha padmasana):
   // the heel by the ankle, the arch, the ball of the foot, and five toes in a row, the big toe the
   // largest, their tips turned up a little; the sole creased across. sx: which way the foot points
   // along x (the left foot, on the right thigh, points to -x); dy, dz: where it lies.
@@ -124,7 +128,7 @@ function shivaField() {
     const nails = blend(toes.map(([o, r, L]) => [E([X(5.85 + L * 0.93), y0 + 0.42 + r * 0.55, z0 + 0.72 - o * 1.12], [r * 0.55, r * 0.22, r * 0.62]), 0.02]));
     return blend([[ft, 0], [nails, 0.03]]);
   };
-  const footL = bounded(foot(-1, 0, 0), [-4.9, 7.2, 4.5], 2.6, 2.0), footR = bounded(foot(1, -0.2, 0.4), [4.9, 7.0, 4.9], 2.6, 2.0);
+  const footL = bounded(foot(-1, -2.35, 1.6), [-4.9, 4.85, 6.1], 2.6, 2.0), footR = bounded(foot(1, -0.2, 0.4), [4.9, 7.0, 4.9], 2.6, 2.0);
   const feet = (x, y, z) => (x < 0 ? footL(x, y, z) : footR(x, y, z));
   const b = blend([
     [E([0, 6.6, 0.4], [5.0, 2.3, 3.8]), 0],
@@ -232,7 +236,7 @@ export const shivaBody = (m, { coarse = false } = {}) => body(coarse ? 'shiva-co
     { region: E([-8.75, 16.1, -0.4], [1.05, 1.15, 1.05]), h: coarse ? 0.14 : 0.08, lo: [-9.9, 14.8, -1.6], hi: [-7.6, 17.4, 0.8] },
     { region: E([8.6, 17.2, -0.2], [1.05, 1.15, 1.05]), h: coarse ? 0.14 : 0.08, lo: [7.4, 15.9, -1.4], hi: [9.8, 18.5, 1.0] },
     // The feet, from the ankle to the toes.
-    ...[-1, 1].map((sx) => ({ region: (x, y, z) => Math.min(9, shivaParts().feet(sx > 0 ? Math.max(x, 0.01) : Math.min(x, -0.01), y, z) - 0.45), h: coarse ? 0.13 : 0.075, lo: [sx > 0 ? 2.3 : -8.6, 5.2, 2.4], hi: [sx > 0 ? 8.6 : -2.3, 9.2, 7.2] })),
+    ...[-1, 1].map((sx) => ({ region: (x, y, z) => Math.min(9, shivaParts().feet(sx > 0 ? Math.max(x, 0.01) : Math.min(x, -0.01), y, z) - 0.45), h: coarse ? 0.13 : 0.075, lo: sx > 0 ? [2.3, 5.2, 2.4] : [-8.6, 3.6, 3.9], hi: sx > 0 ? [8.6, 9.2, 7.2] : [-2.3, 6.6, 8.3] })),
   ],
 });
 let shivaP = null;
@@ -241,16 +245,20 @@ const shivaParts = () => (shivaP ||= shivaField());
 let shivaF = null;
 export const shivaSurface = () => (shivaF ||= shivaField().f);
 
-// Sardar Patel at the Statue of Unity, in the coordinates of patel() in statue-of-unity.js (177 units
-// tall before it is scaled), after photographs of the statue: the shawl over both shoulders hanging
-// like a cape over the arms to the hips, its ends falling down each side of a wide opening that
-// narrows to the neck; in the opening the bandi, a sleeveless jacket buttoned down the front, to
-// the hips; under that the kurta to the knee with its standing collar; below that the dhoti, full and folded round each leg to above the ankle,
-// its pleats falling between the legs; the bare ankles and the feet in chappals, a stride apart; the hands at his sides just below the shawl's hem; and the head. The head is
-// that of the 1949 portrait the statue follows: the bare, broad crown, the heavy brow over deep-set
-// eyes under heavy lids with pouches beneath, a strong nose, deep folds from the nose to the
-// corners of the set, downturned mouth, the full jowls and broad jaw of his later years, a firm
-// chin, and large ears. The fingers and the overlays on the cloth are meshes (patel()).
+// Sardar Patel at the Statue of Unity, in the coordinates of patel() in statue-of-unity.js (175 units
+// tall before it is scaled), after photographs of the statue: the shawl over both shoulders, square
+// across them and hanging stiffly over the upper arms to the elbows like a short cape, gathered in
+// creases over the arms, its hem turned up in a thick band, its ends falling down each side of a
+// wide opening that narrows to the neck; in the opening the bandi, a sleeveless jacket buttoned
+// down the front, to the hips; under that the kurta, its sleeves showing from the shawl's hem to
+// the wrists, flaring to its hem below the knee; below that the dhoti, very full, folded round each
+// leg to above the ankle and hanging between the legs in a deep drop of U-shaped swags; the bare
+// ankles and the feet in chappals, a stride apart; the hands at his sides in loose fists; and the
+// head. The head is that of the 1949 portrait the statue follows, bowed a little: the bare, broad
+// crown and lined forehead, the heavy brow over deep-set eyes under heavy lids with pouches
+// beneath, a strong nose, deep folds from the nose to the corners of the set, downturned mouth,
+// the full jowls and broad jaw of his later years, a firm chin, and large ears. The overlays on the
+// cloth (buttons, the gallery's windows) are meshes (patel()).
 function patelField() {
   // Below the kurta's hem the dhoti is gathered round each leg: full at the knee, folded in long
   // diagonal folds that wind round the leg, narrowing to an uneven hem a little above the ankle,
@@ -259,9 +267,10 @@ function patelField() {
   // big toe and a thong between them, the five toes showing.
   const clamp = (v) => Math.min(1, Math.max(0, v));
   const leg = (sx, zb, zt, fz) => {
-    const zc = (zb + zt) / 2, cx = sx * 8.3;
-    const outer = blend([[cone([sx * 8.0, 13, zb], [sx * 8.6, 58, zt], 6.4, 8.0), 0], [E([sx * 8.6, 37, zc + 0.4], [7.4, 12, 8.0]), 4]]);
-    const folds = (x, y, z) => { const a = Math.atan2(sx * (x - cx), z - zc); return (0.85 * Math.sin(3 * a + 0.3 * y) + 0.45 * Math.sin(0.5 * y - a) + 0.35 * Math.sin(0.9 * y + 2 * a)) * clamp((56 - y) / 5) * clamp((y - 19) / 7); };
+    const zc = (zb + zt) / 2, cx = sx * 8.8;
+    const outer = blend([[cone([sx * 8.3, 13, zb], [sx * 9.3, 61, zt], 7.0, 9.0), 0], [E([sx * 9.3, 38, zc + 0.4], [8.6, 13, 8.8]), 4]]);
+    // The folds run down to the hem, so it ends in cloth, not a smooth cuff.
+    const folds = (x, y, z) => { const a = Math.atan2(sx * (x - cx), z - zc); return (0.6 * Math.sin(3 * a + 0.22 * y) + 0.32 * Math.sin(0.4 * y - a) + 0.22 * Math.sin(0.75 * y + 2 * a)) * clamp((60 - y) / 5) * clamp((y - 13) / 3); };
     const hem = (x, z) => 13.5 + 2.4 * Math.sin(Math.atan2(sx * (x - cx), z - zb) + 0.6);
     const hollow = (x, y, z) => smax(cone([sx * 8.0, 0, zb], [sx * 8.2, 23, zb], 4.4, 4.9)(x, y, z), y - 21, 0.6);
     const cloth = (x, y, z) => smax(smax(outer(x, y, z) + folds(x, y, z), hem(x, z) - y, 0.4), -hollow(x, y, z), 0.35);
@@ -287,37 +296,55 @@ function patelField() {
   // kurta to below the knees, folded back and forth.
   const kasta = (x, y, z) => {
     const t = clamp((56 - y) / 40), hw = 1.8 + 2.0 * t;
-    return Math.max(Math.abs(x) - hw, Math.abs(z - (5.4 + 0.8 * t)) - 1.25 - 0.55 * Math.abs(Math.sin(x * 2.0)), y - 57, 20 - y);
+    return Math.max(Math.abs(x) - hw, Math.abs(z - (5.4 + 0.8 * t)) - 1.25 - 0.55 * Math.abs(Math.sin(x * 2.0)), y - 61, 20 - y);
   };
-  // The kurta, from the collar to about the knee, its hem standing a little proud.
-  const kurta = lathe([[17.9, 56], [17.3, 59], [16.6, 75], [16.0, 92], [16.6, 100], [18.4, 118], [19.8, 131], [17.4, 140], [8, 145], [0.1, 145.5]], { sz: 0.62, folds: 18, amp: 0.025, from: 56, to: 92 });
-  // The shawl over both shoulders, hanging like a cape over the arms to about the hips: a shell
-  // two units thick below the shoulders, open down the front from the collar, widening as it falls,
-  // so the kurta and the bandi's placket show between its edges; long folds down its sides.
-  const cape = lathe([[29, 86], [29.4, 98], [28.6, 118], [26.2, 131], [21.6, 140], [18.6, 145], [9.8, 148.6], [0.1, 149]], { sz: 0.62, folds: 22, amp: 0.03, from: 86, to: 132 });
-  const inside = lathe([[25.6, 80], [25.8, 98], [24.8, 114], [0.1, 115]], { sz: 0.58 });
+  // Between the legs the dhoti's cloth hangs in a deep drop from under the kurta to below the
+  // knees, falling in U-shaped swags, its edge lowest in the middle.
+  const swagBody = blend([[E([0, 46, 2.2], [10.5, 16.5, 6.2]), 0], [E([0, 36, 3.6], [6.8, 9, 4.4]), 2]]);
+  const swag = (x, y, z) => smax(swagBody(x, y, z) + 0.4 * Math.sin(0.55 * (y - 0.05 * x * x)) * clamp((60 - y) / 4), 26 + 0.05 * x * x - y, 1.2);
+  // The kurta, from the collar to below the knee, flaring from the waist to its wide hem.
+  const kurta = lathe([[24.2, 60], [23.6, 62.5], [21.4, 71], [19.2, 81], [17.6, 91], [17.4, 100], [18.6, 118], [19.8, 131], [17.4, 140], [8, 145], [0.1, 145.5]], { sz: 0.62, folds: 13, amp: 0.012, from: 60, to: 95 });
+  // The shawl over both shoulders, square across them and hanging stiffly like a short cape over
+  // the arms to the elbows, flaring a little to its hem: a shell three units thick below the
+  // shoulders, open down the front from the collar, widening as it falls, so the bandi shows between
+  // its edges; long folds down its front and creases across it over the arms; the hem turned up in
+  // a thick rounded band.
+  const cape = lathe([[31.4, 99], [31.0, 104], [29.8, 116], [29.2, 127], [28.8, 133], [27.8, 138.5], [25.4, 142.8], [20.5, 146.4], [11.5, 148.8], [0.1, 149.3]], { sz: 0.62, folds: 22, amp: 0.025, from: 99, to: 130 });
+  const creases = (x, y, z) => (0.2 * Math.sin(0.62 * y + 0.5 * Math.sin(0.25 * z)) + 0.12 * Math.sin(1.3 * y + 0.4 * z)) * clamp((Math.abs(x) - 21) / 5) * clamp((136 - y) / 6) * clamp((y - 103) / 3);
+  const rim = (x, y, z) => torus([0, 99.6, 0], 31.0, 1.15)(x, y, z / 0.62) * 0.62;
+  const inside = lathe([[28.0, 93], [28.0, 104], [26.8, 118], [0.1, 119]], { sz: 0.58 });
   // The opening is a V at the neck, where the shawl's two ends cross over it, widening fast down
   // the chest and then slowly to the hem.
-  const open = (x, y, z) => Math.max(Math.abs(x) - Math.min(0.6 + (148 - y) * 0.24, 5.9 + (148 - y) * 0.065), -z, y - 148, 80 - y);
+  const open = (x, y, z) => Math.max(Math.abs(x) - Math.min(1.5 + (148 - y) * 0.6, 8.2 + (148 - y) * 0.08), -z, y - 148, 80 - y);
   // Over the kurta and under the shawl, the bandi: a sleeveless jacket from its band collar to the
   // hips, buttoned down the front on a raised placket, with a welt pocket on the chest and a
   // pocket on each side below, its hem standing proud of the kurta.
   const jacket = lathe([[17.7, 90.5], [17.3, 92.5], [17.4, 100], [19.2, 118], [20.6, 131], [18.4, 140], [9.6, 144.3], [0.1, 144.6]], { sz: 0.62 });
   const onJacket = (rx, ry, x0, y0, t) => (x, y, z) => Math.max(Math.abs(x - x0) - rx, Math.abs(y - y0) - ry, jacket(x, y, z) - t, -z);
   const placket = onJacket(0.8, 25.5, 0, 117, 0.35);
-  const pockets = (x, y, z) => Math.min(onJacket(1.4, 0.4, 3.2, 129, 0.3)(x, y, z), onJacket(2.6, 2.1, 5.9, 99.5, 0.28)(x, y, z), onJacket(2.6, 2.1, -5.9, 99.5, 0.28)(x, y, z));
+  const pockets = (x, y, z) => Math.min(onJacket(1.4, 0.4, 4.6, 117.5, 0.3)(x, y, z), onJacket(2.6, 2.1, 5.9, 99.5, 0.28)(x, y, z), onJacket(2.6, 2.1, -5.9, 99.5, 0.28)(x, y, z));
   const flaps = (x, y, z) => Math.min(onJacket(2.8, 0.45, 5.9, 101.7, 0.5)(x, y, z), onJacket(2.8, 0.45, -5.9, 101.7, 0.5)(x, y, z));
-  const shawl = (x, y, z) => smax(smax(cape(x, y, z), -inside(x, y, z), 0.4), -open(x, y, z), 0.5);
+  const shawl = (x, y, z) => smax(smax(smin(cape(x, y, z) + creases(x, y, z), rim(x, y, z), 0.4), -inside(x, y, z), 0.4), -open(x, y, z), 0.5);
+  // The hands hang at his sides in loose fists, the backs turned out: the palm, the four fingers
+  // curled under it with their knuckles in a row along its lower outer edge, and the thumb laid down
+  // the front over the index finger. The kurta's sleeve ends in a cuff at the wrist.
+  const fist = mirrorX(bounded(blend([
+    [E([22.1, 84.2, 4.0], [2.3, 3.8, 3.5]), 0],
+    [blend([6.4, 4.75, 3.15, 1.65].map((z, i) => [chain([[22.9, 80.9 + i * 0.25, z, 0.95 - i * 0.04], [22.3, 77.9 + i * 0.3, z, 0.9 - i * 0.04], [20.7, 77.4 + i * 0.3, z, 0.85 - i * 0.04], [20.2, 79.0 + i * 0.3, z, 0.78 - i * 0.04]], 0.15), 0.06])), 0.5],
+    [chain([[20.9, 85.0, 6.9, 1.15], [20.4, 82.0, 7.7, 1.0], [20.7, 79.8, 7.4, 0.85]], 0.2), 0.5],
+    [torus([22.4, 89.4, 3.5], 4.35, 0.65), 0.3],
+  ]), [21.8, 83.5, 4.5], 8, 1.0));
   const b = blend([
     [kurta, 0],
     [shawl, 1.0],
     [leg(1, 2.6, 1.0, 6.4), 2.5],
     [leg(-1, -0.8, 0.2, 3.0), 2.5],
+    [swag, 1.5],
     [kasta, 0.5],
     [mirrorX(E([20.5, 136, 0.5], [6.6, 6.2, 5.6])), 2],
     [mirrorX(cone([20.5, 136, 0.5], [23.6, 111, 2], 6.2, 5.4)), 2],
     [mirrorX(cone([23.6, 111, 2], [22.4, 89, 3.5], 5.4, 4.3)), 1.5],
-    [mirrorX(E([22.2, 83.4, 4], [3.3, 5.2, 3.9])), 1.2],
+    [fist, 0.6],
     [cone([0, 142, 0], [0, 153, 0.8], 6.4, 6.8), 2],
     // The kurta's standing collar, and over it the bandi with its band collar.
     [torus([0, 145.6, 0.4], 6.9, 0.9), 0.4],
@@ -339,11 +366,14 @@ function patelField() {
     [mirrorX(E(P(1.45, -3.1, 10.3), [1.0, 0.9, 0.9])), 0.5],
     [E(P(0, -8.3, 6.9), [3.3, 2.1, 2.5]), 1.5],
     [mirrorX(E(P(9.9, -0.4, -0.6), [1.3, 3.5, 2.5])), 0.6],
+    // The full jowls at the corners of the jaw.
+    [mirrorX(E(P(5.8, -7.6, 3.0), [2.3, 2.3, 2.6])), 1.2],
   ]);
   head = carve(head, mirrorX(E(P(3.4, 0.5, 9.2), [2.4, 1.5, 2.0])), 0.9);
   head = blend([[head, 0],
-    [mirrorX(E(P(3.4, 0.3, 7.7), [1.85, 1.05, 1.5])), 0.3],
-    [mirrorX(E(P(3.4, 1.05, 8.1), [2.2, 0.7, 1.45])), 0.3],
+    // The eyes open under heavy lids, looking ahead.
+    [mirrorX(E(P(3.4, 0.25, 7.85), [1.85, 1.1, 1.5])), 0.3],
+    [mirrorX(E(P(3.4, 1.25, 8.0), [2.2, 0.5, 1.4])), 0.3],
     [mirrorX(E(P(3.5, -0.95, 8.2), [1.9, 0.55, 1.05])), 0.4],
     [E(P(0, -4.45, 9.45), [2.8, 0.6, 1.0]), 0.5],
     [E(P(0, -5.6, 9.05), [2.4, 0.7, 1.0]), 0.5]]);
@@ -351,13 +381,21 @@ function patelField() {
   head = carve(head, mirrorX(E(P(2.85, -5.35, 9.15), [0.5, 0.3, 0.6])), 0.2);
   head = carve(head, mirrorX(cone(P(1.95, -2.3, 9.95), P(3.7, -6.7, 8.5), 0.33, 0.33)), 0.4);
   head = carve(head, mirrorX(E(P(10.6, -0.2, -0.2), [0.6, 2.2, 1.4])), 0.2);
-  const all = (x, y, z) => smin(b(x, y, z), y > 147 ? head(x, y, z) : Infinity, 2);
+  // The iris cut shallow in each eye, and two lines across the forehead.
+  head = carve(head, mirrorX(E(P(3.35, 0.15, 9.45), [0.65, 0.65, 0.3])), 0.12);
+  head = carve(carve(head, E(P(0, 4.6, 10.79), [5.5, 0.3, 1.6]), 0.15), E(P(0, 6.0, 10.27), [5.0, 0.3, 1.6]), 0.15);
+  // The head bowed a little, about the root of the neck.
+  head = turn(head, 'x', 0.09, [0, 152, 1]);
+  // The head drawn a little smaller than the portrait's grid, as the photographs show it against the
+  // broad shawl: 92% about the root of the neck.
+  const hk = 0.92, headS = (x, y, z) => head(x / hk, 152 + (y - 152) / hk, 1 + (z - 1) / hk) * hk;
+  const all = (x, y, z) => smin(b(x, y, z), y > 147 ? headS(x, y, z) : Infinity, 2);
   return { f: flatBase(all), lo: [-33, -1, -21], hi: [33, 177, 22] };
 }
 let patelF = null;
 export const patelSurface = () => (patelF ||= patelField().f);
 // The body is meshed with 1.1-unit cells, and the head (inside an ellipsoid crossing the neck), the
-// front of the torso, and the feet and hems with cells a third that size (on phones 1.5 and about 0.5); the folds of the
+// front of the torso, the fists, and the feet and hems with cells a third that size (on phones 1.5 and about 0.5); the folds of the
 // bronze are rubbed bright.
 export const patelBody = (m) => body(detail.low ? 'patel-coarse' : 'patel', patelField, detail.low ? 1.5 : 1.1, m, [0.3, 0.34, 0.28], {
   wear: 0.3, split: [
@@ -365,60 +403,81 @@ export const patelBody = (m) => body(detail.low ? 'patel-coarse' : 'patel', pate
     // The front of the torso, where the bandi shows between the shawl's ends with its placket,
     // pockets and collar.
     // A box, not an ellipsoid, so its sides cross the shawl squarely and the seam stays a line.
-    { region: (x, y, z) => Math.max(Math.abs(x) - 10.8, Math.abs(y - 115.5) - 30, 3 - z), h: detail.low ? 0.6 : 0.4, lo: [-13, 82, 1], hi: [13, 148, 25] },
+    { region: (x, y, z) => Math.max(Math.abs(x) - 13.5, Math.abs(y - 115.5) - 30, 3 - z), h: detail.low ? 0.6 : 0.4, lo: [-15.5, 82, 1], hi: [15.5, 148, 25] },
+    // The fists and the cuffs at the wrists.
+    ...[-1, 1].map((sx) => ({ region: E([sx * 21.8, 83.5, 4.5], [5.2, 7.6, 5.6]), h: detail.low ? 0.55 : 0.4, lo: [sx * 21.8 - 5.8, 75, -1.6], hi: [sx * 21.8 + 5.8, 91.6, 10.6] })),
     // The feet in their chappals, the ankles and the dhoti's open hems, on the same fine grid.
     ...[[1, 2.6, 6.4], [-1, -0.8, 3.0]].map(([sx, zb, fz]) => ({ region: E([sx * 8, 8, (zb + fz) / 2 + 1], [8.5, 12.5, 13.5]), h: detail.low ? 0.5 : 0.34, lo: [sx * 8 - 10, -1, zb - 12], hi: [sx * 8 + 10, 27, fz + 15] })),
   ],
 });
 
 // Bahubali at Shravanabelagola, standing in kayotsarga in the coordinates of bahubali() in
-// gommateshwara.js (feet at y = 0, the crown of the head at about 19.3), carved from one block of
-// granite: the statue, the two anthills beside his legs and the lotus he stands on are one stone.
-// After the published measurements and photographs of the image: very broad square shoulders
-// (about 7.9 m across, with the arms) over a narrow waist (about 3 m), the arms hanging close by
-// the chest, long legs with slim thighs, and long arms
-// hanging down, the forearms turning in so the hands, palms in and fingers together and straight,
-// come down beside the outer thighs, the wrists level with the groin and the fingertips at the
-// tops of the anthills. The flat broad chest with its nipples and collarbones; the navel; nude (digambara), as
-// Jain images in kayotsarga are. The head is part of the field: an oval face of calm planes, the
-// eyes long and half closed under a ridged brow, a long straight nose, a small smiling mouth, the
-// long pierced earlobes reaching nearly to the shoulders, three lines on the neck. The curls of
-// the hair and the creepers are laid on this skin by bahubali() (bahubaliSurface()).
+// gommateshwara.js (feet at y = 0, the crown of the head at about 19.3, scaled there to the
+// statue's 17.4 m), carved from one block of granite: the statue, the two anthills beside his
+// legs and the lotus he stands on are one stone. After photographs of the image: very broad,
+// slightly sloping shoulders over a narrow waist, the arms hanging close by the chest, and legs
+// carved as massive columns, the thighs pressed together from the groin to the knees and only a
+// narrow slit between the shins, on large feet with their toes; long arms hanging down, the
+// forearms turning in so the hands, palms to the thighs and the long fingers straight and apart,
+// come down beside the outer thighs, the wrists level with the groin and the fingertips resting
+// on the tops of the anthills. The flat broad chest with its nipples and collarbones; the navel;
+// nude (digambara), as Jain images in kayotsarga are. The head is part of the field: an oval face
+// of calm planes, long almond eyes under lowered lids and arched brows, a long straight nose, a
+// wide mouth smiling at its corners, the long pierced earlobes lying flat by the jaw, three lines
+// on the neck. The curls of the hair and the creepers are laid on this skin by bahubali()
+// (bahubaliSurface()).
 function bahubaliField() {
   const base = blend([
-    [E([0, 9.0, 0], [2.1, 1.4, 1.45]), 0],
-    [mirrorX(chain([[1.2, 0.75, 0, 0.55], [1.3, 4.6, 0, 0.72], [1.4, 8.6, 0, 1.0]], 0.5)), 0.55],
-    [mirrorX(E([1.28, 3.1, -0.28], [0.52, 1.2, 0.5])), 0.45],
-    [mirrorX(E([1.32, 4.65, 0.38], [0.44, 0.5, 0.38])), 0.3],
-    [mirrorX(E([1.38, 6.8, 0.12], [0.86, 1.9, 0.86])), 0.55],
-    [mirrorX(E([1.22, 0.4, 0.5], [0.85, 0.45, 1.55])), 0.25],
+    [E([0, 9.0, 0], [2.15, 1.45, 1.5]), 0],
+    // The legs: columns as thick at the calf as at the knee, close enough that the thighs meet.
+    [mirrorX(chain([[0.98, 0.9, 0.05, 0.56], [1.0, 2.9, -0.05, 0.8], [1.02, 4.7, 0.05, 0.86], [1.1, 8.6, 0, 1.12]], 0.5)), 0.55],
+    [mirrorX(E([1.0, 3.0, -0.3], [0.8, 1.35, 0.72])), 0.45],
+    [mirrorX(E([1.02, 4.75, 0.62], [0.42, 0.48, 0.32])), 0.3],
+    [mirrorX(E([1.12, 6.8, 0.1], [1.06, 1.95, 1.05])), 0.55],
+    [mirrorX(E([1.0, 0.36, 0.4], [0.8, 0.38, 1.45])), 0.25],
+    // The instep, falling from the ankle to the toes.
+    [mirrorX(cone([1.0, 0.95, 0.0], [1.02, 0.42, 1.35], 0.5, 0.36)), 0.3],
     [E([0, 10.3, 0], [1.75, 1.5, 1.35]), 0.9],
     [E([0, 11.0, 0.7], [1.6, 1.4, 0.95]), 0.8],
     [E([0, 13.1, 0], [2.75, 2.2, 1.85]), 1.0],
     [mirrorX(E([1.3, 13.7, 0.95], [1.4, 1.0, 0.8])), 0.9],
-    [E([0, 14.85, -0.2], [2.7, 0.62, 1.15]), 0.7],
-    [mirrorX(E([3.2, 14.55, 0], [0.88, 0.88, 0.88])), 0.8],
+    // The shoulders fall a little from the neck to their rounded ends.
+    [E([0, 14.95, -0.2], [2.0, 0.66, 1.15]), 0.7],
+    [mirrorX(cone([0.6, 15.0, -0.15], [2.95, 14.6, -0.05], 0.6, 0.68)), 0.6],
+    [mirrorX(E([3.2, 14.45, 0], [0.88, 0.88, 0.88])), 0.8],
     [cone([0, 15.0, 0], [0, 16.6, 0.1], 0.85, 0.75), 0.5],
     // The arms: the upper arm straight down, the forearm turning in to the hand by the thigh.
-    [mirrorX(chain([[3.35, 14.4, 0, 0.7], [3.42, 11.0, 0.05, 0.56], [2.9, 7.95, 0.12, 0.44]], 0.3)), 0.55],
+    [mirrorX(chain([[3.35, 14.3, 0, 0.7], [3.42, 11.0, 0.05, 0.56], [2.92, 7.95, 0.14, 0.44]], 0.3)), 0.55],
     [mirrorX(E([3.42, 13.0, 0], [0.64, 1.3, 0.64])), 0.4],
   ]);
-  // The hands, palm to the thigh: four fingers together pointing down, the thumb in front.
+  // The feet's toes: five in a row at the front of each foot, long and low, the big toe on the
+  // inside and the largest, with a groove between each.
+  const toes = mirrorX(blend([[0.45, 0.22, 0.19, 0.45], [0.8, 0.17, 0.15, 0.4], [1.1, 0.155, 0.14, 0.36], [1.37, 0.14, 0.13, 0.32], [1.6, 0.12, 0.11, 0.27]].map(([x, r, ry, L], i) => [E([x, ry, 1.95 - i * 0.12], [r, ry, L]), 0.02])));
+  // The hands hang beside the outer thighs, the backs turned forwards and out, the palms to the
+  // thighs: a flat palm, four long fingers below it side by side, index on the inside and little
+  // finger on the outside, straight and a little apart, the middle finger the longest; the thumb
+  // on the inside, pointing down beside the index.
+  const row = [0.8, -0.6], at = (o, y, out = 0) => [2.86 + row[0] * o - 0.6 * out, y, 0.2 + row[1] * o - 0.8 * out];
+  const fingers = blend([[-0.4, 1.1, 0.115], [-0.13, 1.3, 0.12], [0.14, 1.2, 0.115], [0.39, 0.95, 0.1]].map(([o, L, r]) => [chain([[...at(o, 6.95), r], [...at(o, 6.95 - L * 0.55, 0.02), r * 0.95], [...at(o, 6.95 - L, 0.07), r * 0.82]], 0.03), 0.008]));
+  // The palm: a slab in the hand's own frame (u across it, w through it from palm to back).
+  const slab = roundBox([0, 7.3, 0], [0.48, 0.5, 0.15], 0.12);
+  const palm = (x, y, z) => { const dx = x - 2.86, dz = z - 0.2; return slab(dx * row[0] + dz * row[1], y, dx * 0.6 + dz * 0.8); };
   const hand = mirrorX(bounded(blend([
-    [E([2.86, 7.2, 0.22], [0.5, 0.78, 0.5]), 0.08],
-    // The palm turns a little forward, so the fingers stand in a row slanting across the thigh.
-    ...[-0.27, -0.09, 0.09, 0.27].map((t, i) => [cone([2.86 + t * 0.62, 6.6, 0.22 + t * 0.78], [2.82 + t * 0.62, 5.95 + Math.abs(i - 1.5) * 0.12, 0.26 + t * 0.78], 0.145, 0.115), 0.04]),
-    [cone([2.62, 7.1, 0.66], [2.6, 6.35, 0.8], 0.15, 0.12), 0.06],
-  ]), [2.84, 6.7, 0.3], 1.3, 0.5));
-  // The anthills rising beside the legs to the fingertips: rough rounded blocks of the same stone,
-  // pressed against the outer calves and blended into them.
+    [palm, 0],
+    [fingers, 0.09],
+    [chain([[...at(-0.62, 7.35, 0.12), 0.15], [...at(-0.7, 6.8, 0.16), 0.13], [...at(-0.72, 6.35, 0.18), 0.11]], 0.04), 0.1],
+  ]), [2.84, 6.7, 0.25], 1.6, 0.5));
+  // The anthills rising beside the legs to the fingertips: great rounded mounds of the same stone,
+  // highest under the hands and falling away outwards beyond the shoulders' line, swelling forward
+  // round the outer calves and back behind the legs, blended into them.
   const lumps = blend([
-    [roundBox([3.6, 1.5, -0.3], [1.45, 1.5, 1.6], 0.6), 0],
-    [roundBox([3.4, 3.4, -0.25], [1.2, 1.9, 1.4], 0.6), 0.6],
-    [E([3.3, 5.05, -0.15], [0.95, 0.55, 1.15]), 0.45],
-    [E([3.9, 4.8, -0.7], [0.75, 0.5, 0.75]), 0.4],
+    [E([3.6, 0.6, -0.8], [2.3, 4.9, 1.9]), 0],
+    [E([2.95, 4.85, -0.35], [0.8, 0.9, 0.95]), 0.5],
+    [E([3.6, 1.6, 0.15], [1.6, 1.6, 1.25]), 0.6],
+    [E([5.3, 1.1, -0.6], [1.15, 1.3, 1.35]), 0.6],
+    [E([4.2, 3.4, -1.5], [1.3, 1.6, 1.2]), 0.5],
   ]);
-  const hill = (x, y, z) => lumps(x, y, z) + 0.07 * Math.sin(2.3 * x + 1) * Math.sin(1.9 * y + 0.4) * Math.sin(2.6 * z + 0.5);
+  const hill = (x, y, z) => lumps(x, y, z) + 0.07 * Math.sin(2.3 * x + 1) * Math.sin(1.9 * y + 0.4) * Math.sin(2.6 * z + 0.5) + 0.1 * Math.sin(0.9 * x + 2.1 * z) * Math.sin(1.1 * y + 0.7);
   // The chest's nipples and collarbones, laid on the skin of the torso.
   const nip = snap(base, [1.2, 13.5, 3], -0.05), cl = [[0.45, 15.05, 1.2], [1.5, 15.15, 1.2], [2.45, 15.0, 1.0]].map((q) => snap(base, q, -0.1));
   const pel = snap(base, [0, 8.75, 3], -0.12), sc = snap(base, [0, 8.5, 3], -0.2);
@@ -434,67 +493,99 @@ function bahubaliField() {
     [E([0, 17.75, -0.05], [1.28, 1.55, 1.32]), 0],
     [E([0, 16.75, 0.3], [0.98, 0.72, 0.95]), 0.35],
     [mirrorX(E([0.62, 17.1, 0.85], [0.42, 0.38, 0.38])), 0.2],
-    [E([0, 17.8, 0.98], [1.0, 0.17, 0.26]), 0.25],
+    [E([0, 17.78, 0.95], [0.9, 0.12, 0.26]), 0.25],
+    // The brows, arched ridges over the eyes.
+    [mirrorX(chain([[0.1, 17.72, 1.14, 0.065], [0.42, 17.8, 1.11, 0.07], [0.8, 17.7, 0.96, 0.055]], 0.05)), 0.08],
     [cone([0, 17.72, 1.22], [0, 17.05, 1.47], 0.1, 0.15), 0.12],
     [E([0, 17.0, 1.43], [0.2, 0.14, 0.16]), 0.08],
     [E([0, 16.25, 0.95], [0.38, 0.25, 0.3]), 0.2],
-    // The ears, and the long earlobes hanging nearly to the shoulders.
+    // The ears, and the long earlobes hanging flat beside the jaw nearly to the neck's foot.
     [mirrorX(E([1.25, 17.45, 0], [0.2, 0.5, 0.34])), 0.12],
-    [mirrorX(chain([[1.3, 17.1, 0.05, 0.19], [1.36, 16.4, 0.08, 0.2], [1.34, 16.0, 0.1, 0.21]], 0.1)), 0.12],
+    [mirrorX(E([1.17, 16.6, 0.0], [0.13, 0.64, 0.27])), 0.12],
   ]);
-  // The eye sockets, then the long half-closed eyes in them under their heavy lids.
+  // The eye sockets, then the long almond eyes in them under lowered lids, the iris cut shallow.
   head = carve(head, mirrorX(E([0.47, 17.48, 1.32], [0.36, 0.2, 0.3])), 0.12);
-  head = blend([[head, 0], [mirrorX(E([0.47, 17.45, 1.0], [0.29, 0.13, 0.19])), 0.04], [mirrorX(E([0.47, 17.53, 1.04], [0.32, 0.07, 0.18])), 0.03],
-    // The lips: a short full upper lip and a fuller lower one.
-    [E([0, 16.62, 1.24], [0.26, 0.06, 0.08]), 0.06], [E([0, 16.48, 1.2], [0.22, 0.07, 0.08]), 0.06]]);
-  head = carve(head, E([0, 16.555, 1.31], [0.25, 0.016, 0.1]), 0.02);
+  head = blend([[head, 0], [mirrorX(E([0.47, 17.43, 1.04], [0.3, 0.17, 0.21])), 0.04], [mirrorX(E([0.47, 17.575, 1.08], [0.33, 0.05, 0.17])), 0.03],
+    [mirrorX(E([0.47, 17.3, 1.06], [0.29, 0.03, 0.17])), 0.03],
+    // The lips: a wide full upper lip and a fuller lower one.
+    [E([0, 16.62, 1.24], [0.3, 0.06, 0.08]), 0.06], [E([0, 16.48, 1.2], [0.24, 0.07, 0.08]), 0.06]]);
+  head = carve(head, mirrorX(E([0.47, 17.42, 1.28], [0.075, 0.075, 0.05])), 0.01);
+  head = carve(head, E([0, 16.555, 1.31], [0.29, 0.016, 0.1]), 0.02);
+  // The corners of the mouth turned up in the calm smile.
+  head = carve(head, mirrorX(E([0.3, 16.58, 1.18], [0.05, 0.035, 0.08])), 0.015);
   // The slit of each pierced earlobe, and the three lines round the neck.
-  head = carve(head, mirrorX(E([1.42, 16.3, 0.08], [0.22, 0.3, 0.06])), 0.02);
+  head = carve(head, mirrorX(E([1.29, 16.35, 0.0], [0.08, 0.3, 0.07])), 0.02);
   for (const [y, R] of [[15.95, 0.79], [16.2, 0.78]]) head = carve(head, torus([0, y, 0.06], R, 0.04), 0.02);
   const headB = bounded(head, [0, 17.2, 0.3], 2.4, 0.6);
   // The anthills join the legs in a broad fillet; the hands join the forearms in a small one, too
   // small to bridge the gap between the fingertips and the anthills' tops.
-  const all = (x, y, z) => smin(smin(smin(smin(base(x, y, z), hill(Math.abs(x), y, z), 0.22), hand(x, y, z), 0.12), torso(x, y, z), 0.05), headB(x, y, z), 0.25);
+  const all = (x, y, z) => smin(smin(smin(smin(smin(base(x, y, z), toes(x, y, z), 0.06), hill(Math.abs(x), y, z), 0.22), hand(x, y, z), 0.12), torso(x, y, z), 0.05), headB(x, y, z), 0.25);
   const navel = E([0, 10.6, 1.62], [0.15, 0.2, 0.2]);
-  return { f: flatBase(carve(all, navel, 0.1)), lo: [-5, -0.1, -2.6], hi: [5, 19.6, 2.6] };
+  return { f: flatBase(carve(all, navel, 0.1)), lo: [-6, -0.1, -3.2], hi: [6, 19.6, 2.9] };
 }
 let bahubaliF = null;
 export const bahubaliSurface = () => (bahubaliF ||= bahubaliField().f);
-// The body is meshed with 17 cm cells and the head, inside an ellipsoid that crosses the neck,
-// with 4.5 cm cells (on phones 26 and 7 cm); the ridges are rubbed pale, as weathered granite is.
+// The body is meshed with 17 cm cells; the head, inside an ellipsoid that crosses the neck, with
+// 4.5 cm cells, and the hands and the feet with 6 cm cells (on phones 26, 7 and 9 cm), so the
+// fingers and toes stand apart; the ridges are rubbed pale, as weathered granite is.
 export const bahubaliBody = (m) => body(detail.low ? 'bahubali-coarse' : 'bahubali', bahubaliField, detail.low ? 0.26 : 0.17, m, undefined, {
-  wear: 0.35, split: { region: E([0, 16.9, 0.15], [1.85, 1.65, 1.85]), h: detail.low ? 0.07 : 0.045, lo: [-2.2, 14.6, -2.1], hi: [2.2, 19.6, 2.3] },
+  wear: 0.35, split: [
+    { region: E([0, 16.9, 0.15], [1.85, 1.65, 1.85]), h: detail.low ? 0.07 : 0.045, lo: [-2.2, 14.6, -2.1], hi: [2.2, 19.6, 2.3] },
+    ...[-1, 1].flatMap((s) => [
+      { region: E([s * 2.82, 6.6, 0.32], [0.5, 1.25, 0.85]), h: detail.low ? 0.09 : 0.06, lo: [s * 2.82 - 0.6, 5.25, -0.65], hi: [s * 2.82 + 0.6, 7.95, 1.3] },
+      { region: E([s * 1.0, 0.45, 1.65], [1.05, 0.62, 1.0]), h: detail.low ? 0.1 : 0.07, lo: [s - 1.15, -0.1, 0.55], hi: [s + 1.15, 1.15, 2.75] },
+    ]),
+  ],
 });
 
 // Thiruvalluvar at Kanyakumari, in the coordinates of thiruvalluvar() in
-// vivekananda-rock-memorial.js: the robe in folds from the pedestal up, its end thrown across the
-// chest, the right hand raised and the left holding the palm-leaf book. The head, beard and hands
-// are carved in the field, as on the Statue of Unity: an old sage's face (its brow, eyes under
-// heavy lids, a long nose, the lines from nose to mouth), the moustache over the lips, the full
-// beard combed in strands to the chest, the hair combed back over the skull into a knot bound on
-// the crown, the raised right hand with three fingers lifted (the little finger and the thumb
-// folded), and the left hand's fingers curled over the book. The book is a mesh.
+// vivekananda-rock-memorial.js (the robe's hem at y = 13.6 on the pedestal at 12.4, the knot's top
+// at 45.5, scaled there to the statue's 29 m), after photographs: the long robe in folds from the
+// ankles up, gathered in a fan of pleats down the middle of the front, the hips swaying a little
+// to his left; the upper cloth laid as a broad band across the chest from the right shoulder to
+// the left hip; the feet showing under the hem; the right hand raised before the chest and the
+// left holding the palm-leaf book at the waist. The head, beard and hands are carved in the field,
+// as on the Statue of Unity: an old sage's face (its brow, eyes under heavy lids, a long nose, the
+// lines from nose to mouth), the moustache over the lips, the full beard combed in strands to the
+// middle of the chest, the hair combed back over the skull into a knot bound on the crown, the
+// raised right hand, palm forward, with three fingers lifted (the little finger and the thumb
+// folded), and the left hand's fingers curled over the book. The book is a mesh. The field is
+// laid out with the raised hand at +x and turned over at the end, so it stands as photographed:
+// the raised hand on his right (-x).
 function thiruvalluvarField() {
-  const robe = lathe([[4.4, 12.4], [4.6, 16.4], [4.0, 22.4], [3.7, 27.4], [4.0, 32.4], [4.5, 36.4], [2.6, 38.4], [0.1, 38.7]], { sz: 0.72, folds: 18, amp: 0.07, from: 12.4, to: 30.4 });
+  const robe = lathe([[4.25, 13.6], [4.55, 16.4], [4.0, 22.4], [3.7, 27.4], [4.0, 32.4], [4.5, 36.4], [2.6, 38.4], [0.1, 38.7]], { sz: 0.72, folds: 18, amp: 0.07, from: 13.6, to: 30.4 });
+  // The upper cloth: a band two units wide laid on the robe, from the shoulder down across the chest
+  // to the hip, a third of a unit thick.
+  const sash = [[3.5, 37.6], [1.3, 33.4], [-1.3, 29.9], [-3.5, 25.6]];
+  const along = (x, y) => { let d = Infinity; for (let i = 0; i + 1 < sash.length; i++) { const [ax, ay] = sash[i], [bx, by] = sash[i + 1], dx = bx - ax, dy = by - ay, t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy))); d = Math.min(d, Math.hypot(x - ax - dx * t, y - ay - dy * t)); } return d; };
+  const cloth = (x, y, z) => { const r = robe(x, y, z); return Math.max(along(x, y) - 0.95, r - 0.32, -r - 0.25, -z); };
+  // The pleats falling down the middle of the front from the waist to the hem, widening as they fall.
+  const pleats = (x, y, z) => { const t = Math.min(1, Math.max(0, (28.5 - y) / 15)), r = robe(x, y, z), top = Math.min(1, (28.5 - y) / 2); return Math.max(Math.abs(x) - 0.8 - 0.7 * t, r - (0.28 + 0.14 * Math.abs(Math.sin(x * 5.5))) * Math.max(0.2, top), -r - 0.3, -z, y - 28.5, 13.7 - y); };
   const b = blend([
     [robe, 0],
-    [chain([[3.6, 36.5, 1.6, 0.9], [1.2, 33, 3.2, 0.9], [-2.4, 29, 3.0, 0.9], [-3.8, 25, 2.0, 0.9]], 0.4), 0.4],
+    [cloth, 0.15],
+    [pleats, 0.1],
+    // The ankles and feet under the hem.
+    [mirrorX(cone([1.15, 13.0, 1.4], [1.2, 14.6, 0.9], 0.5, 0.55)), 0.3],
+    [mirrorX(E([1.2, 12.85, 2.4], [0.72, 0.45, 1.35])), 0.3],
     [mirrorX(E([4, 36.4, 0], [1.6, 1.5, 1.4])), 0.8],
-    [cone([4.2, 36.2, 0], [5.2, 31.2, 1.6], 1.05, 0.9), 0.5],
-    [cone([5.2, 31.2, 1.6], [5.0, 35.6, 3.6], 0.9, 0.7), 0.3],
-    [E([5.0, 36.45, 3.85], [0.78, 0.95, 0.32]), 0.2],
+    // The raised arm: the upper arm down to the elbow at the side, the forearm up before the chest.
+    [cone([4.2, 36.2, 0], [4.6, 31.4, 1.4], 1.05, 0.9), 0.5],
+    [cone([4.6, 31.4, 1.4], [3.3, 35.3, 3.75], 0.9, 0.7), 0.3],
+    [E([3.1, 36.15, 4.05], [0.78, 0.95, 0.32]), 0.2],
     [cone([-4.2, 36.2, 0], [-4.8, 31.2, 1.4], 1.05, 0.9), 0.5],
     [cone([-4.8, 31.2, 1.4], [-3.2, 29.6, 3.6], 0.9, 0.7), 0.3],
     [cone([0, 37.4, 0], [0, 38.8, 0.3], 1.25, 1.2), 0.6],
   ]);
   // The hands. The right, raised, palm forward: the index, middle and ring fingers straight up, the
-  // little finger folded down onto the palm and the thumb across it. The left holds the book (a
-  // bundle 3.4 long lying across the body at y 29.05 to 29.55, its front at z 4.3): the palm
-  // behind and below it, the four fingers curled over its top and down its front.
+  // little finger, on the outer side, folded down onto the palm, and the thumb across it from the
+  // inner side. The left holds the book (a bundle 3.4 long lying across the body at y 29.05 to
+  // 29.55, its front at z 4.3): the palm behind and below it, the four fingers curled over its top
+  // and down its front.
   const raised = blend([
-    ...[[4.55, 1.15], [4.95, 1.3], [5.35, 1.15]].map(([x, L]) => [chain([[x, 37.3, 3.88, 0.19], [x, 37.3 + L * 0.55, 3.86, 0.175], [x, 37.3 + L, 3.8, 0.15]], 0.05), 0.07]),
-    [chain([[5.7, 37.2, 3.9, 0.16], [5.65, 37.0, 4.2, 0.15], [5.5, 36.8, 4.25, 0.14]], 0.05), 0.07],
-    [chain([[4.35, 36.1, 3.95, 0.2], [4.85, 36.55, 4.22, 0.18], [5.35, 36.75, 4.28, 0.16]], 0.05), 0.08],
+    ...[[2.7, 1.15], [3.1, 1.3], [3.5, 1.15]].map(([x, L]) => [chain([[x, 36.95, 4.08, 0.19], [x, 36.95 + L * 0.55, 4.06, 0.175], [x, 36.95 + L, 4.0, 0.15]], 0.05), 0.07]),
+    [chain([[3.85, 35.85, 4.15, 0.18], [3.55, 36.3, 4.42, 0.16], [3.15, 36.45, 4.48, 0.15]], 0.05), 0.08],
+    [chain([[2.4, 35.75, 4.05, 0.2], [2.6, 36.05, 4.42, 0.18], [2.95, 36.2, 4.52, 0.16]], 0.05), 0.08],
   ]);
   const holding = blend([
     [E([-3.25, 29.5, 3.45], [0.75, 0.6, 0.45]), 0],
@@ -530,11 +621,11 @@ function thiruvalluvarField() {
   // The beard, from the cheeks and jaw down to the chest in a full rounded mass, combed in
   // strands that run down it.
   const beardMass = blend([
-    [E([0, 38.45, 1.95], [1.6, 0.95, 1.05]), 0],
-    [mirrorX(E([1.4, 39.3, 1.25], [0.55, 1.0, 0.8])), 0.35],
-    // It hangs forward, clear of the robe on the chest.
-    [cone([0, 38.2, 2.35], [0, 36.6, 3.45], 1.25, 0.8), 0.55],
-    [E([0, 36.35, 3.5], [0.8, 0.5, 0.55]), 0.4],
+    [E([0, 38.45, 1.95], [1.7, 0.95, 1.05]), 0],
+    [mirrorX(E([1.4, 39.1, 1.3], [0.65, 1.2, 0.85])), 0.35],
+    // It hangs forward, broad and full, clear of the robe on the chest, to a rounded end.
+    [cone([0, 38.2, 2.35], [0, 35.7, 3.3], 1.55, 1.05), 0.55],
+    [E([0, 35.45, 3.3], [1.05, 0.65, 0.7]), 0.4],
   ]);
   // Strands down the beard, a little wavy, cut deeper towards its end.
   const beard = (x, y, z) => beardMass(x, y, z) + (0.06 + 0.03 * Math.max(0, 38.5 - y)) * Math.sin(20 * Math.atan2(x, z - 0.4) + 1.4 * y + 0.4 * Math.sin(3 * y));
@@ -543,10 +634,15 @@ function thiruvalluvarField() {
   const hairMass = blend([[E([0, 41.95, -0.45], [2.42, 2.45, 2.45]), 0], [E([0, 44.55, -0.65], [1.05, 0.95, 1.05]), 0.35], [torus([0, 44.0, -0.6], 0.92, 0.16), 0.1]]);
   const hair = (x, y, z) => hairMass(x, y, z) + 0.035 * Math.sin(30 * Math.atan2(x, z + 0.5) + (y > 43.8 ? 3 * y : 0));
   const headAll = blend([[head, 0], [tache, k(0.3)], [beard, 0.15], [hair, 0.12]]);
-  const headB = bounded(headAll, [0, 40.6, 0.6], 4.4, 2.0);
-  const handsF = (x, y, z) => (x > 3.5 ? raised(x, y, z) : x < -1.8 && y < 31 ? holding(x, y, z) : Infinity);
-  const all = (x, y, z) => smin(smin(b(x, y, z), handsF(x, y, z), 0.1), y > 34.8 ? headB(x, y, z) : Infinity, 0.2);
-  return { f: flatBase(all, 12.4), lo: [-6.6, 12.2, -4.2], hi: [7, 46, 5.8], head: headB, raised: bounded(raised, [5.0, 37.4, 3.9], 1.6, 1.5), holding: bounded(holding, [-3.2, 29.6, 4.0], 1.5, 1.5) };
+  const headB = bounded(headAll, [0, 40.2, 0.8], 5.6, 2.0);
+  const handsF = (x, y, z) => (x > 1.9 && y > 34.8 && z > 3.2 ? raised(x, y, z) : x < -1.8 && y < 31 ? holding(x, y, z) : Infinity);
+  const all = (x, y, z) => smin(smin(b(x, y, z), handsF(x, y, z), 0.1), y > 33.8 ? headB(x, y, z) : Infinity, 0.2);
+  // The hips sway out to his left (here -x) and the robe below them follows: a sideways shift
+  // largest at the hips and gone by the chest and the feet.
+  const sway = (x, y, z) => all(x + 0.6 * Math.exp(-(((y - 22) / 5) ** 2)), y, z);
+  const pre = flatBase(sway, 12.4);
+  // Turned over, so the raised hand is his right.
+  return { f: (x, y, z) => pre(-x, y, z), lo: [-7, 12.2, -4.2], hi: [6.6, 46, 5.8], head: headB, raised: bounded(raised, [3.1, 37.05, 4.2], 1.6, 1.5), holding: bounded(holding, [-3.2, 29.6, 4.0], 1.5, 1.5) };
 }
 let thiruP = null;
 const thiruParts = () => (thiruP ||= thiruvalluvarField());
@@ -559,7 +655,8 @@ export const thiruvalluvarBody = (m) => body(detail.low ? 'thiruvalluvar-coarse'
     // passing above the shoulders, as on the Statue of Unity; the beard's end lies on the robe in
     // the body's own cells.
     { region: E([0, 40.9, 0.9], [2.55, 3.75, 2.75]), h: detail.low ? 0.11 : 0.065, lo: [-2.9, 36.9, -2.2], hi: [2.9, 45.6, 4.0] },
-    { region: (x, y, z) => Math.min(9, thiruParts().raised(x, y, z) - 0.35), h: detail.low ? 0.12 : 0.07, lo: [3.8, 35.4, 3.2], hi: [6.3, 39.2, 4.9] },
-    { region: (x, y, z) => Math.min(9, thiruParts().holding(x, y, z) - 0.35), h: detail.low ? 0.12 : 0.07, lo: [-4.6, 28.6, 2.6], hi: [-2.1, 30.5, 5.1] },
+    // (The parts are laid out before the field is turned over, so they are looked up at -x.)
+    { region: (x, y, z) => Math.min(9, thiruParts().raised(-x, y, z) - 0.35), h: detail.low ? 0.12 : 0.07, lo: [-4.4, 35.0, 3.3], hi: [-1.9, 38.9, 5.0] },
+    { region: (x, y, z) => Math.min(9, thiruParts().holding(-x, y, z) - 0.35), h: detail.low ? 0.12 : 0.07, lo: [2.1, 28.6, 2.6], hi: [4.6, 30.5, 5.1] },
   ],
 });

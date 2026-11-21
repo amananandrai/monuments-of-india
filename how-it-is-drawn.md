@@ -29,14 +29,19 @@ what changes between desktops and phones.
   pale, dark stone is polished, and faces and hands are sculpted. The heads of Patel and Bahubali
   are meshed on a grid three to four times finer than their bodies, inside an ellipsoid that
   crosses the neck, so a face costs only its own triangles; the front of Patel's torso (his
-  bandi's placket, buttons and pockets) and his feet, chappals and dhoti hems are meshed finely
-  the same way. Creepers, hems, curls and leaves are
+  bandi's placket, buttons and pockets), his fists, and his feet, chappals and dhoti hems are
+  meshed finely the same way, as are Bahubali's hands and toes. The four great statues are checked
+  against photographs: Patel's short square shawl, sleeves and full dhoti; Bahubali's column legs,
+  the creepers sweeping up his thighs in a V and the anthills under his fingertips; the Shiva in the
+  half lotus; Thiruvalluvar with his right hand raised, the hips swaying and the Alankara Mandapam
+  under him. Creepers, hems, curls and leaves are
   laid on the skin with `snap()` rather than placed by hand, so they never float. The Statue of
-  Unity's bronze is cast in plates, and free-standing stone weathers in deep rain streaks, both
-  drawn by the surface shader at no cost in triangles. The 25 m Shiva at Nageshwar is the most detailed: matted
-  locks with the crescent moon and the Ganga, the third eye, rudraksha malas, the serpent Vasuki
-  round the neck, a tiger-skin cloth, and the trishul with its damaru
-  (`js/details/nageshwar-temple.js`).
+  Unity's bronze is cast in plates, Thiruvalluvar is built of granite blocks whose joints show, and
+  free-standing stone weathers in deep rain streaks, all drawn by the surface shader at no cost in
+  triangles. The 25 m Shiva at Nageshwar is the most detailed: matted locks combed up into a knot
+  with the crescent moon, the band of ash painted across the brow with the third eye, painted eyes
+  under lowered lids, rudraksha malas, the serpent Vasuki round the neck with its hood beside the
+  ear, tiger-skin cloths, and the trishul with its damaru (`js/details/nageshwar-temple.js`).
 - **Fine detail:** every monument carries a second layer of architectural detail from
   `js/details/`. India Gate, Charminar, the Taj Mahal, the Gateway of India and the Old Parliament
   House have the most: roundels and lettering, nested arches and half-domes, bracketed balconies,
