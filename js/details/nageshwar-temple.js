@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { V, mat, mesh, cyl, at, ellipsoid, capsule, tube, surface, face, fingers, doubleSided } from '../helpers.js';
+import { V, mat, mesh, cyl, at, ellipsoid, capsule, tube, surface, doubleSided } from '../helpers.js';
 import { shivaBody, shivaSurface } from './figures.js';
 import { detail } from '../detail.js';
-import { snap } from '../sdf.js';
+import { snap, normalAt } from '../sdf.js';
 import { mergeByMaterial } from './components.js';
 
 // The great seated Shiva in the Nageshwar temple garden, about 25 m tall, as photographs show it:
@@ -83,6 +83,8 @@ function mats() {
     ventral: plain('#e9b58a', 0.6, 0.02),
     ash: plain('#dfe9ee', 0.8, 0),
     eye: plain('#c2410c', 0.4, 0),
+    eyeWhite: new THREE.MeshStandardMaterial({ color: '#f1ebe1', roughness: 0.5, polygonOffset: true, polygonOffsetFactor: -2 }),
+    iris: new THREE.MeshStandardMaterial({ color: '#2a1a12', roughness: 0.4, polygonOffset: true, polygonOffsetFactor: -4 }),
     snakeEye: plain('#facc15', 0.4, 0, { emissive: '#eab308', emissiveIntensity: 0.6 }),
     tigerEye: plain('#e9d33a', 0.3, 0, { emissive: '#d8b80c', emissiveIntensity: 0.7 }),
     tongue: new THREE.MeshBasicMaterial({ color: '#dc2626' }),
@@ -177,8 +179,9 @@ export function mahayogiShiva() {
   // the skin, its lower edge jagged.
   const nu = 10, nv = 14, pos = [], idx = [];
   for (let j = 0; j <= nv; j++) for (let i = 0; i <= nu; i++) {
-    const u = i / nu, v = j / nv, x = 0.9 + u * 3.9, y = 17.4 - v * (6.6 + (j === nv ? (i % 2) * 0.6 : 0)) + Math.max(0, u - 0.6) * 0.8 * (1 - v);
-    pos.push(...snap(f, [x, y, 7], 0.16));
+    const u = i / nu, v = j / nv, x = 0.9 + u * 3.9, y = 17.2 - v * (6.4 + (j === nv ? (i % 2) * 0.6 : 0)) + Math.max(0, u - 0.6) * 0.8 * (1 - v);
+    // From just in front of the chest, so no point is drawn up onto the chin.
+    pos.push(...snap(f, [x, y, 4.2], 0.16));
   }
   for (let j = 0; j < nv; j++) for (let i = 0; i < nu; i++) { const a = j * (nu + 1) + i, b = a + 1, c = a + nu + 1, d = c + 1; idx.push(a, c, b, b, c, d); }
   const sg = new THREE.BufferGeometry();
@@ -205,13 +208,12 @@ export function mahayogiShiva() {
   for (const [c, ax] of [[[-6.86, 15.45, 3.28], [-0.3, 3.4, 1.8]], [[6.23, 8.75, 3.35], [-0.2, -3.8, 2.2]], [[-8.45, 15.0, -0.95], [-1.1, 2.2, 1.0]], [[8.3, 15.8, -0.8], [0.9, 2.8, 1.1]]]) g.add(band(c, ax, 0.86, 0.16, T.trim));
 
   // The front right hand raised in blessing (abhaya), Om painted on its palm.
-  g.add(fingers(V(-6.9, 18.0, 3.1), V(-6.9, 18.0, 4.3), V(0, 1, 0.1).normalize(), 1.15, 0.2, S), capsule(V(-6.4, 16.2, 4.35), V(-6.05, 17.0, 4.7), 0.2, S, 0.17));
-  const om = mesh(new THREE.PlaneGeometry(1.0, 1.0), T.om, -6.95, 16.7, 4.8);
+  // (The hand and its fingers are carved in the body, figures.js.)
+  const omAt = snap(f, [-6.95, 16.7, 5], 0.03);
+  const om = mesh(new THREE.PlaneGeometry(0.95, 0.95), T.om, ...omAt);
   om.castShadow = false;
   g.add(om);
-  // The front left hand on the knee, its fingers over the knee and a mala hanging from them.
-  for (let k = 0; k < 4; k++) g.add(capsule(V(5.75 + k * 0.28, 7.8, 5.3), V(5.8 + k * 0.32, 7.25 - k * 0.04, 6.2 - k * 0.08), 0.13, S, 0.1));
-  g.add(capsule(V(5.4, 7.9, 4.9), V(5.2, 7.6, 5.7), 0.15, S, 0.12));
+  // The front left hand on the knee (carved in the body), a mala hanging from its fingers.
   const kmala = [];
   for (let i = 0; i < 26; i++) { const t = i / 25; kmala.push(snap(f, [6.0 + t * 2.4, 7.4 - Math.sin(t * Math.PI) * 1.5 - t * 0.6, 5.9 - t * 0.9], 0.2)); }
   g.add(beads(kmala, 0.22, T.rudraksha));
@@ -240,20 +242,26 @@ export function mahayogiShiva() {
   for (const x of [-0.12, 0.12]) hood.add(ellipsoid(0.032 * K, 0.032 * K, 0.032 * K, T.snakeEye, x * K, 0.4 * K, 0.24 * K));
   g.add(hood);
 
-  // The head: the face, ears with round earrings, the third eye on a pale band of ash
-  g.add(at(face(2.2, 2.8, 2.3, S), 0, 21.2, 0.3));
+  // The head (its face and ears carved in the body): round earrings, and the third eye on a pale
+  // band of ash across the brow, laid on the forehead.
   for (const sd of [-1, 1]) {
-    g.add(ellipsoid(0.4, 1.0, 0.5, S, sd * 2.2, 21.2, 0.2));
     const ring = mesh(new THREE.TorusGeometry(0.16 * K, 0.04 * K, 12, 28), T.trim, sd * 2.3, 19.85, 0.24);
     ring.rotation.y = Math.PI / 6;
     g.add(ring);
   }
   for (const dy of [-0.21, 0, 0.21]) {
-    const y = 22.32 + dy, w = (y - 21.2) / 2.8, ash = [];
-    for (let k = 0; k <= 16; k++) { const x = -1.25 + (k / 16) * 2.5, u = x / 2.2; ash.push([x, y, 0.3 + 2.3 * Math.sqrt(Math.max(0, 1 - u * u - w * w)) + 0.05]); }
+    const ash = [];
+    for (let k = 0; k <= 16; k++) ash.push(snap(f, [-1.25 + (k / 16) * 2.5, 22.45 + dy, 4], 0.05));
     g.add(tube(ash, 0.08, T.ash, 32, 6));
   }
-  g.add(ellipsoid(0.13, 0.3, 0.09, T.eye, 0, 22.32, 2.47));
+  // The eyes, painted as on the statue: white almonds with dark irises, looking straight ahead.
+  for (const sd of [-1, 1]) {
+    const c = snap(f, [sd * 0.77, 21.3, 2.65], 0.015), n = v3(normalAt(f, c));
+    const white = mesh(new THREE.CircleGeometry(1, 20).scale(0.34, 0.165, 1), T.eyeWhite, ...c), iris = mesh(new THREE.CircleGeometry(0.1, 16), T.iris, ...v3(c).addScaledVector(n, 0.012).toArray());
+    for (const o of [white, iris]) { o.lookAt(v3(o.position.toArray()).add(n)); o.castShadow = false; g.add(o); }
+  }
+  const third = snap(f, [0, 22.45, 4], 0.06);
+  g.add(ellipsoid(0.13, 0.3, 0.09, T.eye, ...third));
 
   // The jatamukuta: the hair over the skull, coiled up in rings to a tall knot, and locks falling
   // to the shoulders and back

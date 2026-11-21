@@ -93,7 +93,10 @@ export function guardian(h, m) {
 // The seated Shiva at Nageshwar, cross-legged on his seat, with four arms: the front right (-x)
 // raised in blessing, the front left resting on the knee, the rear right gripping the trishul and
 // the rear left raising the damru; in the coordinates of mahayogiShiva() in nageshwar-temple.js.
-// The head, fingers and serpent are meshes.
+// The head and hands are carved in the field, as on the Statue of Unity: the face with its brow,
+// eyes under their lids, nose, lips and chin, and the ears; the raised palm with its four fingers
+// and thumb, the fingers of the left hand curling over the knee, and the rear hands closed round
+// the trishul and the damru. The hair, the serpent and the ornaments are meshes.
 function shivaField() {
   const legs = mirrorX(blend([[cone([2.6, 6.6, 0], [6.2, 5.8, 3.2], 2.3, 1.9), 0], [E([5.9, 6.0, 3.1], [1.9, 1.7, 1.8]), 0.8]]));
   const shins = blend([
@@ -116,19 +119,68 @@ function shivaField() {
     // The front right hand (-x) raised in blessing, the front left (+x) resting on the knee.
     [cone([-4.9, 15.6, 0.2], [-6.6, 12.4, 1.6], 1.2, 0.95), 0.7],
     [cone([-6.6, 12.4, 1.6], [-6.9, 15.8, 3.4], 0.95, 0.72), 0.4],
-    [E([-6.9, 16.8, 3.7], [0.55, 1.45, 1.05]), 0.35],
+    [E([-6.9, 16.75, 3.5], [0.85, 1.0, 0.34]), 0.35],
     [cone([4.9, 15.6, 0.2], [6.4, 12.2, 1.4], 1.2, 0.95), 0.7],
     [cone([6.4, 12.2, 1.4], [6.2, 8.4, 3.6], 0.95, 0.75), 0.4],
-    [E([6.1, 7.7, 4.2], [1.05, 0.65, 1.6]), 0.4],
+    [E([6.15, 7.9, 4.55], [0.85, 0.34, 1.0]), 0.4],
     // The two rear arms, from behind the shoulders: the right (-x) gripping the trishul's shaft at
     // shoulder height, the left (+x) raising the damru.
     [cone([-4.3, 15.9, -1.0], [-7.5, 13.4, -1.7], 1.0, 0.82), 0.6],
     [cone([-7.5, 13.4, -1.7], [-8.6, 15.6, -0.7], 0.82, 0.66), 0.35],
-    [E([-8.75, 16.1, -0.6], [0.75, 0.85, 0.75]), 0.3],
+    [E([-8.75, 16.1, -0.62], [0.62, 0.8, 0.6]), 0.3],
     [cone([4.3, 15.9, -1.0], [7.6, 13.8, -1.6], 1.0, 0.82), 0.6],
     [cone([7.6, 13.8, -1.6], [8.5, 16.6, -0.5], 0.82, 0.66), 0.35],
-    [E([8.6, 17.2, -0.4], [0.7, 0.85, 0.7]), 0.3],
+    [E([8.6, 17.2, -0.42], [0.6, 0.8, 0.58]), 0.3],
   ]);
+  // The hands' fingers. The raised right palm faces forward, its four fingers rising a little
+  // apart, the middle the longest, the thumb out to the side towards the body; the left hand rests
+  // palm down on the knee, its fingers curling over it; the rear hands are fists, their knuckles
+  // in a row in front of what they hold and the thumb over the top.
+  const fingersOf = (list) => blend(list.map((pts) => [chain(pts, 0.06), 0.08]));
+  const raised = fingersOf([
+    ...[[-7.5, 0.95, -0.12], [-7.1, 1.2, -0.04], [-6.7, 1.28, 0], [-6.32, 1.15, -0.04]].map(([x, L, lean]) => [[x, 17.55, 3.52, 0.19], [x + lean, 17.55 + L * 0.55, 3.5, 0.175], [x + lean * 2, 17.55 + L, 3.42, 0.15]]),
+    [[-6.35, 16.35, 3.6, 0.22], [-6.0, 16.75, 3.72, 0.2], [-5.78, 17.15, 3.78, 0.16]],
+  ]);
+  const resting = fingersOf([
+    ...[5.62, 6.0, 6.38, 6.74].map((x, i) => [[x, 7.85, 5.4, 0.19 - i * 0.012], [x + 0.04, 7.6, 5.95, 0.175 - i * 0.012], [x + 0.06, 7.15, 6.3 - i * 0.05, 0.15 - i * 0.01]]),
+    [[5.4, 7.95, 4.7, 0.21], [5.2, 7.75, 5.25, 0.18], [5.15, 7.5, 5.6, 0.15]],
+  ]);
+  const fist = (x, y0, z, sx) => blend([
+    ...[0, 1, 2, 3].map((i) => [E([x, y0 - i * 0.32, z + 0.5], [0.42, 0.17, 0.24]), 0.06]),
+    [E([x - sx * 0.1, y0 + 0.2, z + 0.32], [0.38, 0.18, 0.26]), 0.06],
+  ]);
+  const hands = blend([[raised, 0], [resting, 0], [fist(-8.75, 16.6, -0.62, -1), 0], [fist(8.6, 17.7, -0.42, 1), 0]]);
+  // The head: the skull, a jaw tapering to the chin, high cheekbones, a straight brow over
+  // almond eyes set in their sockets under full lids, a long straight nose with its nostrils, full
+  // lips with the line between them, and the ears; laid out as on the Statue of Unity's head, here
+  // about a quarter its size (P scales its units), younger and calmer, without the lines of age.
+  const S = 0.225, P = (x, y, z) => [x * S, 21.2 + y * S * 1.08, 0.3 + z * S], k = (v) => v * S;
+  let head = blend([
+    [E(P(0, 1.4, -0.5), [9.8 * S, 10.8 * S * 1.08, 10.3 * S]), 0],
+    [E(P(0, -5.0, 1.2), [7.4 * S, 5.6 * S * 1.08, 7.4 * S]), k(3)],
+    [mirrorX(E(P(4.6, -2.2, 6.4), [3.2 * S, 2.8 * S, 2.8 * S])), k(1.6)],
+    [E(P(0, 2.7, 8.3), [6.6 * S, 1.2 * S, 2.1 * S]), k(1.6)],
+    [cone(P(0, 2.0, 9.4), P(0, -2.4, 11.6), k(0.95), k(1.35)), k(0.8)],
+    [E(P(0, -2.6, 11.2), [1.6 * S, 1.2 * S, 1.3 * S]), k(0.6)],
+    [mirrorX(E(P(1.4, -3.0, 10.1), [0.95 * S, 0.85 * S, 0.85 * S])), k(0.5)],
+    [E(P(0, -8.4, 6.6), [3.0 * S, 2.0 * S, 2.4 * S]), k(1.5)],
+    [mirrorX(E(P(9.9, -0.4, -0.6), [1.3 * S, 3.5 * S, 2.5 * S])), k(0.6)],
+  ]);
+  head = carve(head, mirrorX(E(P(3.4, 0.5, 9.2), [2.4 * S, 1.5 * S, 2.0 * S])), k(0.9));
+  head = blend([[head, 0],
+    // The eyeball in the socket, and the upper and lower lids round it, the eyes wide open.
+    [mirrorX(E(P(3.4, 0.35, 7.9), [1.95 * S, 1.2 * S, 1.6 * S])), k(0.2)],
+    [mirrorX(E(P(3.4, 1.45, 8.0), [2.2 * S, 0.42 * S, 1.3 * S])), k(0.25)],
+    [mirrorX(E(P(3.45, -0.85, 8.0), [1.9 * S, 0.3 * S, 0.95 * S])), k(0.3)],
+    [E(P(0, -4.4, 9.4), [2.6 * S, 0.65 * S, 1.05 * S]), k(0.5)],
+    [E(P(0, -5.6, 9.1), [2.3 * S, 0.8 * S, 1.05 * S]), k(0.5)]]);
+  head = carve(head, E(P(0, -5.0, 9.95), [2.6 * S, 0.17 * S, 1.0 * S]), k(0.2));
+  head = carve(head, mirrorX(E(P(2.7, -5.2, 9.1), [0.45 * S, 0.28 * S, 0.6 * S])), k(0.2));
+  // The philtrum under the nose, and the ear's hollow.
+  head = carve(head, E(P(0, -3.65, 10.25), [0.35 * S, 0.6 * S, 0.3 * S]), k(0.15));
+  head = carve(head, mirrorX(E(P(10.6, -0.2, -0.2), [0.6 * S, 2.2 * S, 1.4 * S])), k(0.2));
+  const headB = bounded(head, [0, 21.4, 0.4], 3.2, 0.5);
+  const handsB = (x, y, z) => (Math.abs(x) < 5 ? Infinity : hands(x, y, z));
   // The anatomy of a yogi's body, laid on that skin: the abdominal muscles in three pairs, the
   // collarbones, and the line down the middle of the belly.
   const on = (p, depth) => snap(b, p, -depth);
@@ -138,11 +190,23 @@ function shivaField() {
   const anatomy = blend([[b, 0], ...abs, ...clav]);
   const line = E(on([0, 11.9, 4], 0), [0.12, 1.25, 0.16]);
   const navel = E([0, 10.2, 2.95], [0.25, 0.3, 0.3]);
-  return { f: flatBase(carve(carve(anatomy, line, 0.15), navel, 0.15), 3.6, 0.2), lo: [-10.5, 3.4, -4.5], hi: [10.5, 21.4, 7.6] };
+  const all = (x, y, z) => smin(smin(carve(carve(anatomy, line, 0.15), navel, 0.15)(x, y, z), handsB(x, y, z), 0.12), y > 17.4 ? headB(x, y, z) : Infinity, 0.5);
+  return { f: flatBase(all, 3.6, 0.2), lo: [-10.5, 3.4, -4.5], hi: [10.5, 24.6, 7.6] };
 }
 // coarse: meshed on a cell half as large again (under half the triangles, under half the time), for
 // phones (js/detail.js); kept under its own key, so both can be cached.
-export const shivaBody = (m, { coarse = false } = {}) => body(coarse ? 'shiva-coarse' : 'shiva', shivaField, coarse ? 0.36 : 0.24, m);
+// The head and the four hands are meshed on finer cells, inside regions that cross the neck and
+// the wrists squarely.
+export const shivaBody = (m, { coarse = false } = {}) => body(coarse ? 'shiva-coarse' : 'shiva', shivaField, coarse ? 0.36 : 0.24, m, undefined, {
+  split: [
+    // The head's region crosses the neck under the cobra's coils, so its seam is hidden.
+    { region: E([0, 21.2, 0.6], [2.9, 3.5, 2.9]), h: coarse ? 0.11 : 0.065, lo: [-3.2, 17.5, -2.6], hi: [3.2, 24.9, 3.8] },
+    { region: E([-6.6, 17.0, 3.5], [1.6, 1.75, 1.1]), h: coarse ? 0.13 : 0.075, lo: [-8.4, 15.1, 2.3], hi: [-4.9, 18.9, 4.7] },
+    { region: E([6.1, 7.6, 5.2], [1.55, 1.0, 1.65]), h: coarse ? 0.13 : 0.075, lo: [4.4, 6.4, 3.4], hi: [7.8, 8.8, 7.0] },
+    { region: E([-8.75, 16.1, -0.4], [1.05, 1.15, 1.05]), h: coarse ? 0.14 : 0.08, lo: [-9.9, 14.8, -1.6], hi: [-7.6, 17.4, 0.8] },
+    { region: E([8.6, 17.2, -0.2], [1.05, 1.15, 1.05]), h: coarse ? 0.14 : 0.08, lo: [7.4, 15.9, -1.4], hi: [9.8, 18.5, 1.0] },
+  ],
+});
 // The Shiva's skin as a field, for laying ornaments on it.
 let shivaF = null;
 export const shivaSurface = () => (shivaF ||= shivaField().f);
