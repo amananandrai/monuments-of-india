@@ -12,7 +12,7 @@ import { deer } from './animals.js';
 // and the monasteries' foundations show the cells that lined their courts. Dimensions follow
 // js/monuments/dhamek-stupa.js: the drum r = 14 from 1.2 to 12.2, the faces 1.4 proud at angles
 // k π / 4 (their fronts at r 14.7, 5 wide, from y 2 to 11), their niches from y 6 to 8.6.
-const BRICK_ = surface(mat('#9c6a4f', 0.95), 'brick'), RUIN_ = mat('#a5553b', 0.95), PAVE = mat('#c9bda6', 0.95);
+const BRICK_ = surface(mat('#9c6a4f', 0.95), 'terracotta'), RUIN_ = mat('#a5553b', 0.95), PAVE = mat('#c9bda6', 0.95);
 const STONE = mat('#b8a88e', 0.9), BAND = surface(mat('#b7a48c', 0.9), 'frieze');
 function architecture(f) {
   const d = new THREE.Group();

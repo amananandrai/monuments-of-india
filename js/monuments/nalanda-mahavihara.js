@@ -3,9 +3,9 @@ import { M, mat, box, at, rng, inst, unitBox, aroundRect, surface, cyl, hemi } f
 import { addDetails } from '../details/nalanda-mahavihara.js';
 
 // The brick is old and weathered: a dull red-brown, darker in the lower courses, not new orange.
-const BRICK = surface(mat('#8c5d49', 0.95), 'brick');
-const BRICK_DARK = surface(mat('#6f4a3b', 0.95), 'brick');
-const BRICKS = [BRICK, surface(mat('#7e5444', 0.95), 'brick'), surface(mat('#966753', 0.95), 'brick')];
+const BRICK = surface(mat('#8c5d49', 0.95), 'terracotta');
+const BRICK_DARK = surface(mat('#6f4a3b', 0.95), 'terracotta');
+const BRICKS = [BRICK, surface(mat('#7e5444', 0.95), 'terracotta'), surface(mat('#966753', 0.95), 'terracotta')];
 
 // A ruined monastery: a square of monks' cells round a courtyard. Its thick outer wall and the
 // cross walls between the cells stand to ragged heights, the top crumbling unevenly along the length
