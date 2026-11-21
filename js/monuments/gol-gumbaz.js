@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, box, cyl, at, onFace, FACES, archPanel, onionDome, hemi, finial } from '../helpers.js';
+import { M, box, cyl, at, onFace, FACES, onionDome, hemi, finial } from '../helpers.js';
 import { iwan, arcadeSkin, cellRow } from '../details/mughal.js';
 import { addDetails } from '../details/gol-gumbaz.js';
 
@@ -26,9 +26,8 @@ export function buildGolGumbaz() {
     }
     f.add(at(onionDome(3.7, Dl), x, b + 35, z), at(finial(3), x, b + 35 + 6.6, z));
   }
-  // Drum ringed with leaf-shaped petals, then the great dome
+  // The drum, then the great dome (the ring of petals round its foot: js/details/gol-gumbaz.js)
   f.add(cyl(23.5, 23.5, 2.6, D, 0, b + H, 0, 64));
-  for (let k = 0; k < 40; k++) f.add(onFace(at(archPanel(3.4, 4.4, true, Dl, 0.5), 0, b + H + 1.6, 0), (k / 40) * Math.PI * 2, 21.8));
   f.add(at(hemi(22, Dl, 64), 0, b + H + 2.6, 0));
   f.add(at(finial(4), 0, b + H + 2.6 + 21.9, 0));
   addDetails(f, g);

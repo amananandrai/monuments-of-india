@@ -6,7 +6,8 @@ import { trees, shrubs, asiBoard, along } from './realism.js';
 // Gol Gumbaz, finer detail. From photographs: the great cornice near the top of the walls projects
 // on rows of carved brackets; a parapet of merlons crowns the walls; each storey of the seven-storey
 // corner towers opens in an arched window on every face; a lotus ring sits round the foot of the
-// dome's finial. Dimensions follow js/monuments/gol-gumbaz.js: base b = 1.5, walls H = 27, s = 23.75.
+// dome's finial, and a ring of petals round the dome's foot (the iwans' muqarnas come with
+// iwan(), js/details/mughal.js). Dimensions follow js/monuments/gol-gumbaz.js: base b = 1.5, walls H = 27, s = 23.75.
 function architecture(f) {
   const d = new THREE.Group(), b = 1.5, H = 27, s = 23.75, D = M.deccan, Dl = M.deccanLight, list = [];
   for (const a of FACES) {
@@ -24,6 +25,8 @@ function architecture(f) {
     d.add(t);
   }
   d.add(at(petalRing(1.6, 14, 2.2, 1.1, 0.55, Dl), 0, b + H + 2.6 + 21.6, 0));
+  // The ring of petals the dome rises from, round its foot on the drum (r = 22).
+  d.add(at(petalRing(22.3, 52, 4, 2.5, 0.2, Dl, 0.3), 0, b + H + 2.4, 0));
   mergeByMaterial(d);
   f.add(d);
 }

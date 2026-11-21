@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, at, onFace, FACES } from '../helpers.js';
+import { M, mat, box, cyl, at, onFace, FACES, surface } from '../helpers.js';
 import { archRing, archSlab, arcadeScreen, petalRing, bracketGeo, placeAll, aroundCircle, mergeByMaterial } from './components.js';
 import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
 
@@ -7,8 +7,11 @@ import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
 // blind arches in moulded rings, crowned by a parapet of small arches; its bulbous dome sits in a
 // cup of lotus petals on the drum; the mosque's minarets carry their balconies on brackets.
 // Dimensions follow tomb(s) in js/monuments/qutb-shahi-tombs.js: chamber w = 20 s square from 8 s
-// to 8 s + 12 s, the dome r = 0.38 w on a drum 2 s high.
+// to 8 s + 12 s, the dome r = 0.38 w on a drum 2 s high. Under the parapet runs a frieze of
+// turquoise glazed tile, and the drum is banded in green tile, as traces of both survive.
 const STONE = mat('#a59a86', 0.9), PLASTER = mat('#cfc4ae', 0.85);
+// The glazed tiles, turquoise and green, that once faced the tombs' friezes and drums.
+const TURQ = surface(mat('#2f9a9a', 0.45), 'tiles'), GREEN = surface(mat('#4f7a5c', 0.5), 'tiles');
 function architecture(f) {
   const d = new THREE.Group();
   for (const [x, z, s] of [[0, 0, 1.3], [-60, -20, 1], [56, -24, 1.05], [-40, 50, 0.85], [40, 54, 0.9], [-90, 40, 0.7], [90, 20, 0.75]]) {
@@ -20,8 +23,12 @@ function architecture(f) {
         t.add(onFace(at(archRing(aw, ah, true, 0.22 * s, 0.1, STONE), 0, y, 0), a, w / 2, k * w * 0.3));
       }
       t.add(onFace(at(arcadeScreen(w - 0.4, 1.3 * s, 9, 0.6 * s, 0.9 * s, 0.3 * s, PLASTER), 0, y0 + h, 0), a, w / 2 - 0.2 * s));
+      // A frieze of glazed tile under the parapet, above the upper arches.
+      t.add(onFace(box(w - 0.6, 0.7 * s, 0.06, TURQ, 0, y0 + h - 1.0 * s, 0.03), a, w / 2));
     }
-    const r = 0.38 * w;
+    const r = 0.38 * w, top = y0 + h;
+    // A band of green tile round the drum (tapering from 0.4 w to 0.36 w over 2 s).
+    t.add(cyl(w * 0.3874, w * 0.3954, 0.9 * s, GREEN, 0, top + 0.4 * s, 0, 24));
     t.add(at(petalRing(r * 0.86, 20, r * 0.6, r * 0.4, 0.55, PLASTER, 0.3), 0, y0 + h + 2 * s + r * 0.02, 0));
     d.add(t);
   }

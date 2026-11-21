@@ -45,6 +45,7 @@ const PARTS = `
     'column-trim': () => { const cols = [[0, 0, 0, 0.9, 6, 0.9], [3, 0, 0, 0.9, 6, 0.9], [6, 0, 0, 0.9, 6, 0.9]]; return group(H.inst(H.unitCyl(14), cols, M.buff), C.columnTrim(cols, M.buff), box(8, 0.7, 1.6, M.buff, 3, 6, 0)); },
     'arch': () => group(H.archWall(9, 8, 1.4, 4.4, 6, true, M.red), at(C.archRing(4.4, 6, true, 0.4, 0.14, M.marble), 0, 0, 0.7)),
     'iwan': () => Mu.iwan(6, 9, { m: M.red, trim: M.marble, shade: M.redLight }),
+    'muqarnas': [() => Mu.iwan(10, 14, { m: M.red, trim: M.marble, shade: M.redLight, depth: 2.6, frame: 2.4, top: 2.4, script: true, rosettes: true }), { view: [0.35, 0.1, 1] }],
     'niche': () => group(wall(6, 6.5, M.buff), at(C.niche(2.2, 4, true, 0.4, M.buff), 0, 1, 0)),
     'window-jali': () => group(wall(6, 6, M.marble), at(C.windowFrame(2.4, 4, M.marble, { screen: C.jali(M.marble) }), 0, 1, 0)),
     'classical-door': () => group(wall(8, 7.5, M.cream), at(Co.classicalDoor(2.2, 4.4, { m: M.cream, trim: M.buff, columns: 1, top: 'pediment' }), 0, 0, 0)),
