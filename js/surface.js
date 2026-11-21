@@ -7,7 +7,7 @@ import * as THREE from 'three';
 // patches of soot and age; strongest on brick, about half on marble, none on gilt) and a small
 // per-object tint so that repeated pieces don't look cloned. Water is its own kind: moving ripples
 // that tilt the normal, so the sky reflects in a broken, shifting band instead of a flat sheen.
-export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13, calligraphy: 14, pietra: 15, reliefs: 16, banded: 17, paving: 18, plates: 19 };
+export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13, calligraphy: 14, pietra: 15, reliefs: 16, banded: 17, paving: 18, plates: 19, reeds: 20 };
 
 // Seconds since the page opened, shared by every water material; main.js advances it each frame.
 export const waterTime = { value: 0 };
@@ -214,6 +214,20 @@ const PATTERN = /* glsl */ `
   sTint = (0.96 + 0.06 * sPlPat) * mix(1.0, 0.78, sPlSeam);
   sH = -0.6 * sPlSeam;
   sRough = 0.06 * (sPlPat - 0.5);
+#elif SURF_KIND == 20
+  // A penbey parapet: bundles of tamarisk twigs laid with their cut ends outwards and painted
+  // maroon, so the band reads as a dense stubble of dark-edged ends in courses about 22 cm deep,
+  // each bundle a shade different. Its top and underside are plain. From further off, an even,
+  // slightly mottled tone.
+  vec2 uv = sFaceUV(sp, sn);
+  float sRdC = floor(uv.y / 0.22), sRdB = floor(uv.x / 0.5 + 0.5 * mod(sRdC, 2.0));
+  float sRdEnd = sNoise(vec3(uv * 34.0, 1.0)), sRdFine = sNoise(vec3(uv * 80.0, 2.0));
+  float sRdCourse = 1.0 - smoothstep(0.0, 0.025, min(fract(uv.y / 0.22), 1.0 - fract(uv.y / 0.22)) * 0.22);
+  float sRdSide = 1.0 - step(0.7, abs(sn.y));
+  sTint = mix(1.0, (0.78 + 0.34 * sRdEnd + 0.1 * (sRdFine - 0.5)) * (0.92 + 0.14 * sHash(vec3(sRdB, sRdC, 9.0))) * mix(1.0, 0.7, sRdCourse), sRdSide * sNear);
+  sTint *= mix(1.0, 0.97, sRdSide * (1.0 - sNear));
+  sH = sRdSide * (sRdEnd * 0.8 + sRdFine * 0.3 - sRdCourse * 0.6);
+  sRough = 0.1;
 #elif SURF_KIND == 13
   // A tower's walls: a band of glazing on every floor (3.4 m), box-filtered over the pixel, so a
   // floor smaller than a pixel blends into an even tone instead of shimmering in bands. Roofs plain.
@@ -466,7 +480,7 @@ function patch(shader, kind, bump, photo, wave, edge, reflect) {
   normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`));
 }
 
-const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0, calligraphy: 0.2, pietra: 0.3, reliefs: 1.4, banded: 1.0, paving: 0.9, plates: 0.5 };
+const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0, calligraphy: 0.2, pietra: 0.3, reliefs: 1.4, banded: 1.0, paving: 0.9, plates: 0.5, reeds: 1.6 };
 
 // Choose a surface for a material from its look, unless one was set with surface().
 function guess(m) {

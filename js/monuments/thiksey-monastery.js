@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, rng, hipRoof, tibetanBlock, TIBETAN, inst, unitBox } from '../helpers.js';
+import { M, mat, box, at, rng, hipRoof, TIBETAN, inst, unitBox } from '../helpers.js';
 import { tibetanDoor } from '../details/doorways.js';
 import { mountainRing, heightField, rough, smooth } from '../details/terrain.js';
-import { quarters } from '../details/tibetan.js';
+import { quarters, hall, ganjira, roofCorners } from '../details/tibetan.js';
 import { addDetails } from '../details/thiksey-monastery.js';
 
 const ROCK = mat('#a08b6d', 0.95, 0, { flatShading: true });
@@ -33,9 +33,11 @@ export function buildThiksey() {
   f.add(inst(unitBox(), blocks, TIBETAN.white), inst(unitBox(), blocks.map(([x, y, z, w, h, d, ry]) => [x, y + h, z, w + 0.3, 0.7, d + 0.3, ry]), TIBETAN.maroon));
   // Windows, doors, beam ends and roofs for the houses (js/details/tibetan.js).
   f.add(quarters(blocks, { cap: 0.7 }));
-  // Summit: the main assembly hall and the red Maitreya temple
-  f.add(at(tibetanBlock(18, 9, 14, 2, OCHRE), -4, H - 6, 0), at(hipRoof(20, 16, 3, M.gild), -4, H + 3, 0));
-  f.add(at(tibetanBlock(12, 7, 10, 2), 10, H - 8, 6), at(tibetanDoor(1.4, 2.6), 12, H - 8, 11));
+  // Summit: the main assembly hall, ochre, with a timber window bay in its upper floor, under a
+  // gilded roof with a finial and corner bells; and the Maitreya temple (js/details/tibetan.js).
+  f.add(at(hall(18, 9, 14, { floors: 2, wall: OCHRE, cap: 1.26, y0: 0.8, bay: 3.4 }), -4, H - 6, 0), at(hipRoof(20, 16, 3, M.gild), -4, H + 3, 0));
+  f.add(at(ganjira(2.4), -4, H + 5.85, 0), at(roofCorners(20, 16), -4, H + 3, 0));
+  f.add(at(hall(12, 7, 10, { floors: 2, cap: 0.98, y0: 0.8, door: 2, doorW: 1.4 }), 10, H - 8, 6), at(tibetanDoor(1.4, 2.6), 12, H - 8, 11));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.25, 0.3, 1.25], fog: 10 };
 }

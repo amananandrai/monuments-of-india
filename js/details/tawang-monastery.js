@@ -1,24 +1,20 @@
 import * as THREE from 'three';
 import { at } from '../helpers.js';
 import { mergeByMaterial } from './components.js';
-import { dharmaWheel, shabkhep, parapetDiscs } from './tibetan.js';
+import { dharmaWheel, parapetDiscs, maniWheels } from './tibetan.js';
 import { prayerFlags, trees, scatter } from './realism.js';
 import { yaks } from './animals.js';
 import { spurY } from '../monuments/tawang-monastery.js';
 
 // Tawang, finer detail. From photographs of the Dukhang: the Dharma wheel and its deer over the
-// front of the gilded roof; gilded discs along the maroon parapet; and pleated awnings in red, blue
-// and green over every window of its front. Dimensions follow js/monuments/tawang-monastery.js: the
+// front of the gilded roof; gilded discs along the maroon parapet; and in the courtyard before it,
+// galleries of prayer wheels. (The hall's windows, awnings and window bay are in its builder.) Dimensions follow js/monuments/tawang-monastery.js: the
 // ridge top T = 24, the hall 30 × 15 × 24 at z = -16 (front at -4), three floors of windows.
 function architecture(f) {
   const d = new THREE.Group(), T = 24;
   d.add(at(dharmaWheel(4.4), 0, T + 20.6, -11.1));
-  const n = Math.floor(30 / 3.4);
-  for (let fl = 0; fl < 3; fl++) for (let k = 0; k < n; k++) {
-    const x = -15 + (k + 0.5) * (30 / n), y = 1 + fl * ((15 * 0.85) / 3);
-    if (fl < 2 && Math.abs(x) < 3) continue;
-    d.add(at(shabkhep(1.2), x, T + y + 1.65, -3.9));
-  }
+  // Galleries of prayer wheels down both sides of the courtyard before the hall, facing in.
+  for (const s of [-1, 1]) d.add(at(maniWheels(14, { back: true }), s * 24, T, 12).rotateY(-s * Math.PI / 2));
   d.add(at(parapetDiscs(29.6, 2.2, 0.24), 0, T + 14.1, -3.83), at(parapetDiscs(16, 2, 0.2), 0, T + 19.6, -11.78));
   mergeByMaterial(d);
   f.add(d);

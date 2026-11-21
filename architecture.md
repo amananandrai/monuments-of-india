@@ -223,18 +223,27 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 
 ## Tibetan monasteries (`js/details/tibetan.js`)
 
-| ![Monks' houses](img/tibetan-houses.jpg) | ![Dharma wheel and a victory banner](img/dharma-wheel.jpg) |   |
+| ![Monks' houses](img/tibetan-houses.jpg) | ![Dharma wheel and a victory banner](img/dharma-wheel.jpg) | ![Assembly hall](img/tibetan-hall.jpg) |
 | :---: | :---: | :---: |
-| Monks' houses | Dharma wheel and a victory banner |   |
+| Monks' houses | Dharma wheel and a victory banner | Assembly hall |
+| ![Prayer wheels](img/mani-wheels.jpg) | ![Gilded roof](img/gilded-roof.jpg) |   |
+| Prayer wheels | Gilded roof |   |
 
 | Part | What it is |
 | --- | --- |
-| `tibetanBlock(w, h, d, floors)` (helpers) | A whitewashed block with dark windows under a maroon band |
+| `tibetanBlock(w, h, d, floors)` (helpers) | A whitewashed block with dark windows under a maroon band (Rumtek) |
+| `hall(w, h, d, { floors, wall, cap, door, bay })` | An assembly hall or temple: walls under the penbey band and a white fillet, framed windows with awnings on every face, an earth roof, a door gap, and a timber window bay in the front's top row |
+| `hallWindows(spots)` | Windows in black surrounds, with frames, lintels and valances, at any list of spots |
+| `rabsel(w, h)` | A projecting timber window bay: three lattice lights on a bracketed sill, under painted lintels and a cornice |
+| `maniWheels(len, { h, back })` | A gallery of brass prayer wheels in a recess between maroon posts, under an eave |
+| `ganjira(h)` | The gilded lotus-and-vase finial on a roof's peak |
+| `roofCorners(w, d)` | Upturned gilt tips and bells at the corners of a gilded roof |
 | `quarters(blocks, { cap })` | Dresses a list of plain blocks as monks' houses: windows in black surrounds, doors, beam ends, earth roofs, prayer-flag poles |
 | `dharmaWheel(w)` | The gilded wheel between two deer over an assembly hall |
 | `gyaltsen(h)` | The victory banner at a roof's corner |
 | `shabkhep(w)` | The pleated awning over a window |
 | `parapetDiscs(len, pitch, r)` | Gilded discs along a parapet |
+| `TIBETAN.maroon` (helpers) | The maroon parapet band, drawn with the `reeds` surface as the cut twig ends of a penbey |
 | `tibetanDoor(w, h)`, `tibetanPortico(…)` (doorways) | A painted door; a pillared portico |
 
 ## Stairs (`js/details/doorways.js`)
@@ -274,6 +283,7 @@ continuous skin in `js/details/figures.js` and `js/sdf.js`. The tools for workin
 | `skinMatrix(f, p, dir, offset, scale)` | sdf | A matrix that lays a part flat on the skin, its length along `dir`: leaves and curls, instanced |
 | `bakeCavities(geo, f, reach, deep, { wear })` | sdf | Darkens the crevices into vertex colours, and with `wear` lightens the ridges |
 | `surface(m, 'plates')` | surface | Bronze cast in plates: staggered joints worked out in space, so they run true over a curved body |
+| `surface(m, 'reeds')` | surface | A penbey parapet: the maroon-painted cut ends of tamarisk twigs, in bundled courses |
 
 ## Terrain (`js/details/terrain.js`)
 
