@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { M, mat, at, inst, unitBox, unitCyl, kalash } from '../helpers.js';
-import { rosette, petalRing, railing, archCurve, mergeByMaterial } from '../parts/components.js';
+import { M, V, mat, box, cyl, at, inst, unitBox, unitCyl, kalash, archWall, chhatri, hemi, bulbPoints, surface } from '../helpers.js';
+import { rosette, petalRing, railing, archCurve, mergeByMaterial, archRing, archSlab, merlons } from '../parts/components.js';
 import { balustrade } from '../parts/colonial.js';
-import { trees, shrubs, scatter, along } from '../parts/realism.js';
-import { rideElephant, elephant } from '../parts/animals.js';
+import { trees, shrubs, scatter, along, fountains } from '../parts/realism.js';
+import { rideElephant, elephant, couchant } from '../parts/animals.js';
 import { crossLegged, hold } from '../parts/figures.js';
 import { detail } from '../detail.js';
 import { BAYS, FZ, ARC_SILL, PALACE } from '../monuments/mysore-palace.js';
@@ -88,6 +88,43 @@ function sculpture(f) {
   f.add(at(ga, 0, 22.3, FZ + 1.1));
 }
 
+// A domed kiosk; on phones a drum under a plain dome.
+const kiosk = (r, h, m) => (detail.low ? new THREE.Group().add(cyl(r * 0.85, r * 0.85, h * 0.45, m, 0, 0, 0, 8), at(hemi(r, m, 10), 0, h * 0.45, 0)) : chhatri(r, h, m, m));
+
+// The Jaya Marthanda gate at the head of the drive, after photographs: a great round arch between
+// two lower wings, each of two storeys of arches, in buff stone; a domed kiosk on a square turret at
+// each shoulder of the middle and a smaller one at each end; a pierced parapet along the top with
+// the crest at its centre. The palace's wall runs off either side: yellow, with white copings and
+// merlons. At night the gate is outlined in bulbs like the palace.
+function gate(g) {
+  const d = at(new THREE.Group(), 0, 0.15, 152), BUFF = mat('#c2a47c', 0.85), TRIM = mat('#a98a62', 0.85), YELLOW = surface(mat('#e9c85a', 0.8), 'carved'), W = M.lime;
+  d.add(archWall(17, 20, 5.5, 9.6, 15, false, BUFF), box(18, 0.6, 6.4, TRIM, 0, 20, 0), box(17, 1.6, 5.6, BUFF, 0, 20.6, 0));
+  for (const fz of [1, -1]) {
+    d.add(at(archRing(9.6, 15, false, 0.5, 0.2, TRIM), 0, 0, fz * 2.76).rotateY(fz > 0 ? 0 : Math.PI));
+    d.add(at(merlons(16, 0.9, 1.0, 0.25, TRIM, 0.4), 0, 22.2, fz * 2.5), box(3, 2.6, 0.4, BUFF, 0, 22.2, fz * 2.6), box(1.6, 1.6, 0.1, W, 0, 22.7, fz * 2.82));
+  }
+  for (const s of [-1, 1]) {
+    d.add(box(9.5, 13.5, 4.6, BUFF, s * 13.2, 0, 0), box(10.1, 0.5, 5.4, TRIM, s * 13.2, 13.5, 0), box(10.1, 0.4, 5.2, TRIM, s * 13.2, 6.6, 0));
+    for (const fz of [1, -1]) for (const y of [0.4, 7.4]) {
+      d.add(at(archSlab(4.6, 5.4, false, M.recess, 0.06), s * 13.2, y, fz * 2.31).rotateY(fz > 0 ? 0 : Math.PI), at(archRing(4.6, 5.4, false, 0.3, 0.12, TRIM), s * 13.2, y, fz * 2.33).rotateY(fz > 0 ? 0 : Math.PI));
+    }
+    d.add(box(3, 4.2, 3, BUFF, s * 7.9, 21.2, 0), box(3.5, 0.4, 3.5, TRIM, s * 7.9, 25.4, 0), at(kiosk(1.5, 4.6, BUFF), s * 7.9, 25.8, 0));
+    d.add(box(2.2, 2, 2.2, BUFF, s * 16.8, 14, 0), at(kiosk(1.05, 3.4, BUFF), s * 16.8, 16, 0));
+    // The palace wall.
+    d.add(box(70, 5, 1.2, YELLOW, s * 53, 0, 0), box(70.4, 0.4, 1.6, W, s * 53, 5, 0));
+    if (!detail.low) for (const fz of [1, -1]) d.add(at(merlons(69, 0.7, 0.8, 0.2, W, 0.5), s * 53, 5.4, fz * 0.5));
+  }
+  g.add(mergeByMaterial(d));
+  // The gate's outline in bulbs.
+  const pts = [], line = (a, c) => { const n = Math.max(1, Math.round(a.distanceTo(c) / 0.9)); for (let i = 0; i <= n; i++) pts.push(a.clone().lerp(c, i / n)); };
+  for (const z of [149.1, 154.9]) {
+    line(V(-8.5, 0.5, z), V(-8.5, 20.3, z)); line(V(8.5, 0.5, z), V(8.5, 20.3, z)); line(V(-8.5, 20.3, z), V(8.5, 20.3, z));
+    for (let k = 0; k <= 28; k++) { const a = Math.PI - (k / 28) * Math.PI; pts.push(V(Math.cos(a) * 4.8, 10.35 + Math.sin(a) * 4.8, z)); }
+    for (const s of [-1, 1]) { line(V(s * 4.8, 0.5, z), V(s * 4.8, 10.35, z)); line(V(s * 8.5, 13.8, z), V(s * 17.9, 13.8, z)); line(V(s * 17.9, 0.5, z), V(s * 17.9, 13.8, z)); }
+  }
+  g.add(bulbPoints(pts));
+}
+
 // The forecourt as photographed from the approach: the red-brick drive between low green railings
 // of hoops, the lawns behind them with beds of red flowers, and lamp posts with white globes along
 // the drive; at Dasara the caparisoned elephants of the procession on the lawns, one under the
@@ -95,6 +132,18 @@ function sculpture(f) {
 export function addDetails(f, g) {
   architecture(f);
   sculpture(f);
+  gate(g);
+  // Fountains in round basins in the two lawns.
+  for (const x of [-42, 42]) g.add(cyl(6.4, 6.4, 0.5, M.lime, x, 0.1, 96, 32), cyl(5.8, 5.8, 0.52, M.water, x, 0.1, 96, 32));
+  g.add(fountains([[-42, 96], [42, 96]], { y: 0.6, h: 3.2 }));
+  // The bronze tigers on their pedestals either side of the drive, facing each other across it
+  // (desktops only: each is a sculpted figure).
+  if (!detail.low) for (const z of [46, 118]) for (const sx of [-1, 1]) {
+    const t = at(new THREE.Group(), sx * 14, 0.15, z);
+    t.rotation.y = -sx * Math.PI / 2;
+    t.add(box(1.7, 1.3, 3.6, M.lime), box(1.9, 0.12, 3.8, PALACE.CREAM, 0, 1.3, 0), at(couchant(M.bronze, { tiger: true }), 0, 1.42, 0));
+    g.add(t);
+  }
   [[-30, 62, '#b3262e', '#e3b54a'], [-18, 66, '#2f5d9a', '#e3b54a'], [18, 66, '#2f7a3f', '#e3b54a'], [30, 62, '#7a1f5a', '#e3b54a']].forEach(([x, z, c, t], i) => {
     const e = rideElephant(mat('#6a605a', 0.9), 1, { cloth: c, trim: t, howdah: i === 1 });
     e.position.set(x, 0.15, z);
