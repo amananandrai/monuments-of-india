@@ -329,7 +329,7 @@ Thiruvananthapuram, Kerala · 16th–18th c. · Dravidian and Kerala · Granite 
 
 ### Kargil War Memorial
 
-Dras, Ladakh · Opened 2004 · Modern memorial · Pink sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#kargil-war-memorial)
+Dras, Ladakh · Opened 2004 · Modern memorial · Pink sandstone and brass · [view in 3D](https://monuments-of-india-nu.vercel.app/#kargil-war-memorial)
 
 ![Kargil War Memorial](assets/views/kargil-war-memorial.png)
 
