@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { M, mat, mesh, box, cyl, lathe, at, surface, doubleSided, rise, ONION, ellipseWall, ribbed, finial, inst, unitBox, unitCyl } from '../helpers.js';
 import { attachSurface } from '../surface.js';
+import { detail } from '../detail.js';
 
 // Fine architectural parts shared by the detail modules: mouldings, arch rings, niches, roundels,
 // corbels, balustrades, eaves, merlons, lotus petals, finials, kiosks and carved lettering. Each
@@ -578,18 +579,39 @@ export function windowFrame(w, h, m, { shape = 'pointed', screen = null, frame =
   return g;
 }
 
-// A curved (bangla) roof w long along x and d deep, rising rh: a vault whose section is half a
-// sine, as on the jharokhas and pavilions of Rajput and late Mughal buildings. Its eaves are at
-// y = 0 from z = 0 to z = d.
-export function banglaRoof(w, d, rh, m) {
-  const sh = new THREE.Shape(), n = 12;
-  sh.moveTo(0, 0);
-  for (let k = 0; k <= n; k++) { const u = k / n; sh.lineTo(-u * d, Math.sin(u * Math.PI) * rh); }
-  sh.lineTo(-d, -rh * 0.12); sh.lineTo(0, -rh * 0.12); sh.closePath();
-  const geo = new THREE.ExtrudeGeometry(sh, { depth: w, bevelEnabled: false });
-  geo.translate(0, 0, -w / 2);
-  geo.rotateY(Math.PI / 2);
-  return mesh(geo, m);
+// A curved (bangla) roof w long along x and d deep, rising rh: the roof of the Bengali hut carried
+// into stone and copper on the jharokhas and pavilions of Rajput and late Mughal buildings. Curved
+// both ways: its section is half a sine from eave to eave, and both its ridge and its eaves droop
+// towards the ends (by `droop` × rh at the corners), so the corners hang lowest. A shell th thick.
+// Its eaves are at y = 0 (mid-length) from z = 0 to z = d.
+export function banglaRoof(w, d, rh, m, { droop = 0.35, th = Math.max(0.06, rh * 0.1) } = {}) {
+  // About two divisions a metre each way (fewer on phones), so a jharokha's roof stays light.
+  const k = detail.low ? 1 : 2, nu = Math.max(4, Math.min(16, Math.round(w * k))), nv = Math.max(3, Math.min(12, Math.round(d * k * 1.5)));
+  const pos = [], idx = [], N = (nu + 1) * (nv + 1);
+  const top = (u, v) => { const e = (2 * u - 1) ** 2; return rh * Math.sin(Math.PI * v) * (1 - 0.3 * e) - droop * rh * e; };
+  for (const side of [0, 1]) for (let j = 0; j <= nv; j++) for (let i = 0; i <= nu; i++) {
+    const u = i / nu, v = j / nv;
+    pos.push((u - 0.5) * w, top(u, v) - side * th, v * d);
+  }
+  const at_ = (side, i, j) => side * N + j * (nu + 1) + i;
+  for (let j = 0; j < nv; j++) for (let i = 0; i < nu; i++) {
+    const a = at_(0, i, j), b = at_(0, i + 1, j), c = at_(0, i + 1, j + 1), e = at_(0, i, j + 1);
+    idx.push(a, e, b, b, e, c);
+    const a1 = at_(1, i, j), b1 = at_(1, i + 1, j), c1 = at_(1, i + 1, j + 1), e1 = at_(1, i, j + 1);
+    idx.push(a1, b1, e1, b1, c1, e1);
+  }
+  // The rim: the shell's thickness round its four edges.
+  const rim = (list) => { for (let k = 0; k < list.length - 1; k++) { const [p, q] = [list[k], list[k + 1]]; idx.push(at_(0, ...p), at_(1, ...p), at_(0, ...q), at_(0, ...q), at_(1, ...p), at_(1, ...q)); } };
+  rim(Array.from({ length: nu + 1 }, (_, i) => [i, 0]));
+  rim(Array.from({ length: nu + 1 }, (_, i) => [nu - i, nv]));
+  rim(Array.from({ length: nv + 1 }, (_, j) => [0, nv - j]));
+  rim(Array.from({ length: nv + 1 }, (_, j) => [nu, j]));
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setIndex(idx);
+  const flat = geo.toNonIndexed();
+  flat.computeVertexNormals();
+  return mesh(flat, doubleSided(m));
 }
 
 // A jharokha: an oriel window w wide and h high (sill to eave) projecting d from a wall at z = 0,

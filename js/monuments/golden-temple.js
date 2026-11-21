@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, lathe, at, onFace, FACES, archPanel, onionDome, hemi, finial, kalash, chhatri, ribbed, sheet } from '../helpers.js';
+import { M, mat, mesh, box, cyl, lathe, at, onFace, FACES, archPanel, onionDome, hemi, finial, kalash, chhatri, ribbed, sheet, surface } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
 import { wallWithGaps } from '../details/temples.js';
 import { steps } from '../details/doorways.js';
@@ -9,7 +9,7 @@ import { addDetails } from '../details/golden-temple.js';
 
 const SILVER = mat('#cfd3d8', 0.3, 0.85);
 // The gilded copper, lit warmly so it reads as gold and not as dark bronze on the shaded faces.
-const GILT = mat('#e3b54a', 0.35, 0.6, { emissive: '#4a3306' });
+const GILT = surface(mat('#e3b54a', 0.35, 0.6, { emissive: '#4a3306' }), 'giltsheet');
 
 export function buildGoldenTemple() {
   const G = GILT, Gd = M.gildDeep, W = M.marble, g = new THREE.Group(), f = new THREE.Group();

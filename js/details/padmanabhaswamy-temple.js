@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, V, mat, mesh, box, at, inst, unitBox, unitCyl, onFace, FACES, strut, bulbPoints } from '../helpers.js';
+import { M, V, mat, mesh, box, at, inst, unitBox, unitCyl, onFace, FACES, strut, bulbPoints, surface } from '../helpers.js';
 import { mergeByMaterial } from './components.js';
 import { keralaGable } from './temples.js';
 import { detail } from '../detail.js';
@@ -14,7 +14,7 @@ import { rideElephant } from './animals.js';
 // 46 from y = 1.2 to 8.2 centred on z = -10 under a copper hip roof 38 × 50 × 8; the upper storey
 // 16 × 26 from y = 12 to 16 at z = -12 under a gilt roof 19 × 29 × 6; outer walls 7 high and 2.5
 // thick round 100 × 130, open on the east (+z) at the gopuram.
-const COPPER = mat('#b0773f', 0.45, 0.4);
+const COPPER = surface(mat('#b0773f', 0.45, 0.4), 'copper');
 const TEAK = mat('#5a3a24', 0.7);
 const TILE = mat('#9a4a32', 0.8);
 const BRASS = mat('#b8913f', 0.35, 0.8);
