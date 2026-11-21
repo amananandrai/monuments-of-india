@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, FACES, rng, flat, steppedPlan, planPrism, planBand, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox } from '../helpers.js';
-import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol, placeAll, chhajja, railing, cuspedArchGeo } from './components.js';
+import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol, placeAll, chhajja, railing, cuspedArchGeo, petalRing } from './components.js';
 import { templeDoorway, templePorch, steps, grandStair, doorFrame, doorLeaves, guardian } from './doorways.js';
 import { lion, elephant, horse } from './animals.js';
 import { detail } from '../detail.js';
-import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze, miniSpireGeo, kuta, shala } from './sculpture.js';
+import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze, miniSpireGeo, kuta, shala, figure } from './sculpture.js';
+const D_BRASS = mat('#b8913f', 0.35, 0.8);
 
 // The shared temple builders, with real entrances: a Nagara temple's front porch, doorway and
 // side doors, a mandapa's doors, and a passage through the base of a gopuram. Moved here from
@@ -518,4 +519,48 @@ export function trabeateGate(w, h, d, pw, ph, { m, trim = m, bands = 3, bw = Mat
     else if (beasts === 'horse') { const e = Math.min(0.6, ph * 0.09), o = horse(trim, { coarse: detail.low }); o.scale.setScalar(e); g.add(at(o, s * (ow + 1.2 + e), 0, d / 2 + 2.4 * e + 0.4)); }
   }
   return mergeByMaterial(g);
+}
+
+// A manastambha, the pillar of honour that stands before a Jain temple, h tall on y = 0 (17.6 m
+// by default, as at Shravanabelagola): a base of three steps, a slender shaft girdled by carved
+// bands, a lotus capital, and on it a small open pavilion of four posts under a pointed cap. With
+// `images`, a seated tirthankara faces each way in the pavilion (the chaumukha).
+export function manastambha(h = 17.6, m = M.marble, { images = false } = {}) {
+  const p = new THREE.Group(), s = h / 17.6;
+  for (let k = 0; k < 3; k++) p.add(box((5 - k * 1.2) * s, 0.6 * s, (5 - k * 1.2) * s, m, 0, k * 0.6 * s, 0));
+  p.add(cyl(0.45 * s, 0.55 * s, 12 * s, m, 0, 1.8 * s, 0, 8));
+  for (const y of [4, 7.5, 11]) p.add(cyl(0.62 * s, 0.62 * s, 0.4 * s, frieze(m), 0, y * s, 0, 8));
+  p.add(at(petalRing(0.5 * s, 10, 1.0 * s, 0.6 * s, 0.6, m), 0, 13.8 * s, 0), box(1.8 * s, 0.3 * s, 1.8 * s, m, 0, 14.4 * s, 0));
+  for (const x of [-0.7, 0.7]) for (const z of [-0.7, 0.7]) p.add(cyl(0.08 * s, 0.08 * s, 1.4 * s, m, x * s, 14.7 * s, z * s, 6));
+  p.add(box(2 * s, 0.3 * s, 2 * s, m, 0, 16.1 * s, 0), cyl(0, 0.9 * s, 1.2 * s, m, 0, 16.4 * s, 0, 8));
+  if (images) for (const a of FACES) p.add(onFace(figure(0.9 * s, m, 'seated'), a, 0.3 * s).translateY(14.72 * s));
+  p.userData.top = h;
+  return mergeByMaterial(p);
+}
+
+// The carved timber gable (mukhappu) of a Kerala temple roof, as a small gabled dormer w wide and
+// h high whose face stands at z = 0, its roof running back d into the slope it sits on (set it
+// into a roof so the back is buried). A triangular face of carved boards in `wood`, framed by
+// barge boards that run out past the eaves, under two roof slopes in `roofM`, with a brass kalash
+// at the apex and a carved pendant hanging under it.
+export function keralaGable(w, h, d, roofM, wood) {
+  const g = new THREE.Group(), half = w / 2, ov = w * 0.12, t = Math.max(0.08, w * 0.02);
+  const tri = new THREE.Shape();
+  tri.moveTo(-half, 0); tri.lineTo(half, 0); tri.lineTo(0, h); tri.closePath();
+  g.add(mesh(new THREE.ExtrudeGeometry(tri, { depth: 0.12, bevelEnabled: false }), frieze(wood), 0, 0, -0.14));
+  // The slopes: each a board from the ridge down past the eave, over the face and back into the roof.
+  const len = Math.hypot(half + ov, h * (1 + ov / half)), a = Math.atan2(h, half);
+  for (const sgn of [-1, 1]) {
+    const pivot = new THREE.Group();
+    pivot.position.set(0, h + t, 0);
+    pivot.rotation.z = -sgn * a;
+    // From the ridge out to the eave, and 0.4 m out over the face.
+    pivot.add(box(len, t, d + 0.4, roofM, sgn * len / 2, -t, -d / 2 + 0.2));
+    // The barge board along the face's edge, under the roof's front lip.
+    pivot.add(box(len * 0.96, t * 1.6, 0.1, wood, sgn * len * 0.48, -t * 2.6, 0.3));
+    g.add(pivot);
+  }
+  g.add(at(kalash(Math.max(0.25, w * 0.07), D_BRASS), 0, h + t, 0.05));
+  g.add(cyl(0.02, Math.max(0.05, w * 0.025), h * 0.2, wood, 0, h * 0.62, 0.02, 6));
+  return g;
 }

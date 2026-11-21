@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { M, box, cyl, at, chhatri, onionDome, hemi, finial, aroundRect } from '../helpers.js';
+import { M, box, cyl, at, onFace, chhatri, onionDome, hemi, finial, aroundRect } from '../helpers.js';
 import { iwan, arcadeSkin } from '../details/mughal.js';
-import { jali, chhajja, bracketGeo, placeAll } from '../details/components.js';
+import { D, jali, chhajja, bracketGeo, placeAll, inlayBorder, merlons } from '../details/components.js';
 import { addDetails } from '../details/buland-darwaza.js';
 
 export function buildBulandDarwaza() {
@@ -19,11 +19,17 @@ export function buildBulandDarwaza() {
   f.add(box(31, 3, 6, Rd, 0, P + 35, 5));
   f.add(at(iwan(26, 32, { m: Rd, trim: Mb, shade: Rl, depth: 6, frame: 2.5, top: 3, door: [6, 8.5], rosettes: true }), 0, P, 2));
   for (const s of [-1, 1]) {
-    const w = box(12, 30, 14, Rd, 0, P, 0);
-    w.position.set(s * 24.5, P + 15, 1);
+    // Each wing turns its outer face (local ±x) out towards the town: two tiers of arched
+    // recesses, each in a white marble border, under a marble coping and a row of merlons.
+    const w = at(new THREE.Group(), s * 24.5, P, 1);
     w.rotation.y = -s * Math.PI / 5;
+    w.add(box(12, 30, 14, Rd), box(12.6, 0.5, 14.6, Mb, 0, 30, 0));
+    for (const y of [1.5, 15.5]) {
+      w.add(onFace(at(iwan(6.5, 10, { m: Rd, trim: Mb, shade: Rl, depth: 0.8, frame: 1.1, top: 1.4, fill: 'jali', band: false }), 0, y, 0), s * Math.PI / 2, 6));
+      w.add(onFace(at(inlayBorder(10.6, 13.2, 0.4, Mb, D.ink), 0, y - 0.7, 0), s * Math.PI / 2, 6));
+    }
+    w.add(onFace(at(merlons(13.4, 0.9, 1.3, 0.4, Rd), 0, 30.5, 0), s * Math.PI / 2, 5.9));
     f.add(w);
-    for (const y of [P + 2, P + 15]) f.add(at(iwan(4, 8, { m: Rd, trim: Mb, shade: Rl, depth: 0.8, frame: 0.5, top: 0.6, fill: 'jali', band: false }), s * 24.5 + s * 2.6, y, 6.6).rotateY(-s * Math.PI / 5));
     f.add(cyl(1.7, 1.7, 41, Rd, s * 21, P, 8.2, 8), at(onionDome(1.8, Mb), s * 21, P + 41, 8.2));
   }
   // Rows of kiosks along the top: thirteen small ones along the front, three larger behind. The

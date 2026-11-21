@@ -73,6 +73,8 @@ export function buildPalitana() {
     f.add(slab);
   }
   f.add(inst(unitBox(), bodies, MARBLE), inst(miniSpireGeo(), spires, MARBLE));
+  // The shrines' bodies, for their plinths, cornices and doors (js/details/palitana-temples.js).
+  f.userData.shrines = bodies;
   // The principal temple of Adinath on the higher summit
   f.add(at(nagaraTemple({ w: 9, h: 15, m: MARBLE, shade: SHADE, plinth: 1.2, urus: 8, halls: [[11, 6, 4]] }), -40, H, -6));
   addDetails(f, g);

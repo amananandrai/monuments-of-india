@@ -170,6 +170,7 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | `frieze(m)` | A carved band of rosettes |
 | `carved(m, kind)` | Any other surface: `'script'` (incised names), `'calligraphy'`, `'pietra'` (inlay), `'reliefs'` (sculpture panels), `'tiles'` |
 | `rosette(R, m)`, `medallion(R, m)`, `sunburst(R, m)` | Carved roundels |
+| `inlayBorder(w, h, band, base, inlay)` | A frame of marble strips set with inlaid lozenges and corner stars, round a panel or an arch on a Mughal gate |
 | `lettering(text, size, depth, m)` | Raised letters |
 | `photo(material, key)` (in `js/helpers.js`) | Gives a stone a photo texture set: `'laterite'`, `'blocks'`, `'rubble'`, `'concrete'`, `'timber'` and others (`js/textures.js`) |
 
@@ -180,6 +181,8 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | Shikhara | Nagara temple | Dravida vimana |
 | ![Gopuram](img/gopuram.jpg) | ![Mandap](img/mandap.jpg) | ![Temple niche with an image](img/temple-niche.jpg) |
 | Gopuram | Mandap | Temple niche with an image |
+| ![Manastambha](img/manastambha.jpg) | ![Kerala gable](img/kerala-gable.jpg) |   |
+| Manastambha | Kerala gable |   |
 
 | Part | What it is |
 | --- | --- |
@@ -195,6 +198,8 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | `templePorch(w, d, h, m)` (doorways) | A small open porch before a door |
 | `trabeateGate(w, h, d, passW, passH, …)` | A post-and-lintel gatehouse, with guardians or carved beasts |
 | `dwajasthambha(x, z, h)` | The gold flagstaff before the sanctum |
+| `manastambha(h, m, { images })` | The Jain pillar of honour: a stepped base, a banded shaft, a lotus capital and a small pavilion, with four seated images in it if `images` |
+| `keralaGable(w, h, d, roofM, wood)` | The carved timber gable (mukhappu) of a Kerala roof, as a dormer to set into a hip roof |
 | `kuta(s, m)`, `shala(w, d, m)`, `haraRow(len, s, m)` (sculpture) | The miniature shrines along the edge of each storey of a vimana |
 
 ## Forts (`js/details/forts.js`)
