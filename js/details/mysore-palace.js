@@ -33,11 +33,11 @@ function architecture(f) {
     if (k < BAYS.length - 1) {
       const [nx, nw] = BAYS[k + 1], a = cx + w / 2, c = nx - nw / 2, mid = (a + c) / 2, pair = c - a > 1;
       for (const x of pair ? [mid - 0.48, mid + 0.48] : [mid]) cols.push([x, ARC_SILL, FZ + 0.35]);
-      if (pair) d.add(at(rosette(0.8, L, 10), mid, ARC_SILL + 5.6, FZ + 0.02));
+      if (pair) d.add(at(rosette(0.8, L, 10), mid, ARC_SILL + 6.9, FZ + 0.02));
     }
   });
   for (const sx of [-1, 1]) cols.push([sx * 41.6, ARC_SILL, FZ + 0.35]);
-  const H = 3.6;
+  const H = 2.8;
   if (detail.low) d.add(inst(unitCyl(12), cols.map(([x, y, z]) => [x, y + 0.35, z, 0.6, H, 0.6]), G), inst(unitBox(), cols.flatMap(([x, y, z]) => [[x, y, z, 0.85, 0.35, 0.85], [x, y + H + 0.35, z, 0.95, 0.45, 0.95]]), L));
   else {
     // The columns as they are turned: a square plinth, a pot-shaped base, a shaft ringed at its
@@ -55,7 +55,7 @@ function architecture(f) {
     d.add(at(detail.low ? railing(len, 1.1, 0.3, CREAM, 2.4) : balustrade(len, 1.1, CREAM, { t: 0.35 }), x, 18.0, FZ + 0.05));
   }
   // Lotus cups: under the gilt dome, the red domes of the end towers and of the bay's kiosks.
-  d.add(at(petalRing(2.9 * 0.86, 18, 1.4, 1.0, 0.55, M.gild, 0.3), 0, 35.1, 12));
+  d.add(at(petalRing(2.4 * 0.86, 16, 1.15, 0.85, 0.55, M.gild, 0.3), 0, 37.35, 12));
   for (const s of [-1, 1]) {
     for (const x of [46.1, 60.8]) d.add(at(petalRing(2.5 * 0.86, 14, 1.2, 0.9, 0.55, RED, 0.3), s * x, 27.05, 19.5));
   }
@@ -98,7 +98,7 @@ function sculpture(f) {
 
 // The carving, on desktops: what makes the palace's fronts dense. After photographs:
 // - the gallery over the great arches: a pilaster between every two windows, the windows closed
-//   with blue-green shutters under their lunettes, a deep eave on a row of small brackets, and urns
+//   with dark glazing under yellow panels, a deep eave on a row of small brackets, and urns
 //   along the balustrade;
 // - the ground floor's arches ringed in white;
 // - the four end towers: an octagonal shaft up each corner ending in a red spire, bracket courses
@@ -108,22 +108,25 @@ function sculpture(f) {
 //   railing round each stage and four more gilt kiosks at its top.
 // All instanced or merged, so it costs triangles but few draw calls.
 function carving(f) {
-  const d = new THREE.Group(), L = M.lime, { CREAM, TAN, RED } = PALACE, TEAL = surface(mat('#3f7f78', 0.6), 'none'), b = 1;
-  const pil = [], caps = [], shut = [], dent = [], urns = [], rings = [];
+  const d = new THREE.Group(), L = M.lime, { CREAM, TAN, RED } = PALACE, GLASS = surface(mat('#2f4a4a', 0.4, 0.2), 'none'), OCHRE = surface(mat('#e3bd4e', 0.75), 'none'), b = 1;
+  const pil = [], caps = [], shut = [], panes = [], dent = [], urns = [], rings = [];
   for (const s of [-1, 1]) {
     for (let i = 0; i <= 16; i++) {
       const x = s * (12.6 + (i - 0.5) * 1.9);
       pil.push([x, 13.75, FZ + 0.12, 0.26, 3.5, 0.2]);
       caps.push([x, 17.0, FZ + 0.14, 0.4, 0.22, 0.3], [x, 13.7, FZ + 0.14, 0.4, 0.2, 0.3]);
-      if (i < 16) shut.push([s * (12.6 + i * 1.9), 13.85, FZ - 0.75, 1.2, 1.9, 0.05]);
+      // Each window: dark glazing below, a yellow panel filling the arch above it.
+      if (i < 16) { shut.push([s * (12.6 + i * 1.9), 13.85, FZ - 0.75, 1.2, 1.45, 0.05]); panes.push([s * (12.6 + i * 1.9), 15.3, FZ - 0.7, 1.2, 1.45, 0.05]); }
     }
     for (let x = 11.2; x < 41.6; x += 0.8) dent.push([s * x, 16.75, FZ + 0.42, 0.2, 0.42, 0.66]);
     d.add(at(chhajja(30.8, 1.0, 0.3, 0.12, L), s * 26.4, 17.3, FZ + 0.1));
     for (let x = 12; x <= 40.5; x += 3.56) urns.push([s * x, 19.1, FZ + 0.05]);
   }
+  // The central bay's five windows, glazed and panelled like the gallery's.
+  for (const x of [-7.6, -3.8, 0, 3.8, 7.6]) { const w = x ? 2.4 : 2.7; shut.push([x, 13.85, FZ + 0.8, w, 2.1, 0.05]); panes.push([x, 15.95, FZ + 0.82, w, x ? 2.1 : 2.5, 0.05]); }
   const urnGeo = new THREE.LatheGeometry([[0, 0], [0.16, 0], [0.16, 0.05], [0.07, 0.1], [0.09, 0.16], [0.21, 0.3], [0.23, 0.4], [0.18, 0.52], [0.08, 0.58], [0.11, 0.63], [0.05, 0.74], [0, 0.8]].map(([r, y]) => new THREE.Vector2(r, y)), 10);
   d.add(inst(urnGeo, urns.map(([x, y, z]) => [x, y, z, 1, 1, 1]), L));
-  const ring = archRing(1.9, 3.9, false, 0.16, 0.1, L).geometry;
+  const ring = archRing(1.9, 3.0, false, 0.16, 0.1, L).geometry;
   for (let k = 0; k < 32; k++) { const cx = (k - 15.5) * 2.62; if (Math.abs(cx) > 3) rings.push([cx, b + 0.4, FZ + 0.02, 0]); }
   d.add(placeAll(ring, rings, L));
 
@@ -160,7 +163,7 @@ function carving(f) {
   }
   for (const x of [-3.6, 3.6]) for (const z of [-3.6, 3.6]) tw.add(at(chhatri(0.5, 1.8, CREAM, M.gild), x, 33.3, z));
   d.add(tw);
-  d.add(inst(unitBox(), pil, L), inst(unitBox(), caps, L), inst(unitBox(), shut, TEAL), inst(unitBox(), dent, L));
+  d.add(inst(unitBox(), pil, L), inst(unitBox(), caps, L), inst(unitBox(), shut, GLASS), inst(unitBox(), panes, OCHRE), inst(unitBox(), dent, L));
   f.add(d);
 }
 

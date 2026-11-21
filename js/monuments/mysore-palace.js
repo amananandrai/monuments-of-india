@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, V, mat, photo, surface, box, cyl, mesh, lathe, at, onFace, ONION, onionDome, finial, chhatri, bulbPoints, ribbed } from '../helpers.js';
+import { M, V, mat, surface, box, cyl, mesh, lathe, at, onFace, ONION, onionDome, finial, chhatri, bulbPoints, ribbed } from '../helpers.js';
 import { mergeByMaterial, jharokha } from '../parts/components.js';
 import { arcadeSkin } from '../parts/mughal.js';
 import { addDetails } from '../details/mysore-palace.js';
@@ -17,10 +17,12 @@ import { detail } from '../detail.js';
 // granite, their faces stacked with oriel windows under red hoods, carry crimson onion domes.
 // Everything faces +z; the front of the arcade is at z = 24.
 
-// The arcade's bays: [centre x, width, height] of each arch, the sill of all at y 6.4.
-export const BAYS = [[-37, 9, 6.5], [-26.2, 9, 6.5], [-15.4, 9, 6.5], [-8, 4.4, 6.2], [0, 10.4, 7], [8, 4.4, 6.2], [15.4, 9, 6.5], [26.2, 9, 6.5], [37, 9, 6.5]];
-export const FZ = 24, ARC_SILL = 6.4;
-const CREAM = photo(mat('#e9d7a2', 0.82), 'plaster'), TAN = photo(mat('#c39b82', 0.85), 'granite'), RED = surface(mat('#a3202a', 0.5), 'carved');
+// The arcade's bays: [centre x, width, height] of each arch, the sill of all at y 4.8.
+// (Measured off a frontal photograph: the ground storey is low, about a sixth of the front's
+// height, and the great arches stand tall above it on slender columns.)
+export const BAYS = [[-37, 9, 8.1], [-26.2, 9, 8.1], [-15.4, 9, 8.1], [-8, 4.4, 7.9], [0, 10.4, 8.6], [8, 4.4, 7.9], [15.4, 9, 8.1], [26.2, 9, 8.1], [37, 9, 8.1]];
+export const FZ = 24, ARC_SILL = 4.8;
+const CREAM = surface(mat('#ecd9a2', 0.82), 'carved'), TAN = surface(mat('#cda98c', 0.85), 'carved'), RED = surface(mat('#a3202a', 0.5), 'carved');
 const DOMEGREY = mat('#82786b', 0.45, 0.35), L = M.lime;
 export const PALACE = { CREAM, TAN, RED };
 
@@ -62,8 +64,8 @@ export function buildMysorePalace() {
   // The front: the ground floor's arches, the Durbar Hall's arcade over them and the gallery's
   // windows above that, all cut in one skin 2.4 deep; the central bay is built forward of it.
   const cells = [];
-  for (let k = 0; k < 32; k++) { const cx = (k - 15.5) * 2.62; if (Math.abs(cx) > 3) cells.push([cx, 0.4, 1.9, 3.9, 'room']); }
-  cells.push([0, 0.4, 4, 4.6, 'door']);
+  for (let k = 0; k < 32; k++) { const cx = (k - 15.5) * 2.62; if (Math.abs(cx) > 3) cells.push([cx, 0.4, 1.9, 3.0, 'room']); }
+  cells.push([0, 0.4, 4, 3.2, 'door']);
   for (const [cx, w, h] of BAYS) cells.push([cx, ARC_SILL - b, w, h, 'room']);
   for (const s of [-1, 1]) for (let i = 0; i < 16; i++) cells.push([s * (12.6 + i * 1.9), 12.8, 1.25, 3.0, 'room']);
   f.add(at(arcadeSkin(W, H, cells, 2.4, CREAM, { trim: L, pointed: false }), 0, b, FZ - 2.4));
@@ -78,9 +80,9 @@ export function buildMysorePalace() {
   for (const [cx, w, h] of BAYS) arch(w, h, cx, ARC_SILL, FZ + 0.4);
   rect(-W / 2 - 0.5, W / 2 + 0.5, b + H + 0.65, -21.2, FZ + 0.3);
 
-  /* The central bay: forward of the range, three arched windows over the great arch, and the gable
+  /* The central bay: forward of the range, five arched windows over the great arch, and the gable
      in its red hood, with a red-domed kiosk either side. */
-  f.add(box(22, 8.6, 0.6, CREAM, 0, 13.2, FZ), at(arcadeSkin(22, 8.6, [[-3.6, 0.6, 2.6, 4.2], [0, 0.6, 2.8, 4.6], [3.6, 0.6, 2.6, 4.2]], 1.0, CREAM, { trim: L, pointed: false, fill: 'room' }), 0, 13.2, FZ + 0.6));
+  f.add(box(22, 8.6, 0.6, CREAM, 0, 13.2, FZ), at(arcadeSkin(22, 8.6, [-7.6, -3.8, 0, 3.8, 7.6].map((x) => [x, 0.6, x ? 2.5 : 2.8, x ? 4.3 : 4.7]), 1.0, CREAM, { trim: L, pointed: false, fill: 'room' }), 0, 13.2, FZ + 0.6));
   f.add(box(22.6, 0.5, 2.2, L, 0, 21.8, FZ + 0.6));
   // The tympanum, a half disc, and the hood round it: a broad red band, a little more than a half
   // circle, standing forward of it.
@@ -90,7 +92,10 @@ export function buildMysorePalace() {
     if (r0 > 0) sh.absarc(0, 0, r0, Math.PI + ext, -ext, true); else sh.lineTo(0, 0);
     return new THREE.ExtrudeGeometry(sh, { depth: t, bevelEnabled: false, curveSegments: 32 });
   };
-  f.add(mesh(half(0, 4.0, 0.4), CREAM, 0, 22.3, FZ + 0.6), mesh(half(4.0, 5.3, 1.7, 0.12), RED, 0, 22.3, FZ + 0.6), box(11.4, 0.5, 2.2, L, 0, 21.8, FZ + 0.7));
+  // (The hood is a low, broad arch, not a half circle: flattened to two-thirds of its height.)
+  const tymp = mesh(half(0, 4.0, 0.4), CREAM, 0, 22.3, FZ + 0.6), hood = mesh(half(4.0, 5.3, 1.7, 0.12), RED, 0, 22.3, FZ + 0.6);
+  tymp.scale.y = hood.scale.y = 0.68;
+  f.add(tymp, hood, box(11.4, 0.5, 2.2, L, 0, 21.8, FZ + 0.7));
   for (const s of [-1, 1]) {
     f.add(box(3.6, 3.4, 3.6, CREAM, s * 8.6, 22.3, FZ + 0.4), at(onionDome(1.65, RED), s * 8.6, 26.1, FZ + 0.4), at(finial(1.6), s * 8.6, 26.1 + 1.65 * 1.78, FZ + 0.4));
     f.add(box(4, 0.4, 4, L, s * 8.6, 25.7, FZ + 0.4));
@@ -107,10 +112,14 @@ export function buildMysorePalace() {
   for (const y of [22.8, 27.6]) tower.add(box(11.6, 0.5, 11.6, L, 0, y, 0));
   tower.add(box(8.6, 0.5, 8.6, L, 0, 32.8, 0));
   for (const x of [-4.8, 4.8]) for (const z of [-4.8, 4.8]) tower.add(at(chhatri(0.75, 2.6, CREAM, M.gild), x, 28.1, z));
-  tower.add(cyl(3.1, 3.3, 1.8, CREAM, 0, 33.3, 0, 8), at(onionDome(2.9, M.gild), 0, 35.1, 0), at(finial(4.2), 0, 35.1 + 2.9 * 1.78, 0));
+  // A third, narrower stage, then the drum, the gilded dome and its spire: the tower tapers in
+  // steps to 44 m.
+  tower.add(box(5.2, 2.8, 5.2, CREAM, 0, 33.3, 0), box(5.9, 0.35, 5.9, L, 0, 36.1, 0));
+  for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) tower.add(onFace(at(face(5.2, 2.8, [[0.4, 1.1, 2.0, 2]], 0.4), 0, 33.3, 0), a, 2.6));
+  tower.add(cyl(2.3, 2.5, 0.9, CREAM, 0, 36.45, 0, 8), at(onionDome(2.4, M.gild), 0, 37.35, 0), at(finial(3.2), 0, 37.35 + 2.4 * 1.78, 0));
   f.add(at(mergeByMaterial(tower), 0, 0, tz));
   verticals(-5.5, 5.5, tz - 5.5, tz + 5.5, 18, 28);
-  dome(0, 35.1, tz, 2.9);
+  dome(0, 37.35, tz, 2.4);
 
   /* The two grey domes over the roof: a square kiosk with arched windows, a drum, and a ribbed dome
      of weathered metal with a small lantern. */
@@ -120,8 +129,9 @@ export function buildMysorePalace() {
     k.add(box(6.4, 4.2, 6.4, CREAM, 0, 17.9, 0), box(7, 0.4, 7, L, 0, 22.1, 0));
     for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) k.add(onFace(at(face(7, 4.2, [[0.5, 1.4, 3, 3]], 0.3), 0, 17.9, 0), a, 3.2));
     k.add(cyl(2.9, 2.9, 1.1, CREAM, 0, 22.5, 0, 24), at(ribbed(greyDome.clone(), 16, 0.05), 0, 23.6, 0), cyl(0.35, 0.5, 1.2, DOMEGREY, 0, 28.2, 0, 8), at(finial(1.8, DOMEGREY), 0, 29.4, 0));
-    f.add(at(mergeByMaterial(k), x, 0, z));
-    dome(x, 23.6, z, 3.0);
+    // Each stands on a lower stage of its own, so the dome rises clear of the roofline.
+    f.add(at(mergeByMaterial(k), x, 3, z), box(7.4, 3, 7.4, CREAM, x, 17.9, z), box(7.9, 0.35, 7.9, L, x, 20.55, z));
+    dome(x, 26.6, z, 3.0);
     // Small kiosks with red domes on the parapet.
     for (const kx of [s * 21.3, s * 33.4]) f.add(at(chhatri(0.65, 2.0, CREAM, RED), kx, 18.5, FZ - 0.6));
   }
