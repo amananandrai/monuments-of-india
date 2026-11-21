@@ -179,8 +179,31 @@ g.add(cityAround([-72, 72, -88, 108], { rows: 2, gap: 12, storeys: [2, 4], seed:
 `traffic(lanes, x0, x1, { y, gap, taxis, buses, trucks })` puts vehicles on a road running along x. Each
 lane is `[z, direction]`. Each kind is drawn from its side profile and stands on wheels: saloon cars,
 the yellow Ambassador taxis of Kolkata, buses with their window bands, and trucks with a painted
-wooden body under a tarpaulin; on desktops they also have head and tail lights and bumpers. Only the Howrah Bridge and the Bandra–Worli Sea Link use it; there are
+wooden body under a tarpaulin; on desktops they also have head and tail lights and bumpers. Only the bridges, stations and airports use it; there are
 no motor vehicles anywhere else, and no people at all, so that the monument stays the subject.
+
+## Railways and aircraft
+
+| ![Trains: an express behind its locomotive, a Vande Bharat, a suburban train](img/trains.jpg) | ![An island platform under its canopy](img/platform.jpg) | ![Airliners and a jet bridge](img/airliners.jpg) |
+| :---: | :---: | :---: |
+| Trains: an express behind its locomotive, a Vande Bharat, a suburban train | An island platform under its canopy | Airliners and a jet bridge |
+
+From `js/parts/transport.js`, for the stations, the rail bridges and the airports. Every part lies
+along x, centred on the origin; turn it with `rotateY` to lay it another way.
+
+| Part | What it is |
+| --- | --- |
+| `track(len, { ballast })` | Broad-gauge track: a ballast bed, concrete sleepers and two rails. The rail top is at `RAIL_TOP` (0.52 m); `ballast: false` leaves the bed out, for a bridge deck |
+| `train(cars, { livery, loco })` | A train standing on the rail top. `livery`: `'blue'` (mail and express), `'red'` (Rajdhani), `'green'`, `'emu'` (suburban), `'vande'` or `'orange'` (Vande Bharat, a raked nose at each end). A hauled train has an electric locomotive at its +x end |
+| `overhead(len, { span, side })` | Masts, cantilevers and the two wires of the overhead line |
+| `platform(len, w, { h, canopy })` | An island platform with yellow edge lines, under a butterfly canopy on a row of columns |
+| `airliner({ size, tail, body, belly })` | An airliner on its wheels, nose to +x: `'narrow'` (37.6 m long) or `'wide'` (57 m), in an airline's colours |
+| `jetBridge(len, { h })` | A boarding bridge from a rotunda at the origin to its cab |
+
+```js
+// A Rajdhani at a platform, under the wires.
+g.add(at(track(300), 0, 0, 7), at(train(10, { livery: 'red' }), 0, RAIL_TOP, 7), at(overhead(300), 0, 0, 7), platform(280, 9));
+```
 
 ## Animals
 

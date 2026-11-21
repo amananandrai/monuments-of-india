@@ -188,6 +188,12 @@ From [realism.md](realism.md).
 | :---: | :---: | :---: |
 | Traffic: cars, taxis, buses and trucks |   |   |
 
+### [Railways and aircraft](realism.md#railways-and-aircraft)
+
+| ![Trains: an express behind its locomotive, a Vande Bharat, a suburban train](img/trains.jpg) | ![An island platform under its canopy](img/platform.jpg) | ![Airliners and a jet bridge](img/airliners.jpg) |
+| :---: | :---: | :---: |
+| Trains: an express behind its locomotive, a Vande Bharat, a suburban train | An island platform under its canopy | Airliners and a jet bridge |
+
 ### [Animals](realism.md#animals)
 
 | ![Nandi](img/nandi.jpg) | ![Elephants, plain and dressed](img/elephants.jpg) | ![Horse and lion](img/horse-lion.jpg) |

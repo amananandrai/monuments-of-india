@@ -9,11 +9,11 @@
 #   picture is redrawn unless a monument's file changed too.
 # What does not: a shared part (js/parts/, js/helpers.js), js/surface.js, js/main.js, CSS, the
 # README, the guides, or this file. Those change many monuments or none. When one changes the
-# look, run this workflow by hand ("Run workflow"): with the ids box empty it redraws all 101, or
+# look, run this workflow by hand ("Run workflow"): with the ids box empty it redraws all 125, or
 # name the ones to redraw.
 #
 # The plain renderer (tools/shoot-views.mjs) is used rather than --site: a full site shot of all
-# 101 models is about an hour on a CPU runner. The commit is marked [skip ci], and the paths it
+# 125 models is about an hour on a CPU runner. The commit is marked [skip ci], and the paths it
 # touches are not listed below, so it does not start another run.
 name: Monument screenshots
 
