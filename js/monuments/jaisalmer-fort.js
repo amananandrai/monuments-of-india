@@ -71,10 +71,11 @@ export function buildJaisalmer() {
   // outer wall, 7 m high, round the talus below them.
   const upper = wallRing(0.97, 12, 3, () => H - 2, 0.03), lower = wallRing(1.22, 9, 2.4, (x, z) => trikuta(x, z) - 2, 0.06);
   f.add(inst(unitBox(), upper, GOLD));
-  // Battlements on both walls: parapets and merlons, with string courses and arrow slits on the
-  // upper one (the lower wall's merlons are set wider apart, and phones leave its crest plain).
-  f.add(rampart(upper, GOLD, { trim: GOLD_DARK, kerb: false }));
-  if (!detail.low) f.add(rampart(lower, GOLD_DARK, { course: false, slits: false, kerb: false, every: 1.5 }));
+  // Battlements on both walls: parapets and merlons, with string courses, arrow slits and a
+  // machicolation every third length on the upper one (the lower wall's merlons are set wider apart, without gun-loops, and phones leave
+  // its crest plain).
+  f.add(rampart(upper, GOLD, { trim: GOLD_DARK, kerb: false, boxes: 3 }));
+  if (!detail.low) f.add(rampart(lower, GOLD_DARK, { course: false, slits: false, kerb: false, every: 1.5, loopholes: false }));
   f.add(inst(unitCyl(12), bastions().map(([x, z], k) => [x, H - 3, z, 11, 16 + (k % 3) * 0.25, 11]), GOLD));
   f.add(inst(unitBox(), lower, GOLD_DARK));
   // The way up: a road climbing the talus from the desert to the gates, along the slope from the
@@ -93,9 +94,9 @@ export function buildJaisalmer() {
   g.add(inst(unitBox(), road, GOLD_DARK));
   for (const t of [0.35, 0.65]) {
     const x = gx + 250 - 250 * t, y = 2 + (H - 2) * Math.pow(t, 0.9), z = zAt(x, y);
-    g.add(at(fortGate(12, 11, 7, 4.2, 7, { m: GOLD, trim: GOLD_DARK }), x, y, z).rotateY(-Math.PI / 2));
+    g.add(at(fortGate(12, 11, 7, 4.2, 7, { m: GOLD, trim: GOLD_DARK, box: true }), x, y, z).rotateY(-Math.PI / 2));
   }
-  f.add(at(fortGate(14, 13, 9, 4.6, 8, { m: GOLD, trim: GOLD_DARK, towers: { r: 4, h: 16, cap: 'merlons', seg: 12 } }), gx, H, gz).rotateY(-GATE_A + Math.PI / 2));
+  f.add(at(fortGate(14, 13, 9, 4.6, 8, { m: GOLD, trim: GOLD_DARK, box: true, towers: { r: 4, h: 16, cap: 'merlons', seg: 12 } }), gx, H, gz).rotateY(-GATE_A + Math.PI / 2));
 
   // Inside: the Raj Mahal over the Dussehra Chowk behind the gate, seven storeys of carved stone;
   // the Laxminath temple; the seven Jain temples to the west, their spires crowded together; and

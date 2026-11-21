@@ -209,16 +209,17 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 
 ## Forts (`js/details/forts.js`)
 
-| ![Fort gate](img/fort-gate.jpg) | ![Rampart and a crowned bastion](img/rampart.jpg) |   |
+| ![Fort gate](img/fort-gate.jpg) | ![Rampart and a crowned bastion](img/rampart.jpg) | ![Machicolation](img/machicolation.jpg) |
 | :---: | :---: | :---: |
-| Fort gate | Rampart and a crowned bastion |   |
+| Fort gate | Rampart and a crowned bastion | Machicolation |
 
 | Part | What it is |
 | --- | --- |
-| `fortGate(w, h, d, archW, archH, { towers, iwan })` | A gatehouse with a real passage through it, guard niches and spiked leaves |
+| `fortGate(w, h, d, archW, archH, { towers, iwan, box })` | A gatehouse with a real passage through it, guard niches and spiked leaves; `box` hangs a machicolation over the arch |
 | `towerDetail(rBottom, rTop, h, m)` | String courses and arrow slits for a round tower |
 | `slitRow(len, n, y, w, h)` | A row of arrow slits along a wall |
-| `rampart(…)`, `bastionCrowns(…)` | Battlements, as above |
+| `rampart(…, { loopholes, boxes })`, `bastionCrowns(…)` | Battlements, as above: merlons pierced with gun-loops, and a machicolation every `boxes`th length of wall |
+| `machicolations(list, m, trim)` | Box drop-chutes hung from a wall's head on corbels, with a slot in the floor and a gun-loop in front; instanced |
 
 ## Tibetan monasteries (`js/details/tibetan.js`)
 

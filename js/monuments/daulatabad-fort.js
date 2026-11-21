@@ -61,7 +61,7 @@ export function buildDaulatabad() {
   // open at the gate, whose doors still carry their elephant spikes
   const ga = 1.2;
   g.add(ellipseWall(130, 130, ga + 0.05, ga - 0.05 + Math.PI * 2, 2.6, 0, 7, STONE));
-  g.add(at(fortGate(14, 9, 8, 4.5, 7, { m: STONE, trim: mat('#a49784', 0.9), towers: { r: 3.8, h: 11, cap: 'merlons', seg: 16 } }), Math.cos(ga) * 130, 0, Math.sin(ga) * 130).rotateY(Math.PI / 2 - ga));
+  g.add(at(fortGate(14, 9, 8, 4.5, 7, { m: STONE, trim: mat('#a49784', 0.9), box: true, towers: { r: 3.8, h: 11, cap: 'merlons', seg: 16 } }), Math.cos(ga) * 130, 0, Math.sin(ga) * 130).rotateY(Math.PI / 2 - ga));
   f.add(at(chandMinar(), 40, 0, 96));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.5, 0.3, 1.2] };

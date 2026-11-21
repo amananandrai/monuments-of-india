@@ -64,9 +64,9 @@ From [architecture.md](architecture.md).
 
 ### [Forts](architecture.md#forts-jsdetailsfortsjs)
 
-| ![Fort gate](img/fort-gate.jpg) | ![Rampart and a crowned bastion](img/rampart.jpg) |   |
+| ![Fort gate](img/fort-gate.jpg) | ![Rampart and a crowned bastion](img/rampart.jpg) | ![Machicolation](img/machicolation.jpg) |
 | :---: | :---: | :---: |
-| Fort gate | Rampart and a crowned bastion |   |
+| Fort gate | Rampart and a crowned bastion | Machicolation |
 
 ### [Tibetan monasteries](architecture.md#tibetan-monasteries-jsdetailstibetanjs)
 
@@ -138,9 +138,9 @@ From [realism.md](realism.md).
 
 ### [Traffic](realism.md#traffic)
 
-| ![Traffic: cars, taxis and buses](img/traffic.jpg) |   |   |
+| ![Traffic: cars, taxis, buses and trucks](img/traffic.jpg) |   |   |
 | :---: | :---: | :---: |
-| Traffic: cars, taxis and buses |   |   |
+| Traffic: cars, taxis, buses and trucks |   |   |
 
 ### [Animals](realism.md#animals)
 

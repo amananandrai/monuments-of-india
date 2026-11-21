@@ -68,7 +68,7 @@ export function buildGolconda() {
   const GR = 120;
   for (const [a0, a1] of [[Math.PI / 2 + 0.07, Math.PI / 2 + 0.55], [Math.PI / 2 - 0.55, Math.PI / 2 - 0.07]]) f.add(ellipseWall(GR, GR, a0, a1, 2.6, 0, 9, GRANITE));
   for (const a of [Math.PI / 2 + 0.55, Math.PI / 2 - 0.55]) f.add(cyl(4.4, 5, 12, GRANITE, Math.cos(a) * GR, 0, Math.sin(a) * GR, 14));
-  f.add(at(fortGate(18, 14, 8, 5.5, 10, { m: GRANITE, trim: mat('#b5ac98', 0.9), towers: { r: 3.4, h: 16, cap: 'merlons', seg: 14 } }), 0, 0, GR));
+  f.add(at(fortGate(18, 14, 8, 5.5, 10, { m: GRANITE, trim: mat('#b5ac98', 0.9), box: true, towers: { r: 3.4, h: 16, cap: 'merlons', seg: 14 } }), 0, 0, GR));
   f.add(box(20, 9, 12, mat('#d9d1c0', 0.85), 0, H - 3, 0));
   for (const a of [0, Math.PI]) for (let k = -1; k <= 1; k++) f.add(onFace(at(archPanel(4, 6, true, M.recess, 0.25), 0, H - 2.4, 0), a, 6, k * 6));
   for (const x of [-7, 7]) f.add(at(hemi(2.4, mat('#d9d1c0', 0.85), 16), x, H + 6, 0), at(finial(2), x, H + 8.4, 0));

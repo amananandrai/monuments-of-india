@@ -36,7 +36,7 @@ function architecture(f) {
     arc.push([Math.cos(a) * R, H, -Math.sin(a) * R, ((to - from) * R) / 90 + 0.1, 7, 3, Math.atan2(Math.cos(a), -Math.sin(a))]);
   }
   const neck = [-1, 1].map((s) => { const x0 = s * R * 0.69, z0 = R * 0.72, x1 = s * 16, z1 = 120; return [(x0 + x1) / 2, H, (z0 + z1) / 2, Math.hypot(x1 - x0, z1 - z0), 6.97, 3, Math.atan2(-(z1 - z0), x1 - x0)]; });
-  f.add(rampart(arc, LATERITE, { size: 0.8, course: false, slits: false, kerb: false }), rampart(neck, LATERITE, { trim: LATERITE_DARK, size: 0.8, centre: [0, 95], kerb: false }));
+  f.add(rampart(arc, LATERITE, { size: 0.8, course: false, slits: false, kerb: false }), rampart(neck, LATERITE, { trim: LATERITE_DARK, size: 0.8, centre: [0, 95], kerb: false, boxes: 3 }));
   f.add(bastionCrowns(Array.from({ length: 8 }, (_, k) => { const a = (k / 7) * Math.PI; return [Math.cos(a) * R, H + 9, -Math.sin(a) * R, 4]; }), LATERITE, { trim: LATERITE_DARK, size: 0.8, seg: 14 }));
   f.add(bastionCrowns([[0, H + 19, 0, 8]], LATERITE, { trim: LATERITE_DARK, size: 0.9, seg: 20 }));
   // The ramp up the observation tower: a straight incline from the ground 44 m off, with a low

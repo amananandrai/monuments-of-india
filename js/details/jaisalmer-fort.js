@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import { mat, cyl, at, photo } from '../helpers.js';
+import { M, mat, cyl, at, photo, inst, unitBox } from '../helpers.js';
 import { jharokha, merlonGeo, placeAll, aroundCircle, beltCourse, mergeByMaterial } from './components.js';
 import { trees, scatter } from './realism.js';
 import { camels as camelHerd } from './animals.js';
 import { H, bastions, trikuta } from '../monuments/jaisalmer-fort.js';
 import { detail } from '../detail.js';
 
-// Jaisalmer, finer detail. Each of the 99 bastions has a moulded course below its crown and a ring
-// of merlons on top; and the Raj Mahal's front over the Dussehra Chowk is hung with tiers of
+// Jaisalmer, finer detail. Each of the 99 bastions has a moulded course below its crown, a ring
+// of merlons on top and two staggered rings of arrow slits; and the Raj Mahal's front over the Dussehra Chowk is hung with tiers of
 // jharokhas under curved bangla roofs, as on the havelis of the golden city. Dimensions follow
 // js/monuments/jaisalmer-fort.js: the bastions 5.5 in radius from H - 3, 16 m tall; the palace
 // 56 × 26 × 22 at pal, its front at pal.z + 11.
@@ -20,6 +20,17 @@ function architecture(f, pal) {
     for (const [px, py, pz, ry] of aroundCircle(4.9, 11, top, k * 0.3)) list.push([x + px, py, z + pz, ry]);
   });
   d.add(placeAll(mg, list, GOLD));
+  // Two staggered rings of arrow slits round each bastion, on desktops (js/detail.js).
+  if (!detail.low) {
+    const slits = [];
+    bastions().forEach(([x, z], k) => {
+      for (const [y, ph] of [[H + 3.4, 0], [H + 11.2, 0.5]]) for (let i = 0; i < 8; i++) {
+        const a = ((i + ph) / 8) * Math.PI * 2 + k * 0.3;
+        slits.push([x + Math.sin(a) * 5.52, y, z + Math.cos(a) * 5.52, 0.28, 1.4, 0.05, a]);
+      }
+    });
+    f.add(inst(unitBox(), slits, M.recess));
+  }
   // The palace front: tiers of jharokhas (five on desktops, three on phones), a course between each.
   const tiers = detail.low ? 3 : 5;
   for (let r = 0; r < tiers; r++) {

@@ -59,8 +59,8 @@ export function buildChittorgarh() {
   }
   f.add(inst(unitBox(), segs, STONE), inst(unitCyl(12), towers, STONE));
   // Battlements on the walls and the bastions: parapets, merlons, string courses and arrow slits.
-  f.add(rampart(segs, STONE, { trim: RUIN, size: 0.8, kerb: false }), bastionCrowns(towers.map(([x, y, z, w, h]) => [x, y + h, z, w / 2]), STONE, { trim: RUIN, size: 0.8, seg: 12 }));
-  f.add(at(fortGate(16, 11, 7, 4.5, 7.5, { m: STONE, trim: RUIN, towers: { r: 3, h: 12, cap: 'dome', seg: 16 } }), RAMPOL, H, rimZ(RAMPOL)));
+  f.add(rampart(segs, STONE, { trim: RUIN, size: 0.8, kerb: false, boxes: 4 }), bastionCrowns(towers.map(([x, y, z, w, h]) => [x, y + h, z, w / 2]), STONE, { trim: RUIN, size: 0.8, seg: 12 }));
+  f.add(at(fortGate(16, 11, 7, 4.5, 7.5, { m: STONE, trim: RUIN, box: true, towers: { r: 3, h: 12, cap: 'dome', seg: 16 } }), RAMPOL, H, rimZ(RAMPOL)));
   // The way up: a road in switchbacks up the south face from the plain to the Ram Pol, through
   // the seven gates (pols): Padan Pol at its foot, then one at each turn.
   const zAt = (x, y) => { let lo = rimZ(x, 1.0), hi = 260; for (let k = 0; k < 30; k++) { const m = (lo + hi) / 2; if (chittor(x, m) > y) lo = m; else hi = m; } return (lo + hi) / 2; };
@@ -79,7 +79,7 @@ export function buildChittorgarh() {
     pols.push([x0, y0, zAt(x0, y0), Math.sign(x1 - x0)]);
   });
   g.add(inst(unitBox(), road, RUIN));
-  for (const [x, y, z, dir] of pols) g.add(at(fortGate(10, 8, 6, 3.6, 5.6, { m: STONE, trim: RUIN }), x + dir * 8, y, z).rotateY(dir * Math.PI / 2));
+  for (const [x, y, z, dir] of pols) g.add(at(fortGate(10, 8, 6, 3.6, 5.6, { m: STONE, trim: RUIN, box: true }), x + dir * 8, y, z).rotateY(dir * Math.PI / 2));
   // Vijay Stambh, Rana Kumbha's palace ruins, and Padmini's palace in its pool
   f.add(at(vijayStambh(), VS[0], H, VS[1]));
   const ruins = [];
