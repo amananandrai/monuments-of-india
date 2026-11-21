@@ -96,15 +96,36 @@ export function guardian(h, m) {
 // The head and hands are carved in the field, as on the Statue of Unity: the face with its brow,
 // eyes under their lids, nose, lips and chin, and the ears; the raised palm with its four fingers
 // and thumb, the fingers of the left hand curling over the knee, and the rear hands closed round
-// the trishul and the damru. The hair, the serpent and the ornaments are meshes.
+// the trishul and the damru; and the feet with their toes, lying sole up on the thighs. The hair,
+// the serpent and the ornaments are meshes.
 function shivaField() {
   const legs = mirrorX(blend([[cone([2.6, 6.6, 0], [6.2, 5.8, 3.2], 2.3, 1.9), 0], [E([5.9, 6.0, 3.1], [1.9, 1.7, 1.8]), 0.8]]));
   const shins = blend([
     [cone([6.2, 5.6, 3.4], [-3.6, 5.4, 4.6], 1.7, 1.25), 0],
     [cone([-6.2, 5.6, 3.6], [3.6, 5.2, 5.0], 1.7, 1.25), 0],
-    [E([-4.2, 6.4, 4.5], [1.1, 0.7, 2.0]), 0.5],
-    [E([4.2, 6.2, 4.9], [1.1, 0.7, 2.0]), 0.5],
   ]);
+  // The feet, each lying sole up on the other thigh at the end of its crossed shin (padmasana):
+  // the heel by the ankle, the arch, the ball of the foot, and five toes in a row, the big toe the
+  // largest, their tips turned up a little; the sole creased across. sx: which way the foot points
+  // along x (the left foot, on the right thigh, points to -x); dy, dz: where it lies.
+  const foot = (sx, dy, dz) => {
+    const X = (v) => sx * v, z0 = 4.45 + dz, y0 = 7.15 + dy;
+    const toes = [[0.0, 0.32, 1.2], [0.4, 0.23, 1.05], [0.72, 0.21, 0.95], [1.01, 0.19, 0.84], [1.27, 0.17, 0.72]];
+    let ft = blend([
+      [E([X(3.45), y0 - 0.25, z0], [0.8, 0.62, 0.78]), 0],
+      [E([X(4.55), y0, z0 + 0.05], [1.35, 0.5, 0.92]), 0.35],
+      [E([X(5.55), y0 + 0.05, z0 + 0.1], [0.55, 0.45, 1.0]), 0.3],
+    ]);
+    // The toes, kept apart from one another so each shows, joined to the ball of the foot.
+    const toeF = blend(toes.map(([o, r, L]) => [chain([[X(5.85), y0 + 0.18, z0 + 0.72 - o * 1.05, r], [X(5.85 + L * 0.55), y0 + 0.26, z0 + 0.72 - o * 1.08, r * 0.92], [X(5.85 + L), y0 + 0.42, z0 + 0.72 - o * 1.12, r * 0.8]], 0.04), 0.015]));
+    ft = blend([[ft, 0], [toeF, 0.12]]);
+    // Creases across the sole (its upturned face), and the nails on the toes' tips.
+    for (const [x, w] of [[4.3, 0.75], [4.95, 0.8]]) ft = carve(ft, E([X(x), y0 + 0.5, z0], [0.05, 0.06, w]), 0.05);
+    const nails = blend(toes.map(([o, r, L]) => [E([X(5.85 + L * 0.93), y0 + 0.42 + r * 0.55, z0 + 0.72 - o * 1.12], [r * 0.55, r * 0.22, r * 0.62]), 0.02]));
+    return blend([[ft, 0], [nails, 0.03]]);
+  };
+  const footL = bounded(foot(-1, 0, 0), [-4.9, 7.2, 4.5], 2.6, 2.0), footR = bounded(foot(1, -0.2, 0.4), [4.9, 7.0, 4.9], 2.6, 2.0);
+  const feet = (x, y, z) => (x < 0 ? footL(x, y, z) : footR(x, y, z));
   const b = blend([
     [E([0, 6.6, 0.4], [5.0, 2.3, 3.8]), 0],
     [legs, 1.2],
@@ -190,23 +211,32 @@ function shivaField() {
   const anatomy = blend([[b, 0], ...abs, ...clav]);
   const line = E(on([0, 11.9, 4], 0), [0.12, 1.25, 0.16]);
   const navel = E([0, 10.2, 2.95], [0.25, 0.3, 0.3]);
-  const all = (x, y, z) => smin(smin(carve(carve(anatomy, line, 0.15), navel, 0.15)(x, y, z), handsB(x, y, z), 0.12), y > 17.4 ? headB(x, y, z) : Infinity, 0.5);
-  return { f: flatBase(all, 3.6, 0.2), lo: [-10.5, 3.4, -4.5], hi: [10.5, 24.6, 7.6] };
+  const feetB = (x, y, z) => (y > 9.4 || Math.abs(x) < 2.4 ? Infinity : feet(x, y, z));
+  const all = (x, y, z) => smin(smin(smin(carve(carve(anatomy, line, 0.15), navel, 0.15)(x, y, z), handsB(x, y, z), 0.12), feetB(x, y, z), 0.2), y > 17.4 ? headB(x, y, z) : Infinity, 0.5);
+  // The feet and the resting hand, for the fine regions round them (shivaBody).
+  const palmL = E([6.15, 7.9, 4.55], [0.85, 0.34, 1.0]);
+  return { f: flatBase(all, 3.6, 0.2), lo: [-10.5, 3.4, -4.5], hi: [10.5, 24.6, 7.6], feet: (x, y, z) => (x < 0 ? footL(x, y, z) : footR(x, y, z)), resting: bounded((x, y, z) => Math.min(resting(x, y, z), palmL(x, y, z)), [6.1, 7.6, 5.2], 2.0, 2.0) };
 }
 // coarse: meshed on a cell half as large again (under half the triangles, under half the time), for
 // phones (js/detail.js); kept under its own key, so both can be cached.
-// The head and the four hands are meshed on finer cells, inside regions that cross the neck and
+// The head, the four hands and the feet are meshed on finer cells, inside regions that cross the neck and
 // the wrists squarely.
 export const shivaBody = (m, { coarse = false } = {}) => body(coarse ? 'shiva-coarse' : 'shiva', shivaField, coarse ? 0.36 : 0.24, m, undefined, {
   split: [
     // The head's region crosses the neck under the cobra's coils, so its seam is hidden.
     { region: E([0, 21.2, 0.6], [2.9, 3.5, 2.9]), h: coarse ? 0.11 : 0.065, lo: [-3.2, 17.5, -2.6], hi: [3.2, 24.9, 3.8] },
     { region: E([-6.6, 17.0, 3.5], [1.6, 1.75, 1.1]), h: coarse ? 0.13 : 0.075, lo: [-8.4, 15.1, 2.3], hi: [-4.9, 18.9, 4.7] },
-    { region: E([6.1, 7.6, 5.2], [1.55, 1.0, 1.65]), h: coarse ? 0.13 : 0.075, lo: [4.4, 6.4, 3.4], hi: [7.8, 8.8, 7.0] },
+    // The resting hand and the feet lie on the legs: their regions are their own shapes grown a
+    // little, so the change of mesh falls in the crease where they meet the leg, not across it.
+    { region: (x, y, z) => Math.min(9, shivaParts().resting(x, y, z) - 0.4), h: coarse ? 0.13 : 0.075, lo: [4.4, 6.4, 3.4], hi: [7.8, 8.8, 7.0] },
     { region: E([-8.75, 16.1, -0.4], [1.05, 1.15, 1.05]), h: coarse ? 0.14 : 0.08, lo: [-9.9, 14.8, -1.6], hi: [-7.6, 17.4, 0.8] },
     { region: E([8.6, 17.2, -0.2], [1.05, 1.15, 1.05]), h: coarse ? 0.14 : 0.08, lo: [7.4, 15.9, -1.4], hi: [9.8, 18.5, 1.0] },
+    // The feet, from the ankle to the toes.
+    ...[-1, 1].map((sx) => ({ region: (x, y, z) => Math.min(9, shivaParts().feet(sx > 0 ? Math.max(x, 0.01) : Math.min(x, -0.01), y, z) - 0.45), h: coarse ? 0.13 : 0.075, lo: [sx > 0 ? 2.3 : -8.6, 5.2, 2.4], hi: [sx > 0 ? 8.6 : -2.3, 9.2, 7.2] })),
   ],
 });
+let shivaP = null;
+const shivaParts = () => (shivaP ||= shivaField());
 // The Shiva's skin as a field, for laying ornaments on it.
 let shivaF = null;
 export const shivaSurface = () => (shivaF ||= shivaField().f);
