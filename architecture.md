@@ -249,13 +249,14 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 
 ## Sculpture
 
-| ![Figure frieze](img/figure-frieze.jpg) | ![Statue, urn and pinnacle](img/statue.jpg) |   |
+| ![Figure frieze](img/figure-frieze.jpg) | ![Statue, urn and pinnacle](img/statue.jpg) | ![Door guardian](img/guardian.jpg) |
 | :---: | :---: | :---: |
-| Figure frieze | Statue, urn and pinnacle |   |
+| Figure frieze | Statue, urn and pinnacle | Door guardian |
 
 | Part | File | What it is |
 | --- | --- | --- |
 | `figure(h, m, pose)` | sculpture | A carved figure, standing or dancing |
+| `guardian(h, m)` (figures) | doorways | A door guardian (dvarapala): a fierce face, tall crown, jewellery and a ribbed club; a large one on a desktop gets a finely meshed head |
 | `idol(h, m)` | components | A cheap standing image in relief, for rows of niches |
 | `guardian(h, m)` | figures | A door guardian |
 | `statue(h, m, pose)` | sculpture | A statue on a pedestal |

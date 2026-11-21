@@ -82,9 +82,9 @@ From [architecture.md](architecture.md).
 
 ### [Sculpture](architecture.md#sculpture)
 
-| ![Figure frieze](img/figure-frieze.jpg) | ![Statue, urn and pinnacle](img/statue.jpg) |   |
+| ![Figure frieze](img/figure-frieze.jpg) | ![Statue, urn and pinnacle](img/statue.jpg) | ![Door guardian](img/guardian.jpg) |
 | :---: | :---: | :---: |
-| Figure frieze | Statue, urn and pinnacle |   |
+| Figure frieze | Statue, urn and pinnacle | Door guardian |
 
 ## The setting
 

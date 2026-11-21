@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { mesh, box, cyl, at, lathe, nagaraProfile, finial } from '../helpers.js';
 import { petalRing, bracketGeo, placeAll, frieze, mergeByMaterial } from './components.js';
+import { detail } from '../detail.js';
 
 // Sculpture and the small architectural parts that carry it: carved figures, elephants and horses
 // for friezes, the miniature shrines (kutas and shalas) that line the storeys of a Dravidian tower,
@@ -52,6 +53,30 @@ function ball(r, x, y, z, sx = 1, sy = 1, sz = 1, w = 6, h = 4) {
   return o;
 }
 
+// A small carved head of radius r at (x, y, z), facing +z: a brow ridge, a nose and a chin pushed
+// out of the sphere, enough to read as a face at the scale of a frieze.
+function headMesh(r, x, y, z, sy = 1.12) {
+  const geo = new THREE.SphereGeometry(r, 8, 6), p = geo.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const px = p.getX(i) / r, py = p.getY(i) / r, pz = p.getZ(i) / r;
+    if (pz <= 0) continue;
+    const g = (cx, cy, sx, syy) => Math.exp(-(((px - cx) / sx) ** 2 + ((py - cy) / syy) ** 2));
+    const out = 0.22 * g(0, -0.08, 0.16, 0.3) + 0.08 * g(0, 0.22, 0.55, 0.1) + 0.06 * g(0, -0.62, 0.3, 0.15) - 0.06 * (g(0.32, 0.08, 0.16, 0.1) + g(-0.32, 0.08, 0.16, 0.1));
+    p.setZ(i, p.getZ(i) + out * r * pz);
+  }
+  const o = new THREE.Mesh(geo);
+  o.position.set(x, y, z);
+  o.scale.set(1, sy, 1);
+  return o;
+}
+// A tiered crown (karanda mukuta) of radius r standing on y, rising h: bands stepping in to a knob.
+function crownMesh(r, h, x, y, z) {
+  const pts = [[1, 0], [1.02, 0.15], [0.8, 0.4], [0.86, 0.46], [0.56, 0.72], [0.22, 0.96], [0, 1.08]];
+  const o = new THREE.Mesh(new THREE.LatheGeometry(pts.map(([a, b]) => new THREE.Vector2(a * r, b * h)), 6));
+  o.position.set(x, y, z);
+  return o;
+}
+
 /* ---------- figures ---------- */
 
 // Figures in units of a tenth of their height, facing +z. pose: 'standing' (a deity with a tall
@@ -82,7 +107,7 @@ function figureParts(pose) {
     add(seg(V(0, 1.2, 0), V(0, 4.6, -0.1), 1.25, 1.0, 8));               // torso
     add(ball(1.0, 0, 4.0, 0.25, 1.1, 0.9, 0.8));                          // chest
     for (const s of [-1, 1]) add(seg(V(s * 1.15, 4.4, 0), V(s * 1.3, 2.6, 0.5), 0.32, 0.28), seg(V(s * 1.3, 2.6, 0.5), V(s * 0.3, 1.8, 0.9), 0.28, 0.24));
-    add(ball(0.75, 0, 5.4, 0.1), ball(0.45, 0, 6.2, 0));                 // head, ushnisha
+    add(detail.low ? ball(0.75, 0, 5.4, 0.1) : headMesh(0.75, 0, 5.4, 0.1, 1.05), ball(0.45, 0, 6.2, 0));   // head, ushnisha
     add(ball(0.9, 0, 0.35, 0.6, 1.4, 0.35, 0.9));                         // lap
     return g;
   }
@@ -127,9 +152,11 @@ function figureParts(pose) {
     if (pose !== 'leader') add(seg(V(1.55, 3.4, 0.6), V(1.6, 6.2, 0.7), 0.1, 0.1, 5), ball(0.35, 1.6, 6.4, 0.7));   // a mace or lotus
   }
   add(seg(V(sh.x, 7.3, 0), V(sh.x, 7.9, 0), 0.32, 0.32));                // neck
-  add(ball(0.75, sh.x, 8.5, 0.1, 1, 1.12, 1));                           // head
+  // The head with its face and the tiered crown on desktops (js/detail.js); a ball and a cone on
+  // phones, where these figures, by the hundred, are a few pixels tall.
+  add(detail.low ? ball(0.75, sh.x, 8.5, 0.1, 1, 1.12, 1) : headMesh(0.75, sh.x, 8.5, 0.1));
   if (pose === 'leader') { add(seg(V(sh.x, 8.95, 0), V(sh.x, 9.5, 0), 0.74, 0.7, 10)); return g; } // a cap
-  add(seg(V(sh.x, 9.0, 0), V(sh.x, 10.0, 0), 0.72, 0.28, 8));            // crown or hair knot
+  add(detail.low ? seg(V(sh.x, 9.0, 0), V(sh.x, 10.0, 0), 0.72, 0.28, 8) : crownMesh(0.72, 1.1, sh.x, 9.0, 0));
   for (const s of [-1, 1]) add(ball(0.18, sh.x + s * 0.72, 8.2, 0.1, 1, 2, 1, 6, 4)); // ear ornaments
   return g;
 }
@@ -154,8 +181,9 @@ function stuccoParts(raised, low = false) {
 }
 const figCache = new Map();
 export function figureGeo(pose = 'standing') {
-  if (!figCache.has(pose)) figCache.set(pose, bake(pose.startsWith('stucco') ? stuccoParts(pose === 'stuccoArm', pose === 'stuccoLow') : figureParts(pose)));
-  return figCache.get(pose);
+  const key = pose + (detail.low ? ':low' : '');
+  if (!figCache.has(key)) figCache.set(key, bake(pose.startsWith('stucco') ? stuccoParts(pose === 'stuccoArm', pose === 'stuccoLow') : figureParts(pose)));
+  return figCache.get(key);
 }
 // A single figure about h tall as a mesh facing +z on y = 0 (its width and depth follow h).
 export function figure(h, m, pose = 'standing') {
