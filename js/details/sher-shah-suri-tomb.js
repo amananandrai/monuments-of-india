@@ -1,13 +1,16 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, FACES } from '../helpers.js';
+import { M, mat, box, cyl, at, onFace, FACES, surface } from '../helpers.js';
 import { merlonGeo, placeAll, alongFace, archRing, archSlab, frieze, petalRing, bracketGeo, mergeByMaterial } from './components.js';
 import { trees, boats, asiBoard, scatter } from './realism.js';
 
 // Sher Shah Suri's Tomb, finer detail. From photographs: a carved frieze runs under the cornice of
 // each octagonal storey, which is carried on brackets and crested with merlons; the faces of the
 // stepped platform are opened in blind arcades and its edge is crested too; and the dome rises from
-// a moulded ring to a lotus at its crown. Dimensions follow js/monuments/sher-shah-suri-tomb.js.
+// a moulded ring to a lotus at its crown, its drum banded in blue and yellow glazed tile (the
+// arches' muqarnas come with iwan(), js/details/mughal.js). Dimensions follow js/monuments/sher-shah-suri-tomb.js.
 const STONE = mat('#c39a6e', 0.88), SHADE_ = mat('#a27b52', 0.9);
+// Glazed tiles, blue and yellow, of which traces survive on the drum and the parapets.
+const BLUE = surface(mat('#2f6fa8', 0.45), 'tiles'), YELLOW = surface(mat('#e0b43c', 0.45), 'tiles');
 function architecture(f) {
   const d = new THREE.Group(), mg = merlonGeo(1, 1.2, 0.5);
   for (const [r, h, y0] of [[22, 13, 8], [17, 7, 21]]) {
@@ -33,6 +36,8 @@ function architecture(f) {
   }
   d.add(placeAll(merlonGeo(0.9, 1, 0.5), list, SHADE_));
   d.add(cyl(14.3, 14.3, 0.5, SHADE_, 0, 30.6, 0, 40));
+  // Bands of glazed tile round the drum (r = 14, from 28 to 31) under the moulded ring.
+  d.add(cyl(14.05, 14.05, 0.7, BLUE, 0, 28.5, 0, 32), cyl(14.05, 14.05, 0.5, YELLOW, 0, 29.4, 0, 32), cyl(14.05, 14.05, 0.5, BLUE, 0, 30.0, 0, 32));
   d.add(at(petalRing(1.9, 14, 2, 1.0, 0.55, STONE), 0, 44.4, 0));
   mergeByMaterial(d);
   f.add(d);

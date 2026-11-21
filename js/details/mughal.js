@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import { M, mesh, box, at, rise } from '../helpers.js';
+import { M, mat, mesh, box, at, rise, surface, doubleSided } from '../helpers.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { detail } from '../detail.js';
 import { archCurve, archRing, archSlab, tympanum, niche, jali, rosette, merlons, mergeByMaterial } from './components.js';
 import { interior, doorLeaves, steps } from './doorways.js';
 
@@ -61,15 +63,67 @@ export function mughalDoorway(w, h, { m, trim = m, depth = Math.max(0.45, w * 0.
   return g;
 }
 
+// Muqarnas: the half-dome of a pointed arch w × h, `depth` deep (as hood() in components.js
+// builds it: a quarter ellipsoid from the springing on the back wall to the crown on the opening),
+// lined with tiers of small faceted cells, each a little scalloped niche corbelled out from the
+// vault, its mouth facing in and down, the tiers staggered by half a cell and separated by fine
+// ledges in `trim`. The cells grow fewer towards the crown, where the vault is left smooth.
+// tiers: how many rows (by default about one per 1.2 m of rise). Faces +z, back at z = 0.
+export function muqarnas(w, h, depth, { m, trim = m, tiers = 0 } = {}) {
+  const r = w / 2, R = rise(r, true), s = h - R, D = depth, T = tiers || Math.max(3, Math.min(10, Math.round(R / 1.2)));
+  const C = new THREE.Vector3(0, s, D), eMax = (Math.PI / 2) * 0.86;
+  const P = (a, e) => new THREE.Vector3(r * Math.cos(a) * Math.cos(e), R * Math.sin(e), -D * Math.sin(a) * Math.cos(e)).add(C);
+  const inward = (p) => { const q = p.clone().sub(C); return new THREE.Vector3(-q.x / (r * r), -q.y / (R * R), -q.z / (D * D)).normalize(); };
+  const cell = new THREE.SphereGeometry(1, 6, 3, 0, Math.PI, 0, Math.PI / 2).rotateY(Math.PI);
+  const mats = [], ledges = [], avg = (r + D) / 2;
+  for (let k = 0; k < T; k++) {
+    const e0 = (k / T) * eMax, e1 = ((k + 1) / T) * eMax, tierH = (e1 - e0) * Math.hypot(R, avg) * 0.72;
+    const n = Math.max(2, Math.round((Math.PI * avg * Math.cos(e0)) / (tierH * 1.15)));
+    const cw = (Math.PI * avg * Math.cos(e0)) / n, cd = Math.min(tierH, cw) * 0.45;
+    for (let i = 0; i < n; i++) {
+      const a = ((i + 0.5 + (k % 2) * 0.5) / (n + (k % 2) * 0.5)) * Math.PI;
+      const p = P(a, e0), z = inward(p), up = P(a, e0 + 0.01).sub(p).normalize();
+      const y = up.sub(z.clone().multiplyScalar(up.dot(z))).normalize(), x = new THREE.Vector3().crossVectors(y, z);
+      const o = p.clone().addScaledVector(z, cd);
+      mats.push(new THREE.Matrix4().makeBasis(x, y, z).scale(new THREE.Vector3(cw * 0.48, tierH, cd)).setPosition(o));
+    }
+    if (k > 0 && !detail.low) {
+      const pts = [];
+      for (let i = 0; i <= 24; i++) { const p = P((i / 24) * Math.PI, e0); pts.push(p.addScaledVector(inward(p), cd * 0.9)); }
+      ledges.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 24, Math.min(0.07, tierH * 0.04), 4, false));
+    }
+  }
+  const g = new THREE.Group(), im = new THREE.InstancedMesh(cell, doubleSided(m), mats.length);
+  mats.forEach((mx, i) => im.setMatrixAt(i, mx));
+  im.castShadow = false;
+  im.receiveShadow = true;
+  g.add(im);
+  if (ledges.length) g.add(mesh(mergeGeometries(ledges.map((t) => t.toNonIndexed())), trim));
+  return g;
+}
+
+// An inscription band round a pishtaq: black letters inlaid in white marble (the 'calligraphy'
+// surface), as a frame `bw` wide standing just proud of the face at z = 0, round a rectangle
+// W wide and up to yt high from y = 0.
+const SCRIPT = surface(mat('#f1ece0', 0.5), 'calligraphy');
+export function scriptFrame(W, yt, bw) {
+  const g = new THREE.Group();
+  for (const x of [-1, 1]) g.add(box(bw, yt, 0.05, SCRIPT, x * (W / 2 - bw / 2), 0, 0));
+  g.add(box(W, bw, 0.05, SCRIPT, 0, yt, 0));
+  return g;
+}
+
 // An iwan: a pointed arch w × h set in a rectangular frame (`frame` each side, `top` above),
 // recessed `depth` with a half-dome over it, outlined in `trim` (a moulded ring and a flat band
 // round the frame, as the white marble lines on red sandstone). At the back, fill: 'door' (a
 // mughalDoorway below the springing and, if there is room, a screened window above it), 'jali' (a
 // pierced screen), or 'none'; door: [width, height] to size the door rather than fill the space.
-// Options: merlons along the top, rosettes in the spandrels, and steps down `stepsDown` metres.
+// Options: merlons along the top, rosettes in the spandrels, and steps down `stepsDown` metres;
+// cells: muqarnas in the half-dome (desktops; on by default from 5 m wide); script: an inscription
+// band round the frame.
 export function iwan(w, h, {
   m, trim = m, shade = m, depth = w * 0.22, frame = w * 0.18, top = w * 0.25, fill = 'door', door = null,
-  band = true, crest = false, rosettes = false, stepsDown = 0,
+  band = true, crest = false, rosettes = false, stepsDown = 0, cells = w >= 5, script = false,
 } = {}) {
   const g = new THREE.Group(), s = h - rise(w / 2, true), W = w + 2 * frame;
   g.add(niche(w, h, true, depth, m, { frame, top, back: shade, inner: false, ring: false, hoodM: shade }));
@@ -96,6 +150,10 @@ export function iwan(w, h, {
     g.add(box(2 * xo + bw, bw, 0.06, trim, 0, yt, depth + 0.01));
   }
   if (rosettes) for (const x of [-1, 1]) g.add(at(rosette(Math.min(frame, top) * 0.3, trim, 8), x * w * 0.38, h - rise(w / 2, true) * 0.12, depth + 0.02));
+  // An inscription band round the frame, outside the trim band, where the frame is wide enough.
+  if (script && frame > 1 && top >= frame * 0.8) { const bw = Math.min(0.9, frame * 0.25), W2 = W - frame * 0.16; g.add(at(scriptFrame(W2, h + top - frame * 0.08 - bw, bw), 0, 0, depth + 0.012)); }
+  // Muqarnas in the half-dome, on desktops (and only in an iwan big enough to show them).
+  if (cells && !detail.low) g.add(muqarnas(w * 0.99, h * 0.99, depth * 0.99, { m: shade, trim }));
   if (crest) g.add(at(merlons(W - 0.2, Math.min(0.8, W * 0.04), Math.min(1.1, W * 0.055), Math.min(0.4, depth * 0.4), m, 0.3), 0, h + top, depth / 2));
   if (stepsDown > 0) g.add(at(steps(Math.min(W, w + 2), stepsDown, Math.max(2, Math.ceil(stepsDown / 0.4)), shade), 0, -stepsDown, depth));
   mergeByMaterial(g);

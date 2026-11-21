@@ -117,8 +117,8 @@ for (const a of FACES) d.add(onFace(at(windowFrame(2, 4.2, M.cream, { shape: 'fl
 | Arch wall with its ring | Iwan | Niche |
 | ![Window with a jali screen](img/window-jali.jpg) | ![Classical door](img/classical-door.jpg) | ![Gothic window](img/gothic-window.jpg) |
 | Window with a jali screen | Classical door | Gothic window |
-| ![Temple doorway](img/temple-doorway.jpg) |   |   |
-| Temple doorway |   |   |
+| ![Temple doorway](img/temple-doorway.jpg) | ![Iwan with muqarnas and an inscription band](img/muqarnas.jpg) |   |
+| Temple doorway | Iwan with muqarnas and an inscription band |   |
 
 | Part | File | What it is |
 | --- | --- | --- |
@@ -127,7 +127,9 @@ for (const a of FACES) d.add(onFace(at(windowFrame(2, 4.2, M.cream, { shape: 'fl
 | `archRing(archW, archH, pointed, band, depth, m)` | components | The moulded ring round an arch's opening |
 | `niche(archW, archH, pointed, depth, m)` | components | An arched niche with a half-dome hood |
 | `barrelVault(radius, length, m)` | helpers | The underside of a barrel vault |
-| `iwan(w, h, { m, trim, depth })` | mughal | The great arched recess of a Mughal gate or tomb front, with its door |
+| `iwan(w, h, { m, trim, depth, cells, script, rosettes })` | mughal | The great arched recess of a Mughal gate or tomb front, with its door; muqarnas in its half-dome on desktops (`cells`, on from 5 m wide), an inscription band round its frame (`script`) |
+| `muqarnas(w, h, depth, { m, trim, tiers })` | mughal | Tiers of small faceted cells lining the half-dome of a pointed arch, staggered, with fine ledges between the tiers |
+| `scriptFrame(W, yt, bw)` | mughal | An inscription band of black letters inlaid in white marble round a pishtaq |
 | `mughalDoorway(w, h, { m })` | mughal | A pointed doorway onto a dim room |
 | `arcadeSkin(len, h, cells, depth, m)` | mughal | A wall face cut into a row of arched cells, each a door, a screen or a room |
 | `windowFrame(w, h, m, { shape, screen })` | components | A window in a stone surround; `screen: jali(m)` fills it with a pierced screen |

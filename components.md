@@ -41,8 +41,8 @@ From [architecture.md](architecture.md).
 | Arch wall with its ring | Iwan | Niche |
 | ![Window with a jali screen](img/window-jali.jpg) | ![Classical door](img/classical-door.jpg) | ![Gothic window](img/gothic-window.jpg) |
 | Window with a jali screen | Classical door | Gothic window |
-| ![Temple doorway](img/temple-doorway.jpg) |   |   |
-| Temple doorway |   |   |
+| ![Temple doorway](img/temple-doorway.jpg) | ![Iwan with muqarnas and an inscription band](img/muqarnas.jpg) |   |
+| Temple doorway | Iwan with muqarnas and an inscription band |   |
 
 ### [Walls, eaves and parapets](architecture.md#walls-eaves-and-parapets)
 
