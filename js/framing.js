@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 // The box the home view frames: the monument as built. Lawns, plazas, paths, water and other
-// ground-level things under 2.5 m, and the trees, lamps and other dressing from js/details/realism.js
+// ground-level things under 2.5 m, and the trees, lamps and other dressing from js/parts/realism.js
 // (marked userData.dressing), are left out, so a garden or a square round a monument no longer sets
 // the camera's distance. Falls back to the whole focus group if nothing is left.
 export function frameBox(focus) {

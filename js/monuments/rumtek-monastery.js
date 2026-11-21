@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, lathe, at, rng, hipRoof, tibetanBlock, TIBETAN, inst, unitBox } from '../helpers.js';
-import { tibetanPortico } from '../details/doorways.js';
-import { mergeByMaterial } from '../details/components.js';
-import { mountainRing } from '../details/terrain.js';
+import { M, mat, box, cyl, lathe, at, hipRoof, tibetanBlock, TIBETAN, inst, unitBox } from '../helpers.js';
+import { tibetanPortico } from '../parts/doorways.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { mountainRing } from '../parts/terrain.js';
 import { addDetails } from '../details/rumtek-monastery.js';
 
 const YELLOW = mat('#e6b94a', 0.8);
@@ -10,11 +10,11 @@ const YELLOW = mat('#e6b94a', 0.8);
 const GILT = mat('#e7b84a', 0.32, 0.55, { emissive: '#3d2a06' });
 
 export function buildRumtek() {
-  const g = new THREE.Group(), f = new THREE.Group(), R = rng(59);
+  const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // Forested Sikkim hills
   g.add(box(300, 0.2, 300, mat('#58783f', 0.95)));
-  // Forested Sikkim ridges (js/details/terrain.js).
+  // Forested Sikkim ridges (js/parts/terrain.js).
   g.add(mountainRing({ inner: 400, outer: 700, h: 170, vary: 60, rock: ['#4a5d3a', '#56693f'], cover: '#4e6e3c', steep: 0.6 }));
 
   // Courtyard ringed by monks' quarters

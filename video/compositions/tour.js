@@ -20,7 +20,7 @@ import { separateCoplanar, separateMerged } from '../site/js/coplanar.js';
 import { frameBox } from '../site/js/framing.js';
 import { naturalize } from '../site/js/naturalize.js';
 import { blendIntoLand } from '../site/js/landscape.js';
-import { upgradeTrees, scatterGround } from '../site/js/details/realism.js';
+import { upgradeTrees, scatterGround } from '../site/js/parts/realism.js';
 import { loadPhotoTextures } from '../site/js/textures.js';
 import { MONUMENTS } from '../site/js/data.js';
 import { BUILDERS } from '../site/js/builders.js';

@@ -1,7 +1,7 @@
 import { at, flag, mat } from '../helpers.js';
-import { deepmala, nandiMandapa } from './temples.js';
-import { garland } from './realism.js';
-import { lamp } from './doorways.js';
+import { deepmala, nandiMandapa } from '../parts/temples.js';
+import { garland } from '../parts/realism.js';
+import { lamp } from '../parts/doorways.js';
 
 // Bhimashankar, finer detail. Dimensions follow js/monuments/bhimashankar-temple.js: the temple at
 // z = -8 with its stair down to about z = 13.6, the bell frame at x = -10, z = 8. On the axis before

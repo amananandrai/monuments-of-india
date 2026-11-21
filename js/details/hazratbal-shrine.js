@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, at, onFace, FACES } from '../helpers.js';
-import { rosette, chhajja, archRing, petalRing, bracketGeo, placeAll, aroundCircle, mergeByMaterial } from './components.js';
-import { trees, lampPosts, boats, houseboats, along } from './realism.js';
+import { rosette, chhajja, archRing, petalRing, bracketGeo, placeAll, aroundCircle, mergeByMaterial } from '../parts/components.js';
+import { trees, lampPosts, boats, houseboats, along } from '../parts/realism.js';
 
 // Hazratbal, finer detail. From photographs: carved rosettes between the arches of the marble
 // hall; a sloping eave round its top; a ring of blind arches round the drum and a lotus round the

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, FACES, lathe, surface, tricolour, hemi, finial, chhatri, inst, unitBox, unitCyl } from '../helpers.js';
-import { chhajja, bracketGeo, placeAll, alongFace, windowFrame, railing, jali, aroundCircle, petalRing, star, mouldings, frieze, panel, dentils, columnTrim, mergeByMaterial } from './components.js';
-import { instances, elephantGeo } from './sculpture.js';
-import { trees, lampPosts, along } from './realism.js';
+import { chhajja, bracketGeo, placeAll, alongFace, windowFrame, railing, jali, aroundCircle, petalRing, star, mouldings, frieze, panel, dentils, columnTrim, mergeByMaterial } from '../parts/components.js';
+import { instances, elephantGeo } from '../parts/sculpture.js';
+import { trees, lampPosts, along } from '../parts/realism.js';
 import { COPPER } from '../monuments/rashtrapati-bhavan.js';
 
 const GALLERY = surface(mat('#3a322c', 0.9), 'none');
@@ -108,7 +108,7 @@ function architecture(f) {
 // (base 7 square and 6 high, the shaft to 36, a bronze ball at 37.2).
 const STAR = mat('#d8eef5', 0.08, 0.2, { transparent: true, opacity: 0.85 });
 function sculpture(f, g) {
-  const d = new THREE.Group(), Rd = M.red, Cr = M.cream, Bf = M.buff;
+  const d = new THREE.Group(), Rd = M.red, Bf = M.buff;
   const jc = at(new THREE.Group(), 0, 0, 120);
   jc.add(at(petalRing(1.25, 12, 1.6, 0.9, 0.5, M.bronze), 0, 36, 0));
   for (const ry of [0, Math.PI / 2]) jc.add(at(star(6, 1.3, STAR, 0.12), 0, 43.4, -0.06).rotateY(ry));

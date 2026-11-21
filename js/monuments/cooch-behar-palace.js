@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, lathe, at, ribbed, inst, unitBox, surface } from '../helpers.js';
-import { arcadeSkin } from '../details/mughal.js';
-import { classicalDoor, porch, column, pediment } from '../details/colonial.js';
-import { windowFrame } from '../details/components.js';
+import { arcadeSkin } from '../parts/mughal.js';
+import { classicalDoor, porch, column, pediment } from '../parts/colonial.js';
+import { windowFrame } from '../parts/components.js';
 import { addDetails } from '../details/cooch-behar-palace.js';
 
 const BRICK = surface(mat('#a9583f', 0.85), 'brick');
@@ -10,7 +10,7 @@ const WHITE = mat('#ece6da', 0.8);
 const METAL = mat('#8a9097', 0.45, 0.5);
 
 // Round-arched windows for a wall len long and h high: two storeys of them every 5 m, closed by
-// green louvred shutters below the arch (js/details/components.js, louvredShutter).
+// green louvred shutters below the arch (js/parts/components.js, louvredShutter).
 function windowCells(len, h) {
   const n = Math.floor(len / 5), out = [];
   for (let k = 0; k < n; k++) { const x = -len / 2 + (k + 0.5) * (len / n); out.push([x, 1.4, 2.2, 4.6, 'shutters'], [x, h / 2 + 1.8, 2.2, 4.6, 'shutters']); }

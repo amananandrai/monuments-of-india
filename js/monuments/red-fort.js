@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, box, cyl, at, chhatri, instBoxes, tricolour, inst, unitBox } from '../helpers.js';
-import { fortGate } from '../details/forts.js';
+import { fortGate } from '../parts/forts.js';
 import { addDetails } from '../details/red-fort.js';
 
 // The fort's outline, [x, z] round from the east end of the focus walls by the Lahori Gate.

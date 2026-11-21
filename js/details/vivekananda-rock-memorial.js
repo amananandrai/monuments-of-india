@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { mat, mesh, box, at, onFace, FACES, aroundRect, inst, unitBox, strut } from '../helpers.js';
-import { mouldings, frieze, chhajja, bracketGeo, placeAll, templeNiche, mergeByMaterial } from './components.js';
-import { boats, lampPosts, along } from './realism.js';
+import { mouldings, frieze, chhajja, bracketGeo, placeAll, templeNiche, mergeByMaterial } from '../parts/components.js';
+import { boats, lampPosts, along } from '../parts/realism.js';
 
 // The Vivekananda Rock Memorial, finer detail. From photographs of the mandapam (built in 1970 in a
 // blend of temple styles from across India): its platform is moulded and carved in a band; the

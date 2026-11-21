@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, surface, inst, unitBox, unitCyl, tricolour } from '../helpers.js';
-import { frieze, panel, mergeByMaterial } from './components.js';
-import { lampPosts, around } from './realism.js';
-import { lionCapital } from './animals.js';
+import { M, mat, box, cyl, at, surface, inst, unitBox, unitCyl, tricolour } from '../helpers.js';
+import { frieze, panel, mergeByMaterial } from '../parts/components.js';
+import { lampPosts, around } from '../parts/realism.js';
+import { lionCapital } from '../parts/animals.js';
 
 // The National War Memorial, finer detail. From photographs: the covered gallery of the Veerta
 // Chakra is lined on its inner wall with six bronze murals of battle scenes, each in a granite
@@ -46,7 +46,7 @@ function architecture(f) {
   }
   f.add(inst(unitBox(), piers, LIGHT), inst(unitBox(), bays, GRANITE));
   // The Lion Capital on the obelisk's tip (at 17.6): the lotus bell, the abacus with its wheels, and
-  // the four lions back to back (js/details/animals.js).
+  // the four lions back to back (js/parts/animals.js).
   f.add(at(lionCapital(M.bronze, 0.95), 0, 17.5, 0));
   // Param Yoddha Sthal, west of the circles: 21 bronze busts on granite pedestals in three rows
   // on a paved court, and the national flag on a tall mast beside it.

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { M, mat, box, at, rng, V, strut, inst, unitBox, unitCyl, sheet, surface, photo } from '../helpers.js';
 import { detail } from '../detail.js';
 import { addDetails } from '../details/bandra-worli-sea-link.js';
-import { heightField, rough, smooth } from '../details/terrain.js';
+import { heightField, rough, smooth } from '../parts/terrain.js';
 
 const CONCRETE = photo(mat('#c9c6bf', 0.85), 'concrete');
 const CABLE = mat('#e8e6e1', 0.5, 0.3);

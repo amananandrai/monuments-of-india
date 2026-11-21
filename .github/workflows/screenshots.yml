@@ -7,10 +7,10 @@
 #   (tools/changed-monuments.mjs maps a file to its monument);
 # - js/data.js, where the list's names, places and dates live: the list is rewritten, and no
 #   picture is redrawn unless a monument's file changed too.
-# What does not: a shared part (js/details/realism.js, components.js and the others listed
-# below), js/surface.js, js/main.js, CSS, the README, the guides, or this file. Those change many
-# monuments or none. When one changes the look, run this workflow by hand ("Run workflow"): with
-# the ids box empty it redraws all 101, or name the ones to redraw.
+# What does not: a shared part (js/parts/, js/helpers.js), js/surface.js, js/main.js, CSS, the
+# README, the guides, or this file. Those change many monuments or none. When one changes the
+# look, run this workflow by hand ("Run workflow"): with the ids box empty it redraws all 101, or
+# name the ones to redraw.
 #
 # The plain renderer (tools/shoot-views.mjs) is used rather than --site: a full site shot of all
 # 101 models is about an hour on a CPU runner. The commit is marked [skip ci], and the paths it
@@ -30,19 +30,6 @@ on:
       - 'js/monuments/**'
       - 'js/details/**'
       - 'js/data.js'
-      # The shared parts in js/details: used by many monuments, so they belong to none.
-      - '!js/details/animals.js'
-      - '!js/details/colonial.js'
-      - '!js/details/components.js'
-      - '!js/details/doorways.js'
-      - '!js/details/figures.js'
-      - '!js/details/forts.js'
-      - '!js/details/mughal.js'
-      - '!js/details/realism.js'
-      - '!js/details/sculpture.js'
-      - '!js/details/temples.js'
-      - '!js/details/terrain.js'
-      - '!js/details/tibetan.js'
   pull_request:
     paths: *monument-js
 

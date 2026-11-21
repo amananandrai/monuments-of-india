@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { M, mat, box, at, inst, unitCyl, aroundRect, kalash, flag, rng } from '../helpers.js';
-import { nagaraTemple, bhumijaRows } from '../details/temples.js';
-import { columnTrim } from '../details/components.js';
-import { instances, miniSpireGeo } from '../details/sculpture.js';
-import { townHouses } from '../details/realism.js';
+import { nagaraTemple, bhumijaRows } from '../parts/temples.js';
+import { columnTrim } from '../parts/components.js';
+import { instances, miniSpireGeo } from '../parts/sculpture.js';
+import { townHouses } from '../parts/realism.js';
 import { addDetails } from '../details/mahakaleshwar-temple.js';
 
 const STONE = mat('#e6d6b8', 0.85);
@@ -11,7 +11,7 @@ const SHADE = mat('#b98f5f', 0.9);
 const SPIRE = mat('#eadcc0', 0.8);
 
 // The old town of Ujjain further out, beyond the first ring of houses round the court (both
-// levels; js/details/realism.js, townHouses): rows two to four storeys high facing each other
+// levels; js/parts/realism.js, townHouses): rows two to four storeys high facing each other
 // across lanes, a few old houses under tiled roofs among them, the approach road on the axis to
 // the south kept open, and to the north the houses behind the Mahakal Lok corridor.
 function ujjain() {

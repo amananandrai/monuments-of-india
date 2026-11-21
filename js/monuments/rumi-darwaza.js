@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, at, archWall, chhatri, guldasta, inst } from '../helpers.js';
-import { jali, archSlab, archRing } from '../details/components.js';
-import { arcadeSkin } from '../details/mughal.js';
+import { jali, archSlab, archRing } from '../parts/components.js';
+import { arcadeSkin } from '../parts/mughal.js';
 import { addDetails } from '../details/rumi-darwaza.js';
 
 const LIME = mat('#e6d8b8', 0.85);

@@ -22,8 +22,8 @@ what changes between desktops and phones.
   they reflect the monument.
 - **Nature and figures:** rocks, hills, mountains and trees are sculpted with noise
   (`js/naturalize.js`). The statues and temple animals are each sculpted as one continuous skin
-  from a signed distance field and meshed in the browser (`js/sdf.js`, `js/details/animals.js`,
-  `js/details/figures.js`), so limbs grow out of bodies as in a carving. Examples are Patel in his
+  from a signed distance field and meshed in the browser (`js/sdf.js`, `js/parts/animals.js`,
+  `js/parts/figures.js`), so limbs grow out of bodies as in a carving. Examples are Patel in his
   dhoti and shawl, the Nageshwar Shiva, Bahubali, Thiruvalluvar, the Nandis, elephants, Konark's
   horses, temple lions and door guardians. Their crevices are darkened and their ridges rubbed
   pale, dark stone is polished, and faces and hands are sculpted. The heads of Patel and Bahubali
@@ -63,24 +63,24 @@ what changes between desktops and phones.
   and eaves on the colonial buildings, and the Dharma wheel and victory banners on the monasteries.
   Sculpture is modelled rather than blocked in: carved figures and elephants in the temple friezes
   and on the gopurams, kutas and shalas on the vimanas, yali pillars at Hampi, and Corinthian
-  orders and statues on the colonial buildings (`js/details/sculpture.js`). The parts are shared
-  (`js/details/components.js`, `forts.js`, `temples.js`, `tibetan.js`, `sculpture.js`) and merged
+  orders and statues on the colonial buildings (`js/parts/sculpture.js`). The parts are shared
+  (`js/parts/components.js`, `forts.js`, `temples.js`, `tibetan.js`, `sculpture.js`) and merged
   or instanced into a few meshes per monument.
 - **Entrances:** the Nagara temples, Ram Mandir's halls and the South Indian gopurams have
-  doorways with depth from `js/details/doorways.js`. They have stepped frames, timber doors
+  doorways with depth from `js/parts/doorways.js`. They have stepped frames, timber doors
   standing open onto a lamp-lit sanctum, thresholds, guardians, porches and steps, and real
   passages through the gopurams. The Mughal, Nawabi, Qutb Shahi and Deccan buildings have iwans
-  with half-domes and doors, and arcades of real arched cells, from `js/details/mughal.js`. The
+  with half-domes and doors, and arcades of real arched cells, from `js/parts/mughal.js`. The
   forts' gates are passages through their gatehouses, with guard niches and doors spiked against
-  elephants, from `js/details/forts.js`. The other temples have their own porches and doorways,
+  elephants, from `js/parts/forts.js`. The other temples have their own porches and doorways,
   gates on post-and-lintel lines (one with its two lions), and the monasteries have painted
   Tibetan doors and pillared porticoes. The colonial, Gothic Revival, Baroque and Indo-Saracenic
-  buildings have their doors from `js/details/colonial.js`: porches of paired columns, arched doors
+  buildings have their doors from `js/parts/colonial.js`: porches of paired columns, arched doors
   with fanlights, a Gothic portal with a crocketed gable, a Baroque portal, sash and two-light
   windows in stone surrounds, and arcades with real depth.
 - **Setting:** every monument has its own file in `js/details/` (named after it, as in
   `js/details/taj-mahal.js`) that adds what stands round it, built from a shared kit
-  (`js/details/realism.js`):
+  (`js/parts/realism.js`):
   - the trees and shrubs of its region, twenty-one kinds from one planter: neem, banyan, mango,
     ashoka, coconut palms, deodars and cypress avenues; jamun on Delhi's avenues, peepal at Bodh
     Gaya and Sarnath, chinar in Kashmir, poplar and willow in Ladakh, firs in the eastern

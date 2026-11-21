@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { mat, at, onFace, FACES, starPrism } from '../helpers.js';
-import { frieze, idol, windowFrame, jali, bracketGeo, placeAll, mergeByMaterial } from './components.js';
-import { instances, kutaGeo } from './sculpture.js';
-import { trees, garland, asiBoard, along } from './realism.js';
-import { lamp } from './doorways.js';
+import { frieze, idol, windowFrame, jali, bracketGeo, placeAll, mergeByMaterial } from '../parts/components.js';
+import { instances, kutaGeo } from '../parts/sculpture.js';
+import { trees, garland, asiBoard, along } from '../parts/realism.js';
+import { lamp } from '../parts/doorways.js';
 
 const SOAP = mat('#8f877b', 0.85), SOAP_DARK = mat('#6f685e', 0.85);
 

@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, at, onFace, FACES, hemi, onionDome, finial, mat, surface } from '../helpers.js';
-import { archRing, archSlab, panel, frieze, rosette, windowFrame, arcadeScreen, mergeByMaterial, mughalChhatri, chhajja, merlons, jharokha, chadar } from './components.js';
-import { iwan, arcadeSkin, cellRow } from './mughal.js';
-import { towerDetail, slitRow } from './forts.js';
-import { trees, lampPosts, asiBoard, along } from './realism.js';
+import { archRing, archSlab, panel, frieze, rosette, windowFrame, arcadeScreen, mergeByMaterial, mughalChhatri, chhajja, merlons, jharokha, chadar } from '../parts/components.js';
+import { iwan, arcadeSkin, cellRow } from '../parts/mughal.js';
+import { towerDetail, slitRow } from '../parts/forts.js';
+import { trees, lampPosts, asiBoard, along } from '../parts/realism.js';
 import { RIVER, OUTLINE } from '../monuments/red-fort.js';
 
 // The Red Fort, finer detail. From photographs of the Lahori Gate and the walls:

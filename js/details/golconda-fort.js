@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, hemi, finial, guldasta, archWall, inst, unitBox, photo } from '../helpers.js';
-import { archRing, rosette, chhajja, arcadeScreen, mergeByMaterial } from './components.js';
-import { towerDetail, rampart, bastionCrowns } from './forts.js';
-import { RINGS, ringPoint, hillRadius, hillY, hillSurface } from '../monuments/golconda-fort.js';
-import { trees, shrubs, lampPosts, asiBoard, scatter, along } from './realism.js';
+import { M, mat, box, at, onFace, guldasta, archWall, inst, unitBox, photo } from '../helpers.js';
+import { archRing, rosette, chhajja, arcadeScreen, mergeByMaterial } from '../parts/components.js';
+import { towerDetail, rampart, bastionCrowns } from '../parts/forts.js';
+import { RINGS, ringPoint, hillRadius, hillSurface } from '../monuments/golconda-fort.js';
+import { trees, shrubs, lampPosts, asiBoard, scatter, along } from '../parts/realism.js';
 
 // Golconda, finer detail. The granite bastions on every ring of wall are banded and slit, as are
 // the towers of the Fateh Darwaza, whose face carries carved medallions in its spandrels; the Bala

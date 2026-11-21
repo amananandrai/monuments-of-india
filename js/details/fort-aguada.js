@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, hemi, photo } from '../helpers.js';
-import { railingRing, windowFrame, mergeByMaterial } from './components.js';
-import { trees, boats, asiBoard, scatter } from './realism.js';
+import { railingRing, windowFrame, mergeByMaterial } from '../parts/components.js';
+import { trees, boats, asiBoard, scatter } from '../parts/realism.js';
 
 // Fort Aguada, finer detail. The Portuguese laterite walls carry a rounded cordon a little below
 // the parapet, with embrasures for the guns along it; the lighthouse of 1864 has a gallery railing

@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, lathe, at, onFace, FACES, archPanel, onionDome, hemi, finial, kalash, chhatri, ribbed, sheet, surface } from '../helpers.js';
-import { fortGate } from '../details/forts.js';
-import { wallWithGaps } from '../details/temples.js';
-import { steps } from '../details/doorways.js';
-import { mughalDoorway, arcadeSkin } from '../details/mughal.js';
+import { fortGate } from '../parts/forts.js';
+import { wallWithGaps } from '../parts/temples.js';
+import { steps } from '../parts/doorways.js';
+import { mughalDoorway, arcadeSkin } from '../parts/mughal.js';
 import { detail } from '../detail.js';
 import { addDetails } from '../details/golden-temple.js';
 

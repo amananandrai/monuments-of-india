@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, surface, inst, unitBox, rng } from '../helpers.js';
-import { idol, mergeByMaterial } from './components.js';
-import { trees, asiBoard, scatter } from './realism.js';
-import { deer } from './animals.js';
+import { idol, mergeByMaterial } from '../parts/components.js';
+import { trees, asiBoard, scatter } from '../parts/realism.js';
+import { deer } from '../parts/animals.js';
 
 // The Dhamek Stupa, finer detail. From photographs: the stone drum is girdled by its famous band of
 // carving (swastikas, geometric and floral scrolls) between the projecting faces; and each of the

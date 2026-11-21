@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import { surface } from '../surface.js';
-import { mat, mesh, box, at, onFace, rng, inst, unitBox, aroundRect, tube, pidaRoof } from '../helpers.js';
+import { mat, box, at, onFace, rng, inst, unitBox, aroundRect, tube, pidaRoof } from '../helpers.js';
 import { onSkin, skinMatrix, normalAt } from '../sdf.js';
-import { heightField, fbm, smooth } from '../details/terrain.js';
-import { trabeateGate } from '../details/temples.js';
-import { templeNiche, petalRing, mergeByMaterial } from '../details/components.js';
-import { figure } from '../details/sculpture.js';
+import { heightField, fbm, smooth } from '../parts/terrain.js';
+import { trabeateGate } from '../parts/temples.js';
+import { templeNiche, petalRing, mergeByMaterial } from '../parts/components.js';
+import { figure } from '../parts/sculpture.js';
 import { detail } from '../detail.js';
-import { bahubaliBody, bahubaliSurface } from '../details/figures.js';
+import { bahubaliBody, bahubaliSurface } from '../parts/figures.js';
 import { addDetails } from '../details/gommateshwara.js';
 
 const GRANITE = mat('#c9c3b6', 0.8);
@@ -17,7 +17,7 @@ const RELIEF = surface(mat('#cfc9bc', 0.75), 'carved');
 const HILL = mat('#9a917f', 0.95, 0, { flatShading: true });
 
 // Bahubali standing in kayotsarga, as carved from the one block of granite: the body, the
-// anthills beside his legs and the head are one sculpted field (bahubaliBody, js/details/
+// anthills beside his legs and the head are one sculpted field (bahubaliBody, js/parts/
 // figures.js); on its skin lie, in the same stone and in low relief, the madhavi creepers that
 // grew up him as he stood (leafy stems rising from between the feet and sweeping out across the
 // thighs to the hips, and winding up each arm from the wrist to a coiled tendril on the upper

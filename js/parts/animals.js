@@ -70,10 +70,12 @@ function nandiField(fine = true) {
   if (fine) {
     // The blanket over the back, 12 cm thick, its border raised along its edges.
     const region = (x, y, z) => Math.max(1.0 - y, z - 0.35, -1.7 - z);
-    const blanket = (x, y, z) => Math.max(Math.abs(body(x, y, z) - 0.06) - 0.06, region(x, y, z));
-    const border = (x, y, z) => Math.max(Math.abs(body(x, y, z) - 0.09) - 0.09, Math.abs(region(x, y, z) + 0.1) - 0.1);
-    const f0 = f;
-    f = (x, y, z) => smin(smin(f0(x, y, z), blanket(x, y, z), 0.03), border(x, y, z), 0.02);
+    // The body's field is costly, so each point samples it once for the hide, the blanket and its border.
+    f = (x, y, z) => {
+      const b = body(x, y, z), r = region(x, y, z);
+      const blanket = Math.max(Math.abs(b - 0.06) - 0.06, r), border = Math.max(Math.abs(b - 0.09) - 0.09, Math.abs(r + 0.1) - 0.1);
+      return smin(smin(smin(b, deco(x, y, z), 0.03), blanket, 0.03), border, 0.02);
+    };
   }
   // The eyes, the nostrils and the line of the mouth.
   let g = carve(f, mirrorX(E([0.38, 2.28, 2.3], [0.08, 0.06, 0.08])), 0.03);
@@ -230,9 +232,12 @@ function horseField(coarse = false, prance = false) {
   if (!coarse) {
     // The saddle cloth: a shell over the back and down the flanks under the saddle, its border raised.
     const region = (x, y, z) => Math.max(1.85 - y, z - 0.55, -0.85 - z);
-    const cloth = (x, y, z) => Math.max(Math.abs(body(x, y, z) - 0.06) - 0.055, region(x, y, z));
-    const border = (x, y, z) => Math.max(Math.abs(body(x, y, z) - 0.08) - 0.075, Math.abs(region(x, y, z) + 0.08) - 0.08);
-    f = (x, y, z) => smin(smin(body(x, y, z), cloth(x, y, z), 0.02), border(x, y, z), 0.02);
+    // The body's field is costly, so each point samples it once for the hide, the cloth and its border.
+    f = (x, y, z) => {
+      const b = body(x, y, z), r = region(x, y, z);
+      const cloth = Math.max(Math.abs(b - 0.06) - 0.055, r), border = Math.max(Math.abs(b - 0.08) - 0.075, Math.abs(r + 0.08) - 0.08);
+      return smin(smin(b, cloth, 0.02), border, 0.02);
+    };
   }
   // The nostrils and the line of the mouth.
   f = carve(f, mirrorX(E([0.075, 3.25, 2.63], [0.035, 0.05, 0.035])), 0.015);
@@ -392,7 +397,7 @@ export function rideElephant(m, s = 1, { cloth = '#b3262e', trim = '#e3b54a', ho
 // of embroidered roundels along the hem of the side cloths, a rope of brass bells round the neck,
 // anklets of bells, brass caps on the tusks and, on a temple elephant, the nettipattam: the gold
 // caparison hung over the forehead and down the trunk, studded with bosses, with a crescent at its
-// head. Built on an elephant of scale 1 (js/details/animals.js).
+// head. Built on an elephant of scale 1 (js/parts/animals.js).
 function dress(g, C, T, temple) {
   const F = elephantSurface(), d = new THREE.Group(), tassel = new THREE.ConeGeometry(0.05, 0.22, 6).translate(0, -0.11, 0), boss = new THREE.SphereGeometry(0.055, 8, 6);
   // The gold fringe along the cloth's hem, and three embroidered roundels on each flank.

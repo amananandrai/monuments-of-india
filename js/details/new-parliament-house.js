@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, tricolour, surface, inst, unitBox } from '../helpers.js';
-import { instances, elephantGeo, horseGeo } from './sculpture.js';
-import { lion } from './animals.js';
-import { windowFrame, jali, frieze, mergeByMaterial } from './components.js';
-import { trees, shrubs, lampPosts, around } from './realism.js';
+import { instances, elephantGeo, horseGeo } from '../parts/sculpture.js';
+import { lion } from '../parts/animals.js';
+import { windowFrame, jali, frieze, mergeByMaterial } from '../parts/components.js';
+import { trees, shrubs, lampPosts, around } from '../parts/realism.js';
 
 // The new Parliament House, finer detail. From photographs: the red sandstone base storey is pierced
 // by rows of tall jali windows along each long face, and a carved band runs along the buff upper

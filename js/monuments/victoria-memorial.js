@@ -1,17 +1,17 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, lathe, at, onFace, FACES, hemi, group, doubleSided, mown } from '../helpers.js';
-import { figure } from '../details/sculpture.js';
-import { allegory, hold } from '../details/figures.js';
+import { M, mesh, box, cyl, lathe, at, onFace, FACES, hemi, doubleSided, mown } from '../helpers.js';
+import { figure } from '../parts/sculpture.js';
+import { allegory, hold } from '../parts/figures.js';
 import { detail } from '../detail.js';
-import { mergeByMaterial } from '../details/components.js';
-import { steps } from '../details/doorways.js';
-import { classicalDoor, porch } from '../details/colonial.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { steps } from '../parts/doorways.js';
+import { classicalDoor, porch } from '../parts/colonial.js';
 import { addDetails } from '../details/victoria-memorial.js';
 
 // The Angel of Victory (by Esch, cast by H. H. Martyn), 4.9 m of bronze turning with the wind on a
 // ball on the lantern: a winged woman in drapery blown back, poised on her left foot, the right
 // leg trailing, the right hand raising a bugle to her lips and the left held out behind with a
-// wreath (js/details/figures.js). On phones, a robed figure from the light kit, with flat wings.
+// wreath (js/parts/figures.js). On phones, a robed figure from the light kit, with flat wings.
 export function angelOfVictory() {
   const g = new THREE.Group(), B = M.bronze;
   g.add(mesh(new THREE.SphereGeometry(0.55, 14, 10), B, 0, 0.3, 0));
@@ -33,7 +33,7 @@ export function angelOfVictory() {
 }
 // Queen Victoria (George Frampton), enthroned and aged, in the robes of the Star of India with the
 // collar of the order, a small crown and veil, the sceptre upright in her right hand and the orb in
-// her left (js/details/figures.js). On phones, the enthroned figure of the light kit.
+// her left (js/parts/figures.js). On phones, the enthroned figure of the light kit.
 export function queenVictoria() {
   if (detail.low) return figure(4.4, M.bronze, 'enthroned');
   const g = new THREE.Group(), B = M.bronze, fig = allegory('victoria', { seated: true, throne: true, mantle: true, head: 'queen', stout: true, right: 'throne', left: 'lap' }, B, 0.018);

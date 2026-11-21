@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, at, cyl, onFace, FACES, guldasta } from '../helpers.js';
-import { star, petalRing, merlons, mergeByMaterial } from './components.js';
-import { iwan } from './mughal.js';
-import { trees, asiBoard, fountains, scatter, along } from './realism.js';
+import { star, petalRing, merlons, mergeByMaterial } from '../parts/components.js';
+import { iwan } from '../parts/mughal.js';
+import { trees, asiBoard, fountains, scatter, along } from '../parts/realism.js';
 
 // Humayun's Tomb, finer detail. From photographs and descriptions of the tomb:
 // - each main face is a great iwan flanked by two storeys of smaller iwans, as on the chamfers, so

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { mat, mesh, box, at, hemi, onFace } from '../helpers.js';
-import { jharokha, bracketGeo, placeAll, aroundCircle, railingRing, mergeByMaterial } from './components.js';
-import { towerDetail } from './forts.js';
-import { trees, shrubs, asiBoard, scatter } from './realism.js';
+import { jharokha, bracketGeo, placeAll, aroundCircle, railingRing, mergeByMaterial } from '../parts/components.js';
+import { towerDetail } from '../parts/forts.js';
+import { trees, shrubs, asiBoard, scatter } from '../parts/realism.js';
 
 const SAND = mat('#c9b08a', 0.9), SAND_DARK = mat('#a68d68', 0.9);
 
@@ -53,7 +53,7 @@ export function addDetails(p, g) {
     for (let k = 0; k < 3; k++) {
       const w = 22 - k * 3, y = 2 + k * 5;
       sb.add(box(w - 4, 4.6, w - 4, SAND, 0, y), box(w + 0.6, 0.5, w + 0.6, SAND_DARK, 0, y + 4.6));
-      for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) for (let i = 0; i < 5; i++) sb.add(onFace(at(box(0.7, 4.6, 0.7, SAND), 0, y, 0), a, w / 2 - 0.6, -w / 2 + 1.2 + (i * (w - 2.4)) / 4));
+      for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) for (let i = 0; i < 5; i++) sb.add(onFace(box(0.7, 4.6, 0.7, SAND, 0, y, 0), a, w / 2 - 0.6, -w / 2 + 1.2 + (i * (w - 2.4)) / 4));
     }
     for (let k = 0; k < 5; k++) sb.add(box(12 - k * 2, 1.4, 12 - k * 2, SAND, 0, 17 + k * 1.4));
     sb.add(at(hemi(1.4, SAND, 12), 0, 24, 0));

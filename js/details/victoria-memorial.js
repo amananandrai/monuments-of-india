@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import { M, box, at, onFace, FACES } from '../helpers.js';
-import { rosette, windowFrame, mergeByMaterial } from './components.js';
-import { corinthianCapital, entablature, figure } from './sculpture.js';
-import { allegory, hold } from './figures.js';
+import { rosette, windowFrame, mergeByMaterial } from '../parts/components.js';
+import { corinthianCapital, entablature, figure } from '../parts/sculpture.js';
+import { allegory, hold } from '../parts/figures.js';
 import { detail } from '../detail.js';
-import { balustrade, GLASS } from './colonial.js';
-import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
+import { balustrade, GLASS } from '../parts/colonial.js';
+import { trees, shrubs, lampPosts, scatter, along } from '../parts/realism.js';
 
 // The Victoria Memorial, finer detail. From photographs: a balustrade runs along the roof of the
 // main block between the corner pavilions; each pavilion opens in a tall arched window on its two
@@ -40,7 +40,7 @@ function architecture(f) {
 }
 
 // An allegorical statue in marble on its pedestal, h tall overall, facing +z: a woman in classical
-// drapery (js/details/figures.js), standing or seated, holding her attributes ([side, kind, opts]
+// drapery (js/parts/figures.js), standing or seated, holding her attributes ([side, kind, opts]
 // for hold()). On phones, a robed figure from the light kit.
 function allegoryStatue(h, key, opts, held = [], { seat = false } = {}) {
   const g = new THREE.Group(), Mb = M.marble, Sh = M.marbleShade, ph = h * 0.16;

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { mat, mesh, box, at, onFace } from '../helpers.js';
-import { archRing, pilasters, panel, frieze, bracketGeo, placeAll, columnTrim, cuspedArchGeo, mergeByMaterial, beltCourse } from './components.js';
-import { manastambha } from './temples.js';
-import { trees, lampPosts, along } from './realism.js';
+import { archRing, pilasters, panel, frieze, bracketGeo, placeAll, columnTrim, cuspedArchGeo, mergeByMaterial, beltCourse } from '../parts/components.js';
+import { manastambha } from '../parts/temples.js';
+import { trees, lampPosts, along } from '../parts/realism.js';
 
 // Soniji ki Nasiyan, finer detail. From photographs of the street front at Ajmer: the red
 // sandstone is carved everywhere, the storeys divided into bays by pilasters, a carved band under

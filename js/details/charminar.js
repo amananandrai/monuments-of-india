@@ -3,9 +3,9 @@ import { M, mat, mesh, box, cyl, at, onFace, FACES, ribbed, finial } from '../he
 import {
   archRing, archSlab, rosette, clockFace, bracketGeo, placeAll, aroundCircle, alongFace, chhajjaRing,
   railingRing, arcadeScreen, merlons, lotusDome, petalRing, mergeByMaterial,
-} from './components.js';
-import { stalls, along, cityAround } from './realism.js';
-import { iwan } from './mughal.js';
+} from '../parts/components.js';
+import { stalls, along, cityAround } from '../parts/realism.js';
+import { iwan } from '../parts/mughal.js';
 
 // Charminar, finer detail (Muhammad Quli Qutb Shah, 1591). From photographs and descriptions:
 // - four minarets, each a fluted shaft rising through the building and on above the roof in two
@@ -72,7 +72,7 @@ export function charminarMinaret(m, out) {
 
 // The carving on the four faces, the clocks, the galleries and the parapet.
 export function addCharminarDetails(g, { b }) {
-  const m = M.plaster, d = new THREE.Group();
+  const d = new THREE.Group();
   for (const a of FACES) {
     // The great arch: an outer moulded ring, and a lighter arch traced inside the opening.
     d.add(onFace(at(archRing(11, 16.5, true, 0.5, 0.16, STUCCO), 0, b, 0), a, 10));

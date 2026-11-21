@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mesh, at } from '../helpers.js';
-import { templeNiche, idol, medallion, mergeByMaterial } from './components.js';
-import { lamp } from './doorways.js';
+import { templeNiche, idol, medallion, mergeByMaterial } from '../parts/components.js';
+import { lamp } from '../parts/doorways.js';
 
 // The Mahabodhi Temple, finer detail. From photographs: the faces of the great tower are covered in
 // rows of niches, each under a horseshoe (chaitya) arch and holding a seated Buddha; and the posts of

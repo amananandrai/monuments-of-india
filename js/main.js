@@ -7,13 +7,13 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
-import { nightState, V, box } from './helpers.js';
+import { nightState, V } from './helpers.js';
 import { attachSurface, surface, waterTime, landColor, reflection, groundShade, SHADE_SPAN } from './surface.js';
 import { blendIntoLand, siteLand } from './landscape.js';
 import { separateCoplanar, separateMerged } from './coplanar.js';
 import { frameBox } from './framing.js';
 import { batchStatic } from './batch.js';
-import { upgradeTrees, scatterGround } from './details/realism.js';
+import { upgradeTrees, scatterGround } from './parts/realism.js';
 import { naturalize } from './naturalize.js';
 import { loadPhotoTextures } from './textures.js';
 import { MONUMENTS } from './data.js';
@@ -306,7 +306,7 @@ function getBuilt(i) {
       r.focus = r.focus || r.group;
       // The colour of the land round the site, read before the seas are extended over it.
       r.land = siteLand(r);
-      // On desktops, grass tufts and stones on the open ground round it (js/details/realism.js), then
+      // On desktops, grass tufts and stones on the open ground round it (js/parts/realism.js), then
       // fuller trees, each while the monument has triangles to spare under the desktop budget
       // (js/detail.js). Phones keep plain trees and bare ground.
       if (!detail.low) { await step('plant'); scatterGround(r, detail.budget); upgradeTrees(r.group, detail.budget); }
@@ -335,6 +335,35 @@ function getBuilt(i) {
   })());
   return loading.get(i);
 }
+// A built monument holds tens of megabytes of geometry, in the page's memory and again on the
+// graphics card, so only the last few opened are kept: four on desktops, two on phones. An older one
+// is taken out of the scene and its geometry freed; opening it again builds it afresh (its code is
+// already fetched). Materials are shared between monuments and stay. Geometry that is cached and
+// shared (sculpted figures, tree crowns) is only dropped from the graphics card, and is sent again
+// when next drawn.
+const KEEP = detail.low ? 2 : 4, recent = [];
+function keepRecent(i) {
+  const at = recent.indexOf(i);
+  if (at >= 0) recent.splice(at, 1);
+  recent.push(i);
+  while (recent.length > KEEP) evict(recent.shift());
+  // One that finished building after the visitor had moved on was never shown: free it as well.
+  for (const k of [...built.keys()]) if (!recent.includes(k)) evict(k);
+}
+function evict(i) {
+  const r = built.get(i);
+  if (!r) return;
+  built.delete(i);
+  scene.remove(r.group);
+  const gone = new Set();
+  r.group.traverse((o) => {
+    gone.add(o);
+    if (o.geometry) o.geometry.dispose();
+    if (o.isInstancedMesh) o.dispose();
+  });
+  nightState.objects = nightState.objects.filter((o) => !gone.has(o));
+}
+
 // Fetch a monument's code ahead of a likely click (hover, or the next and previous in the list),
 // without building it.
 const prefetch = (i) => { if (i !== undefined && !built.has(i)) MONUMENTS[i].load().catch(() => {}); };
@@ -593,6 +622,7 @@ async function select(i, instant = false) {
   built.forEach((b, k) => { b.group.visible = k === i; });
   const first = current === -1;
   current = i;
+  keepRecent(i);
   // Switching between very different scales: start the flight from the same angle, scaled to the new size.
   if (!first && !instant) {
     const prevDist = camera.position.distanceTo(controls.target);
@@ -767,9 +797,7 @@ function applyFilters() {
     mobFilterBtn.setAttribute('aria-pressed', String(isFiltering));
   }
 
-  if (typeof map !== 'undefined' && map && map.setFilter) {
-    map.setFilter(isFiltering ? matchesFilter : null);
-  }
+  map.setFilter(isFiltering ? matchesFilter : null);
 }
 
 q.addEventListener('input', applyFilters);

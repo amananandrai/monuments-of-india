@@ -1,7 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, surface, box, cyl, lathe, group, at, archWall, barrelVault, mown } from '../helpers.js';
-import { addIndiaGateDetails, addCanopyDetails } from '../details/india-gate.js';
-import { addDetails } from '../details/india-gate.js';
+import { M, mat, surface, box, cyl, lathe, at, archWall, barrelVault, mown } from '../helpers.js';
+import { addIndiaGateDetails, addCanopyDetails, addDetails } from '../details/india-gate.js';
 
 const NAMES = surface(mat('#d4bd98', 0.8), 'script');
 const BAND = surface(mat('#c9ad85', 0.9), 'frieze');

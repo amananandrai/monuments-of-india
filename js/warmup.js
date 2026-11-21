@@ -1,19 +1,23 @@
 import * as THREE from 'three';
 
-// The five sculpted figures that take longest to mesh (half a second to a second each on a laptop):
-// Patel (Statue of Unity), Shiva (Nageshwar), Thiruvalluvar (Vivekananda Rock), the horse (the
-// Gateway of India and others) and Bahubali (Gommateshwara). Each is meshed once and then cached
-// (sculpt() in js/sdf.js), so meshing one ahead of time makes its monument's first click fast.
+// The sculpted figures that take longest to mesh, several seconds each on a slow machine: Patel
+// (Statue of Unity), Shiva (Nageshwar), Thiruvalluvar (Vivekananda Rock), Bahubali (Gommateshwara),
+// Netaji (India Gate), Shivaji and his prancing horse (the Gateway of India) and the standing
+// horse (Konark and others). Each is meshed once and then cached (sculpt() in js/sdf.js), so
+// meshing one ahead of time makes its monument's first click fast.
 //
 // Meshing a figure blocks the page while it runs, so it is done only when that cannot be felt: on
 // larger screens (phones skip it), while the map is showing (nothing animates there), after the
 // visitor has been still for two seconds, one figure at a time, and not while a monument loads.
 const SLOW = [
-  ['patel', () => import('./details/figures.js').then((m) => m.patelBody)],
-  ['shiva', () => import('./details/figures.js').then((m) => m.shivaBody)],
-  ['thiruvalluvar', () => import('./details/figures.js').then((m) => m.thiruvalluvarBody)],
-  ['horse', () => import('./details/animals.js').then((m) => m.horse)],
-  ['bahubali', () => import('./details/figures.js').then((m) => m.bahubaliBody)],
+  ['patel', () => import('./parts/figures.js').then((m) => m.patelBody)],
+  ['shiva', () => import('./parts/figures.js').then((m) => m.shivaBody)],
+  ['thiruvalluvar', () => import('./parts/figures.js').then((m) => m.thiruvalluvarBody)],
+  ['bahubali', () => import('./parts/figures.js').then((m) => m.bahubaliBody)],
+  ['netaji', () => import('./parts/figures.js').then((m) => m.netajiBody)],
+  ['shivaji', () => import('./parts/figures.js').then((m) => m.shivajiBody)],
+  ['horse-prance', () => import('./parts/animals.js').then((m) => (mat) => m.horse(mat, { prance: true }))],
+  ['horse', () => import('./parts/animals.js').then((m) => m.horse)],
 ];
 
 // canWarm(): whether the page is free for a while (the map showing, nothing loading).

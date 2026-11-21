@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { M, box, cyl, at, onFace, chhatri, onionDome, hemi, finial, aroundRect } from '../helpers.js';
-import { iwan, arcadeSkin } from '../details/mughal.js';
-import { D, jali, chhajja, bracketGeo, placeAll, inlayBorder, merlons } from '../details/components.js';
+import { M, box, cyl, at, onFace, FACES, chhatri, onionDome, hemi, finial, aroundRect } from '../helpers.js';
+import { iwan, arcadeSkin } from '../parts/mughal.js';
+import { D, jali, chhajja, bracketGeo, placeAll, inlayBorder, merlons } from '../parts/components.js';
 import { addDetails } from '../details/buland-darwaza.js';
 
 export function buildBulandDarwaza() {
@@ -75,7 +75,7 @@ function jamaMasjid(P) {
   const cells = [];
   for (let k = 0; k < 18; k++) { const z = -hl / 2 + (k + 0.5) * (hl / 18); if (Math.abs(z) > 10) cells.push([z, 0.5, 3.6, 8]); }
   g.add(at(arcadeSkin(hl, 15, cells, 1.2, Rd, { trim: Mb, fill: 'room' }), X0 + 0.6, P, cz).rotateY(Math.PI / 2));
-  g.add(at(box(20, 26, 4, Rd, 0, 0, 0), X0 + 1.2, P, cz).rotateY(Math.PI / 2), at(iwan(12, 21, { m: Rd, trim: Mb, shade: Rl, depth: 2.6, frame: 2, top: 2.4 }), X0 + 0.6, P, cz).rotateY(Math.PI / 2));
+  g.add(at(box(20, 26, 4, Rd), X0 + 1.2, P + 13, cz).rotateY(Math.PI / 2), at(iwan(12, 21, { m: Rd, trim: Mb, shade: Rl, depth: 2.6, frame: 2, top: 2.4 }), X0 + 0.6, P, cz).rotateY(Math.PI / 2));
   for (const [z, r] of [[0, 9], [-36, 6.5], [36, 6.5]]) {
     g.add(cyl(r * 0.95, r * 0.95, 2.6, Rd, hx, P + 15.6, cz + z, 32), at(hemi(r, Mb, 32), hx, P + 18.2, cz + z), at(finial(r * 0.5), hx, P + 18.2 + r, cz + z));
   }
@@ -85,7 +85,7 @@ function jamaMasjid(P) {
   const sc = new THREE.Group(), W = 14;
   sc.add(box(W + 6, 1.2, W + 6, Mb), box(W, 7, W, jali(Mb), 0, 1.2, 0), box(W - 4, 7.4, W - 4, Mb, 0, 1.2, 0));
   sc.add(box(W + 0.6, 0.6, W + 0.6, Mb, 0, 8.2, 0));
-  for (const [a, b] of [[0, 1], [Math.PI / 2, 1], [Math.PI, 1], [-Math.PI / 2, 1]]) {
+  for (const a of FACES) {
     const e = chhajja(W + 3, 1.8, 0.7, 0.14, Mb);
     e.position.set(Math.sin(a) * (W / 2 + 0.2), 8.1, Math.cos(a) * (W / 2 + 0.2));
     e.rotation.y = a;

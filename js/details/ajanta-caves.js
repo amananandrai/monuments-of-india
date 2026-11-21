@@ -1,12 +1,11 @@
 import * as THREE from 'three';
 import { mat, mesh, box, cyl, at, surface } from '../helpers.js';
-import { pilasters, templeNiche, idol, panel, frieze, windowFrame, mergeByMaterial } from './components.js';
-import { figure } from './sculpture.js';
-import { doorFrame } from './doorways.js';
-import { trees, shrubs, asiBoard, scatter } from './realism.js';
-import { openDistance } from '../monuments/ajanta-caves.js';
+import { pilasters, templeNiche, idol, panel, frieze, windowFrame, mergeByMaterial } from '../parts/components.js';
+import { figure } from '../parts/sculpture.js';
+import { doorFrame } from '../parts/doorways.js';
+import { trees, shrubs, asiBoard, scatter } from '../parts/realism.js';
+import { openDistance, caveFront } from '../monuments/ajanta-caves.js';
 import { detail } from '../detail.js';
-import { caveFront } from '../monuments/ajanta-caves.js';
 
 // Ajanta, finer detail. From photographs of the caves: the facades of the chaitya halls 19 and 26
 // are carved round the great horseshoe window, which is outlined by a projecting horseshoe arch,

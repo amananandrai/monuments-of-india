@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, box, mesh, at, onFace, curvedBand, photo, hipRoof, kalash, surface } from '../helpers.js';
-import { mergeByMaterial } from './components.js';
-import { towerDetail, rampart, bastionCrowns } from './forts.js';
-import { trees, shrubs, boats, asiBoard, scatter } from './realism.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { towerDetail, rampart, bastionCrowns } from '../parts/forts.js';
+import { trees, shrubs, boats, asiBoard, scatter } from '../parts/realism.js';
 
 // Bekal Fort, finer detail. The laterite walls are pierced with loopholes at three levels (the fort
 // is known for them: the lowest for the nearest targets, the highest for the furthest), with a

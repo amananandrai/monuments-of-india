@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, guldasta } from '../helpers.js';
-import { archRing, archSlab, rosette, merlons, mergeByMaterial } from './components.js';
-import { trees, lampPosts, scatter, along } from './realism.js';
+import { archRing, archSlab, rosette, merlons, mergeByMaterial } from '../parts/components.js';
+import { trees, lampPosts, scatter, along } from '../parts/realism.js';
 
 // Rumi Darwaza, finer detail. From photographs: the piers either side of the great arch are opened
 // in stacked niches, each in a moulded ring; stucco rosettes are set either side of the arch's

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, at, box } from '../helpers.js';
-import { mouldings, frieze, mergeByMaterial } from './components.js';
-import { steps } from './doorways.js';
-import { trees, shrubs, asiBoard, scatter, along } from './realism.js';
+import { mouldings, frieze, mergeByMaterial } from '../parts/components.js';
+import { steps } from '../parts/doorways.js';
+import { trees, shrubs, asiBoard, scatter, along } from '../parts/realism.js';
 
 // Parshvanath, finer architecture. Dimensions follow js/monuments/parshvanath-temple-khajuraho.js:
 // the high platform (jagati) 26 × 44 and 3 high, centred on z = 6, the temple on it. The platform is

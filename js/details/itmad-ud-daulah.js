@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, FACES, chhatri } from '../helpers.js';
-import { chhajja, railing, panel, jali, bracketGeo, placeAll, alongFace, merlons, mergeByMaterial } from './components.js';
-import { iwan } from './mughal.js';
-import { trees, shrubs, boats, asiBoard, fountains, scatter, along } from './realism.js';
+import { chhajja, railing, panel, jali, bracketGeo, placeAll, alongFace, merlons, mergeByMaterial } from '../parts/components.js';
+import { iwan } from '../parts/mughal.js';
+import { trees, shrubs, boats, asiBoard, fountains, scatter, along } from '../parts/realism.js';
 
 // Itmad-ud-Daulah, finer detail. From photographs: the walls between the arches are inlaid with
 // panels of coloured stone; a deep eave on brackets runs round the tomb under a pierced marble

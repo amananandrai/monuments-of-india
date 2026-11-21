@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, box, at } from '../helpers.js';
-import { nagaraTemple } from '../details/temples.js';
+import { nagaraTemple } from '../parts/temples.js';
 import { mahayogiShiva } from '../details/nageshwar-temple.js';
-import { trees, along } from '../details/realism.js';
+import { trees, along } from '../parts/realism.js';
 import { detail } from '../detail.js';
 
 const PINK = mat('#e4b7a0', 0.85);

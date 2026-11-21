@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, box, at, onFace, FACES, chhatri, minaret } from '../helpers.js';
-import { iwan, arcadeSkin, cellRow } from '../details/mughal.js';
+import { iwan, arcadeSkin, cellRow } from '../parts/mughal.js';
 import { addDetails } from '../details/akbars-tomb.js';
 
 export function buildAkbarsTomb() {

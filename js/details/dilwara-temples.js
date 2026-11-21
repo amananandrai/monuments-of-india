@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mesh, cyl, at, onFace } from '../helpers.js';
-import { mouldings, frieze, templeNiche, idol, petalRing, bracketGeo, placeAll, mergeByMaterial } from './components.js';
-import { trees, scatter } from './realism.js';
-import { figure } from './sculpture.js';
+import { mouldings, frieze, templeNiche, idol, petalRing, bracketGeo, placeAll, mergeByMaterial } from '../parts/components.js';
+import { trees, scatter } from '../parts/realism.js';
+import { figure } from '../parts/sculpture.js';
 import { DOME } from '../monuments/dilwara-temples.js';
 
 // Dilwara, finer detail. Plain outside, the temples are carved all over within: here the main

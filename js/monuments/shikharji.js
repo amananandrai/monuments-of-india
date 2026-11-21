@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { mat, box, at, inst, unitBox, unitHemi } from '../helpers.js';
-import { heightField, rough, smooth } from '../details/terrain.js';
-import { nagaraTemple } from '../details/temples.js';
+import { heightField, rough, smooth } from '../parts/terrain.js';
+import { nagaraTemple } from '../parts/temples.js';
 import { addDetails } from '../details/shikharji.js';
 
 const WHITE = mat('#f2eee6', 0.7);

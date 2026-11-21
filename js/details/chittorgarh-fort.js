@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { M, mat, box, at, chhatri, onFace, FACES, photo, rng } from '../helpers.js';
-import { frieze, beltCourse, pilasters, jharokha, windowFrame, chhajja, archSlab, archRing, mergeByMaterial } from './components.js';
-import { nagaraTemple } from './temples.js';
+import { frieze, beltCourse, pilasters, jharokha, windowFrame, chhajja, archSlab, archRing, mergeByMaterial } from '../parts/components.js';
+import { nagaraTemple } from '../parts/temples.js';
 import { detail } from '../detail.js';
-import { towerDetail } from './forts.js';
-import { trees, shrubs, asiBoard, scatter } from './realism.js';
+import { towerDetail } from '../parts/forts.js';
+import { trees, shrubs, asiBoard, scatter } from '../parts/realism.js';
 import { H, VS, KS, PP, RAMPOL, rimZ, RUINS, TEMPLES } from '../monuments/chittorgarh-fort.js';
 
 // Chittorgarh, finer detail. From photographs of the Vijay Stambh: every storey is carved all

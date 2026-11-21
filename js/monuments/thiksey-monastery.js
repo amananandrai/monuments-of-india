@@ -1,11 +1,10 @@
 import * as THREE from 'three';
 import { M, mat, box, at, rng, hipRoof, TIBETAN, inst, unitBox } from '../helpers.js';
-import { tibetanDoor } from '../details/doorways.js';
-import { mountainRing, heightField, rough, smooth } from '../details/terrain.js';
-import { quarters, hall, ganjira, roofCorners } from '../details/tibetan.js';
+import { tibetanDoor } from '../parts/doorways.js';
+import { mountainRing, heightField, rough, smooth } from '../parts/terrain.js';
+import { quarters, hall, ganjira, roofCorners } from '../parts/tibetan.js';
 import { addDetails } from '../details/thiksey-monastery.js';
 
-const ROCK = mat('#a08b6d', 0.95, 0, { flatShading: true });
 const OCHRE = mat('#b8562f', 0.85);
 
 // Buildings stacked up a rocky hill, twelve storeys from foot to summit, like the Potala in Lhasa.
@@ -13,7 +12,7 @@ export function buildThiksey() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(61);
   g.add(f);
   g.add(box(400, 0.2, 400, mat('#b49e7c', 0.95)), box(30, 0.4, 400, M.river, 120, 0, 0));
-  // The bare Ladakh ranges round the Indus valley, snow on the crests (js/details/terrain.js).
+  // The bare Ladakh ranges round the Indus valley, snow on the crests (js/parts/terrain.js).
   g.add(mountainRing({ inner: 560, outer: 900, h: 250, vary: 80, snow: 215, rock: ['#8e8172', '#9d8b78', '#857565'], cover: '#a89377', steep: 0.82 }));
 
   const H = 48;
@@ -31,10 +30,10 @@ export function buildThiksey() {
     }
   }
   f.add(inst(unitBox(), blocks, TIBETAN.white), inst(unitBox(), blocks.map(([x, y, z, w, h, d, ry]) => [x, y + h, z, w + 0.3, 0.7, d + 0.3, ry]), TIBETAN.maroon));
-  // Windows, doors, beam ends and roofs for the houses (js/details/tibetan.js).
+  // Windows, doors, beam ends and roofs for the houses (js/parts/tibetan.js).
   f.add(quarters(blocks, { cap: 0.7 }));
   // Summit: the main assembly hall, ochre, with a timber window bay in its upper floor, under a
-  // gilded roof with a finial and corner bells; and the Maitreya temple (js/details/tibetan.js).
+  // gilded roof with a finial and corner bells; and the Maitreya temple (js/parts/tibetan.js).
   f.add(at(hall(18, 9, 14, { floors: 2, wall: OCHRE, cap: 1.26, y0: 0.8, bay: 3.4 }), -4, H - 6, 0), at(hipRoof(20, 16, 3, M.gild), -4, H + 3, 0));
   f.add(at(ganjira(2.4), -4, H + 5.85, 0), at(roofCorners(20, 16), -4, H + 3, 0));
   f.add(at(hall(12, 7, 10, { floors: 2, cap: 0.98, y0: 0.8, door: 2, doorW: 1.4 }), 10, H - 8, 6), at(tibetanDoor(1.4, 2.6), 12, H - 8, 11));

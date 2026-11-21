@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, ring, group, at, chhatri } from '../helpers.js';
+import { M, mesh, box, cyl, ring, at, chhatri } from '../helpers.js';
 import { addDetails } from '../details/qutub-minar.js';
 
 // Storey radii at base and top, and heights (m). Base slab 1.2 m + 71.3 m of shaft = 72.5 m.

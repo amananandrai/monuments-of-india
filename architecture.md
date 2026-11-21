@@ -15,6 +15,11 @@ Each monument has two files:
 - `js/monuments/<name>.js` builds the masses: plinth, walls, towers, roofs.
 - `js/details/<name>.js` adds the finer architecture and the setting, from `addDetails(f, g)`.
 
+Both are named after the monument's id in `js/data.js`. The shared parts they are built from are in
+`js/helpers.js` (primitives, stones, domes) and `js/parts/` (one file per family: `components`,
+`temples`, `mughal`, `forts`, `colonial`, `doorways`, `tibetan`, `terrain`, `sculpture`, `figures`,
+`animals` and `realism`). The tables below name each part's file.
+
 The builder returns `{ group, focus, view, zoom }`. `focus` is the group the home view frames;
 `group` is the whole site.
 
@@ -169,7 +174,7 @@ for (const a of FACES) d.add(onFace(at(windowFrame(2, 4.2, M.cream, { shape: 'fl
 | `wallWithGaps(axis, len, h, t, m, gaps)` | temples | A compound wall with openings left for its gates |
 | `curvedBand(points, a, b, y0, y1, m)`, `ellipseWall(…)` | helpers | A wall that follows a curve |
 
-## Surface ornament (`js/details/components.js`)
+## Surface ornament (`js/parts/components.js`)
 
 These cost almost no triangles: the pattern is drawn by the surface shader (`js/surface.js`).
 
@@ -183,7 +188,7 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | `lettering(text, size, depth, m)` | Raised letters |
 | `photo(material, key)` (in `js/helpers.js`) | Gives a stone a photo texture set: `'laterite'`, `'blocks'`, `'rubble'`, `'concrete'`, `'timber'` and others (`js/textures.js`) |
 
-## Temples (`js/details/temples.js`)
+## Temples (`js/parts/temples.js`)
 
 | ![Shikhara](img/shikhara.jpg) | ![Nagara temple](img/nagara-temple.jpg) | ![Dravida vimana](img/dravida-vimana.jpg) |
 | :---: | :---: | :---: |
@@ -216,7 +221,7 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | `dravidaDress(w, d, h, m, { eaveM, haraM })` | The dress of a plain South Indian hall or shrine block: moulded base, pilasters, a kapota eave and a parapet of miniature shrines |
 | `kuta(s, m)`, `shala(w, d, m)`, `haraRow(len, s, m)` (sculpture) | The miniature shrines along the edge of each storey of a vimana |
 
-## Forts (`js/details/forts.js`)
+## Forts (`js/parts/forts.js`)
 
 | ![Fort gate](img/fort-gate.jpg) | ![Rampart and a crowned bastion](img/rampart.jpg) | ![Machicolation](img/machicolation.jpg) |
 | :---: | :---: | :---: |
@@ -230,7 +235,7 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | `rampart(…, { loopholes, boxes })`, `bastionCrowns(…)` | Battlements, as above: merlons pierced with gun-loops, and a machicolation every `boxes`th length of wall |
 | `machicolations(list, m, trim)` | Box drop-chutes hung from a wall's head on corbels, with a slot in the floor and a gun-loop in front; instanced |
 
-## Tibetan monasteries (`js/details/tibetan.js`)
+## Tibetan monasteries (`js/parts/tibetan.js`)
 
 | ![Monks' houses](img/tibetan-houses.jpg) | ![Dharma wheel and a victory banner](img/dharma-wheel.jpg) | ![Assembly hall](img/tibetan-hall.jpg) |
 | :---: | :---: | :---: |
@@ -255,7 +260,7 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | `TIBETAN.maroon` (helpers) | The maroon parapet band, drawn with the `reeds` surface as the cut twig ends of a penbey |
 | `tibetanDoor(w, h)`, `tibetanPortico(…)` (doorways) | A painted door; a pillared portico |
 
-## Stairs (`js/details/doorways.js`)
+## Stairs (`js/parts/doorways.js`)
 
 | ![Grand stair](img/grand-stair.jpg) |   |   |
 | :---: | :---: | :---: |
@@ -289,7 +294,7 @@ Every statue, with a picture and what it shows: [Components: Statues](components
 | `urn(h, m)`, `pinnacle(h, m)`, `gothicPinnacle(h, m)` | sculpture | Roofline ornaments |
 
 The great statues (Patel, Bahubali, Thiruvalluvar, the Nageshwar Shiva, and Netaji, Shivaji, Adi Shankaracharya at Kedarnath and the boy Shankaracharya of the Statue of Oneness) are sculpted as one
-continuous skin in `js/details/figures.js` and `js/sdf.js`. The tools for working on that skin:
+continuous skin in `js/parts/figures.js` and `js/sdf.js`. The tools for working on that skin:
 
 | Tool | File | What it does |
 | --- | --- | --- |
@@ -309,7 +314,7 @@ continuous skin in `js/details/figures.js` and `js/sdf.js`. The tools for workin
 | `surface(m, 'cladding')` | surface | Marble panels in staggered courses with fine joints worked out in space, so they follow a curved shell (the Lotus Temple's petals) |
 | `chadar(w, len, drop, m)` | components | A Mughal garden cascade: a sloping marble bed carved in fish scales under a thin sheet of water, between kerbs, with a lip at the top and a pool at the foot |
 
-## Terrain (`js/details/terrain.js`)
+## Terrain (`js/parts/terrain.js`)
 
 | Part | What it is |
 | --- | --- |

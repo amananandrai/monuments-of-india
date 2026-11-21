@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, surface, onionDome, finial, guldasta } from '../helpers.js';
-import { fishPair, rosette, merlons, petalRing, windowFrame, jali, mergeByMaterial } from './components.js';
-import { trees, shrubs, lampPosts, asiBoard, fountains, scatter, along } from './realism.js';
+import { mat, box, cyl, at, onFace, surface, onionDome, finial, guldasta } from '../helpers.js';
+import { fishPair, rosette, merlons, petalRing, windowFrame, jali, mergeByMaterial } from '../parts/components.js';
+import { trees, shrubs, lampPosts, asiBoard, fountains, scatter, along } from '../parts/realism.js';
 
 // The Chota Imambara, finer detail. From photographs: the black band along the front is lettered
 // in white Arabic calligraphy; rosettes fill the spandrels of its arcade; a parapet of merlons runs

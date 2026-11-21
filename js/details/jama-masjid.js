@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, at, surface } from '../helpers.js';
-import { panel, merlons, star, bracketGeo, placeAll, aroundCircle, mergeByMaterial } from './components.js';
-import { stalls, along, cityAround } from './realism.js';
+import { panel, merlons, star, bracketGeo, placeAll, aroundCircle, mergeByMaterial } from '../parts/components.js';
+import { stalls, along, cityAround } from '../parts/realism.js';
 
 // The Jama Masjid, finer detail. From photographs: over each arch of the prayer hall's front is a
 // white marble panel lettered in black; a parapet of merlons runs along the top (the cloisters' open

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, cyl, at, photo, inst, unitBox } from '../helpers.js';
-import { jharokha, merlonGeo, placeAll, aroundCircle, beltCourse, mergeByMaterial } from './components.js';
-import { trees, scatter } from './realism.js';
-import { camels as camelHerd } from './animals.js';
+import { jharokha, merlonGeo, placeAll, aroundCircle, beltCourse, mergeByMaterial } from '../parts/components.js';
+import { trees, scatter } from '../parts/realism.js';
+import { camels as camelHerd } from '../parts/animals.js';
 import { H, bastions, trikuta } from '../monuments/jaisalmer-fort.js';
 import { detail } from '../detail.js';
 

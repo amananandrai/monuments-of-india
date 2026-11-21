@@ -10,7 +10,7 @@ const DARK_STONE = mat('#4a4541', 0.9);
 
 // The shared temple builders, with real entrances: a Nagara temple's front porch, doorway and
 // side doors, a mandapa's doors, and a passage through the base of a gopuram. Moved here from
-// helpers.js, since they use the doorway parts in js/details/doorways.js.
+// helpers.js, since they use the doorway parts in js/parts/doorways.js.
 
 // A door opening for a wall `wallH` high: about half the wall, at most 4.4 m, half as wide as tall.
 function doorSize(wallH) {

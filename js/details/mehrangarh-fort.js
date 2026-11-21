@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { M, box, at, flag, mat, rng, onFace, FACES, photo, inst, unitBox } from '../helpers.js';
-import { jharokha, chhajja, beltCourse, windowFrame, jali, mergeByMaterial } from './components.js';
-import { towerDetail } from './forts.js';
-import { shrubs } from './realism.js';
+import { M, at, flag, mat, rng, onFace, FACES, photo, inst, unitBox } from '../helpers.js';
+import { jharokha, chhajja, beltCourse, windowFrame, jali, mergeByMaterial } from '../parts/components.js';
+import { towerDetail } from '../parts/forts.js';
+import { shrubs } from '../parts/realism.js';
 import { H, rock, bastions, wallPoint } from '../monuments/mehrangarh-fort.js';
 import { detail } from '../detail.js';
 

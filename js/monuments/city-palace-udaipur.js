@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, rng, chhatri, onFace, archPanel, hemi, finial, inst, unitBox, sheet } from '../helpers.js';
-import { heightField, fbm, smooth } from '../details/terrain.js';
+import { M, mat, box, cyl, at, chhatri, onFace, archPanel, hemi, finial, sheet } from '../helpers.js';
+import { heightField, fbm, smooth } from '../parts/terrain.js';
 import { detail } from '../detail.js';
 import { addDetails } from '../details/city-palace-udaipur.js';
 
@@ -17,7 +17,7 @@ export function ridge(x, z) {
 }
 
 export function buildCityPalaceUdaipur() {
-  const g = new THREE.Group(), f = new THREE.Group(), R = rng(101);
+  const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   // Lake Pichola in front, the Lake Palace on its island, and the ridge behind
   g.add(sheet(800, 400, M.lake, 0, 0.3, 172));

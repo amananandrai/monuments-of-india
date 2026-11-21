@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, photo } from '../helpers.js';
-import { dentils, windowFrame, sunburst, lettering, panel, frieze, mergeByMaterial } from './components.js';
-import { pinnacle } from './sculpture.js';
-import { trees, shrubs, lampPosts, asiBoard, scatter, along } from './realism.js';
+import { dentils, windowFrame, sunburst, lettering, panel, frieze, mergeByMaterial } from '../parts/components.js';
+import { pinnacle } from '../parts/sculpture.js';
+import { trees, shrubs, lampPosts, asiBoard, scatter, along } from '../parts/realism.js';
 
 // The Basilica of Bom Jesus, finer detail. From photographs: the basalt pilasters of the facade
 // have moulded bases and capitals on every tier; scrolls (volutes) flank the top tier; a dentil
 // course runs under the cornice along the nave; pilaster strips divide the nave's side walls between
 // its windows; the bell tower opens in round-arched belfry windows on every face.
-// Dimensions follow js/monuments/bom-jesus.js: the facade at z = 12.2, its tiers 8 high.
+// Dimensions follow js/monuments/basilica-of-bom-jesus.js: the facade at z = 12.2, its tiers 8 high.
 const BASALT = photo(mat('#8a847a', 0.85), 'blocks');
 function architecture(f) {
   const d = new THREE.Group(), fz = 12.2;

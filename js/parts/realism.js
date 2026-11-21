@@ -3,7 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { mat, mesh, box, cyl, surface, rng, nightState } from '../helpers.js';
 import { detail } from '../detail.js';
 
-// The setting round a monument, shared by every file in js/details: trees and shrubs, heritage
+// The setting round a monument, used by every file in js/details: trees and shrubs, heritage
 // lamp posts, benches, the blue board of the Archaeological Survey of India, marigold garlands,
 // prayer flags, boats, bollards with chains, stalls, and fountain jets. There are no people. The
 // Howrah Bridge and the Bandra-Worli Sea Link carry traffic (traffic(), below); nowhere else has

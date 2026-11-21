@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, at, rng, flat, kalash, inst, aroundRect, sheet, onFace } from '../helpers.js';
-import { templeDoorway } from '../details/doorways.js';
-import { nandiGeometry } from '../details/animals.js';
+import { templeDoorway } from '../parts/doorways.js';
+import { nandiGeometry } from '../parts/animals.js';
 import { statueMaterial } from '../sdf.js';
-import { mergeByMaterial } from '../details/components.js';
-import { kuta, shala } from '../details/sculpture.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { kuta, shala } from '../parts/sculpture.js';
 import { addDetails } from '../details/shore-temple.js';
 
 const GRANITE = mat('#8f8577', 0.95);

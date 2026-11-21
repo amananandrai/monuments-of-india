@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { mat, box, cyl, at, rng, chhatri, inst, unitBox, unitCyl, surface, photo } from '../helpers.js';
-import { fortGate, rampart, bastionCrowns } from '../details/forts.js';
-import { heightField, rough, smooth } from '../details/terrain.js';
-import { townHouses } from '../details/realism.js';
+import { mat, box, at, rng, chhatri, inst, unitBox, unitCyl, photo } from '../helpers.js';
+import { fortGate, rampart, bastionCrowns } from '../parts/forts.js';
+import { heightField, rough, smooth } from '../parts/terrain.js';
+import { townHouses } from '../parts/realism.js';
 import { addDetails } from '../details/mehrangarh-fort.js';
 import { detail } from '../detail.js';
 

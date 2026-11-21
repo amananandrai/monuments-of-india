@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, FACES, aroundRect, guldasta, archWall, hemi, inst, unitBox } from '../helpers.js';
-import { chhajja, railing, petalRing, windowFrame, archRing, jali, merlons, beltCourse, mergeByMaterial } from './components.js';
-import { doorLeaves, interior } from './doorways.js';
-import { shrubs, lampPosts, asiBoard, scatter, along } from './realism.js';
+import { M, mat, box, at, onFace, FACES, aroundRect, guldasta, archWall, inst, unitBox } from '../helpers.js';
+import { chhajja, railing, petalRing, windowFrame, archRing, jali, merlons, beltCourse, mergeByMaterial } from '../parts/components.js';
+import { doorLeaves, interior } from '../parts/doorways.js';
+import { shrubs, lampPosts, asiBoard, scatter, along } from '../parts/realism.js';
 
 // Tipu Sultan's Gumbaz, finer detail. From photographs: the polished black granite pillars of the
 // verandah stand on moulded bases under square capitals, with a cusped arch between each pair;

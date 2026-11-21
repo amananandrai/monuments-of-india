@@ -1,13 +1,12 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, group, rng, hipRoof, kalash, flag, photo } from '../helpers.js';
-import { templeDoorway, templePorch, grandStair } from '../details/doorways.js';
-import { statue } from '../details/sculpture.js';
-import { mergeByMaterial } from '../details/components.js';
-import { nandi } from '../details/animals.js';
-import { crossLegged, hold, attribute } from '../details/figures.js';
-import { mountainRing } from '../details/terrain.js';
+import { templeDoorway, templePorch, grandStair } from '../parts/doorways.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { nandi } from '../parts/animals.js';
+import { crossLegged, hold, attribute } from '../parts/figures.js';
+import { mountainRing } from '../parts/terrain.js';
 import { addDetails } from '../details/kedarnath-temple.js';
-import { townHouses, houseRow } from '../details/realism.js';
+import { townHouses, houseRow } from '../parts/realism.js';
 
 const STONE = photo(mat('#8e8a82', 0.9), 'blocks');
 const STONE_DARK = photo(mat('#6f6b64', 0.9), 'blocks');
@@ -38,7 +37,7 @@ function coursedTower(w, h, n, m, md) {
 // long hair falling behind his shoulders, the right hand raised before his chest in the gesture of
 // teaching and holding the staff (danda) with its small flag, which leans across him to its foot on
 // the lotus, the left hand on his knee, a palm-leaf book on his left thigh, and the end of his cloth
-// falling over the lotus's edge (js/details/figures.js). He sits on a great lotus bud carved in
+// falling over the lotus's edge (js/parts/figures.js). He sits on a great lotus bud carved in
 // the same stone, its petals closed round it, set on a short square post in a pool.
 const SCHIST = mat('#2c2c2f', 0.42);
 export function shankaracharya() {
@@ -73,10 +72,10 @@ export function buildKedarnath() {
   g.add(f);
   // The glacial valley: Mandakini river, meadow and the Kedarnath massif behind
   g.add(box(240, 0.2, 240, SLOPE), box(14, 0.4, 260, M.river, 70, 0, 0));
-  // The Kedar peaks: a ring of rock walls under snow (js/details/terrain.js).
+  // The Kedar peaks: a ring of rock walls under snow (js/parts/terrain.js).
   g.add(mountainRing({ inner: 420, outer: 760, h: 250, vary: 70, snow: 165, rock: ['#7d7a74', '#6e6b66', '#8a867f'], cover: '#6f7550', steep: 0.82, aspect: 1.2 }));
 
-  // The pilgrim town along the approach (js/details/realism.js): lodges, dharamshalas and shops
+  // The pilgrim town along the approach (js/parts/realism.js): lodges, dharamshalas and shops
   // packed close on both sides of the stone path that runs south from the Nandi, facing it, two
   // and three storeys under pitched roofs of painted sheet iron, a few newer ones with flat roofs;
   // behind them two more rows along lanes, on the meadow short of the Mandakini.

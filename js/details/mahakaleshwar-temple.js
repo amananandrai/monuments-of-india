@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, at, flag, mat, box, cyl, lathe, inst, unitBox, unitCyl, kalash } from '../helpers.js';
-import { lampPosts, garland, along } from './realism.js';
-import { mergeByMaterial } from './components.js';
+import { lampPosts, garland, along } from '../parts/realism.js';
+import { mergeByMaterial } from '../parts/components.js';
 
 // The Mahakal Lok corridor (first phase opened 2022) along the north shore of the Rudra Sagar:
 // a broad sandstone walk lined both sides with carved red sandstone pillars, each topped by a

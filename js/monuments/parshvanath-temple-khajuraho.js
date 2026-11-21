@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, aroundRect, shikhara, clothGeometry } from '../helpers.js';
-import { nagaraTemple } from '../details/temples.js';
-import { figureRow, figure } from '../details/sculpture.js';
+import { nagaraTemple } from '../parts/temples.js';
+import { figureRow, figure } from '../parts/sculpture.js';
 import { addDetails } from '../details/parshvanath-temple-khajuraho.js';
 
 export function buildParshvanath() {

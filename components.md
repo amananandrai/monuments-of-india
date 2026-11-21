@@ -54,7 +54,7 @@ From [architecture.md](architecture.md).
 | :---: | :---: | :---: |
 | Chhajja on brackets | Merlons | Railing |
 
-### [Temples](architecture.md#temples-jsdetailstemplesjs)
+### [Temples](architecture.md#temples-jspartstemplesjs)
 
 | ![Shikhara](img/shikhara.jpg) | ![Nagara temple](img/nagara-temple.jpg) | ![Dravida vimana](img/dravida-vimana.jpg) |
 | :---: | :---: | :---: |
@@ -66,13 +66,13 @@ From [architecture.md](architecture.md).
 | ![Deepmala](img/deepmala.jpg) | ![Nandi mandapa](img/nandi-mandapa.jpg) | ![Dravida hall dress](img/dravida-dress.jpg) |
 | Deepmala | Nandi mandapa | Dravida hall dress |
 
-### [Forts](architecture.md#forts-jsdetailsfortsjs)
+### [Forts](architecture.md#forts-jspartsfortsjs)
 
 | ![Fort gate](img/fort-gate.jpg) | ![Rampart and a crowned bastion](img/rampart.jpg) | ![Machicolation](img/machicolation.jpg) |
 | :---: | :---: | :---: |
 | Fort gate | Rampart and a crowned bastion | Machicolation |
 
-### [Tibetan monasteries](architecture.md#tibetan-monasteries-jsdetailstibetanjs)
+### [Tibetan monasteries](architecture.md#tibetan-monasteries-jspartstibetanjs)
 
 | ![Monks' houses](img/tibetan-houses.jpg) | ![Dharma wheel and a victory banner](img/dharma-wheel.jpg) | ![Assembly hall](img/tibetan-hall.jpg) |
 | :---: | :---: | :---: |
@@ -80,7 +80,7 @@ From [architecture.md](architecture.md).
 | ![Prayer wheels](img/mani-wheels.jpg) | ![Gilded roof](img/gilded-roof.jpg) |   |
 | Prayer wheels | Gilded roof |   |
 
-### [Stairs](architecture.md#stairs-jsdetailsdoorwaysjs)
+### [Stairs](architecture.md#stairs-jspartsdoorwaysjs)
 
 | ![Grand stair](img/grand-stair.jpg) |   |   |
 | :---: | :---: | :---: |
@@ -95,7 +95,7 @@ From [architecture.md](architecture.md).
 ### [Statues](architecture.md#sculpture)
 
 The free-standing statues are sculpted as one continuous skin from a signed distance field and
-meshed in the browser (`js/sdf.js`, `js/details/figures.js`, `js/details/animals.js`), each checked
+meshed in the browser (`js/sdf.js`, `js/parts/figures.js`, `js/parts/animals.js`), each checked
 against photographs. The four colossal ones are drawn first; the rest follow by monument.
 
 | ![Statue of Unity](img/statue-patel.jpg) | ![Gommateshwara](img/statue-bahubali.jpg) | ![Thiruvalluvar](img/statue-thiruvalluvar.jpg) |

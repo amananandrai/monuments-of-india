@@ -1,8 +1,7 @@
 import * as THREE from 'three';
 import { M, box, cyl, hemi, at, onFace, FACES, archWall } from '../helpers.js';
-import { arcadeSkin, cellRow } from '../details/mughal.js';
-import { charminarMinaret, addCharminarDetails } from '../details/charminar.js';
-import { addDetails } from '../details/charminar.js';
+import { arcadeSkin, cellRow } from '../parts/mughal.js';
+import { charminarMinaret, addCharminarDetails, addDetails } from '../details/charminar.js';
 
 export function buildCharminar() {
   const m = M.plaster, g = new THREE.Group();

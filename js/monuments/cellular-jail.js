@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, inst, unitBox, hipRoof, surface, sheet } from '../helpers.js';
-import { arcadeSkin } from '../details/mughal.js';
+import { arcadeSkin } from '../parts/mughal.js';
 import { addDetails } from '../details/cellular-jail.js';
 
 const BRICK = surface(mat('#a4573f', 0.9), 'terracotta');

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, FACES } from '../helpers.js';
-import { jharokha, chhajja, windowFrame, archRing, archSlab, mergeByMaterial } from './components.js';
-import { trees, shrubs, boats, scatter, along } from './realism.js';
+import { jharokha, chhajja, windowFrame, archRing, archSlab, mergeByMaterial } from '../parts/components.js';
+import { trees, shrubs, boats, scatter, along } from '../parts/realism.js';
 import { ridge } from '../monuments/city-palace-udaipur.js';
 
 // The City Palace, Udaipur, finer detail. From photographs: the white blocks are hung with
@@ -18,7 +18,7 @@ function architecture(f, g) {
     const n = Math.max(2, Math.floor(w / 4)), z = -6 + dd / 2, floors = Math.floor(h / 7);
     for (let fl = 0; fl < floors; fl++) {
       for (let k = 0; k < n - 1; k++) if ((k + fl) % 2 === 0) d.add(at(jharokha(1.5, 2.2, CREAM, { d: 0.75, trim: SHADE }), x - w / 2 + (k + 1) * (w / n), 15.6 + fl * 7, z + 0.02));
-      if (fl) d.add(at(box(w, 0.35, 0.3, SHADE, 0, 14 + fl * 7 - 0.5, 0), x, 0, z + 0.14));
+      if (fl) d.add(box(w, 0.35, 0.3, SHADE, x, 14 + fl * 7 - 0.5, z + 0.14));
     }
     d.add(at(chhajja(w + 0.6, 1.1, 0.4, 0.12, SHADE), x, 14 + h - 0.2, z));
   }

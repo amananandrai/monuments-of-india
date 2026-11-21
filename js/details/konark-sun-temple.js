@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { M, mat, at, onFace, mesh, box } from '../helpers.js';
-import { mouldings, frieze, templeNiche, idol, mergeByMaterial } from './components.js';
-import { figure, figureFrieze, instances, horseGeo } from './sculpture.js';
-import { lion, elephant, horse } from './animals.js';
-import { trees, shrubs, asiBoard, scatter, along } from './realism.js';
+import { mouldings, frieze, templeNiche, idol, mergeByMaterial } from '../parts/components.js';
+import { figure, figureFrieze, instances, horseGeo } from '../parts/sculpture.js';
+import { lion, elephant, horse } from '../parts/animals.js';
+import { trees, asiBoard, scatter, along } from '../parts/realism.js';
 import { detail } from '../detail.js';
 
 // Konark, finer detail. From photographs and descriptions: the chariot's plinth is wrapped in

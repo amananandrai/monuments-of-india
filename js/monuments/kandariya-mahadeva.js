@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, at, onFace, FACES, kalash, bell, shikhara, pidaRoof, aroundRect } from '../helpers.js';
-import { pranala, templeDoorway, steps, grandStair } from '../details/doorways.js';
-import { mergeByMaterial } from '../details/components.js';
-import { figureRow } from '../details/sculpture.js';
+import { pranala, templeDoorway, steps, grandStair } from '../parts/doorways.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { figureRow } from '../parts/sculpture.js';
 import { addDetails } from '../details/kandariya-mahadeva.js';
 
 export function buildKandariya() {

@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, onFace, FACES } from '../helpers.js';
-import { medallion, frieze, mergeByMaterial } from './components.js';
-import { instances, elephantGeo, horseGeo, figure, figureGeo } from './sculpture.js';
-import { steps } from './doorways.js';
-import { trees, asiBoard, scatter } from './realism.js';
+import { medallion, frieze, mergeByMaterial } from '../parts/components.js';
+import { instances, elephantGeo, horseGeo, figure, figureGeo } from '../parts/sculpture.js';
+import { steps } from '../parts/doorways.js';
+import { trees, asiBoard, scatter } from '../parts/realism.js';
 
 // The Great Stupa at Sanchi, finer detail. From photographs: the posts of the ground railing
 // (vedika) carry lotus medallions; a double stairway climbs from the south to the walkway on the

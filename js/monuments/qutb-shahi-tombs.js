@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, FACES, lathe, finial, guldasta, minaret } from '../helpers.js';
-import { arcadeSkin, cellRow } from '../details/mughal.js';
+import { arcadeSkin, cellRow } from '../parts/mughal.js';
 import { addDetails } from '../details/qutb-shahi-tombs.js';
 
 const STONE = mat('#a59a86', 0.9);

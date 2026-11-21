@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, at, onFace, starPrism, photo, sheet } from '../helpers.js';
-import { mouldings, frieze, templeNiche, idol, mergeByMaterial } from './components.js';
-import { trees, shrubs, asiBoard, scatter } from './realism.js';
+import { mouldings, frieze, templeNiche, idol, mergeByMaterial } from '../parts/components.js';
+import { trees, shrubs, asiBoard, scatter } from '../parts/realism.js';
 
 // Ramappa, finer detail. From photographs: the star-shaped platform is carved with a band of
 // elephants and scrolls along its edge; the dolerite sanctum stands on moulded courses with images

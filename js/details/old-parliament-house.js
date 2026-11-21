@@ -3,8 +3,8 @@ import { M, mat, box, cyl, at, inst, unitBox, unitCyl, tube, kalash } from '../h
 import {
   jali, archSlab, archRing, bracketGeo, placeAll, aroundCircle, chhajjaRing, railingRing, chhajja,
   arcadeScreen, mergeByMaterial,
-} from './components.js';
-import { trees, shrubs, lampPosts, around } from './realism.js';
+} from '../parts/components.js';
+import { trees, shrubs, lampPosts, around } from '../parts/realism.js';
 
 // Old Parliament House (Samvidhan Sadan), finer detail (Lutyens and Baker, 1921–27). From
 // photographs and descriptions (Wikipedia, the Lok Sabha's Parliament House Estate booklet):

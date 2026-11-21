@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, at, onFace, FACES, photo } from '../helpers.js';
-import { chhajja, petalRing, rosette, templeNiche, windowFrame, merlons, mergeByMaterial } from './components.js';
-import { trees, shrubs, lampPosts, scatter, along, cityAround } from './realism.js';
+import { chhajja, petalRing, rosette, templeNiche, windowFrame, merlons, mergeByMaterial } from '../parts/components.js';
+import { trees, shrubs, lampPosts, scatter, along, cityAround } from '../parts/realism.js';
 
 // Kirti Mandir, finer detail. From photographs: a sloping eave runs round the memorial hall above
 // its arcade; rosettes fill the spandrels; its domes rise from cups of lotus petals; and the central

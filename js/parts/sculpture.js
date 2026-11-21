@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { mesh, box, cyl, at, lathe, nagaraProfile, finial } from '../helpers.js';
+import { mesh, box, cyl, at, lathe, nagaraProfile, finial, inst } from '../helpers.js';
 import { petalRing, bracketGeo, placeAll, frieze, mergeByMaterial } from './components.js';
 import { detail } from '../detail.js';
 
@@ -271,14 +271,9 @@ export function figureFrieze(len, h, m, { pitch = h * 0.7, kinds = ['standing', 
   return g;
 }
 
-// Place instanced copies of a unit geometry by [x, y, z, sx, sy, sz, ry].
-export function instances(geo, list, m) {
-  const im = new THREE.InstancedMesh(geo, m, list.length), o = new THREE.Object3D();
-  list.forEach(([x, y, z, sx, sy, sz, ry = 0], i) => { o.position.set(x, y, z); o.rotation.set(0, ry, 0); o.scale.set(sx, sy, sz); o.updateMatrix(); im.setMatrixAt(i, o.matrix); });
-  im.castShadow = true;
-  im.receiveShadow = true;
-  return im;
-}
+// Place instanced copies of a unit geometry by [x, y, z, sx, sy, sz, ry]: inst() of js/helpers.js,
+// under the name the temple files use.
+export const instances = inst;
 
 /* ---------- Dravidian miniature shrines ---------- */
 

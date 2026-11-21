@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, lathe, at, ribbed, kalash, hipRoof, FACES, onFace, sheet, flat } from '../helpers.js';
-import { heightField, fbm, smooth } from '../details/terrain.js';
+import { heightField, fbm, smooth } from '../parts/terrain.js';
 import { detail } from '../detail.js';
-import { pranala, templeDoorway } from '../details/doorways.js';
-import { mergeByMaterial, templeNiche, idol } from '../details/components.js';
+import { pranala, templeDoorway } from '../parts/doorways.js';
+import { mergeByMaterial, templeNiche, idol } from '../parts/components.js';
 import { addDetails } from '../details/kamakhya-temple.js';
 
 const STONE = mat('#a08766', 0.9);

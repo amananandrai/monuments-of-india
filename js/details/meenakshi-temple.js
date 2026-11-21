@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import { M, mat, box, at, onFace, FACES, inst, unitBox } from '../helpers.js';
-import { mouldings, chhajja, columnTrim, mergeByMaterial } from './components.js';
-import { haraRow } from './sculpture.js';
-import { dravidaDress } from './temples.js';
-import { trees, stalls, along, cityAround } from './realism.js';
+import { mouldings, chhajja, columnTrim, mergeByMaterial } from '../parts/components.js';
+import { haraRow } from '../parts/sculpture.js';
+import { dravidaDress } from '../parts/temples.js';
+import { trees, stalls, along, cityAround } from '../parts/realism.js';
 import { detail } from '../detail.js';
-import { rideElephant } from './animals.js';
+import { rideElephant } from '../parts/animals.js';
 
 // Meenakshi, finer architecture (desktops, inside the temple budget of js/detail.js; phones keep
 // the plain masses). From photographs: the halls round the two shrines stand on moulded bases,

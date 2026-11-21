@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet, photo } from '../helpers.js';
-import { fortGate } from '../details/forts.js';
-import { heightField, rough, smooth } from '../details/terrain.js';
+import { M, mat, box, cyl, at, inst, unitBox, sheet, photo } from '../helpers.js';
+import { fortGate } from '../parts/forts.js';
+import { heightField, rough, smooth } from '../parts/terrain.js';
 import { addDetails } from '../details/fort-aguada.js';
 
 const LATERITE = photo(mat('#9b5b3f', 0.95), 'laterite');

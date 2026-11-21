@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, ring, inst, unitBox, surface } from '../helpers.js';
-import { townHouses } from '../details/realism.js';
+import { M, mat, mesh, box, cyl, at, rng, ring, surface } from '../helpers.js';
+import { townHouses } from '../parts/realism.js';
 import { addDetails } from '../details/jallianwala-bagh.js';
 
 const RED = mat('#a5473a', 0.85);

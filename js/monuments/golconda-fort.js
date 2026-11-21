@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, onFace, archPanel, archWall, hemi, finial, ellipseWall, curvedBand, inst, unitBox, photo } from '../helpers.js';
-import { fortGate } from '../details/forts.js';
-import { heightField, fbm, smooth } from '../details/terrain.js';
+import { fortGate } from '../parts/forts.js';
+import { heightField, fbm, smooth } from '../parts/terrain.js';
 import { detail } from '../detail.js';
 import { addDetails } from '../details/golconda-fort.js';
 

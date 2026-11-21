@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { mat, box, cyl, at, onFace, tricolour } from '../helpers.js';
-import { windowFrame, keystone, mergeByMaterial } from './components.js';
-import { trees, shrubs, lampPosts, scatter, around } from './realism.js';
+import { windowFrame, keystone, mergeByMaterial } from '../parts/components.js';
+import { trees, shrubs, lampPosts, scatter, around } from '../parts/realism.js';
 
 // The Cellular Jail, finer detail. From photographs: white string courses mark the floors along the
 // outer walls of the wings; the central watchtower has arched windows on every face of its
@@ -31,7 +31,7 @@ function architecture(f) {
 // corridors and an impost band between the floors on the corridor side. In each wing's frame the
 // arcade's face is at x = -4.5, its arches 2.1 × 3.2 (round) every 3 m from 1.5, floors 4.2 apart.
 function sculpture(f) {
-  const lens = [100, 100, 100, 14, 14, 14, 14], ks = [], d = new THREE.Group();
+  const lens = [100, 100, 100, 14, 14, 14, 14], d = new THREE.Group();
   for (let k = 0; k < 7; k++) {
     const ry = (k / 7) * Math.PI * 2 + 0.4, len = lens[k], w = new THREE.Group();
     w.rotation.y = ry;

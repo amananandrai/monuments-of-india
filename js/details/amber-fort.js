@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { M, mat, at, onFace, aroundRect, FACES } from '../helpers.js';
-import { jharokha, merlons, beltCourse, bracketGeo, placeAll, chhajja, mergeByMaterial } from './components.js';
-import { towerDetail, slitRow } from './forts.js';
-import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
+import { jharokha, merlons, beltCourse, bracketGeo, placeAll, chhajja, mergeByMaterial } from '../parts/components.js';
+import { towerDetail, slitRow } from '../parts/forts.js';
+import { trees, shrubs, lampPosts, scatter, along } from '../parts/realism.js';
 import { ridgeY } from '../monuments/amber-fort.js';
-import { rideElephant } from './animals.js';
+import { rideElephant } from '../parts/animals.js';
 
 // Amber Fort: painted elephants in their howdahs on the ramp up from the lake to the Suraj Pol, the
 // saffron beds of the Kesar Kyari garden, scrub and dhok trees on the Aravalli slopes, and lamps

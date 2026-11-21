@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, box, cyl, at, onFace, FACES, finial, chhatri, chamferPrism, persianDome } from '../helpers.js';
-import { iwan, arcadeSkin, cellRow } from '../details/mughal.js';
+import { iwan, arcadeSkin, cellRow } from '../parts/mughal.js';
 import { addDetails } from '../details/humayuns-tomb.js';
 
 export function buildHumayun() {

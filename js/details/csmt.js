@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace } from '../helpers.js';
-import { railing, jali, clockFace, rosette, windowFrame, bracketGeo, mergeByMaterial } from './components.js';
-import { figure, gothicPinnacle } from './sculpture.js';
-import { allegory, hold } from './figures.js';
+import { railing, jali, clockFace, rosette, windowFrame, bracketGeo, mergeByMaterial } from '../parts/components.js';
+import { figure, gothicPinnacle } from '../parts/sculpture.js';
+import { allegory, hold } from '../parts/figures.js';
 import { detail } from '../detail.js';
-import { GLASS } from './colonial.js';
-import { couchant } from './animals.js';
-import { trees, lampPosts, along, cityAround } from './realism.js';
+import { GLASS } from '../parts/colonial.js';
+import { couchant } from '../parts/animals.js';
+import { trees, lampPosts, along, cityAround } from '../parts/realism.js';
 
 // CSMT, finer detail. From photographs of the terminus: a pierced Gothic parapet runs along the
 // eaves of every range, with pinnacles at the corners; carved roundels sit between the windows of
@@ -16,7 +16,7 @@ const BAND = mat('#7e7c78', 0.9);
 function architecture(f) {
   const d = new THREE.Group();
   // Each range: [x, z, rotY, w, h, d].
-  const ranges = [[0, 0, 0, 36, 22, 26], [-33, -5, 0, 30, 16, 16], [33, -5, 0, 30, 16, 16], [-52, 14, -Math.PI / 2, 16, 18, 30], [52, 14, Math.PI / 2, 16, 18, 30]];
+  const ranges = [[0, 0, 0, 36, 22, 26], [-33, -5, 0, 30, 16, 16], [33, -5, 0, 30, 16, 16], [-52, 14, 0, 16, 18, 30], [52, 14, 0, 16, 18, 30]];
   for (const [x, z, ry, w, h, dd] of ranges) {
     const t = at(new THREE.Group(), x, 1, z);
     t.rotation.y = ry;
@@ -90,7 +90,7 @@ function sculpture(f) {
   f.add(at(couchant(CREAM_), -10, 5.3, 35.95), at(couchant(CREAM_, { tiger: true }), 10, 5.3, 35.95));
 }
 
-// A robed woman in stone h tall, facing +z (js/details/figures.js; on phones, from the light kit),
+// A robed woman in stone h tall, facing +z (js/parts/figures.js; on phones, from the light kit),
 // holding what `held` lists ([side, kind, opts] for hold()).
 function robed(h, key, opts, held = []) {
   if (detail.low) return figure(h, CREAM_, 'robed');

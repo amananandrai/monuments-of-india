@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, hemi, rng, onFace, archPanel, guldasta, inst, unitBox, shikhara, nagaraProfile, flag } from '../helpers.js';
-import { templeDoorway, steps } from '../details/doorways.js';
-import { jharokha, mergeByMaterial } from '../details/components.js';
-import { miniSpireGeo, instances, elephantGeo } from '../details/sculpture.js';
+import { templeDoorway, steps } from '../parts/doorways.js';
+import { jharokha, mergeByMaterial } from '../parts/components.js';
+import { miniSpireGeo, instances, elephantGeo } from '../parts/sculpture.js';
 import { addDetails } from '../details/soniji-ki-nasiyan.js';
 
 const RED = mat('#a94a3c', 0.85);

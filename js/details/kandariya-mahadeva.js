@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, at } from '../helpers.js';
-import { mouldings, frieze, mergeByMaterial } from './components.js';
-import { trees, shrubs, asiBoard, scatter, along } from './realism.js';
+import { mouldings, frieze, mergeByMaterial } from '../parts/components.js';
+import { trees, shrubs, asiBoard, scatter, along } from '../parts/realism.js';
 
 // Kandariya Mahadeva, finer detail. From photographs: the high base (adhishthana) is a stack of
 // carved mouldings; the balconied windows of the halls have dwarf pillars on a sloping seat-back

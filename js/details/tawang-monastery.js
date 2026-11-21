@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { at } from '../helpers.js';
-import { mergeByMaterial } from './components.js';
-import { dharmaWheel, parapetDiscs, maniWheels } from './tibetan.js';
-import { prayerFlags, trees, scatter } from './realism.js';
-import { yaks } from './animals.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { dharmaWheel, parapetDiscs, maniWheels } from '../parts/tibetan.js';
+import { prayerFlags, trees, scatter } from '../parts/realism.js';
+import { yaks } from '../parts/animals.js';
 import { spurY } from '../monuments/tawang-monastery.js';
 
 // Tawang, finer detail. From photographs of the Dukhang: the Dharma wheel and its deer over the

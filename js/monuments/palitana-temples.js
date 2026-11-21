@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { mat, box, cyl, at, rng, inst, unitBox, ellipseWall } from '../helpers.js';
-import { heightField, fbm, smooth } from '../details/terrain.js';
+import { heightField, fbm, smooth } from '../parts/terrain.js';
 import { detail } from '../detail.js';
-import { nagaraTemple, trabeateGate } from '../details/temples.js';
-import { miniSpireGeo } from '../details/sculpture.js';
+import { nagaraTemple, trabeateGate } from '../parts/temples.js';
+import { miniSpireGeo } from '../parts/sculpture.js';
 import { addDetails } from '../details/palitana-temples.js';
 
 const MARBLE = mat('#f1ede4', 0.6);

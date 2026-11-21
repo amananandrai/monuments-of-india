@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, rng, inst, unitBox, aroundRect, surface, cyl, hemi } from '../helpers.js';
+import { M, mat, box, at, rng, inst, unitBox, surface, cyl, hemi } from '../helpers.js';
 import { addDetails } from '../details/nalanda-mahavihara.js';
 
 // The brick is old and weathered: a dull red-brown, darker in the lower courses, not new orange.

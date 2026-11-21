@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, box, at, chhatri, onFace, FACES, archPanel, hemi, inst, unitBox, unitCyl, photo } from '../helpers.js';
-import { heightField, rough, smooth, fbm } from '../details/terrain.js';
+import { heightField, rough, smooth, fbm } from '../parts/terrain.js';
 import { detail } from '../detail.js';
-import { fortGate, rampart, bastionCrowns } from '../details/forts.js';
+import { fortGate, rampart, bastionCrowns } from '../parts/forts.js';
 import { addDetails } from '../details/chittorgarh-fort.js';
 
 const STONE = photo(mat('#c8b28c', 0.9), 'rubble');

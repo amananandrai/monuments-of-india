@@ -1,17 +1,17 @@
 import * as THREE from 'three';
 import { mat, mesh, box, cyl, at, rng, strut, V, lathe, capsule, ellipsoid } from '../helpers.js';
-import { shankaraBody, shankaraSurface } from './figures.js';
+import { shankaraBody, shankaraSurface } from '../parts/figures.js';
 import { snap } from '../sdf.js';
 import { detail } from '../detail.js';
-import { trees, boats, scatter } from './realism.js';
-import { petalRing, mergeByMaterial } from './components.js';
+import { trees, boats, scatter } from '../parts/realism.js';
+import { petalRing, mergeByMaterial } from '../parts/components.js';
 import { islandHeight } from '../monuments/omkareshwar-temple.js';
 
 // The Statue of Oneness (Ekatmata ki Pratima, unveiled 2023) on the crest of Mandhata island:
 // Adi Shankaracharya as a boy of twelve, 108 ft high in bronze, walking, on a 54 ft pedestal whose
 // upper half is a lotus. Here the pedestal and figure are compressed with the rest of the island
 // (figure 24, pedestal 9), keeping the 2:1 proportion of figure to pedestal. After photographs:
-// the boy (js/details/figures.js) holds the staff across his body in his right hand, a bundle of
+// the boy (js/parts/figures.js) holds the staff across his body in his right hand, a bundle of
 // cloth tied at its top, and the water pot (kamandalu) in his left; a long rudraksha mala hangs to
 // his waist and bands of rudraksha ring his upper arms and wrists. Faces south, over the ghats and
 // the river.

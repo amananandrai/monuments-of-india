@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, box, group, at, pidaRoof, inst, unitCyl, aroundRect, starPrism, stellateTower } from '../helpers.js';
-import { trabeateGate } from '../details/temples.js';
-import { pranala, templeDoorway, steps } from '../details/doorways.js';
-import { mergeByMaterial } from '../details/components.js';
+import { trabeateGate } from '../parts/temples.js';
+import { pranala, templeDoorway, steps } from '../parts/doorways.js';
+import { mergeByMaterial } from '../parts/components.js';
 import { addDetails } from '../details/chennakesava-temple.js';
 
 export function buildChennakesava() {

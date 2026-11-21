@@ -6,7 +6,9 @@
   "scripts": {
     "budgets": "node check-budgets.mjs",
     "flicker": "node check-flicker.mjs",
-    "heights": "node check-heights.mjs"
+    "heights": "node check-heights.mjs",
+    "filters": "node check-filters.mjs",
+    "registry": "node check-registry.mjs"
   },
   "devDependencies": {
     "playwright": "1.63.0",

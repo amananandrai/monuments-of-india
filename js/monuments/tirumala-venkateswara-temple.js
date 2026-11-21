@@ -3,10 +3,10 @@ import { M, mat, box, at, rng, surface } from '../helpers.js';
 
 // The Ananda Nilayam's gold: gilded copper sheets (js/surface.js, 'giltsheet').
 const GILT = surface(mat('#e3b54a', 0.28, 0.85), 'giltsheet');
-import { gopuram, wallWithGaps, dravidaVimana, dwajasthambha } from '../details/temples.js';
-import { mountainRing } from '../details/terrain.js';
-import { townHouses, houseRow } from '../details/realism.js';
-import { addDetails } from '../details/tirumala-temple.js';
+import { gopuram, wallWithGaps, dravidaVimana, dwajasthambha } from '../parts/temples.js';
+import { mountainRing } from '../parts/terrain.js';
+import { townHouses, houseRow } from '../parts/realism.js';
+import { addDetails } from '../details/tirumala-venkateswara-temple.js';
 
 const WHITE = ['#f2ede2', '#e9e1cf', '#f6f2ea', '#dcd3c0'];
 const LIME = mat('#efe9dd', 0.85);
@@ -14,11 +14,11 @@ const LIME = mat('#efe9dd', 0.85);
 export function buildTirumala() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(29);
   g.add(f);
-  // The seven hills of the Seshachalam, rocky and wooded (js/details/terrain.js).
+  // The seven hills of the Seshachalam, rocky and wooded (js/parts/terrain.js).
   g.add(mountainRing({ inner: 440, outer: 760, h: 130, vary: 45, rock: ['#8a7b66', '#766a58'], cover: '#5b7445', steep: 0.72 }));
 
   g.add(box(220, 0.2, 220, M.path));
-  // The temple town (js/details/realism.js): round the temple's outer wall, beyond the broad Mada
+  // The temple town (js/parts/realism.js): round the temple's outer wall, beyond the broad Mada
   // streets, rows of pilgrim lodges and shops face it on every side, with more rows behind along
   // lanes. To the south they line the approach either side of the stalls, and the large choultries
   // (rest houses for pilgrims, four and five storeys) stand at the corners. The rows stop short of

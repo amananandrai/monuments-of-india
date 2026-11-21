@@ -1,7 +1,7 @@
 # The setting: trees, boats, flags and the rest
 
 Everything that stands round a monument, and is not the monument, comes from one shared kit:
-`js/details/realism.js`, with the animals in `js/details/animals.js`. Each monument's own detail
+`js/parts/realism.js`, with the animals in `js/parts/animals.js`. Each monument's own detail
 file (`js/details/<monument>.js`) calls the kit from its `addDetails(f, g)`.
 
 For the buildings themselves (domes, kiosks, pillars, arches) see [architecture.md](architecture.md).
@@ -190,7 +190,7 @@ no motor vehicles anywhere else, and no people at all, so that the monument stay
 | ![Deer](img/deer.jpg) | ![Yaks and camels](img/yaks-camels.jpg) |   |
 | Deer | Yaks and camels |   |
 
-From `js/details/animals.js`. The larger animals are sculpted as one continuous skin and meshed in
+From `js/parts/animals.js`. The larger animals are sculpted as one continuous skin and meshed in
 the browser, so they are heavier than the rest of the kit.
 
 | Part | What it is |

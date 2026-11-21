@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { surface } from '../surface.js';
 import { M, mat, mesh, box, at, pidaRoof, kalash, hemi, inst, unitBox, unitCyl, aroundRect, sheet } from '../helpers.js';
-import { thiruvalluvarBody } from '../details/figures.js';
+import { thiruvalluvarBody } from '../parts/figures.js';
 import { addDetails } from '../details/vivekananda-rock-memorial.js';
 
 const STONE = mat('#c9a98a', 0.85);

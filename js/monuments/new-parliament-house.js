@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, group, at, onFace, FACES, inst, unitBox, wheel, mown } from '../helpers.js';
-import { lion } from '../details/animals.js';
-import { mergeByMaterial } from '../details/components.js';
-import { interior, doorLeaves, steps } from '../details/doorways.js';
-import { cutSlab, headRing } from '../details/colonial.js';
+import { lion } from '../parts/animals.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { interior, doorLeaves, steps } from '../parts/doorways.js';
+import { cutSlab, headRing } from '../parts/colonial.js';
 import { addDetails } from '../details/new-parliament-house.js';
 
 export function buildNewParliament() {

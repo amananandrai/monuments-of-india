@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { mat, mesh, box, cyl, at, onFace, flat, kalash, aroundRect } from '../helpers.js';
-import { elephant } from '../details/animals.js';
-import { trabeateGate } from '../details/temples.js';
-import { templeDoorway, grandStair } from '../details/doorways.js';
-import { mergeByMaterial } from '../details/components.js';
-import { instances, elephantGeo, kuta, shala } from '../details/sculpture.js';
+import { elephant } from '../parts/animals.js';
+import { trabeateGate } from '../parts/temples.js';
+import { templeDoorway, grandStair } from '../parts/doorways.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { instances, elephantGeo, kuta, shala } from '../parts/sculpture.js';
 import { addDetails } from '../details/kailasa-temple.js';
-import { heightField, rough, smooth } from '../details/terrain.js';
+import { heightField, rough, smooth } from '../parts/terrain.js';
 
 const ROCK = mat('#6f675e', 0.95);
 const ROCK_DARK = mat('#57514a', 0.95);

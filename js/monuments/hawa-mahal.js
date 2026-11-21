@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, hemi, finial, surface, inst, unitBox, unitHemi, guldasta } from '../helpers.js';
 import { addDetails } from '../details/hawa-mahal.js';
-import { arcadeSkin } from '../details/mughal.js';
+import { arcadeSkin } from '../parts/mughal.js';
 
 // The jali in each window. Its holes are cut in the shader, so it stays opaque (a transparent
 // material would lose its surface) and casts no shadow; the stone screen around it does.

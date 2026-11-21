@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, cyl, at, onFace, FACES, pidaRoof, sheet } from '../helpers.js';
-import { chhajja, mouldings, templeNiche, pilasters, mergeByMaterial } from './components.js';
-import { figureFrieze, haraRow, kuta, figure, instances, kuduGeo } from './sculpture.js';
-import { trees, asiBoard, scatter } from './realism.js';
+import { chhajja, mouldings, templeNiche, pilasters, mergeByMaterial } from '../parts/components.js';
+import { figureFrieze, haraRow, kuta, figure, instances, kuduGeo } from '../parts/sculpture.js';
+import { trees, asiBoard, scatter } from '../parts/realism.js';
 import { detail } from '../detail.js';
 
 // Vittala, Hampi, finer detail. The halls' pillars are carved in the builder (clustered "musical"

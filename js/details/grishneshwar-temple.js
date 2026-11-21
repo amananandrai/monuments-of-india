@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { at, flag, mat, box, onFace } from '../helpers.js';
-import { pilasters, mergeByMaterial } from './components.js';
-import { deepmala } from './temples.js';
-import { trees, garland, scatter } from './realism.js';
+import { pilasters, mergeByMaterial } from '../parts/components.js';
+import { deepmala } from '../parts/temples.js';
+import { trees, garland, scatter } from '../parts/realism.js';
 
 // Grishneshwar, finer detail. The walled court (js/monuments/grishneshwar-temple.js: 70 × 80, walls
 // 4 high and 2 thick, the gatehouse in the south wall at z = 40) gets a moulded foot, pilasters and

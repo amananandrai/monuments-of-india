@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, pidaRoof } from '../helpers.js';
-import { nagaraTemple, trabeateGate, wallWithGaps } from '../details/temples.js';
+import { nagaraTemple, trabeateGate, wallWithGaps } from '../parts/temples.js';
 import { addDetails } from '../details/baidyanath-temple.js';
 
 const WHITE = mat('#f0e9de', 0.85);

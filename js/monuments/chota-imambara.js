@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, onionDome, finial, ribbed, guldasta } from '../helpers.js';
-import { iwan, arcadeSkin, cellRow } from '../details/mughal.js';
+import { iwan, arcadeSkin, cellRow } from '../parts/mughal.js';
 import { addDetails } from '../details/chota-imambara.js';
 
 const WHITE = mat('#f1ede6', 0.8);

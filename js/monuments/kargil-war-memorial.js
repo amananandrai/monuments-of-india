@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { mat, box, cyl, at, rng, ellipseWall, tricolour } from '../helpers.js';
-import { mountainRing } from '../details/terrain.js';
+import { mat, box, cyl, at, ellipseWall, tricolour } from '../helpers.js';
+import { mountainRing } from '../parts/terrain.js';
 import { addDetails } from '../details/kargil-war-memorial.js';
 
 const PINK = mat('#c8917a', 0.85);
@@ -9,11 +9,11 @@ const PINK = mat('#c8917a', 0.85);
 const bigFlag = (pole) => tricolour(pole, 18);
 
 export function buildKargilMemorial() {
-  const g = new THREE.Group(), f = new THREE.Group(), R = rng(109);
+  const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   g.add(box(600, 0.2, 600, mat('#9d8f78', 0.95)));
   // Tololing and the mountains around Dras
-  // (js/details/terrain.js): bare brown-grey ridges ringing the Dras valley, highest behind the
+  // (js/parts/terrain.js): bare brown-grey ridges ringing the Dras valley, highest behind the
   // memorial, snow on their crests.
   g.add(mountainRing({ inner: 420, outer: 720, h: 330, vary: 110, aspect: 1.1, cz: -60, snow: 300, rock: ['#7f766a', '#8f8578', '#766d62'], cover: '#9d8f78', steep: 0.82 }));
   // The plaza, the curved wall of names, the flame and the giant flag

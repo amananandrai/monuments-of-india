@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { mat, mesh, cyl, at, onFace, FACES } from '../helpers.js';
-import { pilasters, templeNiche, idol, mouldings, frieze, mergeByMaterial } from './components.js';
-import { trees, shrubs, asiBoard, scatter } from './realism.js';
+import { pilasters, templeNiche, idol, mouldings, frieze, mergeByMaterial } from '../parts/components.js';
+import { trees, shrubs, asiBoard, scatter } from '../parts/realism.js';
 
 // Kailasa, Ellora, finer detail. From photographs: above the elephant frieze the plinth ends in a
 // carved moulding; the walls of the hall and the shrine, cut from the living rock, are divided by

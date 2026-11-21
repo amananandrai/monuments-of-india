@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, at, onFace, FACES, aroundRect, inst, unitBox } from '../helpers.js';
-import { mouldings, frieze, petalRing, bracketGeo, placeAll, templeNiche, idol, mergeByMaterial } from './components.js';
-import { trees, shrubs, lampPosts, fountains, garland, scatter, along } from './realism.js';
+import { mouldings, frieze, petalRing, bracketGeo, placeAll, templeNiche, idol, mergeByMaterial } from '../parts/components.js';
+import { trees, shrubs, lampPosts, fountains, garland, scatter, along } from '../parts/realism.js';
 
 // Akshardham, finer detail. From photographs: the mandir's plinth above the elephant frieze steps in
 // through carved mouldings; every pillar of its outer colonnade stands on a moulded base and carries

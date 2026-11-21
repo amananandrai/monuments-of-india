@@ -8,7 +8,7 @@ import { attachSurface } from './surface.js';
 // carving, instead of meeting it in a crease. The field is turned into a mesh in the browser by
 // surface nets, once per figure, and the mesh is shared by every copy. Crevices are darkened in a
 // vertex colour baked from the field, so the folds, armpits and the gaps between legs hold shadow
-// the way weathered stone and patinated bronze do. See docs/realistic-statues-research.md.
+// the way weathered stone and patinated bronze do. See "Nature and figures" in how-it-is-drawn.md.
 
 const len = (x, y, z) => Math.sqrt(x * x + y * y + z * z);
 
@@ -167,6 +167,8 @@ export function skinMatrix(f, p, dir, offset = 0, scale = [1, 1, 1]) {
 export function surfaceNets(f, lo, hi, h) {
   const nx = Math.ceil((hi[0] - lo[0]) / h) + 1, ny = Math.ceil((hi[1] - lo[1]) / h) + 1, nz = Math.ceil((hi[2] - lo[2]) / h) + 1;
   const F = new Float32Array(nx * ny * nz), I = (i, j, k) => i + nx * (j + ny * k);
+  // Nodes already sampled: neighbouring blocks share their faces, and the field is costly.
+  const sampled = new Uint8Array(nx * ny * nz);
   const B = 4, bx = Math.ceil((nx - 1) / B) + 1, by = Math.ceil((ny - 1) / B) + 1, bz = Math.ceil((nz - 1) / B) + 1;
   const C = new Float32Array(bx * by * bz), CI = (i, j, k) => i + bx * (j + by * k);
   for (let k = 0; k < bz; k++) for (let j = 0; j < by; j++) for (let i = 0; i < bx; i++) C[CI(i, j, k)] = f(lo[0] + i * B * h, lo[1] + j * B * h, lo[2] + k * B * h);
@@ -180,7 +182,8 @@ export function surfaceNets(f, lo, hi, h) {
     const i0 = Ii * B, j0 = J * B, k0 = K * B, i1 = Math.min(nx - 1, i0 + B), j1 = Math.min(ny - 1, j0 + B), k1 = Math.min(nz - 1, k0 + B);
     for (let k = k0; k <= k1; k++) for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
       const id = I(i, j, k);
-      if (near) F[id] = f(lo[0] + i * h, lo[1] + j * h, lo[2] + k * h);
+      if (sampled[id]) continue;
+      if (near) { F[id] = f(lo[0] + i * h, lo[1] + j * h, lo[2] + k * h); sampled[id] = 1; }
       else if (F[id] === 0) F[id] = s > 0 ? far : -far;
     }
   }
@@ -303,7 +306,7 @@ export function sculpt(key, build, { h, reach = h * 6, deep, wear = 0, split = n
 
 // The material a figure is carved or cast in: the given one, using the baked cavity colours, and
 // for stone the 'carved' surface (fine grain, no block joints, and no wall photo).
-const statueMats = new Map();
+const statueMats = new WeakMap();
 export function statueMaterial(m) {
   if (!statueMats.has(m)) {
     const c = attachSurface(m.clone());

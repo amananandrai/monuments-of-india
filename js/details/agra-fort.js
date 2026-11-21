@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, curvedBand, chhatri, onionDome, finial } from '../helpers.js';
-import { archRing, archSlab, panel, frieze, jali, merlons, chhajja, rosette, windowFrame, mughalChhatri, mergeByMaterial } from './components.js';
-import { towerDetail, rampart } from './forts.js';
-import { trees, shrubs, lampPosts, asiBoard, fountains, along } from './realism.js';
+import { archRing, archSlab, panel, frieze, jali, merlons, chhajja, rosette, windowFrame, mughalChhatri, mergeByMaterial } from '../parts/components.js';
+import { towerDetail, rampart } from '../parts/forts.js';
+import { trees, shrubs, lampPosts, asiBoard, fountains, along } from '../parts/realism.js';
 
 // Agra Fort, finer detail. From photographs of the fort:
 // - the red sandstone walls have a string course and a row of loopholes under the merlons, and the

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, ring, group, onFace, FACES, instBoxes, torana } from '../helpers.js';
+import { M, mesh, box, cyl, ring, onFace, FACES, instBoxes, torana } from '../helpers.js';
 import { addDetails } from '../details/sanchi-stupa.js';
 
 export function buildSanchi() {
@@ -12,7 +12,11 @@ export function buildSanchi() {
   dome.scale.y = 0.75;
   f.add(dome);
   const top = 4.3 + 16.5 * 0.75 - 0.3;
-  for (const x of [-2, -0.67, 0.67, 2]) for (const z of [-2, 2]) f.add(box(0.3, 1.6, 0.3, S, x, top, z), box(0.3, 1.6, 0.3, S, z, top, x));
+  for (const x of [-2, -0.67, 0.67, 2]) for (const z of [-2, 2]) {
+    f.add(box(0.3, 1.6, 0.3, S, x, top, z));
+    // The corner posts belong to both pairs of sides: add each once.
+    if (Math.abs(x) < 2) f.add(box(0.3, 1.6, 0.3, S, z, top, x));
+  }
   for (const y of [0.5, 1.2]) for (const s of [-2, 2]) f.add(box(4.3, 0.25, 0.3, S, 0, top + y, s), box(0.3, 0.25, 4.3, S, s, top + y, 0));
   f.add(cyl(0.15, 0.15, 4.6, S, 0, top, 0, 8));
   [[1.8, 2.0], [1.4, 3.1], [1.0, 4.2]].forEach(([r, y]) => f.add(cyl(r, r, 0.25, S, 0, top + y, 0, 24)));

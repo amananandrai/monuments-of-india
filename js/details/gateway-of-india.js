@@ -3,10 +3,10 @@ import { M, mat, mesh, box, cyl, at, onFace, kalash, hemi, finial, inst, unitBox
 import {
   jali, archCurve, archRing, archSlab, tympanum, bracketGeo, placeAll, alongFace, chhajja, railingRing,
   arcadeScreen, mughalChhatri, mergeByMaterial,
-} from './components.js';
-import { lampPosts, boats, launches, ships, along } from './realism.js';
-import { horse } from './animals.js';
-import { shivajiBody } from './figures.js';
+} from '../parts/components.js';
+import { lampPosts, boats, launches, ships, along } from '../parts/realism.js';
+import { horse } from '../parts/animals.js';
+import { shivajiBody } from '../parts/figures.js';
 
 // Gateway of India, finer detail (George Wittet, 1913–24). From photographs and descriptions
 // (Britannica, Victorian Web, the CyArk scan on Google Arts & Culture): a Roman triumphal arch
@@ -170,7 +170,7 @@ export function addDetails(f, g) {
 
 // The equestrian statue of Chhatrapati Shivaji (unveiled 1961) in its railed garden, facing the
 // Gateway, after photographs. The bronze horse prances, its left foreleg raised high (animals.js);
-// the rider (js/details/figures.js) sits upright, the reins in his left hand and the curved sword
+// the rider (js/parts/figures.js) sits upright, the reins in his left hand and the curved sword
 // held low in his right, its blade pointing forward along the horse's flank; a tasselled cord
 // hangs at the horse's throat. The pedestal is of yellow stone: a shaft tapering a little on a
 // broad plinth, capped in dark stone, with the bronze round shield and crossed swords on each long
@@ -211,7 +211,7 @@ export function shivajiStatue() {
     }
     g.add(e);
   }
-  // The horse and its rider, at 0.85 of the horse's own units (js/details/animals.js), so the horse
+  // The horse and its rider, at 0.85 of the horse's own units (js/parts/animals.js), so the horse
   // stands about 2.4 m at the withers.
   const eq = new THREE.Group();
   eq.add(horse(B, { prance: true }));

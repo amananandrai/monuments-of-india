@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, hemi, lathe, inst, unitBox, unitCyl, archWall, barrelVault, surface, curvedBand } from '../helpers.js';
 import { addDetails } from '../details/ajanta-caves.js';
-import { heightField, rough, smooth } from '../details/terrain.js';
-import { figure, figureFrieze } from '../details/sculpture.js';
+import { heightField, rough, smooth } from '../parts/terrain.js';
+import { figure, figureFrieze } from '../parts/sculpture.js';
 import { detail } from '../detail.js';
 
 const ROCK = mat('#7a6c5c', 0.95);

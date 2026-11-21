@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { M, mat, box, at, onFace, inst, unitBox, pidaRoof, kalash } from '../helpers.js';
-import { pilasters, chhajja, columnTrim, mergeByMaterial } from './components.js';
-import { dravidaDress, carvedPillar } from './temples.js';
+import { pilasters, chhajja, columnTrim, mergeByMaterial } from '../parts/components.js';
+import { dravidaDress, carvedPillar } from '../parts/temples.js';
 import { detail } from '../detail.js';
-import { trees, stalls, scatter, along } from './realism.js';
-import { rideElephant } from './animals.js';
+import { trees, stalls, scatter, along } from '../parts/realism.js';
+import { rideElephant } from '../parts/animals.js';
 
-// Tirumala, finer architecture. Dimensions follow js/monuments/tirumala-temple.js: the outer wall
+// Tirumala, finer architecture. Dimensions follow js/monuments/tirumala-venkateswara-temple.js: the outer wall
 // 80 × 104, 8 high and 2.5 thick, the Mahadwaram gopuram in its south side (z = 52); the inner
 // wall 52 × 44, 6 high, its gopuram at z = 22; the gold sanctum, Ananda Nilayam, 12 square and 7
 // high at the centre; the Swami Pushkarini (36 × 30) at x = -62, z = -4. The sanctum's gilded walls
@@ -60,7 +60,7 @@ function pushkarini(g) {
 }
 
 // Tirumala: the temple elephant, flower and prasadam stalls along the approach, trees along the
-// Mada streets between the temple wall and the town (js/monuments/tirumala-temple.js), and the
+// Mada streets between the temple wall and the town (js/monuments/tirumala-venkateswara-temple.js), and the
 // trees of the Seshachalam hills beyond it.
 export function addDetails(f, g) {
   const d = new THREE.Group();
