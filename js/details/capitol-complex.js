@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { mat, at, M, box, cyl, surface, photo } from '../helpers.js';
+import { mat, at, M, box, cyl, surface, photo, rng } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
-import { HC } from '../monuments/capitol-complex.js';
+import { HC, COURT, TOWER } from '../monuments/capitol-complex.js';
 import { trees, along } from '../parts/realism.js';
 
 // The Capitol Complex, finer detail. From photographs of Le Corbusier's buildings: the great pivoting
@@ -26,11 +26,17 @@ function architecture(f, g) {
     // The glazing at the back of the cells, so the screen reads as deep boxes of shade.
     d.add(box(0.06, 14.4, 60, BACK_GLASS, s * 32.04, 0.8, 0));
   }
-  const hc = at(new THREE.Group(), 60, 0, HC);
+  // The High Court's fronts: each block of courtrooms is screened by a grid of concrete fins and
+  // shelves, and some of the cells behind are closed with panels painted blue, red and yellow.
+  const hc = at(new THREE.Group(), 60, 0, HC), R = rng(31);
   hc.rotation.y = Math.PI;
-  for (let k = 0; k <= 30; k++) hc.add(new THREE.Mesh(new THREE.BoxGeometry(0.3, 17.6, 1.6), CONCRETE_DARK).translateX(-44 + k * (88 / 30)).translateY(8.8).translateZ(15.8));
-  for (const y of [4.5, 9, 13.5]) hc.add(new THREE.Mesh(new THREE.BoxGeometry(88.3, 0.3, 1.6), CONCRETE_DARK).translateY(y).translateZ(15.8));
-  hc.add(box(88, 16.4, 0.06, BACK_GLASS, 0, 0.6, 15.04));
+  for (const [x0, x1] of [COURT.long, COURT.short]) {
+    const len = x1 - x0 - 2, c = (x0 + x1) / 2, n = Math.round(len / 2.9);
+    for (let k = 0; k <= n; k++) hc.add(box(0.3, 17.6, 1.6, CONCRETE_DARK, x0 + 1 + (k * len) / n, 0, 15.8));
+    for (const y of [4.5, 9, 13.5]) hc.add(box(len + 0.3, 0.3, 1.6, CONCRETE_DARK, c, y, 15.8));
+    hc.add(box(len, 16.4, 0.06, BACK_GLASS, c, 0.6, 15.04));
+    for (let k = 0; k < n; k++) for (let j = 0; j < 4; j++) if (R() < 0.22) hc.add(box(len / n - 0.5, 1.6, 0.08, ENAMEL[Math.floor(R() * 3)], x0 + 1 + ((k + 0.5) * len) / n, 0.6 + j * 4.5, 15.1));
+  }
   g.add(mergeByMaterial(hc));
 
   // The Assembly's back, screened like its sides.
@@ -47,16 +53,20 @@ function architecture(f, g) {
   // The tower over the chamber is cut off at a slant: its lid tilts towards the sun, and carries
   // the sculpted forms of Le Corbusier's roofscape (a crescent and a small upright slab). A
   // footbridge runs from it to the pyramid over the council chamber.
-  const lid = at(new THREE.Group(), 6, 36.2, -4);
+  const lid = at(new THREE.Group(), 6, 42.1, -4);
   lid.rotation.z = -0.16;
-  lid.add(cyl(9.9, 9.9, 0.5, CONCRETE_DARK, 0, 0, 0, 40), box(1, 3.4, 4, CONCRETE, -3, 0.5, 1));
-  const horn = new THREE.Mesh(new THREE.TorusGeometry(2.6, 0.45, 8, 20, Math.PI), CONCRETE);
-  horn.position.set(3, 0.5, -1);
+  lid.add(cyl(11.9, 11.9, 0.5, CONCRETE_DARK, 0, 0, 0, 40), box(1, 3.4, 4, CONCRETE, -3.6, 0.5, 1.2));
+  const horn = new THREE.Mesh(new THREE.TorusGeometry(3.1, 0.5, 8, 20, Math.PI), CONCRETE);
+  horn.position.set(3.6, 0.5, -1.2);
   horn.rotation.y = 0.6;
   lid.add(horn);
-  d.add(lid, box(14, 0.6, 1.6, CONCRETE_DARK, -8, 20.4, 4).rotateY(-0.63), box(14, 1, 0.15, CONCRETE, -8, 21, 4.75).rotateY(-0.63));
+  // The footbridge from the lift tower's head to the rim: a light truss with a rail each side.
+  d.add(lid, box(11, 0.4, 1.6, CONCRETE_DARK, -2.4, 33.4, -1.6), box(11, 1, 0.12, GLASS, -2.4, 33.8, -0.85), box(11, 1, 0.12, GLASS, -2.4, 33.8, -2.35));
   // Board marks: the shuttering's lifts show as lines round the tower.
-  for (const [y, r] of [[4, 9.3], [8, 8.05], [12, 7.75], [16, 8.25]]) d.add(cyl(r + 0.06, r + 0.06, 0.12, CONCRETE_DARK, 6, 16 + y, -4, 40));
+  for (const t of [0.2, 0.4, 0.6, 0.8]) {
+    const y = t * 25, k = TOWER.findIndex(([, h]) => h > y), [r0, y0] = TOWER[k - 1], [r1, y1] = TOWER[k], r = r0 + ((r1 - r0) * (y - y0)) / (y1 - y0);
+    d.add(cyl(r + 0.06, r + 0.06, 0.12, CONCRETE_DARK, 6, 17 + y, -4, 48));
+  }
 
   // The Secretariat (at -105, -125; 254 long, 42 high, 18 deep): it is six blocks in a row, parted
   // by expansion joints that show as full-height piers; its ends are blank concrete with a column
@@ -105,6 +115,6 @@ function architecture(f, g) {
 // of Assembly, and the rows of trees planted along the edges of the great concrete esplanade.
 export function addDetails(f, g) {
   architecture(f, g);
-  g.add(box(70, 0.35, 14, M.water, 0, 0, 62), box(14, 0.35, 40, M.water, 60, 0, HC - 60));
+  g.add(box(104, 0.35, 44, M.water, 0, 0, 72), box(14, 0.35, 40, M.water, 60, 0, HC - 60));
   g.add(trees([...along(14, [-230, HC + 70], [230, HC + 70]), ...along(14, [-230, -140], [-230, HC + 50]), ...along(14, [230, -140], [230, HC + 50])], { kind: 'mango', seed: 5 }));
 }

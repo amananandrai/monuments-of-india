@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, lathe, ribbed, finial, surface } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, FACES, lathe, ribbed, finial, surface, inst, unitBox, unitCyl } from '../helpers.js';
 import { detail } from '../detail.js';
 import { arcadeSkin } from '../parts/mughal.js';
 import { porch } from '../parts/colonial.js';
-import { merlons, windowFrame, mughalChhatri, mergeByMaterial, archCurve, chhajja, bracketGeo, placeAll, jharokha } from '../parts/components.js';
+import { merlons, windowFrame, mughalChhatri, mergeByMaterial, archCurve, chhajja, bracketGeo, placeAll, jharokha, petalRing, railing, archRing, alongFace } from '../parts/components.js';
 import { addDetails } from '../details/laxmi-vilas-palace.js';
 
 // The stones, each its own material: the warm golden-beige sandstone of the walls; a darker buff
@@ -16,7 +16,8 @@ export const DARK = surface(mat('#b39a7b', 0.9), 'masonry');
 export const PINK = surface(mat('#c9a08a', 0.88), 'carved');
 export const RED = surface(mat('#a8634a', 0.88), 'masonry');
 export const TRAP = surface(mat('#5e6672', 0.86), 'masonry');
-export const DOME = surface(mat('#cdbfa8', 0.85), 'masonry');
+// (Dressed smooth: a dome's ribs and petals would be crossed by block joints otherwise.)
+export const DOME = surface(mat('#cdbfa8', 0.85), 'carved');
 
 // The palace's domes: tall, a little swollen at the haunch and drawn up to a point, ribbed, of unit
 // radius at the base and 1.5 high.
@@ -37,6 +38,14 @@ function domeOnDrum(r, dh, { m = STONE, ribs = 16, fin = r * 0.45 } = {}) {
     g.add(w);
   }
   g.add(at(lvDome(r * 1.04, DOME, ribs), 0, dh, 0), at(finial(fin, DARK), 0, dh + r * 1.5, 0));
+  // On desktops the dome springs from a cup of lotus petals, and under its finial sits the ribbed
+  // cushion (amalaka) on an inverted lotus, as the palace's domes are finished.
+  if (!detail.low) {
+    g.add(at(petalRing(r * 1.07, Math.max(12, Math.round(r * 3.2)), r * 0.4, r * 0.32, 0.3, DOME, 0.25), 0, dh - r * 0.04, 0));
+    const am = at(ribbed(mesh(new THREE.SphereGeometry(r * 0.2, 16, 8), DARK), 12, 0.12), 0, dh + r * 1.5, 0);
+    am.scale.y = 0.55;
+    g.add(am, at(petalRing(r * 0.14, 10, r * 0.2, r * 0.13, Math.PI - 0.7, DOME, 0.25), 0, dh + r * 1.47, 0));
+  }
   g.userData.top = dh + r * 1.56 + fin;
   return g;
 }
@@ -90,7 +99,7 @@ function wing(w, h, d) {
 // heads; a stone chhajja over the ground arcade and under the parapet, each on carved brackets; a
 // jharokha on brackets in every third bay of the middle storey; and slender chhatris along the
 // parapet, one to about every 13 m.
-function ornament(fine, w, h, d, s, cells) {
+function ornament(fine, w, h, d, s, cells, { crown = true, eave = true } = {}) {
   const z = d / 2, cusps = [], br = [];
   for (const [cx, sill, aw, ah] of cells) {
     if (sill > 1) continue;
@@ -103,13 +112,43 @@ function ornament(fine, w, h, d, s, cells) {
   const cuspM = new THREE.InstancedMesh(new THREE.TorusGeometry(0.16, 0.05, 4, 8, Math.PI), DARK, cusps.length), o = new THREE.Object3D();
   cusps.forEach(([x, y, zz, a], i) => { o.position.set(x, y, zz); o.rotation.set(0, 0, a); o.updateMatrix(); cuspM.setMatrixAt(i, o.matrix); });
   fine.add(cuspM);
-  for (const y of [5.8 * s, h - 0.1]) {
+  for (const y of eave ? [5.8 * s, h - 0.1] : [h - 0.1]) {
     fine.add(at(chhajja(w, 1.1, 0.35, 0.12, DARK), 0, y, z));
     for (let x = -w / 2 + 1; x <= w / 2 - 1; x += 2.2) br.push([x, y - 0.18, z]);
   }
   fine.add(placeAll(bracketGeo(0.9, 0.9, 0.22), br, DARK));
   const n = Math.max(2, Math.round(w / 4.4));
-  for (let k = 1; k < n; k += 3) fine.add(at(jharokha(1.9, 2.6, STONE, { d: 0.9, trim: DARK, roof: 'bangla' }), -w / 2 + (k + 0.5) * (w / n), 7.4 * s, z + 0.02));
+  if (crown) for (let k = 1; k < n; k += 3) fine.add(at(jharokha(1.9, 2.6, STONE, { d: 0.9, trim: DARK, roof: 'bangla' }), -w / 2 + (k + 0.5) * (w / n), 7.4 * s, z + 0.02));
+  // Every window between two colonnettes with a base and a cap, under a moulded hood; an engaged
+  // column on each pier of the ground arcade with a roundel over it; a course of small brackets
+  // under the balcony and under the cornice; a pierced railing along the loggia's balcony; and urns
+  // along the parapet.
+  const jamb = [], blocks = [], piers = [], rounds = [], urns = [], hoods = new Map(), pitch = w / n;
+  for (const [cx, sill, aw, ah] of cells) {
+    if (sill <= 1) continue;
+    for (const k of [-1, 1]) {
+      const x = cx + k * (aw / 2 + 0.18);
+      jamb.push([x, sill, z + 0.1, 0.17, ah * 0.6, 0.17]);
+      blocks.push([x, sill + ah * 0.6, z + 0.1, 0.3, 0.14, 0.3], [x, sill - 0.13, z + 0.1, 0.3, 0.13, 0.3]);
+    }
+    const key = `${aw}:${ah}`;
+    if (!hoods.has(key)) hoods.set(key, { geo: archRing(aw, ah, true, 0.15, 0.1, DARK).geometry, list: [] });
+    hoods.get(key).list.push([cx, sill, z + 0.03, 0]);
+  }
+  for (let k = 0; k <= n; k++) {
+    const x = -w / 2 + k * pitch;
+    piers.push([x, 0.5, z + 0.14, 0.44, 3.1 * s, 0.44]);
+    blocks.push([x, 0.5 + 3.1 * s, z + 0.14, 0.62, 0.2, 0.62], [x, 0.5, z + 0.14, 0.6, 0.22, 0.6]);
+    rounds.push([x, 0.5 + 4.25 * s, z + 0.05, 1, 1, 1]);
+  }
+  for (const y of [11.8 * s - 1.05, h - 0.45]) for (let x = -w / 2 + 0.3; x < w / 2; x += 0.62) blocks.push([x, y, z + 0.2, 0.2, 0.36, 0.4]);
+  if (crown) for (let x = -w / 2 + pitch / 2; x < w / 2; x += pitch) urns.push([x, h + 0.8, z - 0.15, 1, 1, 1]);
+  const urnGeo = new THREE.LatheGeometry([[0, 0], [0.2, 0], [0.2, 0.08], [0.09, 0.16], [0.11, 0.26], [0.26, 0.5], [0.28, 0.66], [0.2, 0.86], [0.09, 0.94], [0.12, 1.02], [0.05, 1.18], [0, 1.26]].map(([r, y]) => new THREE.Vector2(r, y)), 10);
+  fine.add(inst(unitCyl(8), jamb, DARK), inst(unitCyl(10), piers, STONE), inst(unitBox(), blocks, DARK), inst(urnGeo, urns, DARK));
+  fine.add(inst(new THREE.TorusGeometry(0.34, 0.09, 5, 12), rounds, DARK), inst(new THREE.CircleGeometry(0.26, 10), rounds.map(([x, y, zz]) => [x, y, zz + 0.02, 1, 1, 1]), PINK));
+  for (const { geo, list } of hoods.values()) fine.add(placeAll(geo, list, DARK));
+  if (!crown) return;
+  fine.add(at(railing(w, 0.9, 0.14, STONE, 2.2), 0, 11.8 * s + 0.6, z + 1.35));
   const m = Math.max(1, Math.round(w / 13));
   for (let k = 0; k < m; k++) fine.add(at(mughalChhatri(0.85, 3.6, STONE, { domeM: DOME, finialM: DARK, crescent: false }), -w / 2 + (k + 0.5) * (w / m), h + 0.8, z - 1.4));
 }
@@ -118,6 +157,11 @@ function ornament(fine, w, h, d, s, cells) {
 function turret(r, h) {
   const g = new THREE.Group();
   g.add(cyl(r, r * 1.05, h, STONE, 0, 0, 0, 8), cyl(r * 1.25, r * 1.25, 0.5, DARK, 0, h - 0.5, 0, 8));
+  // On desktops the shaft is banded at each storey and its cap carried on a ring of brackets.
+  if (!detail.low) {
+    for (const y of [6, 11.8, h - 3]) if (y < h - 1) g.add(cyl(r * 1.1, r * 1.1, 0.3, DARK, 0, y, 0, 8));
+    g.add(placeAll(bracketGeo(0.6, r * 0.32, 0.16), Array.from({ length: 8 }, (_, k) => { const a = (k / 8) * Math.PI * 2 + Math.PI / 8; return [Math.sin(a) * r * 0.98, h - 0.5, Math.cos(a) * r * 0.98, a]; }), DARK));
+  }
   g.add(cyl(r * 0.9, r * 0.9, r * 1.2, STONE, 0, h, 0, 8), at(lvDome(r * 1.05, DOME, 8), 0, h + r * 1.2, 0), at(finial(r * 0.9, DARK), 0, h + r * 2.75, 0));
   return g;
 }
@@ -165,6 +209,14 @@ export function buildLaxmiVilas() {
     const a = (k / 8) * Math.PI * 2 + Math.PI / 8;
     C.add(at(mughalChhatri(0.9, 3.4, STONE, { domeM: DOME, finialM: DARK, crescent: false }), Math.sin(a) * 7.8, bayH + 0.9, cz + 3 + Math.cos(a) * 7.8));
   }
+  // The entrance block's own carving, on desktops: the same colonnettes, hoods, pier columns and
+  // bracket courses as the wings, without their parapet kiosks (the gables stand there).
+  if (!detail.low) {
+    for (const sg of [-1, 1]) { const o = at(new THREE.Group(), sg * (bay / 2 + side / 2), 0, 0); ornament(o, side, h, 2 * front, 1, cells(side, 2, 'room'), { crown: false }); C.add(mergeByMaterial(o)); }
+    const o = new THREE.Group();
+    ornament(o, bay, bayH, 2 * front, 1, [[0, 9, 4, 5.2, 'room'], [-3.4, 15.5, 1.8, 3.6, 'jali'], [0, 15.5, 2.2, 4.4, 'room'], [3.4, 15.5, 1.8, 3.6, 'jali']], { crown: false, eave: false });
+    C.add(mergeByMaterial(o));
+  }
   // The porch: a porte-cochère of three arches before the door.
   C.add(at(porch(12, 5, 7, { m: STONE, trim: DARK, colM: STONE, cols: 4, r: 0.6, top: 'balustrade', stepsDown: 0.5 }), 0, 0.5, front));
   f.add(C);
@@ -186,6 +238,18 @@ export function buildLaxmiVilas() {
   }
   T.add(at(lvDome(3.2, DOME, 12), 0, th + 6.6, 0), at(finial(2.4, DARK), 0, th + 6.6 + 4.8, 0));
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) T.add(at(mughalChhatri(1.1, 4.4, STONE, { domeM: DOME, finialM: DARK, crescent: false }), sx * (tw / 2 + 0.2), th + 1, sz * (tw / 2 + 0.2)));
+  // On desktops: an octagonal shaft up each corner, a course of small brackets under every band,
+  // and the balcony at the top carried on a row of carved brackets.
+  if (!detail.low) {
+    const td = [];
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) T.add(cyl(0.5, 0.55, th, DARK, sx * tw / 2, 0, sz * tw / 2, 8));
+    for (const a of FACES) {
+      for (const y of [6, 11.8, 18, 24, 30, 36]) for (const [x, yy, z, ry] of alongFace(a, tw / 2 + 0.16, tw - 1.2, 12, y - 0.38)) td.push([x, yy, z, 0.2, 0.38, 0.36, ry]);
+      T.add(placeAll(bracketGeo(1.5, 1.1, 0.3), alongFace(a, tw / 2 + 0.02, tw - 0.8, 7, th), DARK));
+      T.add(onFace(at(railing(tw + 2, 0.9, 0.14, STONE, 1.6), 0, th + 1, 0), a, tw / 2 + 1));
+    }
+    T.add(inst(unitBox(), td, DARK));
+  }
   f.add(at(T, TOWER[0], 0, TOWER[1]));
 
   // The Durbar Hall at the west end: a tall block under the biggest dome, on a drum, with domed
