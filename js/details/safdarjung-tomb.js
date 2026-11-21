@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { M, mat, at, cyl, onFace, FACES, lathe } from '../helpers.js';
-import { star, petalRing, jharokha, merlons, mergeByMaterial } from './components.js';
-import { iwan } from './mughal.js';
-import { trees, asiBoard, fountains, scatter, along } from './realism.js';
+import { mat, at, cyl, onFace, FACES, lathe } from '../helpers.js';
+import { star, petalRing, jharokha, merlons, mergeByMaterial } from '../parts/components.js';
+import { iwan } from '../parts/mughal.js';
+import { trees, asiBoard, fountains, scatter, along } from '../parts/realism.js';
 
 // Safdarjung's Tomb, finer detail. From photographs: either side of each great iwan the face is
 // opened in two storeys of small iwans; buff stars are inlaid in the spandrels; the polygonal

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { mat, at, onFace, FACES, M, box, archWall } from '../helpers.js';
-import { fishPair, rosette, merlons, windowFrame, chhajja, bracketGeo, placeAll, aroundCircle, mergeByMaterial } from './components.js';
-import { trees, shrubs, lampPosts, asiBoard, fountains, scatter, along } from './realism.js';
+import { fishPair, rosette, merlons, windowFrame, chhajja, bracketGeo, placeAll, aroundCircle, mergeByMaterial } from '../parts/components.js';
+import { trees, shrubs, lampPosts, asiBoard, fountains, scatter, along } from '../parts/realism.js';
 
 // The Bara Imambara, finer detail. From photographs: stucco rosettes in the spandrels between the
 // arches of the long front; a crenellated parapet of merlons between the guldastas; the pair of

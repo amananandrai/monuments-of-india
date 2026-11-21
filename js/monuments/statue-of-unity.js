@@ -1,14 +1,14 @@
 import * as THREE from 'three';
-import { heightField, ridged, fbm, smooth } from '../details/terrain.js';
+import { heightField, ridged, fbm, smooth } from '../parts/terrain.js';
 import { detail } from '../detail.js';
-import { M, mat, mesh, box, at, ellipsoid, tube, smoothLathe, sheet, inst, unitBox } from '../helpers.js';
-import { patelBody, patelSurface } from '../details/figures.js';
+import { M, mat, mesh, box, at, ellipsoid, smoothLathe, sheet, inst, unitBox } from '../helpers.js';
+import { patelBody, patelSurface } from '../parts/figures.js';
 import { onSkin } from '../sdf.js';
 import { surface } from '../surface.js';
 import { addDetails } from '../details/statue-of-unity.js';
 
 // Sardar Patel, walking forward a step in dhoti, kurta, bandi and a shawl over the shoulders, arms
-// at his sides. The body, head and hands are one cast skin (js/details/figures.js); the bandi's
+// at his sides. The body, head and hands are one cast skin (js/parts/figures.js); the bandi's
 // buttons and the windows of the viewing gallery are added here, laid on the skin (onSkin). The
 // bronze, weathered to a dull olive-gold, is cast in plates (the 'plates' surface). All in the
 // statue's own units (175.4 to the crown), scaled to 182 m at the end.
@@ -18,11 +18,11 @@ const PLATED = surface(mat('#7b6a48', 0.62, 0.45), 'plates');
 export function patel(B) {
   const s = new THREE.Group(), F = patelSurface();
   s.add(patelBody(B));
-  // The bandi's buttons down its placket (js/details/figures.js), and the windows of the viewing
+  // The bandi's buttons down its placket (js/parts/figures.js), and the windows of the viewing
   // gallery, a row of slits across the chest from one edge of the shawl's opening to the other.
   for (const [x, y, z] of onSkin(F, [140.5, 134, 127.5, 121, 114.5, 108, 101.5, 95].map((y) => [0, y, 20]), 0.3)) s.add(ellipsoid(0.7, 0.7, 0.45, B, x, y, z));
   for (const x of [-7.4, -5.5, -3.6, -1.7, 1.7, 3.6, 5.5, 7.4]) { const [, , z] = onSkin(F, [[x, 128.4, 20]], 0)[0]; s.add(box(1.3, 1.9, 1.2, SLIT, x, 127.5, z - 0.5)); }
-  // The head and the fists are part of the cast skin (js/details/figures.js): the 1949 portrait, clean-shaven.
+  // The head and the fists are part of the cast skin (js/parts/figures.js): the 1949 portrait, clean-shaven.
   s.scale.setScalar(182 / 175.4);
   return s;
 }
@@ -54,7 +54,7 @@ export function buildStatue() {
   g.add(box(18, 2, 420, M.concrete, 0, 0, 290));
   for (let z = 100; z <= 480; z += 40) g.add(box(10, 6, 4, M.concrete, 0, -6, z));
   g.add(sheet(7000, 7000, M.river, 0, 0.08, 0));
-  // The Satpura and Vindhya hills round the gorge (js/details/terrain.js): rocky, scrub-covered
+  // The Satpura and Vindhya hills round the gorge (js/parts/terrain.js): rocky, scrub-covered
   // ridges rising from the river's banks, the Narmada running between them past the island to the
   // dam upstream (-z), their feet sinking under the water.
   g.add(heightField(6000, 6000, detail.low ? 130 : 190, (x, z) => {

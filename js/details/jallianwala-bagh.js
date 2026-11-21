@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, hemi, surface, inst, unitBox } from '../helpers.js';
-import { mergeByMaterial } from './components.js';
-import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { trees, shrubs, lampPosts, scatter, along } from '../parts/realism.js';
 
 // Jallianwala Bagh, finer detail. From photographs: the base of the flame memorial is lettered on
 // its faces; and on the preserved wall the bullet marks

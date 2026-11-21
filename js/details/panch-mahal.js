@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, at, onFace, FACES, inst, unitBox, unitCyl } from '../helpers.js';
-import { chhajja, railing, bracketGeo, placeAll, mergeByMaterial } from './components.js';
-import { trees, asiBoard, scatter } from './realism.js';
+import { chhajja, railing, bracketGeo, placeAll, mergeByMaterial } from '../parts/components.js';
+import { trees, asiBoard, scatter } from '../parts/realism.js';
 import { LEVELS, GAP, H } from '../monuments/panch-mahal.js';
 
 // Panch Mahal, finer detail. From photographs: every one of the 176 columns stands on a moulded

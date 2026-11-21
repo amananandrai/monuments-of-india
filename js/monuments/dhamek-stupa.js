@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, inst, unitBox, onFace, surface } from '../helpers.js';
+import { M, mat, mesh, box, cyl, rng, inst, unitBox, onFace, surface } from '../helpers.js';
 import { addDetails } from '../details/dhamek-stupa.js';
 
 const STONE = mat('#b8a88e', 0.9);

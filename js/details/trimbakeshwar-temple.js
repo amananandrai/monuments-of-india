@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { at, flag, mat, box, onFace } from '../helpers.js';
-import { pilasters, mouldings, merlons, frieze, mergeByMaterial } from './components.js';
-import { deepmala, nandiMandapa } from './temples.js';
-import { trees, stalls, garland, scatter, along } from './realism.js';
+import { pilasters, mouldings, merlons, frieze, mergeByMaterial } from '../parts/components.js';
+import { deepmala, nandiMandapa } from '../parts/temples.js';
+import { trees, stalls, garland, scatter, along } from '../parts/realism.js';
 
 // Trimbakeshwar, finer detail. Dimensions follow js/monuments/trimbakeshwar-temple.js: the court
 // 80 × 90 inside walls 6 high and 2 thick, the gatehouse 20 wide in the south wall (z = 45), the

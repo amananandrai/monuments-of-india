@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { at, flag, mat, box, onFace } from '../helpers.js';
-import { mergeByMaterial } from './components.js';
-import { dravidaDress, carvedPillar, dwajasthambha, nandiMandapa } from './temples.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { dravidaDress, carvedPillar, dwajasthambha, nandiMandapa } from '../parts/temples.js';
 import { detail } from '../detail.js';
-import { trees, stalls, scatter, along } from './realism.js';
+import { trees, stalls, scatter, along } from '../parts/realism.js';
 
 // Mallikarjuna, finer architecture (desktops; phones are at their budget with the plain masses).
 // Dimensions follow js/monuments/mallikarjuna-temple.js: the enclosure 100 × 120 inside walls 9
@@ -13,7 +13,7 @@ import { trees, stalls, scatter, along } from './realism.js';
 // the hall stand on moulded bases, ribbed with pilasters under a kapota eave; the hall carries a
 // parapet of miniature shrines and opens on a porch of carved pillars; on the axis, the gold
 // flagstaff and the Nandi in its mandapa face the shrine; and the walls are coped.
-const CREAM = mat('#e9e0cc', 0.85), TRIM = mat('#cbbd9f', 0.88), WALL = mat('#b9a586', 0.9), COPE = mat('#a8946f', 0.9);
+const CREAM = mat('#e9e0cc', 0.85), TRIM = mat('#cbbd9f', 0.88), COPE = mat('#a8946f', 0.9);
 
 function coping(d) {
   const W = 100, D = 120;

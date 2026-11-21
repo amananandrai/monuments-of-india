@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { V, mat, mesh, cyl, at, ellipsoid, capsule, tube, lathe, surface, doubleSided } from '../helpers.js';
-import { shivaBody, shivaSurface } from './figures.js';
+import { shivaBody, shivaSurface } from '../parts/figures.js';
 import { detail } from '../detail.js';
 import { snap, normalAt } from '../sdf.js';
-import { mergeByMaterial } from './components.js';
+import { mergeByMaterial } from '../parts/components.js';
 
 // The great seated Shiva in the Nageshwar temple garden, about 25 m tall, as photographs show it:
 // a figure in painted terracotta-orange concrete, seated in the half lotus on a mound of rock draped

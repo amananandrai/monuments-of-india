@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, at, onFace, FACES, guldasta } from '../helpers.js';
-import { archRing, petalRing, bracketGeo, placeAll, aroundCircle, mergeByMaterial } from './components.js';
-import { iwan } from './mughal.js';
-import { trees, lampPosts, asiBoard, fountains, scatter, along } from './realism.js';
+import { archRing, petalRing, bracketGeo, placeAll, aroundCircle, mergeByMaterial } from '../parts/components.js';
+import { iwan } from '../parts/mughal.js';
+import { trees, lampPosts, asiBoard, fountains, scatter, along } from '../parts/realism.js';
 
 // Bibi ka Maqbara, finer detail. Modelled on the Taj Mahal, and detailed the same way (in stucco
 // over basalt rather than marble): two storeys of arched alcoves on every chamfer and either side of

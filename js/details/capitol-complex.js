@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { mat, at, M, box, cyl, surface, photo } from '../helpers.js';
-import { mergeByMaterial } from './components.js';
+import { mergeByMaterial } from '../parts/components.js';
 import { HC } from '../monuments/capitol-complex.js';
-import { trees, along } from './realism.js';
+import { trees, along } from '../parts/realism.js';
 
 // The Capitol Complex, finer detail. From photographs of Le Corbusier's buildings: the great pivoting
 // door of the Palace of Assembly, enamelled in Le Corbusier's own design in squares of bright colour;

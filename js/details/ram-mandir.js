@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mesh, box, at, onFace, flag, mat, FACES, nagaraProfile, steppedPlan, planBand, shikhara, pidaRoof, kalash } from '../helpers.js';
-import { mouldings, frieze, templeNiche, idol, mergeByMaterial, chhajja, cuspedArchGeo } from './components.js';
-import { carvedPillar, storeyedHall, nagaraTemple, trabeateGate, wallWithGaps } from './temples.js';
-import { trees, lampPosts, garland, along } from './realism.js';
+import { mouldings, frieze, templeNiche, idol, mergeByMaterial, chhajja, cuspedArchGeo } from '../parts/components.js';
+import { carvedPillar, storeyedHall, nagaraTemple, trabeateGate, wallWithGaps } from '../parts/temples.js';
+import { trees, lampPosts, garland, along } from '../parts/realism.js';
 import { detail } from '../detail.js';
 
 // The Ram Mandir, from the published design and photographs and renderings of the finished
@@ -28,7 +28,7 @@ export const plinthPlan = (grow = 0) => steppedPlan(PLAN, { grow, cut: 1.2 });
 // Gudh (Sabha) mandap before the sanctum, the Kirtan and Prarthana mandaps at its sides, the Rang
 // mandap and the Nritya mandap at the entrance.
 const SIDE = [Math.PI / 2, -Math.PI / 2];
-// Each hall is three storeys of F (js/details/temples.js, storeyedHall).
+// Each hall is three storeys of F (js/parts/temples.js, storeyedHall).
 export const hall = (w, roofs, m, sh, opts) => storeyedHall(w, roofs, m, sh, { floors: 3, F, ...opts });
 export const HALLS = [
   [0, -3, 24, 6, []],

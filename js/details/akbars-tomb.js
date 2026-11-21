@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, box, at, onFace, FACES } from '../helpers.js';
-import { star, panel, frieze, jali, archRing, archSlab, mergeByMaterial } from './components.js';
-import { trees, asiBoard, fountains, scatter, along } from './realism.js';
-import { deer } from './animals.js';
+import { star, panel, frieze, jali, archRing, archSlab, mergeByMaterial } from '../parts/components.js';
+import { trees, asiBoard, fountains, scatter, along } from '../parts/realism.js';
+import { deer } from '../parts/animals.js';
 
 // Akbar's Tomb at Sikandra, finer detail. From photographs and descriptions:
 // - white marble stars are inlaid in the spandrels of the great iwans of the ground storey;

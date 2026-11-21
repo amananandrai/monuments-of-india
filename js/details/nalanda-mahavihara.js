@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, surface, inst, unitBox, ring } from '../helpers.js';
-import { templeNiche, idol, mouldings, mergeByMaterial } from './components.js';
-import { trees, asiBoard, scatter, along } from './realism.js';
+import { templeNiche, idol, mouldings, mergeByMaterial } from '../parts/components.js';
+import { trees, asiBoard, scatter, along } from '../parts/realism.js';
 
 // Nalanda, finer detail. From photographs of Temple 3 (the Sariputta Stupa): its corner towers are
 // faced with stucco niches holding images of the Buddha and Bodhisattvas, in two rows; and each of

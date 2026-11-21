@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, lathe, doubleSided, photo } from '../helpers.js';
-import { nagaraTemple } from '../details/temples.js';
-import { trees as plantTrees } from '../details/realism.js';
-import { mountainRing } from '../details/terrain.js';
+import { M, mat, box, cyl, at, rng, lathe, doubleSided, photo } from '../helpers.js';
+import { nagaraTemple } from '../parts/temples.js';
+import { trees as plantTrees } from '../parts/realism.js';
+import { mountainRing } from '../parts/terrain.js';
 import { addDetails } from '../details/bhimashankar-temple.js';
 
 const BASALT = photo(mat('#4f4a45', 0.85), 'blocks');
@@ -13,7 +13,7 @@ export function buildBhimashankar() {
   g.add(f);
   // A forested valley in the Sahyadri hills
   g.add(box(260, 0.2, 260, mat('#5a7242', 0.95)));
-  // The forested crests of the Sahyadri (js/details/terrain.js).
+  // The forested crests of the Sahyadri (js/parts/terrain.js).
   g.add(mountainRing({ inner: 300, outer: 560, h: 95, vary: 30, rock: ['#4f5a3a', '#5d6644'], cover: '#3f5e34', steep: 0.6 }));
 
   const trees = [];

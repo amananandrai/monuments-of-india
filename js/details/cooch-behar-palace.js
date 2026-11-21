@@ -1,16 +1,16 @@
 import * as THREE from 'three';
 import { mat, box, at, onFace, FACES, surface } from '../helpers.js';
-import { windowFrame, keystone, mergeByMaterial } from './components.js';
-import { urn } from './sculpture.js';
-import { balustrade, GLASS } from './colonial.js';
-import { trees, shrubs, lampPosts, asiBoard, scatter, along } from './realism.js';
+import { windowFrame, keystone, mergeByMaterial } from '../parts/components.js';
+import { urn } from '../parts/sculpture.js';
+import { balustrade, GLASS } from '../parts/colonial.js';
+import { trees, shrubs, lampPosts, asiBoard, scatter, along } from '../parts/realism.js';
 
 // Cooch Behar Palace, finer detail. From photographs (it was modelled on Buckingham Palace in the
 // Italian Renaissance manner): a balustrade along the roof; a band of round-arched windows round
 // the drum of the Durbar Hall's dome; moulded capitals on the white pilasters between the arches.
 // Dimensions follow js/monuments/cooch-behar-palace.js: 120 × 30, 18 high, the drum r = 9 from
 // y = 19.2.
-const BRICK = surface(mat('#a9583f', 0.85), 'brick'), WHITE = mat('#ece6da', 0.8);
+const WHITE = mat('#ece6da', 0.8);
 function architecture(f) {
   const d = new THREE.Group(), W = 120, D = 30, H = 18;
   for (const a of FACES) {

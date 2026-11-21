@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, surface } from '../helpers.js';
-import { D, arcadeScreen, star, mergeByMaterial, inlayBorder, archSlab, archRing, windowFrame, jali, pilasters, beltCourse } from './components.js';
+import { D, arcadeScreen, star, mergeByMaterial, inlayBorder, archSlab, archRing, windowFrame, jali, pilasters, beltCourse } from '../parts/components.js';
 import { detail } from '../detail.js';
-import { trees, asiBoard, scatter } from './realism.js';
+import { trees, asiBoard, scatter } from '../parts/realism.js';
 
 // Buland Darwaza, finer detail. From photographs and descriptions: the great arch is framed in a
 // band of Quranic inscription, cut in black marble on white; white marble stars are inlaid along

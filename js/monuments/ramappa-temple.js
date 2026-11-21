@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { M, mat, box, at, group, starPrism, pidaRoof, kalash, inst, unitCyl, surface, photo } from '../helpers.js';
-import { pranala, templeDoorway, steps } from '../details/doorways.js';
-import { mergeByMaterial } from '../details/components.js';
-import { nandi } from '../details/animals.js';
-import { figure, instances, kutaGeo } from '../details/sculpture.js';
+import { pranala, templeDoorway, steps } from '../parts/doorways.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { nandi } from '../parts/animals.js';
+import { figure, instances, kutaGeo } from '../parts/sculpture.js';
 import { addDetails } from '../details/ramappa-temple.js';
 
 const DOLERITE = photo(mat('#4d4a47', 0.8), 'blocks');

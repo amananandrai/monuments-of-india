@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import { M, mat, surface, box, cyl, at, onFace, archPanel, chhatri, hemi, finial, inst, unitBox, unitCyl, aroundRect, sheet, curvedBand } from '../helpers.js';
-import { fortGate } from '../details/forts.js';
-import { columnTrim, banglaRoof } from '../details/components.js';
+import { fortGate } from '../parts/forts.js';
+import { columnTrim, banglaRoof } from '../parts/components.js';
 import { addDetails } from '../details/agra-fort.js';
 
 // The Khas Mahal's two golden pavilions (the Bangla-i-Darshan and the Bangla-i-Jahanara) are roofed
-// in gilded copper sheet, curved both ways, their corners drooping (js/details/components.js).
+// in gilded copper sheet, curved both ways, their corners drooping (js/parts/components.js).
 const GILT_SHEET = surface(mat('#d9a93a', 0.32, 0.8), 'giltsheet');
 
 export function buildAgraFort() {

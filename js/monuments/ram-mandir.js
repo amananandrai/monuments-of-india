@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, at, planPrism } from '../helpers.js';
-import { mergeByMaterial } from '../details/components.js';
-import { grandStair } from '../details/doorways.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { grandStair } from '../parts/doorways.js';
 import { addDetails, plinthPlan, hall, sanctum, porch, parkota, HALLS, SANCTUM, P } from '../details/ram-mandir.js';
 
 export function buildRamMandir() {

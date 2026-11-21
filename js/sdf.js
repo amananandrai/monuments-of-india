@@ -8,7 +8,7 @@ import { attachSurface } from './surface.js';
 // carving, instead of meeting it in a crease. The field is turned into a mesh in the browser by
 // surface nets, once per figure, and the mesh is shared by every copy. Crevices are darkened in a
 // vertex colour baked from the field, so the folds, armpits and the gaps between legs hold shadow
-// the way weathered stone and patinated bronze do. See docs/realistic-statues-research.md.
+// the way weathered stone and patinated bronze do. See "Nature and figures" in how-it-is-drawn.md.
 
 const len = (x, y, z) => Math.sqrt(x * x + y * y + z * z);
 
@@ -167,6 +167,8 @@ export function skinMatrix(f, p, dir, offset = 0, scale = [1, 1, 1]) {
 export function surfaceNets(f, lo, hi, h) {
   const nx = Math.ceil((hi[0] - lo[0]) / h) + 1, ny = Math.ceil((hi[1] - lo[1]) / h) + 1, nz = Math.ceil((hi[2] - lo[2]) / h) + 1;
   const F = new Float32Array(nx * ny * nz), I = (i, j, k) => i + nx * (j + ny * k);
+  // Nodes already sampled: neighbouring blocks share their faces, and the field is costly.
+  const sampled = new Uint8Array(nx * ny * nz);
   const B = 4, bx = Math.ceil((nx - 1) / B) + 1, by = Math.ceil((ny - 1) / B) + 1, bz = Math.ceil((nz - 1) / B) + 1;
   const C = new Float32Array(bx * by * bz), CI = (i, j, k) => i + bx * (j + by * k);
   for (let k = 0; k < bz; k++) for (let j = 0; j < by; j++) for (let i = 0; i < bx; i++) C[CI(i, j, k)] = f(lo[0] + i * B * h, lo[1] + j * B * h, lo[2] + k * B * h);
@@ -180,7 +182,8 @@ export function surfaceNets(f, lo, hi, h) {
     const i0 = Ii * B, j0 = J * B, k0 = K * B, i1 = Math.min(nx - 1, i0 + B), j1 = Math.min(ny - 1, j0 + B), k1 = Math.min(nz - 1, k0 + B);
     for (let k = k0; k <= k1; k++) for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
       const id = I(i, j, k);
-      if (near) F[id] = f(lo[0] + i * h, lo[1] + j * h, lo[2] + k * h);
+      if (sampled[id]) continue;
+      if (near) { F[id] = f(lo[0] + i * h, lo[1] + j * h, lo[2] + k * h); sampled[id] = 1; }
       else if (F[id] === 0) F[id] = s > 0 ? far : -far;
     }
   }
@@ -270,26 +273,55 @@ export function bakeCavities(geo, f, reach, deep = [0.45, 0.42, 0.4], { wear = 0
 // overlap by 1.5 coarse cells either side of the region's surface; across it each in turn is drawn
 // a quarter of a coarse cell inside the skin, so the other covers its cut edge, and they cross
 // over in one line.
+// Drop the triangles buried in the figure: those whose three corners all lie deeper than `depth`
+// inside the field f. Cutting a figure into parts for split closes each part with a cap inside the
+// body, a tenth to a fifth of its triangles, which nothing can ever see. Vertices left unused go too.
+export function dropHidden(geo, f, depth) {
+  const p = geo.attributes.position, n = geo.attributes.normal, ix = geo.index.array, deep = new Uint8Array(p.count);
+  for (let i = 0; i < p.count; i++) deep[i] = f(p.getX(i), p.getY(i), p.getZ(i)) < -depth ? 1 : 0;
+  const idx = [], remap = new Int32Array(p.count).fill(-1), pos = [], nrm = [];
+  for (let t = 0; t < ix.length; t += 3) {
+    if (deep[ix[t]] && deep[ix[t + 1]] && deep[ix[t + 2]]) continue;
+    for (let k = 0; k < 3; k++) {
+      const v = ix[t + k];
+      if (remap[v] < 0) { remap[v] = pos.length / 3; pos.push(p.getX(v), p.getY(v), p.getZ(v)); nrm.push(n.getX(v), n.getY(v), n.getZ(v)); }
+      idx.push(remap[v]);
+    }
+  }
+  if (idx.length === ix.length) return geo;
+  const out = new THREE.BufferGeometry();
+  out.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  out.setAttribute('normal', new THREE.Float32BufferAttribute(nrm, 3));
+  out.setIndex(idx);
+  out.computeBoundingSphere();
+  geo.dispose();
+  return out;
+}
+
 const cache = new Map();
 export function sculpt(key, build, { h, reach = h * 6, deep, wear = 0, split = null } = {}) {
   if (!cache.has(key)) {
-    const { f, lo, hi } = build();
+    // shade: for a part meshed apart from its figure (a hand), the whole figure's field, so the
+    // part is shaded by what stands round it.
+    const { f, lo, hi, shade = f } = build();
     let geo;
     if (!split) {
       geo = surfaceNets(f, lo, hi, h);
-      if (reach > 0) bakeCavities(geo, f, reach, deep, { wear });
+      if (reach > 0) bakeCavities(geo, shade, reach, deep, { wear });
     } else {
       // One fine region or several (a head and the feet), which must not overlap.
       const parts = Array.isArray(split) ? split : [split], ov = 1.5 * h, inset = 0.25 * h;
       const fineSide = (c) => { const t = Math.min(1, Math.max(0, 0.5 - c / ov)); return t * t * (3 - 2 * t); };
       const R = (x, y, z) => { let c = Infinity; for (const p of parts) c = Math.min(c, p.region(x, y, z)); return c; };
       const fc = (x, y, z) => { const c = R(x, y, z); return smax(f(x, y, z) + inset * fineSide(c), -c - ov, h * 0.3); };
-      const coarse = surfaceNets(fc, lo, hi, h);
+      // The caps that close each part inside the body are dropped (dropHidden): the skin of a part
+      // lies at most a third of a coarse cell inside the figure, its cap far deeper.
+      const coarse = dropHidden(surfaceNets(fc, lo, hi, h), f, 0.6 * h);
       if (reach > 0) bakeCavities(coarse, f, reach, deep, { wear });
       const geos = [coarse];
       for (const p of parts) {
         const ff = (x, y, z) => { const c = p.region(x, y, z); return smax(f(x, y, z) + inset * (1 - fineSide(c)), c - ov, p.h * 0.3); };
-        const fine = surfaceNets(ff, p.lo, p.hi, p.h);
+        const fine = dropHidden(surfaceNets(ff, p.lo, p.hi, p.h), f, 0.6 * h);
         // Each part's shading at its own scale: a face's folds are a few of its cells deep.
         if (reach > 0) bakeCavities(fine, f, p.h * 6, deep, { wear });
         geos.push(fine);
@@ -303,7 +335,7 @@ export function sculpt(key, build, { h, reach = h * 6, deep, wear = 0, split = n
 
 // The material a figure is carved or cast in: the given one, using the baked cavity colours, and
 // for stone the 'carved' surface (fine grain, no block joints, and no wall photo).
-const statueMats = new Map();
+const statueMats = new WeakMap();
 export function statueMaterial(m) {
   if (!statueMats.has(m)) {
     const c = attachSurface(m.clone());

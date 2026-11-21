@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, lathe, ribbed, finial, surface } from '../helpers.js';
 import { detail } from '../detail.js';
-import { arcadeSkin } from '../details/mughal.js';
-import { porch } from '../details/colonial.js';
-import { merlons, windowFrame, mughalChhatri, mergeByMaterial, archCurve, chhajja, bracketGeo, placeAll, jharokha } from '../details/components.js';
+import { arcadeSkin } from '../parts/mughal.js';
+import { porch } from '../parts/colonial.js';
+import { merlons, windowFrame, mughalChhatri, mergeByMaterial, archCurve, chhajja, bracketGeo, placeAll, jharokha } from '../parts/components.js';
 import { addDetails } from '../details/laxmi-vilas-palace.js';
 
 // The stones, each its own material: the warm golden-beige sandstone of the walls; a darker buff
@@ -92,7 +92,7 @@ function wing(w, h, d) {
 // parapet, one to about every 13 m.
 function ornament(fine, w, h, d, s, cells) {
   const z = d / 2, cusps = [], br = [];
-  for (const [cx, sill, aw, ah, kind] of cells) {
+  for (const [cx, sill, aw, ah] of cells) {
     if (sill > 1) continue;
     const r = aw / 2, sp = ah - 1.4 * r, pts = archCurve(r, sp, true, 12);
     for (let k = 2; k < pts.length - 2; k += 2) {

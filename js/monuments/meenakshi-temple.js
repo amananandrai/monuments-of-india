@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, box, cyl, at, onionDome, inst, unitBox } from '../helpers.js';
-import { gopuram, wallWithGaps, dravidaVimana } from '../details/temples.js';
+import { gopuram, wallWithGaps, dravidaVimana } from '../parts/temples.js';
 import { addDetails } from '../details/meenakshi-temple.js';
 import { detail } from '../detail.js';
 

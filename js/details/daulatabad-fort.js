@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, hemi, finial, archWall, inst, unitBox, unitCyl, surface, photo } from '../helpers.js';
-import { bracketGeo, placeAll, aroundCircle, railingRing, windowFrame, mergeByMaterial } from './components.js';
-import { towerDetail, rampart, bastionCrowns } from './forts.js';
-import { arcadeSkin, cellRow } from './mughal.js';
-import { trees, shrubs, asiBoard, scatter } from './realism.js';
+import { M, mat, box, cyl, at, onFace, hemi, archWall, inst, unitCyl, surface, photo } from '../helpers.js';
+import { bracketGeo, placeAll, aroundCircle, railingRing, windowFrame, mergeByMaterial } from '../parts/components.js';
+import { towerDetail, rampart, bastionCrowns } from '../parts/forts.js';
+import { arcadeSkin, cellRow } from '../parts/mughal.js';
+import { trees, shrubs, asiBoard, scatter } from '../parts/realism.js';
 
 // Daulatabad, finer detail. From photographs of the Chand Minar: each of its three balconies rests
 // on a ring of carved brackets and is closed by a railing, and each stage opens in small arched
@@ -15,7 +15,7 @@ import { trees, shrubs, asiBoard, scatter } from './realism.js';
 // in blue tiles; and the white Baradari stands on the hill below the summit.
 // Dimensions follow js/monuments/daulatabad-fort.js.
 const WHITE = mat('#e4ddd0', 0.85), TILE_ = surface(mat('#3f78a8', 0.5), 'none');
-const STONE = photo(mat('#8e8172', 0.9), 'rubble'), SAND = mat('#c9b48a', 0.85);
+const STONE = photo(mat('#8e8172', 0.9), 'rubble');
 function architecture(f) {
   const ga = 1.2;
   const d = new THREE.Group(), cm = at(new THREE.Group(), 40, 0, 96);
@@ -57,7 +57,9 @@ function architecture(f) {
   // The Bharat Mata temple at (-6, 104): a walled court 34 × 30 and, across its west end, the
   // prayer hall open to the court in a row of arches, on rows of plain pillars, under a flat roof.
   const bm = at(new THREE.Group(), -6, 0, 104);
-  for (const s of [-1, 1]) bm.add(box(34, 4, 0.8, STONE, 0, 0, s * 15), box(0.8, 4, 30, STONE, 17 * (s > 0 ? 1 : -1), 0, 0));
+  for (const s of [-1, 1]) bm.add(box(34, 4, 0.8, STONE, 0, 0, s * 15), s > 0 ? box(0.8, 4, 12, STONE, 17, 0, -9) : box(0.8, 4, 30, STONE, -17, 0, 0));
+  // The east wall stops either side of its gate (the arch below), instead of running across it.
+  bm.add(box(0.8, 4, 12, STONE, 17, 0, 9));
   bm.add(box(10, 6, 29.2, STONE, -11.6, 0, 0), box(10.6, 0.5, 29.8, STONE, -11.6, 6, 0));
   const hall = arcadeSkin(29.2, 6, cellRow(7, 4, 0.2, 2.8, 4.4), 1, STONE, { fill: 'room' });
   hall.position.set(-6.6, 0, 0);
@@ -87,7 +89,10 @@ function architecture(f) {
 // walls, and the ASI board.
 export function addDetails(f, g) {
   architecture(f);
-  const ring = scatter(70, [-125, 125, -125, 125], { seed: 3, gap: 8 }).filter(([x, z]) => { const r = Math.hypot(x, z); return r > 78 && r < 124 && Math.hypot(x - 40, z - 96) > 12 && Math.hypot(x + 6, z - 104) > 26 && Math.hypot(x + 58, z - 86) > 16 && Math.hypot(x - 28, z - 72) > 10; });
-  g.add(trees(ring.slice(0, 30), { kind: 'babul', seed: 4, h: 6 }), shrubs(ring.slice(30).map(([x, z]) => [x, z, 2.2]), { dry: true, seed: 5 }));
+  const open = ([x, z]) => { const r = Math.hypot(x, z); return r > 78 && r < 124 && Math.hypot(x - 40, z - 96) > 12 && Math.hypot(x + 6, z - 104) > 26 && Math.hypot(x + 58, z - 86) > 16 && Math.hypot(x - 28, z - 72) > 10; };
+  const ring = scatter(70, [-125, 125, -125, 125], { seed: 3, gap: 8 }).filter(open);
+  // Dry scrub between the trees, on spots of its own (the trees take every spot of the first scatter).
+  const scrub = scatter(60, [-125, 125, -125, 125], { seed: 9, gap: 6 }).filter(open);
+  g.add(trees(ring.slice(0, 30), { kind: 'babul', seed: 4, h: 6 }), shrubs(scrub.map(([x, z]) => [x, z, 2.2]), { dry: true, seed: 5 }));
   g.add(asiBoard('Daulatabad Fort', 52, 132, 0.6));
 }

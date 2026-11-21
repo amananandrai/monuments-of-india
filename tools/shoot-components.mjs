@@ -20,10 +20,10 @@ fs.mkdirSync(out, { recursive: true });
 // floor ('grass', 'sand', 'water' or 'stone'), view (the direction the camera stands in), fit (a
 // margin on the camera's distance, 1.1 by default).
 const PARTS = `
-  const H = await import('/js/helpers.js'), C = await import('/js/details/components.js'), T = await import('/js/details/temples.js');
-  const Mu = await import('/js/details/mughal.js'), Co = await import('/js/details/colonial.js'), D = await import('/js/details/doorways.js');
-  const F = await import('/js/details/forts.js'), Tb = await import('/js/details/tibetan.js'), S = await import('/js/details/sculpture.js');
-  const Fi = await import('/js/details/figures.js'), R = await import('/js/details/realism.js'), A = await import('/js/details/animals.js');
+  const H = await import('/js/helpers.js'), C = await import('/js/parts/components.js'), T = await import('/js/parts/temples.js');
+  const Mu = await import('/js/parts/mughal.js'), Co = await import('/js/parts/colonial.js'), D = await import('/js/parts/doorways.js');
+  const F = await import('/js/parts/forts.js'), Tb = await import('/js/parts/tibetan.js'), S = await import('/js/parts/sculpture.js');
+  const Fi = await import('/js/parts/figures.js'), R = await import('/js/parts/realism.js'), A = await import('/js/parts/animals.js');
   const { M, mat, box, cyl, at, group, onFace } = H;
   // The statues: each monument's own builder for them.
   const SoU = await import('/js/monuments/statue-of-unity.js'), Gom = await import('/js/monuments/gommateshwara.js'), Viv = await import('/js/monuments/vivekananda-rock-memorial.js');

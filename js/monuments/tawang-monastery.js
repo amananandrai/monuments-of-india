@@ -1,15 +1,14 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, group, rng, inst, unitBox, hipRoof, TIBETAN } from '../helpers.js';
-import { tibetanPortico, steps } from '../details/doorways.js';
-import { mergeByMaterial } from '../details/components.js';
-import { mountainRing, heightField, rough, smooth } from '../details/terrain.js';
-import { quarters, hall, gyaltsen, ganjira, roofCorners } from '../details/tibetan.js';
+import { tibetanPortico, steps } from '../parts/doorways.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { mountainRing, heightField, rough, smooth } from '../parts/terrain.js';
+import { quarters, hall, gyaltsen, ganjira, roofCorners } from '../parts/tibetan.js';
 import { addDetails } from '../details/tawang-monastery.js';
 
 const WHITE = mat('#efece4', 0.85);
 const MAROON = TIBETAN.maroon;
 const WINDOW = mat('#2a2220', 0.8);
-const RIDGE = mat('#6f7a55', 0.95, 0, { flatShading: true });
 
 const CW = 160, CD = 70;
 // The spur: a crest line flat across the compound, falling 0.3 m per metre towards the valley (+x)
@@ -34,17 +33,18 @@ export function buildTawang() {
   // The spur it stands on: a ridge running down from the mountain (-x) towards the valley (+x),
   // flattened on top for the monastery, its sides falling steeply away. Snow peaks beyond.
   g.add(heightField(900, 700, 180, spurY, { rock: ['#6f7a55', '#66704f', '#757e5c'], cover: '#6f7a55', steep: 0.7, band: 8 }));
-  // Himalayan ridges round the valley, rock to snow (js/details/terrain.js).
+  // Himalayan ridges round the valley, rock to snow (js/parts/terrain.js).
   g.add(mountainRing({ inner: 470, outer: 820, h: 230, vary: 70, snow: 190, rock: ['#7e8084', '#8a8c8f', '#74767a'], cover: '#5f7349', steep: 0.82 }));
 
   const T = 24;
   // The compound runs along the ridge top, about 160 × 70 m, entered from the downhill end.
   f.add(box(CW, 0.6, CD, M.path, 0, T - 0.6, 0));
-  for (const s of [-1, 1]) f.add(box(CW, 3, 1.5, WHITE, 0, T, s * CD / 2), box(1.5, 3, CD, WHITE, -CW / 2, T, 0));
+  for (const s of [-1, 1]) f.add(box(CW, 3, 1.5, WHITE, 0, T, s * CD / 2));
+  f.add(box(1.5, 3, CD, WHITE, -CW / 2, T, 0));
   for (const s of [-1, 1]) f.add(box(1.5, 3, CD / 2 - 5, WHITE, CW / 2, T, s * (CD / 4 + 2.5)));
   // The three-storey Dukhang (assembly hall), a timber window bay in the middle of its top floor,
   // its upper storey, and the gilded roof with a finial at its peak and bells at its corners; victory
-  // banners at the front corners of the terrace (js/details/tibetan.js).
+  // banners at the front corners of the terrace (js/parts/tibetan.js).
   f.add(at(hall(30, 15, 24, { floors: 3, door: 0, doorW: 4.2, bay: 4 }), 0, T, -16));
   f.add(at(hall(16, 5, 12, { floors: 1, cap: 0.8, y0: 1.4 }), 0, T + 15, -18));
   f.add(at(hipRoof(19, 15, 5, M.gild), 0, T + 20, -18), at(ganjira(3.4), 0, T + 24.6, -18), at(roofCorners(19, 15), 0, T + 20, -18));
@@ -72,7 +72,7 @@ export function buildTawang() {
   f.add(at(hall(10, 7, 9, { floors: 2, door: 0, doorW: 3.4 }), kx, spurBase(kx, 0, 10, 9), 0).rotateY(Math.PI / 2), box(0.2, 4, 3.4, WINDOW, kx + 4.6, spurBase(kx, 0, 10, 9), 0));
   f.add(inst(unitBox(), blocks, WHITE));
   f.add(inst(unitBox(), blocks.map(([x, y, z, sx, sy, sz, ry]) => [x, y + sy, z, sx + 0.2, 0.7, sz + 0.2, ry]), MAROON));
-  // Windows, doors, beam ends and roofs for the houses (js/details/tibetan.js).
+  // Windows, doors, beam ends and roofs for the houses (js/parts/tibetan.js).
   f.add(quarters(blocks, { cap: 0.7 }));
   // Prayer-flag lines strung from the courtyard poles
   for (const x of [-20, 20]) {

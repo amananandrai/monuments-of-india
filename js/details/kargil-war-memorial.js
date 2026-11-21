@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { mat, mesh, box, cyl, at, surface } from '../helpers.js';
 import { detail } from '../detail.js';
-import { mergeByMaterial } from './components.js';
+import { mergeByMaterial } from '../parts/components.js';
 
 // The Kargil War Memorial, finer detail. From photographs: the curved pink sandstone wall is set
 // with bronze-lettered tablets bearing the names of the fallen, in a row along its inner face; and

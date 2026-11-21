@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { M, V, mat, box, at, group, rng, strut, sheet } from '../helpers.js';
-import { townHouses } from '../details/realism.js';
+import { M, V, mat, box, at, rng, strut, sheet } from '../helpers.js';
+import { townHouses } from '../parts/realism.js';
 import { addDetails } from '../details/howrah-bridge.js';
 
 export function buildHowrah() {

@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { M, mat, mesh, at, onFace, FACES } from '../helpers.js';
-import { mouldings, frieze, pilasters, templeNiche, idol, mergeByMaterial } from './components.js';
-import { trees, garland, asiBoard, along } from './realism.js';
-import { rideElephant } from './animals.js';
-import { lamp } from './doorways.js';
+import { mouldings, frieze, pilasters, templeNiche, idol, mergeByMaterial } from '../parts/components.js';
+import { trees, garland, asiBoard, along } from '../parts/realism.js';
+import { rideElephant } from '../parts/animals.js';
+import { lamp } from '../parts/doorways.js';
 
 // Brihadeeswara, finer detail. From photographs and descriptions of the vimana:
 // - the base (adhishthana) is a stack of mouldings, the lowest carrying a frieze of yalis;

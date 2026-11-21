@@ -1,17 +1,17 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, onFace, rng } from '../helpers.js';
-import { figureFrieze } from '../details/sculpture.js';
-import { gopuram, wallWithGaps, dravidaVimana } from '../details/temples.js';
-import { mountainRing } from '../details/terrain.js';
+import { M, mat, box, at, onFace } from '../helpers.js';
+import { figureFrieze } from '../parts/sculpture.js';
+import { gopuram, wallWithGaps, dravidaVimana } from '../parts/temples.js';
+import { mountainRing } from '../parts/terrain.js';
 import { addDetails } from '../details/mallikarjuna-temple.js';
 
 const CREAM = ['#efe7d6', '#e2d3b7', '#d6c5a4', '#f4efe4'];
 const WALL = mat('#b9a586', 0.9);
 
 export function buildMallikarjuna() {
-  const g = new THREE.Group(), f = new THREE.Group(), R = rng(47);
+  const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  // The Nallamala hills, forest over rock (js/details/terrain.js).
+  // The Nallamala hills, forest over rock (js/parts/terrain.js).
   g.add(mountainRing({ inner: 430, outer: 720, h: 120, vary: 40, rock: ['#7c705a', '#6a6150'], cover: '#557040', steep: 0.7 }));
 
   g.add(box(220, 0.2, 220, M.path));

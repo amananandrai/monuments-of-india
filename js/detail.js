@@ -7,7 +7,7 @@
 // (stucco figures and kudus on the gopurams), Vittala at Hampi (yali riders and their elephants,
 // figure friezes), Konark (the carving on the wheels, the horses) and Nageshwar (the Shiva statue,
 // the minor spires); and in the shared parts, the carving of temples and gopurams, the boats,
-// stalls and dressed elephants round them (docs/performance.md). Every monument keeps plain trees
+// stalls and dressed elephants round them. Every monument keeps plain trees
 // on 'low'.
 //
 // The triangle budget each level builds to: up to 800k on desktops (a monument may take two or

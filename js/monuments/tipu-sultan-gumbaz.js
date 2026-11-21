@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, at, rng, onionDome, finial, guldasta, inst, unitCyl, aroundRect } from '../helpers.js';
-import { trees as plantTrees } from '../details/realism.js';
+import { trees as plantTrees } from '../parts/realism.js';
 import { addDetails } from '../details/tipu-sultan-gumbaz.js';
 
 const WHITE = mat('#efebe2', 0.8);

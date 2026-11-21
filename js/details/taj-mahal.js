@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, FACES, chamferPrism, finial, onionDome, sheet, inst, unitCyl, unitHemi, surface } from '../helpers.js';
-import { iwan, arcadeSkin, cellRow } from './mughal.js';
+import { iwan, arcadeSkin, cellRow } from '../parts/mughal.js';
 import {
   jali, frieze, niche, archSlab, archRing, rosette, bracketGeo, placeAll, aroundCircle, alongFace,
   railingRing, merlons, lotusDome, petalRing, crescentFinial, mughalChhatri, mergeByMaterial,
-} from './components.js';
-import { trees, asiBoard, fountains, scatter, along } from './realism.js';
+} from '../parts/components.js';
+import { trees, asiBoard, fountains, scatter, along } from '../parts/realism.js';
 import { detail } from '../detail.js';
 
 // Taj Mahal, finer detail (1632–1653). From photographs and descriptions (tajmahal.gov.in,

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, at, inst, unitCyl, unitBox, aroundRect, sheet } from '../helpers.js';
-import { gopuram, wallWithGaps, dravidaVimana } from '../details/temples.js';
+import { gopuram, wallWithGaps, dravidaVimana } from '../parts/temples.js';
 import { addDetails } from '../details/ramanathaswamy-temple.js';
 
 const STONE = ['#cfc6b3', '#b9ae97', '#ddd5c4', '#a89c83'];

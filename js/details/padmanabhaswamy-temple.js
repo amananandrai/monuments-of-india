@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { M, V, mat, mesh, box, at, inst, unitBox, unitCyl, onFace, FACES, strut, bulbPoints, surface } from '../helpers.js';
-import { mergeByMaterial } from './components.js';
-import { keralaGable } from './temples.js';
+import { M, V, mat, mesh, box, at, inst, unitCyl, onFace, FACES, strut, bulbPoints, surface } from '../helpers.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { keralaGable } from '../parts/temples.js';
 import { detail } from '../detail.js';
-import { trees, along, cityAround } from './realism.js';
-import { rideElephant } from './animals.js';
+import { trees, along, cityAround } from '../parts/realism.js';
+import { rideElephant } from '../parts/animals.js';
 
 // Sree Padmanabhaswamy, finer detail. From photographs: the temple is Kerala work inside a Pandyan
 // gopuram. Its roofs carry carved timber gables (mukhappu) on their fronts and backs; their deep

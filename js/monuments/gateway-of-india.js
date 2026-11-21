@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { M, box, at, archWall, hemi, finial, sheet } from '../helpers.js';
-import { addGatewayDetails } from '../details/gateway-of-india.js';
-import { addDetails } from '../details/gateway-of-india.js';
+import { addGatewayDetails, addDetails } from '../details/gateway-of-india.js';
 
 export function buildGateway() {
   const m = M.basalt, g = new THREE.Group(), f = new THREE.Group();

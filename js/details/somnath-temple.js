@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { M, at, flag, mat, box, cyl, mesh, pidaRoof, kalash } from '../helpers.js';
-import { pilasters, railing, mouldings, frieze, placeAll, mergeByMaterial } from './components.js';
-import { trabeateGate } from './temples.js';
-import { miniSpireGeo } from './sculpture.js';
-import { lampPosts, trees, along } from './realism.js';
+import { pilasters, railing, mouldings, frieze, placeAll, mergeByMaterial } from '../parts/components.js';
+import { trabeateGate } from '../parts/temples.js';
+import { miniSpireGeo } from '../parts/sculpture.js';
+import { lampPosts, trees, along } from '../parts/realism.js';
 
 // Somnath, finer architecture. Dimensions follow js/monuments/somnath-temple.js: the sea wall a
 // block 110 × 3 × 4 at z = -38, the Baan Stambh on it at x = 30 (a shaft 9 high from y = 3 under a

@@ -1,16 +1,16 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, kalash, flag, shikhara, photo } from '../helpers.js';
-import { townHouses } from '../details/realism.js';
-import { nagaraTemple, bhumijaRows, trabeateGate, wallWithGaps } from '../details/temples.js';
-import { steps } from '../details/doorways.js';
-import { instances, miniSpireGeo } from '../details/sculpture.js';
-import { heightField, rough, smooth } from '../details/terrain.js';
+import { M, mat, box, cyl, at, rng, kalash, flag, shikhara, photo } from '../helpers.js';
+import { townHouses } from '../parts/realism.js';
+import { nagaraTemple, bhumijaRows, trabeateGate, wallWithGaps } from '../parts/temples.js';
+import { steps } from '../parts/doorways.js';
+import { instances, miniSpireGeo } from '../parts/sculpture.js';
+import { heightField, rough, smooth } from '../parts/terrain.js';
 import { addDetails } from '../details/trimbakeshwar-temple.js';
 
 const BASALT = photo(mat('#3d3a37', 0.8), 'blocks');
 const SHADE = mat('#2c2a28', 0.85);
 
-// The town of Trimbak round the temple (js/details/realism.js, townHouses), both levels: old houses
+// The town of Trimbak round the temple (js/parts/realism.js, townHouses), both levels: old houses
 // under pitched roofs of terracotta tiles and newer ones with flat roofs, two to four storeys. They
 // line the temple street south of the gate behind its stalls, fill lanes west of the temple court,
 // and face the Kushavarta kund from north, south and east, and the lanes south of it.

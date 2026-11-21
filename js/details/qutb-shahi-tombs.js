@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, FACES, surface } from '../helpers.js';
-import { archRing, archSlab, arcadeScreen, petalRing, bracketGeo, placeAll, aroundCircle, mergeByMaterial } from './components.js';
-import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
+import { archRing, archSlab, arcadeScreen, petalRing, bracketGeo, placeAll, aroundCircle, mergeByMaterial } from '../parts/components.js';
+import { trees, shrubs, lampPosts, scatter, along } from '../parts/realism.js';
 
 // The Qutb Shahi Tombs, finer detail. From photographs: each tomb chamber is faced with two tiers of
 // blind arches in moulded rings, crowned by a parapet of small arches; its bulbous dome sits in a

@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { mat, mesh, box, at, rng, pidaRoof, surface } from '../helpers.js';
-import { elephant } from '../details/animals.js';
-import { trabeateGate, wallWithGaps } from '../details/temples.js';
-import { templeDoorway, grandStair, steps } from '../details/doorways.js';
-import { mergeByMaterial } from '../details/components.js';
-import { clusterPillar, yaliPillar, carvedWheelGeo } from '../details/sculpture.js';
+import { elephant } from '../parts/animals.js';
+import { trabeateGate, wallWithGaps } from '../parts/temples.js';
+import { templeDoorway, grandStair, steps } from '../parts/doorways.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { clusterPillar, yaliPillar, carvedWheelGeo } from '../parts/sculpture.js';
 import { addDetails } from '../details/vittala-temple-hampi.js';
 import { detail } from '../detail.js';
 

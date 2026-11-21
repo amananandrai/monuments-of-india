@@ -1,13 +1,12 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, hemi, finial, inst, unitBox, surface, ellipseWall } from '../helpers.js';
-import { elephant } from '../details/animals.js';
-import { fortGate } from '../details/forts.js';
+import { M, mat, box, cyl, at, hemi, finial, inst, unitBox, surface, ellipseWall } from '../helpers.js';
+import { elephant } from '../parts/animals.js';
+import { fortGate } from '../parts/forts.js';
 import { addDetails } from '../details/gwalior-fort.js';
-import { heightField, rough, smooth } from '../details/terrain.js';
+import { heightField, rough, smooth } from '../parts/terrain.js';
 
 const SAND = mat('#c9b08a', 0.9);
 const SAND_DARK = mat('#a68d68', 0.9);
-const CLIFF = mat('#8f7a5c', 0.95, 0, { flatShading: true });
 const TILES = [mat('#2f6fa8', 0.5), mat('#3c9a6a', 0.5), mat('#e3b23c', 0.5)].map((m) => surface(m, 'tiles'));
 const TILE_YELLOW = mat('#f0c64a', 0.45), TILE_GREEN = mat('#2f8a52', 0.45);
 // A flat picture about 1 m across (y from 0 to 1, facing +z), for the glazed tiles.

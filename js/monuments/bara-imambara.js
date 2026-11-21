@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, at, rng, inst, unitBox, onFace, onionDome, finial, hemi, minaret, guldasta } from '../helpers.js';
-import { iwan, arcadeSkin } from '../details/mughal.js';
+import { iwan, arcadeSkin } from '../parts/mughal.js';
 import { addDetails } from '../details/bara-imambara.js';
 
 const LIME = mat('#e6d8b8', 0.85);

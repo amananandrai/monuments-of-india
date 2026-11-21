@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { M, mat, mesh, at, onFace, surface, photo } from '../helpers.js';
-import { mouldings, templeNiche, idol, pilasters, windowFrame, railing, mergeByMaterial } from './components.js';
-import { scatter } from './realism.js';
-import { horse } from './animals.js';
+import { mat, mesh, at, onFace, surface, photo } from '../helpers.js';
+import { mouldings, templeNiche, idol, pilasters, windowFrame, railing, mergeByMaterial } from '../parts/components.js';
+import { scatter } from '../parts/realism.js';
+import { horse } from '../parts/animals.js';
 
 // Kedarnath, finer detail. From photographs: the grey stone sanctum stands on moulded courses, with
 // a niche and image in each of its outer faces; pilasters divide the walls of the hall; and amalaka

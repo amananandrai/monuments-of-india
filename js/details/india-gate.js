@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, FACES, surface, hemi, ribbed, kalash, finial } from '../helpers.js';
-import { D, archRing, keystone, sunburst, rosette, lettering, dentils, chhajja, petalRing, mergeByMaterial } from './components.js';
-import { trees, lampPosts, along } from './realism.js';
-import { netajiBody, netajiSpectacles } from './figures.js';
+import { D, archRing, keystone, sunburst, rosette, lettering, dentils, chhajja, petalRing, mergeByMaterial } from '../parts/components.js';
+import { trees, lampPosts, along } from '../parts/realism.js';
+import { netajiBody, netajiSpectacles } from '../parts/figures.js';
 
 // India Gate, finer detail (Lutyens, 1921–31). From photographs and descriptions of the arch:
 // - two large sunburst roundels, one each side of the main arch on both long faces, and a smaller
@@ -22,7 +22,7 @@ const STONE = mat('#d8c19c', 0.8); // the carved buff, a shade lighter than the 
 const DEDICATION = surface(mat('#d6bf98', 0.8), 'script');
 
 export function addIndiaGateDetails(f, { b, top }) {
-  const m = M.buff, d = new THREE.Group();
+  const d = new THREE.Group();
   const zF = 6, xS = 12;
   for (const a of [0, Math.PI]) {
     // Long faces: the archivolt from the springing, and a keystone at the crown.
@@ -126,7 +126,7 @@ export function addCanopyDetails(c) {
 }
 
 // Netaji Subhas Chandra Bose (2022): carved from one block of black granite, 8.5 m tall, saluting
-// (js/details/figures.js), with his spectacles, on a low pedestal of the same polished stone.
+// (js/parts/figures.js), with his spectacles, on a low pedestal of the same polished stone.
 const BLACK_GRANITE = mat('#26262a', 0.3);
 export function netaji() {
   const g = new THREE.Group(), fig = new THREE.Group();

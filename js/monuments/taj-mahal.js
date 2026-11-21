@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, at, onionDome, mown } from '../helpers.js';
-import { addTajDetails } from '../details/taj-mahal.js';
-import { addDetails } from '../details/taj-mahal.js';
+import { addTajDetails, addDetails } from '../details/taj-mahal.js';
 
 export function buildTaj() {
   const g = new THREE.Group(), f = new THREE.Group();

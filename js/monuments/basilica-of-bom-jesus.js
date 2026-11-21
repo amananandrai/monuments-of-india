@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, hipRoof, photo } from '../helpers.js';
-import { mergeByMaterial } from '../details/components.js';
-import { classicalDoor, oculus } from '../details/colonial.js';
-import { addDetails } from '../details/bom-jesus.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { classicalDoor, oculus } from '../parts/colonial.js';
+import { addDetails } from '../details/basilica-of-bom-jesus.js';
 
 const LATERITE = photo(mat('#9b5b3f', 0.95), 'laterite');
 const BASALT = photo(mat('#8a847a', 0.85), 'blocks');

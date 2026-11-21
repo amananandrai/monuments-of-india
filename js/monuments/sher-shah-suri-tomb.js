@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, chhatri, hemi, finial, onFace, sheet } from '../helpers.js';
-import { iwan } from '../details/mughal.js';
+import { iwan } from '../parts/mughal.js';
 import { addDetails } from '../details/sher-shah-suri-tomb.js';
 
 const STONE = mat('#c39a6e', 0.88);

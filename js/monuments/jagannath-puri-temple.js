@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, flat, mesh, box, at, kalash, bell, shikhara, pidaRoof, flag, kalingaProfile } from '../helpers.js';
-import { trabeateGate, wallWithGaps } from '../details/temples.js';
-import { templeDoorway, grandStair } from '../details/doorways.js';
-import { mergeByMaterial } from '../details/components.js';
+import { trabeateGate, wallWithGaps } from '../parts/temples.js';
+import { templeDoorway, grandStair } from '../parts/doorways.js';
+import { mergeByMaterial } from '../parts/components.js';
 import { addDetails } from '../details/jagannath-puri-temple.js';
 
 export function buildJagannath() {

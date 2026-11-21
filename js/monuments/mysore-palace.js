@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, V, mat, photo, box, cyl, mesh, lathe, at, onFace, ONION, onionDome, finial, chhatri, bulbPoints, ribbed } from '../helpers.js';
-import { mergeByMaterial, jharokha } from '../details/components.js';
-import { arcadeSkin } from '../details/mughal.js';
+import { mergeByMaterial, jharokha } from '../parts/components.js';
+import { arcadeSkin } from '../parts/mughal.js';
 import { addDetails } from '../details/mysore-palace.js';
 import { detail } from '../detail.js';
 

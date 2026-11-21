@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { mat, box, at, group, onFace, FACES, inst, unitBox } from '../helpers.js';
-import { mouldings, pilasters, templeNiche, idol, mergeByMaterial } from './components.js';
-import { nandiMandapa, dwajasthambha } from './temples.js';
+import { mouldings, pilasters, templeNiche, idol, mergeByMaterial } from '../parts/components.js';
+import { nandiMandapa, dwajasthambha } from '../parts/temples.js';
 import { detail } from '../detail.js';
-import { trees, stalls, scatter, along } from './realism.js';
+import { trees, stalls, scatter, along } from '../parts/realism.js';
 
 // Ramanathaswamy, finer detail. From photographs: the high outer walls of the temple are plain
 // lime-washed granite but moulded at the foot, ribbed with pilasters and capped by a coping; the

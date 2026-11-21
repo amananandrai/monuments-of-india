@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, lathe, at, onFace, ribbed, hipRoof, wheel, surface } from '../helpers.js';
-import { figure } from '../details/sculpture.js';
-import { allegory, hold } from '../details/figures.js';
+import { figure } from '../parts/sculpture.js';
+import { allegory, hold } from '../parts/figures.js';
 import { detail } from '../detail.js';
-import { mergeByMaterial } from '../details/components.js';
-import { gothicDoor, gothicWindow, oculus } from '../details/colonial.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { gothicDoor, gothicWindow, oculus } from '../parts/colonial.js';
 import { addDetails } from '../details/csmt.js';
 
 const SLATE = mat('#5b6067', 0.8);
@@ -40,7 +40,7 @@ function turret(h, r) {
 
 // The statue of Progress crowning the dome (Thomas Earp, 1887), about 14 ft of marble: a woman in
 // flowing classical robes, a star above her forehead, holding a copper-gilt torch aloft in her
-// right hand, the left hand on the winged wheel at her side (js/details/figures.js). On phones, a
+// right hand, the left hand on the winged wheel at her side (js/parts/figures.js). On phones, a
 // robed figure from the light kit with the torch and wheel.
 export function progress() {
   const g = new THREE.Group(), Mb = M.marble;
@@ -97,7 +97,7 @@ export function buildCsmt() {
   // Side ranges and the two forward wings that frame the forecourt, each ending in a gable and turrets
   for (const s of [-1, 1]) {
     f.add(at(range(30, 16, 16, 2), s * 33, 1, -5));
-    f.add(at(range(16, 18, 30, 2).rotateY(s * Math.PI / 2), s * 52, 1, 14));
+    f.add(at(range(16, 18, 30, 2), s * 52, 1, 14));
     for (const x of [s * 44, s * 60]) f.add(at(turret(21, 1.3), x, 1, 29));
     const gable = new THREE.Shape();
     gable.moveTo(-8, 0); gable.lineTo(8, 0); gable.lineTo(0, 7); gable.closePath();

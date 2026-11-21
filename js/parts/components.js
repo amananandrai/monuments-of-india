@@ -484,7 +484,10 @@ export function mergeByMaterial(root) {
   const m4 = new THREE.Matrix4();
   root.traverse((o) => {
     if (!o.isMesh || o.isInstancedMesh) return;
-    let geo = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone();
+    // Parts keep their index (one without gets a plain one), so vertices shared within a part stay
+    // shared: a turned or sculpted shape then holds a sixth of the vertices it would unrolled.
+    const geo = o.geometry.clone();
+    if (!geo.index) geo.setIndex([...Array(geo.attributes.position.count).keys()]);
     // Textured materials (a map or a bump map) keep their texture coordinates; a part without any
     // gets zeros, so every geometry merged into one material has the same attributes.
     const textured = !!(o.material.map || o.material.bumpMap);
@@ -494,14 +497,8 @@ export function mergeByMaterial(root) {
     m4.multiplyMatrices(inv, o.matrixWorld);
     geo.applyMatrix4(m4);
     // A mirrored placement turns the triangles inside out; turn them back.
-    if (m4.determinant() < 0) {
-      const p = geo.attributes.position, n = geo.attributes.normal;
-      for (let i = 0; i < p.count; i += 3) for (const a of [p, n]) {
-        const x = a.getX(i + 1), y = a.getY(i + 1), z = a.getZ(i + 1);
-        a.setXYZ(i + 1, a.getX(i + 2), a.getY(i + 2), a.getZ(i + 2));
-        a.setXYZ(i + 2, x, y, z);
-      }
-    }
+    if (m4.determinant() < 0) { const ix = geo.index.array; for (let i = 0; i < ix.length; i += 3) { const t = ix[i + 1]; ix[i + 1] = ix[i + 2]; ix[i + 2] = t; } }
+    geo.clearGroups();
     if (!groups.has(o.material)) groups.set(o.material, { list: [], shadow: o.castShadow });
     const e = groups.get(o.material);
     e.list.push(geo);

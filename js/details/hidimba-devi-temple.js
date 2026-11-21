@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, at, onFace, FACES, surface, photo } from '../helpers.js';
-import { frieze, beltCourse, mergeByMaterial } from './components.js';
-import { garland } from './realism.js';
-import { yaks } from './animals.js';
+import { frieze, beltCourse, mergeByMaterial } from '../parts/components.js';
+import { garland } from '../parts/realism.js';
+import { yaks } from '../parts/animals.js';
 
 // Hidimba Devi, finer detail. From photographs: the timber of the walls is carved in bands of
 // scrolls and figures; a fringe of carved wooden pendants hangs from the eaves of each of the three

@@ -1,6 +1,6 @@
 import { M, mat, at, inst, unitBox, unitCyl } from '../helpers.js';
-import { manastambha } from './temples.js';
-import { trees, scatter } from './realism.js';
+import { manastambha } from '../parts/temples.js';
+import { trees, scatter } from '../parts/realism.js';
 import { ridgeY, PEAKS } from '../monuments/shikharji.js';
 
 // Shikharji, finer architecture. Dimensions follow js/monuments/shikharji.js, which lists the

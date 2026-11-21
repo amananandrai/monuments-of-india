@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import { M, box, at, onFace, FACES } from '../helpers.js';
-import { rosette, windowFrame, mergeByMaterial } from './components.js';
-import { corinthianCapital, entablature, figure } from './sculpture.js';
-import { allegory, hold } from './figures.js';
+import { rosette, windowFrame, mergeByMaterial } from '../parts/components.js';
+import { corinthianCapital, entablature, figure } from '../parts/sculpture.js';
+import { allegory, hold } from '../parts/figures.js';
 import { detail } from '../detail.js';
-import { balustrade, GLASS } from './colonial.js';
-import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
+import { balustrade, GLASS } from '../parts/colonial.js';
+import { trees, shrubs, lampPosts, scatter, along } from '../parts/realism.js';
 
 // The Victoria Memorial, finer detail. From photographs: a balustrade runs along the roof of the
 // main block between the corner pavilions; each pavilion opens in a tall arched window on its two
@@ -40,7 +40,7 @@ function architecture(f) {
 }
 
 // An allegorical statue in marble on its pedestal, h tall overall, facing +z: a woman in classical
-// drapery (js/details/figures.js), standing or seated, holding her attributes ([side, kind, opts]
+// drapery (js/parts/figures.js), standing or seated, holding her attributes ([side, kind, opts]
 // for hold()). On phones, a robed figure from the light kit.
 function allegoryStatue(h, key, opts, held = [], { seat = false } = {}) {
   const g = new THREE.Group(), Mb = M.marble, Sh = M.marbleShade, ph = h * 0.16;
@@ -83,15 +83,15 @@ function sculpture(f) {
   // brush, Architecture with a column and a square, Justice with her sword and scales, and Charity
   // seated with a child at her knee, her hand held out.
   const round = [
-    [-1, 1, 'art', { right: 'forward', left: 'chest' }, [['r', 'brush', { axis: 'arm' }], ['l', 'palette', { axis: [0, 0, 1] }]]],
-    [1, 1, 'architecture', { right: 'down', left: 'chest' }, [['r', 'square', { axis: [0, -1, 0.3] }], ['l', 'column', { offset: [0, 0.02, 0.02] }]]],
-    [-1, -1, 'justice', { right: 'down', left: 'raised' }, [['r', 'sword', { axis: [0, 1, 0.15] }], ['l', 'scales', {}]]],
+    [-1, 1, 'art', { right: 'forward', left: 'chest', hand: { l: 'grip' } }, [['r', 'brush', { axis: 'arm' }], ['l', 'palette', { axis: [0, 0, 1] }]]],
+    [1, 1, 'architecture', { right: 'down', left: 'chest', hand: { r: 'grip', l: 'rest' } }, [['r', 'square', { axis: [0, -1, 0.3] }], ['l', 'column', { offset: [0, 0.02, 0.02] }]]],
+    [-1, -1, 'justice', { right: 'down', left: 'raised', hand: { r: 'grip' } }, [['r', 'sword', { axis: [0, 1, 0.15] }], ['l', 'scales', {}]]],
     [1, -1, 'charity', { seated: true, child: true, right: 'out', left: 'lap' }, []],
   ];
   for (const [sx, sz, k, o, held] of round) statues.add(at(allegoryStatue(o.seated ? 3.6 : 3.8, k, o, held), sx * 13.8, top, sz * 13.8).rotateY(Math.atan2(sx, sz)));
   statues.add(at(allegoryStatue(4.2, 'motherhood', { seated: true, child: true, baby: true, right: 'lap', left: 'cradle' }), 0, b + 16.1, 35.4));
   statues.add(at(allegoryStatue(3.4, 'prudence', { right: 'forward', left: 'down' }, [['r', 'mirror', { axis: [0, 0.6, 1] }]]), -4.5, b + 16.1, 35.4));
-  statues.add(at(allegoryStatue(3.4, 'learning', { right: 'chest', left: 'chest', free: -1 }, [['r', 'book', { axis: [0, 1, 0.5], offset: [0.08, 0.02, 0.03] }]]), 4.5, b + 16.1, 35.4));
+  statues.add(at(allegoryStatue(3.4, 'learning', { right: 'chest', left: 'chest', free: -1, hand: { r: 'cup' } }, [['r', 'book', { axis: [0, 1, 0.5], offset: [0.08, 0.02, 0.03] }]]), 4.5, b + 16.1, 35.4));
   f.add(statues);
   // Ribs up the dome, following its profile (the lathe from y = top + 10).
   const prof = [[14.4, 0], [14.3, 3], [13.2, 7], [10.6, 10.8], [6.8, 13.6], [2.6, 15]];

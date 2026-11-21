@@ -91,8 +91,9 @@ monument's `year` from `js/data.js`.
   (ambient occlusion, bloom, SMAA antialiasing).
 - **A static site with no build step:** `index.html`, `css/style.css` and ES modules in `js/`.
 - **One file per monument** in `js/monuments/`, and one for its finer detail and setting in
-  `js/details/`. A monument's code is fetched only when it is opened.
-- **Shared parts** in `js/helpers.js` and `js/details/`: see [Architecture](architecture.md)
+  `js/details/`, both named after the monument's id in `js/data.js`. A monument's code is fetched
+  only when it is opened.
+- **Shared parts** in `js/helpers.js` and `js/parts/`: see [Architecture](architecture.md)
   and [The setting](realism.md).
 - **Procedural surfaces** in `js/surface.js`, generated in the shader from world position, with
   CC0 photo textures and their normal and roughness maps over them (`js/textures.js`).
@@ -126,7 +127,7 @@ A few of the shared parts. All of them are in [Components](components.md).
 | :---: | :---: | :---: |
 | [Dome](architecture.md#domes) | [Chhatri](architecture.md#kiosks-and-turrets) | [Pillars](architecture.md#pillars-and-columns) |
 | ![Iwan](img/iwan.jpg) | ![Gopuram](img/gopuram.jpg) | ![Fort gate](img/fort-gate.jpg) |
-| [Arches and doors](architecture.md#arches-doors-and-windows) | [Temple towers](architecture.md#temples-jsdetailstemplesjs) | [Forts](architecture.md#forts-jsdetailsfortsjs) |
+| [Arches and doors](architecture.md#arches-doors-and-windows) | [Temple towers](architecture.md#temples-jspartstemplesjs) | [Forts](architecture.md#forts-jspartsfortsjs) |
 | ![Trees](img/trees-broadleaf.jpg) | ![Boats](img/boats.jpg) | ![Elephants](img/elephants.jpg) |
 | [Trees](realism.md#trees) | [Boats](realism.md#boats) | [Animals](realism.md#animals) |
 
@@ -143,7 +144,8 @@ npx serve .
 ## Checks
 
 `tools/` holds headless checks that build every model in Chromium as the site does: triangle
-budgets, flicker, heights against `refs`, the filter groups, and renders of the home views. See
+budgets, flicker, heights against `refs`, the filter groups, that the lists of monuments agree, and
+renders of the home views. See
 [`tools/README.md`](tools/README.md).
 
 ## Video

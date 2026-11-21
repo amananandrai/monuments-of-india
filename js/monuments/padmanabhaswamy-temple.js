@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, at, hipRoof, inst, unitCyl, aroundRect, kalash, surface } from '../helpers.js';
-import { gopuram, wallWithGaps, dwajasthambha } from '../details/temples.js';
-import { columnTrim } from '../details/components.js';
+import { gopuram, wallWithGaps, dwajasthambha } from '../parts/temples.js';
+import { columnTrim } from '../parts/components.js';
 import { addDetails } from '../details/padmanabhaswamy-temple.js';
 
 const STONE = ['#d9d2c2', '#bdb4a2', '#e6dece', '#a99f8c'];

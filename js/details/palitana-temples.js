@@ -1,8 +1,8 @@
 import { M, mat, at, inst, unitBox, unitCyl } from '../helpers.js';
-import { merlonGeo } from './components.js';
-import { manastambha } from './temples.js';
+import { merlonGeo } from '../parts/components.js';
+import { manastambha } from '../parts/temples.js';
 import { detail } from '../detail.js';
-import { trees, scatter } from './realism.js';
+import { trees, scatter } from '../parts/realism.js';
 import { shatrunjaya } from '../monuments/palitana-temples.js';
 
 // Palitana, finer detail. From photographs of the tuks on Shatrunjaya: each shrine, however small,

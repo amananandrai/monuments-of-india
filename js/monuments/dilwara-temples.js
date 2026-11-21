@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, V, mat, mesh, doubleSided, box, cyl, lathe, group, at, kalash, bell, shikhara, pidaRoof, nagaraProfile, ribbed, inst, unitBox, unitCyl, aroundRect, hoopArch } from '../helpers.js';
-import { trabeateGate, wallWithGaps } from '../details/temples.js';
-import { templeDoorway, steps } from '../details/doorways.js';
-import { miniSpireGeo } from '../details/sculpture.js';
+import { trabeateGate, wallWithGaps } from '../parts/temples.js';
+import { templeDoorway, steps } from '../parts/doorways.js';
+import { miniSpireGeo } from '../parts/sculpture.js';
 import { addDetails } from '../details/dilwara-temples.js';
 
 // The Ranga Mandapa's dome, [radius, height] from its springing.
@@ -101,7 +101,7 @@ function otherTemples() {
   let y = 1.2;
   for (const [wd, h] of [[14, 6.5], [11, 5.5], [8.5, 5]]) {
     k.add(box(wd, h, wd, GREY, 0, y, 0), box(wd + 1.2, 0.5, wd + 1.2, GREY_SH, 0, y + h, 0));
-    for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) k.add(at(box(2.2, h * 0.6, 0.3, M.recess, 0, 0, 0), Math.sin(a) * (wd / 2 + 0.02), y + 0.6, Math.cos(a) * (wd / 2 + 0.02)).rotateY(a));
+    for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) k.add(at(box(2.2, h * 0.6, 0.3, M.recess), Math.sin(a) * (wd / 2 + 0.02), y + 0.6 + h * 0.3, Math.cos(a) * (wd / 2 + 0.02)).rotateY(a));
     y += h + 0.5;
   }
   k.add(at(shikhara(7.5, 9, GREY, nagaraProfile, 12), 0, y, 0));

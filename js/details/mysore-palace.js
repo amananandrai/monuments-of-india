@@ -1,12 +1,11 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, mesh, at, inst, unitBox, unitCyl } from '../helpers.js';
-import { rosette, petalRing, railing, archCurve, mergeByMaterial } from './components.js';
-import { balustrade } from './colonial.js';
-import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
-import { rideElephant, elephant } from './animals.js';
-import { crossLegged, hold } from './figures.js';
+import { M, mat, at, inst, unitBox, unitCyl, kalash } from '../helpers.js';
+import { rosette, petalRing, railing, archCurve, mergeByMaterial } from '../parts/components.js';
+import { balustrade } from '../parts/colonial.js';
+import { trees, shrubs, scatter, along } from '../parts/realism.js';
+import { rideElephant, elephant } from '../parts/animals.js';
+import { crossLegged, hold } from '../parts/figures.js';
 import { detail } from '../detail.js';
-import { kalash } from '../helpers.js';
 import { BAYS, FZ, ARC_SILL, PALACE } from '../monuments/mysore-palace.js';
 
 // Mysore Palace, finer detail, after photographs of the main front. Dimensions follow
@@ -20,7 +19,7 @@ import { BAYS, FZ, ARC_SILL, PALACE } from '../monuments/mysore-palace.js';
 // - the cups of lotus petals the domes rise from.
 function architecture(f) {
   const d = new THREE.Group(), G = M.mysore, L = M.lime, { CREAM, RED } = PALACE;
-  const lobe = new THREE.TorusGeometry(0.36, 0.09, 4, 8, Math.PI), cols = [], caps = [];
+  const lobe = new THREE.TorusGeometry(0.36, 0.09, 4, 8, Math.PI), cols = [];
   BAYS.forEach(([cx, w, h], k) => {
     const r = w / 2, pts = archCurve(r, h - r, false, 10).slice(1, -1);
     pts.forEach((p, i) => {

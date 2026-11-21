@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, pidaRoof } from '../helpers.js';
-import { pranala, templeDoorway, doorFrame, guardian } from '../details/doorways.js';
-import { mergeByMaterial } from '../details/components.js';
-import { nandi } from '../details/animals.js';
-import { kuta, shala } from '../details/sculpture.js';
-import { gopuram, wallWithGaps } from '../details/temples.js';
+import { M, flat, mesh, box, cyl, at, onFace, FACES, kalash, pidaRoof } from '../helpers.js';
+import { pranala, templeDoorway, doorFrame, guardian } from '../parts/doorways.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { nandi } from '../parts/animals.js';
+import { kuta, shala } from '../parts/sculpture.js';
+import { gopuram, wallWithGaps } from '../parts/temples.js';
 import { addDetails } from '../details/brihadeeswara-temple.js';
 
 export function buildBrihadeeswara() {

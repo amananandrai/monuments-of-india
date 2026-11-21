@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, chhatri, onFace, archPanel, inst, unitBox, aroundRect, paintMats } from '../helpers.js';
-import { fortGate } from '../details/forts.js';
+import { fortGate } from '../parts/forts.js';
 import { addDetails } from '../details/amber-fort.js';
-import { heightField, rough, smooth } from '../details/terrain.js';
+import { heightField, rough, smooth } from '../parts/terrain.js';
 
 const SAND = mat('#d9b77e', 0.9);
 const SAND_DARK = mat('#b8925a', 0.9);

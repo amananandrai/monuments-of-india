@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { mat, cyl, at, hemi, box } from '../helpers.js';
-import { mergeByMaterial } from './components.js';
-import { dharmaWheel, gyaltsen, parapetDiscs, maniWheels } from './tibetan.js';
-import { trees, prayerFlags, along } from './realism.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { dharmaWheel, gyaltsen, parapetDiscs, maniWheels } from '../parts/tibetan.js';
+import { trees, prayerFlags, along } from '../parts/realism.js';
 
 // Thiksey, finer detail. From photographs: the Dharma wheel and its deer stand over the front of
 // the assembly hall's gilded roof, with victory banners at its corners; gilded discs run along its

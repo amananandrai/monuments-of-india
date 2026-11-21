@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { mat, mesh, box, at, onFace } from '../helpers.js';
-import { pilasters, mergeByMaterial } from './components.js';
-import { trees, lampPosts, along, cityAround } from './realism.js';
+import { pilasters, mergeByMaterial } from '../parts/components.js';
+import { trees, lampPosts, along, cityAround } from '../parts/realism.js';
 import { detail } from '../detail.js';
 
 // Baidyanath Dham at Deoghar, finer detail. Dimensions follow js/monuments/baidyanath-temple.js: the

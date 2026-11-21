@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, FACES, onionDome, finial, chhatri, minaret, chamferPrism } from '../helpers.js';
-import { iwan } from '../details/mughal.js';
+import { iwan } from '../parts/mughal.js';
 import { addDetails } from '../details/bibi-ka-maqbara.js';
 
 const PLASTER = mat('#ebe4d6', 0.8);

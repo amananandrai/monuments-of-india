@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, inst, unitBox, sheet, ellipseWall, photo } from '../helpers.js';
-import { fortGate } from '../details/forts.js';
+import { fortGate } from '../parts/forts.js';
 import { addDetails } from '../details/bekal-fort.js';
 
 const LATERITE = photo(mat('#8f4e36', 0.95), 'laterite');

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, at, aroundRect } from '../helpers.js';
-import { nagaraTemple, trabeateGate, wallWithGaps } from '../details/temples.js';
-import { figureRow } from '../details/sculpture.js';
+import { nagaraTemple, trabeateGate, wallWithGaps } from '../parts/temples.js';
+import { figureRow } from '../parts/sculpture.js';
 import { addDetails } from '../details/grishneshwar-temple.js';
 
 // The local red basalt, darkened and dulled by weather: a brown-red, not a painted red.

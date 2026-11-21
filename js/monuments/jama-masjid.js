@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, box, cyl, at, onionDome, finial, chhatri, minaret, latheStripes, ONION } from '../helpers.js';
-import { iwan, arcadeSkin } from '../details/mughal.js';
+import { iwan, arcadeSkin } from '../parts/mughal.js';
 import { addDetails } from '../details/jama-masjid.js';
 import { detail } from '../detail.js';
 

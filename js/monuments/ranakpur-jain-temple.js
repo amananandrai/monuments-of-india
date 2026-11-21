@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, box, group, at, onFace, FACES, shikhara, flag, nagaraProfile, inst, unitCyl, unitHemi, unitBox, aroundRect } from '../helpers.js';
-import { templeDoorway, templePorch } from '../details/doorways.js';
-import { mergeByMaterial } from '../details/components.js';
-import { miniSpireGeo } from '../details/sculpture.js';
+import { templeDoorway, templePorch } from '../parts/doorways.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { miniSpireGeo } from '../parts/sculpture.js';
 import { addDetails } from '../details/ranakpur-jain-temple.js';
 
 export function buildRanakpur() {

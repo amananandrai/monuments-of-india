@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, ring, inst, unitBox, mown } from '../helpers.js';
-import { trees as plantTrees } from '../details/realism.js';
+import { trees as plantTrees } from '../parts/realism.js';
 import { addDetails } from '../details/national-war-memorial.js';
 
 const GRANITE = mat('#6f6a66', 0.6);

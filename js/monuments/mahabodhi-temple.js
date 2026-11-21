@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, at, hemi, shikhara, rng, instBoxes, torana } from '../helpers.js';
-import { mughalDoorway } from '../details/mughal.js';
-import { steps } from '../details/doorways.js';
-import { trees as plantTrees } from '../details/realism.js';
+import { M, box, cyl, at, hemi, shikhara, rng, instBoxes, torana } from '../helpers.js';
+import { mughalDoorway } from '../parts/mughal.js';
+import { steps } from '../parts/doorways.js';
+import { trees as plantTrees } from '../parts/realism.js';
 import { addDetails } from '../details/mahabodhi-temple.js';
 
 export function buildMahabodhi() {

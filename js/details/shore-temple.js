@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { mat, mesh, at, onFace, FACES } from '../helpers.js';
-import { pilasters, mouldings, frieze, mergeByMaterial } from './components.js';
-import { pranala } from './doorways.js';
-import { lion } from './animals.js';
-import { trees, boats, asiBoard, scatter, along } from './realism.js';
+import { pilasters, mouldings, frieze, mergeByMaterial } from '../parts/components.js';
+import { pranala } from '../parts/doorways.js';
+import { lion } from '../parts/animals.js';
+import { trees, boats, asiBoard, scatter, along } from '../parts/realism.js';
 
 // The Shore Temple, finer detail. From photographs: the walls of the shrines are divided by
 // pilasters, rearing lions (vyalas) at the corners of the main shrine on

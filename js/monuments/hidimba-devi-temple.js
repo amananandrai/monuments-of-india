@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { mat, box, cyl, at, rng, hipRoof, finial, photo } from '../helpers.js';
-import { templeDoorway, steps } from '../details/doorways.js';
-import { trees as plantTrees } from '../details/realism.js';
+import { templeDoorway, steps } from '../parts/doorways.js';
+import { trees as plantTrees } from '../parts/realism.js';
 import { addDetails } from '../details/hidimba-devi-temple.js';
 
 const STONE = mat('#8d8a85', 0.95);
@@ -14,7 +14,7 @@ export function buildHidimba() {
   g.add(f);
   g.add(box(260, 0.2, 260, mat('#4f6a3a', 0.95)));
   // Dhungiri forest of deodar cedars, kept clear of the opening camera view
-  const trunks = [], crowns = [], view = [0.85, 0.3, 1.15], va = Math.atan2(view[2], view[0]);
+  const trunks = [], view = [0.85, 0.3, 1.15], va = Math.atan2(view[2], view[0]);
   for (let i = 0; i < 110; i++) {
     const a = R() * Math.PI * 2, d = 82 + R() * 80, h = 22 + R() * 18, x = Math.cos(a) * d, z = Math.sin(a) * d;
     const off = Math.abs(((a - va + Math.PI * 3) % (Math.PI * 2)) - Math.PI);

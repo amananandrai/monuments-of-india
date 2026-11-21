@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, box, cyl, at, onFace, FACES, finial, chhatri } from '../helpers.js';
-import { iwan, arcadeSkin, cellRow } from '../details/mughal.js';
+import { iwan, arcadeSkin, cellRow } from '../parts/mughal.js';
 import { addDetails, STONE, bulbousDome } from '../details/safdarjung-tomb.js';
 
 export function buildSafdarjung() {

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, rng, onFace, FACES, onionDome, finial, minaret } from '../helpers.js';
-import { arcadeSkin, cellRow } from '../details/mughal.js';
+import { arcadeSkin, cellRow } from '../parts/mughal.js';
 import { addDetails } from '../details/hazratbal-shrine.js';
 
 const HILL = mat('#5d6b4a', 0.95, 0, { flatShading: true });

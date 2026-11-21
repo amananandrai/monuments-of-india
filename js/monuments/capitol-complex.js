@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, lathe, at, inst, unitBox, unitCyl, doubleSided, photo } from '../helpers.js';
+import { M, mat, mesh, box, cyl, lathe, at, inst, unitBox, doubleSided, photo } from '../helpers.js';
 import { addDetails } from '../details/capitol-complex.js';
 
 const CONCRETE = photo(mat('#b3aea4', 0.95), 'concrete');

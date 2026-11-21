@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { M, flat, mesh, box, cyl, group, at, onFace, FACES, kalash, bell, pidaRoof, rng } from '../helpers.js';
-import { templeDoorway, grandStair } from '../details/doorways.js';
-import { mergeByMaterial, frieze } from '../details/components.js';
-import { figure, instances, carvedWheelGeo } from '../details/sculpture.js';
+import { M, flat, mesh, box, cyl, at, onFace, FACES, kalash, bell, pidaRoof, rng } from '../helpers.js';
+import { templeDoorway, grandStair } from '../parts/doorways.js';
+import { mergeByMaterial, frieze } from '../parts/components.js';
+import { figure, instances, carvedWheelGeo } from '../parts/sculpture.js';
 import { addDetails } from '../details/konark-sun-temple.js';
 import { detail } from '../detail.js';
 

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, box, at, onFace, FACES, lathe } from '../helpers.js';
-import { petalRing, jharokha, windowFrame, mergeByMaterial } from './components.js';
+import { petalRing, jharokha, windowFrame, mergeByMaterial } from '../parts/components.js';
 import { STONE, DARK, PINK, TOWER, DURBAR, EAST, CENTRE } from '../monuments/laxmi-vilas-palace.js';
-import { trees, shrubs, lampPosts, fountains, scatter, along } from './realism.js';
+import { trees, shrubs, lampPosts, fountains, scatter, along } from '../parts/realism.js';
 import { detail } from '../detail.js';
 
 // Laxmi Vilas Palace, finer detail. From photographs: the tower has arched windows in pink panels

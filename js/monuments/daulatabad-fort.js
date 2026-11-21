@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, hemi, finial, ellipseWall, inst, unitBox, photo } from '../helpers.js';
-import { fortGate } from '../details/forts.js';
-import { heightField, rough, smooth } from '../details/terrain.js';
+import { M, mat, box, cyl, at, hemi, finial, ellipseWall, inst, unitBox, photo } from '../helpers.js';
+import { fortGate } from '../parts/forts.js';
+import { heightField, rough, smooth } from '../parts/terrain.js';
 import { addDetails } from '../details/daulatabad-fort.js';
 
 const STONE = photo(mat('#8e8172', 0.9), 'rubble');

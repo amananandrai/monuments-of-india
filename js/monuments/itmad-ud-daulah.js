@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, FACES, chhatri, finial, inst, unitBox, sheet, surface } from '../helpers.js';
-import { jali } from '../details/components.js';
-import { iwan } from '../details/mughal.js';
+import { jali } from '../parts/components.js';
+import { iwan } from '../parts/mughal.js';
 import { addDetails } from '../details/itmad-ud-daulah.js';
 
 // Pietra dura: inlaid panels of coloured stone set into the white marble.

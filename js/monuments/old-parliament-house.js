@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { M, box, cyl, group, at, hemi, inst, unitBox, unitCyl, mown } from '../helpers.js';
-import { addOldParliamentDetails } from '../details/old-parliament-house.js';
-import { addDetails } from '../details/old-parliament-house.js';
+import { addOldParliamentDetails, addDetails } from '../details/old-parliament-house.js';
 
 export function buildOldParliament() {
   const Rd = M.red, Bf = M.buff, g = new THREE.Group(), f = new THREE.Group();

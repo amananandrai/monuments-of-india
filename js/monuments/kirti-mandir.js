@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, at, shikhara, nagaraProfile, hemi, chhatri, finial, surface, photo } from '../helpers.js';
-import { arcadeSkin } from '../details/mughal.js';
-import { steps } from '../details/doorways.js';
+import { arcadeSkin } from '../parts/mughal.js';
+import { steps } from '../parts/doorways.js';
 import { addDetails } from '../details/kirti-mandir.js';
 
 const CREAM = mat('#ecd9bd', 0.85);

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, box, at, onFace, rng } from '../helpers.js';
-import { archSlab, archRing, pilasters, mouldings, merlons, jharokha, frieze, mergeByMaterial } from './components.js';
-import { umbrellas, boats, along } from './realism.js';
+import { M, mat, at, onFace, rng } from '../helpers.js';
+import { archSlab, archRing, pilasters, mouldings, merlons, jharokha, frieze, mergeByMaterial } from '../parts/components.js';
+import { umbrellas, boats, along } from '../parts/realism.js';
 
 // Kashi Vishwanath, finer detail. Dimensions follow js/monuments/kashi-vishwanath-temple.js: the
 // Mandir Chowk on a podium 76 × 60, 8 high, centred on z = -30 (its front at z = 0, the steps

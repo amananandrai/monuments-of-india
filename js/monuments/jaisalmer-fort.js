@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { townHouses, houseRow } from '../details/realism.js';
+import { townHouses, houseRow } from '../parts/realism.js';
 import { mat, box, at, rng, inst, unitBox, unitCyl, chhatri, photo } from '../helpers.js';
-import { fortGate, rampart } from '../details/forts.js';
-import { miniSpireGeo } from '../details/sculpture.js';
-import { heightField, rough, smooth, fbm } from '../details/terrain.js';
+import { fortGate, rampart } from '../parts/forts.js';
+import { miniSpireGeo } from '../parts/sculpture.js';
+import { heightField, rough, smooth, fbm } from '../parts/terrain.js';
 import { addDetails } from '../details/jaisalmer-fort.js';
 import { detail } from '../detail.js';
 

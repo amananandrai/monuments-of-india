@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, lathe, surface } from '../helpers.js';
-import { bracketGeo, placeAll, aroundCircle, windowFrame, frieze, railing, mergeByMaterial } from './components.js';
-import { trees, lampPosts, scatter, along, around } from './realism.js';
+import { bracketGeo, placeAll, aroundCircle, windowFrame, frieze, railing, mergeByMaterial } from '../parts/components.js';
+import { trees, lampPosts, scatter, along, around } from '../parts/realism.js';
 
 // Shaheed Minar, finer detail. From photographs: the two balconies near the top rest on rings of
 // brackets; the cupola's drum opens in arched windows; and a carved band runs round the top of the

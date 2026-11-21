@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { M, mesh, at, aroundRect, nagaraProfile, inst, unitBox } from '../helpers.js';
-import { mouldings, frieze, bracketGeo, placeAll, mergeByMaterial } from './components.js';
-import { trees, scatter } from './realism.js';
+import { M, mesh, aroundRect, nagaraProfile, inst, unitBox } from '../helpers.js';
+import { mouldings, frieze, bracketGeo, placeAll, mergeByMaterial } from '../parts/components.js';
+import { trees, scatter } from '../parts/realism.js';
 
 // Ranakpur, finer detail. From photographs: the plinth is carved in bands; the walls of the
 // temple carry a carved frieze under the roof line; each of the outer pillars stands on a moulded

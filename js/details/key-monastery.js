@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { mat, cyl, at, hemi, box, onFace, FACES } from '../helpers.js';
-import { mergeByMaterial } from './components.js';
-import { dharmaWheel, gyaltsen, parapetDiscs, maniWheels } from './tibetan.js';
-import { prayerFlags } from './realism.js';
-import { yaks } from './animals.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { dharmaWheel, gyaltsen, parapetDiscs, maniWheels } from '../parts/tibetan.js';
+import { prayerFlags } from '../parts/realism.js';
+import { yaks } from '../parts/animals.js';
 import { HILL_H, HILL_R } from '../monuments/key-monastery.js';
 
 // Key Monastery, finer detail. From photographs: the gilded roof of the top hall carries the Dharma

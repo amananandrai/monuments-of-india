@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { mat, box, at, ellipseWall } from '../helpers.js';
-import { idol, frieze, jali, chhajja, templeNiche, bracketGeo, placeAll, mergeByMaterial } from './components.js';
-import { figure } from './sculpture.js';
-import { trees, shrubs, asiBoard, along } from './realism.js';
+import { idol, frieze, jali, chhajja, templeNiche, bracketGeo, placeAll, mergeByMaterial } from '../parts/components.js';
+import { figure } from '../parts/sculpture.js';
+import { trees, shrubs, asiBoard, along } from '../parts/realism.js';
 
 // Rani ki Vav, finer detail. From photographs: every niche in the stepwell's side walls holds a
 // sculpted figure (Vishnu's avatars, apsaras and nagakanyas among the 500 there); carved bands run

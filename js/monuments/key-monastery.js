@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, rng, hipRoof, TIBETAN, inst, unitBox } from '../helpers.js';
-import { tibetanDoor } from '../details/doorways.js';
-import { heightField, fbm, smooth } from '../details/terrain.js';
+import { M, mat, mesh, box, at, rng, hipRoof, TIBETAN, inst, unitBox } from '../helpers.js';
+import { tibetanDoor } from '../parts/doorways.js';
+import { heightField, fbm, smooth } from '../parts/terrain.js';
 import { detail } from '../detail.js';
-import { quarters, hall, ganjira, roofCorners } from '../details/tibetan.js';
+import { quarters, hall, ganjira, roofCorners } from '../parts/tibetan.js';
 import { addDetails } from '../details/key-monastery.js';
 
 
@@ -66,11 +66,11 @@ export function buildKeyMonastery() {
     blocks.push([Math.cos(a) * r, base, Math.sin(a) * r, w, h, d, -a + Math.PI / 2 + (R() - 0.5) * 0.4]);
   }
   f.add(inst(unitBox(), blocks, TIBETAN.white), inst(unitBox(), blocks.map(([x, y, z, w, h, d, ry]) => [x, y + h, z, w + 0.3, 0.6, d + 0.3, ry]), TIBETAN.maroon));
-  // Windows, doors, beam ends and roofs for the houses (js/details/tibetan.js).
+  // Windows, doors, beam ends and roofs for the houses (js/parts/tibetan.js).
   f.add(quarters(blocks, { cap: 0.6 }));
   f.add(at(tibetanDoor(1.4, 2.4), 0, H - 4, 5));
   // The top hall, its windows and awnings, under a gilded roof with a finial and corner bells
-  // (js/details/tibetan.js).
+  // (js/parts/tibetan.js).
   f.add(at(hall(10, 6.7, 10, { floors: 1, cap: 0.7, y0: 2.4, door: 0, doorW: 1.4 }), 0, H - 4, 0), at(hipRoof(11, 11, 3, M.gild), 0, H + 2.7, 0));
   f.add(at(ganjira(2.4), 0, H + 5.55, 0), at(roofCorners(11, 11), 0, H + 2.7, 0));
   addDetails(f, g);

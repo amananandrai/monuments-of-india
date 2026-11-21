@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, at, onFace, FACES } from '../helpers.js';
-import { panel, frieze, railing, pilasters, beltCourse, mergeByMaterial } from './components.js';
-import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
+import { panel, frieze, railing, pilasters, beltCourse, mergeByMaterial } from '../parts/components.js';
+import { trees, shrubs, lampPosts, scatter, along } from '../parts/realism.js';
 
 // The Statue of Unity, finer detail. From photographs: the top tier of the pedestal is faced with
 // bronze relief panels, three to a side, between stone bands; the terraces below are edged with

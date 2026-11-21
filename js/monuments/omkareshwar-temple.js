@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, rng, inst, unitBox, sheet } from '../helpers.js';
-import { nagaraTemple } from '../details/temples.js';
+import { M, mat, mesh, box, at, rng, sheet } from '../helpers.js';
+import { nagaraTemple } from '../parts/temples.js';
 import { addDetails } from '../details/omkareshwar-temple.js';
-import { townHouses } from '../details/realism.js';
+import { townHouses } from '../parts/realism.js';
 import { detail } from '../detail.js';
 
 const WHITE = mat('#efe9de', 0.85);

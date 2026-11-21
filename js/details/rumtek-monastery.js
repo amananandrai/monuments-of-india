@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, cyl, box, at, hipRoof, tibetanBlock, TIBETAN, lathe } from '../helpers.js';
-import { mergeByMaterial } from './components.js';
-import { dharmaWheel, shabkhep, parapetDiscs } from './tibetan.js';
-import { prayerFlags, copies, trees, around } from './realism.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { dharmaWheel, shabkhep, parapetDiscs } from '../parts/tibetan.js';
+import { prayerFlags, copies, trees, around } from '../parts/realism.js';
 
 // Rumtek, finer detail. From photographs: the Dharma wheel and its two deer stand over the front
 // of the gilded roof; gilded discs are set along the maroon parapet bands; and each window of the

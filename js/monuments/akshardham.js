@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { M, box, cyl, lathe, group, at, kalash, shikhara, nagaraProfile, ribbed, inst, unitCyl, unitHemi, aroundRect } from '../helpers.js';
-import { templeDoorway } from '../details/doorways.js';
-import { arcadeSkin } from '../details/mughal.js';
+import { M, box, cyl, lathe, at, kalash, shikhara, nagaraProfile, ribbed, inst, unitCyl, unitHemi, aroundRect } from '../helpers.js';
+import { templeDoorway } from '../parts/doorways.js';
+import { arcadeSkin } from '../parts/mughal.js';
 import { detail } from '../detail.js';
-import { instances, elephantGeo, miniSpireGeo } from '../details/sculpture.js';
+import { instances, elephantGeo, miniSpireGeo } from '../parts/sculpture.js';
 import { addDetails } from '../details/akshardham.js';
 
 export function buildAkshardham() {

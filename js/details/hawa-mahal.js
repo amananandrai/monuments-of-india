@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, box, at, inst } from '../helpers.js';
-import { bracketGeo, placeAll, frieze, petalRing, archSlab, archRing, mergeByMaterial } from './components.js';
-import { shrubs } from './realism.js';
+import { bracketGeo, placeAll, frieze, petalRing, archSlab, archRing, mergeByMaterial } from '../parts/components.js';
+import { shrubs } from '../parts/realism.js';
 import { FLOORS, CROWN } from '../monuments/hawa-mahal.js';
 
 // The Hawa Mahal, finer detail. From photographs: each of the windows (jharokhas) of the screen

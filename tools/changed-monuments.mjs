@@ -2,10 +2,10 @@
 //   node changed-monuments.mjs <path> [<path> ...]     (repository-relative paths; or one per line on stdin)
 // Prints the monuments' ids on one line (nothing, if none):
 // - js/monuments/<file>.js and js/details/<file>.js belong to the monument whose builder is loaded
-//   from js/monuments/<file>.js in js/data.js (the file's name is not always the monument's id);
-// - any other file under js/details is a shared part (trees, domes, temple towers) that any
-//   monument may use. It names no monument, so it is left out and noted on stderr: render every
-//   monument by hand (the workflow's "Run workflow" button) when a shared part changes the look;
+//   from js/monuments/<file>.js in js/data.js (each file is named after its monument's id; tools/check-registry.mjs checks it);
+// - the shared parts (js/parts/, js/helpers.js: trees, domes, temple towers) belong to no monument,
+//   so they name none: render every monument by hand (the workflow's "Run workflow" button) when a
+//   shared part changes the look;
 // - other paths are ignored.
 // Runs in Node, without a browser.
 import fs from 'node:fs';
@@ -23,9 +23,8 @@ const paths = (args.length ? args : fs.readFileSync(0, 'utf8').split('\n')).map(
 const ids = new Set(), shared = [];
 for (const p of paths) {
   const m = p.match(/^js\/(monuments|details)\/([^/]+)\.js$/);
-  if (!m) continue;
-  if (byFile.has(m[2])) ids.add(byFile.get(m[2]));
-  else shared.push(p);
+  if (m && byFile.has(m[2])) ids.add(byFile.get(m[2]));
+  else if (/^js\/parts\//.test(p)) shared.push(p);
 }
 if (shared.length) console.error(`Shared parts changed (${shared.join(', ')}): not tied to one monument, so no picture is redrawn for them.`);
 console.log([...ids].join(' '));

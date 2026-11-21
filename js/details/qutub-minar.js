@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, surface, rng, hemi, finial } from '../helpers.js';
-import { iwan } from './mughal.js';
-import { bracketGeo, placeAll, aroundCircle, mergeByMaterial, windowFrame } from './components.js';
-import { trees, asiBoard, scatter, along } from './realism.js';
+import { iwan } from '../parts/mughal.js';
+import { bracketGeo, placeAll, aroundCircle, mergeByMaterial, windowFrame } from '../parts/components.js';
+import { trees, asiBoard, scatter, along } from '../parts/realism.js';
 import { TIERS } from '../monuments/qutub-minar.js';
 
 // The Qutub Minar, finer detail. From photographs and descriptions: under every balcony is a ring

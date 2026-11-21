@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, at } from '../helpers.js';
-import { mergeByMaterial } from './components.js';
-import { steps } from './doorways.js';
-import { trees, shrubs, lampPosts } from './realism.js';
+import { mergeByMaterial } from '../parts/components.js';
+import { steps } from '../parts/doorways.js';
+import { trees, shrubs, lampPosts } from '../parts/realism.js';
 
 // The Lotus Temple, finer detail. Its two-tier podium is climbed by a flight of marble steps at the
 // head of each of the nine paths that radiate to the gardens, and each path is edged with a marble

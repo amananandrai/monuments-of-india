@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, FACES, clothGeometry, onionDome, ribbed, kalash, chhatri } from '../helpers.js';
-import { panel, frieze, jharokha, rosette, mergeByMaterial, chhajja } from './components.js';
-import { arcadeSkin, cellRow } from './mughal.js';
-import { trees, lampPosts } from './realism.js';
+import { panel, frieze, jharokha, rosette, mergeByMaterial, chhajja } from '../parts/components.js';
+import { arcadeSkin, cellRow } from '../parts/mughal.js';
+import { trees, lampPosts } from '../parts/realism.js';
 
 // The Harmandir Sahib, finer detail. From photographs: the marble lower storey is inlaid with floral
 // panels (pietra dura) in a band above its arches; the gilded upper storey is sheathed in embossed
@@ -60,7 +60,7 @@ export function addDetails(f, g) {
   g.add(at(akalTakht(), -113, 0.8, 0).rotateY(Math.PI / 2));
   // The Nishan Sahibs
   for (const z of [-6, 6]) {
-    g.add(cyl(0.35, 0.45, 32, SAFFRON, -96, 0.8, z, 10), at(cyl(0.25, 0, 1.6, GOLD, 0, 0, 0, 10), -96, 32.8, z));
+    g.add(cyl(0.35, 0.45, 32, SAFFRON, -96, 0.8, z, 10), cyl(0, 0.25, 1.6, GOLD, -96, 32.8, z, 10));
     // The saffron cloth, tapering to a point, flying from the top of the staff, and the gilt khanda.
     const cl = new THREE.Mesh(clothGeometry(7, 3.2, { taper: 0.85 }), SAFFRON);
     cl.position.set(-96, 32.4, z + 0.3);

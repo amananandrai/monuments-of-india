@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import { M, box, at, onFace, FACES } from '../helpers.js';
-import { bracketGeo, placeAll, alongFace, windowFrame, merlonGeo, petalRing, mergeByMaterial } from './components.js';
-import { trees, shrubs, asiBoard, along } from './realism.js';
+import { bracketGeo, placeAll, alongFace, windowFrame, merlonGeo, petalRing, mergeByMaterial } from '../parts/components.js';
+import { trees, shrubs, asiBoard, along } from '../parts/realism.js';
 
 // Gol Gumbaz, finer detail. From photographs: the great cornice near the top of the walls projects
 // on rows of carved brackets; a parapet of merlons crowns the walls; each storey of the seven-storey
 // corner towers opens in an arched window on every face; a lotus ring sits round the foot of the
 // dome's finial, and a ring of petals round the dome's foot (the iwans' muqarnas come with
-// iwan(), js/details/mughal.js). Dimensions follow js/monuments/gol-gumbaz.js: base b = 1.5, walls H = 27, s = 23.75.
+// iwan(), js/parts/mughal.js). Dimensions follow js/monuments/gol-gumbaz.js: base b = 1.5, walls H = 27, s = 23.75.
 function architecture(f) {
   const d = new THREE.Group(), b = 1.5, H = 27, s = 23.75, D = M.deccan, Dl = M.deccanLight, list = [];
   for (const a of FACES) {
