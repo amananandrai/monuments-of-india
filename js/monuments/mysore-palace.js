@@ -24,7 +24,16 @@ export const BAYS = [[-37, 9, 8.1], [-26.2, 9, 8.1], [-15.4, 9, 8.1], [-8, 4.4, 
 export const FZ = 24, ARC_SILL = 4.8;
 const CREAM = surface(mat('#ecd9a2', 0.82), 'carved'), TAN = surface(mat('#cda98c', 0.85), 'carved'), RED = surface(mat('#a3202a', 0.5), 'carved');
 const DOMEGREY = mat('#82786b', 0.45, 0.35), L = M.lime;
+// The central tower's stone, a darker golden buff than the fronts.
+const TOWERM = surface(mat('#c2a274', 0.82), 'carved');
+// The palace's domes as photographed: nearly a ball, a little drawn up at the crown, with fine
+// ribs. Of unit radius at its widest and 1.6 high.
+const BULB = [[0.74, 0], [0.93, 0.18], [1.0, 0.52], [0.95, 0.86], [0.76, 1.16], [0.46, 1.4], [0.16, 1.54], [0, 1.6]];
+const bulb = (r, m, ribs = 16) => ribbed(lathe(BULB.map(([a, c]) => [a * r, c * r]), m, 40), ribs, 0.025);
 export const PALACE = { CREAM, TAN, RED };
+// The end towers, [x, z, turn, width]: at each end of the front an inner and an outer tower, and
+// behind the outer one a third that faces sideways, so each side of the palace shows two domes.
+export const END_TOWERS = [-1, 1].flatMap((s) => [[s * 46.1, 19.5, 0, 8.4], [s * 60.8, 19.5, 0, 7.6], [s * 60.1, 3.6, s * Math.PI / 2, 7.6]]);
 
 export function buildMysorePalace() {
   const S = M.mysore, g = new THREE.Group(), f = new THREE.Group(), b = 1;
@@ -106,20 +115,27 @@ export function buildMysorePalace() {
      domelets on the corners of the lower, an octagonal drum, the gilded dome and its spire. */
   const tz = 12, tower = new THREE.Group();
   // A face w wide and h high of a square block, with rows [sill, width, height, count] of arches.
-  const face = (w, h, rows, d = 0.7) => arcadeSkin(w, h, rows.flatMap(([y, aw, ah, n]) => Array.from({ length: n }, (_, i) => [(i - (n - 1) / 2) * (w / n), y, aw, ah, 'room'])), d, CREAM, { trim: L, pointed: false });
-  tower.add(box(9.6, 10, 9.6, CREAM, 0, 18, 0), box(6.8, 5, 6.8, CREAM, 0, 28, 0));
-  for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) tower.add(onFace(at(face(11, 10, [[0.8, 2, 3.6, 3], [5.5, 2, 3.6, 3]]), 0, 18, 0), a, 4.8), onFace(at(face(8, 5, [[0.8, 1.8, 3.4, 3]], 0.6), 0, 28, 0), a, 3.4));
+  const face = (w, h, rows, d = 0.7, m = CREAM) => arcadeSkin(w, h, rows.flatMap(([y, aw, ah, n]) => Array.from({ length: n }, (_, i) => [(i - (n - 1) / 2) * (w / n), y, aw, ah, 'room'])), d, m, { trim: L, pointed: false });
+  tower.add(box(9.6, 10, 9.6, TOWERM, 0, 18, 0), box(6.8, 5, 6.8, TOWERM, 0, 28, 0));
+  for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) tower.add(onFace(at(face(11, 10, [[0.8, 2, 3.6, 3], [5.5, 2, 3.6, 3]], 0.7, TOWERM), 0, 18, 0), a, 4.8), onFace(at(face(8, 5, [[0.8, 1.8, 3.4, 3]], 0.6, TOWERM), 0, 28, 0), a, 3.4));
   for (const y of [22.8, 27.6]) tower.add(box(11.6, 0.5, 11.6, L, 0, y, 0));
   tower.add(box(8.6, 0.5, 8.6, L, 0, 32.8, 0));
-  for (const x of [-4.8, 4.8]) for (const z of [-4.8, 4.8]) tower.add(at(chhatri(0.75, 2.6, CREAM, M.gild), x, 28.1, z));
-  // A third, narrower stage, then the drum, the gilded dome and its spire: the tower tapers in
-  // steps to 44 m.
-  tower.add(box(5.2, 2.8, 5.2, CREAM, 0, 33.3, 0), box(5.9, 0.35, 5.9, L, 0, 36.1, 0));
-  for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) tower.add(onFace(at(face(5.2, 2.8, [[0.4, 1.1, 2.0, 2]], 0.4), 0, 33.3, 0), a, 2.6));
-  tower.add(cyl(2.3, 2.5, 0.9, CREAM, 0, 36.45, 0, 8), at(onionDome(2.4, M.gild), 0, 37.35, 0), at(finial(3.2), 0, 37.35 + 2.4 * 1.78, 0));
+  // An octagonal turret up each corner of the lower stage, under a small ribbed dome of grey metal.
+  for (const x of [-4.9, 4.9]) for (const z of [-4.9, 4.9]) tower.add(cyl(1.0, 1.1, 11.2, TOWERM, x, 18, z, 8), cyl(1.25, 1.25, 0.3, L, x, 29.2, z, 8), at(bulb(1.2, DOMEGREY, 8), x, 29.5, z), at(finial(1.2, DOMEGREY), x, 29.5 + 1.2 * 1.6, z));
+  // A third, narrower stage, then the drum and the gilded dome: nearly a ball, with a small open
+  // lantern on its crown under a dome of its own and the spire. The tower tapers in steps to 44 m.
+  tower.add(box(5.2, 2.8, 5.2, TOWERM, 0, 33.3, 0), box(5.9, 0.35, 5.9, L, 0, 36.1, 0));
+  for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) tower.add(onFace(at(face(5.2, 2.8, [[0.4, 1.1, 2.0, 2]], 0.4, TOWERM), 0, 33.3, 0), a, 2.6));
+  // The gilded dome is in two tiers: the great dome, and on its crown an open lantern of eight
+  // posts carrying a second, smaller dome, with the spire on that.
+  tower.add(cyl(2.2, 2.4, 0.7, TOWERM, 0, 36.45, 0, 8), at(bulb(2.5, M.gild), 0, 37.15, 0));
+  tower.add(cyl(1.25, 1.35, 0.2, M.gild, 0, 40.95, 0, 16), cyl(1.3, 1.2, 0.18, M.gild, 0, 42.45, 0, 16));
+  for (let k = 0; k < 8; k++) { const a = (k / 8) * Math.PI * 2; tower.add(cyl(0.09, 0.09, 1.3, M.gild, Math.sin(a) * 1.02, 41.15, Math.cos(a) * 1.02, 6)); }
+  tower.add(at(bulb(1.12, M.gild, 8), 0, 42.6, 0), at(finial(1.5), 0, 42.6 + 1.12 * 1.6, 0));
   f.add(at(mergeByMaterial(tower), 0, 0, tz));
   verticals(-5.5, 5.5, tz - 5.5, tz + 5.5, 18, 28);
-  dome(0, 37.35, tz, 2.4);
+  dome(0, 37.15, tz, 2.5);
+  dome(0, 42.6, tz, 1.1);
 
   /* The two grey domes over the roof: a square kiosk with arched windows, a drum, and a ribbed dome
      of weathered metal with a small lantern. */
@@ -136,27 +152,40 @@ export function buildMysorePalace() {
     for (const kx of [s * 21.3, s * 33.4]) f.add(at(chhatri(0.65, 2.0, CREAM, RED), kx, 18.5, FZ - 0.6));
   }
 
-  /* The end pavilions: on each side an inner and an outer tower in pink-brown granite, and between
-     them a lower range with a tall arch on the ground floor. */
-  for (const s of [-1, 1]) {
-    for (const [cx, w] of [[s * 46.1, 8.4], [s * 60.8, 7.6]]) {
-      const t = new THREE.Group();
-      t.add(box(w, 23.6, 9, TAN, 0, 0, 0));
-      // The front: two arched windows on the ground floor, three under the cornice; the bands.
-      t.add(at(arcadeSkin(w, 23.6, [[-w / 4, 1, 1.7, 3.6, 'room'], [w / 4, 1, 1.7, 3.6, 'room'], [-w * 0.3, 18.6, 1.4, 3.0, 'room'], [0, 18.6, 1.4, 3.0, 'room'], [w * 0.3, 18.6, 1.4, 3.0, 'room']], 0.6, TAN, { trim: L, pointed: false }), 0, 0, 4.5));
-      for (const y of [6.0, 17.4, 23.4]) t.add(box(w + 0.5, 0.45, 9.5, L, 0, y, 0));
-      // The oriels stacked up the middle of the face, the top one under a red hood.
-      for (const [y, red] of [[7.4, false], [10.8, false], [14.2, true]]) t.add(at(jharokha(3.2, 2.6, CREAM, { d: 1.0, trim: L, roof: red ? 'dome' : 'bangla', roofM: red ? RED : TAN }), 0, y, 5.1));
-      // The balustraded top with red domelets on its corners, and the crimson onion dome.
-      t.add(box(w + 0.3, 1.0, 9.3, TAN, 0, 23.85, 0));
-      // (On phones, only the two at the front.)
-      for (const x of [-w / 2 + 0.5, w / 2 - 0.5]) for (const z of detail.low ? [4.1] : [-4.1, 4.1]) t.add(at(chhatri(0.45, 1.6, TAN, RED), x, 24.85, z));
-      t.add(box(5, 1.2, 5, TAN, 0, 24.85, 0), at(onionDome(2.5, RED), 0, 26.05, 0), at(finial(2.2), 0, 26.05 + 2.5 * 1.78, 0));
-      f.add(at(mergeByMaterial(t), cx, b, 19.5));
-      verticals(cx - w / 2, cx + w / 2, 15, 24, b, b + 23.6);
-      rect(cx - w / 2 - 0.1, cx + w / 2 + 0.1, b + 24.9, 14.9, 24.1);
-      dome(cx, b + 26.05, 19.5, 2.5);
+  /* The end pavilions: on each side an inner and an outer tower in pink-brown granite, between
+     them a lower range with a tall arch on the ground floor, and a third tower behind the outer one. */
+  // One end tower, w wide and 9 deep, its front towards +z, standing on y = 0.
+  const endTower = (w) => {
+    const t = new THREE.Group();
+    t.add(box(w, 23.6, 9, TAN, 0, 0, 0));
+    // The front: two arched windows on the ground floor, three under the cornice; the bands.
+    t.add(at(arcadeSkin(w, 23.6, [[-w / 4, 1, 1.7, 3.6, 'room'], [w / 4, 1, 1.7, 3.6, 'room'], [-w * 0.3, 18.6, 1.4, 3.0, 'room'], [0, 18.6, 1.4, 3.0, 'room'], [w * 0.3, 18.6, 1.4, 3.0, 'room']], 0.6, TAN, { trim: L, pointed: false }), 0, 0, 4.5));
+    for (const y of [6.0, 17.4, 23.4]) t.add(box(w + 0.5, 0.45, 9.5, L, 0, y, 0));
+    // The oriels stacked up the middle of the face, the top one under a red hood.
+    // (On desktops the three-storey bay of windows under its red hood takes their place:
+    // js/details/mysore-palace.js.)
+    if (detail.low) for (const [y, red] of [[7.4, false], [10.8, false], [14.2, true]]) t.add(at(jharokha(3.2, 2.6, CREAM, { d: 1.0, trim: L, roof: red ? 'dome' : 'bangla', roofM: red ? RED : TAN }), 0, y, 5.1));
+    // The top, as photographed: over the eave a cream attic with a white cornice, two red posts
+    // with gilt caps at each corner, a cream drum, and the crimson dome, nearly a ball, with its
+    // gilt finial.
+    t.add(box(w - 0.6, 1.9, 8.0, CREAM, 0, 23.85, 0), box(w - 0.2, 0.3, 8.4, L, 0, 25.75, 0));
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) for (const k of detail.low ? [0] : [0, 1]) {
+      const px = sx * (w / 2 - 0.55 - k * 0.75), pz = sz * (3.75 - (1 - k) * 0.0);
+      t.add(cyl(0.13, 0.17, 1.5, RED, px, 26.05, pz, 6), cyl(0.2, 0.05, 0.45, M.gild, px, 27.55, pz, 6));
     }
+    t.add(cyl(2.25, 2.35, 0.7, CREAM, 0, 26.05, 0, 20), at(bulb(2.75, RED), 0, 26.75, 0), at(finial(2.2), 0, 26.75 + 2.75 * 1.6, 0));
+    return mergeByMaterial(t);
+  };
+  for (const [x, z, ry, w] of END_TOWERS) {
+    const t = at(endTower(w), x, b, z);
+    t.rotation.y = ry;
+    f.add(t);
+    dome(x, b + 26.75, z, 2.7);
+    if (!ry) { verticals(x - w / 2, x + w / 2, 15, 24, b, b + 23.6); rect(x - w / 2 - 0.1, x + w / 2 + 0.1, b + 24.9, 14.9, 24.1); }
+  }
+  for (const s of [-1, 1]) {
+    // The side range from the corner tower back to the tower behind it.
+    f.add(box(7.6, 19.2, 7.6, TAN, s * 60.6, b, 11.3), box(8, 0.5, 7.6, L, s * 60.6, b + 19.2, 11.3));
     const cx = s * 53.65, r = new THREE.Group();
     r.add(box(6.8, 19.2, 7.6, TAN, 0, 0, 0), at(arcadeSkin(6.8, 19.2, [[0, 0.5, 4.4, 9.4, 'room'], [-1.6, 12.6, 1.3, 3, 'room'], [0, 12.6, 1.3, 3, 'room'], [1.6, 12.6, 1.3, 3, 'room']], 0.6, CREAM, { trim: L, pointed: false }), 0, 0, 3.8), box(7.2, 0.5, 8.2, L, 0, 19.2, 0));
     f.add(at(mergeByMaterial(r), cx, b, 19.6));

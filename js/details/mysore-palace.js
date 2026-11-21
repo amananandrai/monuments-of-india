@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { M, V, mat, box, cyl, at, onFace, FACES, inst, unitBox, unitCyl, kalash, archWall, chhatri, hemi, bulbPoints, surface } from '../helpers.js';
-import { rosette, petalRing, railing, archCurve, mergeByMaterial, archRing, archSlab, merlons, bracketGeo, placeAll, alongFace, chhajja } from '../parts/components.js';
+import { M, V, mat, mesh, box, cyl, at, onFace, FACES, inst, unitBox, unitCyl, kalash, archWall, chhatri, hemi, bulbPoints, surface } from '../helpers.js';
+import { rosette, petalRing, railing, archCurve, mergeByMaterial, archRing, archSlab, merlons, bracketGeo, placeAll, alongFace, chhajja, cuspedArchGeo, banglaRoof, jali } from '../parts/components.js';
 import { balustrade } from '../parts/colonial.js';
 import { trees, shrubs, scatter, along, fountains } from '../parts/realism.js';
 import { rideElephant, elephant, couchant } from '../parts/animals.js';
 import { crossLegged, hold } from '../parts/figures.js';
 import { detail } from '../detail.js';
-import { BAYS, FZ, ARC_SILL, PALACE } from '../monuments/mysore-palace.js';
+import { BAYS, FZ, ARC_SILL, PALACE, END_TOWERS } from '../monuments/mysore-palace.js';
 
 // Mysore Palace, finer detail, after photographs of the main front. Dimensions follow
 // js/monuments/mysore-palace.js: the arcade's bays (BAYS) on a sill at y 6.4 in the front at z 24,
@@ -18,7 +18,7 @@ import { BAYS, FZ, ARC_SILL, PALACE } from '../monuments/mysore-palace.js';
 // - a balustrade along the parapet either side of the central bay;
 // - the cups of lotus petals the domes rise from.
 function architecture(f) {
-  const d = new THREE.Group(), G = M.mysore, L = M.lime, { CREAM, RED } = PALACE;
+  const d = new THREE.Group(), G = M.mysore, L = M.lime, { CREAM } = PALACE;
   const lobe = new THREE.TorusGeometry(0.36, 0.09, 4, 8, Math.PI), cols = [];
   BAYS.forEach(([cx, w, h], k) => {
     const r = w / 2, pts = archCurve(r, h - r, false, 10).slice(1, -1);
@@ -53,11 +53,6 @@ function architecture(f) {
     d.add(at(railing(x1 - x0, 0.95, 0.22, G, 1.8), (x0 + x1) / 2, ARC_SILL, FZ + 0.25));
     const len = x1 - x0 - 5.8, x = (x0 + x1) / 2 + Math.sign(x0) * 2.9;
     d.add(at(detail.low ? railing(len, 1.1, 0.3, CREAM, 2.4) : balustrade(len, 1.1, CREAM, { t: 0.35 }), x, 18.0, FZ + 0.05));
-  }
-  // Lotus cups: under the gilt dome, the red domes of the end towers and of the bay's kiosks.
-  d.add(at(petalRing(2.4 * 0.86, 16, 1.15, 0.85, 0.55, M.gild, 0.3), 0, 37.35, 12));
-  for (const s of [-1, 1]) {
-    for (const x of [46.1, 60.8]) d.add(at(petalRing(2.5 * 0.86, 14, 1.2, 0.9, 0.55, RED, 0.3), s * x, 27.05, 19.5));
   }
   mergeByMaterial(d);
   f.add(d);
@@ -107,9 +102,48 @@ function sculpture(f) {
 // - the central tower: colonnettes between its openings, bracket courses under its bands, a
 //   railing round each stage and four more gilt kiosks at its top.
 // All instanced or merged, so it costs triangles but few draw calls.
+// One end tower's carving, in the tower's own frame (w wide and 9 deep, its front at z = 4.5, on
+// y = 0), after the photographs:
+// - an octagonal shaft up each corner; small brackets under each storey's band; a deep eave on
+//   carved brackets under the attic;
+// - up the middle of the front, three storeys of jharokhas as the palaces of Rajasthan build
+//   them: each a balcony on a shelf with a pierced apron, a row of small cusped arches between
+//   slender mullions, red posts at its corners, and a curved eave drooping at its ends; the top one
+//   under a curved red hood with a gilt finial; the whole carried on carved corbels;
+// - red colonnettes and yellow panels at the three windows under the eave.
+function towerCarving(w, GLASS, OCHRE) {
+  const t = new THREE.Group(), L = M.lime, { TAN, RED } = PALACE;
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) t.add(cyl(0.38, 0.4, 23.6, TAN, sx * (w / 2), 0, sz * 4.5, 8));
+  for (const a of FACES) {
+    const len = a === 0 || a === Math.PI ? w : 9, dist = (a === 0 || a === Math.PI ? 9 : w) / 2;
+    for (const y of [5.55, 16.95]) for (const [x, yy, z, ry] of alongFace(a, dist + 0.2, len - 1, Math.round(len / 0.7), y)) t.add(at(box(0.2, 0.42, 0.5, L), x, yy, z).rotateY(ry));
+    t.add(onFace(at(chhajja(len + 0.4, 1.1, 0.35, 0.14, L), 0, 23.3, 0), a, dist + 0.05));
+    t.add(placeAll(bracketGeo(0.9, 0.85, 0.22), alongFace(a, dist + 0.02, len - 0.6, Math.round(len / 0.95), 22.95), L));
+  }
+  const bw = w * 0.62, z0 = 4.5, aw = (bw - 0.24) / 6, head = cuspedArchGeo(aw - 0.1, 0.6, 0.1), SCREEN = jali(L);
+  for (let k = 0; k < 3; k++) {
+    const y = 7.0 + k * 3.25;
+    t.add(box(bw + 0.5, 0.2, 1.3, L, 0, y - 0.2, z0 + 0.6), box(bw, 1.0, 1.0, SCREEN, 0, y, z0 + 0.5), box(bw, 0.3, 1.0, L, 0, y + 2.55, z0 + 0.5));
+    t.add(box(bw - 0.25, 1.55, 0.95, GLASS, 0, y + 1.0, z0 + 0.42));
+    for (let i = 0; i <= 6; i++) t.add(box(0.11, 1.55, 0.11, L, -bw / 2 + 0.12 + i * aw, y + 1.0, z0 + 0.94));
+    for (let i = 0; i < 6; i++) t.add(mesh(head, L, -bw / 2 + 0.12 + (i + 0.5) * aw, y + 2.55, z0 + 0.94));
+    for (const sx of [-1, 1]) t.add(cyl(0.08, 0.08, 2.5, RED, sx * (bw / 2 + 0.02), y + 0.1, z0 + 1.0, 8));
+    // The curved eave over each storey; over the top one the red hood.
+    t.add(at(banglaRoof(bw + 0.9, 1.6, k < 2 ? 0.4 : 1.15, k < 2 ? L : RED), 0, y + 2.85, z0 + 0.7));
+  }
+  t.add(cyl(0.12, 0.03, 0.7, M.gild, 0, 7.0 + 2 * 3.25 + 3.95, z0 + 0.7, 6));
+  t.add(placeAll(bracketGeo(1.5, 1.0, 0.3), [-bw / 2 + 0.4, 0, bw / 2 - 0.4].map((x) => [x, 6.8, z0 + 0.02, 0]), L));
+  for (const x of [-w * 0.3, 0, w * 0.3]) {
+    t.add(box(1.3, 1.4, 0.05, OCHRE, x, 20.1, z0 - 0.1));
+    for (const k of [-1, 1]) t.add(cyl(0.08, 0.08, 2.3, RED, x + k * 0.82, 18.6, z0 + 0.08, 8));
+  }
+  for (const x of [-w / 4, w / 4]) for (const k of [-1, 1]) t.add(cyl(0.09, 0.09, 2.75, L, x + k * 0.98, 1, z0 + 0.08, 8));
+  return mergeByMaterial(t);
+}
+
 function carving(f) {
-  const d = new THREE.Group(), L = M.lime, { CREAM, TAN, RED } = PALACE, GLASS = surface(mat('#2f4a4a', 0.4, 0.2), 'none'), OCHRE = surface(mat('#e3bd4e', 0.75), 'none'), b = 1;
-  const pil = [], caps = [], shut = [], panes = [], dent = [], urns = [], rings = [];
+  const d = new THREE.Group(), L = M.lime, { CREAM, RED } = PALACE, GLASS = surface(mat('#2f4a4a', 0.4, 0.2), 'none'), OCHRE = surface(mat('#e3bd4e', 0.75), 'none'), b = 1;
+  const pil = [], caps = [], shut = [], panes = [], panes2 = [], dent = [], urns = [], rings = [];
   for (const s of [-1, 1]) {
     for (let i = 0; i <= 16; i++) {
       const x = s * (12.6 + (i - 0.5) * 1.9);
@@ -130,27 +164,19 @@ function carving(f) {
   for (let k = 0; k < 32; k++) { const cx = (k - 15.5) * 2.62; if (Math.abs(cx) > 3) rings.push([cx, b + 0.4, FZ + 0.02, 0]); }
   d.add(placeAll(ring, rings, L));
 
-  // The end towers, each w wide and 9 deep about (cx, 19.5), 23.6 high from the plinth.
-  const shafts = [], spires = [], tdent = [], colon = [];
-  for (const s of [-1, 1]) for (const [cx, w] of [[s * 46.1, 8.4], [s * 60.8, 7.6]]) {
-    const t = at(new THREE.Group(), cx, b, 19.5);
-    for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
-      shafts.push([cx + sx * (w / 2), b, 19.5 + sz * 4.5, 0.75, 25.4, 0.75]);
-      spires.push([cx + sx * (w / 2), b + 25.4, 19.5 + sz * 4.5, 0.55, 1.5, 0.55]);
-    }
-    for (const a of FACES) {
-      const len = a === 0 || a === Math.PI ? w : 9, dist = (a === 0 || a === Math.PI ? 9 : w) / 2;
-      for (const y of [5.55, 16.95]) for (const [x, yy, z, ry] of alongFace(a, dist + 0.2, len - 1, Math.round(len / 0.7), y)) tdent.push([cx + x, b + yy, 19.5 + z, 0.2, 0.42, 0.5, ry]);
-      t.add(onFace(at(chhajja(len + 0.4, 1.1, 0.35, 0.14, L), 0, 23.3, 0), a, dist + 0.05));
-      t.add(placeAll(bracketGeo(0.9, 0.85, 0.22), alongFace(a, dist + 0.02, len - 0.6, Math.round(len / 0.95), 22.95), L));
-      t.add(onFace(at(merlons(len - 0.4, 0.5, 0.6, 0.2, L, 0.3), 0, 24.85, 0), a, dist + 0.05));
-    }
-    // Colonnettes either side of each of the three top windows and the two below.
-    for (const x of [-w * 0.3, 0, w * 0.3]) for (const k of [-1, 1]) colon.push([cx + x + k * 0.82, b + 18.6, 24.08, 0.16, 2.3, 0.16]);
-    for (const x of [-w / 4, w / 4]) for (const k of [-1, 1]) colon.push([cx + x + k * 0.98, b + 1, 24.08, 0.18, 2.75, 0.18]);
+  // The end towers (END_TOWERS): each carved in its own frame and set where the tower stands.
+  for (const [x, z, ry, w] of END_TOWERS) {
+    const t = at(towerCarving(w, GLASS, OCHRE), x, b, z);
+    t.rotation.y = ry;
     d.add(t);
   }
-  d.add(inst(unitCyl(8), shafts, TAN), inst(new THREE.ConeGeometry(0.5, 1, 8).translate(0, 0.5, 0), spires, RED), inst(unitBox(), tdent, L), inst(unitCyl(8), colon, L));
+  // Between each pair of towers: the tall arch closed with a yellow screen, and a balustrade along
+  // the roof of the range.
+  for (const s of [-1, 1]) {
+    panes2.push([s * 53.65, b + 0.6, 23.82, 4.3, 7.0, 0.05]);
+    d.add(at(balustrade(6.6, 1.0, L, { t: 0.3 }), s * 53.65, b + 19.7, 23.7));
+  }
+  d.add(inst(unitBox(), panes2, OCHRE));
 
   // The central tower (about x = 0, z = 12): its lower stage 9.6 square from y 18, its upper 6.8
   // square from y 28.
@@ -158,7 +184,7 @@ function carving(f) {
   for (const a of FACES) {
     for (const [y, half, n] of [[22.38, 5.85, 13], [27.18, 5.85, 13], [32.38, 4.35, 9]]) for (const [x, yy, z, ry] of alongFace(a, half, half * 2 - 0.6, n, y)) tw.add(at(box(0.2, 0.42, 0.5, L), x, yy, z).rotateY(ry));
     for (const k of [-2.75, -0.92, 0.92, 2.75]) for (const y of [18.8, 23.5]) tw.add(onFace(cyl(0.11, 0.11, 2.6, L, 0, y, 0, 8), a, 5.35, k));
-    for (const k of [-0.95, 0.95]) tw.add(onFace(cyl(0.1, 0.1, 2.4, L, 0, 28.8, 0, 8), a, 3.85, k));
+    for (const k of [-2.0, -0.95, 0.95, 2.0]) tw.add(onFace(cyl(0.11, 0.11, 2.6, RED, 0, 28.8, 0, 8), a, 3.85, k));
     tw.add(onFace(at(railing(8.6, 0.7, 0.14, L, 1.2), 0, 28.1, 0), a, 5.6), onFace(at(railing(7.6, 0.6, 0.12, L, 1.2), 0, 33.3, 0), a, 4.15));
   }
   for (const x of [-3.6, 3.6]) for (const z of [-3.6, 3.6]) tw.add(at(chhatri(0.5, 1.8, CREAM, M.gild), x, 33.3, z));
