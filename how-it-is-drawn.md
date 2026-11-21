@@ -25,8 +25,15 @@ what changes between desktops and phones.
   from a signed distance field and meshed in the browser (`js/sdf.js`, `js/details/animals.js`,
   `js/details/figures.js`), so limbs grow out of bodies as in a carving. Examples are Patel in his
   dhoti and shawl, the Nageshwar Shiva, Bahubali, Thiruvalluvar, the Nandis, elephants, Konark's
-  horses, temple lions and door guardians. Their crevices are darkened, dark stone is polished,
-  and faces and hands are sculpted. The 25 m Shiva at Nageshwar is the most detailed: matted
+  horses, temple lions and door guardians. Their crevices are darkened and their ridges rubbed
+  pale, dark stone is polished, and faces and hands are sculpted. The heads of Patel and Bahubali
+  are meshed on a grid three to four times finer than their bodies, inside an ellipsoid that
+  crosses the neck, so a face costs only its own triangles; the front of Patel's torso (his
+  bandi's placket, buttons and pockets) and his feet, chappals and dhoti hems are meshed finely
+  the same way. Creepers, hems, curls and leaves are
+  laid on the skin with `snap()` rather than placed by hand, so they never float. The Statue of
+  Unity's bronze is cast in plates, and free-standing stone weathers in deep rain streaks, both
+  drawn by the surface shader at no cost in triangles. The 25 m Shiva at Nageshwar is the most detailed: matted
   locks with the crescent moon and the Ganga, the third eye, rudraksha malas, the serpent Vasuki
   round the neck, a tiger-skin cloth, and the trishul with its damaru
   (`js/details/nageshwar-temple.js`).

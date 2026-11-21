@@ -1,62 +1,115 @@
 import * as THREE from 'three';
 import { surface } from '../surface.js';
-import { mat, mesh, box, at, onFace, rng, inst, unitBox, aroundRect, ellipsoid, tube, face, pidaRoof } from '../helpers.js';
+import { mat, mesh, box, at, onFace, rng, inst, unitBox, aroundRect, tube, pidaRoof } from '../helpers.js';
+import { onSkin, skinMatrix, normalAt } from '../sdf.js';
 import { heightField, fbm, smooth } from '../details/terrain.js';
 import { trabeateGate } from '../details/temples.js';
-import { templeNiche, mergeByMaterial } from '../details/components.js';
+import { templeNiche, petalRing, mergeByMaterial } from '../details/components.js';
 import { figure } from '../details/sculpture.js';
 import { detail } from '../detail.js';
-import { bahubaliBody } from '../details/figures.js';
+import { bahubaliBody, bahubaliSurface } from '../details/figures.js';
 import { addDetails } from '../details/gommateshwara.js';
 
 const GRANITE = mat('#c9c3b6', 0.8);
 // The statue is one smooth monolith, so it gets plain stone rather than coursed masonry.
 const STATUE = surface(mat('#cfc9bc', 0.75), 'marble');
+const RELIEF = surface(mat('#cfc9bc', 0.75), 'carved');
 const HILL = mat('#9a917f', 0.95, 0, { flatShading: true });
-const VINE = mat('#5c7a44', 0.9);
 
-// Bahubali standing in kayotsarga: upright, arms straight at his sides, with creepers winding
-// up his legs and arms, curled hair and long ears, all as carved from the one block of granite.
+// Bahubali standing in kayotsarga, as carved from the one block of granite: the body, the
+// anthills beside his legs and the head are one sculpted field (bahubaliBody, js/details/
+// figures.js); on its skin lie, in the same stone and in low relief, the madhavi creepers that
+// grew up him as he stood (leafy stems rising from the feet up the fronts of the thighs, and up
+// each arm from the wrist to a coiled tendril on the upper arm), the tendrils and snakes carved
+// on the anthills, and the tight curls of his hair. He stands on an open lotus.
 function bahubali() {
-  const g = new THREE.Group(), G = STATUE, leaves = [];
-  // The body as one carved skin, from the feet to the neck
-  g.add(bahubaliBody(G));
+  // The relief on the skin is in the body's own stone: its carved surface, without the marble's joints.
+  const g = new THREE.Group(), G = RELIEF, F = bahubaliSurface();
+  g.add(bahubaliBody(STATUE));
+  const add = (o) => (g.add(o), o);
+  // A stem in relief: its centre line on the skin, half its thickness sunk into the stone.
+  const stem = (pts, r) => add(tube(onSkin(F, pts, r * 0.45), r, G, Math.max(24, pts.length * 4), 6));
+  const leafM = [], leafS = [], curlM = [];
+  // Leaves in pairs along a stem, every `step` metres, angled up and out from it, len long.
+  const leaves = (pts, step, len, list) => {
+    const curve = new THREE.CatmullRomCurve3(onSkin(F, pts, 0).map((p) => new THREE.Vector3(...p))), L = curve.getLength();
+    for (let t = step; t < L - step * 0.4; t += step) {
+      const u = t / L, p = curve.getPointAt(u), tg = curve.getTangentAt(u), n = new THREE.Vector3(...normalAt(F, p.toArray())), side = new THREE.Vector3().crossVectors(n, tg).normalize();
+      for (const sd of [-1, 1]) {
+        const dir = tg.clone().multiplyScalar(Math.cos(0.62)).addScaledVector(side, sd * Math.sin(0.62));
+        const k = len(u);
+        list.push(skinMatrix(F, p.toArray(), dir.toArray(), -0.01, [k, 1, k]));
+      }
+    }
+  };
   for (const s of [-1, 1]) {
-    // Creepers spiralling up the legs and the arms
-    for (const [x0, y0, y1, r] of [[s * 1.3, 0.8, 8.4, 1.0], [s * 3.7, 6.6, 14.4, 0.85]]) {
-      const pts = [];
-      for (let k = 0; k <= 26; k++) { const a = k * 0.62 + (s > 0 ? 0 : Math.PI); pts.push([x0 + Math.sin(a) * r, y0 + (k / 26) * (y1 - y0), Math.cos(a) * r]); }
-      g.add(tube(pts, 0.12, VINE, 120, 6));
-      // Leaves along the creeper, in pairs.
-      pts.forEach(([x, y, z], k) => { if (k % 2) leaves.push([x + Math.sin(k) * 0.25, y, z + 0.2, 0.42, 0.18, 0.28, k * 1.3]); });
+    // Up the front of each leg from the foot, over the thigh and out towards the hip.
+    const leg = Array.from({ length: 12 }, (_, i) => { const t = i / 11; return [s * (1.02 + 0.3 * t + 0.5 * t ** 3), 1.0 + t * 7.5, 3]; });
+    stem(leg, 0.11);
+    leaves(leg, 0.5, (u) => 1.05 + 0.6 * u, leafM);
+    // Up each arm from the wrist along the front of the forearm and the upper arm.
+    const arm = Array.from({ length: 12 }, (_, i) => { const t = i / 11, ax = t < 0.5 ? 3.0 + (3.42 - 3.0) * t * 2 : 3.42, ay = t < 0.5 ? 8.5 + (11.0 - 8.5) * t * 2 : 11.0 + (13.0 - 11.0) * (t - 0.5) * 2; return [s * (ax + 0.35), ay, 2]; });
+    stem(arm, 0.085);
+    leaves(arm, 0.75, () => 0.85, leafS);
+    // The coiled tendril at the top, on the front of the upper arm.
+    const coil = Array.from({ length: 28 }, (_, i) => { const t = i / 27, a = Math.PI * 0.5 - t * Math.PI * 3.2, r = 0.55 * (1 - t) + 0.08; return [s * (3.42 + 0.12 + Math.cos(a) * r), 13.45 + Math.sin(a) * r, 2]; });
+    stem([[s * 3.8, 13.0, 2], ...coil], 0.075);
+    // On each anthill, tendrils carved rising in S-curves to curled ends, and two snakes.
+    for (const [x0, ph] of [[2.6, 0], [3.4, 1.3], [4.3, 2.4]]) {
+      const tend = Array.from({ length: 16 }, (_, i) => { const t = i / 15, a = t * 7 + ph; return [s * (x0 + 0.25 * Math.sin(a) + (t > 0.75 ? 0.3 * Math.cos((t - 0.75) * 18) * (1 - t) * 4 : 0)), 0.6 + t * 4.0 + (t > 0.75 ? 0.3 * Math.sin((t - 0.75) * 18) * (1 - t) * 4 : 0), 2]; });
+      stem(tend, 0.07);
     }
-    // The anthills that rose round his feet as he stood, carved beside the legs up to the knee,
-    // with snakes coming out of them.
-    const hill = new THREE.IcosahedronGeometry(1, 2), hp = hill.attributes.position;
-    for (let k = 0; k < hp.count; k++) { const y = hp.getY(k), w = 1 + 0.18 * Math.sin(hp.getX(k) * 7 + y * 5) * Math.cos(hp.getZ(k) * 6); hp.setXYZ(k, hp.getX(k) * w * (1.2 - y * 0.45), y, hp.getZ(k) * w * (1.2 - y * 0.45)); }
-    hill.computeVertexNormals();
-    const ah = mesh(hill, G, s * 3.3, 2.4, 0.3);
-    ah.scale.set(1.3, 2.6, 1.2);
-    g.add(ah);
-    for (const ph of [0, 2.4]) {
-      const sp = [];
-      for (let k = 0; k <= 12; k++) { const t = k / 12, a = ph + t * 5; sp.push([s * (3.3 + Math.cos(a) * (1.4 - t * 0.6)), 1.2 + t * 4.2, 0.3 + Math.sin(a) * (1.2 - t * 0.5)]); }
-      g.add(tube(sp, 0.13, VINE, 48, 6));
+    for (const z0 of [-0.9, 0.3]) {
+      const outer = Array.from({ length: 10 }, (_, i) => { const t = i / 9; return [s * 5.6, 0.5 + t * 3.4, z0 + 0.35 * Math.sin(t * 6)]; });
+      stem(outer, 0.13);
+      const head = new THREE.Mesh(HOOD, G);
+      head.matrixAutoUpdate = false;
+      head.matrix.copy(skinMatrix(F, [s * 5.6, 4.05, z0 + 0.35 * Math.sin(6)], [0, 1, 0], 0.08, [1, 1, 1]));
+      add(head);
     }
   }
-  g.add(inst(new THREE.SphereGeometry(0.5, 6, 4), leaves, VINE));
-  // The serene face, and the long ears
-  g.add(at(face(1.32, 1.65, 1.4, G), 0, 17.4, 0.1));
-  for (const s of [-1, 1]) g.add(ellipsoid(0.22, 0.95, 0.4, G, s * 1.32, 17.0, 0));
-  // Tight curls of hair over the crown
-  const curls = [];
-  for (let k = 0; k < 140; k++) {
-    const phi = Math.acos(1 - (k + 0.5) / 140 * 1.1), th = k * 2.39996;
-    curls.push([Math.sin(phi) * Math.cos(th) * 1.32, 17.55 + Math.cos(phi) * 1.62, 0.05 + Math.sin(phi) * Math.sin(th) * 1.36, 0.36, 0.3, 0.36]);
+  const placed = (geo, list) => { const im = new THREE.InstancedMesh(geo, G, list.length); list.forEach((m, i) => im.setMatrixAt(i, m)); im.castShadow = im.receiveShadow = true; return add(im); };
+  placed(leafGeo(1.0, 0.46, 0.09, 1.1), leafM);
+  placed(leafGeo(0.75, 0.32, 0.07, 0.7), leafS);
+  // The curls: rows of small snail-shell knobs over the scalp, down to the hairline (low over the
+  // forehead and temples, lower behind), clear of the ears.
+  for (let phi = 0.1; phi < 2.3; phi += 0.115) {
+    const n = Math.max(6, Math.round((2 * Math.PI * Math.sin(phi) * 1.35) / 0.2));
+    for (let k = 0; k < n; k++) {
+      const a = (k / n) * Math.PI * 2 + phi * 3, p = [Math.sin(phi) * Math.sin(a) * 1.4, 17.75 + Math.cos(phi) * 1.62, -0.05 + Math.sin(phi) * Math.cos(a) * 1.45];
+      const ca = Math.cos(a), line = ca > 0 ? 17.6 + 0.45 * ca : 17.6 + 0.3 * ca;
+      if (p[1] < line || (Math.abs(p[0]) > 0.95 && p[1] < 18.0 && Math.abs(p[2]) < 0.5)) continue;
+      curlM.push(skinMatrix(F, p, [Math.cos(a), 0, -Math.sin(a)], -0.03));
+    }
   }
-  g.add(inst(new THREE.SphereGeometry(0.5, 10, 8), curls, mat('#8d877a', 0.9)));
+  placed(CURL, curlM);
+  // The open lotus he stands on: a ring of broad petals turned out round his feet, its back half
+  // lost in the anthills.
+  add(at(petalRing(2.5, 20, 1.0, 0.8, 1.3, G, 0.32), 0, 0, 0.9));
   return g;
 }
+// A pointed leaf len long and w wide, t thick, its base at the origin and its tip along +z, curving
+// down from its base to follow a limb of radius R, with a raised midrib.
+function leafGeo(len, w, t, R) {
+  const geo = new THREE.SphereGeometry(1, 20, 10), p = geo.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i), y = p.getY(i), z = p.getZ(i), u = (z + 1) / 2;
+    const width = Math.sin(Math.PI * Math.pow(u, 0.75)) * w * 0.5, zz = u * len, yy = y * t * 0.5 + (y > 0 ? t * 0.5 * Math.exp(-((x / 0.18) ** 2)) : 0);
+    p.setXYZ(i, x * width, yy - (zz * zz) / (2 * R), zz);
+  }
+  geo.computeVertexNormals();
+  return geo;
+}
+// A curl: a small knob, its top turned in a spiral.
+const CURL = (() => {
+  const geo = new THREE.SphereGeometry(0.11, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), p = geo.attributes.position;
+  for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i), z = p.getZ(i), a = Math.atan2(z, x), r = Math.hypot(x, z); p.setY(i, y * (1 + 0.25 * Math.sin(a * 1 + r * 55))); }
+  geo.scale(1, 0.6, 1);
+  geo.computeVertexNormals();
+  return geo;
+})();
+// A cobra's hood, raised.
+const HOOD = new THREE.SphereGeometry(1, 12, 8).scale(0.32, 0.1, 0.42);
 
 // The pillared cloister round the hilltop court (a 36 m square, its floor at H + 0.5): the solid
 // outer wall, a colonnade 2.4 m in from it under a flat roof with a parapet, and in the middle of the
