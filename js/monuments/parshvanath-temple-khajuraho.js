@@ -9,7 +9,8 @@ export function buildParshvanath() {
   g.add(f);
   g.add(box(100, 0.2, 100, M.grass));
   // High platform, then the temple with its spire, minor spires and bands of sculpture
-  f.add(box(26, 3, 40, Sd, 0, 0, 4));
+  // It runs 4 m past the foot of the temple's own stair, and a flight climbs it from the east.
+  f.add(box(26, 3, 44, Sd, 0, 0, 6));
   // The Jain flag, in its five colours, flies from the finial. In the sanctum's niches, a seated
   // tirthankara in meditation rather than a Shaiva guardian.
   const crown = new THREE.Group(), jain = ['#d2302c', '#f2c21c', '#f5f2ea', '#2f8a4a', '#2f5d9a'];

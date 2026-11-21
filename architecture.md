@@ -183,8 +183,8 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | Gopuram | Mandap | Temple niche with an image |
 | ![Manastambha](img/manastambha.jpg) | ![Kerala gable](img/kerala-gable.jpg) | ![Deepmala](img/deepmala.jpg) |
 | Manastambha | Kerala gable | Deepmala |
-| ![Nandi mandapa](img/nandi-mandapa.jpg) |   |   |
-| Nandi mandapa |   |   |
+| ![Nandi mandapa](img/nandi-mandapa.jpg) | ![Dravida hall dress](img/dravida-dress.jpg) |   |
+| Nandi mandapa | Dravida hall dress |   |
 
 | Part | What it is |
 | --- | --- |
@@ -204,6 +204,7 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | `keralaGable(w, h, d, roofM, wood)` | The carved timber gable (mukhappu) of a Kerala roof, as a dormer to set into a hip roof |
 | `deepmala(h, m)` | The lamp tower of Maharashtra's temples: a tapering shaft with rings of stone arms, a brass lamp on each, lit at night |
 | `nandiMandapa(w, h, m, trim, { nandiM })` | An open pavilion of eight carved pillars on the temple's axis, the Nandi lying in it facing the sanctum |
+| `dravidaDress(w, d, h, m, { eaveM, haraM })` | The dress of a plain South Indian hall or shrine block: moulded base, pilasters, a kapota eave and a parapet of miniature shrines |
 | `kuta(s, m)`, `shala(w, d, m)`, `haraRow(len, s, m)` (sculpture) | The miniature shrines along the edge of each storey of a vimana |
 
 ## Forts (`js/details/forts.js`)

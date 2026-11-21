@@ -61,6 +61,7 @@ const PARTS = `
     'temple-niche': () => group(wall(5, 6, M.pink), at(C.templeNiche(1.6, 3, M.pink, { figure: C.idol(2.5, M.pink) }), 0, 1, 0)),
     'manastambha': () => T.manastambha(12, M.marble, { images: true }),
     'deepmala': () => T.deepmala(9),
+    'dravida-dress': () => group(box(14, 6, 10, M.granite), T.dravidaDress(14, 10, 6, M.granite, { eaveM: M.graniteDark, haraM: M.stucco })),
     'nandi-mandapa': () => T.nandiMandapa(7, 4.4, M.granite, M.graniteDark),
     'kerala-gable': [() => group(box(9, 1.2, 4, M.granite, 0, 0, -2), at(T.keralaGable(6, 2.6, 3.6, mat('#b0773f', 0.45, 0.4), mat('#5a3a24', 0.7)), 0, 1.2, 0)), { view: [0.15, 0.5, 1] }],
     'inlay-border': () => group(wall(7, 8, M.red), at(C.inlayBorder(5, 6.4, 0.4, M.marble, C.D.ink), 0, 0.8, 0)),

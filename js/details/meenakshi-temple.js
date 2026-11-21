@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, box, at, onFace, FACES, inst, unitBox } from '../helpers.js';
-import { mouldings, pilasters, chhajja, columnTrim, mergeByMaterial } from './components.js';
-import { haraRow, kuta } from './sculpture.js';
+import { mouldings, chhajja, columnTrim, mergeByMaterial } from './components.js';
+import { haraRow } from './sculpture.js';
+import { dravidaDress } from './temples.js';
 import { trees, stalls, along, cityAround } from './realism.js';
 import { detail } from '../detail.js';
 import { rideElephant } from './animals.js';
@@ -13,21 +14,6 @@ import { rideElephant } from './animals.js';
 // Thousand Pillar Hall has a moulded base, a capital and a bracket (pushpapodigai); and the outer
 // walls are moulded at the foot and coped. Dimensions follow js/monuments/meenakshi-temple.js.
 const Gr = M.granite;
-
-// A rectangular hall w × dd, h high, centred on (cx, cz): base mouldings, pilasters, a kapota eave
-// and a parapet of kutas and shalas along every edge of its roof.
-function dressHall(d, cx, cz, w, dd, h) {
-  const g = new THREE.Group();
-  g.add(mouldings(w, dd, [[0, 0.45, 0.35], [0.45, 0.3, 0.18], [0.75, 0.35, 0.28]], Gr));
-  for (const a of FACES) {
-    const side = Math.abs(Math.sin(a)) > 0.5, len = side ? dd : w, dist = side ? w / 2 : dd / 2;
-    g.add(onFace(at(pilasters(len - 1.2, Math.max(2, Math.round(len / 2.6)), 0.55, h - 2.2, 0.14, Gr), 0, 1.15, 0), a, dist));
-    g.add(onFace(at(chhajja(len + 0.8, 1.1, 0.45, 0.14, M.graniteDark), 0, h - 0.2, 0), a, dist));
-    g.add(onFace(at(haraRow(len - 2.6, 1.1, M.stucco), 0, h, 0), a, dist - 0.7));
-  }
-  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(at(kuta(1.1, M.stucco), sx * (w / 2 - 0.7), h, sz * (dd / 2 - 0.7)));
-  d.add(at(g, cx, 0, cz));
-}
 
 // A kapota eave len long at (x, y, z), its lip facing angle a.
 const eave = (len, x, y, z, a, dep = 1.2) => { const o = chhajja(len, dep, 0.45, 0.14, M.graniteDark); o.position.set(x, y, z); o.rotation.y = a; return o; };
@@ -101,8 +87,9 @@ function walls(d) {
 
 function architecture(f) {
   const d = new THREE.Group();
-  dressHall(d, 22, 30, 44, 32, 7);
-  dressHall(d, -22, -28, 34, 40, 7);
+  // The halls round the two shrines (js/monuments: 44 × 32 and 34 × 40, 7 high).
+  d.add(at(dravidaDress(44, 32, 7, Gr, { eaveM: M.graniteDark, haraM: M.stucco }), 22, 0, 30));
+  d.add(at(dravidaDress(34, 40, 7, Gr, { eaveM: M.graniteDark, haraM: M.stucco }), -22, 0, -28));
   tankCloister(d);
   thousandPillars(d);
   corridors(d);

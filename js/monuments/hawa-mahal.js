@@ -117,6 +117,8 @@ export function buildHawaMahal() {
   const paneIm = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0), JALI, panes.length), po = new THREE.Object3D();
   panes.forEach(([x, py, z, sx, sy, sz, a], i) => { po.position.set(x, py, z); po.rotation.set(0, a, 0); po.scale.set(sx, sy, sz); po.updateMatrix(); paneIm.setMatrixAt(i, po.matrix); });
   f.add(inst(bayGeo, bays, P), paneIm);
+  // The oriels, for their white lime trim (js/details/hawa-mahal.js).
+  f.userData.bays = bays;
   f.add(inst(unitHemi(10), domes, L), inst(unitBox(), posts, P), inst(banglaGeo(), banglas, L), inst(finialGeo(), finials, L), inst(unitBox(), corbels, L));
   // The cusps: small lobes turned to face out of the arch.
   const cuspM = new THREE.InstancedMesh(new THREE.TorusGeometry(0.07, 0.022, 4, 8, Math.PI), L, cusps.length), o = new THREE.Object3D();
