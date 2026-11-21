@@ -70,9 +70,11 @@ From [architecture.md](architecture.md).
 
 ### [Tibetan monasteries](architecture.md#tibetan-monasteries-jsdetailstibetanjs)
 
-| ![Monks' houses](img/tibetan-houses.jpg) | ![Dharma wheel and a victory banner](img/dharma-wheel.jpg) |   |
+| ![Monks' houses](img/tibetan-houses.jpg) | ![Dharma wheel and a victory banner](img/dharma-wheel.jpg) | ![Assembly hall](img/tibetan-hall.jpg) |
 | :---: | :---: | :---: |
-| Monks' houses | Dharma wheel and a victory banner |   |
+| Monks' houses | Dharma wheel and a victory banner | Assembly hall |
+| ![Prayer wheels](img/mani-wheels.jpg) | ![Gilded roof](img/gilded-roof.jpg) |   |
+| Prayer wheels | Gilded roof |   |
 
 ### [Stairs](architecture.md#stairs-jsdetailsdoorwaysjs)
 

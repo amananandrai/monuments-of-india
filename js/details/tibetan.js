@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, surface, inst, unitBox, TIBETAN, rng } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, surface, inst, unitBox, unitCyl, onFace, FACES, TIBETAN, rng } from '../helpers.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { detail } from '../detail.js';
 
@@ -163,5 +163,136 @@ export function quarters(blocks, { cap = 0.7, seed = 3, doors = true } = {}) {
   add(unitBox(), roofs, EARTH, false);
   add(unitBox(), poles, SURROUND, false);
   TARCHOK.forEach((m, i) => add(unitBox(), flags[i], m, false));
+  return g;
+}
+
+/* ---------- the halls ---------- */
+// Windows for an assembly hall or a temple, as on the monks' houses above but set on any list of
+// spots [x, y, z, ry, s] (the sill's centre on the wall, the window facing +z turned by ry, s its
+// size, 1 being 1.1 × 1.6): the black surround widening to the sill, the pane, the timber frame
+// and mullion (desktops), the projecting lintel and the white valance under it.
+export function hallWindows(spots) {
+  const g = new THREE.Group(), L = { s: [], f: [], p: [], l: [], v: [] };
+  for (const [x, y, z, ry = 0, s = 1] of spots) {
+    const c = Math.cos(ry), sn = Math.sin(ry);
+    const at_ = (ly, lz, sx, sy, sz) => [x + lz * sn, y + ly * s, z + lz * c, sx * s, sy * s, sz, ry];
+    L.s.push(at_(0, 0, 1.1, 1.6, 1));
+    L.f.push(at_(0, 0, 1.1, 1.6, 1));
+    L.p.push(at_(0.22, 0.01, 0.68, 1.22, 0.03));
+    L.l.push(at_(1.6, 0, 1.4, 0.14, 0.3 * s));
+    L.v.push(at_(1.44, 0.04, 1.3, 0.16, 0.24 * s));
+  }
+  const out = () => new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0.5);
+  const add = (geo, list, m) => { const im = inst(geo, list, m); im.castShadow = false; g.add(im); };
+  add(surroundGeo(), L.s, SURROUND);
+  if (!detail.low) add(frameGeo(), L.f, TIMBER);
+  add(out(), L.p, PANE);
+  add(out(), L.l, TIMBER);
+  add(out(), L.v, CLOTH);
+  return g;
+}
+
+// A projecting timber window bay (rabsel) w wide and h high, its back on the wall at z = 0 and its
+// sill at y = 0: a box of dark red timber standing 0.8 out, glazed across its front in three
+// lights with lattice bars, on a sill carried by two brackets, under a stack of painted lintels
+// (red, green, blue, each projecting further) and a timber cornice; set in a black surround on
+// the wall behind it.
+const BAY = surface(mat('#5e2a1e', 0.75), 'none');
+export function rabsel(w, h) {
+  const g = new THREE.Group();
+  const sur = mesh(surroundGeo(), SURROUND);
+  sur.scale.set(w * 0.95, h * 1.05, 1);
+  sur.position.y = -0.2;
+  g.add(sur, box(w, h, 0.8, BAY, 0, 0, 0.4), box(w + 0.24, 0.2, 0.95, TIMBER, 0, -0.2, 0.48));
+  for (const s of [-1, 1]) g.add(box(0.16, 0.5, 0.7, TIMBER, s * w * 0.36, -0.7, 0.35));
+  const lw = (w - 0.5) / 3;
+  for (let k = 0; k < 3; k++) {
+    const x = -w / 2 + 0.125 + (k + 0.5) * (lw + 0.125);
+    g.add(box(lw, h * 0.66, 0.04, PANE, x, h * 0.14, 0.81));
+    if (!detail.low) {
+      g.add(box(0.05, h * 0.66, 0.05, TIMBER, x, h * 0.14, 0.84));
+      for (const t of [0.36, 0.58]) g.add(box(lw, 0.05, 0.05, TIMBER, x, h * t, 0.84));
+    }
+  }
+  [[RED, 0, 0.9], [GREEN, 0.14, 1.0], [BLUE, 0.28, 1.1]].forEach(([m, y, d]) => g.add(box(w + 0.2 + y, 0.14, d, m, 0, h + y, d / 2)));
+  g.add(box(w + 0.7, 0.18, 1.3, TIMBER, 0, h + 0.42, 0.65));
+  return g;
+}
+
+// A gallery of prayer wheels (mani khorlo) len long, its back on a wall at z = 0: a whitewashed
+// plinth, a row of brass drums about 55 cm apart, each banded in red, turning on spindles in a
+// dark recess, between maroon posts under a beam and a small timber eave. back: a whitewashed wall
+// behind it, for a gallery that stands free.
+const BRASS = surface(mat('#c9a04a', 0.35, 0.8), 'none');
+export function maniWheels(len, { h = 2.4, back = false } = {}) {
+  const g = new THREE.Group(), n = Math.max(2, Math.floor(len / 0.55)), drums = [], bands = [], spindles = [];
+  g.add(box(len, 0.6, 0.9, TIBETAN.white, 0, 0, 0.45), box(len, h - 0.6, 0.06, SURROUND, 0, 0.6, 0.03));
+  for (let k = 0; k < n; k++) {
+    const x = -len / 2 + (k + 0.5) * (len / n);
+    drums.push([x, 0.95, 0.45, 0.4, 0.6, 0.4]);
+    bands.push([x, 1.2, 0.45, 0.41, 0.1, 0.41]);
+    spindles.push([x, 0.6, 0.45, 0.05, h - 0.75, 0.05]);
+  }
+  g.add(inst(unitCyl(12), drums, BRASS), inst(unitCyl(12), bands, RED), inst(unitCyl(5), spindles, SURROUND));
+  for (const s of [-1, 1]) g.add(box(0.24, h - 0.6, 0.24, TIBETAN.maroon, s * (len / 2 - 0.12), 0.6, 0.78));
+  g.add(box(len, 0.24, 0.3, TIBETAN.maroon, 0, h - 0.24, 0.78), box(len + 0.5, 0.14, 1.3, TIMBER, 0, h, 0.6));
+  if (back) g.add(box(len + 0.5, h + 0.6, 0.6, TIBETAN.white, 0, 0, -0.3), box(len + 0.7, 0.4, 0.8, TIBETAN.maroon, 0, h + 0.6, -0.3));
+  return g;
+}
+
+// A gilded finial (ganjira) h tall for the peak of a roof: a lotus base, a swelling vase, rings and
+// a jewel at the top; on desktops a ring of petals round its foot.
+export function ganjira(h, m = M.gild) {
+  const pts = [[0, 0], [0.3, 0], [0.33, 0.05], [0.2, 0.11], [0.16, 0.18], [0.25, 0.3], [0.28, 0.4], [0.24, 0.5], [0.13, 0.58], [0.1, 0.64], [0.17, 0.67], [0.17, 0.7], [0.08, 0.73], [0.13, 0.8], [0.12, 0.86], [0.05, 0.92], [0, 1]];
+  const g = new THREE.Group().add(mesh(new THREE.LatheGeometry(pts.map(([r, y]) => new THREE.Vector2(r * h, y * h)), 16), m));
+  if (!detail.low) for (let k = 0; k < 8; k++) {
+    const a = (k / 8) * Math.PI * 2, p = mesh(new THREE.SphereGeometry(1, 8, 5, 0, Math.PI * 2, 0, Math.PI / 2), m);
+    p.scale.set(0.09 * h, 0.13 * h, 0.05 * h);
+    p.position.set(Math.cos(a) * 0.24 * h, 0.06 * h, Math.sin(a) * 0.24 * h);
+    p.rotation.set(0, -a + Math.PI / 2, 0);
+    p.rotateX(-0.5);
+    g.add(p);
+  }
+  return g;
+}
+
+// The corners of a gilded hip roof w × d whose eave is at y = 0: at each corner a gilt tip turned
+// up and out (the makara head of photographs, simplified) with a bell hung under it.
+export function roofCorners(w, d, m = M.gild) {
+  const g = new THREE.Group();
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+    const a = Math.atan2(sx * w, sz * d), tip = mesh(new THREE.ConeGeometry(0.22, 1.1, 8).rotateX(Math.PI / 2 - 0.7), m);
+    const x = sx * w / 2, z = sz * d / 2;
+    tip.position.set(x, 0.25, z);
+    tip.rotation.y = a;
+    g.add(tip, cyl(0.02, 0.02, 0.5, m, x, -0.5, z, 4), at(mesh(new THREE.ConeGeometry(0.16, 0.3, 10, 1, true), m), x, -0.65, z));
+  }
+  return g;
+}
+
+// A Tibetan hall w × h × d, standing on y = 0 and facing +z: whitewashed (or `wall`) walls, the
+// penbey band of maroon twig ends along their top (cap deep) over a white fillet, and windows on
+// every face (hallWindows), in `floors` rows from y0 up, and a roof of beaten earth, each hung with a pleated awning (shabkhep)
+// over its lintel. door: where a door stands in the front (x), its width doorW, so the two lowest
+// rows leave room for it; bay: the width of a rabsel to set in the middle of the front's top row.
+export function hall(w, h, d, { floors = 2, wall = TIBETAN.white, cap = Math.min(1.6, h * 0.14), y0 = 1, door = null, doorW = 4, bay = 0, awnings = true } = {}) {
+  const g = new THREE.Group(), spots = [], aw = new THREE.Group(), s = h >= 9 ? 1.15 : 1;
+  g.add(box(w, h - cap, d, wall), box(w + 0.3, cap, d + 0.3, TIBETAN.maroon, 0, h - cap), box(w + 0.12, 0.16, d + 0.12, CLOTH, 0, h - cap - 0.16));
+  // The flat roof inside the parapet, in beaten earth.
+  g.add(box(w - 0.6, 0.08, d - 0.6, EARTH, 0, h - 0.02));
+  const step = floors > 1 ? (h * 0.85) / floors : 0;
+  for (const a of FACES) {
+    const side = Math.abs(Math.sin(a)) > 0.5, len = side ? d : w, dist = (side ? w : d) / 2, n = Math.max(1, Math.floor(len / 3.4));
+    for (let fl = 0; fl < floors; fl++) for (let k = 0; k < n; k++) {
+      const lat = -len / 2 + (k + 0.5) * (len / n), y = y0 + fl * step;
+      if (a === 0 && door !== null && fl < 2 && Math.abs(lat - door) < doorW / 2 + 0.9) continue;
+      if (a === 0 && bay && fl === floors - 1 && Math.abs(lat) < bay / 2 + 0.9) continue;
+      const x = Math.sin(a) * dist + Math.cos(a) * lat, z = Math.cos(a) * dist - Math.sin(a) * lat;
+      spots.push([x, y, z, a, s]);
+      if (awnings) aw.add(onFace(at(shabkhep(1.1 * s), 0, y + 1.6 * s + 0.16 * s, 0), a, dist + 0.02, lat));
+    }
+  }
+  g.add(hallWindows(spots), aw);
+  if (bay) g.add(at(rabsel(bay, 2.2), 0, y0 + (floors - 1) * step, d / 2));
   return g;
 }

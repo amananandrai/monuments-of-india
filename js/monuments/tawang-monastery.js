@@ -1,34 +1,15 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, group, rng, inst, unitBox, hipRoof, onFace } from '../helpers.js';
+import { M, mat, box, cyl, at, group, rng, inst, unitBox, hipRoof, TIBETAN } from '../helpers.js';
 import { tibetanPortico, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { mountainRing, heightField, rough, smooth } from '../details/terrain.js';
-import { quarters } from '../details/tibetan.js';
+import { quarters, hall, gyaltsen, ganjira, roofCorners } from '../details/tibetan.js';
 import { addDetails } from '../details/tawang-monastery.js';
 
 const WHITE = mat('#efece4', 0.85);
-const MAROON = mat('#6b2a22', 0.85);
+const MAROON = TIBETAN.maroon;
 const WINDOW = mat('#2a2220', 0.8);
 const RIDGE = mat('#6f7a55', 0.95, 0, { flatShading: true });
-
-// A Tibetan block: whitewashed walls, tapering dark windows and a maroon parapet band.
-// doorX: where a door stands, so the two lowest rows of windows leave room for it.
-function tibetan(w, h, d, floors, doorX = null) {
-  const g = new THREE.Group();
-  g.add(box(w, h, d, WHITE), box(w + 0.3, h * 0.12, d + 0.3, MAROON, 0, h * 0.88));
-  const n = Math.max(1, Math.floor(w / 3.4));
-  for (let fl = 0; fl < floors; fl++) for (let k = 0; k < n; k++) {
-    const x = -w / 2 + (k + 0.5) * (w / n), y = 1 + fl * ((h * 0.85) / floors);
-    if (doorX !== null && fl < 2 && Math.abs(x - doorX) < 3) continue;
-    g.add(onFace(box(1.2, 1.6, 0.2, WINDOW, 0, y), 0, d / 2, x));
-  }
-  // The sides have their windows too, so neither is a blank wall.
-  const m = Math.max(1, Math.floor(d / 3.4));
-  for (const a of [Math.PI / 2, -Math.PI / 2]) for (let fl = 0; fl < floors; fl++) for (let k = 0; k < m; k++) {
-    g.add(onFace(box(1.2, 1.6, 0.2, WINDOW, 0, 1 + fl * ((h * 0.85) / floors)), a, w / 2, -d / 2 + (k + 0.5) * (d / m)));
-  }
-  return g;
-}
 
 const CW = 160, CD = 70;
 // The spur: a crest line flat across the compound, falling 0.3 m per metre towards the valley (+x)
@@ -61,11 +42,13 @@ export function buildTawang() {
   f.add(box(CW, 0.6, CD, M.path, 0, T - 0.6, 0));
   for (const s of [-1, 1]) f.add(box(CW, 3, 1.5, WHITE, 0, T, s * CD / 2), box(1.5, 3, CD, WHITE, -CW / 2, T, 0));
   for (const s of [-1, 1]) f.add(box(1.5, 3, CD / 2 - 5, WHITE, CW / 2, T, s * (CD / 4 + 2.5)));
-  // The three-storey Dukhang (assembly hall) with its gilded roof
-  f.add(at(tibetan(30, 15, 24, 3, 0), 0, T, -16));
-  f.add(box(16, 5, 12, WHITE, 0, T + 15, -18), box(16.4, 0.8, 12.4, MAROON, 0, T + 19.2, -18));
-  f.add(at(hipRoof(19, 15, 5, M.gild), 0, T + 20, -18), cyl(0.3, 0.7, 2.4, M.gild, 0, T + 25, -18, 8));
-  for (const x of [-13, 13]) f.add(cyl(0.6, 0.9, 3, M.gild, x, T + 15, -5, 8));
+  // The three-storey Dukhang (assembly hall), a timber window bay in the middle of its top floor,
+  // its upper storey, and the gilded roof with a finial at its peak and bells at its corners; victory
+  // banners at the front corners of the terrace (js/details/tibetan.js).
+  f.add(at(hall(30, 15, 24, { floors: 3, door: 0, doorW: 4.2, bay: 4 }), 0, T, -16));
+  f.add(at(hall(16, 5, 12, { floors: 1, cap: 0.8, y0: 1.4 }), 0, T + 15, -18));
+  f.add(at(hipRoof(19, 15, 5, M.gild), 0, T + 20, -18), at(ganjira(3.4), 0, T + 24.6, -18), at(roofCorners(19, 15), 0, T + 20, -18));
+  for (const x of [-13, 13]) f.add(at(gyaltsen(3.2), x, T + 15, -5));
   // The landing before the hall, steps up to it, and the pillared portico over its door
   f.add(box(18, 2, 7, WHITE, 0, T, -0.5), box(18.4, 0.6, 7.4, MAROON, 0, T + 2, -0.5));
   f.add(mergeByMaterial(group(at(tibetanPortico(7, 3.2, 4.6, [2.2, 3.4]), 0, T + 2.6, -4), at(steps(5, 2.6, 6, WHITE), 0, T, 3.2))));
@@ -86,7 +69,7 @@ export function buildTawang() {
   }
   // The Kakaling: the gate house on the spur below the compound, the way in.
   const kx = CW / 2 + 85;
-  f.add(at(tibetan(10, 7, 9, 2, 0), kx, spurBase(kx, 0, 10, 9), 0).rotateY(Math.PI / 2), box(0.2, 4, 3.4, WINDOW, kx + 5.01, spurBase(kx, 0, 10, 9), 0));
+  f.add(at(hall(10, 7, 9, { floors: 2, door: 0, doorW: 3.4 }), kx, spurBase(kx, 0, 10, 9), 0).rotateY(Math.PI / 2), box(0.2, 4, 3.4, WINDOW, kx + 4.6, spurBase(kx, 0, 10, 9), 0));
   f.add(inst(unitBox(), blocks, WHITE));
   f.add(inst(unitBox(), blocks.map(([x, y, z, sx, sy, sz, ry]) => [x, y + sy, z, sx + 0.2, 0.7, sz + 0.2, ry]), MAROON));
   // Windows, doors, beam ends and roofs for the houses (js/details/tibetan.js).
