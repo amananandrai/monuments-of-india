@@ -28,8 +28,9 @@ what changes between desktops and phones.
   horses, temple lions and door guardians. Their crevices are darkened and their ridges rubbed
   pale, dark stone is polished, and faces and hands are sculpted. The heads of Patel and Bahubali
   are meshed on a grid three to four times finer than their bodies, inside an ellipsoid that
-  crosses the neck, so a face costs only its own triangles; Patel's feet, chappals and dhoti hems
-  are meshed finely the same way. Creepers, hems, curls and leaves are
+  crosses the neck, so a face costs only its own triangles; the front of Patel's torso (his
+  bandi's placket, buttons and pockets) and his feet, chappals and dhoti hems are meshed finely
+  the same way. Creepers, hems, curls and leaves are
   laid on the skin with `snap()` rather than placed by hand, so they never float. The Statue of
   Unity's bronze is cast in plates, and free-standing stone weathers in deep rain streaks, both
   drawn by the surface shader at no cost in triangles. The 25 m Shiva at Nageshwar is the most detailed: matted

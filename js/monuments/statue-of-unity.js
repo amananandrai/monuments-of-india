@@ -9,8 +9,8 @@ import { addDetails } from '../details/statue-of-unity.js';
 
 // Sardar Patel, walking forward a step in dhoti, kurta, bandi and a shawl over the shoulders, arms
 // at his sides. The body and head are one cast skin (js/details/figures.js); the finer folds of the
-// shawl, the placket and buttons, the cuffs and hands are added here, the folds and placket
-// laid on the skin (onSkin). The bronze is cast in plates (the 'plates' surface). All in the
+// shawl, the bandi's buttons, the gallery windows, the cuffs and hands are added here, the
+// buttons and windows laid on the skin (onSkin). The bronze is cast in plates (the 'plates' surface). All in the
 // statue's own units (177.4 to the
 // crown), scaled to 182 m at the end.
 const SLIT = mat('#2a221c', 0.6, 0.3);
@@ -19,11 +19,10 @@ const PLATED = surface(M.bronze.clone(), 'plates');
 function patel(B) {
   const s = new THREE.Group(), F = patelSurface();
   s.add(patelBody(B));
-  // The bandi's placket down the chest, with its buttons, under the shawl's opening.
-  s.add(tube(onSkin(F, [[0, 141.5, 13.6], [0, 136, 15.6], [0, 131.5, 16.2], [0, 127, 16.2]], 0.3), 0.7, B, 24, 8));
-  for (const [x, y, z] of onSkin(F, [[0, 139, 20], [0, 135.5, 20], [0, 132, 20], [0, 128.5, 20]], 0.55)) s.add(ellipsoid(0.65, 0.65, 0.45, B, x, y, z));
-  // The windows of the viewing gallery, a slit across the chest (the gallery is at 153 m).
-  for (const x of [-3.6, -1.6, 1.6, 3.6]) { const [, , z] = onSkin(F, [[x, 123.4, 20]], 0)[0]; s.add(box(1.4, 1.9, 1.2, SLIT, x, 122.5, z - 0.5)); }
+  // The bandi's buttons down its placket (js/details/figures.js), and the windows of the viewing
+  // gallery, a slit across the chest.
+  for (const [x, y, z] of onSkin(F, [140.5, 134, 127.5, 121, 114.5, 108, 101.5, 95].map((y) => [0, y, 20]), 0.3)) s.add(ellipsoid(0.7, 0.7, 0.45, B, x, y, z));
+  for (const x of [-4.6, -2.6, 2.6, 4.6]) { const [, , z] = onSkin(F, [[x, 123.4, 20]], 0)[0]; s.add(box(1.4, 1.9, 1.2, SLIT, x, 122.5, z - 0.5)); }
   for (const side of [-1, 1]) {
     // The sleeve's cuff under the shawl's hem, the thumb, and fingers curling towards the thigh.
     const cuff = ellipsoid(4.9, 1.3, 4.5, B, side * 22.3, 88.6, 3.8);

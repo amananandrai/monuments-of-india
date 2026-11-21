@@ -98,8 +98,9 @@ export const shivaSurface = () => (shivaF ||= shivaField().f);
 
 // Sardar Patel at the Statue of Unity, in the coordinates of patel() in statue-of-unity.js (177 units
 // tall before it is scaled), after photographs of the statue: the shawl over both shoulders hanging
-// like a cape over the arms to the hips, open down the front; under it the kurta to the knee with
-// its standing collar; below that the dhoti, full and folded round each leg to above the ankle,
+// like a cape over the arms to the hips, its ends falling down each side of a wide opening that
+// narrows to the neck; in the opening the bandi, a sleeveless jacket buttoned down the front, to
+// the hips; under that the kurta to the knee with its standing collar; below that the dhoti, full and folded round each leg to above the ankle,
 // its pleats falling between the legs; the bare ankles and the feet in chappals, a stride apart; the hands at his sides just below the shawl's hem; and the head. The head is
 // that of the 1949 portrait the statue follows: the bare, broad crown, the heavy brow over deep-set
 // eyes under heavy lids with pouches beneath, a strong nose, deep folds from the nose to the
@@ -150,7 +151,17 @@ function patelField() {
   // so the kurta and the bandi's placket show between its edges; long folds down its sides.
   const cape = lathe([[29, 86], [29.4, 98], [28.6, 118], [26.2, 131], [21.6, 140], [18.6, 145], [9.8, 148.6], [0.1, 149]], { sz: 0.62, folds: 22, amp: 0.03, from: 86, to: 132 });
   const inside = lathe([[25.6, 80], [25.8, 98], [24.8, 114], [0.1, 115]], { sz: 0.58 });
-  const open = (x, y, z) => Math.max(Math.abs(x) - (3.4 + (143 - y) * 0.065), -z, y - 143.5, 80 - y);
+  // The opening is a V at the neck, where the shawl's two ends cross over it, widening fast down
+  // the chest and then slowly to the hem.
+  const open = (x, y, z) => Math.max(Math.abs(x) - Math.min(0.6 + (148 - y) * 0.24, 5.9 + (148 - y) * 0.065), -z, y - 148, 80 - y);
+  // Over the kurta and under the shawl, the bandi: a sleeveless jacket from its band collar to the
+  // hips, buttoned down the front on a raised placket, with a welt pocket on the chest and a
+  // pocket on each side below, its hem standing proud of the kurta.
+  const jacket = lathe([[17.7, 90.5], [17.3, 92.5], [17.4, 100], [19.2, 118], [20.6, 131], [18.4, 140], [9.6, 144.3], [0.1, 144.6]], { sz: 0.62 });
+  const onJacket = (rx, ry, x0, y0, t) => (x, y, z) => Math.max(Math.abs(x - x0) - rx, Math.abs(y - y0) - ry, jacket(x, y, z) - t, -z);
+  const placket = onJacket(0.8, 25.5, 0, 117, 0.35);
+  const pockets = (x, y, z) => Math.min(onJacket(1.4, 0.4, 3.2, 129, 0.3)(x, y, z), onJacket(2.6, 2.1, 5.9, 99.5, 0.28)(x, y, z), onJacket(2.6, 2.1, -5.9, 99.5, 0.28)(x, y, z));
+  const flaps = (x, y, z) => Math.min(onJacket(2.8, 0.45, 5.9, 101.7, 0.5)(x, y, z), onJacket(2.8, 0.45, -5.9, 101.7, 0.5)(x, y, z));
   const shawl = (x, y, z) => smax(smax(cape(x, y, z), -inside(x, y, z), 0.4), -open(x, y, z), 0.5);
   const b = blend([
     [kurta, 0],
@@ -163,8 +174,13 @@ function patelField() {
     [mirrorX(cone([23.6, 111, 2], [22.4, 89, 3.5], 5.4, 4.3)), 1.5],
     [mirrorX(E([22.2, 83.4, 4], [3.3, 5.2, 3.9])), 1.2],
     [cone([0, 142, 0], [0, 153, 0.8], 6.4, 6.8), 2],
-    // The kurta's standing collar.
+    // The kurta's standing collar, and over it the bandi with its band collar.
     [torus([0, 145.6, 0.4], 6.9, 0.9), 0.4],
+    [jacket, 0.3],
+    [torus([0, 144.2, 0.5], 8.9, 0.75), 0.3],
+    [placket, 0.1],
+    [pockets, 0.1],
+    [flaps, 0.1],
   ]);
   // The head, about the point (0, 163.6, 1) where its ellipsoid of 10.2 × 11.8 × 10.8 is centred.
   const P = (x, y, z) => [x, 163.6 + y, 1.0 + z];
@@ -195,12 +211,16 @@ function patelField() {
 }
 let patelF = null;
 export const patelSurface = () => (patelF ||= patelField().f);
-// The body is meshed with 1.1-unit cells, and the head (inside an ellipsoid crossing the neck) and
-// the feet and hems with cells a third that size (on phones 1.5 and about 0.5); the folds of the
+// The body is meshed with 1.1-unit cells, and the head (inside an ellipsoid crossing the neck), the
+// front of the torso, and the feet and hems with cells a third that size (on phones 1.5 and about 0.5); the folds of the
 // bronze are rubbed bright.
 export const patelBody = (m) => body(detail.low ? 'patel-coarse' : 'patel', patelField, detail.low ? 1.5 : 1.1, m, [0.3, 0.34, 0.28], {
   wear: 0.3, split: [
     { region: E([0, 162.5, 2], [13.5, 13.5, 14]), h: detail.low ? 0.48 : 0.32, lo: [-14, 148, -13], hi: [14, 177, 17] },
+    // The front of the torso, where the bandi shows between the shawl's ends with its placket,
+    // pockets and collar.
+    // A box, not an ellipsoid, so its sides cross the shawl squarely and the seam stays a line.
+    { region: (x, y, z) => Math.max(Math.abs(x) - 10.8, Math.abs(y - 115.5) - 30, 3 - z), h: detail.low ? 0.6 : 0.4, lo: [-13, 82, 1], hi: [13, 148, 25] },
     // The feet in their chappals, the ankles and the dhoti's open hems, on the same fine grid.
     ...[[1, 2.6, 6.4], [-1, -0.8, 3.0]].map(([sx, zb, fz]) => ({ region: E([sx * 8, 8, (zb + fz) / 2 + 1], [8.5, 12.5, 13.5]), h: detail.low ? 0.5 : 0.34, lo: [sx * 8 - 10, -1, zb - 12], hi: [sx * 8 + 10, 27, fz + 15] })),
   ],
