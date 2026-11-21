@@ -803,3 +803,31 @@ export function louvredShutter(w, h, m = SHUTTER, { out = 0.06 } = {}) {
   g.add(mesh(mergeGeometries(slats.map((b) => b.toNonIndexed())), m));
   return g;
 }
+
+// A chadar: the carved cascade of a Mughal garden, down which water runs from one level to the next
+// in a glittering sheet. A marble slab w wide sloping from y = drop at z = 0 down to y = 0 at z = len,
+// its bed carved in fish scales (the 'scallop' surface) under a thin sheet of water, between kerbs,
+// with a lip at the top and a small pool at its foot.
+const SCALLOP = surface(mat('#e6ded2', 0.4), 'scallop');
+const SHEET = mat('#dcecf4', 0.35, 0, { transparent: true, opacity: 0.16, depthWrite: false });
+export function chadar(w, len, drop, m = M.marble) {
+  const g = new THREE.Group(), slope = Math.atan2(drop, len), L = Math.hypot(len, drop);
+  const bed = mesh(new THREE.BoxGeometry(w, 0.2, L).translate(0, -0.1, L / 2), SCALLOP);
+  bed.position.set(0, drop, 0);
+  bed.rotation.x = slope;
+  const water = new THREE.Mesh(new THREE.PlaneGeometry(w * 0.96, L).rotateX(-Math.PI / 2).translate(0, 0.03, L / 2), SHEET);
+  water.position.copy(bed.position);
+  water.rotation.x = slope;
+  water.castShadow = false;
+  g.add(bed, water);
+  for (const s of [-1, 1]) {
+    const k = box(0.3, 0.35, L, m, 0, -0.05, 0);
+    k.geometry.translate(0, 0, L / 2);
+    k.position.set(s * (w / 2 + 0.15), drop, 0);
+    k.rotation.x = slope;
+    g.add(k);
+  }
+  g.add(box(w + 0.6, 0.25, 0.4, m, 0, drop, -0.2), box(w + 1.2, 0.3, 1.6, m, 0, -0.3, len + 0.8), box(w + 0.6, 0.05, 1.0, M.water, 0, -0.04, len + 0.8));
+  g.traverse((o) => { if (o.isMesh && o.material !== SHEET) { o.castShadow = o.receiveShadow = true; } });
+  return g;
+}

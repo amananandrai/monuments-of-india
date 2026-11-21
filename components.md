@@ -25,8 +25,8 @@ From [architecture.md](architecture.md).
 | Chhatri | Mughal chhatri | Guldastas |
 | ![Minaret](img/minaret.jpg) | ![Jharokha](img/jharokha.jpg) | ![Copper and gilded-copper roofs](img/copper-roofs.jpg) |
 | Minaret | Jharokha | Copper and gilded-copper roofs |
-| ![Terracotta brick and plaques](img/terracotta.jpg) |   |   |
-| Terracotta brick and plaques |   |   |
+| ![Terracotta brick and plaques](img/terracotta.jpg) | ![Chadar (water cascade)](img/chadar.jpg) |   |
+| Terracotta brick and plaques | Chadar (water cascade) |   |
 
 ### [Pillars and columns](architecture.md#pillars-and-columns)
 

@@ -1,5 +1,8 @@
 import * as THREE from 'three';
-import { M, mat, box, at, rng } from '../helpers.js';
+import { M, mat, box, at, rng, surface } from '../helpers.js';
+
+// The Ananda Nilayam's gold: gilded copper sheets (js/surface.js, 'giltsheet').
+const GILT = surface(mat('#e3b54a', 0.28, 0.85), 'giltsheet');
 import { gopuram, wallWithGaps, dravidaVimana, dwajasthambha } from '../details/temples.js';
 import { mountainRing } from '../details/terrain.js';
 import { townHouses, houseRow } from '../details/realism.js';
@@ -39,8 +42,8 @@ export function buildTirumala() {
   for (const s of [-1, 1]) f.add(wallWithGaps('x', 52, 6, 2, LIME, s > 0 ? [[0, 13]] : [], 0, s * 22), box(2, 6, 44, LIME, s * 26, 0, 0));
   // Ananda Nilayam: the sanctum at ground level under its gold vimana of three storeys, the
   // ledges set with gilt kutas and shalas, a round cap and a tall kalash.
-  f.add(box(12, 7, 12, M.gild, 0, 0, 0), box(12.8, 0.6, 12.8, M.gildDeep, 0, 7, 0));
-  f.add(at(dravidaVimana(11, 3, 3.3, M.gild, M.gildDeep, { cap: 'round', capScale: 0.3, kalashM: M.gild, kalashScale: 0.85, taper: 0.4 }), 0, 7.6, 0));
+  f.add(box(12, 7, 12, GILT, 0, 0, 0), box(12.8, 0.6, 12.8, M.gildDeep, 0, 7, 0));
+  f.add(at(dravidaVimana(11, 3, 3.3, GILT, M.gildDeep, { cap: 'round', capScale: 0.3, kalashM: M.gild, kalashScale: 0.85, taper: 0.4 }), 0, 7.6, 0));
   f.add(dwajasthambha(0, 14, 19));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.7, 0.42, 1.2] };

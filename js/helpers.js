@@ -61,7 +61,7 @@ export const M = {
   khond: mat('#7f705f', 0.95),
   khondDark: mat('#5f5347', 0.95),
   stucco: mat('#e9dcc0', 0.85),
-  lotus: mat('#f4f3ef', 0.4, 0, { side: THREE.DoubleSide }),
+  lotus: surface(mat('#f4f3ef', 0.4, 0, { side: THREE.DoubleSide }), 'cladding'),
   deccan: mat('#8d877c', 0.9),
   deccanLight: mat('#b3ada1', 0.85),
   mysore: mat('#bcb3a4', 0.85),

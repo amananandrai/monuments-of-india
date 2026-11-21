@@ -1,13 +1,15 @@
 import * as THREE from 'three';
 import { mat, mesh, at, onFace, FACES } from '../helpers.js';
-import { pilasters, mergeByMaterial } from './components.js';
+import { pilasters, mouldings, frieze, mergeByMaterial } from './components.js';
+import { pranala } from './doorways.js';
 import { lion } from './animals.js';
 import { trees, boats, asiBoard, scatter, along } from './realism.js';
 
 // The Shore Temple, finer detail. From photographs: the walls of the shrines are divided by
 // pilasters, rearing lions (vyalas) at the corners of the main shrine on
 // its sea side; and the cornice of each
-// storey of the two vimanas is lined with kudus, small horseshoe-arched dormers.
+// storey of the two vimanas is lined with kudus, small horseshoe-arched dormers. The platform's
+// base is moulded, with a carved frieze; and a makara spout drains the main shrine.
 // Dimensions follow js/monuments/shore-temple.js: the main shrine 9 square from 1.4 to 7.4 at
 // z = -10, its vimana of five storeys 2.8 high; the small shrine 6 square to 5.9 at z = 9.
 const GRANITE = mat('#8f8577', 0.95), GRANITE_DARK = mat('#6d655a', 0.95);
@@ -27,6 +29,11 @@ function architecture(f) {
       d.add(o);
     }
   }
+  // The platform's base (adhishthana, 26 × 40, 1.4 high): a plinth, a carved frieze of little
+  // panels, a rounded moulding and a cornice, each standing a little proud of the last.
+  d.add(mouldings(26, 40, [[0, 0.28, 0.16, GRANITE_DARK], [0.3, 0.42, 0.06, frieze(GRANITE)], [0.74, 0.3, 0.12], [1.06, 0.3, 0.18, GRANITE_DARK]], GRANITE));
+  // The main shrine drains through a makara spout on its north wall onto the platform.
+  d.add(at(pranala(1.6, GRANITE, { drop: 0.35 }), -4.5, 1.75, -10).rotateY(-Math.PI / 2));
   mergeByMaterial(d);
   f.add(d);
   for (const sx of [-1, 1]) for (const sz of [-1]) {
