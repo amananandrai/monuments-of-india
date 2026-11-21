@@ -15,9 +15,12 @@ const body = (key, field, h, m, deep, opts = {}) => mesh(sculpt(key, field, { h,
 
 // A door guardian (dvarapala) about 1.7 m tall on his plinth: standing with the weight on one hip,
 // one hand resting on a club planted beside him and the other raised in warning, in a short dhoti,
-// with a tall crown.
+// as temple doors carve them: a fierce face (a heavy brow over bulging eyes, a broad nose, a curling
+// moustache, fangs at the corners of the mouth), great round earrings, a tall crown (kirita) of
+// stacked bands rising to a knob, a necklace, armlets and a belt with its clasp, and the club
+// ribbed along its head.
 function guardianField() {
-  const f = blend([
+  const bodyF = blend([
     [roundBox([0, 0.14, 0], [0.31, 0.14, 0.25], 0.02), 0],
     [mirrorX(cone([0.09, 0.3, 0.02], [0.1, 0.76, 0], 0.055, 0.085)), 0.04],
     [mirrorX(E([0.1, 0.31, 0.07], [0.05, 0.03, 0.09])), 0.03],
@@ -29,20 +32,58 @@ function guardianField() {
     [cone([0.17, 1.25, 0], [0.24, 1.0, 0.03], 0.055, 0.045), 0.04],
     [cone([0.24, 1.0, 0.03], [0.27, 0.8, 0.07], 0.045, 0.035), 0.03],
     [E([0.28, 0.76, 0.08], [0.04, 0.05, 0.045]), 0.02],
-    [cone([0.31, 0.3, 0.09], [0.3, 0.8, 0.09], 0.035, 0.065), 0.02],
+    [cone([0.31, 0.3, 0.09], [0.3, 0.68, 0.09], 0.035, 0.05), 0.02],
     [cone([-0.17, 1.25, 0], [-0.27, 1.07, 0.08], 0.055, 0.045), 0.04],
     [cone([-0.27, 1.07, 0.08], [-0.25, 1.37, 0.12], 0.045, 0.035), 0.03],
     [E([-0.25, 1.42, 0.12], [0.035, 0.06, 0.03]), 0.02],
     [cone([0, 1.24, 0], [0, 1.34, 0.01], 0.05, 0.05), 0.03],
-    [E([0, 1.42, 0.02], [0.075, 0.095, 0.085]), 0.03],
-    [cone([0, 1.47, 0], [0, 1.64, 0], 0.082, 0.03), 0.03],
+    // The broad chest and the belly over the belt.
+    [mirrorX(E([0.065, 1.165, 0.065], [0.075, 0.055, 0.045])), 0.03],
+    [E([0.005, 1.0, 0.055], [0.105, 0.09, 0.075]), 0.04],
   ]);
+  // The dhoti flares to its hem in folds, and its sash hangs in a loop at the front.
+  const fold = (x, y, z) => (y < 0.84 && y > 0.5 ? 0.009 * Math.sin(Math.atan2(x, z) * 11) * Math.min(1, (0.84 - y) / 0.1) : 0);
+  const body0 = bodyF;
+  const bodyF2 = (x, y, z) => body0(x, y, z) + fold(x, y, z);
+  const sash = chain([[-0.11, 0.86, 0.12, 0.024], [-0.05, 0.73, 0.155, 0.024], [0.07, 0.71, 0.155, 0.024], [0.13, 0.85, 0.12, 0.024]], 0.012);
+  // The club's head, ribbed, and its knob.
+  const club = blend([[cone([0.3, 0.66, 0.09], [0.3, 0.86, 0.09], 0.065, 0.07), 0], ...[0.7, 0.76, 0.82].map((y) => [torus([0.3, y, 0.09], 0.072, 0.012), 0.005]), [E([0.3, 0.89, 0.09], [0.04, 0.035, 0.04]), 0.01]]);
+  // Jewellery: a necklace hanging on the chest, armlets, the belt and its clasp, the dhoti's hem.
+  const jewels = blend([
+    [chain(Array.from({ length: 13 }, (_, k) => { const a = (k / 12) * Math.PI * 2; return [Math.sin(a) * 0.12, 1.26 - Math.cos(a) * 0.07 - (Math.cos(a) > 0 ? 0.03 : 0), 0.035 + Math.cos(a) * 0.1, 0.02]; }), 0.012), 0],
+    [E([0, 1.17, 0.125], [0.025, 0.03, 0.015]), 0.01],
+    [torus([0.205, 1.18, 0.015], 0.05, 0.02), 0],
+    [torus([-0.215, 1.18, 0.03], 0.05, 0.02), 0],
+    [chain(Array.from({ length: 13 }, (_, k) => { const a = (k / 12) * Math.PI * 2; return [0.02 + Math.sin(a) * 0.165, 0.87, Math.cos(a) * 0.12, 0.024]; }), 0.012), 0],
+    [E([0.02, 0.86, 0.125], [0.04, 0.035, 0.02]), 0.01],
+  ]);
+  // The head: the face, the earrings and the crown.
+  let head = blend([
+    [E([0, 1.42, 0.02], [0.075, 0.095, 0.085]), 0],
+    [E([0, 1.445, 0.085], [0.06, 0.018, 0.03]), 0.01],
+    [mirrorX(E([0.028, 1.425, 0.087], [0.016, 0.012, 0.012])), 0.004],
+    [cone([0, 1.44, 0.095], [0, 1.4, 0.108], 0.009, 0.016), 0.006],
+    [mirrorX(cone([0.006, 1.388, 0.1], [0.038, 1.392, 0.088], 0.008, 0.005)), 0.004],
+    [mirrorX(cone([0.022, 1.37, 0.088], [0.026, 1.355, 0.09], 0.005, 0.002)), 0.002],
+    [mirrorX(E([0.075, 1.41, 0.0], [0.012, 0.03, 0.02])), 0.006],
+    [mirrorX(torus([0.08, 1.355, 0.0], 0.03, 0.007)), 0],
+    // The kirita: stacked bands narrowing upward, then a knob.
+    [cone([0, 1.47, 0], [0, 1.62, 0], 0.082, 0.04), 0.01],
+    ...[1.485, 1.53, 1.575].map((y, i) => [torus([0, y, 0], 0.08 - i * 0.014, 0.01), 0.004]),
+    [E([0, 1.64, 0], [0.032, 0.03, 0.032]), 0.008],
+  ]);
+  head = carve(head, E([0, 1.375, 0.088], [0.03, 0.006, 0.02]), 0.003);
+  const headB = bounded(head, [0, 1.5, 0.02], 0.2, 0.06);
+  const f = (x, y, z) => smin(smin(smin(smin(bodyF2(x, y, z), club(x, y, z), 0.01), jewels(x, y, z), 0.006), sash(x, y, z), 0.006), headB(x, y, z), 0.02);
   return { f, lo: [-0.4, -0.02, -0.3], hi: [0.4, 1.7, 0.3] };
 }
-// A guardian about h tall, facing +z on y = 0.
+// A guardian about h tall, facing +z on y = 0. A large one (1.3 m or more) on a desktop (js/detail.js)
+// has its head and crown meshed at 1.1 cm and the rest at 3.5 cm; the small ones in a sanctum's niches,
+// often dozens to a temple court, and all of them on phones, are meshed whole at 4.5 cm.
 export function guardian(h, m) {
   const g = new THREE.Group();
-  g.add(body('guardian', guardianField, 0.045, m));
+  g.add(detail.low || h < 1.3 ? body('guardian-low', guardianField, 0.045, m) : body('guardian', guardianField, 0.035, m, undefined, {
+    wear: 0.35, split: { region: E([0, 1.49, 0.02], [0.14, 0.2, 0.14]), h: 0.011, lo: [-0.16, 1.27, -0.14], hi: [0.16, 1.7, 0.18] } }));
   g.scale.setScalar(h / 1.7);
   return g;
 }

@@ -3,7 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { mat, mesh, box, cyl, at, surface } from '../helpers.js';
 import { detail } from '../detail.js';
 import { mergeByMaterial } from './components.js';
-import { ellipsoid as E, cone, chain, blend, bounded, carve, mirrorX, flatBase, roundBox, sculpt, statueMaterial } from '../sdf.js';
+import { ellipsoid as E, cone, chain, blend, bounded, carve, mirrorX, flatBase, roundBox, sculpt, statueMaterial, smin, snap, onSkin, skinMatrix } from '../sdf.js';
 
 // The temple animals, each sculpted as one skin from a signed distance field (see js/sdf.js): the
 // Nandi before a Shiva shrine, the elephants of Kailasa, Hampi and Gwalior, the war horses that draw
@@ -26,14 +26,20 @@ function loop(cx, cy, cz, rx, ry, r, plane = 'xy', n = 16, from = 0, to = Math.P
 
 // A recumbent Nandi, about 5.4 m long and 3.4 m to the tips of its horns: forelegs folded under
 // the chest, hind legs tucked beside the flank, the hump, the dewlap hanging from the throat, the
-// head raised and the horns curving up, and a garland of bells round the neck.
-function nandiField() {
-  const garland = [], bells = [];
+// head raised and the horns curving up. As temple Nandis are carved: a garland of bells round the
+// neck with a larger bell at the chest and a strand of beads above it, a saddle blanket over the
+// back with a raised border, anklets on the forelegs, the tail with its tuft laid along the flank,
+// and the face with its nostrils, mouth and heavy-lidded eyes. fine: false leaves out the blanket,
+// for the small Nandis lining a wall, meshed too coarsely to hold it.
+function nandiField(fine = true) {
+  const garland = [], beads = [], bells = [];
   for (let k = 0; k <= 24; k++) {
     const a = (k / 24) * Math.PI * 2, c = Math.cos(a), s = Math.sin(a);
     garland.push([s * 0.72, 1.85 - c * 0.45, 1.55 + c * 0.3, 0.075]);
+    beads.push([s * 0.66, 2.05 - c * 0.36, 1.62 + c * 0.24, 0.05]);
   }
-  for (const a of [-0.9, -0.45, 0, 0.45, 0.9]) bells.push(E([Math.sin(a) * 0.72, 1.85 - Math.cos(a) * 0.45 - 0.12, 1.55 + Math.cos(a) * 0.3 + 0.03], [0.1, 0.13, 0.1]));
+  for (const a of [-0.9, -0.45, 0.45, 0.9]) bells.push(E([Math.sin(a) * 0.72, 1.85 - Math.cos(a) * 0.45 - 0.12, 1.55 + Math.cos(a) * 0.3 + 0.03], [0.1, 0.13, 0.1]));
+  bells.push(E([0, 1.22, 1.9], [0.16, 0.2, 0.15]), E([0, 1.07, 1.9], [0.2, 0.05, 0.18]));
   const body = blend([
     [E([0, 1.15, -0.3], [1.12, 0.98, 1.9]), 0],
     [E([0, 1.25, 0.95], [1.02, 1.05, 1.0]), 0.5],
@@ -50,15 +56,38 @@ function nandiField() {
     [mirrorX(chain([[0.2, 2.75, 1.88, 0.12], [0.45, 3.0, 1.78, 0.09], [0.5, 3.32, 1.88, 0.05]], 0.05)), 0.05],
     [mirrorX(E([0.5, 2.45, 1.82], [0.3, 0.09, 0.14])), 0.08],
     [chain([[0, 1.4, -2.1, 0.09], [0.5, 0.35, -1.9, 0.07], [0.95, 0.2, -1.0, 0.06]], 0.08), 0.08],
-    [chain(garland, 0.03), 0.03],
-    [bounded(blend(bells.map((b) => [b, 0])), [0, 1.3, 1.85], 0.9), 0.02],
+    [E([1.0, 0.2, -0.85], [0.1, 0.1, 0.2]), 0.05],
+    [mirrorX(E([0.38, 2.36, 2.28], [0.1, 0.035, 0.08])), 0.02],
   ]);
-  const eye = mirrorX(E([0.38, 2.28, 2.3], [0.08, 0.06, 0.08]));
-  return { f: flatBase(carve(body, eye, 0.03)), lo: [-1.6, -0.05, -2.5], hi: [1.6, 3.5, 3.0] };
+  const deco = blend([
+    [chain(garland, 0.03), 0],
+    [chain(beads, 0.02), 0],
+    [bounded(blend(bells.map((b) => [b, 0])), [0, 1.3, 1.85], 0.9), 0.02],
+    // Anklets round the forelegs.
+    [mirrorX(chain(loop(0.78, 0.36, 1.88, 0.24, 0.24, 0.045, 'xz', 14), 0.02)), 0],
+  ]);
+  let f = (x, y, z) => smin(body(x, y, z), deco(x, y, z), 0.03);
+  if (fine) {
+    // The blanket over the back, 12 cm thick, its border raised along its edges.
+    const region = (x, y, z) => Math.max(1.0 - y, z - 0.35, -1.7 - z);
+    const blanket = (x, y, z) => Math.max(Math.abs(body(x, y, z) - 0.06) - 0.06, region(x, y, z));
+    const border = (x, y, z) => Math.max(Math.abs(body(x, y, z) - 0.09) - 0.09, Math.abs(region(x, y, z) + 0.1) - 0.1);
+    const f0 = f;
+    f = (x, y, z) => smin(smin(f0(x, y, z), blanket(x, y, z), 0.03), border(x, y, z), 0.02);
+  }
+  // The eyes, the nostrils and the line of the mouth.
+  let g = carve(f, mirrorX(E([0.38, 2.28, 2.3], [0.08, 0.06, 0.08])), 0.03);
+  g = carve(g, mirrorX(E([0.13, 1.66, 2.8], [0.06, 0.05, 0.06])), 0.02);
+  g = carve(g, E([0, 1.47, 2.68], [0.22, 0.02, 0.1]), 0.02);
+  return { f: flatBase(g), lo: [-1.6, -0.05, -2.5], hi: [1.6, 3.5, 3.0] };
 }
-// The Nandi's mesh; fine: false meshes it coarsely, for the small Nandis lining a wall.
+// The Nandi's mesh; fine: false meshes it coarsely, for the small Nandis lining a wall. The fine one
+// is meshed at 8 cm and its head, inside an ellipsoid crossing the neck, at 3.5 cm (5 and 12 cm on
+// phones), its ridges rubbed pale as polished stone is.
 export function nandiGeometry(fine = true) {
-  return sculpt(fine ? 'nandi' : 'nandi-small', nandiField, { h: fine ? 0.08 : 0.3, reach: fine ? 0.5 : 0.8 });
+  if (!fine) return sculpt('nandi-small', () => nandiField(false), { h: 0.3, reach: 0.8 });
+  return sculpt(detail.low ? 'nandi-low' : 'nandi', nandiField, { h: detail.low ? 0.12 : 0.08, reach: 0.5, wear: 0.4,
+    split: { region: E([0, 2.38, 2.25], [0.9, 1.15, 0.78]), h: detail.low ? 0.05 : 0.035, lo: [-1.0, 1.1, 1.4], hi: [1.0, 3.5, 3.05] } });
 }
 export function nandi(m, s = 1) {
   const g = new THREE.Group();
@@ -90,13 +119,27 @@ function elephantField() {
     [chain([[0, 2.6, -1.95, 0.08], [0, 2.0, -2.12, 0.06], [0, 1.3, -2.08, 0.05]], 0.1), 0.12],
     [mirrorX(chain([[0.3, 2.35, 2.35, 0.14], [0.37, 2.0, 2.75, 0.1], [0.32, 1.98, 3.15, 0.05]], 0.03)), 0.06],
     [mirrorX(E([0.7, 2.95, 2.2], [0.1, 0.08, 0.1])), 0.05],
+    // The thickened rim of each ear, and the toenails, five on a forefoot and four behind.
+    [mirrorX(chain(loop(1.03, 2.72, 1.45, 0.62, 0.78, 0.05, 'zy', 18, -1.2, 2.6), 0.04)), 0.05],
+    ...[1.15, -1.15].flatMap((z) => [-0.28, -0.14, 0, 0.14, 0.28].slice(z > 0 ? 0 : 1).map((dx) => [mirrorX(E([0.6 + dx, 0.12, z + 0.4 * Math.cos(dx * 3)], [0.07, 0.07, 0.05])), 0.03])),
   ]);
-  return { f: flatBase(body), lo: [-1.6, -0.05, -2.4], hi: [1.6, 4.05, 3.4] };
+  // The trunk's rings of wrinkles, deepest on its underside half, and the lids over the eyes.
+  const onTrunk = (x, y, z) => Math.max(0, 1 - Math.hypot(x, Math.max(0, z - 2.95) * 1.5) / 0.4) * (y < 2.6 && z > 2.35 ? 1 : 0);
+  let f = (x, y, z) => body(x, y, z) + 0.022 * Math.sin(y * 52) * onTrunk(x, y, z);
+  f = carve(f, mirrorX(E([0.64, 2.98, 2.24], [0.09, 0.025, 0.09])), 0.02);
+  f = carve(f, E([0, 2.02, 2.62], [0.24, 0.05, 0.2]), 0.04);
+  return { f: flatBase(f), lo: [-1.6, -0.05, -2.4], hi: [1.6, 4.05, 3.4] };
 }
+let elephantF = null;
+export const elephantSurface = () => (elephantF ||= elephantField().f);
 // coarse: meshed on a cell twice the size (a quarter of the triangles), as the horse's.
 export function elephant(m, s = 1, { coarse = false } = {}) {
   const g = new THREE.Group();
-  g.add(figure(sculpt(coarse ? 'elephant-coarse' : 'elephant', elephantField, { h: coarse ? 0.16 : 0.08, reach: 0.6 }), m));
+  // On desktops the head and trunk are meshed finer (6.5 cm) than the body (8 cm); a coarse elephant
+// and all elephants on phones are meshed whole.
+  const fine = !coarse && !detail.low;
+  const opts = coarse ? { h: 0.16, reach: 0.6 } : fine ? { h: 0.08, reach: 0.6, wear: 0.3, split: { region: E([0, 2.3, 2.6], [1.1, 1.85, 0.9]), h: 0.065, lo: [-1.3, 0.1, 1.5], hi: [1.3, 4.1, 3.5] } } : { h: 0.08, reach: 0.6 };
+  g.add(figure(sculpt(coarse ? 'elephant-coarse' : fine ? 'elephant' : 'elephant-low', elephantField, opts), m));
   g.scale.setScalar(s);
   return g;
 }
@@ -239,16 +282,23 @@ const shared = (c, r, m) => { const k = c + r + m; if (!sharedMats.has(k)) share
 // embroidered cloth over its back and a canopied howdah.
 export function rideElephant(m, s = 1, { cloth = '#b3262e', trim = '#e3b54a', howdah = true } = {}) {
   const g = elephant(m, 1), C = shared(cloth, 0.8, 0), T = shared(trim, 0.35, 0.8);
-  g.add(box(2.3, 0.12, 2.6, C, 0, 3.3, 0), box(0.1, 1.5, 2.4, C, 1.18, 2.0, 0), box(0.1, 1.5, 2.4, C, -1.18, 2.0, 0));
-  g.add(box(2.4, 0.08, 2.7, T, 0, 3.22, 0));
+  // The cloth over the back and down both flanks, cast on the body, and its gold border; on phones
+  // (js/detail.js) a cloth of three flat panels and a gold strip.
+  if (detail.low) {
+    g.add(box(2.3, 0.12, 2.6, C, 0, 3.3, 0), box(0.1, 1.5, 2.4, C, 1.18, 2.0, 0), box(0.1, 1.5, 2.4, C, -1.18, 2.0, 0), box(2.4, 0.08, 2.7, T, 0, 3.22, 0));
+  } else {
+    const [cl, bd] = clothGeometry();
+    g.add(mesh(cl, C), mesh(bd, T));
+  }
   // The howdah: a railed seat with a canopy on four posts (a temple elephant goes without)
   if (howdah) {
     g.add(box(1.6, 0.5, 1.7, T, 0, 3.42, -0.1), box(1.4, 0.06, 1.5, C, 0, 3.92, -0.1));
     for (const x of [-0.7, 0.7]) for (const z of [-0.8, 0.6]) g.add(cyl(0.035, 0.035, 1.2, T, x, 3.92, z, 6));
     g.add(at(mesh(new THREE.ConeGeometry(1.15, 0.6, 4).rotateY(Math.PI / 4), C), 0, 5.4, -0.1));
   }
-  // The painted forehead
-  g.add(at(mesh(new THREE.CircleGeometry(0.42, 16), shared('#f2c21c', 0.8, 0)), 0, 3.0, 2.68).rotateX(-0.45));
+  // The painted forehead, laid on the skin (under the nettipattam on a temple elephant).
+  if (howdah && detail.low) g.add(at(mesh(new THREE.CircleGeometry(0.42, 16), shared('#f2c21c', 0.8, 0)), 0, 3.0, 2.68).rotateX(-0.45));
+  else if (howdah) g.add(mesh(paintGeometry(), shared('#f2c21c', 0.8, 0)));
   if (!detail.low) dress(g, C, T, !howdah);
   g.scale.setScalar(s);
   return g;
@@ -260,18 +310,17 @@ export function rideElephant(m, s = 1, { cloth = '#b3262e', trim = '#e3b54a', ho
 // caparison hung over the forehead and down the trunk, studded with bosses, with a crescent at its
 // head. Built on an elephant of scale 1 (js/details/animals.js).
 function dress(g, C, T, temple) {
-  const d = new THREE.Group(), tassel = new THREE.ConeGeometry(0.05, 0.22, 6).translate(0, -0.11, 0), boss = new THREE.SphereGeometry(0.055, 8, 6);
+  const F = elephantSurface(), d = new THREE.Group(), tassel = new THREE.ConeGeometry(0.05, 0.22, 6).translate(0, -0.11, 0), boss = new THREE.SphereGeometry(0.055, 8, 6);
+  // The gold fringe along the cloth's hem, and three embroidered roundels on each flank.
   for (const sx of [-1, 1]) {
-    d.add(box(0.13, 0.1, 2.44, T, sx * 1.19, 1.95, 0));
-    for (let k = 0; k < 11; k++) d.add(at(mesh(tassel, T), sx * 1.2, 1.96, -1.1 + k * 0.22));
-    for (const z of [-0.75, 0, 0.75]) d.add(at(mesh(new THREE.CircleGeometry(0.2, 16), T), sx * 1.24, 2.75, z).rotateY(sx * Math.PI / 2));
+    for (let k = 0; k < 11; k++) { const [x, y, z] = snap(F, [sx * 1.6, CLOTH_HEM, -1.1 + k * 0.22], 0.12); d.add(at(mesh(tassel, T), x, y - 0.02, z)); }
+    for (const z of [-0.75, 0, 0.75]) { const o = mesh(new THREE.CircleGeometry(0.2, 16), T); o.matrixAutoUpdate = false; o.matrix.copy(skinMatrix(F, [sx * 1.6, 2.7, z], [0, 1, 0], 0.115)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)); d.add(o); }
   }
-  // The neck rope with its bells, and the anklets.
-  const rope = mesh(new THREE.TorusGeometry(1, 0.045, 6, 28), T, 0, 2.72, 1.5);
-  rope.scale.set(0.9, 0.98, 1);
-  d.add(rope);
+  // The rope round the neck, laid on the skin, with its bells hanging at the front.
+  const ring = onSkin(F, Array.from({ length: 29 }, (_, k) => { const a = (k / 28) * Math.PI * 2; return [Math.sin(a) * 1.4, 2.72 - Math.cos(a) * 1.3, 1.5 + Math.cos(a) * 0.15]; }), 0.05);
+  d.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(ring.map((p) => new THREE.Vector3(...p)), true), 56, 0.045, 6, true), T));
   const bell = new THREE.LatheGeometry([[0, 0], [0.12, 0], [0.11, 0.06], [0.07, 0.18], [0.02, 0.24], [0, 0.25]].map(([a, b]) => new THREE.Vector2(a, b)), 10).translate(0, -0.25, 0);
-  for (const [x, y] of [[0, 1.78], [-0.62, 2.0], [0.62, 2.0]]) d.add(at(mesh(bell, T), x, y, 1.52));
+  for (const k of [12, 14, 16]) { const [x, y, z] = ring[k]; d.add(at(mesh(bell, T), x, y - 0.03, z + 0.06)); }
   for (const sx of [-0.6, 0.6]) for (const z of [1.13, -1.15]) {
     const a = mesh(new THREE.TorusGeometry(0.43, 0.045, 5, 18).rotateX(Math.PI / 2), T, sx, 0.42, z);
     d.add(a);
@@ -279,17 +328,43 @@ function dress(g, C, T, temple) {
   }
   for (const sx of [-1, 1]) d.add(cyl(0.065, 0.075, 0.18, T, sx * 0.32, 1.92, 3.08, 8).rotateX(Math.PI / 2 - 0.4));
   if (temple) {
-    // The nettipattam: a tapering plate from the crown of the head down the trunk.
-    const sh = new THREE.Shape([[-0.55, 0], [0.55, 0], [0.5, -0.5], [0.32, -1.2], [0.18, -1.75], [0, -1.9], [-0.18, -1.75], [-0.32, -1.2], [-0.5, -0.5]].map(([x, y]) => new THREE.Vector2(x, y)));
-    const plate = new THREE.Group();
-    plate.add(mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.04, bevelEnabled: false }), T));
-    for (const [x, y] of [[-0.36, -0.3], [0.36, -0.3], [-0.22, -0.65], [0.22, -0.65], [0, -0.85], [-0.14, -1.15], [0.14, -1.15], [0, -1.45]]) plate.add(at(mesh(boss, T), x, y, 0.06));
-    plate.add(at(mesh(new THREE.TorusGeometry(0.2, 0.045, 5, 14, Math.PI).rotateZ(Math.PI), T), 0, 0.02, 0.05));
-    plate.position.set(0, 3.55, 2.52);
-    plate.rotation.x = -0.44;
-    d.add(plate);
+    // The nettipattam, cast on the forehead and down the trunk, studded with bosses, a crescent at
+    // its head.
+    d.add(mesh(plateGeometry(), T));
+    for (const [x, y] of [[-0.36, 3.3], [0.36, 3.3], [-0.24, 3.0], [0.24, 3.0], [0, 2.85], [-0.14, 2.6], [0.14, 2.6], [0, 2.35]]) {
+      const o = mesh(boss, T);
+      o.matrixAutoUpdate = false;
+      o.matrix.copy(skinMatrix(F, [x, y, 3.5], [0, 1, 0], 0.08));
+      d.add(o);
+    }
+    const [cx, cy, cz] = snap(F, [0, 3.55, 3.5], 0.08);
+    d.add(at(mesh(new THREE.TorusGeometry(0.2, 0.045, 5, 14, Math.PI).rotateZ(Math.PI), T), cx, cy + 0.02, cz).rotateX(-0.6));
   }
   g.add(mergeByMaterial(d));
+}
+
+// The cloth and the forehead plate, cast as thin shells on the elephant's skin: each the band of
+// space a few centimetres out from the surface, inside a region of it. Meshed once and kept.
+const CLOTH_HEM = 1.9;
+function clothGeometry() {
+  const F = elephantSurface();
+  const region = (x, y, z) => Math.max(CLOTH_HEM - y, Math.abs(z + 0.05) - 1.25);
+  const cloth = (x, y, z) => Math.max(Math.abs(F(x, y, z) - 0.08) - 0.065, region(x, y, z));
+  const border = (x, y, z) => Math.max(Math.abs(F(x, y, z) - 0.1) - 0.065, Math.abs(region(x, y, z) + 0.08) - 0.08);
+  const box = { lo: [-1.5, 1.7, -1.6], hi: [1.5, 3.7, 1.5] };
+  return [sculpt('elephant-cloth', () => ({ f: cloth, ...box }), { h: 0.09, reach: 0 }), sculpt('elephant-cloth-border', () => ({ f: border, ...box }), { h: 0.06, reach: 0 })];
+}
+function paintGeometry() {
+  const F = elephantSurface();
+  const paint = (x, y, z) => Math.max(Math.abs(F(x, y, z) - 0.02) - 0.012, Math.hypot(x, y - 3.05) - 0.42, 2.3 - z);
+  return sculpt('elephant-paint', () => ({ f: paint, lo: [-0.5, 2.55, 2.2], hi: [0.5, 3.55, 3.2] }), { h: 0.018, reach: 0 });
+}
+function plateGeometry() {
+  const F = elephantSurface();
+  // Broad at the crown of the head, narrowing to a point down the trunk.
+  const region = (x, y, z) => Math.max(Math.abs(x) - 0.56 * Math.min(1, Math.max(0, (y - 1.9) / 1.6)), 1.9 - y, y - 3.6, 2.3 - z);
+  const plate = (x, y, z) => Math.max(Math.abs(F(x, y, z) - 0.045) - 0.04, region(x, y, z));
+  return sculpt('elephant-plate', () => ({ f: plate, lo: [-0.7, 1.8, 2.2], hi: [0.7, 3.8, 3.4] }), { h: 0.04, reach: 0 });
 }
 
 /* ---------- yak ---------- */

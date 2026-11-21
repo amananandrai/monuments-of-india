@@ -193,9 +193,9 @@ the browser, so they are heavier than the rest of the kit.
 
 | Part | What it is |
 | --- | --- |
-| `nandi(material, scale)` | The seated bull before a Shiva temple |
-| `elephant(material, scale)` | A standing elephant, in stone or bronze |
-| `rideElephant(material, scale, { cloth, trim, howdah })` | A dressed elephant with its cloth and howdah |
+| `nandi(material, scale)` | The seated bull before a Shiva temple: garland of bells and beads, a saddle blanket with its border, anklets; its head meshed finer |
+| `elephant(material, scale)` | A standing elephant, in stone or bronze: wrinkled trunk, rimmed ears, toenails; its head and trunk meshed finer on desktops |
+| `rideElephant(material, scale, { cloth, trim, howdah })` | A dressed elephant: on desktops its cloth, border, painted forehead and (on a temple elephant) the gold nettipattam are cast on its skin, the bell rope laid round the neck; and a howdah |
 | `horse(material)` | A horse; scaled down for the ponies at Kedarnath |
 | `lion(scale, material)` | A seated lion: gate guardians and the Lion Capital |
 | `deer(spots)` | The deer of Sarnath and Sikandra |
