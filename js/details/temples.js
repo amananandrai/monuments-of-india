@@ -1,11 +1,12 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, FACES, rng, flat, steppedPlan, planPrism, planBand, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, onFace, FACES, rng, flat, steppedPlan, planPrism, planBand, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox, unitCyl, inst, bulbPoints, V } from '../helpers.js';
 import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol, placeAll, chhajja, railing, cuspedArchGeo, petalRing } from './components.js';
 import { templeDoorway, templePorch, steps, grandStair, doorFrame, doorLeaves, guardian } from './doorways.js';
-import { lion, elephant, horse } from './animals.js';
+import { lion, elephant, horse, nandi } from './animals.js';
 import { detail } from '../detail.js';
 import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze, miniSpireGeo, kuta, shala, figure } from './sculpture.js';
 const D_BRASS = mat('#b8913f', 0.35, 0.8);
+const DARK_STONE = mat('#4a4541', 0.9);
 
 // The shared temple builders, with real entrances: a Nagara temple's front porch, doorway and
 // side doors, a mandapa's doors, and a passage through the base of a gopuram. Moved here from
@@ -562,5 +563,49 @@ export function keralaGable(w, h, d, roofM, wood) {
   }
   g.add(at(kalash(Math.max(0.25, w * 0.07), D_BRASS), 0, h + t, 0.05));
   g.add(cyl(0.02, Math.max(0.05, w * 0.025), h * 0.2, wood, 0, h * 0.62, 0.02, 6));
+  return g;
+}
+
+// A deepmala, the lamp tower of the temples of Maharashtra, h tall on y = 0 (9 m by default): a
+// stepped square base, a tapering octagonal shaft bristling with stone arms in staggered rings,
+// a brass lamp cup on the tip of every arm, and a small cap with a kalash. The flames show at night.
+// On phones (js/detail.js) the rings stand twice as far apart.
+export function deepmala(h = 9, m = DARK_STONE, { lampM = D_BRASS } = {}) {
+  const g = new THREE.Group(), u = h / 9, bh = 1.0 * u, sh = h - bh - 1.3 * u, r0 = 0.62 * u, r1 = 0.3 * u;
+  g.add(box(2.6 * u, 0.5 * u, 2.6 * u, m), box(2 * u, 0.5 * u, 2 * u, m, 0, 0.5 * u));
+  g.add(cyl(r1, r0, sh, m, 0, bh, 0, 8));
+  const arms = [], cups = [], flames = [], step = (detail.low ? 1.1 : 0.55) * u, n = 8;
+  for (let y = bh + 0.6 * u, k = 0; y < bh + sh - 0.3 * u; y += step, k++) {
+    const r = r0 + (r1 - r0) * ((y - bh) / sh), len = 0.5 * u;
+    for (let i = 0; i < n; i++) {
+      const a = ((i + (k % 2) * 0.5) / n) * Math.PI * 2, sa = Math.sin(a), ca = Math.cos(a);
+      arms.push([sa * (r + len / 2 - 0.05 * u), y, ca * (r + len / 2 - 0.05 * u), 0.13 * u, 0.13 * u, len, a]);
+      const tx = sa * (r + len - 0.08 * u), tz = ca * (r + len - 0.08 * u);
+      cups.push([tx, y + 0.13 * u, tz, 0.16 * u, 0.06 * u, 0.16 * u]);
+      flames.push(V(tx, y + 0.24 * u, tz));
+    }
+  }
+  g.add(inst(unitBox(), arms, m), inst(unitCyl(6), cups, lampM), bulbPoints(flames));
+  const top = bh + sh;
+  g.add(box(r1 * 3, 0.25 * u, r1 * 3, m, 0, top), cyl(r1 * 0.9, r1 * 1.4, 0.5 * u, m, 0, top + 0.25 * u, 0, 8), at(kalash(0.35 * u, M.gold), 0, top + 0.75 * u, 0));
+  g.userData.top = h;
+  return g;
+}
+
+// An open Nandi mandapa, the pavilion on a temple's axis where the bull lies facing the sanctum
+// (towards -z): a moulded platform, a ring of eight carved pillars round the bull under a flat roof
+// and a small stepped one with a kalash. w is the width of the pillared square, h the pillars'
+// height; the bull is scaled to fit (s, as nandi()).
+export function nandiMandapa(w, h, m, trim = m, { roofM = m, nandiM = m, s = w / 8.6 } = {}) {
+  const g = new THREE.Group();
+  g.add(box(w + 1.6, 1, w + 1.6, m), box(w + 0.6, 0.3, w + 0.6, trim, 0, 1));
+  const cols = new THREE.Group();
+  for (const px of [-1, 0, 1]) for (const pz of [-1, 0, 1]) if (px || pz) cols.add(at(carvedPillar(h, m), px * (w / 2 - 0.5), 1.3, pz * (w / 2 - 0.5)));
+  g.add(mergeByMaterial(cols));
+  g.add(box(w + 1.4, 0.8, w + 1.4, m, 0, 1.3 + h), box(w + 2, 0.3, w + 2, trim, 0, 2.1 + h));
+  const roof = pidaRoof(w * 0.8, w * 0.36, 3, Math.max(0.5, w * 0.09), roofM, trim);
+  g.add(at(roof, 0, 2.4 + h, 0), at(kalash(Math.max(0.5, w * 0.11), M.gold), 0, 2.4 + h + roof.userData.top, 0));
+  g.add(at(nandi(nandiM, s), 0, 1.3, 0).rotateY(Math.PI));
+  g.userData.top = 2.4 + h + roof.userData.top + w * 0.25;
   return g;
 }

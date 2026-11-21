@@ -1,8 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, box, at, group, onFace, FACES, inst, unitBox, pidaRoof, kalash } from '../helpers.js';
+import { mat, box, at, group, onFace, FACES, inst, unitBox } from '../helpers.js';
 import { mouldings, pilasters, templeNiche, idol, mergeByMaterial } from './components.js';
-import { carvedPillar, dwajasthambha } from './temples.js';
-import { nandi } from './animals.js';
+import { nandiMandapa, dwajasthambha } from './temples.js';
 import { detail } from '../detail.js';
 import { trees, stalls, scatter, along } from './realism.js';
 
@@ -66,22 +65,6 @@ function shrines(d) {
   }
 }
 
-// The Nandi mandapa on the axis of Ramanathaswamy's shrine, open on every side: eight carved
-// pillars round the bull under a flat roof and a small stepped one.
-function nandiMandapa(f) {
-  const g = new THREE.Group(), w = 9, h = 5.6;
-  g.add(box(w + 1.6, 1, w + 1.6, GRANITE), box(w + 0.6, 0.3, w + 0.6, CORNICE, 0, 1));
-  const cols = new THREE.Group();
-  for (const px of [-1, 0, 1]) for (const pz of [-1, 0, 1]) if (px || pz) cols.add(at(carvedPillar(h, GRANITE), px * (w / 2 - 0.5), 1.3, pz * (w / 2 - 0.5)));
-  g.add(mergeByMaterial(cols));
-  g.add(box(w + 1.4, 0.8, w + 1.4, GRANITE, 0, 1.3 + h), box(w + 2, 0.3, w + 2, CORNICE, 0, 2.1 + h));
-  const roof = pidaRoof(w * 0.8, w * 0.36, 3, 0.8, LIME, CORNICE);
-  g.add(at(roof, 0, 2.4 + h, 0), at(kalash(1, M.gold), 0, 2.4 + h + roof.userData.top, 0));
-  // The bull lies facing west, towards the shrine.
-  g.add(at(nandi(mat('#d9d0bd', 0.6), 1.05), 0, 1.3, 0).rotateY(Math.PI));
-  f.add(at(g, -10, 0, 12));
-}
-
 // Ramanathaswamy at Rameswaram: flower stalls at the east gate, and coconut palms on the island.
 export function addDetails(f, g) {
   const d = new THREE.Group();
@@ -89,7 +72,8 @@ export function addDetails(f, g) {
   shrines(d);
   f.add(mergeByMaterial(d));
   parapets(f);
-  nandiMandapa(f);
+  // The Nandi mandapa on the axis of Ramanathaswamy's shrine, the bull facing west to it.
+  f.add(at(nandiMandapa(9, 5.6, GRANITE, CORNICE, { roofM: LIME, nandiM: mat('#d9d0bd', 0.6), s: 1.05 }), -10, 0, 12));
   f.add(dwajasthambha(-10, 26, 13));
   g.add(stalls([...along(5, [-22, 102], [-22, 124]).map(([x, z]) => [x, z, Math.PI / 2]), ...along(5, [22, 102], [22, 124]).map(([x, z]) => [x, z, -Math.PI / 2])]));
   g.add(trees(scatter(40, [-155, 155, -145, 140], { seed: 5, gap: 12 }).filter(([x, z]) => Math.abs(x) > 76 || Math.abs(z) > 100), { kind: 'palm', seed: 5 }));

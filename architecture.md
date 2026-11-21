@@ -181,8 +181,10 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | Shikhara | Nagara temple | Dravida vimana |
 | ![Gopuram](img/gopuram.jpg) | ![Mandap](img/mandap.jpg) | ![Temple niche with an image](img/temple-niche.jpg) |
 | Gopuram | Mandap | Temple niche with an image |
-| ![Manastambha](img/manastambha.jpg) | ![Kerala gable](img/kerala-gable.jpg) |   |
-| Manastambha | Kerala gable |   |
+| ![Manastambha](img/manastambha.jpg) | ![Kerala gable](img/kerala-gable.jpg) | ![Deepmala](img/deepmala.jpg) |
+| Manastambha | Kerala gable | Deepmala |
+| ![Nandi mandapa](img/nandi-mandapa.jpg) |   |   |
+| Nandi mandapa |   |   |
 
 | Part | What it is |
 | --- | --- |
@@ -200,6 +202,8 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | `dwajasthambha(x, z, h)` | The gold flagstaff before the sanctum |
 | `manastambha(h, m, { images })` | The Jain pillar of honour: a stepped base, a banded shaft, a lotus capital and a small pavilion, with four seated images in it if `images` |
 | `keralaGable(w, h, d, roofM, wood)` | The carved timber gable (mukhappu) of a Kerala roof, as a dormer to set into a hip roof |
+| `deepmala(h, m)` | The lamp tower of Maharashtra's temples: a tapering shaft with rings of stone arms, a brass lamp on each, lit at night |
+| `nandiMandapa(w, h, m, trim, { nandiM })` | An open pavilion of eight carved pillars on the temple's axis, the Nandi lying in it facing the sanctum |
 | `kuta(s, m)`, `shala(w, d, m)`, `haraRow(len, s, m)` (sculpture) | The miniature shrines along the edge of each storey of a vimana |
 
 ## Forts (`js/details/forts.js`)
