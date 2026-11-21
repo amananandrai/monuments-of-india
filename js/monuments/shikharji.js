@@ -36,6 +36,8 @@ export function buildShikharji() {
     domes.push([x, h + 0.4 + wall, z, b, rise * s, b]);
   });
   f.add(inst(unitBox(), plinths, SHADE), inst(unitBox(), bodies, WHITE), inst(unitHemi(16), domes, WHITE));
+  // The tonks' bodies and domes, for their mouldings, doors and finials (js/details/shikharji.js).
+  f.userData.tonks = { bodies, domes };
   const [px, pz, ph] = PEAKS[17];
   f.add(box(14, 1.2, 14, SHADE, px, ph - 0.8, pz), at(nagaraTemple({ w: 7, h: 11, m: WHITE, shade: SHADE, plinth: 0.6, urus: 4, halls: [[8, 4.5, 0, 'dome']] }), px, ph + 0.4, pz - 3));
   // The Jal Mandir, a larger temple in a saddle of the ridge.

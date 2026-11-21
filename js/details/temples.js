@@ -4,7 +4,7 @@ import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol, place
 import { templeDoorway, templePorch, steps, grandStair, doorFrame, doorLeaves, guardian } from './doorways.js';
 import { lion, elephant, horse, nandi } from './animals.js';
 import { detail } from '../detail.js';
-import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze, miniSpireGeo, kuta, shala, figure } from './sculpture.js';
+import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze, miniSpireGeo, kuta, shala, figure, haraRow } from './sculpture.js';
 const D_BRASS = mat('#b8913f', 0.35, 0.8);
 const DARK_STONE = mat('#4a4541', 0.9);
 
@@ -608,4 +608,21 @@ export function nandiMandapa(w, h, m, trim = m, { roofM = m, nandiM = m, s = w /
   g.add(at(nandi(nandiM, s), 0, 1.3, 0).rotateY(Math.PI));
   g.userData.top = 2.4 + h + roof.userData.top + w * 0.25;
   return g;
+}
+
+// The dress of a South Indian hall or shrine block w × d and h high, standing on y = 0: a moulded
+// base (adhishthana), pilasters on every face, a curved eave (kapota) under the roof and, along its
+// edges, a parapet (hara) of miniature shrines, a kuta at each corner and shalas between. Set it
+// round a plain block of the same size. eaveM, haraM: the eave's and the parapet's materials.
+export function dravidaDress(w, d, h, m, { eaveM = m, haraM = m, base = true, hara = true } = {}) {
+  const g = new THREE.Group(), ks = Math.min(1.1, Math.max(0.6, Math.min(w, d) * 0.07));
+  if (base) g.add(mouldings(w, d, [[0, 0.45, 0.35], [0.45, 0.3, 0.18], [0.75, 0.35, 0.28]], m));
+  for (const a of FACES) {
+    const side = Math.abs(Math.sin(a)) > 0.5, len = side ? d : w, dist = side ? w / 2 : d / 2;
+    g.add(onFace(at(pilasters(len - 1.2, Math.max(2, Math.round(len / 2.6)), 0.55, h - 2.2, 0.14, m), 0, 1.15, 0), a, dist));
+    g.add(onFace(at(chhajja(len + 0.8, 1.1, 0.45, 0.14, eaveM), 0, h - 0.2, 0), a, dist));
+    if (hara && len > 4 * ks) g.add(onFace(at(haraRow(len - 2.4 * ks, ks, haraM), 0, h, 0), a, dist - 0.64 * ks));
+  }
+  if (hara) for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(at(kuta(ks, haraM), sx * (w / 2 - 0.64 * ks), h, sz * (d / 2 - 0.64 * ks)));
+  return mergeByMaterial(g);
 }

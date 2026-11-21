@@ -59,8 +59,8 @@ From [architecture.md](architecture.md).
 | Gopuram | Mandap | Temple niche with an image |
 | ![Manastambha](img/manastambha.jpg) | ![Kerala gable](img/kerala-gable.jpg) | ![Inlaid border](img/inlay-border.jpg) |
 | Manastambha | Kerala gable | Inlaid border |
-| ![Deepmala](img/deepmala.jpg) | ![Nandi mandapa](img/nandi-mandapa.jpg) |   |
-| Deepmala | Nandi mandapa |   |
+| ![Deepmala](img/deepmala.jpg) | ![Nandi mandapa](img/nandi-mandapa.jpg) | ![Dravida hall dress](img/dravida-dress.jpg) |
+| Deepmala | Nandi mandapa | Dravida hall dress |
 
 ### [Forts](architecture.md#forts-jsdetailsfortsjs)
 
