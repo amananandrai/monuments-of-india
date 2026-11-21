@@ -1,17 +1,12 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, at, onFace, archPanel, chhatri, hemi, finial, inst, unitBox, unitCyl, aroundRect, sheet, curvedBand } from '../helpers.js';
+import { M, mat, surface, box, cyl, at, onFace, archPanel, chhatri, hemi, finial, inst, unitBox, unitCyl, aroundRect, sheet, curvedBand } from '../helpers.js';
 import { fortGate } from '../details/forts.js';
-import { columnTrim } from '../details/components.js';
+import { columnTrim, banglaRoof } from '../details/components.js';
 import { addDetails } from '../details/agra-fort.js';
 
-// The curved, gilded "bangaldar" roof of the Khas Mahal pavilions.
-function bangaldar(w, d, h, m) {
-  const s = new THREE.Shape();
-  s.moveTo(-w / 2, 0); s.quadraticCurveTo(-w / 2, h * 1.1, 0, h); s.quadraticCurveTo(w / 2, h * 1.1, w / 2, 0); s.closePath();
-  const geo = new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: false, curveSegments: 12 });
-  geo.translate(0, 0, -d / 2);
-  return mesh(geo, m);
-}
+// The Khas Mahal's two golden pavilions (the Bangla-i-Darshan and the Bangla-i-Jahanara) are roofed
+// in gilded copper sheet, curved both ways, their corners drooping (js/details/components.js).
+const GILT_SHEET = surface(mat('#d9a93a', 0.32, 0.8), 'giltsheet');
 
 export function buildAgraFort() {
   const Rd = M.red, Rl = M.redLight, Mb = M.marble, g = new THREE.Group(), f = new THREE.Group();
@@ -42,9 +37,9 @@ export function buildAgraFort() {
   f.add(gate);
   // White marble palaces on the river front: Khas Mahal and the octagonal Musamman Burj
   f.add(box(90, 1, 20, Mb, -10, 12, 8));
-  for (const [x, w, roofM] of [[-34, 14, M.gild], [-10, 22, Mb], [14, 14, M.gild]]) {
+  for (const [x, w, roofM] of [[-34, 14, GILT_SHEET], [-10, 22, Mb], [14, 14, GILT_SHEET]]) {
     f.add(box(w, 7, 10, Mb, x, 13, 6), onFace(at(archPanel(3, 5, true, M.recess, 0.2), 0, 13.4, 0), 0, 11, x));
-    f.add(at(bangaldar(w + 1, 11, 4, roofM), x, 20, 6));
+    f.add(at(banglaRoof(w + 1.6, 11.6, 4, roofM, { droop: 0.22 }), x, 20.05, 0.2));
   }
   f.add(cyl(7, 7, 12, Mb, 44, 12, 6, 8), at(hemi(6, Mb, 16), 44, 24, 6), at(finial(4), 44, 30, 6));
   // Diwan-i-Am, the hall of public audience, in the inner court

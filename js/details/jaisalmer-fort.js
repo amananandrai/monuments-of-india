@@ -24,8 +24,8 @@ function architecture(f, pal) {
   if (!detail.low) {
     const slits = [];
     bastions().forEach(([x, z], k) => {
-      for (const [y, ph] of [[H + 3.4, 0], [H + 11.2, 0.5]]) for (let i = 0; i < 8; i++) {
-        const a = ((i + ph) / 8) * Math.PI * 2 + k * 0.3;
+      for (const [y, ph] of [[H + 3.4, 0], [H + 11.2, 0.5]]) for (let i = 0; i < 10; i++) {
+        const a = ((i + ph) / 10) * Math.PI * 2 + k * 0.3;
         slits.push([x + Math.sin(a) * 5.52, y, z + Math.cos(a) * 5.52, 0.28, 1.4, 0.05, a]);
       }
     });

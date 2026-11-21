@@ -7,7 +7,7 @@ import * as THREE from 'three';
 // patches of soot and age; strongest on brick, about half on marble, none on gilt) and a small
 // per-object tint so that repeated pieces don't look cloned. Water is its own kind: moving ripples
 // that tilt the normal, so the sky reflects in a broken, shifting band instead of a flat sheen.
-export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13, calligraphy: 14, pietra: 15, reliefs: 16, banded: 17, paving: 18, plates: 19, reeds: 20 };
+export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13, calligraphy: 14, pietra: 15, reliefs: 16, banded: 17, paving: 18, plates: 19, reeds: 20, copper: 21, giltsheet: 22 };
 
 // Seconds since the page opened, shared by every water material; main.js advances it each frame.
 export const waterTime = { value: 0 };
@@ -228,6 +228,29 @@ const PATTERN = /* glsl */ `
   sTint *= mix(1.0, 0.97, sRdSide * (1.0 - sNear));
   sH = sRdSide * (sRdEnd * 0.8 + sRdFine * 0.3 - sRdCourse * 0.6);
   sRough = 0.1;
+#elif SURF_KIND == 21 || SURF_KIND == 22
+  // Roofs sheathed in sheet copper (21), or in copper gilded (22): sheets 0.6 m wide and 2 m long
+  // in staggered courses, their standing seams fine dark lines worked out in space as on the bronze
+  // plates (19) so they run true over a curved roof, each sheet a shade different and dimpled by
+  // the hammer. On copper, verdigris: green along the seams, in streaks washed down the slope and
+  // in broad weathered patches; never on gilding.
+  vec3 sCuSz = vec3(0.6, 2.0, 0.6), sCuQ = sp / sCuSz;
+  float sCuRow = floor(sCuQ.y);
+  sCuQ.xz += 0.5 * mod(sCuRow, 2.0);
+  vec3 sCuCell = floor(sCuQ), sCuF = fract(sCuQ), sCuD = min(sCuF, 1.0 - sCuF) * sCuSz;
+  vec3 sCuAl = sqrt(max(vec3(1e-3), 1.0 - sn * sn));
+  float sCuJ = min(min(sCuD.x / sCuAl.x, sCuD.y / sCuAl.y), sCuD.z / sCuAl.z);
+  float sCuSeam = (1.0 - smoothstep(0.01, 0.035, sCuJ)) * sNear;
+  float sCuSheet = sHash(sCuCell + 3.0), sCuDent = sNoise(sp * 9.0);
+  sTint = (0.94 + 0.1 * sCuSheet + 0.05 * (sCuDent - 0.5)) * mix(1.0, 0.72, sCuSeam);
+  sH = sCuDent * 0.35 - sCuSeam * 0.8;
+  sRough = 0.08 * (sCuSheet - 0.5);
+  #if SURF_KIND == 21
+  float sCuWash = sNoise(vec3(sp.x * 1.6, sp.y * 0.12, sp.z * 1.6)), sCuBig = sFbm(sp * 0.25);
+  float sCuPat = clamp(smoothstep(0.55, 0.85, sCuBig + 0.25 * sCuWash) * 0.8 + (1.0 - smoothstep(0.0, 0.12, sCuJ)) * 0.45, 0.0, 0.85);
+  sCol = mix(vec3(1.0), vec3(0.62, 1.32, 1.12), sCuPat);
+  sRough += 0.25 * sCuPat;
+  #endif
 #elif SURF_KIND == 13
   // A tower's walls: a band of glazing on every floor (3.4 m), box-filtered over the pixel, so a
   // floor smaller than a pixel blends into an even tone instead of shimmering in bands. Roofs plain.
@@ -480,7 +503,7 @@ function patch(shader, kind, bump, photo, wave, edge, reflect) {
   normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`));
 }
 
-const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0, calligraphy: 0.2, pietra: 0.3, reliefs: 1.4, banded: 1.0, paving: 0.9, plates: 0.5, reeds: 1.6 };
+const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0, calligraphy: 0.2, pietra: 0.3, reliefs: 1.4, banded: 1.0, paving: 0.9, plates: 0.5, reeds: 1.6, copper: 0.6, giltsheet: 0.5 };
 
 // Choose a surface for a material from its look, unless one was set with surface().
 function guess(m) {

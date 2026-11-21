@@ -90,9 +90,10 @@ export function guardian(h, m) {
 
 /* ---------- the colossal statues ---------- */
 
-// The seated Shiva at Nageshwar, cross-legged on his lotus, the right hand raised in blessing and
-// the left resting on the knee; in the coordinates of seatedShiva() in nageshwar-temple.js. The
-// head, fingers and serpent are meshes.
+// The seated Shiva at Nageshwar, cross-legged on his seat, with four arms: the front right (-x)
+// raised in blessing, the front left resting on the knee, the rear right gripping the trishul and
+// the rear left raising the damru; in the coordinates of mahayogiShiva() in nageshwar-temple.js.
+// The head, fingers and serpent are meshes.
 function shivaField() {
   const legs = mirrorX(blend([[cone([2.6, 6.6, 0], [6.2, 5.8, 3.2], 2.3, 1.9), 0], [E([5.9, 6.0, 3.1], [1.9, 1.7, 1.8]), 0.8]]));
   const shins = blend([
@@ -112,12 +113,21 @@ function shivaField() {
     [E([0, 15.9, -0.2], [5.0, 1.5, 2.7]), 1.2],
     [mirrorX(E([4.6, 16.0, 0], [1.75, 1.6, 1.6])), 0.9],
     [cone([0, 16.8, 0], [0, 19.6, 0.2], 1.35, 1.2), 0.8],
-    [cone([4.9, 15.6, 0.2], [6.6, 12.4, 1.6], 1.2, 0.95), 0.7],
-    [cone([6.6, 12.4, 1.6], [6.9, 15.8, 3.4], 0.95, 0.72), 0.4],
-    [E([6.9, 16.8, 3.7], [0.55, 1.45, 1.05]), 0.35],
-    [cone([-4.9, 15.6, 0.2], [-6.4, 12.2, 1.4], 1.2, 0.95), 0.7],
-    [cone([-6.4, 12.2, 1.4], [-6.2, 8.4, 3.6], 0.95, 0.75), 0.4],
-    [E([-6.1, 7.7, 4.2], [1.05, 0.65, 1.6]), 0.4],
+    // The front right hand (-x) raised in blessing, the front left (+x) resting on the knee.
+    [cone([-4.9, 15.6, 0.2], [-6.6, 12.4, 1.6], 1.2, 0.95), 0.7],
+    [cone([-6.6, 12.4, 1.6], [-6.9, 15.8, 3.4], 0.95, 0.72), 0.4],
+    [E([-6.9, 16.8, 3.7], [0.55, 1.45, 1.05]), 0.35],
+    [cone([4.9, 15.6, 0.2], [6.4, 12.2, 1.4], 1.2, 0.95), 0.7],
+    [cone([6.4, 12.2, 1.4], [6.2, 8.4, 3.6], 0.95, 0.75), 0.4],
+    [E([6.1, 7.7, 4.2], [1.05, 0.65, 1.6]), 0.4],
+    // The two rear arms, from behind the shoulders: the right (-x) gripping the trishul's shaft at
+    // shoulder height, the left (+x) raising the damru.
+    [cone([-4.3, 15.9, -1.0], [-7.5, 13.4, -1.7], 1.0, 0.82), 0.6],
+    [cone([-7.5, 13.4, -1.7], [-8.6, 15.6, -0.7], 0.82, 0.66), 0.35],
+    [E([-8.75, 16.1, -0.6], [0.75, 0.85, 0.75]), 0.3],
+    [cone([4.3, 15.9, -1.0], [7.6, 13.8, -1.6], 1.0, 0.82), 0.6],
+    [cone([7.6, 13.8, -1.6], [8.5, 16.6, -0.5], 0.82, 0.66), 0.35],
+    [E([8.6, 17.2, -0.4], [0.7, 0.85, 0.7]), 0.3],
   ]);
   // The anatomy of a yogi's body, laid on that skin: the abdominal muscles in three pairs, the
   // collarbones, and the line down the middle of the belly.
@@ -128,7 +138,7 @@ function shivaField() {
   const anatomy = blend([[b, 0], ...abs, ...clav]);
   const line = E(on([0, 11.9, 4], 0), [0.12, 1.25, 0.16]);
   const navel = E([0, 10.2, 2.95], [0.25, 0.3, 0.3]);
-  return { f: flatBase(carve(carve(anatomy, line, 0.15), navel, 0.15), 3.6, 0.2), lo: [-9.5, 3.4, -4.5], hi: [9.5, 21.4, 7.6] };
+  return { f: flatBase(carve(carve(anatomy, line, 0.15), navel, 0.15), 3.6, 0.2), lo: [-10.5, 3.4, -4.5], hi: [10.5, 21.4, 7.6] };
 }
 // coarse: meshed on a cell half as large again (under half the triangles, under half the time), for
 // phones (js/detail.js); kept under its own key, so both can be cached.

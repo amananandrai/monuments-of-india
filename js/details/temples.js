@@ -142,7 +142,7 @@ export function nagaraTemple({
     }
   } else {
     // A small shrine with no hall: the doorway is in the sanctum itself.
-    const ds = doorSize(w * 0.7), door = templeDoorway(ds.w, ds.h, { m, guardians: w >= 7, hood: true });
+    const ds = doorSize(w * 0.7), door = templeDoorway(ds.w, ds.h, { m, guardians: w >= 7, hood: true, shakha: w >= 7 });
     e.add(at(door, 0, plinth, sw / 2));
     frontDoor = door.userData.outerW;
   }

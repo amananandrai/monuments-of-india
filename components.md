@@ -23,8 +23,8 @@ From [architecture.md](architecture.md).
 | ![Chhatri](img/chhatri.jpg) | ![Mughal chhatri](img/mughal-chhatri.jpg) | ![Guldastas](img/guldasta.jpg) |
 | :---: | :---: | :---: |
 | Chhatri | Mughal chhatri | Guldastas |
-| ![Minaret](img/minaret.jpg) | ![Jharokha](img/jharokha.jpg) |   |
-| Minaret | Jharokha |   |
+| ![Minaret](img/minaret.jpg) | ![Jharokha](img/jharokha.jpg) | ![Copper and gilded-copper roofs](img/copper-roofs.jpg) |
+| Minaret | Jharokha | Copper and gilded-copper roofs |
 
 ### [Pillars and columns](architecture.md#pillars-and-columns)
 

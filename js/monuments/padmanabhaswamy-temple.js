@@ -1,11 +1,12 @@
 import * as THREE from 'three';
-import { M, mat, box, at, hipRoof, inst, unitCyl, aroundRect, kalash } from '../helpers.js';
+import { M, mat, box, at, hipRoof, inst, unitCyl, aroundRect, kalash, surface } from '../helpers.js';
 import { gopuram, wallWithGaps, dwajasthambha } from '../details/temples.js';
 import { columnTrim } from '../details/components.js';
 import { addDetails } from '../details/padmanabhaswamy-temple.js';
 
 const STONE = ['#d9d2c2', '#bdb4a2', '#e6dece', '#a99f8c'];
-const COPPER = mat('#b0773f', 0.45, 0.4);
+// Sheet copper on the roofs, seamed and weathering green in places (js/surface.js, 'copper').
+const COPPER = surface(mat('#b0773f', 0.45, 0.4), 'copper'), GILT_SHEET = surface(mat('#d9a93a', 0.32, 0.8), 'giltsheet');
 const LIME = mat('#efe9dd', 0.85);
 
 export function buildPadmanabhaswamy() {
@@ -23,9 +24,9 @@ export function buildPadmanabhaswamy() {
   aroundRect(74, 96, 2.6).forEach(([x, z]) => cols.push([x, 1.2, z, 0.9, 5, 0.9]));
   f.add(box(80, 1.2, 102, M.granite), inst(unitCyl(8), cols, M.granite), columnTrim(cols, M.granite, { capM: M.graniteDark }));
   for (const s of [-1, 1]) f.add(box(80, 0.8, 6, M.graniteDark, 0, 6.2, s * 48), box(6, 0.8, 102, M.graniteDark, s * 37, 6.2, 0));
-  // Sanctum under tiered Kerala copper roofs, and the gold flagstaff in front
+  // Sanctum under tiered Kerala roofs, sheet copper below and gilded copper above, and the gold flagstaff in front
   f.add(box(34, 7, 46, LIME, 0, 1.2, -10), at(hipRoof(38, 50, 8, COPPER), 0, 8.2, -10));
-  f.add(box(16, 4, 26, LIME, 0, 12, -12), at(hipRoof(19, 29, 6, M.gild), 0, 16, -12));
+  f.add(box(16, 4, 26, LIME, 0, 12, -12), at(hipRoof(19, 29, 6, GILT_SHEET), 0, 16, -12));
   for (const z of [-20, -12, -4]) f.add(at(kalash(1.6), 0, 21.6, z));
   // The tall gold-tipped dwajasthambha on the axis between the gopuram and the sanctum.
   const mast = dwajasthambha(0, 26, 25);

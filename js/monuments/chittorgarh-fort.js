@@ -30,6 +30,11 @@ function vijayStambh() {
 // js/details/chittorgarh-fort.js.
 export const H = 90, L = 640, W = 130;
 export const VS = [-40, 0], KS = [230, -18], PP = [120, 20], RAMPOL = -232;
+// The ruined palaces and halls on the plateau, [x, z, w, d, h]: the first four Rana Kumbha's palace.
+export const RUINS = [[-190, -10, 34, 20, 10], [-212, 12, 16, 12, 7], [-172, 18, 12, 9, 5], [-226, -22, 9, 9, 12], [-120, -30, 14, 10, 6], [40, -26, 18, 12, 5], [170, 30, 12, 10, 6]];
+// The temples: Kumbha Shyam and Meera's beside it, south of the Vijay Stambh; Kalika Mata east of
+// Padmini's palace. [x, z, w, h].
+export const TEMPLES = [[-78, 28, 9, 19], [-100, 30, 6, 12], [158, -22, 9, 17]];
 const reach = (x, z) => Math.pow((Math.abs(x) / (L / 2)) ** 4 + (Math.abs(z) / (W / 2)) ** 4, 0.25);
 // The hill's height at (x, z): read by the walls, the road and the trees.
 export function chittor(x, z) {
@@ -83,7 +88,7 @@ export function buildChittorgarh() {
   // Vijay Stambh, Rana Kumbha's palace ruins, and Padmini's palace in its pool
   f.add(at(vijayStambh(), VS[0], H, VS[1]));
   const ruins = [];
-  for (const [x, z, w, d, h] of [[-190, -10, 34, 20, 10], [-212, 12, 16, 12, 7], [-172, 18, 12, 9, 5], [-226, -22, 9, 9, 12], [-120, -30, 14, 10, 6], [40, -26, 18, 12, 5], [170, 30, 12, 10, 6]]) ruins.push([x, H, z, w, h, d]);
+  for (const [x, z, w, d, h] of RUINS) ruins.push([x, H, z, w, h, d]);
   f.add(inst(unitBox(), ruins, RUIN));
   f.add(box(40, 0.6, 30, M.water, PP[0], H, PP[1]), box(10, 6, 8, mat('#efe7d6', 0.85), PP[0], H + 0.6, PP[1]), at(hemi(3, mat('#efe7d6', 0.85), 16), PP[0], H + 6.6, PP[1]));
   addDetails(f, g);

@@ -80,8 +80,8 @@ for (const a of FACES) d.add(onFace(at(windowFrame(2, 4.2, M.cream, { shape: 'fl
 | ![Chhatri](img/chhatri.jpg) | ![Mughal chhatri](img/mughal-chhatri.jpg) | ![Guldastas](img/guldasta.jpg) |
 | :---: | :---: | :---: |
 | Chhatri | Mughal chhatri | Guldastas |
-| ![Minaret](img/minaret.jpg) | ![Jharokha](img/jharokha.jpg) |   |
-| Minaret | Jharokha |   |
+| ![Minaret](img/minaret.jpg) | ![Jharokha](img/jharokha.jpg) | ![Copper and gilded-copper roofs](img/copper-roofs.jpg) |
+| Minaret | Jharokha | Copper and gilded-copper roofs |
 
 | Part | File | What it is |
 | --- | --- | --- |
@@ -90,7 +90,7 @@ for (const a of FACES) d.add(onFace(at(windowFrame(2, 4.2, M.cream, { shape: 'fl
 | `guldasta(h, r, m)` | helpers | The slender roof turret of Lucknow: a shaft, a tiny onion dome and a spike |
 | `minaret(h, r, m, { balconies, cap })` | helpers | A tapering minaret with balconies, capped by a chhatri |
 | `jharokha(w, h, m, { roof })` | components | An oriel window on brackets, screened on three sides, under a curved (`'bangla'`), domed or flat roof |
-| `banglaRoof(w, d, rise, m)` | components | The curved roof of Bengal, as on jharokhas and pavilions |
+| `banglaRoof(w, d, rise, m, { droop })` | components | The curved roof of Bengal, as on jharokhas and pavilions: curved both ways, its ridge and eaves drooping to the corners |
 
 ## Pillars and columns
 
@@ -291,6 +291,8 @@ continuous skin in `js/details/figures.js` and `js/sdf.js`. The tools for workin
 | `bakeCavities(geo, f, reach, deep, { wear })` | sdf | Darkens the crevices into vertex colours, and with `wear` lightens the ridges |
 | `surface(m, 'plates')` | surface | Bronze cast in plates: staggered joints worked out in space, so they run true over a curved body |
 | `surface(m, 'reeds')` | surface | A penbey parapet: the maroon-painted cut ends of tamarisk twigs, in bundled courses |
+| `surface(m, 'copper')` | surface | Sheet copper: staggered sheets with standing seams worked out in space, hammer dimples, and verdigris along the seams, in streaks and in weathered patches |
+| `surface(m, 'giltsheet')` | surface | The same sheets gilded: seams and dimples, no verdigris |
 
 ## Terrain (`js/details/terrain.js`)
 
@@ -305,7 +307,7 @@ continuous skin in `js/details/figures.js` and `js/sdf.js`. The tools for workin
 From `tools/`:
 
 ```bash
-node check-budgets.mjs <id>     # triangles, against 650,000 on desktops (800,000 for temples) and 300,000 on phones
+node check-budgets.mjs <id>     # triangles, against 800,000 on desktops and 300,000 on phones
 node check-flicker.mjs <id>     # faces that share a plane
 node check-heights.mjs <id>     # the model's height against the real one
 node shoot-views.mjs <id>       # a picture of the home view

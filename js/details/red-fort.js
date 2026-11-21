@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { M, mesh, box, cyl, at, onFace, FACES, hemi, onionDome, finial, mat } from '../helpers.js';
-import { archRing, archSlab, panel, frieze, rosette, windowFrame, arcadeScreen, mergeByMaterial, mughalChhatri, chhajja, merlons } from './components.js';
+import { M, mesh, box, cyl, at, onFace, FACES, hemi, onionDome, finial, mat, surface } from '../helpers.js';
+import { archRing, archSlab, panel, frieze, rosette, windowFrame, arcadeScreen, mergeByMaterial, mughalChhatri, chhajja, merlons, jharokha } from './components.js';
 import { iwan, arcadeSkin, cellRow } from './mughal.js';
 import { towerDetail, slitRow } from './forts.js';
 import { trees, lampPosts, asiBoard, along } from './realism.js';
@@ -13,7 +13,7 @@ import { RIVER, OUTLINE } from '../monuments/red-fort.js';
 //   marble, rosettes in the spandrels, and a screen of small arches along its top;
 // - the octagonal towers either side open in an arched window on each face of their upper storey.
 // Dimensions follow js/monuments/red-fort.js: walls 10 thick centred on z = 0, the gate at z = 2.
-const Rd = M.red, Rl = M.redLight, Mb = M.marble;
+const Rd = M.red, Rl = M.redLight, Mb = M.marble, GILT_SHEET = surface(mat('#d9a93a', 0.32, 0.8), 'giltsheet');
 function architecture(f) {
   const d = new THREE.Group();
   for (const [x0, x1] of [[-60, -16], [16, 60]]) {
@@ -96,6 +96,12 @@ function insideWalls(g) {
   // Musamman Burj: an octagonal tower over the river wall, with a gilded dome.
   d.add(cyl(5.4, 6, 17.6, Rd, 48, 0, RW - 6, 8), cyl(5, 5, 6, Mb, 48, 17.6, RW - 6, 8));
   d.add(at(hemi(4.6, M.gild, 24), 48, 23.6, RW - 6), at(finial(3), 48, 28, RW - 6));
+  // The Jharokha-i-Darshan: the balcony on the tower's river face where the emperor showed himself
+  // each morning, in marble under a curved roof of gilded copper.
+  const jd = onFace(at(jharokha(2.2, 2.4, Mb, { d: 1.1, trim: Mb, roofM: GILT_SHEET }), 0, 18.6, 0), Math.PI - Math.PI / 8, 4.62);
+  jd.position.x += 48;
+  jd.position.z += RW - 6;
+  d.add(jd);
   // Hayat Bakhsh Bagh, the garden to the north of the palaces, with its pavilions and channels.
   d.add(box(120, 0.4, 120, M.grass, -220, 0, RW + 100), box(4, 0.5, 120, M.water, -220, 0, RW + 100), box(120, 0.5, 4, M.water, -220, 0, RW + 100));
   for (const x of [-280, -160]) d.add(at(pavilion(14, 10, 6, Mb, { arch: 2.6, kiosks: false }), x, 0, RW + 100));
