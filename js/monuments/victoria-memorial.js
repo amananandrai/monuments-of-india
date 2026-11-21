@@ -36,7 +36,7 @@ export function angelOfVictory() {
 // her left (js/parts/figures.js). On phones, the enthroned figure of the light kit.
 export function queenVictoria() {
   if (detail.low) return figure(4.4, M.bronze, 'enthroned');
-  const g = new THREE.Group(), B = M.bronze, fig = allegory('victoria', { seated: true, throne: true, mantle: true, head: 'queen', stout: true, right: 'throne', left: 'lap' }, B, 0.018);
+  const g = new THREE.Group(), B = M.bronze, fig = allegory('victoria', { seated: true, throne: true, mantle: true, head: 'queen', stout: true, right: 'throne', left: 'lap', hand: { l: 'cup' } }, B, 0.018);
   g.add(fig.mesh);
   hold(g, fig, 'r', 'sceptre', B, { axis: [0, 1, 0.12] });
   hold(g, fig, 'l', 'orb', B, { offset: [0, 0.03, 0] });

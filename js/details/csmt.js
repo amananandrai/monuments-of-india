@@ -112,16 +112,16 @@ function apexPlatform(g) {
 }
 export function commerce() {
   const g = new THREE.Group(), y = apexPlatform(g);
-  g.add(at(robed(2.5, 'commerce', { right: 'out', left: 'chest' }, [['l', 'caduceus', { axis: [0.1, 1, 0.1] }]]), 0, y, 0.1));
-  g.add(at(robed(2.1, 'trade', { seated: true, right: 'lap', left: 'forward' }, [['l', 'ship', { axis: [0, 1, 0], offset: [0, 0.05, 0] }]]), -1.35, y, 0.35).rotateY(0.3));
+  g.add(at(robed(2.5, 'commerce', { right: 'out', left: 'chest', hand: { l: 'grip' } }, [['l', 'caduceus', { axis: [0.1, 1, 0.1] }]]), 0, y, 0.1));
+  g.add(at(robed(2.1, 'trade', { seated: true, right: 'lap', left: 'forward', hand: { l: 'rest' } }, [['l', 'ship', { axis: [0, 1, 0], offset: [0, 0.05, 0] }]]), -1.35, y, 0.35).rotateY(0.3));
   const b = at(robed(2.1, 'britannia', { seated: true, head: 'helmet', right: 'holdUp', left: 'lap' }, [['r', 'trident', { axis: [0, 1, 0] }]]), 1.35, y, 0.35).rotateY(-0.3);
   if (!detail.low) { const sh = at(new THREE.Group(), 0.5, 0.42, 0.12).add(hold(new THREE.Group(), { hands: { c: [0, 0, 0] }, dirs: {} }, 'c', 'shield', CREAM_)); sh.rotation.y = Math.PI / 2 - 0.3; sh.scale.setScalar(1.25); b.add(sh); }
   return g.add(b);
 }
 export function agriculture() {
   const g = new THREE.Group(), y = apexPlatform(g);
-  g.add(at(robed(2.5, 'agriculture', { right: 'down', left: 'chest' }, [['r', 'plough', { axis: [0, 1, 0] }], ['l', 'cornucopia', { axis: [0.3, 1, 0.2] }]]), 0.5, y, 0.1));
-  return g.add(at(robed(2.1, 'harvest', { seated: true, right: 'lap', left: 'cradle' }, [['r', 'sickle', { axis: [0, 1, 0.3] }], ['l', 'sheaf', { axis: [0.5, 1, 0.2] }]]), -1.1, y, 0.35).rotateY(0.25));
+  g.add(at(robed(2.5, 'agriculture', { right: 'down', left: 'chest', hand: { r: 'grip', l: 'grip' } }, [['r', 'plough', { axis: [0, 1, 0] }], ['l', 'cornucopia', { axis: [0.3, 1, 0.2] }]]), 0.5, y, 0.1));
+  return g.add(at(robed(2.1, 'harvest', { seated: true, right: 'lap', left: 'cradle', hand: { r: 'grip' } }, [['r', 'sickle', { axis: [0, 1, 0.3] }], ['l', 'sheaf', { axis: [0.5, 1, 0.2] }]]), -1.1, y, 0.35).rotateY(0.25));
 }
 
 

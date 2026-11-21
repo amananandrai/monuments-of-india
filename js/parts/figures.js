@@ -953,11 +953,63 @@ const ARM_POSES = {
   knee: [[-0.07, -0.26, 0.05], [-0.15, -0.44, 0.27]],
   lotusUp: [[-0.16, -0.19, 0.06], [-0.2, 0.05, 0.12]],
 };
+// A hand in human units, growing from the wrist along `u` (the forearm's direction): the palm, four
+// fingers of their own lengths and the thumb, in place of a plain lump. side: -1 the right hand, 1
+// the left. shape:
+// - 'grip': a fist closed round a shaft that runs through the hand's centre (0.055 along u from the
+//   wrist, where hold() sets what the figure holds), the fingers wrapped over it and the thumb laid
+//   across them. The shaft runs along `across`, as near as the forearm allows.
+// - 'relaxed': the fingers together and gently curled, as a hand hangs or rests; 'open': nearly
+//   straight, as a hand held out. The palm faces `across`. (A figure may also ask for 'cup', a
+//   relaxed hand palm up under what it carries, or 'rest', palm down on it: see upperBody.)
+// The hand is meshed on its own, on cells fine enough to part the fingers (a body's cells are
+// several times too coarse, and a wrist too thin to carry a seam between two grids), so its field
+// takes in the end of the forearm, which lies in the body's own. mitten: for a small figure whose
+// hand is meshed coarsely, the fingers a little fuller and run together, so they hold as one mass
+// instead of breaking up on the grid. Returns the field and the box that holds it.
+const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+const FINGERS = [[0.027, 0.07, 0.0088], [0.009, 0.078, 0.0092], [-0.009, 0.072, 0.0088], [-0.0265, 0.056, 0.0078]];
+function hand(wrist, u, side, shape, across, mitten = false) {
+  // The frame: u along the hand, n out of the palm, t towards the thumb.
+  const perp = (v) => { const d = v[0] * u[0] + v[1] * u[1] + v[2] * u[2], w = v.map((c, i) => c - d * u[i]), l = Math.hypot(...w); return l < 0.3 ? null : w.map((c) => c / l); };
+  const grip = shape === 'grip', a0 = perp(across) || perp([0, 0, 1]) || perp([0, 1, 0]);
+  const t = grip ? a0 : side < 0 ? cross(u, a0) : cross(a0, u), n = grip ? (side < 0 ? cross(t, u) : cross(u, t)) : a0;
+  const fk = mitten ? 0.016 : 0.004, fr = mitten ? 1.2 : 1;
+  let parts;
+  if (grip) {
+    // The back of the hand lies behind the shaft; each finger runs from its knuckle over the shaft
+    // and back to the palm; the thumb comes round the other way and lies across the first two.
+    parts = [[roundBox([0.04, -0.023, 0], [0.04, 0.015, 0.037], 0.012), 0]];
+    for (const [c, L, r] of FINGERS) {
+      const k = L / 0.078;
+      parts.push([chain([[0.076, -0.024, c, r], [0.078 + 0.016 * k, 0.004, c, r * 0.96], [0.064 + 0.012 * k, 0.028, c, r * 0.9], [0.044, 0.022, c, r * 0.84]].map(([a, b, cc, rr]) => [a, b, cc, rr * fr]), 0.005), fk]);
+    }
+    parts.push([chain([[0.018, -0.012, 0.03, 0.0125], [0.048, 0.014, 0.042, 0.0105], [0.07, 0.034, 0.024, 0.0088]], 0.006), 0.008]);
+  } else {
+    const curl = shape === 'open' ? 0.4 : 1;
+    parts = [[roundBox([0.043, 0, 0], [0.043, 0.014, 0.038], 0.012), 0]];
+    for (const [c, L, r] of FINGERS) {
+      parts.push([chain([[0.08, 0, c, r], [0.08 + L * 0.42, curl * 0.006, c * 1.05, r * 0.95], [0.08 + L * 0.75, curl * 0.019, c * 1.08, r * 0.88], [0.08 + L, curl * 0.036, c * 1.1, r * 0.8]].map(([a, b, cc, rr]) => [a, b, cc, rr * fr]), 0.004), fk]);
+    }
+    parts.push([chain([[0.02, 0.004, 0.03, 0.0125], [0.05, 0.01 + curl * 0.006, 0.05, 0.0105], [0.078, 0.014 + curl * 0.01, 0.057, 0.0088]], 0.006), 0.008]);
+  }
+  const local = blend(parts), W = wrist, c = wrist.map((v, i) => v + u[i] * 0.07);
+  const f = (x, y, z) => { const px = x - W[0], py = y - W[1], pz = z - W[2]; return local(px * u[0] + py * u[1] + pz * u[2], px * n[0] + py * n[1] + pz * n[2], px * t[0] + py * t[1] + pz * t[2]); };
+  const stub = cone(wrist.map((v, i) => v - u[i] * 0.07), wrist, 0.0352, 0.033);
+  return { f: (x, y, z) => smin(f(x, y, z), stub(x, y, z), 0.012), lo: c.map((v) => v - 0.125), hi: c.map((v) => v + 0.125) };
+}
+// How each arm pose holds its hand unless the figure says otherwise (opts.hand: { r, l }): the
+// shape, and which way the palm faces for the right hand (x is mirrored for the left). The poses
+// not listed close the hand round what it holds.
+const HAND_POSES = {
+  down: ['relaxed', [1, 0, 0.15]], chest: ['relaxed', [0.2, -0.2, -1]], out: ['open', [0, 0.8, 0.6]], lap: ['relaxed', [0, -1, 0]], knee: ['relaxed', [0, -1, 0]],
+  cradle: ['relaxed', [0.3, 0.6, -0.7]],
+};
 // The upper body, its shoulders at (±0.17, sy, oz): waist, chest and bust, shoulders, neck, the head
 // and what covers it, and the arms in their poses. head: 'hair' (waved, drawn back to a knot),
 // 'queen' (a veil and a small crown) or 'helmet' (Britannia's, crested); stout: the fuller figure
 // and the face of age.
-function upperBody(sy, oz, { right = 'down', left = 'down', head = 'hair', stout = false, male = false } = {}) {
+function upperBody(sy, oz, { right = 'down', left = 'down', head = 'hair', stout = false, male = false, hand: handOpt = null, mitten = false } = {}) {
   const dy = sy - 1.41, Y = (y) => y + dy, Z = (z) => z + oz, w = stout ? 1.2 : male ? 1.12 : 1;
   const parts = [
     [E([0, Y(1.08), Z(0)], [0.135 * w, 0.09, 0.1 * w]), 0],
@@ -969,13 +1021,25 @@ function upperBody(sy, oz, { right = 'down', left = 'down', head = 'hair', stout
     [mirrorX(cone([0.03, Y(1.46), Z(-0.01)], [0.16, Y(1.42), Z(-0.005)], 0.05, 0.05)), 0.04],
     [cone([0, Y(1.42), Z(0)], [0, Y(1.54), Z(0.015)], 0.05, 0.046), 0.03],
   ];
-  const hands = {}, dirs = {}, upper = {};
+  const hands = {}, dirs = {}, upper = {}, fine = [];
   for (const [side, pose] of [[-1, right], [1, left]]) {
     const [e, wr] = ARM_POSES[pose], m = (v) => (side < 0 ? v : -v), sh = [side * 0.17, sy, Z(0)];
     const elbow = [sh[0] + m(e[0]), sh[1] + e[1], sh[2] + e[2]], wrist = [sh[0] + m(wr[0]), sh[1] + wr[1], sh[2] + wr[2]];
-    const d = wrist.map((v, i) => v - elbow[i]), L = Math.hypot(...d), u = d.map((v) => v / L), hand = wrist.map((v, i) => v + u[i] * 0.055);
-    parts.push([cone(sh, elbow, 0.056, 0.046), 0.03], [cone(elbow, wrist, 0.044, 0.034), 0.015], [E(hand, [0.038, 0.046, 0.038]), 0.012]);
-    hands[side < 0 ? 'r' : 'l'] = hand;
+    const d = wrist.map((v, i) => v - elbow[i]), L = Math.hypot(...d), u = d.map((v) => v / L), grip = wrist.map((v, i) => v + u[i] * 0.055);
+    // On desktops the body's forearm stops short of the wrist, so its rounded end lies inside the
+    // hand's own wrist instead of standing over the palm.
+    const end = detail.low ? wrist : wrist.map((v, i) => v - u[i] * 0.035);
+    parts.push([cone(sh, elbow, 0.056, 0.046), 0.03], [cone(elbow, end, 0.044, detail.low ? 0.034 : 0.0345), 0.015]);
+    // The hand: on desktops sculpted with its fingers and meshed on its own (allegory() and
+    // crossLegged() add it), the arm ending at the wrist here; on phones a plain lump on the arm.
+    if (detail.low) parts.push([E(grip, [0.038, 0.046, 0.038]), 0.012]);
+    else {
+      const key = side < 0 ? 'r' : 'l', [shape0, palm0] = HAND_POSES[pose] || ['grip', [0, 1, 0]], shape = (handOpt && handOpt[key]) || shape0;
+      const across = shape === 'grip' ? [0, 1, 0] : shape === 'cup' ? [0, 1, 0] : shape === 'rest' ? [0, -1, 0] : [m(palm0[0]), palm0[1], palm0[2]];
+      const hf = hand(wrist, u, side, shape === 'cup' || shape === 'rest' ? 'relaxed' : shape, across, mitten);
+      fine.push(hf);
+    }
+    hands[side < 0 ? 'r' : 'l'] = grip;
     dirs[side < 0 ? 'r' : 'l'] = u;
     upper[side < 0 ? 'r' : 'l'] = [sh, elbow];
   }
@@ -1008,6 +1072,8 @@ function upperBody(sy, oz, { right = 'down', left = 'down', head = 'hair', stout
     top = blend([[cap, 0], [E([0, Y(1.643), Z(-0.1)], [0.045, 0.04, 0.035]), 0.01]]);
   }
   const headAll = (x, y, z) => smin(faceF(x, y, z), top(x, y, z), 0.006);
+  // Not enumerable, so the hands' positions can still be listed by side.
+  Object.defineProperty(hands, 'fine', { value: fine });
   return { parts, hands, dirs, upper, head: headAll, centre: [0, Y(1.645), Z(0)], Y, Z };
 }
 // A standing draped woman: the chiton to the feet in folds, the knee of the free leg pressing
@@ -1092,15 +1158,32 @@ function seatedField(opts = {}) {
   const all = (x, y, z) => smin(body(x, y, z), y > 1.1 ? up.head(x, y, z) : Infinity, 0.012);
   return { f: flatBase(all), lo: [-0.6, -0.01, -0.5], hi: [0.6, 1.62, 0.66], hands: up.hands, dirs: up.dirs, centre: up.centre };
 }
+// The cell a figure's hands are meshed on: fine enough to part the fingers on the large figures
+// that are seen close (those meshed at 2.2 cm or finer). The small figures on roofs and gables,
+// a score to a building, get a hand's shape (a palm, a thumb, the fingers as one) for a fifth of
+// the triangles.
+const handCell = (h) => (h > 0.0225 ? 0.012 : Math.max(0.0042, h * 0.23));
+// A figure's hands (desktops only: upperBody lists none on phones), each meshed once for the
+// figure's key and set on its body, in the same stone or bronze and shaded by the whole figure.
+function addHands(o, key, build, h, m) {
+  if (detail.low) return;
+  const n = build().hands.fine.length, hc = handCell(h);
+  for (let i = 0; i < n; i++) {
+    const geo = sculpt(`${key}-hand${i}`, () => { const all = build(), hf = all.hands.fine[i]; return { f: hf.f, lo: hf.lo, hi: hf.hi, shade: (x, y, z) => Math.min(all.f(x, y, z), hf.f(x, y, z)) }; }, { h: hc, reach: hc * 6, wear: 0.2 });
+    o.add(mesh(geo, statueMaterial(m)));
+  }
+}
 // An allegorical figure's body, meshed once for its key: standing (or flying) or seated, with the
 // head meshed on cells a third the size of the body's. Returns the mesh, and the hands' positions
 // and directions for the caller to set what they hold.
 export function allegory(key, opts, m, h = 0.016) {
+  opts = { ...opts, mitten: handCell(h) > 0.008 };
   const build = () => (opts.seated ? seatedField(opts) : standingField(opts));
   const parts = build(), c = parts.centre, k = detail.low ? 1.6 : 1;
   const o = body('allegory-' + key + (detail.low ? '-low' : ''), build, h * k, m, undefined, {
     wear: 0.2, split: { region: E(c, [0.1, 0.12, 0.11]), h: (h * k) / 2.6, lo: [c[0] - 0.12, c[1] - 0.15, c[2] - 0.13], hi: [c[0] + 0.12, c[1] + 0.2, c[2] + 0.14] },
   });
+  addHands(o, 'allegory-' + key, build, h, m);
   return { mesh: o, hands: parts.hands, dirs: parts.dirs };
 }
 
@@ -1267,5 +1350,6 @@ export function crossLegged(key, opts, m, h = 0.012, { low = 1.6 } = {}) {
   const o = body('crossleg-' + key + (detail.low ? '-low' : ''), build, h * k, m, undefined, {
     wear: 0.2, split: { region: E(c, [0.1, 0.12, 0.11]), h: (h * k) / 2.4, lo: [c[0] - 0.12, c[1] - 0.15, c[2] - 0.13], hi: [c[0] + 0.12, c[1] + 0.25, c[2] + 0.14] },
   });
+  addHands(o, 'crossleg-' + key, build, h, m);
   return { mesh: o, hands: parts.hands, dirs: parts.dirs };
 }

@@ -43,6 +43,11 @@ what changes between desktops and phones.
   Queen Victoria enthroned with orb and sceptre, the allegories round its dome and over its porch,
   and the figures on its roofs; Progress with her torch and winged wheel on the dome of Victoria
   Terminus, the groups of Commerce and Agriculture over its wings, and its couchant lion and tiger.
+  Their hands are sculpted too, each on a grid of its own several times finer than the body's:
+  a palm, four fingers and a thumb, closed round what the figure holds, hanging relaxed, or held
+  open (the small figures on roofs and gables get the hand's shape with the fingers as one). The
+  triangles for them come from inside the statues: where a figure is meshed in parts, the caps
+  that closed each part inside the body, a tenth to a fifth of its triangles, are no longer kept.
   On phones these allegories are the light kit's robed figures. Seated cross-legged figures are
   sculpted the same way: Adi Shankaracharya in black stone at Kedarnath, on his lotus bud, and
   Gajalakshmi between her elephants in the gable of Mysore Palace. Every statue is shown, with

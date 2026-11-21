@@ -285,7 +285,7 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | `guardian(h, m)` | figures | A door guardian |
 | `statue(h, m, pose)` | sculpture | A statue on a pedestal |
 | `crossLegged(key, opts, m, h)` | figures | A figure seated cross-legged, a sage (bare-chested, long hair, malas) or a goddess (crowned): Adi Shankaracharya at Kedarnath, Gajalakshmi |
-| `allegory(key, opts, m, h)` | figures | A woman in classical drapery sculpted as one skin: standing, seated (on a block or a throne, with a mantle, a child, an infant) or winged; her arms in named poses, her head in hair, a veil and crown, or a helmet. Returns the mesh and where its hands are |
+| `allegory(key, opts, m, h)` | figures | A woman in classical drapery sculpted as one skin: standing, seated (on a block or a throne, with a mantle, a child, an infant) or winged; her arms in named poses, her head in hair, a veil and crown, or a helmet; her hands sculpted with fingers, closed round what they hold or relaxed by the arm's pose (`hand: { r, l }` chooses `'grip'`, `'relaxed'`, `'open'`, `'cup'` or `'rest'`). Returns the mesh and where its hands are |
 | `hold(g, fig, side, kind, m, opts)`, `attribute(kind, m)` | figures | What a figure holds, set at her hand: torch, sword, scales, mirror, book, palette, square, trident, caduceus, ship, plough, cornucopia, sheaf, sickle, wreath, trumpet, sceptre, orb, shield, winged wheel, star, lotus, palm-leaf book, staff |
 | `lionCapital(m, s)` | animals | The Lion Capital of Ashoka: four lions back to back on the abacus with its wheels, over the lotus bell |
 
