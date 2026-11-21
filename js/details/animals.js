@@ -146,62 +146,112 @@ export function elephant(m, s = 1, { coarse = false } = {}) {
 
 /* ---------- horse ---------- */
 
-// One of Konark's war horses, about 4.2 m to its ears, straining forward in harness: the right
-// foreleg lifted, the neck arched, the tail thick, a breast collar, a girth and a saddle cloth, and
-// a noseband.
-function horseField() {
+// One of Konark's war horses, about 4.2 m to its ears, straining forward in harness, as carved: the
+// right foreleg lifted, the neck arched under a mane carved in strands, the forelock, muscled
+// shoulders and quarters, the legs jointed at knee, hock and fetlock down to the hooves, a full
+// tail; the bridle with its cheek straps, browband and noseband and a plume between the ears; a
+// breast collar hung with bells, a girth, a saddle on a saddle cloth with a raised border; eyes,
+// nostrils and the line of the mouth. coarse: the plain horse, without the saddle cloth.
+function horseField(coarse = false) {
   const half = [[0.56, 2.6, 0.45, 0.065], [0.5, 2.3, 1.15, 0.065], [0.25, 2.12, 1.5, 0.065], [0, 2.08, 1.58, 0.065]];
+  // A leg from the top of the cannon down: fetlock, pastern and hoof.
+  const foot = (x, y, z, dz = 0.04) => [
+    [E([x, y, z], [0.1, 0.1, 0.11]), 0.04],
+    [cone([x, y - 0.02, z + 0.01], [x, y - 0.17, z + dz + 0.03], 0.075, 0.08), 0.04],
+    [cone([x, y - 0.17, z + dz + 0.03], [x, y - 0.3, z + dz + 0.05], 0.09, 0.115), 0.02],
+  ];
+  const crest = chain([[0, 2.95, 0.85, 0.13], [0, 3.5, 1.35, 0.13], [0, 3.95, 1.75, 0.1]], 0.1);
+  // The mane: the crest cut into strands falling to the right.
+  const mane = (x, y, z) => crest(x, y, z) - 0.03 * Math.abs(Math.sin((y * 0.8 + z) * 26 + x * 8));
   const body = blend([
     [E([0, 2.05, -0.1], [0.6, 0.7, 1.3]), 0],
     [E([0, 2.1, 0.95], [0.58, 0.72, 0.6]), 0.4],
     [E([0, 2.15, -1.1], [0.62, 0.74, 0.7]), 0.45],
     [E([0, 2.6, 0.75], [0.32, 0.32, 0.5]), 0.35],
+    // The muscles of the shoulders and of the quarters.
+    [mirrorX(E([0.4, 2.2, 0.8], [0.24, 0.55, 0.42])), 0.3],
+    [mirrorX(E([0.42, 2.25, -1.15], [0.26, 0.6, 0.5])), 0.3],
+    [mirrorX(E([0.36, 1.75, -1.4], [0.18, 0.35, 0.24])), 0.2],
     [chain([[0, 2.45, 1.05, 0.5], [0, 3.15, 1.5, 0.36], [0, 3.6, 1.82, 0.27]], 0.25), 0.35],
-    [chain([[0, 2.95, 0.85, 0.13], [0, 3.5, 1.35, 0.13], [0, 3.95, 1.75, 0.1]], 0.1), 0.12],
+    [mane, 0.12],
+    [E([0, 3.95, 1.98], [0.08, 0.13, 0.07]), 0.04],
     [chain([[0, 3.78, 1.92, 0.24], [0, 3.32, 2.48, 0.15]], 0.1), 0.15],
     [E([0, 3.62, 2.02], [0.19, 0.26, 0.26]), 0.1],
     [E([0, 3.24, 2.5], [0.15, 0.15, 0.16]), 0.08],
+    [mirrorX(E([0.16, 3.68, 2.06], [0.055, 0.045, 0.06])), 0.02],
     [mirrorX(cone([0.1, 3.95, 1.86], [0.13, 4.25, 1.78], 0.075, 0.025)), 0.03],
-    // Forelegs: the right one lifted, the left planted
+    // Forelegs: the right one lifted, the left planted.
     [cone([0.3, 1.85, 1.0], [0.32, 1.3, 1.3], 0.19, 0.12), 0.25],
     [E([0.32, 1.3, 1.3], [0.11, 0.11, 0.11]), 0.05],
     [cone([0.32, 1.3, 1.3], [0.32, 0.95, 1.05], 0.1, 0.08), 0.05],
     [E([0.32, 0.88, 1.0], [0.1, 0.09, 0.11]), 0.04],
+    [cone([0.32, 0.86, 0.98], [0.32, 0.72, 0.85], 0.08, 0.1), 0.03],
     [cone([-0.3, 1.85, 0.98], [-0.31, 1.05, 1.05], 0.19, 0.12), 0.25],
-    [cone([-0.31, 1.05, 1.05], [-0.31, 0.2, 1.02], 0.1, 0.085), 0.05],
-    [E([-0.31, 0.1, 1.06], [0.12, 0.1, 0.14]), 0.04],
-    // Hind legs
+    [E([-0.31, 1.05, 1.05], [0.11, 0.12, 0.11]), 0.05],
+    [cone([-0.31, 1.05, 1.05], [-0.31, 0.38, 1.04], 0.1, 0.085), 0.05],
+    ...foot(-0.31, 0.32, 1.04),
+    // Hind legs, with their hocks.
     [cone([0.33, 2.0, -1.2], [0.34, 1.3, -1.55], 0.3, 0.13), 0.3],
-    [E([0.34, 1.3, -1.58], [0.1, 0.12, 0.12]), 0.05],
-    [cone([0.34, 1.3, -1.58], [0.34, 0.2, -1.4], 0.09, 0.085), 0.05],
-    [E([0.34, 0.1, -1.36], [0.12, 0.1, 0.14]), 0.04],
+    [E([0.34, 1.3, -1.58], [0.1, 0.13, 0.13]), 0.05],
+    [cone([0.34, 1.3, -1.58], [0.34, 0.38, -1.42], 0.09, 0.085), 0.05],
+    ...foot(0.34, 0.32, -1.41),
     [cone([-0.33, 2.0, -1.05], [-0.34, 1.3, -1.4], 0.3, 0.13), 0.3],
-    [E([-0.34, 1.3, -1.43], [0.1, 0.12, 0.12]), 0.05],
-    [cone([-0.34, 1.3, -1.43], [-0.34, 0.2, -1.25], 0.09, 0.085), 0.05],
-    [E([-0.34, 0.1, -1.21], [0.12, 0.1, 0.14]), 0.04],
-    [chain([[0, 2.6, -1.72, 0.1], [0, 2.25, -2.0, 0.14], [0, 1.6, -2.08, 0.12], [0, 1.1, -2.0, 0.09]], 0.08), 0.1],
-    // Harness
+    [E([-0.34, 1.3, -1.43], [0.1, 0.13, 0.13]), 0.05],
+    [cone([-0.34, 1.3, -1.43], [-0.34, 0.38, -1.27], 0.09, 0.085), 0.05],
+    ...foot(-0.34, 0.32, -1.26),
+    // The tail, full and falling.
+    [chain([[0, 2.6, -1.72, 0.1], [0, 2.25, -2.0, 0.15], [0, 1.6, -2.1, 0.14], [0, 1.0, -2.02, 0.11]], 0.08), 0.1],
+    // Harness: the breast collar and its bells, the girth, the saddle, the bridle and the plume.
     [mirrorX(chain(half, 0.03)), 0.03],
+    ...[[0, 1.92, 1.62], [0.26, 2.0, 1.52], [-0.26, 2.0, 1.52], [0.47, 2.2, 1.18], [-0.47, 2.2, 1.18]].map((c) => [E(c, [0.07, 0.09, 0.07]), 0.015]),
     [chain(loop(0, 2.05, 0.38, 0.64, 0.74, 0.065), 0.02), 0.03],
     [roundBox([0, 2.74, -0.15], [0.48, 0.07, 0.62], 0.06), 0.06],
     [chain(loop(0, 3.3, 2.38, 0.17, 0.19, 0.05), 0.02), 0.02],
+    [mirrorX(chain([[0.19, 3.88, 1.96, 0.035], [0.2, 3.6, 2.12, 0.035], [0.16, 3.34, 2.36, 0.035]], 0.02)), 0.02],
+    [chain([[-0.18, 3.9, 1.98, 0.03], [0, 3.95, 2.05, 0.03], [0.18, 3.9, 1.98, 0.03]], 0.02), 0.02],
+    [cone([0, 4.0, 1.9], [0, 4.5, 1.72], 0.07, 0.03), 0.03],
+    [E([0, 4.55, 1.68], [0.05, 0.14, 0.1]), 0.03],
   ]);
-  return { f: flatBase(body), lo: [-0.9, -0.05, -2.4], hi: [0.9, 4.35, 2.8] };
+  let f = body;
+  if (!coarse) {
+    // The saddle cloth: a shell over the back and down the flanks under the saddle, its border raised.
+    const region = (x, y, z) => Math.max(1.85 - y, z - 0.55, -0.85 - z);
+    const cloth = (x, y, z) => Math.max(Math.abs(body(x, y, z) - 0.06) - 0.055, region(x, y, z));
+    const border = (x, y, z) => Math.max(Math.abs(body(x, y, z) - 0.08) - 0.075, Math.abs(region(x, y, z) + 0.08) - 0.08);
+    f = (x, y, z) => smin(smin(body(x, y, z), cloth(x, y, z), 0.02), border(x, y, z), 0.02);
+  }
+  // The nostrils and the line of the mouth.
+  f = carve(f, mirrorX(E([0.075, 3.25, 2.63], [0.035, 0.05, 0.035])), 0.015);
+  f = carve(f, E([0, 3.13, 2.52], [0.13, 0.015, 0.13]), 0.02);
+  return { f: flatBase(f), lo: [-0.9, -0.05, -2.4], hi: [0.9, 4.75, 2.8] };
 }
-// coarse: a lighter mesh for small or distant horses, such as the ponies on a pilgrim path.
+// coarse: a lighter mesh for small or distant horses, such as the ponies on a pilgrim path. A full
+// horse on a desktop (js/detail.js) has its head, neck and mane meshed at 4.5 cm and the rest at
+// 6.5 cm, its ridges rubbed pale; on a phone it is meshed whole at 6.5 cm.
 export function horse(m, { coarse = false } = {}) {
   const g = new THREE.Group();
-  g.add(figure(sculpt(coarse ? 'horse-coarse' : 'horse', horseField, { h: coarse ? 0.13 : 0.065, reach: 0.4 }), m));
+  const geo = coarse ? sculpt('horse-coarse', () => horseField(true), { h: 0.13, reach: 0.4 })
+    : detail.low ? sculpt('horse-low', horseField, { h: 0.065, reach: 0.4 })
+    : sculpt('horse', horseField, { h: 0.065, reach: 0.4, wear: 0.3, split: { region: E([0, 3.6, 1.75], [0.5, 1.15, 0.9]), h: 0.045, lo: [-0.55, 2.4, 0.8], hi: [0.55, 4.75, 2.75] } });
+  g.add(figure(geo, m));
   return g;
 }
 
 /* ---------- lion ---------- */
 
-// A seated lion facing +z, 2.3 m tall with its plinth: upright on its haunches, forelegs straight,
-// a curling mane, the mouth open, and the tail curled round its side.
+// A seated lion facing +z, 2.3 m tall with its plinth, as temple gates carve them: upright on its
+// haunches, forelegs straight with the toes and claws of the paws marked, a mane of tight spiral
+// curls in rows framing the face, a heavy brow over bulging eyes, the mouth open on its fangs and
+// tongue, small ears, a collar with a bell at the throat, and the tail curling up over the haunch to
+// a flame-like tuft.
 function lionField() {
-  const mane = E([0, 2.0, 0.38], [0.6, 0.62, 0.5]);
-  const curls = (x, y, z) => mane(x, y, z) - 0.045 * Math.sin(9 * Math.atan2(x, y - 2.0)) * Math.sin(11 * z + 4 * y);
+  // The mane: rows of curls round the face, each a knob, the rows set by distance from the face's
+  // centre and the knobs by the angle round it.
+  const mane0 = E([0, 2.0, 0.38], [0.6, 0.62, 0.5]);
+  const curls = (x, y, z) => {
+    const a = Math.atan2(x, y - 2.0), r = Math.hypot(x, y - 2.0), k = 0.5 + 0.5 * Math.cos(16 * a + r * 9), row = 0.5 + 0.5 * Math.cos(r * 34);
+    return mane0(x, y, z) - 0.05 * k * row - 0.025 * Math.sin(11 * z + 4 * y);
+  };
   const body = blend([
     [E([0, 0.95, -0.35], [0.55, 0.5, 0.65]), 0],
     [mirrorX(E([0.42, 0.78, -0.3], [0.22, 0.38, 0.5])), 0.2],
@@ -210,24 +260,43 @@ function lionField() {
     [E([0, 1.45, 0.42], [0.42, 0.55, 0.35]), 0.3],
     [mirrorX(cone([0.25, 1.35, 0.5], [0.25, 0.55, 0.62], 0.15, 0.11)), 0.15],
     [mirrorX(E([0.25, 0.52, 0.7], [0.13, 0.08, 0.17])), 0.06],
+    // The toes of each forepaw, with their claws.
+    ...[-0.08, -0.027, 0.027, 0.08].map((dx) => [mirrorX(E([0.25 + dx, 0.5, 0.84], [0.035, 0.045, 0.05])), 0.015]),
+    ...[-0.08, -0.027, 0.027, 0.08].map((dx) => [mirrorX(cone([0.25 + dx, 0.5, 0.88], [0.25 + dx, 0.46, 0.92], 0.014, 0.004)), 0.004]),
     [curls, 0.25],
+    // The face: the brow, the bulging eyes, the cheeks and muzzle pads, the nose, the ears.
     [E([0, 1.95, 0.85], [0.28, 0.25, 0.3]), 0.12],
+    [E([0, 2.18, 0.95], [0.25, 0.07, 0.12]), 0.05],
+    [mirrorX(E([0.12, 2.09, 1.03], [0.055, 0.045, 0.045])), 0.02],
+    [mirrorX(E([0.1, 1.92, 1.07], [0.1, 0.08, 0.08])), 0.04],
     [E([0, 2.02, 1.1], [0.13, 0.1, 0.1]), 0.06],
     [mirrorX(E([0.14, 2.17, 0.85], [0.12, 0.08, 0.12])), 0.05],
     [mirrorX(E([0.3, 2.45, 0.5], [0.1, 0.12, 0.06])), 0.05],
-    [chain([[0, 0.55, -0.95, 0.07], [0.45, 0.5, -0.7, 0.06], [0.6, 0.52, -0.2, 0.05]], 0.04), 0.04],
+    // The collar and its bell.
+    [chain(loop(0, 1.62, 0.42, 0.4, 0.33, 0.035, 'xz', 18), 0.02), 0.02],
+    [E([0, 1.52, 0.78], [0.065, 0.08, 0.065]), 0.015],
+    // The tail curling up over the right haunch, and its tuft.
+    [chain([[0, 0.55, -0.95, 0.07], [0.45, 0.5, -0.7, 0.06], [0.62, 0.62, -0.3, 0.05], [0.6, 0.9, -0.05, 0.045]], 0.04), 0.04],
+    [E([0.58, 1.0, 0.0], [0.06, 0.12, 0.09]), 0.03],
   ]);
-  const mouth = E([0, 1.82, 1.02], [0.16, 0.06, 0.18]);
-  return { f: flatBase(carve(body, mouth, 0.03), 0.45), lo: [-0.85, 0.4, -1.15], hi: [0.85, 2.75, 1.35] };
+  // The open mouth, then the fangs and tongue in it, and the nostrils.
+  let f = carve(body, E([0, 1.82, 1.02], [0.16, 0.06, 0.18]), 0.03);
+  f = blend([[f, 0], [mirrorX(cone([0.08, 1.87, 1.1], [0.08, 1.8, 1.12], 0.022, 0.004)), 0.006], [mirrorX(cone([0.08, 1.77, 1.1], [0.08, 1.83, 1.11], 0.02, 0.004)), 0.006], [E([0, 1.79, 1.0], [0.09, 0.025, 0.12]), 0.02]]);
+  f = carve(f, mirrorX(E([0.05, 1.99, 1.19], [0.03, 0.025, 0.03])), 0.01);
+  return { f: flatBase(f, 0.45), lo: [-0.85, 0.4, -1.15], hi: [0.85, 2.75, 1.35] };
 }
-// A seated lion about 2.3·s high on its own plinth: the guardians of temple gates.
+// A seated lion about 2.3·s high on its own plinth: the guardians of temple gates. A large one (s of
+// 1.2 or more) on a desktop (js/detail.js) has its head and mane meshed at 3 cm and the rest at
+// 4.2 cm, the ridges of the curls rubbed pale; smaller lions, and all lions on phones, are meshed
+// whole at 4.2 cm.
 export function lion(s, m) {
-  const g = new THREE.Group(), fig = figure(sculpt('lion', lionField, { h: 0.042, reach: 0.25 }), m);
+  const geo = detail.low || s < 1.2 ? sculpt('lion-low', lionField, { h: 0.042, reach: 0.25 }) : sculpt('lion', lionField, { h: 0.042, reach: 0.25, wear: 0.35,
+    split: { region: E([0, 1.98, 0.62], [0.68, 0.72, 0.72]), h: 0.03, lo: [-0.72, 1.2, -0.15], hi: [0.72, 2.75, 1.36] } });
+  const g = new THREE.Group(), fig = figure(geo, m);
   fig.scale.setScalar(s);
   g.add(box(1.3 * s, 0.45 * s, 2 * s, m), fig);
   return g;
 }
-
 
 /* ---------- deer ---------- */
 

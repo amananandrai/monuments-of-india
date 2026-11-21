@@ -196,8 +196,8 @@ the browser, so they are heavier than the rest of the kit.
 | `nandi(material, scale)` | The seated bull before a Shiva temple: garland of bells and beads, a saddle blanket with its border, anklets; its head meshed finer |
 | `elephant(material, scale)` | A standing elephant, in stone or bronze: wrinkled trunk, rimmed ears, toenails; its head and trunk meshed finer on desktops |
 | `rideElephant(material, scale, { cloth, trim, howdah })` | A dressed elephant: on desktops its cloth, border, painted forehead and (on a temple elephant) the gold nettipattam are cast on its skin, the bell rope laid round the neck; and a howdah |
-| `horse(material)` | A horse; scaled down for the ponies at Kedarnath |
-| `lion(scale, material)` | A seated lion: gate guardians and the Lion Capital |
+| `horse(material, { coarse })` | A war horse in harness, after Konark's: muscled shoulders and quarters, jointed legs and hooves, a carved mane; bridle, plume, breast collar with bells and a bordered saddle cloth; its head and neck meshed finer on desktops. `coarse` for the ponies at Kedarnath |
+| `lion(scale, material)` | A seated lion at a temple gate: a mane of curls in rows, a heavy brow, bulging eyes, fangs and tongue, toes and claws, a collar and bell, the tail curled up to its tuft; a large one's head meshed finer on desktops |
 | `deer(spots)` | The deer of Sarnath and Sikandra |
 | `yaks(spots)` | Yaks, in the mountains |
 | `camels(spots, { cloths })` | Camels in saddle cloths, in the Thar |
