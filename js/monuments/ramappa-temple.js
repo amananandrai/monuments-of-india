@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, at, group, starPrism, pidaRoof, kalash, inst, unitCyl, surface, photo } from '../helpers.js';
-import { templeDoorway, steps } from '../details/doorways.js';
+import { pranala, templeDoorway, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { nandi } from '../details/animals.js';
 import { figure, instances, kutaGeo } from '../details/sculpture.js';
@@ -40,6 +40,8 @@ export function buildRamappa() {
   f.add(mergeByMaterial(group(at(templeDoorway(1.7, 3.6, { m: DOLERITE, bands: 4 }), 0, B, -4), at(steps(5, B, 7, SAND), 0, 0, 15))));
   // Sanctum on its dark base, under the light-brick tower
   f.add(box(12, 7, 12, DOLERITE, 0, B, -10), box(13, 0.6, 13, SAND, 0, B + 7, -10));
+  // The spout (pranala) draining the sanctum, out through its north wall onto the platform.
+  f.add(at(pranala(2.2, DOLERITE, { drop: 0.6 }), -6, B + 0.6, -10).rotateY(-Math.PI / 2));
   // The tower is of the famous light bricks, porous enough to float, pale and rough; a miniature
   // shrine (kuta) stands at each corner and the middle of each face on every storey's ledge.
   const tower = pidaRoof(12, 4.5, 7, 1.1, BRICK, mat('#a7735a', 0.95));

@@ -6,14 +6,14 @@ import { trees, along } from './realism.js';
 
 // The Capitol Complex, finer detail. From photographs of Le Corbusier's buildings: the great pivoting
 // door of the Palace of Assembly, enamelled in Le Corbusier's own design in squares of bright colour;
-// the Assembly's side walls screened by a deep egg-crate brise-soleil; and the High Court's front
+// the Assembly's side walls screened by a deep egg-crate brise-soleil, glazed at the back of its cells; and the High Court's front
 // shaded by a grid of concrete fins and shelves; the Assembly's glazed front behind its portico and
 // the slanted lid of its tower; the Secretariat's joints, blank ends and roof; the Tower of Shadows
 // and the Geometric Hill on the esplanade, and the esplanade's paving joints. Dimensions follow js/monuments/capitol-complex.js:
 // the Assembly 64 square and 16 high at the origin; the High Court 90 × 18 × 30, turned to face
 // south at (60, 0, HC).
 const CONCRETE = photo(mat('#b3aea4', 0.95), 'concrete'), CONCRETE_DARK = photo(mat('#8f8a80', 0.95), 'concrete');
-const GLASS = surface(mat('#3e4246', 0.4, 0.2), 'none'), JOINT = surface(mat('#77736b', 0.95), 'none');
+const GLASS = surface(mat('#3e4246', 0.4, 0.2), 'none'), BACK_GLASS = surface(mat('#58626b', 0.3, 0.2), 'none'), JOINT = surface(mat('#77736b', 0.95), 'none');
 const ENAMEL = ['#d23a2a', '#f2c230', '#2f5d9a', '#3d8a4f', '#f1ede4', '#1f1f22'].map((c) => mat(c, 0.35));
 function architecture(f, g) {
   const d = new THREE.Group();
@@ -23,16 +23,20 @@ function architecture(f, g) {
   for (const s of [-1, 1]) {
     for (let k = 0; k <= 20; k++) d.add(new THREE.Mesh(new THREE.BoxGeometry(1.4, 15, 0.3), CONCRETE_DARK).translateX(s * 32.7).translateY(8).translateZ(-30 + k * 3));
     for (let y = 2; y < 16; y += 3.2) d.add(new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.3, 60.3), CONCRETE_DARK).translateX(s * 32.7).translateY(y));
+    // The glazing at the back of the cells, so the screen reads as deep boxes of shade.
+    d.add(box(0.06, 14.4, 60, BACK_GLASS, s * 32.04, 0.8, 0));
   }
   const hc = at(new THREE.Group(), 60, 0, HC);
   hc.rotation.y = Math.PI;
   for (let k = 0; k <= 30; k++) hc.add(new THREE.Mesh(new THREE.BoxGeometry(0.3, 17.6, 1.6), CONCRETE_DARK).translateX(-44 + k * (88 / 30)).translateY(8.8).translateZ(15.8));
   for (const y of [4.5, 9, 13.5]) hc.add(new THREE.Mesh(new THREE.BoxGeometry(88.3, 0.3, 1.6), CONCRETE_DARK).translateY(y).translateZ(15.8));
+  hc.add(box(88, 16.4, 0.06, BACK_GLASS, 0, 0.6, 15.04));
   g.add(mergeByMaterial(hc));
 
   // The Assembly's back, screened like its sides.
   for (let k = 0; k <= 20; k++) d.add(new THREE.Mesh(new THREE.BoxGeometry(0.3, 15, 1.4), CONCRETE_DARK).translateX(-30 + k * 3).translateY(8).translateZ(-32.7));
   for (let y = 2; y < 16; y += 3.2) d.add(new THREE.Mesh(new THREE.BoxGeometry(60.3, 0.3, 1.4), CONCRETE_DARK).translateY(y).translateZ(-32.7));
+  d.add(box(60, 14.4, 0.06, BACK_GLASS, 0, 0.8, -32.04));
   // Its front, behind the portico: three floors of square windows set deep in the concrete, either
   // side of the enamelled door.
   for (let i = 0; i < 16; i++) for (let j = 0; j < 3; j++) {

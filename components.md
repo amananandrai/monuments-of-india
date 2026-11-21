@@ -41,8 +41,10 @@ From [architecture.md](architecture.md).
 | Arch wall with its ring | Iwan | Niche |
 | ![Window with a jali screen](img/window-jali.jpg) | ![Classical door](img/classical-door.jpg) | ![Gothic window](img/gothic-window.jpg) |
 | Window with a jali screen | Classical door | Gothic window |
-| ![Temple doorway](img/temple-doorway.jpg) | ![Iwan with muqarnas and an inscription band](img/muqarnas.jpg) |   |
-| Temple doorway | Iwan with muqarnas and an inscription band |   |
+| ![Temple doorway with carved jambs](img/temple-doorway.jpg) | ![Iwan with muqarnas and an inscription band](img/muqarnas.jpg) | ![Water spout (pranala)](img/pranala.jpg) |
+| Temple doorway with carved jambs | Iwan with muqarnas and an inscription band | Water spout (pranala) |
+| ![Louvred shutters](img/louvred-shutters.jpg) |   |   |
+| Louvred shutters |   |   |
 
 ### [Walls, eaves and parapets](architecture.md#walls-eaves-and-parapets)
 

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, box, group, at, pidaRoof, inst, unitCyl, aroundRect, starPrism, stellateTower } from '../helpers.js';
 import { trabeateGate } from '../details/temples.js';
-import { templeDoorway, steps } from '../details/doorways.js';
+import { pranala, templeDoorway, steps } from '../details/doorways.js';
 import { mergeByMaterial } from '../details/components.js';
 import { addDetails } from '../details/chennakesava-temple.js';
 
@@ -24,6 +24,8 @@ export function buildChennakesava() {
     for (const y of [0.5, 1.6, 2.7]) f.add(at(starPrism(16, 6.25, 5.2, 0.6, md), x, B + y, z));
     f.add(at(stellateTower(5.6, 9, m, md), x, B + 7, z));
   }
+  // The spout (pranala) draining the main shrine, out through its back onto the platform.
+  f.add(at(pranala(2.2, m, { drop: 0.5 }), 0, B + 0.5, -15.4).rotateY(Math.PI));
   addDetails(f, g);
   return { group: g, focus: f, view: [0.85, 0.55, 1.15] };
 }

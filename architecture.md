@@ -117,8 +117,10 @@ for (const a of FACES) d.add(onFace(at(windowFrame(2, 4.2, M.cream, { shape: 'fl
 | Arch wall with its ring | Iwan | Niche |
 | ![Window with a jali screen](img/window-jali.jpg) | ![Classical door](img/classical-door.jpg) | ![Gothic window](img/gothic-window.jpg) |
 | Window with a jali screen | Classical door | Gothic window |
-| ![Temple doorway](img/temple-doorway.jpg) | ![Iwan with muqarnas and an inscription band](img/muqarnas.jpg) |   |
-| Temple doorway | Iwan with muqarnas and an inscription band |   |
+| ![Temple doorway with carved jambs](img/temple-doorway.jpg) | ![Iwan with muqarnas and an inscription band](img/muqarnas.jpg) | ![Water spout (pranala)](img/pranala.jpg) |
+| Temple doorway with carved jambs | Iwan with muqarnas and an inscription band | Water spout (pranala) |
+| ![Louvred shutters](img/louvred-shutters.jpg) |   |   |
+| Louvred shutters |   |   |
 
 | Part | File | What it is |
 | --- | --- | --- |
@@ -131,12 +133,15 @@ for (const a of FACES) d.add(onFace(at(windowFrame(2, 4.2, M.cream, { shape: 'fl
 | `muqarnas(w, h, depth, { m, trim, tiers })` | mughal | Tiers of small faceted cells lining the half-dome of a pointed arch, staggered, with fine ledges between the tiers |
 | `scriptFrame(W, yt, bw)` | mughal | An inscription band of black letters inlaid in white marble round a pishtaq |
 | `mughalDoorway(w, h, { m })` | mughal | A pointed doorway onto a dim room |
-| `arcadeSkin(len, h, cells, depth, m)` | mughal | A wall face cut into a row of arched cells, each a door, a screen or a room |
+| `arcadeSkin(len, h, cells, depth, m)` | mughal | A wall face cut into a row of arched cells, each a door, a screen, a room, or a window closed by louvred shutters (`'shutters'`) |
+| `louvredShutter(w, h, m)` | components | Two closed leaves of angled slats in a frame of stiles and rails, green by default |
 | `windowFrame(w, h, m, { shape, screen })` | components | A window in a stone surround; `screen: jali(m)` fills it with a pierced screen |
 | `classicalDoor(w, h, { shape, fill, top })` | colonial | A classical door or sash window, with a pediment if asked |
 | `gothicDoor(w, h, …)`, `gothicWindow(w, h, …)`, `oculus(R, …)` | colonial | Gothic portal, two-light window and round window |
 | `porch(w, d, h, …)`, `pediment(w, h, depth, m)` | colonial | A columned porch; a triangular pediment |
-| `templeDoorway(w, h, { m })` | doorways | A temple door: stepped frame, hood, open leaves, a lamp in the sanctum behind, guardians |
+| `templeDoorway(w, h, { m, shakha })` | doorways | A temple door: stepped frame, hood, open leaves, a lamp in the sanctum behind, guardians; on desktops its carved jambs (`shakhas`) |
+| `shakhas(w, h, bands, bw, d0, depth, m)` | doorways | The carved jambs of a dvarashakha: columns of little figures in niches up the carved bands, nine across the lintel, Ganga and Yamuna at the foot |
+| `pranala(len, m, { drop, size })` | doorways | The water spout draining a sanctum: a channelled trough on a corbel ending in a makara head with a curled trunk, over a stone basin |
 | `doorFrame(w, h, { bands })` | doorways | The nested, carved bands round a post-and-lintel door |
 | `doorLeaves(w, h, { open, studs, spikes })` | doorways | Timber leaves, standing open; `spikes` against war elephants |
 | `interior(w, h)` | doorways | The dim room seen through an open door |
