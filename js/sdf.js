@@ -255,7 +255,7 @@ export function bakeCavities(geo, f, reach, deep = [0.45, 0.42, 0.4], { wear = 0
 // Mesh a figure once and keep it: build() returns { f, lo, hi } (the field and its bounds); h is
 // the cell size; reach and deep set the cavity shading (reach 0 for none), wear the rubbed ridges.
 //
-// split: { region, h, lo, hi } meshes the part of the figure inside `region` (a field, negative
+// split: { region, h, lo, hi } (or a list of them) meshes the part of the figure inside `region` (a field, negative
 // inside: an ellipsoid round a head, so the seam crosses the neck squarely) on its own, finer grid
 // of cell h within the box lo..hi, and the rest on the main grid, as one geometry. The two parts
 // overlap by 1.5 coarse cells either side of the region's surface; across it each in turn is drawn
@@ -270,14 +270,22 @@ export function sculpt(key, build, { h, reach = h * 6, deep, wear = 0, split = n
       geo = surfaceNets(f, lo, hi, h);
       if (reach > 0) bakeCavities(geo, f, reach, deep, { wear });
     } else {
-      const ov = 1.5 * h, inset = 0.25 * h, R = split.region;
+      // One fine region or several (a head and the feet), which must not overlap.
+      const parts = Array.isArray(split) ? split : [split], ov = 1.5 * h, inset = 0.25 * h;
       const fineSide = (c) => { const t = Math.min(1, Math.max(0, 0.5 - c / ov)); return t * t * (3 - 2 * t); };
+      const R = (x, y, z) => { let c = Infinity; for (const p of parts) c = Math.min(c, p.region(x, y, z)); return c; };
       const fc = (x, y, z) => { const c = R(x, y, z); return smax(f(x, y, z) + inset * fineSide(c), -c - ov, h * 0.3); };
-      const ff = (x, y, z) => { const c = R(x, y, z); return smax(f(x, y, z) + inset * (1 - fineSide(c)), c - ov, split.h * 0.3); };
-      const coarse = surfaceNets(fc, lo, hi, h), fine = surfaceNets(ff, split.lo, split.hi, split.h);
-      // Each part's shading at its own scale: the head's folds are a few of its cells deep.
-      if (reach > 0) { bakeCavities(coarse, f, reach, deep, { wear }); bakeCavities(fine, f, split.h * 6, deep, { wear }); }
-      geo = mergeGeometries([coarse, fine]);
+      const coarse = surfaceNets(fc, lo, hi, h);
+      if (reach > 0) bakeCavities(coarse, f, reach, deep, { wear });
+      const geos = [coarse];
+      for (const p of parts) {
+        const ff = (x, y, z) => { const c = p.region(x, y, z); return smax(f(x, y, z) + inset * (1 - fineSide(c)), c - ov, p.h * 0.3); };
+        const fine = surfaceNets(ff, p.lo, p.hi, p.h);
+        // Each part's shading at its own scale: a face's folds are a few of its cells deep.
+        if (reach > 0) bakeCavities(fine, f, p.h * 6, deep, { wear });
+        geos.push(fine);
+      }
+      geo = mergeGeometries(geos);
     }
     cache.set(key, geo);
   }

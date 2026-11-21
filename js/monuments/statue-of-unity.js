@@ -9,7 +9,7 @@ import { addDetails } from '../details/statue-of-unity.js';
 
 // Sardar Patel, walking forward a step in dhoti, kurta, bandi and a shawl over the shoulders, arms
 // at his sides. The body and head are one cast skin (js/details/figures.js); the finer folds of the
-// shawl, the placket and buttons, the cuffs, hands and sandals are added here, the folds and placket
+// shawl, the placket and buttons, the cuffs and hands are added here, the folds and placket
 // laid on the skin (onSkin). The bronze is cast in plates (the 'plates' surface). All in the
 // statue's own units (177.4 to the
 // crown), scaled to 182 m at the end.
@@ -30,9 +30,6 @@ function patel(B) {
     cuff.rotation.z = side * 0.08;
     s.add(cuff, capsule(V(side * 21.0, 86.2, 6.0), V(side * 19.9, 82.2, 7.1), 1.2, B, 0.9));
     s.add(fingers(V(side * 22.4, 79.4, 1.6), V(side * 22.4, 79.4, 5.6), V(-side * 0.6, -0.8, 0).normalize(), 2.5, 0.95, B));
-    // Sandals: a sole under each foot and a strap over the instep.
-    const fz = side > 0 ? 6.4 : 3.0;
-    s.add(ellipsoid(5.4, 0.8, 9.4, B, side * 7.8, 0.8, fz + 0.5), tube([[side * 7.8 - 4.6, 1.5, fz - 0.6], [side * 7.8, 4.3, fz + 0.6], [side * 7.8 + 4.6, 1.5, fz - 0.6]], 0.65, B, 16, 6));
   }
   // The head is part of the cast skin (js/details/figures.js): the 1949 portrait, clean-shaven.
   s.scale.setScalar(182 / 177.4);

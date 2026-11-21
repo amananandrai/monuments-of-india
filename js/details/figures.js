@@ -99,18 +99,49 @@ export const shivaSurface = () => (shivaF ||= shivaField().f);
 // Sardar Patel at the Statue of Unity, in the coordinates of patel() in statue-of-unity.js (177 units
 // tall before it is scaled), after photographs of the statue: the shawl over both shoulders hanging
 // like a cape over the arms to the hips, open down the front; under it the kurta to the knee with
-// its standing collar; below that the dhoti gathered into two full trouser legs to the sandalled
-// feet, a stride apart; the hands at his sides just below the shawl's hem; and the head. The head is
+// its standing collar; below that the dhoti, full and folded round each leg to above the ankle,
+// its pleats falling between the legs; the bare ankles and the feet in chappals, a stride apart; the hands at his sides just below the shawl's hem; and the head. The head is
 // that of the 1949 portrait the statue follows: the bare, broad crown, the heavy brow over deep-set
 // eyes under heavy lids with pouches beneath, a strong nose, deep folds from the nose to the
 // corners of the set, downturned mouth, the full jowls and broad jaw of his later years, a firm
 // chin, and large ears. The fingers and the overlays on the cloth are meshes (patel()).
 function patelField() {
-  // Below the kurta's hem the dhoti is gathered round each leg into a full, baggy trouser leg,
-  // folded down its length, the left a stride forward, as he walks; a narrow gap between them.
-  const leg = (sx, z0, z1) => {
-    const c = cone([sx * 8.2, 3, z0], [sx * 8.6, 58, z1], 7.0, 8.0);
-    return (x, y, z) => c(x, y, z) + 0.35 * Math.sin(7 * Math.atan2(x - sx * 8.4, z - (z0 + z1) / 2) + y * 0.05) * Math.min(1, Math.max(0, (58 - y) / 6));
+  // Below the kurta's hem the dhoti is gathered round each leg: full at the knee, folded in long
+  // diagonal folds that wind round the leg, narrowing to an uneven hem a little above the ankle,
+  // the left leg a stride forward, as he walks. The hem is open: below it the bare shin and ankle,
+  // and the foot in its chappal: a thick sole, a broad strap over the instep, a ring round the
+  // big toe and a thong between them, the five toes showing.
+  const clamp = (v) => Math.min(1, Math.max(0, v));
+  const leg = (sx, zb, zt, fz) => {
+    const zc = (zb + zt) / 2, cx = sx * 8.3;
+    const outer = blend([[cone([sx * 8.0, 13, zb], [sx * 8.6, 58, zt], 6.4, 8.0), 0], [E([sx * 8.6, 37, zc + 0.4], [7.4, 12, 8.0]), 4]]);
+    const folds = (x, y, z) => { const a = Math.atan2(sx * (x - cx), z - zc); return (0.85 * Math.sin(3 * a + 0.3 * y) + 0.45 * Math.sin(0.5 * y - a) + 0.35 * Math.sin(0.9 * y + 2 * a)) * clamp((56 - y) / 5) * clamp((y - 19) / 7); };
+    const hem = (x, z) => 13.5 + 2.4 * Math.sin(Math.atan2(sx * (x - cx), z - zb) + 0.6);
+    const hollow = (x, y, z) => smax(cone([sx * 8.0, 0, zb], [sx * 8.2, 23, zb], 4.4, 4.9)(x, y, z), y - 21, 0.6);
+    const cloth = (x, y, z) => smax(smax(outer(x, y, z) + folds(x, y, z), hem(x, z) - y, 0.4), -hollow(x, y, z), 0.35);
+    const shin = blend([[cone([sx * 7.9, 4.6, zb + 0.4], [sx * 8.1, 22, zb], 2.6, 3.3), 0], [E([sx * 7.9, 4.8, zb + 0.4], [3.1, 1.7, 2.9]), 0.6]]);
+    const foot = blend([
+      [E([sx * 7.9, 2.95, fz + 1], [3.6, 1.6, 7.4]), 0],
+      [E([sx * 7.9, 3.1, fz - 4.9], [2.8, 1.8, 2.8]), 1.2],
+      [cone([sx * 7.9, 5.4, zb + 1.2], [sx * 7.9, 3.6, fz + 4.2], 2.4, 1.7), 1.2],
+      ...[-2.55, -1.15, 0, 1.05, 2.0].map((d, i) => [cone([sx * (7.9 + d), 2.75, fz + 7.2], [sx * (7.9 + d), 2.45, fz + 9.9 - Math.abs(d) * 0.45], i ? 0.95 - i * 0.07 : 1.3, i ? 0.85 - i * 0.07 : 1.15), 0.25]),
+    ]);
+    const bigToe = cone([sx * 5.35, 2.75, fz + 7.2], [sx * 5.35, 2.45, fz + 9.9 - 1.15], 1.3, 1.15);
+    // The sole follows the foot's outline: broad at the toes, narrower at the heel, rounded.
+    const sole = (x, y, z) => {
+      const v = (z - (fz + 1.4)) / 10.7, w = 4.6 * (0.8 + 0.2 * clamp(v + 0.6));
+      return Math.max((Math.hypot((x - sx * 7.9) / w, Math.pow(Math.abs(v), 3)) - 1) * Math.min(w, 4) * 0.9, Math.abs(y - 0.7) - 0.7);
+    };
+    const strap = (x, y, z) => Math.max(Math.abs(foot(x, y, z) - 0.35) - 0.3, Math.abs(z - (fz + 1.2)) - 1.6, 1.4 - y);
+    const ring = (x, y, z) => Math.max(Math.abs(bigToe(x, y, z) - 0.28) - 0.22, Math.abs(z - (fz + 7.9)) - 0.45, 1.4 - y);
+    const thong = cone([sx * 6.0, 4.75, fz + 1.4], [sx * 5.9, 3.9, fz + 7.6], 0.42, 0.36);
+    return blend([[cloth, 0], [shin, 0.6], [foot, 1.0], [sole, 0.25], [strap, 0.1], [ring, 0.08], [thong, 0.1]]);
+  };
+  // The kasta: the dhoti's pleats falling in a fan down the front between the legs, from under the
+  // kurta to below the knees, folded back and forth.
+  const kasta = (x, y, z) => {
+    const t = clamp((56 - y) / 40), hw = 1.8 + 2.0 * t;
+    return Math.max(Math.abs(x) - hw, Math.abs(z - (5.4 + 0.8 * t)) - 1.25 - 0.55 * Math.abs(Math.sin(x * 2.0)), y - 57, 20 - y);
   };
   // The kurta, from the collar to about the knee, its hem standing a little proud.
   const kurta = lathe([[17.9, 56], [17.3, 59], [16.6, 75], [16.0, 92], [16.6, 100], [18.4, 118], [19.8, 131], [17.4, 140], [8, 145], [0.1, 145.5]], { sz: 0.62, folds: 18, amp: 0.025, from: 56, to: 92 });
@@ -124,12 +155,9 @@ function patelField() {
   const b = blend([
     [kurta, 0],
     [shawl, 1.0],
-    [leg(1, 2.6, 1.0), 2.5],
-    [leg(-1, -0.8, 0.2), 2.5],
-    // The kasta: the dhoti's pleated front falling between the legs below the kurta's hem.
-    [(x, y, z) => E([0, 36, 8.6], [2.8, 21, 2.0])(x, y, z) + 0.3 * Math.sin(x * 2.4) * Math.min(1, Math.max(0, (56 - y) / 4)), 1.2],
-    [E([7.8, 2.2, 6.4], [5, 2.4, 8.5]), 1.5],
-    [E([-7.8, 2.2, 3.0], [5, 2.4, 8.5]), 1.5],
+    [leg(1, 2.6, 1.0, 6.4), 2.5],
+    [leg(-1, -0.8, 0.2, 3.0), 2.5],
+    [kasta, 0.5],
     [mirrorX(E([20.5, 136, 0.5], [6.6, 6.2, 5.6])), 2],
     [mirrorX(cone([20.5, 136, 0.5], [23.6, 111, 2], 6.2, 5.4)), 2],
     [mirrorX(cone([23.6, 111, 2], [22.4, 89, 3.5], 5.4, 4.3)), 1.5],
@@ -167,10 +195,15 @@ function patelField() {
 }
 let patelF = null;
 export const patelSurface = () => (patelF ||= patelField().f);
-// The body is meshed with 1.1-unit cells and the head, inside an ellipsoid crossing the neck, with
-// 0.32-unit cells (on phones 1.5 and 0.48); the folds of the bronze are rubbed bright.
+// The body is meshed with 1.1-unit cells, and the head (inside an ellipsoid crossing the neck) and
+// the feet and hems with cells a third that size (on phones 1.5 and about 0.5); the folds of the
+// bronze are rubbed bright.
 export const patelBody = (m) => body(detail.low ? 'patel-coarse' : 'patel', patelField, detail.low ? 1.5 : 1.1, m, [0.3, 0.34, 0.28], {
-  wear: 0.3, split: { region: E([0, 162.5, 2], [13.5, 13.5, 14]), h: detail.low ? 0.48 : 0.32, lo: [-14, 148, -13], hi: [14, 177, 17] },
+  wear: 0.3, split: [
+    { region: E([0, 162.5, 2], [13.5, 13.5, 14]), h: detail.low ? 0.48 : 0.32, lo: [-14, 148, -13], hi: [14, 177, 17] },
+    // The feet in their chappals, the ankles and the dhoti's open hems, on the same fine grid.
+    ...[[1, 2.6, 6.4], [-1, -0.8, 3.0]].map(([sx, zb, fz]) => ({ region: E([sx * 8, 8, (zb + fz) / 2 + 1], [8.5, 12.5, 13.5]), h: detail.low ? 0.5 : 0.34, lo: [sx * 8 - 10, -1, zb - 12], hi: [sx * 8 + 10, 27, fz + 15] })),
+  ],
 });
 
 // Bahubali at Shravanabelagola, standing in kayotsarga in the coordinates of bahubali() in
