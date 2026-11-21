@@ -25,6 +25,13 @@ const PARTS = `
   const F = await import('/js/details/forts.js'), Tb = await import('/js/details/tibetan.js'), S = await import('/js/details/sculpture.js');
   const Fi = await import('/js/details/figures.js'), R = await import('/js/details/realism.js'), A = await import('/js/details/animals.js');
   const { M, mat, box, cyl, at, group, onFace } = H;
+  // The statues: each monument's own builder for them.
+  const SoU = await import('/js/monuments/statue-of-unity.js'), Gom = await import('/js/monuments/gommateshwara.js'), Viv = await import('/js/monuments/vivekananda-rock-memorial.js');
+  const Nag = await import('/js/details/nageshwar-temple.js'), Ked = await import('/js/monuments/kedarnath-temple.js'), Omk = await import('/js/details/omkareshwar-temple.js');
+  const IG = await import('/js/details/india-gate.js'), GoI = await import('/js/details/gateway-of-india.js'), VM = await import('/js/monuments/victoria-memorial.js');
+  const Cs = await import('/js/monuments/csmt.js'), CsD = await import('/js/details/csmt.js'), Mys = await import('/js/details/mysore-palace.js');
+  // Allegories in a row, each with what it holds: [opts, [[side, kind, holdOpts]]].
+  const allegories = (list, m, gap = 1.6) => group(...list.map(([key, o, held], i) => { const a = Fi.allegory(key, o, m), g = new THREE.Group(); g.add(a.mesh); for (const [sd, k, ho] of held) Fi.hold(g, a, sd, k, m, ho); return at(g, i * gap, 0, 0); }));
   detail.level = 'high';
   const full = (g) => { const w = new THREE.Group(); w.add(g); R.upgradeTrees(w, 1e9); return w; };
   const row = (kinds, gap, opts = {}) => group(...kinds.map((k, i) => full(R.trees([[i * gap, 0]], { kind: k, seed: 2, ...opts }))));
@@ -82,6 +89,27 @@ const PARTS = `
     'grand-stair': () => group(box(14, 3, 6, M.pinkShade, 0, 0, -3), D.grandStair(3, 8, M.pinkShade, M.pink)),
     'figure-frieze': () => group(wall(9, 3.4, M.pink), at(S.figureFrieze(8.4, 1.6, M.pink, { kinds: ['standing', 'dancer', 'elephant'] }), 0, 0.9, 0)),
     'statue': () => group(S.statue(5, M.bronze, 'standing', M.granite), at(S.urn(1.6, M.marble), 3, 0, 0), at(S.pinnacle(2.4, M.buff), 5, 0, 0)),
+    // ---- the statues
+    'statue-patel': [() => SoU.patel(H.surface(mat('#7b6a48', 0.62, 0.45), 'plates')), { view: [0.35, 0.08, 1], fit: 1.15 }],
+    'statue-bahubali': [() => Gom.bahubali(), { view: [0.25, 0.1, 1], fit: 1.1 }],
+    'statue-thiruvalluvar': [() => Viv.thiruvalluvar(), { floor: 'water', view: [-0.2, 0.15, 1], fit: 0.9 }],
+    'statue-shiva': [() => Nag.mahayogiShiva(), { floor: 'sand', view: [0.25, 0.12, 1], fit: 0.85 }],
+    'statue-shankaracharya': [() => Ked.shankaracharya(), { view: [0.3, 0.12, 1], fit: 0.85 }],
+    'statue-oneness': [() => Omk.statueOfOneness(), { floor: 'grass', view: [0.3, 0.12, 1], fit: 0.85 }],
+    'statue-netaji': [() => IG.netaji(), { view: [0.3, 0.08, 1], fit: 1.1 }],
+    'statue-shivaji': [() => GoI.shivajiStatue(), { floor: 'grass', view: [1, 0.12, 0.55], fit: 0.6 }],
+    'statue-angel-victoria': [() => group(VM.angelOfVictory(), at(VM.queenVictoria(), 7, 0, 0)), { view: [0.3, 0.12, 1], fit: 0.9 }],
+    'statue-allegories': [() => allegories([
+      ['justice', { right: 'down', left: 'raised' }, [['r', 'sword', { axis: [0, 1, 0.15] }], ['l', 'scales', {}]]],
+      ['prudence', { right: 'forward', left: 'down' }, [['r', 'mirror', { axis: [0, 0.6, 1] }]]],
+      ['motherhood', { seated: true, child: true, baby: true, right: 'lap', left: 'cradle' }, []],
+      ['learning', { right: 'chest', left: 'chest', free: -1 }, [['r', 'book', { axis: [0, 1, 0.5], offset: [0.08, 0.02, 0.03] }]]],
+      ['britannia', { seated: true, head: 'helmet', right: 'holdUp', left: 'lap' }, [['r', 'trident', {}]]],
+    ], M.marbleShade, 1.5), { view: [0.15, 0.12, 1], fit: 0.95 }],
+    'statue-progress': [() => Cs.progress(), { view: [0.3, 0.1, 1], fit: 0.85 }],
+    'statue-commerce-agriculture': [() => group(CsD.commerce(), at(CsD.agriculture(), 7, 0, 0)), { view: [0.15, 0.1, 1], fit: 0.85 }],
+    'statue-gajalakshmi': [() => Mys.gajalakshmi(), { view: [0.15, 0.1, 1], fit: 0.85 }],
+    'statue-lions': [() => group(A.lionCapital(M.bronze, 1), at(A.couchant(M.cream), 3.6, 0, 0), at(A.couchant(M.cream, { tiger: true }), 7.2, 0, 0)), { floor: 'sand', view: [0.6, 0.2, 1] }],
     // ---- the setting
     'trees-broadleaf': [() => row(['neem', 'mango', 'jamun', 'tamarind', 'teak', 'sal'], 9), { floor: 'grass', view: [0, 0.12, 1] }],
     'trees-wide': [() => row(['banyan', 'peepal', 'chinar', 'willow'], 17), { floor: 'grass', view: [0, 0.12, 1] }],

@@ -128,7 +128,7 @@ export function addCanopyDetails(c) {
 // Netaji Subhas Chandra Bose (2022): carved from one block of black granite, 8.5 m tall, saluting
 // (js/details/figures.js), with his spectacles, on a low pedestal of the same polished stone.
 const BLACK_GRANITE = mat('#26262a', 0.3);
-function netaji() {
+export function netaji() {
   const g = new THREE.Group(), fig = new THREE.Group();
   g.add(box(3.8, 0.3, 3.4, BLACK_GRANITE), box(3.3, 0.55, 2.9, BLACK_GRANITE, 0, 0.3), box(3.5, 0.15, 3.1, BLACK_GRANITE, 0, 0.85));
   fig.add(netajiBody(BLACK_GRANITE), netajiSpectacles(BLACK_GRANITE));

@@ -15,7 +15,7 @@ import { addDetails } from '../details/statue-of-unity.js';
 const SLIT = mat('#2a221c', 0.6, 0.3);
 // The statue's bronze, its cladding cast in plates.
 const PLATED = surface(mat('#7b6a48', 0.62, 0.45), 'plates');
-function patel(B) {
+export function patel(B) {
   const s = new THREE.Group(), F = patelSurface();
   s.add(patelBody(B));
   // The bandi's buttons down its placket (js/details/figures.js), and the windows of the viewing

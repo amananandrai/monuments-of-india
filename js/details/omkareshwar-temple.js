@@ -16,7 +16,7 @@ import { islandHeight } from '../monuments/omkareshwar-temple.js';
 // his waist and bands of rudraksha ring his upper arms and wrists. Faces south, over the ghats and
 // the river.
 const BRONZE = mat('#b06a3e', 0.42, 0.55), PLINTH = mat('#d9d2c4', 0.85), LOTUS = mat('#e4dccd', 0.8);
-function statueOfOneness() {
+export function statueOfOneness() {
   const g = new THREE.Group(), P = 11, B = BRONZE;
   // A terrace levelled into the hilltop, a broad base, the drum of the pedestal, and the open
   // lotus on it: two rings of petals round its heart, on which he stands.

@@ -101,7 +101,10 @@ export function nandi(m, s = 1) {
 // An Indian elephant about 3.6 m to the top of its head: the domed twin bumps of the skull, the
 // back highest over the shoulders, the belly sagging, column legs on round feet, small ears lying
 // flat, tusks, and the trunk hanging to the ground.
-function elephantField() {
+function elephantField(raised = false) {
+  const trunk = raised
+    ? chain([[0, 2.7, 2.5, 0.38], [0, 3.1, 3.0, 0.3], [0, 3.8, 3.35, 0.22], [0, 4.5, 3.4, 0.17], [0, 4.95, 3.2, 0.13], [0, 5.15, 2.95, 0.11]], 0.15)
+    : chain([[0, 2.7, 2.5, 0.38], [0, 2.15, 2.85, 0.3], [0, 1.5, 2.95, 0.22], [0, 0.9, 2.9, 0.17], [0, 0.45, 2.75, 0.13], [0, 0.32, 2.52, 0.11]], 0.15);
   const body = blend([
     [E([0, 2.3, 0], [1.12, 1.12, 1.75]), 0],
     [E([0, 1.95, 0.1], [1.02, 0.9, 1.4]), 0.4],
@@ -110,7 +113,7 @@ function elephantField() {
     [E([0, 2.75, 1.55], [0.82, 0.85, 0.6]), 0.4],
     [E([0, 2.85, 1.95], [0.78, 0.92, 0.72]), 0.35],
     [mirrorX(E([0.3, 3.5, 1.85], [0.38, 0.36, 0.42])), 0.25],
-    [chain([[0, 2.7, 2.5, 0.38], [0, 2.15, 2.85, 0.3], [0, 1.5, 2.95, 0.22], [0, 0.9, 2.9, 0.17], [0, 0.45, 2.75, 0.13], [0, 0.32, 2.52, 0.11]], 0.15), 0.3],
+    [trunk, 0.3],
     [mirrorX(E([0.95, 2.72, 1.45], [0.15, 0.8, 0.66])), 0.1],
     [mirrorX(cone([0.62, 2.0, 1.0], [0.6, 0.15, 1.12], 0.44, 0.38)), 0.35],
     [mirrorX(cone([0.62, 2.0, -1.1], [0.6, 0.15, -1.15], 0.48, 0.38)), 0.35],
@@ -125,15 +128,17 @@ function elephantField() {
   ]);
   // The trunk's rings of wrinkles, deepest on its underside half, and the lids over the eyes.
   const onTrunk = (x, y, z) => Math.max(0, 1 - Math.hypot(x, Math.max(0, z - 2.95) * 1.5) / 0.4) * (y < 2.6 && z > 2.35 ? 1 : 0);
-  let f = (x, y, z) => body(x, y, z) + 0.022 * Math.sin(y * 52) * onTrunk(x, y, z);
+  let f = raised ? body : (x, y, z) => body(x, y, z) + 0.022 * Math.sin(y * 52) * onTrunk(x, y, z);
   f = carve(f, mirrorX(E([0.64, 2.98, 2.24], [0.09, 0.025, 0.09])), 0.02);
   f = carve(f, E([0, 2.02, 2.62], [0.24, 0.05, 0.2]), 0.04);
-  return { f: flatBase(f), lo: [-1.6, -0.05, -2.4], hi: [1.6, 4.05, 3.4] };
+  return { f: flatBase(f), lo: [-1.6, -0.05, -2.4], hi: [1.6, raised ? 5.45 : 4.05, raised ? 3.75 : 3.4] };
 }
 let elephantF = null;
 export const elephantSurface = () => (elephantF ||= elephantField().f);
-// coarse: meshed on a cell twice the size (a quarter of the triangles), as the horse's.
-export function elephant(m, s = 1, { coarse = false } = {}) {
+// coarse: meshed on a cell twice the size (a quarter of the triangles), as the horse's. raised: the
+// trunk lifted high over the head, as the elephants that pour water over Gajalakshmi; meshed coarsely.
+export function elephant(m, s = 1, { coarse = false, raised = false } = {}) {
+  if (raised) { const g = new THREE.Group(); g.add(figure(sculpt('elephant-raised', () => elephantField(true), { h: detail.low ? 0.16 : 0.11, reach: 0.6 }), m)); g.scale.setScalar(s); return g; }
   const g = new THREE.Group();
   // On desktops the head and trunk are meshed finer (6.5 cm) than the body (8 cm); a coarse elephant
 // and all elephants on phones are meshed whole.
@@ -556,4 +561,39 @@ function couchantField(tiger) {
 export function couchant(m, { tiger = false } = {}) {
   const key = (tiger ? 'tiger' : 'lion') + '-couchant' + (detail.low ? '-low' : '');
   return figure(sculpt(key, () => couchantField(tiger), { h: detail.low ? 0.05 : 0.03, reach: 0.25, wear: 0.3 }), m);
+}
+
+/* ---------- the Lion Capital ---------- */
+
+// The Lion Capital of Ashoka, as it crowns the obelisk of the National War Memorial: the bell of
+// an inverted lotus, its petals ribbed; the round abacus with the Dharma Chakra on its side between
+// the lions; and four lions seated back to back on it, facing the four ways, their haunches merged at
+// the middle (the temple lion of lionField(), without its plinth). About 2.2·s tall, standing on y = 0.
+export function lionCapital(m, s = 1) {
+  const g = new THREE.Group(), c = new THREE.Group();
+  const bell = new THREE.LatheGeometry([[0.62, 0], [0.61, 0.08], [0.52, 0.3], [0.4, 0.47], [0.33, 0.55], [0.36, 0.58]].map(([r, y]) => new THREE.Vector2(r, y)), 32);
+  c.add(mesh(bell, m));
+  for (let k = 0; k < 16; k++) { const a = (k / 16) * Math.PI * 2, rib = mesh(new THREE.CylinderGeometry(0.018, 0.03, 0.5, 5).translate(0, 0.25, 0), m); rib.position.set(Math.sin(a) * 0.5, 0.02, Math.cos(a) * 0.5); rib.rotation.set(-0.42 * Math.cos(a), 0, 0.42 * Math.sin(a), 'XYZ'); rib.lookAt(0, 0.9, 0); rib.rotateX(Math.PI / 2); c.add(rib); }
+  c.add(mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.27, 32).translate(0, 0.715, 0), m));
+  for (let k = 0; k < 4; k++) {
+    const a = ((k + 0.5) / 4) * Math.PI * 2, w = wheelGeo(0.11, m);
+    w.position.set(Math.sin(a) * 0.6, 0.715, Math.cos(a) * 0.6);
+    w.rotation.y = a;
+    c.add(w);
+    const lg = lion(1, m).children[1], l = new THREE.Group().add(lg);
+    lg.position.set(0, -0.45, 0.4);
+    l.scale.setScalar(0.42);
+    l.position.y = 0.85;
+    l.rotation.y = (k / 4) * Math.PI * 2;
+    c.add(l);
+  }
+  c.scale.setScalar(s);
+  return g.add(c);
+}
+// A small Dharma Chakra facing +z: a rim, a hub and 24 spokes.
+function wheelGeo(r, m) {
+  const g = new THREE.Group();
+  g.add(mesh(new THREE.TorusGeometry(r, r * 0.12, 5, 24), m), mesh(new THREE.CylinderGeometry(r * 0.2, r * 0.2, r * 0.25, 10).rotateX(Math.PI / 2), m));
+  for (let k = 0; k < 24; k++) { const sp = mesh(new THREE.BoxGeometry(r * 0.04, r, r * 0.04).translate(0, r / 2, 0), m); sp.rotation.z = (k / 24) * Math.PI * 2; g.add(sp); }
+  return g;
 }

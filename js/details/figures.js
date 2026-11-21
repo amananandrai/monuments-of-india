@@ -947,23 +947,29 @@ const ARM_POSES = {
   holdUp: [[-0.12, -0.24, 0.08], [-0.16, -0.06, 0.22]],
   cradle: [[-0.06, -0.26, 0.07], [0.13, -0.3, 0.22]],
   throne: [[-0.08, -0.26, 0.0], [-0.09, -0.4, 0.24]],
+  // Seated cross-legged: the right hand raised before the chest in the gesture of teaching; a hand
+  // resting on the knee; a hand held up beside the shoulder with a lotus.
+  jnana: [[-0.1, -0.25, 0.08], [-0.02, -0.1, 0.27]],
+  knee: [[-0.07, -0.26, 0.05], [-0.15, -0.44, 0.27]],
+  lotusUp: [[-0.16, -0.19, 0.06], [-0.2, 0.05, 0.12]],
 };
 // The upper body, its shoulders at (±0.17, sy, oz): waist, chest and bust, shoulders, neck, the head
 // and what covers it, and the arms in their poses. head: 'hair' (waved, drawn back to a knot),
 // 'queen' (a veil and a small crown) or 'helmet' (Britannia's, crested); stout: the fuller figure
 // and the face of age.
-function upperBody(sy, oz, { right = 'down', left = 'down', head = 'hair', stout = false } = {}) {
-  const dy = sy - 1.41, Y = (y) => y + dy, Z = (z) => z + oz, w = stout ? 1.2 : 1;
+function upperBody(sy, oz, { right = 'down', left = 'down', head = 'hair', stout = false, male = false } = {}) {
+  const dy = sy - 1.41, Y = (y) => y + dy, Z = (z) => z + oz, w = stout ? 1.2 : male ? 1.12 : 1;
   const parts = [
     [E([0, Y(1.08), Z(0)], [0.135 * w, 0.09, 0.1 * w]), 0],
     [E([0, Y(1.27), Z(0.0)], [0.16 * w, 0.13, 0.098 * w]), 0.06],
-    [mirrorX(E([0.06 * w, Y(1.285), Z(0.065 * w)], [0.05 * w, 0.045 * w, 0.04 * w])), 0.05],
+    // The bust; or a man's chest, its muscles broad and flat.
+    male ? [mirrorX(E([0.07, Y(1.3), Z(0.055)], [0.075, 0.055, 0.035])), 0.05] : [mirrorX(E([0.06 * w, Y(1.285), Z(0.065 * w)], [0.05 * w, 0.045 * w, 0.04 * w])), 0.05],
     [mirrorX(E([0.17, Y(1.405), Z(0)], [0.06, 0.055, 0.06])), 0.04],
     // The slope from the neck to each shoulder.
     [mirrorX(cone([0.03, Y(1.46), Z(-0.01)], [0.16, Y(1.42), Z(-0.005)], 0.05, 0.05)), 0.04],
     [cone([0, Y(1.42), Z(0)], [0, Y(1.54), Z(0.015)], 0.05, 0.046), 0.03],
   ];
-  const hands = {}, dirs = {};
+  const hands = {}, dirs = {}, upper = {};
   for (const [side, pose] of [[-1, right], [1, left]]) {
     const [e, wr] = ARM_POSES[pose], m = (v) => (side < 0 ? v : -v), sh = [side * 0.17, sy, Z(0)];
     const elbow = [sh[0] + m(e[0]), sh[1] + e[1], sh[2] + e[2]], wrist = [sh[0] + m(wr[0]), sh[1] + wr[1], sh[2] + wr[2]];
@@ -971,6 +977,7 @@ function upperBody(sy, oz, { right = 'down', left = 'down', head = 'hair', stout
     parts.push([cone(sh, elbow, 0.056, 0.046), 0.03], [cone(elbow, wrist, 0.044, 0.034), 0.015], [E(hand, [0.038, 0.046, 0.038]), 0.012]);
     hands[side < 0 ? 'r' : 'l'] = hand;
     dirs[side < 0 ? 'r' : 'l'] = u;
+    upper[side < 0 ? 'r' : 'l'] = [sh, elbow];
   }
   const S = 0.0076, P = (x, y, z) => [x * S, Y(1.628) + y * S * 1.05, Z(0.015) + z * S];
   const faceF = face(P, S, { full: stout ? 1.8 : 0.2, age: stout ? 0.8 : 0, lids: 0.55 });
@@ -979,6 +986,18 @@ function upperBody(sy, oz, { right = 'down', left = 'down', head = 'hair', stout
     // The veil falls from under the crown over the back of the head to the shoulders.
     const veil = (x, y, z) => smax(E([0, Y(1.583), Z(-0.035)], [0.107, 0.16, 0.107])(x, y, z), (z - Z(0.03)) - (y - Y(1.683)) * 0.4, 0.01);
     top = blend([[veil, 0], [torus([0, Y(1.718), Z(0)], 0.06, 0.012), 0.008], [E([0, Y(1.748), Z(0)], [0.04, 0.035, 0.04]), 0.01], [E([0, Y(1.793), Z(0)], [0.012, 0.016, 0.012]), 0.004]]);
+  } else if (head === 'bare') {
+    top = (x, y, z) => Infinity;
+  } else if (head === 'long') {
+    // Long hair from a parting over the skull, falling straight behind the ears to the shoulders and
+    // down the back, framing the face.
+    const shell = (x, y, z) => smax(E([0, Y(1.62), Z(-0.03)], [0.1, 0.13, 0.1])(x, y, z), (z - Z(0.035)) - Math.max(0, y - Y(1.69)) * 0.9, 0.012);
+    const fall = (x, y, z) => smax(roundBox([0, Y(1.47), Z(-0.06)], [0.11, 0.13, 0.05], 0.04)(x, y, z), z - Z(0.01), 0.01);
+    top = blend([[shell, 0], [fall, 0.04]]);
+  } else if (head === 'kirita') {
+    // A tall crown of stacked bands narrowing to a finial, over hair drawn back behind the ears.
+    const band = (x, y, z) => smax(E([0, Y(1.66), Z(-0.012)], [0.088, 0.083, 0.092])(x, y, z), (z - Z(0.04)) - (y - Y(1.688)) * 0.9, 0.01);
+    top = blend([[band, 0], [cone([0, Y(1.7), Z(-0.01)], [0, Y(1.86), Z(-0.01)], 0.078, 0.035), 0.01], ...[1.72, 1.77, 1.82].map((y, i) => [torus([0, Y(y), Z(-0.01)], 0.074 - i * 0.012, 0.008), 0.004]), [E([0, Y(1.885), Z(-0.01)], [0.025, 0.03, 0.025]), 0.008]]);
   } else if (head === 'helmet') {
     // A helmet over the skull down to the brow, its crest from front to back.
     const shell = (x, y, z) => smax(E([0, Y(1.673), Z(-0.01)], [0.094, 0.09, 0.102])(x, y, z), Y(1.608) - y, 0.01);
@@ -989,7 +1008,7 @@ function upperBody(sy, oz, { right = 'down', left = 'down', head = 'hair', stout
     top = blend([[cap, 0], [E([0, Y(1.643), Z(-0.1)], [0.045, 0.04, 0.035]), 0.01]]);
   }
   const headAll = (x, y, z) => smin(faceF(x, y, z), top(x, y, z), 0.006);
-  return { parts, hands, dirs, head: headAll, centre: [0, Y(1.645), Z(0)], Y, Z };
+  return { parts, hands, dirs, upper, head: headAll, centre: [0, Y(1.645), Z(0)], Y, Z };
 }
 // A standing draped woman: the chiton to the feet in folds, the knee of the free leg pressing
 // through it and the toes showing at the hem, the himation laid across the front from the left
@@ -1178,6 +1197,17 @@ export function attribute(kind, m, gild = m) {
       }
       return g;
     }
+    case 'lotus': {
+      add(rod(0.008, -0.1, 0.2));
+      for (let k = 0; k < 8; k++) { const p = mesh(new THREE.SphereGeometry(0.035, 6, 4).scale(0.6, 1.2, 0.3).translate(0, 0.035, 0), m); p.position.y = 0.21; p.rotation.set(0.6, (k / 8) * Math.PI * 2, 0, 'YXZ'); add(p); }
+      return add(ball(0.02, 0, 0.23, 0));
+    }
+    case 'palmleaf': return add(mesh(new THREE.BoxGeometry(0.24, 0.035, 0.06), m), mesh(new THREE.BoxGeometry(0.25, 0.008, 0.065).translate(0, 0.02, 0), m), mesh(new THREE.BoxGeometry(0.25, 0.008, 0.065).translate(0, -0.02, 0), m));
+    case 'danda': {
+      add(rod(0.012, -0.75, 0.62));
+      const fl = new THREE.Shape(); fl.moveTo(0, 0); fl.lineTo(0.11, 0.025); fl.lineTo(0.09, 0.07); fl.lineTo(0, 0.08); fl.closePath();
+      return add(flat(fl, 0.008).translateY(0.52));
+    }
     case 'star': { const sh = new THREE.Shape(); for (let k = 0; k <= 10; k++) { const a = (k / 10) * Math.PI * 2 + Math.PI / 2, r = k % 2 ? 0.022 : 0.055; k ? sh.lineTo(Math.cos(a) * r, Math.sin(a) * r) : sh.moveTo(Math.cos(a) * r, Math.sin(a) * r); } return add(flat(sh, 0.012, gild)); }
     default: return g;
   }
@@ -1193,4 +1223,49 @@ export function hold(g, fig, side, kind, m, { axis = [0, 1, 0], spin = 0, offset
   a.position.set(...fig.hands[side].map((v, i) => v + offset[i]));
   g.add(a);
   return a;
+}
+
+// A figure seated cross-legged on a flat seat (y = 0), facing +z: the hips, the thighs out to the
+// knees, the shins crossed in front with the feet tucked, a cloth over the lap whose end falls over
+// the seat's front edge (drop: how far), and the upper body from upperBody() (shoulders at 0.62).
+// For a sage (male: bare-chested, with malas and armbands) or a goddess (with a necklace).
+function crossLeggedField(opts = {}) {
+  const { male = false, drop = 0 } = opts, up = upperBody(0.62, -0.02, opts);
+  const parts = [
+    ...up.parts,
+    [E([0, 0.36, -0.03], [0.15 * (male ? 1.12 : 1), 0.16, 0.115]), 0.06],
+    [E([0, 0.15, -0.04], [0.21, 0.13, 0.17]), 0.06],
+    [mirrorX(cone([0.1, 0.14, -0.01], [0.37, 0.11, 0.2], 0.115, 0.09)), 0.06],
+    [cone([0.37, 0.1, 0.23], [-0.12, 0.09, 0.33], 0.075, 0.055), 0.04],
+    [cone([-0.37, 0.1, 0.23], [0.12, 0.16, 0.3], 0.075, 0.055), 0.04],
+    [mirrorX(E([0.17, 0.11, 0.33], [0.095, 0.04, 0.05])), 0.03],
+    // The cloth over the lap and, with drop, its end hanging over the seat's front.
+    [E([0, 0.1, 0.1], [0.36, 0.09, 0.22]), 0.08],
+  ];
+  if (drop) parts.push([(x, y, z) => roundBox([0.02, 0.04 - drop / 2, 0.36], [0.1, 0.06 + drop / 2, 0.022], 0.02)(x, y, z) + 0.005 * Math.sin(x * 70), 0.05]);
+  const Y = (y) => y - 0.79;
+  if (male) {
+    // Rudraksha malas, three strands from the neck down the chest, and armbands.
+    // Each strand rings the neck behind and hangs in a curve down the chest in front, lying on it.
+    const chest = blend(up.parts.slice(0, 5));
+    for (const [drop, r] of [[0.1, 0.012], [0.17, 0.013], [0.24, 0.014]]) {
+      const pts = [];
+      for (let k = 0; k <= 24; k++) { const a = (k / 24) * Math.PI * 2, f = Math.max(0, Math.cos(a)); pts.push([...snap(chest, [Math.sin(a) * 0.09 * (1 + 0.6 * f), Y(1.47) - drop * f ** 1.4, -0.02 + Math.cos(a) * 0.12], r), r]); }
+      const strand = chain(pts, 0.004);
+      parts.push([(x, y, z) => strand(x, y, z) - 0.004 * Math.abs(Math.sin(x * 160 + y * 160)), 0.006]);
+    }
+    for (const [a, e] of Object.values(up.upper)) parts.push([cone(a.map((v, i) => v + (e[i] - v) * 0.4), a.map((v, i) => v + (e[i] - v) * 0.47), 0.058, 0.057), 0.01]);
+  } else parts.push([(x, y, z) => torus([0, Y(1.45), 0.0], 0.1, 0.012)(x, y, (z - 0.035) * 1.5), 0.008]);
+  const body = blend(parts);
+  const all = (x, y, z) => smin(body(x, y, z), y > 0.7 ? up.head(x, y, z) : Infinity, 0.012);
+  return { f: flatBase(all, -drop - 0.01), lo: [-0.5, -drop - 0.02, -0.3], hi: [0.5, 1.15, 0.5], hands: up.hands, dirs: up.dirs, centre: up.centre };
+}
+// A cross-legged figure's body, meshed once for its key (as allegory()).
+export function crossLegged(key, opts, m, h = 0.012, { low = 1.6 } = {}) {
+  const build = () => crossLeggedField(opts);
+  const parts = build(), c = parts.centre, k = detail.low ? low : 1;
+  const o = body('crossleg-' + key + (detail.low ? '-low' : ''), build, h * k, m, undefined, {
+    wear: 0.2, split: { region: E(c, [0.1, 0.12, 0.11]), h: (h * k) / 2.4, lo: [c[0] - 0.12, c[1] - 0.15, c[2] - 0.13], hi: [c[0] + 0.12, c[1] + 0.25, c[2] + 0.14] },
+  });
+  return { mesh: o, hands: parts.hands, dirs: parts.dirs };
 }

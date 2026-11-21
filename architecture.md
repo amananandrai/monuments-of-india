@@ -279,12 +279,16 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | `idol(h, m)` | components | A cheap standing image in relief, for rows of niches |
 | `guardian(h, m)` | figures | A door guardian |
 | `statue(h, m, pose)` | sculpture | A statue on a pedestal |
+| `crossLegged(key, opts, m, h)` | figures | A figure seated cross-legged, a sage (bare-chested, long hair, malas) or a goddess (crowned): Adi Shankaracharya at Kedarnath, Gajalakshmi |
 | `allegory(key, opts, m, h)` | figures | A woman in classical drapery sculpted as one skin: standing, seated (on a block or a throne, with a mantle, a child, an infant) or winged; her arms in named poses, her head in hair, a veil and crown, or a helmet. Returns the mesh and where its hands are |
-| `hold(g, fig, side, kind, m, opts)`, `attribute(kind, m)` | figures | What an allegory holds, set at her hand: torch, sword, scales, mirror, book, palette, square, trident, caduceus, ship, plough, cornucopia, sheaf, sickle, wreath, trumpet, sceptre, orb, shield, winged wheel, star |
+| `hold(g, fig, side, kind, m, opts)`, `attribute(kind, m)` | figures | What a figure holds, set at her hand: torch, sword, scales, mirror, book, palette, square, trident, caduceus, ship, plough, cornucopia, sheaf, sickle, wreath, trumpet, sceptre, orb, shield, winged wheel, star, lotus, palm-leaf book, staff |
+| `lionCapital(m, s)` | animals | The Lion Capital of Ashoka: four lions back to back on the abacus with its wheels, over the lotus bell |
+
+Every statue, with a picture and what it shows: [Components: Statues](components.md#statues).
 | `figureFrieze(len, h, m, { kinds })` | sculpture | A band of figures, elephants or horses in relief |
 | `urn(h, m)`, `pinnacle(h, m)`, `gothicPinnacle(h, m)` | sculpture | Roofline ornaments |
 
-The great statues (Patel, Bahubali, Thiruvalluvar, the Nageshwar Shiva, and Netaji, Shivaji and the boy Shankaracharya of the Statue of Oneness) are sculpted as one
+The great statues (Patel, Bahubali, Thiruvalluvar, the Nageshwar Shiva, and Netaji, Shivaji, Adi Shankaracharya at Kedarnath and the boy Shankaracharya of the Statue of Oneness) are sculpted as one
 continuous skin in `js/details/figures.js` and `js/sdf.js`. The tools for working on that skin:
 
 | Tool | File | What it does |

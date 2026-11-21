@@ -4,6 +4,7 @@ import { templeDoorway, templePorch, grandStair } from '../details/doorways.js';
 import { statue } from '../details/sculpture.js';
 import { mergeByMaterial } from '../details/components.js';
 import { nandi } from '../details/animals.js';
+import { crossLegged, hold, attribute } from '../details/figures.js';
 import { mountainRing } from '../details/terrain.js';
 import { addDetails } from '../details/kedarnath-temple.js';
 import { townHouses, houseRow } from '../details/realism.js';
@@ -30,6 +31,41 @@ function coursedTower(w, h, n, m, md) {
   g.add(am, at(kalash(top * 0.5), 0, ay + ar * 0.8, 0));
   g.userData.top = ay + ar * 0.8 + top * 0.5 * 1.12;
   return g;
+}
+
+// Adi Shankaracharya at his samadhi (2021, by Arun Yogiraj), 12 ft of black chlorite schist, after
+// photographs: seated cross-legged, bare-chested with three strands of rudraksha and armbands, his
+// long hair falling behind his shoulders, the right hand raised before his chest in the gesture of
+// teaching and holding the staff (danda) with its small flag, which leans across him to its foot on
+// the lotus, the left hand on his knee, a palm-leaf book on his left thigh, and the end of his cloth
+// falling over the lotus's edge (js/details/figures.js). He sits on a great lotus bud carved in
+// the same stone, its petals closed round it, set on a short square post in a pool.
+const SCHIST = mat('#2c2c2f', 0.42);
+export function shankaracharya() {
+  const g = new THREE.Group(), S = SCHIST, k = 3.9;
+  g.add(mesh(new THREE.CylinderGeometry(2.8, 2.8, 0.06, 40), M.water, 0, -0.02, 0), box(1.3, 1.1, 1.3, S));
+  const bud = new THREE.LatheGeometry([[0.4, 0], [1.0, 0.22], [1.55, 0.62], [1.78, 1.1], [1.62, 1.48], [1.2, 1.72], [0.6, 1.8], [0, 1.82]].map(([r, y]) => new THREE.Vector2(r, y)), 48);
+  g.add(at(mesh(bud, S), 0, 1.1, 0));
+  // The petals closed round the bud: two rows of broad leaves laid against it.
+  for (const [n, r, y, len, tilt, sh] of [[10, 1.0, 1.25, 1.25, 0.72, 0], [10, 1.68, 2.05, 1.05, -0.55, 0.5]]) {
+    for (let j = 0; j < n; j++) {
+      const a = ((j + sh) / n) * Math.PI * 2, p = mesh(new THREE.SphereGeometry(0.5, 10, 6).translate(0, 0.5, 0), S);
+      p.scale.set(1.05, len, 0.16);
+      p.position.set(Math.sin(a) * r, y, Math.cos(a) * r);
+      p.rotation.set(tilt, a, 0, 'YXZ');
+      g.add(p);
+    }
+  }
+  const fig = crossLegged('shankara', { male: true, head: 'long', right: 'jnana', left: 'knee', drop: 0.25 }, S), s = new THREE.Group();
+  s.add(fig.mesh);
+  hold(s, fig, 'r', 'danda', S, { axis: [-0.35, 1, -0.12] });
+  const book = attribute('palmleaf', S);
+  book.position.set(0.24, 0.235, 0.12);
+  book.rotation.y = Math.PI / 2 - 0.3;
+  s.add(book);
+  s.scale.setScalar(k);
+  s.position.y = 2.9;
+  return g.add(s);
 }
 
 export function buildKedarnath() {
@@ -72,8 +108,8 @@ export function buildKedarnath() {
   boulder.scale.set(1.5, 0.75, 1);
   f.add(boulder);
   // Behind the temple, the samadhi of Adi Shankaracharya: a round sunken court with a low parapet
-  // and a seated image. On the ridge to the south-east, the small open shrine of Bhairavanath,
-  // guardian of the valley, on its own rise. Both stand outside the home view's frame.
+  // and his statue (shankaracharya(), below). On the ridge to the south-east, the small open shrine
+  // of Bhairavanath, guardian of the valley, on its own rise. Both stand outside the home view's frame.
   g.add(cyl(7, 7.4, 0.5, STONE_DARK, 0, 0, -42, 32), cyl(5.6, 5.6, 0.12, STONE, 0, 0.5, -42, 32));
   for (let k = 0; k < 12; k++) {
     const a = (k / 12) * Math.PI * 2;
@@ -82,7 +118,7 @@ export function buildKedarnath() {
     pc.rotation.y = a;
     g.add(pc);
   }
-  g.add(at(statue(3.2, mat('#3b3936', 0.6), 'seated', STONE_DARK), 0, 0.62, -42));
+  g.add(at(shankaracharya(), 0, 0.62, -42));
   const bh = new THREE.Group(), mound = mesh(new THREE.SphereGeometry(9, 20, 8, 0, Math.PI * 2, 0, Math.PI / 2), SLOPE);
   mound.scale.y = 0.4;
   bh.add(mound, box(7, 0.5, 7, STONE_DARK, 0, 3.4, 0), box(4, 2.6, 4, STONE, 0, 3.9, 0), at(hipRoof(5, 5, 1.8, STONE_DARK), 0, 6.5, 0), at(kalash(0.6), 0, 8.2, 0));

@@ -191,7 +191,7 @@ function talwar(L, m) {
   g.add(mesh(new THREE.SphereGeometry(0.045, 10, 8), m, 0, 0, -0.2));
   return g;
 }
-function shivajiStatue() {
+export function shivajiStatue() {
   const g = new THREE.Group(), STONE = mat('#b39a74', 0.85), CAP = mat('#4c4844', 0.55), B = M.bronze, Hp = 5.8;
   g.add(box(5.4, 0.3, 7.8, STONE), box(4.8, 1.4, 7.2, STONE, 0, 0.3), taperBox(3.4, 5.8, 3.0, 5.4, 3.8, STONE).translateY(1.7), box(3.4, 0.3, 5.8, CAP, 0, 5.5));
   g.add(box(1.6, 0.8, 0.06, mat('#1d1d1f', 0.4), 0, 0.6, 3.61));
