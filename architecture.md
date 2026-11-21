@@ -82,8 +82,8 @@ for (const a of FACES) d.add(onFace(at(windowFrame(2, 4.2, M.cream, { shape: 'fl
 | Chhatri | Mughal chhatri | Guldastas |
 | ![Minaret](img/minaret.jpg) | ![Jharokha](img/jharokha.jpg) | ![Copper and gilded-copper roofs](img/copper-roofs.jpg) |
 | Minaret | Jharokha | Copper and gilded-copper roofs |
-| ![Terracotta brick and plaques](img/terracotta.jpg) |   |   |
-| Terracotta brick and plaques |   |   |
+| ![Terracotta brick and plaques](img/terracotta.jpg) | ![Chadar (water cascade)](img/chadar.jpg) |   |
+| Terracotta brick and plaques | Chadar (water cascade) |   |
 
 | Part | File | What it is |
 | --- | --- | --- |
@@ -297,6 +297,9 @@ continuous skin in `js/details/figures.js` and `js/sdf.js`. The tools for workin
 | `surface(m, 'giltsheet')` | surface | The same sheets gilded: seams and dimples, no verdigris |
 | `surface(m, 'terracotta')` | surface | Thin fired-clay bricks (32 × 6.5 cm) with fine joints, each brick its own shade, the odd one over-burnt, stained by soot and lichen; fades to an even tone where a brick is under a few pixels, so it never shimmers |
 | `surface(m, 'plaques')` | surface | A band of moulded terracotta plaques: bordered tiles with an open lotus or a standing figure in turn |
+| `surface(m, 'scallop')` | surface | A chadar's carved bed: staggered rows of fish scales, light lips and dark hollows |
+| `surface(m, 'cladding')` | surface | Marble panels in staggered courses with fine joints worked out in space, so they follow a curved shell (the Lotus Temple's petals) |
+| `chadar(w, len, drop, m)` | components | A Mughal garden cascade: a sloping marble bed carved in fish scales under a thin sheet of water, between kerbs, with a lip at the top and a pool at the foot |
 
 ## Terrain (`js/details/terrain.js`)
 

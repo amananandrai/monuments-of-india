@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, rng, onFace, archPanel, guldasta, sheet, chhatri } from '../helpers.js';
+import { M, mat, box, at, rng, onFace, archPanel, guldasta, sheet, chhatri, surface } from '../helpers.js';
 import { townHouses } from '../details/realism.js';
 import { detail } from '../detail.js';
 import { arcadeSkin } from '../details/mughal.js';
@@ -8,7 +8,8 @@ import { addDetails } from '../details/kashi-vishwanath-temple.js';
 
 const CHUNAR = mat('#d9b48f', 0.85);
 const SHADE = mat('#b8906a', 0.9);
-const GOLD = mat('#e8b64a', 0.3, 0.7, { emissive: '#3a2805' });
+// The gold is sheet copper gilded, laid in seamed sheets (js/surface.js, 'giltsheet').
+const GOLD = surface(mat('#e8b64a', 0.3, 0.7, { emissive: '#3a2805' }), 'giltsheet');
 
 // The old city of Varanasi round the corridor (js/details/realism.js, townHouses): along the river,
 // tall houses and palaces rising straight from the top of the ghats, many crowned with kiosks on

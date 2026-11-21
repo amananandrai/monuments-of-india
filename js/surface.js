@@ -7,7 +7,7 @@ import * as THREE from 'three';
 // patches of soot and age; strongest on brick, about half on marble, none on gilt) and a small
 // per-object tint so that repeated pieces don't look cloned. Water is its own kind: moving ripples
 // that tilt the normal, so the sky reflects in a broken, shifting band instead of a flat sheen.
-export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13, calligraphy: 14, pietra: 15, reliefs: 16, banded: 17, paving: 18, plates: 19, reeds: 20, copper: 21, giltsheet: 22, terracotta: 23, plaques: 24 };
+export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13, calligraphy: 14, pietra: 15, reliefs: 16, banded: 17, paving: 18, plates: 19, reeds: 20, copper: 21, giltsheet: 22, terracotta: 23, plaques: 24, scallop: 25, cladding: 26 };
 
 // Seconds since the page opened, shared by every water material; main.js advances it each frame.
 export const waterTime = { value: 0 };
@@ -290,6 +290,29 @@ const PATTERN = /* glsl */ `
   sTint = mix(1.0, (0.86 + 0.12 * sHash(vec3(sPqC, 2.0))) * mix(0.62, 1.0, sPqJoint) * (1.0 + 0.18 * sPqRelief + 0.1 * sPqRim - 0.14 * sPqKind * sPqNiche * (1.0 - sPqRelief)), sPqSide * sPqNear);
   sH = sPqSide * sPqNear * (sPqRelief * 1.0 + sPqRim * 0.6 - (1.0 - sPqJoint) * 0.8);
   sRough = 0.04;
+#elif SURF_KIND == 25
+  // A chadar's carved bed: rows of fish scales 28 cm across, each row half a scale over from the
+  // last, cut so the water breaking over them glitters; the scales' lips light, their hollows dark.
+  vec2 uv = sFaceUV(sp, sn);
+  vec2 sScQ = vec2(uv.x / 0.28 + 0.5 * mod(floor(uv.y / 0.16), 2.0), uv.y / 0.16);
+  vec2 sScF = vec2(fract(sScQ.x) - 0.5, fract(sScQ.y));
+  float sScR = length(vec2(sScF.x, sScF.y * 0.56)), sScLip = smoothstep(0.38, 0.48, sScR) * (1.0 - smoothstep(0.48, 0.52, sScR));
+  float sScNear = 1.0 - smoothstep(0.03, 0.1, sFw);
+  sTint = mix(0.9, (0.62 + 0.5 * sScLip) * (0.8 + 0.25 * sScF.y), sScNear);
+  sH = sScNear * (sScLip - sScR * 0.6);
+#elif SURF_KIND == 26
+  // A shell clad in marble panels, as the Lotus Temple's petals: panels about 1.4 m by 0.9 m in
+  // staggered courses, their joints fine grey lines worked out in space (as the plates, 19) so they
+  // follow the curve, each panel a shade different.
+  vec3 sClSz = vec3(1.4, 0.9, 1.4), sClQ = sp / sClSz;
+  float sClRow = floor(sClQ.y);
+  sClQ.xz += 0.5 * mod(sClRow, 2.0);
+  vec3 sClCell = floor(sClQ), sClF = fract(sClQ), sClD = min(sClF, 1.0 - sClF) * sClSz;
+  vec3 sClAl = sqrt(max(vec3(1e-3), 1.0 - sn * sn));
+  float sClJ = min(min(sClD.x / sClAl.x, sClD.y / sClAl.y), sClD.z / sClAl.z);
+  float sClSeam = (1.0 - smoothstep(0.008, 0.03, sClJ)) * sNear;
+  sTint = (0.97 + 0.05 * sHash(sClCell + 1.0)) * mix(1.0, 0.8, sClSeam);
+  sH = -0.6 * sClSeam;
 #elif SURF_KIND == 13
   // A tower's walls: a band of glazing on every floor (3.4 m), box-filtered over the pixel, so a
   // floor smaller than a pixel blends into an even tone instead of shimmering in bands. Roofs plain.
@@ -542,7 +565,7 @@ function patch(shader, kind, bump, photo, wave, edge, reflect) {
   normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`));
 }
 
-const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0, calligraphy: 0.2, pietra: 0.3, reliefs: 1.4, banded: 1.0, paving: 0.9, plates: 0.5, reeds: 1.6, copper: 0.6, giltsheet: 0.5, terracotta: 1.3, plaques: 1.6 };
+const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0, calligraphy: 0.2, pietra: 0.3, reliefs: 1.4, banded: 1.0, paving: 0.9, plates: 0.5, reeds: 1.6, copper: 0.6, giltsheet: 0.5, terracotta: 1.3, plaques: 1.6, scallop: 1.5, cladding: 0.4 };
 
 // Choose a surface for a material from its look, unless one was set with surface().
 function guess(m) {

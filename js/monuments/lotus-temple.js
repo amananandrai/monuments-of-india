@@ -25,7 +25,25 @@ function leafPool() {
   };
   const ex = (sh, h) => new THREE.ExtrudeGeometry(sh, { depth: h, bevelEnabled: false, curveSegments: 4 }).rotateX(-Math.PI / 2);
   g.add(mesh(bend(ex(rim, 0.7)), M.marble, 0, 0.21, 0), mesh(bend(ex(leaf(25.7, 8.7), 0.65)), M.water, 0, 0.22, 0));
+  // A coping round the rim, a little wider than it and lipped over the water.
+  const cope = leaf(28.4, 11.4);
+  cope.holes.push(leaf(25.3, 8.3));
+  g.add(mesh(bend(ex(cope, 0.12)), M.marbleShade, 0, 0.91, 0));
   return g;
+}
+
+// The ridge down the middle of a petal (as petal() in helpers.js shapes it): the line where its
+// marble panels meet, standing as a slim rib from foot to tip.
+function rib(P0, P1, P2, halfW, bulge) {
+  const pts = [];
+  for (let j = 1; j <= 20; j++) {
+    const v = j / 20, a = (1 - v) * (1 - v), b = 2 * (1 - v) * v, c = v * v;
+    const r = a * P0[0] + b * P1[0] + c * P2[0], y = a * P0[1] + b * P1[1] + c * P2[1];
+    const dr = 2 * (1 - v) * (P1[0] - P0[0]) + 2 * v * (P2[0] - P1[0]), dy = 2 * (1 - v) * (P1[1] - P0[1]) + 2 * v * (P2[1] - P1[1]);
+    const len = Math.hypot(dr, dy) || 1, off = bulge * halfW * Math.sin(Math.PI * (0.15 + 0.85 * v));
+    pts.push(new THREE.Vector3(0, y - (dr / len) * off, r + (dy / len) * off));
+  }
+  return mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, 0.14, 6, false), M.lotus);
 }
 
 export function buildLotusTemple() {
@@ -36,9 +54,9 @@ export function buildLotusTemple() {
   const B = 4.2;
   for (let k = 0; k < 9; k++) {
     const t = k * 40 * deg, t2 = t + 20 * deg;
-    f.add(petal([11, B], [14.5, B + 20], [1.2, B + 30], 5.6, 0.35).rotateY(t));
-    f.add(petal([16, B], [22, B + 15], [13, B + 23.5], 7.6, 0.35).rotateY(t2));
-    f.add(petal([22, B], [31, B + 12.5], [36, B + 3.5], 8, -0.3).rotateY(t));
+    for (const [P0, P1, P2, w, bulge, a] of [[[11, B], [14.5, B + 20], [1.2, B + 30], 5.6, 0.35, t], [[16, B], [22, B + 15], [13, B + 23.5], 7.6, 0.35, t2], [[22, B], [31, B + 12.5], [36, B + 3.5], 8, -0.3, t]]) {
+      f.add(petal(P0, P1, P2, w, bulge).rotateY(a), rib(P0, P1, P2, w, bulge).rotateY(a));
+    }
     f.add(leafPool().rotateY(t2));
   }
   for (let k = 0; k < 9; k++) g.add(group(box(5, 0.3, 40, M.path, 0, 0.2, 60)).rotateY(k * 40 * deg));

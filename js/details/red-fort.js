@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, at, onFace, FACES, hemi, onionDome, finial, mat, surface } from '../helpers.js';
-import { archRing, archSlab, panel, frieze, rosette, windowFrame, arcadeScreen, mergeByMaterial, mughalChhatri, chhajja, merlons, jharokha } from './components.js';
+import { archRing, archSlab, panel, frieze, rosette, windowFrame, arcadeScreen, mergeByMaterial, mughalChhatri, chhajja, merlons, jharokha, chadar } from './components.js';
 import { iwan, arcadeSkin, cellRow } from './mughal.js';
 import { towerDetail, slitRow } from './forts.js';
 import { trees, lampPosts, asiBoard, along } from './realism.js';
@@ -104,6 +104,9 @@ function insideWalls(g) {
   d.add(jd);
   // Hayat Bakhsh Bagh, the garden to the north of the palaces, with its pavilions and channels.
   d.add(box(120, 0.4, 120, M.grass, -220, 0, RW + 100), box(4, 0.5, 120, M.water, -220, 0, RW + 100), box(120, 0.5, 4, M.water, -220, 0, RW + 100));
+  // The Sawan and Bhadon pavilions at the ends of the cross channel pour their water into it down
+  // carved cascades (chadars).
+  for (const s of [-1, 1]) { const c = at(chadar(3.4, 4.5, 1.2), -220 + s * 51.4, 0.5, RW + 100); c.rotation.y = s > 0 ? -Math.PI / 2 : Math.PI / 2; d.add(c); }
   for (const x of [-280, -160]) d.add(at(pavilion(14, 10, 6, Mb, { arch: 2.6, kiosks: false }), x, 0, RW + 100));
   // Moti Masjid: a walled marble mosque with three bulbous domes.
   const mm = at(new THREE.Group(), -120, 0, RW + 70);

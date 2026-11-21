@@ -55,6 +55,7 @@ const PARTS = `
     'louvred-shutters': [() => group(C.louvredShutter(1.4, 2.4), at(C.louvredShutter(1.4, 2.4), 2, 0, 0), box(4.4, 3, 0.4, M.brick || M.red, 1, -0.2, -0.2)), { view: [0.4, 0.1, 1] }],
     'copper-roofs': [() => group(at(H.hipRoof(10, 8, 3.2, H.surface(mat('#b0773f', 0.45, 0.4), 'copper')), 0, 0, 0), at(C.banglaRoof(7, 5, 2.2, H.surface(mat('#d9a93a', 0.32, 0.8), 'giltsheet')), 11, 0, -2.5)), { view: [0.5, 0.45, 1] }],
     'terracotta': [() => group(box(6, 3.2, 1, H.surface(mat('#8c5d49', 0.95), 'terracotta'), 0, 0, -0.5), box(6.04, 1.44, 1.04, H.surface(mat('#b0714f', 0.9), 'plaques'), 0, 0.6, -0.5)), { view: [0.35, 0.15, 1], fit: 0.8 }],
+    'chadar': [() => group(box(6, 2.4, 3, M.marble, 0, 0, -1.5), at(C.chadar(3, 5, 1.8), 0, 0.6, 0)), { floor: 'grass', view: [0.6, 0.5, 1] }],
     'chhajja': () => group(wall(10, 5, M.cream), at(C.chhajja(10.6, 1.8, 0.7, 0.16, M.buff), 0, 4.6, 0), C.placeAll(C.bracketGeo(1.1, 1.6, 0.35), C.alongFace(0, 0, 9, 6, 4.5), M.buff)),
     'merlons': () => group(wall(12, 5, M.red), at(C.merlons(12, 1.1, 1.4, 0.5, M.red), 0, 5, -0.3)),
     'railing': () => C.railing(9, 1.3, 0.3, M.marble),

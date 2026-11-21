@@ -3,7 +3,7 @@ import { M, mat, box, cyl, at, inst, unitBox, hipRoof, surface, sheet } from '..
 import { arcadeSkin } from '../details/mughal.js';
 import { addDetails } from '../details/cellular-jail.js';
 
-const BRICK = surface(mat('#a4573f', 0.9), 'brick');
+const BRICK = surface(mat('#a4573f', 0.9), 'terracotta');
 const LIME = mat('#e9e3d6', 0.85);
 const DARK = mat('#2b2523', 0.8);
 
