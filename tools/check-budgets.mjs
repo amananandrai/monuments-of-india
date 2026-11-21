@@ -1,5 +1,6 @@
 // Builds every monument at both detail levels and checks its triangles against the budget for that
-// level (js/detail.js: 650k on desktops, 300k on phones), counted before the trees are filled in.
+// level (js/detail.js, budgetFor: 650k on desktops, 800k for temples on desktops, 300k on phones),
+// counted before the trees are filled in.
 //   node check-budgets.mjs [id ...] [--top N]
 // Exits 1 if any monument is over.
 import { openPage, PRELUDE } from './lib/browser.mjs';
@@ -8,11 +9,11 @@ const argv = process.argv.slice(2), top = Number(argv[argv.indexOf('--top') + 1]
 const ids = argv.filter((a, i) => !a.startsWith('--') && argv[i - 1] !== '--top');
 const page = await openPage();
 const rows = await page.run(PRELUDE + `
-  const { BUDGET } = await import('/js/detail.js');
+  const { budgetFor } = await import('/js/detail.js');
   const out = [];
   for (const m of MONUMENTS) {
     if (args.ids.length && !args.ids.includes(m.id)) continue;
-    const row = { id: m.id, high: 0, low: 0, budget: BUDGET };
+    const row = { id: m.id, high: 0, low: 0, cap: { high: budgetFor(m, 'high'), low: budgetFor(m, 'low') } };
     for (const level of ['high', 'low']) { try { row[level] = tris((await build(m.id, level)).group); } catch (e) { row[level] = -1; row.error = e.message; } }
     out.push(row);
   }
@@ -21,12 +22,14 @@ const rows = await page.run(PRELUDE + `
 `, { ids });
 await page.close();
 
-const { high: H, low: L } = rows[0]?.budget || { high: 650000, low: 300000 };
 const k = (n) => (n < 0 ? 'error' : `${Math.round(n / 1000)}k`);
-const over = rows.filter((r) => r.high > H || r.low > L || r.error);
-for (const [level, cap] of [['high', H], ['low', L]]) {
-  console.log(`\n${level === 'high' ? 'Desktop' : 'Phone'} (budget ${k(cap)}), top ${top}:`);
-  for (const r of [...rows].sort((a, b) => b[level] - a[level]).slice(0, top)) console.log(`  ${r.id.padEnd(32)} ${k(r[level]).padStart(6)}${r[level] > cap ? '  OVER' : ''}`);
+const over = rows.filter((r) => r.high > r.cap.high || r.low > r.cap.low || r.error);
+for (const level of ['high', 'low']) {
+  console.log(`\n${level === 'high' ? 'Desktop (budget 650k, temples 800k)' : 'Phone (budget 300k)'}, top ${top}:`);
+  for (const r of [...rows].sort((a, b) => b[level] - a[level]).slice(0, top)) {
+    const cap = r.cap[level];
+    console.log(`  ${r.id.padEnd(32)} ${k(r[level]).padStart(6)} of ${k(cap).padStart(5)}${r[level] > cap ? '  OVER' : ''}`);
+  }
 }
 console.log(`\n${rows.length} monuments built.`);
 if (over.length) {
