@@ -1,9 +1,11 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace } from '../helpers.js';
 import { railing, jali, clockFace, rosette, windowFrame, bracketGeo, mergeByMaterial } from './components.js';
-import { statue, gothicPinnacle } from './sculpture.js';
+import { figure, gothicPinnacle } from './sculpture.js';
+import { allegory, hold } from './figures.js';
+import { detail } from '../detail.js';
 import { GLASS } from './colonial.js';
-import { lion } from './animals.js';
+import { couchant } from './animals.js';
 import { trees, lampPosts, along, cityAround } from './realism.js';
 
 // CSMT, finer detail. From photographs of the terminus: a pierced Gothic parapet runs along the
@@ -39,16 +41,17 @@ function architecture(f) {
 
 // The sculpture and finer parts, after photographs of the terminus:
 // - on the piers of the gateway into the forecourt, the lion (for Britain) and the tiger (for
-//   India), each on a moulded cap;
+//   India), lying couchant on moulded caps (Thomas Earp, in Bath stone);
+// - above the gables of the two forward wings, the groups of Commerce and Agriculture;
 // - a crocketed gable over each of the eight faces of the dome's drum, with pinnacles between
 //   them, and crockets running up the dome's ribs;
-// - statues on corbels either side of the clock;
+// - robed statues on corbels either side of the clock;
 // - gabled dormers with windows along the slate roofs of the side ranges, and gargoyles at the
 //   corners of the eaves.
-const CREAM_ = M.cream, TIGER = mat('#c98a3a', 0.7), SLATE_ = mat('#5b6067', 0.8);
+const CREAM_ = M.cream, SLATE_ = mat('#5b6067', 0.8);
 function sculpture(f) {
   const d = new THREE.Group(), dt = 23;
-  for (const x of [-10, 10]) d.add(box(2.4, 4.4, 2.4, BAND, x, 0, 36), box(2.8, 0.5, 2.8, CREAM_, x, 4.4, 36), box(2.2, 0.4, 2.2, BAND, x, 4.9, 36));
+  for (const x of [-10, 10]) d.add(box(2.4, 4.4, 3.2, BAND, x, 0, 36), box(2.8, 0.5, 3.7, CREAM_, x, 4.4, 36), box(2.2, 0.4, 3.3, BAND, x, 4.9, 36));
   // Drum gables (the drum is an octagon r = 9 to dt + 8, its faces centred between the corners).
   const gable = new THREE.Shape();
   gable.moveTo(-3, 0); gable.lineTo(3, 0); gable.lineTo(0, 3.2); gable.closePath();
@@ -66,7 +69,9 @@ function sculpture(f) {
     const a = (k / 8) * Math.PI * 2;
     for (const [r, y] of prof) d.add(at(new THREE.Mesh(new THREE.SphereGeometry(0.28, 6, 4), CREAM_), Math.sin(a) * (r + 0.2), dt + 8.6 + y, Math.cos(a) * (r + 0.2)));
   }
-  for (const x of [-3.2, 3.2]) d.add(at(new THREE.Mesh(bracketGeo(0.8, 0.7, 0.9), BAND), x, 1 + 18.5, 13), at(statue(2.6, CREAM_, 'standing', BAND), x, 1 + 18.5, 13.45));
+  for (const x of [-3.2, 3.2]) d.add(at(new THREE.Mesh(bracketGeo(0.8, 0.7, 0.9), BAND), x, 1 + 18.5, 13));
+  for (const [x, key, o] of [[-3.2, 'csmt-robe-a', { right: 'down', left: 'chest' }], [3.2, 'csmt-robe-b', { right: 'chest', left: 'down', free: -1 }]]) f.add(at(robed(2.4, key, o), x, 1 + 18.5, 13.45));
+  f.add(at(commerce(), -52, 0, 29.5), at(agriculture(), 52, 0, 29.5));
   // Dormers on the front slopes of the side ranges (30 × 16, roofs from y 17 at z = -5 ± 8).
   for (const sx of [-1, 1]) for (const k of [-1, 0, 1]) {
     const x = sx * 33 + k * 9, dm = at(new THREE.Group(), x, 17.2, 1.6);
@@ -82,8 +87,41 @@ function sculpture(f) {
   }
   mergeByMaterial(d);
   f.add(d);
-  const lionStatue = at(lion(1.1, CREAM_), -10, 5.3, 36), tiger = at(lion(1.1, TIGER), 10, 5.3, 36);
-  f.add(lionStatue, tiger);
+  f.add(at(couchant(CREAM_), -10, 5.3, 35.95), at(couchant(CREAM_, { tiger: true }), 10, 5.3, 35.95));
+}
+
+// A robed woman in stone h tall, facing +z (js/details/figures.js; on phones, from the light kit),
+// holding what `held` lists ([side, kind, opts] for hold()).
+function robed(h, key, opts, held = []) {
+  if (detail.low) return figure(h, CREAM_, 'robed');
+  const fig = allegory(key, opts, CREAM_, opts.seated ? 0.024 : 0.028), g = new THREE.Group();
+  g.add(fig.mesh);
+  for (const [side, kind, o] of held) hold(g, fig, side, kind, CREAM_, o);
+  g.scale.setScalar(h / (opts.seated ? 1.62 : 1.76));
+  return g;
+}
+// The groups above the forward wings' gables, each on a corbelled platform at the gable's apex (the
+// gable 16 wide and 7 high from y 19, its face at z 29 to 30). Commerce: a standing woman, one arm
+// held out in welcome and a caduceus in the other hand, between a seated figure with her hand on a
+// model ship and Britannia seated with her trident and shield. Agriculture: a standing woman with a
+// ploughshare and a cornucopia, and beside her a seated figure with a sickle and a sheaf of grain.
+// After the descriptions of Earp's groups (Victorian Web); their exact arrangement is not recorded.
+function apexPlatform(g) {
+  g.add(box(3.2, 1.6, 1.4, BAND, 0, 23.6, 0), box(4.2, 0.45, 2.0, CREAM_, 0, 25.2, 0.1));
+  return 25.65;
+}
+function commerce() {
+  const g = new THREE.Group(), y = apexPlatform(g);
+  g.add(at(robed(2.5, 'commerce', { right: 'out', left: 'chest' }, [['l', 'caduceus', { axis: [0.1, 1, 0.1] }]]), 0, y, 0.1));
+  g.add(at(robed(2.1, 'trade', { seated: true, right: 'lap', left: 'forward' }, [['l', 'ship', { axis: [0, 1, 0], offset: [0, 0.05, 0] }]]), -1.35, y, 0.35).rotateY(0.3));
+  const b = at(robed(2.1, 'britannia', { seated: true, head: 'helmet', right: 'holdUp', left: 'lap' }, [['r', 'trident', { axis: [0, 1, 0] }]]), 1.35, y, 0.35).rotateY(-0.3);
+  if (!detail.low) { const sh = at(new THREE.Group(), 0.5, 0.42, 0.12).add(hold(new THREE.Group(), { hands: { c: [0, 0, 0] }, dirs: {} }, 'c', 'shield', CREAM_)); sh.rotation.y = Math.PI / 2 - 0.3; sh.scale.setScalar(1.25); b.add(sh); }
+  return g.add(b);
+}
+function agriculture() {
+  const g = new THREE.Group(), y = apexPlatform(g);
+  g.add(at(robed(2.5, 'agriculture', { right: 'down', left: 'chest' }, [['r', 'plough', { axis: [0, 1, 0] }], ['l', 'cornucopia', { axis: [0.3, 1, 0.2] }]]), 0.5, y, 0.1));
+  return g.add(at(robed(2.1, 'harvest', { seated: true, right: 'lap', left: 'cradle' }, [['r', 'sickle', { axis: [0, 1, 0.3] }], ['l', 'sheaf', { axis: [0.5, 1, 0.2] }]]), -1.1, y, 0.35).rotateY(0.25));
 }
 
 

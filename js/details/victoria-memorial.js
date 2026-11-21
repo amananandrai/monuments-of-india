@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import { M, box, at, onFace, FACES } from '../helpers.js';
 import { rosette, windowFrame, mergeByMaterial } from './components.js';
-import { corinthianCapital, entablature, statue } from './sculpture.js';
+import { corinthianCapital, entablature, figure } from './sculpture.js';
+import { allegory, hold } from './figures.js';
+import { detail } from '../detail.js';
 import { balustrade, GLASS } from './colonial.js';
 import { trees, shrubs, lampPosts, scatter, along } from './realism.js';
 
@@ -37,10 +39,30 @@ function architecture(f) {
   f.add(d);
 }
 
+// An allegorical statue in marble on its pedestal, h tall overall, facing +z: a woman in classical
+// drapery (js/details/figures.js), standing or seated, holding her attributes ([side, kind, opts]
+// for hold()). On phones, a robed figure from the light kit.
+function allegoryStatue(h, key, opts, held = [], { seat = false } = {}) {
+  const g = new THREE.Group(), Mb = M.marble, Sh = M.marbleShade, ph = h * 0.16;
+  g.add(box(h * 0.36, ph * 0.18, h * 0.36, Mb), box(h * 0.3, ph * 0.66, h * 0.3, Mb, 0, ph * 0.18), box(h * 0.36, ph * 0.16, h * 0.36, Mb, 0, ph * 0.84));
+  const fh = h - ph;
+  if (detail.low) return g.add(at(figure(fh, Sh, 'robed'), 0, ph, 0));
+  const fig = allegory(key, opts, Sh, opts.seated ? 0.024 : 0.03), s = new THREE.Group();
+  s.add(fig.mesh);
+  for (const [side, kind, o] of held) hold(s, fig, side, kind, Sh, o);
+  s.scale.setScalar(fh / (opts.seated ? 1.62 : 1.76));
+  s.position.y = ph;
+  return g.add(s);
+}
+
 // The sculpture and finer parts, after photographs: a carved entablature under the cornice of the
-// main block; statues on the corners of each pavilion's roof, along the roof balustrade and on the
-// porch (where the group of Motherhood, Prudence and Learning stands); ribs running up the great
-// dome; round-arched windows in the drums of the four cupolas and round the lantern.
+// main block; robed statues on the corners of each pavilion's roof and along the roof balustrade;
+// the four allegories of Art, Architecture, Justice and Charity round the great dome; over the
+// north porch the group of Motherhood (a mother with an infant in her arm and a child at her
+// knee), with Prudence (her mirror) and Learning (an open book) either side; ribs running up the
+// great dome; round-arched windows in the drums of the four cupolas and round the lantern. (The
+// allegories' poses and attributes are the traditional ones; the sources name the figures but do
+// not describe them.)
 function sculpture(f) {
   const d = new THREE.Group(), b = 3.5, Mb = M.marble, Sh = M.marbleShade, top = b + 19.2;
   for (const a of FACES) {
@@ -48,15 +70,29 @@ function sculpture(f) {
     if (a === 0) for (const x of [-22.5, 22.5]) d.add(at(entablature(17, 1.5, Mb, { carvedFrieze: true, depth: 0.5 }), x, b + 16.5, 28));
     else d.add(onFace(at(entablature(long ? 62 : 34, 1.5, Mb, { carvedFrieze: true, depth: 0.5 }), 0, b + 16.5, 0), a, long ? 28 : 42));
   }
+  const statues = new THREE.Group(), robes = [['robe-a', { right: 'down', left: 'chest' }], ['robe-b', { right: 'chest', left: 'down', free: -1 }]];
+  let n = 0;
   for (const x of [-38, 38]) for (const z of [-24, 24]) {
     const t = at(new THREE.Group(), x, 0, z);
-    for (const sx of [-1, 1]) for (const sz of [-1, 1]) t.add(at(statue(3.2, Sh, 'standing', Mb), sx * 6.3, b + 23, sz * 6.3).rotateY(Math.atan2(sx, sz)));
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) { const [k, o] = robes[n++ % 2]; statues.add(at(allegoryStatue(3.2, k, o), x + sx * 6.3, b + 23, z + sz * 6.3).rotateY(Math.atan2(sx, sz))); }
     for (let k = 0; k < 8; k++) t.add(onFace(at(windowFrame(0.9, 2, Sh, { shape: 'round', back: GLASS, frame: 0.14 }), 0, b + 23.4, 0), ((k + 0.5) / 8) * Math.PI * 2, 4.62));
     d.add(t);
   }
-  for (const x of [-29, -16, 16, 29]) d.add(at(statue(3, Sh, 'standing', Mb), x, b + 19.2, 28.1));
-  d.add(at(statue(4.2, Sh, 'seated', Mb), 0, b + 16.1, 35.4));
-  for (const x of [-4.5, 4.5]) d.add(at(statue(3.4, Sh, 'standing', Mb), x, b + 16.1, 35.4));
+  for (const x of [-29, -16, 16, 29]) { const [k, o] = robes[n++ % 2]; statues.add(at(allegoryStatue(3, k, o), x, b + 19.2, 28.1)); }
+  // Round the dome, on the roof at its four diagonals, each facing out: Art with her palette and
+  // brush, Architecture with a column and a square, Justice with her sword and scales, and Charity
+  // seated with a child at her knee, her hand held out.
+  const round = [
+    [-1, 1, 'art', { right: 'forward', left: 'chest' }, [['r', 'brush', { axis: 'arm' }], ['l', 'palette', { axis: [0, 0, 1] }]]],
+    [1, 1, 'architecture', { right: 'down', left: 'chest' }, [['r', 'square', { axis: [0, -1, 0.3] }], ['l', 'column', { offset: [0, 0.02, 0.02] }]]],
+    [-1, -1, 'justice', { right: 'down', left: 'raised' }, [['r', 'sword', { axis: [0, 1, 0.15] }], ['l', 'scales', {}]]],
+    [1, -1, 'charity', { seated: true, child: true, right: 'out', left: 'lap' }, []],
+  ];
+  for (const [sx, sz, k, o, held] of round) statues.add(at(allegoryStatue(o.seated ? 3.6 : 3.8, k, o, held), sx * 13.8, top, sz * 13.8).rotateY(Math.atan2(sx, sz)));
+  statues.add(at(allegoryStatue(4.2, 'motherhood', { seated: true, child: true, baby: true, right: 'lap', left: 'cradle' }), 0, b + 16.1, 35.4));
+  statues.add(at(allegoryStatue(3.4, 'prudence', { right: 'forward', left: 'down' }, [['r', 'mirror', { axis: [0, 0.6, 1] }]]), -4.5, b + 16.1, 35.4));
+  statues.add(at(allegoryStatue(3.4, 'learning', { right: 'chest', left: 'chest', free: -1 }, [['r', 'book', { axis: [0, 1, 0.5], offset: [0.08, 0.02, 0.03] }]]), 4.5, b + 16.1, 35.4));
+  f.add(statues);
   // Ribs up the dome, following its profile (the lathe from y = top + 10).
   const prof = [[14.4, 0], [14.3, 3], [13.2, 7], [10.6, 10.8], [6.8, 13.6], [2.6, 15]];
   for (let k = 0; k < 16; k++) {

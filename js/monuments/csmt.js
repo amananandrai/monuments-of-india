@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, lathe, at, onFace, ribbed, hipRoof, wheel, surface } from '../helpers.js';
 import { figure } from '../details/sculpture.js';
+import { allegory, hold } from '../details/figures.js';
+import { detail } from '../detail.js';
 import { mergeByMaterial } from '../details/components.js';
 import { gothicDoor, gothicWindow, oculus } from '../details/colonial.js';
 import { addDetails } from '../details/csmt.js';
@@ -36,6 +38,28 @@ function turret(h, r) {
   return g;
 }
 
+// The statue of Progress crowning the dome (Thomas Earp, 1887), about 14 ft of marble: a woman in
+// flowing classical robes, a star above her forehead, holding a copper-gilt torch aloft in her
+// right hand, the left hand on the winged wheel at her side (js/details/figures.js). On phones, a
+// robed figure from the light kit with the torch and wheel.
+function progress() {
+  const g = new THREE.Group(), Mb = M.marble;
+  if (detail.low) {
+    g.add(figure(4.4, Mb, 'robed'), at(mesh(new THREE.ConeGeometry(0.22, 0.7, 8), M.gild), -0.55, 4.9, 0.2), cyl(0.05, 0.05, 1.4, Mb, -0.55, 3.6, 0.2, 6));
+    return g.add(at(wheel(0.55, Mb), 0.95, 0.6, 0.15));
+  }
+  const fig = allegory('progress', { right: 'raised', left: 'down', free: -1 }, Mb, 0.02), s = new THREE.Group();
+  s.add(fig.mesh);
+  hold(s, fig, 'r', 'torch', Mb, { gild: M.gild });
+  // The wheel stands on its rim beside her left leg, under her hand; the star above her forehead.
+  const w = hold(s, fig, 'l', 'wheel', Mb, { axis: [0, 1, 0], offset: [0.1, -0.24, 0.02] });
+  w.rotation.set(0, Math.PI / 2, 0);
+  const star = hold(s, { hands: { c: [0, 1.79, 0.05] }, dirs: {} }, 'c', 'star', Mb, { gild: M.gild });
+  star.rotation.set(0, 0, 0);
+  s.scale.setScalar(4.4 / 1.76);
+  return g.add(s);
+}
+
 export function buildCsmt() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
@@ -69,10 +93,7 @@ export function buildCsmt() {
   f.add(mergeByMaterial(ribs));
   const lt = dt + 8.6 + 12;
   f.add(cyl(1.4, 1.8, 3, M.cream, 0, lt, 0, 8), cyl(0.5, 0.8, 1.2, M.bronze, 0, lt + 3, 0, 8));
-  // The statue of Progress crowning the dome: a woman holding a flaming torch up over her shoulder,
-  // a spoked wheel at her side.
-  f.add(at(figure(4.4, M.bronze, 'chauri'), 0, lt + 4.2, 0), at(mesh(new THREE.ConeGeometry(0.22, 0.7, 8), M.gild), 0.17, lt + 8.75, 0.05));
-  f.add(at(wheel(0.55, M.bronze), -0.9, lt + 5.0, 0.15));
+  f.add(at(progress(), 0, lt + 4.2, 0));
   // Side ranges and the two forward wings that frame the forecourt, each ending in a gable and turrets
   for (const s of [-1, 1]) {
     f.add(at(range(30, 16, 16, 2), s * 33, 1, -5));
