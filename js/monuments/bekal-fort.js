@@ -28,7 +28,7 @@ export function buildBekal() {
   }
   // The gate at the neck, walls joining it to the neck's sides, and inside it a baffle wall that
   // turns the way in into a zigzag; then the tall round observation tower in the middle
-  f.add(at(fortGate(14, 10, 8, 4, 7, { m: LATERITE, trim: LATERITE_DARK, towers: { r: 3, h: 11, cap: 'merlons', seg: 14 } }), 0, H, 122));
+  f.add(at(fortGate(14, 10, 8, 4, 7, { m: LATERITE, trim: LATERITE_DARK, box: true, towers: { r: 3, h: 11, cap: 'merlons', seg: 14 } }), 0, H, 122));
   for (const s of [-1, 1]) f.add(box(9.5, 6.9, 3, LATERITE, s * 11.5, H, 120));
   f.add(box(16, 7, 3, LATERITE_DARK, -4, H, 106));
   f.add(cyl(7, 8, 18, LATERITE, 0, H, 0, 20), cyl(8, 8, 1, LATERITE_DARK, 0, H + 18, 0, 20), box(10, 1.2, 1.2, LATERITE_DARK, 0, H + 6, 9));

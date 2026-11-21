@@ -40,7 +40,7 @@ function architecture(f) {
     const a = a0 + ((k + 0.5) / 14) * (a1 - a0);
     segs.push([Math.cos(a) * 120, 0, Math.sin(a) * 120, (Math.abs(a1 - a0) * 120) / 14 + 0.1, 9, 2.6, Math.atan2(-Math.cos(a), -Math.sin(a))]);
   }
-  f.add(bastionCrowns(crowns, GRANITE, { trim: TRIM, size: 0.8, seg: 14 }), rampart(segs, GRANITE, { trim: TRIM, size: 0.8, kerb: false }));
+  f.add(bastionCrowns(crowns, GRANITE, { trim: TRIM, size: 0.8, seg: 14 }), rampart(segs, GRANITE, { trim: TRIM, size: 0.8, kerb: false, boxes: 3 }));
   // The stair from the gate to the summit, straight up the south face (x = 0): stone treads
   // bedded in the rock, and a small gate where it passes each ring of wall.
   const treads = [];

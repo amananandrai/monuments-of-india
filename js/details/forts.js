@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mesh, box, cyl, at, onFace, archWall, rise, hemi, finial, inst, unitBox, unitCyl } from '../helpers.js';
 import { detail } from '../detail.js';
-import { archRing, hood, merlons, mergeByMaterial } from './components.js';
+import { archRing, hood, merlons, mergeByMaterial, bracketGeo } from './components.js';
 import { doorLeaves, interior } from './doorways.js';
 import { pierced } from './mughal.js';
 
@@ -13,10 +13,11 @@ import { pierced } from './mughal.js';
 //   passage opens (as at the Lahori Gate);
 // - through: false ends the passage at a dim inner doorway instead of running through;
 // - towers: { r, h, cap: 'dome' | 'merlons', seg }, a tower at each front corner;
-// - crest: merlons along the top; ramp: [rise, run], a ramp up to the sill from the ground in front.
+// - crest: merlons along the top; ramp: [rise, run], a ramp up to the sill from the ground in front;
+// - box: a machicolation over the arch.
 export function fortGate(w, h, d, aw, ah, {
   m, trim = m, pointed = true, iwan = null, through = true, open = 1.3, niches = true, crest = true,
-  towers = null, ramp = null, spikes = true, leafM = undefined,
+  towers = null, ramp = null, spikes = true, leafM = undefined, box: mbox = false,
 } = {}) {
   const g = new THREE.Group();
   const id = iwan ? iwan.depth : 0, pd = d - id, pz = -d / 2 + pd / 2;
@@ -57,6 +58,8 @@ export function fortGate(w, h, d, aw, ah, {
     g.add(at(archRing(iwan.w, iwan.h, pointed, Math.min(0.45, iwan.w * 0.035), 0.08, trim), 0, 0, d / 2));
   }
   if (crest) g.add(at(merlons(w - 0.4, Math.min(0.9, w * 0.05), Math.min(1.2, w * 0.065), 0.5, m, 0.35), 0, h, d / 2 - 0.3));
+  // box: a machicolation over the arch, high on the gate's face, to guard its mouth.
+  if (mbox) { const ms = Math.min(1.4, aw / 3.4); g.add(machicolations([[0, Math.min(h - 2.4 * ms, AH + (h - AH) * 0.45), d / 2, 0, ms]], m, trim)); }
   if (towers) {
     const { r, h: th, cap = 'dome', seg = 8 } = towers;
     for (const sx of [-1, 1]) {
@@ -127,11 +130,12 @@ function plainMerlon() {
 // and below it a projecting string course and a row of arrow slits; on the inner edge, the low kerb
 // of the wall walk. All instanced. size scales the parts (1: merlons 1.1 m wide and 1.3 high).
 // On phones: merlons twice as far apart, and no slits or kerb.
-export function rampart(segs, m, { trim = m, size = 1, centre = [0, 0], course = true, slits = true, kerb = true, every = 1 } = {}) {
+export function rampart(segs, m, { trim = m, size = 1, centre = [0, 0], course = true, slits = true, kerb = true, every = 1, loopholes = true, boxes = 0 } = {}) {
   const g = new THREE.Group(), low = detail.low, s = size;
-  const parapets = [], merlons = [], courses = [], loops = [], kerbs = [];
+  const parapets = [], merlons = [], courses = [], loops = [], kerbs = [], guns = [], mach = [];
   const pitch = 1.9 * s * (low ? 2 : 1) * every;
-  for (const [mx, y, mz, len, h, t, ry = 0] of segs) {
+  for (const seg of segs) {
+    const [mx, y, mz, len, h, t, ry = 0] = seg;
     const ux = Math.cos(ry), uz = -Math.sin(ry);
     let nx = Math.sin(ry), nz = Math.cos(ry);
     if (nx * (mx - centre[0]) + nz * (mz - centre[1]) < 0) { nx = -nx; nz = -nz; }
@@ -142,9 +146,13 @@ export function rampart(segs, m, { trim = m, size = 1, centre = [0, 0], course =
     for (let k = 0; k < n; k++) {
       const along = ((k + 0.5) / n - 0.5) * len, [x, z] = put(o - 0.25 * s, along);
       merlons.push([x, top + 0.7 * s, z, 1.1 * s, 1.3 * s, 0.5 * s, ry]);
+      // A gun-loop through the merlon: a dark slit on its outer face.
+      if (loopholes && !low) { const [gx, gz] = put(o + 0.015, along); guns.push([gx, top + 0.95 * s, gz, 0.14 * s, 0.5 * s, 0.03, ry]); }
       if (slits && !low && k % 2 === 0) { const [lx, lz] = put(o + 0.02, along); loops.push([lx, top - 4.2 * s, lz, 0.24 * s, 1.6 * s, 0.06, ry]); }
     }
     if (course) { const [cx, cz] = put(o + 0.1); courses.push([cx, top - 1.5 * s, cz, len, 0.4 * s, 0.3, ry]); }
+    // A machicolation in the middle of every `boxes`th length, hung from the parapet.
+    if (boxes && segs.indexOf(seg) % boxes === 0) { const [bx, bz] = put(o); mach.push([bx, top - 0.05 * s, bz, Math.atan2(nx, nz), s]); }
     if (kerb && !low) { const [kx, kz] = put(-o + 0.2 * s); kerbs.push([kx, top, kz, len, 0.5 * s, 0.4 * s, ry]); }
   }
   const add = (geo, list, mm, shadow) => { if (!list.length) return; const im = inst(geo, list, mm); im.castShadow = shadow; g.add(im); };
@@ -153,21 +161,48 @@ export function rampart(segs, m, { trim = m, size = 1, centre = [0, 0], course =
   add(unitBox(), courses, trim, false);
   add(unitBox(), loops, M.recess, false);
   add(unitBox(), kerbs, m, false);
+  add(unitBox(), guns, M.recess, false);
+  if (mach.length) g.add(machicolations(mach, m, trim));
+  return g;
+}
+
+// Machicolations: boxes projecting from the head of a wall, through whose floors defenders dropped
+// stones and oil on attackers at its foot. Each, at [x, y, z, facing, size], has its back against
+// the wall face and its floor at y: three corbels under it, a slot along its floor, a gun-loop in its
+// front, a coping and two merlons. size 1: 3.2 m wide, 1.8 high, 1.1 out. All instanced, so a whole
+// circuit of walls costs a few draw calls.
+export function machicolations(list, m, trim = m) {
+  const g = new THREE.Group(), bodies = [], copes = [], heads = [], slots = [], loops = [], corbels = [];
+  for (const [x, y, z, a, s = 1] of list) {
+    const sa = Math.sin(a), ca = Math.cos(a), P = (out, lat = 0) => [x + sa * out + ca * lat, z + ca * out - sa * lat];
+    const [bx, bz] = P(0.55 * s), [fx, fz] = P(1.115 * s), [sx, sz] = P(0.7 * s);
+    bodies.push([bx, y, bz, 3.2 * s, 1.8 * s, 1.1 * s, a]);
+    copes.push([bx, y + 1.8 * s, bz, 3.4 * s, 0.22 * s, 1.3 * s, a]);
+    for (const lat of [-0.85, 0.85]) { const [hx, hz] = P(0.85 * s, lat * s); heads.push([hx, y + 2.02 * s, hz, 0.9 * s, 0.9 * s, 0.45 * s, a]); }
+    slots.push([sx, y - 0.012, sz, 2.6 * s, 0.03, 0.3 * s, a]);
+    loops.push([fx, y + 0.6 * s, fz, 0.16 * s, 0.6 * s, 0.03, a]);
+    for (const lat of [-1.2, 0, 1.2]) { const [cx, cz] = P(0, lat * s); corbels.push([cx, y, cz, s, s, s, a]); }
+  }
+  const brk = bracketGeo(1.1, 1.0, 0.35);
+  g.add(inst(unitBox(), bodies, m), inst(unitBox(), copes, trim), inst(plainMerlon(), heads, m), inst(unitBox(), slots, M.recess), inst(unitBox(), loops, M.recess), inst(brk, corbels, trim));
   return g;
 }
 
 // The crowns of round bastions, [x, top, z, r] each: a projecting cornice under the top and a ring
 // of merlons round it. size as in rampart().
 export function bastionCrowns(list, m, { trim = m, size = 1, seg = 16 } = {}) {
-  const g = new THREE.Group(), merlons = [], cornices = [], s = size, step = detail.low ? 2 : 1;
+  const g = new THREE.Group(), merlons = [], cornices = [], guns = [], s = size, step = detail.low ? 2 : 1;
   for (const [x, top, z, r] of list) {
     cornices.push([x, top - 1.3 * s, z, 2 * r + 0.5 * s, 0.45 * s, 2 * r + 0.5 * s]);
     const n = Math.max(6, Math.round((2 * Math.PI * r) / (1.9 * s)));
     for (let k = 0; k < n; k += step) {
       const a = (k / n) * Math.PI * 2;
       merlons.push([x + Math.sin(a) * (r - 0.3 * s), top, z + Math.cos(a) * (r - 0.3 * s), 1.1 * s, 1.3 * s, 0.5 * s, a]);
+      // Its gun-loop, on desktops.
+      if (!detail.low) guns.push([x + Math.sin(a) * (r - 0.035 * s), top + 0.25 * s, z + Math.cos(a) * (r - 0.035 * s), 0.14 * s, 0.5 * s, 0.03, a]);
     }
   }
   g.add(inst(unitCyl(seg), cornices, trim), inst(plainMerlon(), merlons, m));
+  if (guns.length) g.add(inst(unitBox(), guns, M.recess));
   return g;
 }

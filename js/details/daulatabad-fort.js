@@ -46,7 +46,7 @@ function architecture(f) {
   }
   for (let k = 1; k < 10; k++) { const a = ga + (k / 10) * Math.PI * 2; towers.push([Math.cos(a) * 131.5, 0, Math.sin(a) * 131.5, 9, 9.5, 9]); }
   const site = f.parent;
-  site.add(rampart(wallSegs, STONE, { size: 0.8, kerb: false }), inst(unitCyl(14), towers, STONE), bastionCrowns(towers.map(([x, , z]) => [x, 9.5, z, 4.5]), STONE, { size: 0.8, seg: 14 }));
+  site.add(rampart(wallSegs, STONE, { size: 0.8, kerb: false, boxes: 3 }), inst(unitCyl(14), towers, STONE), bastionCrowns(towers.map(([x, , z]) => [x, 9.5, z, 4.5]), STONE, { size: 0.8, seg: 14 }));
   // The bridge over the moat and the tunnel's mouth in the scarp, on the side towards the gate.
   const way = new THREE.Group();
   way.rotation.y = Math.PI / 2 - ga;

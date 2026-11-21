@@ -80,14 +80,15 @@ export function buildMehrangarh() {
     bands.push([mx + nx * (WT / 2 + 0.15), H + wh - 3, mz + nz * (WT / 2 + 0.15), len, 0.7, 0.3, ry]);
   }
   f.add(inst(unitBox(), segs, SAND), inst(unitBox(), bands, SAND_LIGHT));
-  // Battlements along the wall's top: a parapet, merlons, arrow slits and the wall walk's kerb.
-  f.add(rampart(segs, SAND, { size: 1.5, course: false }));
+  // Battlements along the wall's top: a parapet, merlons with gun-loops, arrow slits, the wall walk's
+  // kerb, and a machicolation hung from every fourth length.
+  f.add(rampart(segs, SAND, { size: 1.5, course: false, boxes: 4 }));
   // The bastions, round, rising a little above the walls from the rock at the cliff's edge.
   f.add(inst(unitCyl(16), bastions().map(([x, z]) => [x, H - 14, z, 17, 48, 17]), SAND));
   f.add(bastionCrowns(bastions().map(([x, z]) => [x, H + 34, z, 8.5]), SAND, { trim: SAND_LIGHT, size: 1.5 }));
   // Jayapol, the gatehouse on the south side, its passage ending at the inner door.
   const gp = wallPoint(Math.PI / 2);
-  f.add(at(fortGate(12, 16, 8, 4.6, 8, { m: SAND, trim: SAND_LIGHT, through: false }), 0, H, gp.z));
+  f.add(at(fortGate(12, 16, 8, 4.6, 8, { m: SAND, trim: SAND_LIGHT, through: false, box: true }), 0, H, gp.z));
 
   // The palaces at the north end (+x), rising above the walls in ranges of carved sandstone: the
   // Phool Mahal and Moti Mahal range along the south front, the Sheesh Mahal and Takhat Vilas
