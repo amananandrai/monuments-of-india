@@ -23,7 +23,7 @@ const PARTS = `
   const H = await import('/js/helpers.js'), C = await import('/js/parts/components.js'), T = await import('/js/parts/temples.js');
   const Mu = await import('/js/parts/mughal.js'), Co = await import('/js/parts/colonial.js'), D = await import('/js/parts/doorways.js');
   const F = await import('/js/parts/forts.js'), Tb = await import('/js/parts/tibetan.js'), S = await import('/js/parts/sculpture.js');
-  const Fi = await import('/js/parts/figures.js'), R = await import('/js/parts/realism.js'), A = await import('/js/parts/animals.js');
+  const Fi = await import('/js/parts/figures.js'), R = await import('/js/parts/realism.js'), A = await import('/js/parts/animals.js'), Tr = await import('/js/parts/transport.js');
   const { M, mat, box, cyl, at, group, onFace } = H;
   // The statues: each monument's own builder for them.
   const SoU = await import('/js/monuments/statue-of-unity.js'), Gom = await import('/js/monuments/gommateshwara.js'), Viv = await import('/js/monuments/vivekananda-rock-memorial.js');
@@ -130,6 +130,9 @@ const PARTS = `
     'stalls': [() => group(R.stalls([[0, 0, 0], [4.5, 0, 0], [9, 0, 0]]), R.umbrellas([[13, 0], [15.5, 1]])), { floor: 'stone' }],
     'town-houses': [() => R.townHouses([[0, 0, 9, 11, 3, 0], [10.5, 0, 9, 11, 2, 0], [21, 0, 10, 11, 4, 0], [32, 0, 9, 11, 3, 0]], { seed: 4 }), { floor: 'stone' }],
     'traffic': [() => group(box(40, 0.2, 14, M.asphalt), R.traffic([[-4.6, 1], [-1.6, 1], [1.6, -1], [4.6, -1]], -18, 18, { y: 0.2, gap: 9, seed: 3, taxis: 0.3, buses: 0.15, trucks: 0.15 })), { floor: 'stone', view: [0.6, 0.45, 1], fit: 0.8 }],
+    'trains': [() => group(at(Tr.track(70), 0, 0, 5), at(Tr.train(2, { livery: 'blue' }), 0, Tr.RAIL_TOP, 5), at(Tr.overhead(70, { span: 35 }), 0, 0, 5), at(Tr.track(70), 0, 0, -1), at(Tr.train(3, { livery: 'vande' }), 0, Tr.RAIL_TOP, -1), at(Tr.track(70), 0, 0, -7), at(Tr.train(3, { livery: 'emu' }), 0, Tr.RAIL_TOP, -7)), { floor: 'stone', view: [0.5, 0.5, 1], fit: 0.6 }],
+    'platform': [() => group(at(Tr.platform(60, 9), 0, 0, 0), at(Tr.track(60), 0, 0, 7), at(Tr.track(60), 0, 0, -7), at(Tr.train(2, { livery: 'red', loco: false }), 0, Tr.RAIL_TOP, 7)), { floor: 'stone', view: [0.8, 0.4, 1], fit: 0.75 }],
+    'airliners': [() => group(Tr.airliner({ size: 'wide', tail: '#c8102e' }), at(Tr.airliner({ tail: '#1f2f8f', belly: '#1f2f8f' }), 0, 0, 50), at(Tr.jetBridge(26), 5, 0, 24).rotateY(Math.PI / 2)), { floor: 'stone', view: [0.8, 0.4, 1], fit: 0.8 }],
     'guardian': [() => group(box(1.6, 0.4, 1.2, M.granite), at(Fi.guardian(1.8, M.granite), 0, 0.4, 0)), { floor: 'stone', view: [0.3, 0.15, 1], fit: 0.9 }],
     'nandi': [() => group(box(4, 0.8, 6, M.granite), at(A.nandi(mat('#3b3936', 0.7), 0.7), 0, 0.8, 0)), { floor: 'stone', view: [1, 0.3, 0.8] }],
     'elephants': [() => group(at(A.elephant(M.granite, 1), 0, 0, 0), at(A.rideElephant(mat('#6f6a66', 0.85), 1), 7, 0, 0), at(A.rideElephant(mat('#5e5650', 0.9), 1, { cloth: '#b3262e', howdah: false }), 14, 0, 0)), { floor: 'sand', view: [0.6, 0.25, 1] }],

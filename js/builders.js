@@ -103,6 +103,30 @@ import { buildJallianwala } from './monuments/jallianwala-bagh.js';
 import { buildKargilMemorial } from './monuments/kargil-war-memorial.js';
 import { buildNationalWarMemorial } from './monuments/national-war-memorial.js';
 import { buildKirtiMandir } from './monuments/kirti-mandir.js';
+import { buildLingaraja } from './monuments/lingaraja-temple.js';
+import { buildModhera } from './monuments/modhera-sun-temple.js';
+import { buildDwarkadhish } from './monuments/dwarkadhish-temple.js';
+import { buildBadrinath } from './monuments/badrinath-temple.js';
+import { buildJantarMantar } from './monuments/jantar-mantar-jaipur.js';
+import { buildChandBaori } from './monuments/chand-baori.js';
+import { buildBishnupur } from './monuments/bishnupur-temples.js';
+import { buildDakshineswar } from './monuments/dakshineswar-kali-temple.js';
+import { buildRangGhar } from './monuments/rang-ghar.js';
+import { buildUjjayanta } from './monuments/ujjayanta-palace.js';
+import { buildBhoramdeo } from './monuments/bhoramdeo-temple.js';
+import { buildLehPalace } from './monuments/leh-palace.js';
+import { buildVirupaksha } from './monuments/virupaksha-temple-hampi.js';
+import { buildHowrahStation } from './monuments/howrah-station.js';
+import { buildChennaiCentral } from './monuments/chennai-central.js';
+import { buildCharbagh } from './monuments/charbagh-station.js';
+import { buildMumbaiT2 } from './monuments/mumbai-airport-t2.js';
+import { buildBengaluruT2 } from './monuments/bengaluru-airport-t2.js';
+import { buildChenabBridge } from './monuments/chenab-rail-bridge.js';
+import { buildPambanBridge } from './monuments/new-pamban-bridge.js';
+import { buildVidhanaSoudha } from './monuments/vidhana-soudha.js';
+import { buildMatrimandir } from './monuments/matrimandir.js';
+import { buildStatueOfEquality } from './monuments/statue-of-equality.js';
+import { buildSriharikota } from './monuments/satish-dhawan-space-centre.js';
 
 // Builders by the name js/data.js gives each monument (its `fn`).
 export const BUILDERS = {
@@ -207,4 +231,28 @@ export const BUILDERS = {
   buildKargilMemorial,
   buildNationalWarMemorial,
   buildKirtiMandir,
+  buildLingaraja,
+  buildModhera,
+  buildDwarkadhish,
+  buildBadrinath,
+  buildJantarMantar,
+  buildChandBaori,
+  buildBishnupur,
+  buildDakshineswar,
+  buildRangGhar,
+  buildUjjayanta,
+  buildBhoramdeo,
+  buildLehPalace,
+  buildVirupaksha,
+  buildHowrahStation,
+  buildChennaiCentral,
+  buildCharbagh,
+  buildMumbaiT2,
+  buildBengaluruT2,
+  buildChenabBridge,
+  buildPambanBridge,
+  buildVidhanaSoudha,
+  buildMatrimandir,
+  buildStatueOfEquality,
+  buildSriharikota,
 };
