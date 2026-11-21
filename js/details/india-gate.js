@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, FACES, surface, hemi, ribbed, kalash, finial } from '../helpers.js';
 import { D, archRing, keystone, sunburst, rosette, lettering, dentils, chhajja, petalRing, mergeByMaterial } from './components.js';
 import { trees, lampPosts, along } from './realism.js';
-import { statue } from './sculpture.js';
+import { netajiBody, netajiSpectacles } from './figures.js';
 
 // India Gate, finer detail (Lutyens, 1921–31). From photographs and descriptions of the arch:
 // - two large sunburst roundels, one each side of the main arch on both long faces, and a smaller
@@ -122,7 +122,20 @@ export function addCanopyDetails(c) {
   c.add(d, at(finial(3.5), 0, 17.35, 0));
   // The black granite statue of Netaji Subhas Chandra Bose, standing under the canopy and facing
   // the arch.
-  c.add(at(statue(8, mat('#2e2e33', 0.3), 'leader', STONE), 0, 1, 0).rotateY(Math.PI));
+  c.add(at(netaji(), 0, 1, 0).rotateY(Math.PI));
+}
+
+// Netaji Subhas Chandra Bose (2022): carved from one block of black granite, 8.5 m tall, saluting
+// (js/details/figures.js), with his spectacles, on a low pedestal of the same polished stone.
+const BLACK_GRANITE = mat('#26262a', 0.3);
+function netaji() {
+  const g = new THREE.Group(), fig = new THREE.Group();
+  g.add(box(3.8, 0.3, 3.4, BLACK_GRANITE), box(3.3, 0.55, 2.9, BLACK_GRANITE, 0, 0.3), box(3.5, 0.15, 3.1, BLACK_GRANITE, 0, 0.85));
+  fig.add(netajiBody(BLACK_GRANITE), netajiSpectacles(BLACK_GRANITE));
+  fig.scale.setScalar(8.5 / 1.84);
+  fig.position.y = 1.0;
+  g.add(fig);
+  return g;
 }
 
 // Kartavya Path round the gate: lawn up to the piers, lamps, and the jamun trees along the avenue.

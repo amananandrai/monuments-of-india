@@ -6,6 +6,7 @@ import {
 } from './components.js';
 import { lampPosts, boats, launches, ships, along } from './realism.js';
 import { horse } from './animals.js';
+import { shivajiBody } from './figures.js';
 
 // Gateway of India, finer detail (George Wittet, 1913–24). From photographs and descriptions
 // (Britannica, Victorian Web, the CyArk scan on Google Arts & Culture): a Roman triumphal arch
@@ -132,8 +133,8 @@ export function addGatewayDetails(f, { p, b }) {
 }
 
 // Apollo Bunder round the Gateway: the bronze equestrian statue of Chhatrapati Shivaji on its
-// pedestal facing the Gateway, the ferries to Elephanta tied up at the jetties and boats out in the
-// harbour, and lamps along the sea wall.
+// pedestal facing the Gateway (shivajiStatue(), below), the ferries to Elephanta tied up at the
+// jetties and boats out in the harbour, and lamps along the sea wall.
 // The Taj Mahal Palace hotel (1903) beside the Gateway, facing the harbour: a long range of grey
 // basalt and cream stone, six storeys of arched windows banded in white, wings ending in turrets,
 // and at its middle the great red-tiled dome on its drum, with smaller domes at the corners.
@@ -158,19 +159,93 @@ function tajHotel() {
 export function addDetails(f, g) {
   // Far enough off that the camera, orbiting the Gateway, never enters it.
   g.add(at(tajHotel(), -165, 0, -105).rotateY(0.35));
-  const ped = new THREE.Group(), rider = new THREE.Group();
-  ped.add(box(5, 4, 8, M.basalt), box(5.6, 0.5, 8.6, M.plaster, 0, 4));
-  const h = horse(M.bronze);
-  h.scale.setScalar(0.85);
-  rider.add(h, cyl(0.38, 0.45, 1.4, M.bronze, 0, 2.6 * 0.85 + 0.2, 0.4, 10), mesh(new THREE.SphereGeometry(0.3, 12, 10), M.bronze, 0, 2.6 * 0.85 + 1.9, 0.45));
-  rider.add(cyl(0.03, 0.03, 2.2, M.bronze, 0.5, 2.6, 1.4, 6).rotateX(0.5));
-  ped.add(at(rider, 0, 4.5, 0));
-  ped.rotation.y = 0;
-  g.add(at(ped, 0, 0, -48));
+  g.add(at(shivajiStatue(), 0, 0, -48));
   // The Elephanta ferry launches moored bow-out along the harbour wall, either side of the steps;
   // small boats out in the harbour; and ships at anchor in the roads beyond.
   g.add(launches([[-36, 22, 0.05], [-29, 22, -0.04], [-22, 22, 0.03], [24, 22, -0.03], [31, 22, 0.04], [38, 22, -0.02]], { y: 0.1 }));
   g.add(boats([[-80, 90, 1.1], [60, 120, 2.3], [140, 70, 0.4], [-150, 140, 2.9], [10, 180, 1.7]], { y: 0.1, size: 2 }));
   g.add(ships([[-210, 255, 0.35], [190, 270, 2.0]], { y: 0.1 }));
   g.add(lampPosts(along(10, [-34, 2.5], [34, 2.5])));
+}
+
+// The equestrian statue of Chhatrapati Shivaji (unveiled 1961) in its railed garden, facing the
+// Gateway, after photographs. The bronze horse prances, its left foreleg raised high (animals.js);
+// the rider (js/details/figures.js) sits upright, the reins in his left hand and the curved sword
+// held low in his right, its blade pointing forward along the horse's flank; a tasselled cord
+// hangs at the horse's throat. The pedestal is of yellow stone: a shaft tapering a little on a
+// broad plinth, capped in dark stone, with the bronze round shield and crossed swords on each long
+// side and a plaque on the front of the plinth.
+function taperBox(wb, db, wt, dt, h, m) {
+  const geo = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0), p = geo.attributes.position;
+  for (let i = 0; i < p.count; i++) { const top = p.getY(i) > 0.5; p.setX(i, p.getX(i) * (top ? wt : wb)); p.setZ(i, p.getZ(i) * (top ? dt : db)); p.setY(i, p.getY(i) * h); }
+  geo.computeVertexNormals();
+  return mesh(geo, m);
+}
+// A curved sword (talwar) lying along +z from its hilt at the origin: grip, guard, pommel and a
+// blade curving up a little to its point, flat across x.
+function talwar(L, m) {
+  const g = new THREE.Group(), sh = new THREE.Shape();
+  sh.moveTo(0, -0.035); sh.quadraticCurveTo(L * 0.6, -0.03, L, 0.09); sh.quadraticCurveTo(L * 0.6, 0.02, 0, 0.035); sh.closePath();
+  const blade = new THREE.ExtrudeGeometry(sh, { depth: 0.02, bevelEnabled: false }).translate(0, 0, -0.01).rotateY(-Math.PI / 2);
+  g.add(mesh(blade, m).translateZ(0.12), box(0.05, 0.03, 0.16, m, 0, -0.015, 0.06), cyl(0.025, 0.025, 0.2, m, 0, 0, -0.08, 8).rotateX(Math.PI / 2));
+  g.add(mesh(new THREE.SphereGeometry(0.045, 10, 8), m, 0, 0, -0.2));
+  return g;
+}
+function shivajiStatue() {
+  const g = new THREE.Group(), STONE = mat('#b39a74', 0.85), CAP = mat('#4c4844', 0.55), B = M.bronze, Hp = 5.8;
+  g.add(box(5.4, 0.3, 7.8, STONE), box(4.8, 1.4, 7.2, STONE, 0, 0.3), taperBox(3.4, 5.8, 3.0, 5.4, 3.8, STONE).translateY(1.7), box(3.4, 0.3, 5.8, CAP, 0, 5.5));
+  g.add(box(1.6, 0.8, 0.06, mat('#1d1d1f', 0.4), 0, 0.6, 3.61));
+  // The emblem on each long side of the shaft: a round shield with its bosses, two curved swords
+  // crossed behind it with their blades rising like horns.
+  for (const sx of [-1, 1]) {
+    const e = at(new THREE.Group(), sx * 1.66, 3.6, 0);
+    e.rotation.y = sx * Math.PI / 2;
+    const shield = mesh(new THREE.SphereGeometry(0.5, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2), B);
+    shield.rotation.x = Math.PI / 2;
+    shield.scale.set(1, 0.35, 1);
+    e.add(shield);
+    for (const [x, y] of [[0.16, 0.16], [-0.16, 0.16], [0.16, -0.16], [-0.16, -0.16]]) e.add(mesh(new THREE.SphereGeometry(0.06, 8, 6), B, x, y, 0.17));
+    for (const s of [-1, 1]) {
+      const curve = new THREE.CatmullRomCurve3([[s * 0.75, -0.75, 0.05], [s * 0.2, -0.15, 0.08], [-s * 0.45, 0.45, 0.08], [-s * 0.55, 0.95, 0.05]].map((q) => new THREE.Vector3(...q)));
+      e.add(mesh(new THREE.TubeGeometry(curve, 16, 0.045, 5, false), B));
+    }
+    g.add(e);
+  }
+  // The horse and its rider, at 0.85 of the horse's own units (js/details/animals.js), so the horse
+  // stands about 2.4 m at the withers.
+  const eq = new THREE.Group();
+  eq.add(horse(B, { prance: true }));
+  const rider = shivajiBody(B);
+  rider.position.set(0, 2.84, -0.15);
+  rider.scale.setScalar(2.1);
+  eq.add(rider);
+  const sword = talwar(1.3, B);
+  sword.position.set(-0.72, 3.21, -0.43);
+  sword.rotation.y = -0.06;
+  eq.add(sword);
+  // The reins from each side of the bit to his left hand; the cord and tassel at the horse's
+  // throat; the stirrups and their straps.
+  for (const sx of [-1, 1]) {
+    const reins = new THREE.CatmullRomCurve3([[sx * 0.16, 3.25, 2.45], [sx * 0.24, 3.1, 1.9], [sx * 0.2, 3.25, 1.2], [0.19, 3.72, 0.62]].map((q) => new THREE.Vector3(...q)));
+    eq.add(mesh(new THREE.TubeGeometry(reins, 24, 0.025, 5, false), B));
+    const strap = new THREE.CatmullRomCurve3([[sx * 0.5, 2.72, -0.1], [sx * 0.68, 2.05, 0.18], [sx * 0.72, 1.42, 0.38]].map((q) => new THREE.Vector3(...q)));
+    eq.add(mesh(new THREE.TubeGeometry(strap, 10, 0.022, 4, false), B));
+    const stirrup = mesh(new THREE.TorusGeometry(0.1, 0.02, 5, 12), B, sx * 0.72, 1.32, 0.38);
+    stirrup.rotation.y = Math.PI / 2;
+    eq.add(stirrup);
+  }
+  eq.add(cyl(0.025, 0.025, 0.5, B, 0, 2.6, 2.02, 5), mesh(new THREE.ConeGeometry(0.12, 0.5, 10).translate(0, -0.25, 0), B, 0, 2.62, 2.02));
+  eq.scale.setScalar(0.85);
+  eq.position.y = Hp;
+  g.add(eq);
+  // The garden: a lawn behind railings with spear-headed bars, open on the side towards the Gateway.
+  const lawn = box(18, 0.12, 22, M.grass, 0, 0, 0), bars = [], tips = [];
+  for (const [x0, z0, x1, z1] of [[-9, -11, 9, -11], [-9, -11, -9, 11], [9, -11, 9, 11], [-9, 11, -2.5, 11], [2.5, 11, 9, 11]]) {
+    const L = Math.hypot(x1 - x0, z1 - z0), n = Math.round(L / 0.3);
+    for (let i = 0; i <= n; i++) { const x = x0 + ((x1 - x0) * i) / n, z = z0 + ((z1 - z0) * i) / n; bars.push([x, 0, z, 0.035, 1.6, 0.035]); tips.push([x, 1.6, z, 0.09, 0.22, 0.09]); }
+  }
+  const rails = [[0, 0.3, -11, 18, 0.05, 0.05], [0, 1.4, -11, 18, 0.05, 0.05], [-9, 0.3, 0, 0.05, 0.05, 22], [-9, 1.4, 0, 0.05, 0.05, 22], [9, 0.3, 0, 0.05, 0.05, 22], [9, 1.4, 0, 0.05, 0.05, 22], [-5.75, 0.3, 11, 6.5, 0.05, 0.05], [-5.75, 1.4, 11, 6.5, 0.05, 0.05], [5.75, 0.3, 11, 6.5, 0.05, 0.05], [5.75, 1.4, 11, 6.5, 0.05, 0.05]];
+  const IRON = mat('#2a2826', 0.6, 0.4);
+  g.add(lawn, inst(unitBox(), [...bars, ...rails], IRON), inst(new THREE.ConeGeometry(0.5, 1, 4), tips.map(([x, y, z, sx, sy, sz]) => [x, y + sy / 2, z, sx, sy, sz]), IRON));
+  return g;
 }

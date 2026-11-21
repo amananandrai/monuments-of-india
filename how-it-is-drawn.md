@@ -34,7 +34,10 @@ what changes between desktops and phones.
   against photographs: Patel's short square shawl, sleeves and full dhoti; Bahubali's column legs,
   the creepers sweeping up his thighs in a V and the anthills under his fingertips; the Shiva in the
   half lotus; Thiruvalluvar with his right hand raised, the hips swaying and the Alankara Mandapam
-  under him. Creepers, hems, curls and leaves are
+  under him. Three more modern statues are sculpted the same way, after photographs: Netaji at
+  India Gate saluting in his INA uniform, cap and spectacles, in black granite; Shivaji at the
+  Gateway of India on a prancing horse, his sword held low; and the Statue of Oneness at
+  Omkareshwar, the boy Shankaracharya walking with his staff and water pot, on a lotus. Creepers, hems, curls and leaves are
   laid on the skin with `snap()` rather than placed by hand, so they never float. The Statue of
   Unity's bronze is cast in plates, Thiruvalluvar is built of granite blocks whose joints show, and
   free-standing stone weathers in deep rain streaks, all drawn by the surface shader at no cost in
