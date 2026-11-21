@@ -734,3 +734,29 @@ export function columnTrim(list, m, { capM = m } = {}) {
   g.add(inst(unitBox(), plinths, m), inst(unitCyl(12), rings, m), inst(unitBox(), caps, capM));
   return g;
 }
+
+/* ---------- inlay ---------- */
+
+// An inlaid border on a wall at z = 0: a rectangular frame w × h (from y = 0) of `band`-wide strips
+// in `base`, 4 cm proud, with a run of lozenges in `inlay` along the middle of each strip, 2 cm
+// further out, as the white and black marble that frames the panels of Mughal gates in red
+// sandstone. `every` is the spacing of the lozenges (0 for none). Corners carry a small star.
+export function inlayBorder(w, h, band, base, inlay, { every = band * 2.2 } = {}) {
+  const g = new THREE.Group(), d = 0.04;
+  for (const s of [-1, 1]) g.add(box(band, h, d, base, s * (w - band) / 2, 0, d / 2));
+  for (const y of [0, h - band]) g.add(box(w - 2 * band, band, d, base, 0, y, d / 2));
+  if (every > 0) {
+    const geo = star(4, band * 0.32, inlay, 0.02, 0.45).geometry, list = [];
+    const run = (x0, y0, x1, y1) => {
+      const n = Math.max(1, Math.floor(Math.hypot(x1 - x0, y1 - y0) / every));
+      for (let k = 0; k < n; k++) { const t = (k + 0.5) / n; list.push([x0 + (x1 - x0) * t, y0 + (y1 - y0) * t]); }
+    };
+    const m = band / 2;
+    run(-w / 2 + m, band, -w / 2 + m, h - band); run(w / 2 - m, band, w / 2 - m, h - band);
+    run(-w / 2 + band, m, w / 2 - band, m); run(-w / 2 + band, h - m, w / 2 - band, h - m);
+    for (const [x, y] of list) g.add(mesh(geo, inlay, x, y, d));
+    const sg = star(8, band * 0.42, inlay, 0.02).geometry;
+    for (const x of [-w / 2 + m, w / 2 - m]) for (const y of [m, h - m]) g.add(mesh(sg, inlay, x, y, d));
+  }
+  return g;
+}

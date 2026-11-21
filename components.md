@@ -57,6 +57,10 @@ From [architecture.md](architecture.md).
 | Shikhara | Nagara temple | Dravida vimana |
 | ![Gopuram](img/gopuram.jpg) | ![Mandap](img/mandap.jpg) | ![Temple niche with an image](img/temple-niche.jpg) |
 | Gopuram | Mandap | Temple niche with an image |
+| ![Manastambha](img/manastambha.jpg) | ![Kerala gable](img/kerala-gable.jpg) | ![Inlaid border](img/inlay-border.jpg) |
+| Manastambha | Kerala gable | Inlaid border |
+| ![Deepmala](img/deepmala.jpg) | ![Nandi mandapa](img/nandi-mandapa.jpg) |   |
+| Deepmala | Nandi mandapa |   |
 
 ### [Forts](architecture.md#forts-jsdetailsfortsjs)
 

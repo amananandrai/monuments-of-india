@@ -170,6 +170,7 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | `frieze(m)` | A carved band of rosettes |
 | `carved(m, kind)` | Any other surface: `'script'` (incised names), `'calligraphy'`, `'pietra'` (inlay), `'reliefs'` (sculpture panels), `'tiles'` |
 | `rosette(R, m)`, `medallion(R, m)`, `sunburst(R, m)` | Carved roundels |
+| `inlayBorder(w, h, band, base, inlay)` | A frame of marble strips set with inlaid lozenges and corner stars, round a panel or an arch on a Mughal gate |
 | `lettering(text, size, depth, m)` | Raised letters |
 | `photo(material, key)` (in `js/helpers.js`) | Gives a stone a photo texture set: `'laterite'`, `'blocks'`, `'rubble'`, `'concrete'`, `'timber'` and others (`js/textures.js`) |
 
@@ -180,6 +181,10 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | Shikhara | Nagara temple | Dravida vimana |
 | ![Gopuram](img/gopuram.jpg) | ![Mandap](img/mandap.jpg) | ![Temple niche with an image](img/temple-niche.jpg) |
 | Gopuram | Mandap | Temple niche with an image |
+| ![Manastambha](img/manastambha.jpg) | ![Kerala gable](img/kerala-gable.jpg) | ![Deepmala](img/deepmala.jpg) |
+| Manastambha | Kerala gable | Deepmala |
+| ![Nandi mandapa](img/nandi-mandapa.jpg) |   |   |
+| Nandi mandapa |   |   |
 
 | Part | What it is |
 | --- | --- |
@@ -195,6 +200,10 @@ These cost almost no triangles: the pattern is drawn by the surface shader (`js/
 | `templePorch(w, d, h, m)` (doorways) | A small open porch before a door |
 | `trabeateGate(w, h, d, passW, passH, …)` | A post-and-lintel gatehouse, with guardians or carved beasts |
 | `dwajasthambha(x, z, h)` | The gold flagstaff before the sanctum |
+| `manastambha(h, m, { images })` | The Jain pillar of honour: a stepped base, a banded shaft, a lotus capital and a small pavilion, with four seated images in it if `images` |
+| `keralaGable(w, h, d, roofM, wood)` | The carved timber gable (mukhappu) of a Kerala roof, as a dormer to set into a hip roof |
+| `deepmala(h, m)` | The lamp tower of Maharashtra's temples: a tapering shaft with rings of stone arms, a brass lamp on each, lit at night |
+| `nandiMandapa(w, h, m, trim, { nandiM })` | An open pavilion of eight carved pillars on the temple's axis, the Nandi lying in it facing the sanctum |
 | `kuta(s, m)`, `shala(w, d, m)`, `haraRow(len, s, m)` (sculpture) | The miniature shrines along the edge of each storey of a vimana |
 
 ## Forts (`js/details/forts.js`)
@@ -268,7 +277,7 @@ continuous skin in `js/details/figures.js` and `js/sdf.js`.
 From `tools/`:
 
 ```bash
-node check-budgets.mjs <id>     # triangles, against 650,000 on desktops and 300,000 on phones
+node check-budgets.mjs <id>     # triangles, against 650,000 on desktops (800,000 for temples) and 300,000 on phones
 node check-flicker.mjs <id>     # faces that share a plane
 node check-heights.mjs <id>     # the model's height against the real one
 node shoot-views.mjs <id>       # a picture of the home view

@@ -77,7 +77,7 @@ what changes between desktops and phones.
   There are no people, and no motor vehicles except the traffic on the Howrah Bridge and the
   Bandra–Worli Sea Link, so the monument itself stays the subject. Everything is
   instanced, so a garden of fifty trees costs a few draw calls.
-- **Budget:** each monument stays under 650,000 triangles on desktops and 300,000 on phones
+- **Budget:** each monument stays under 650,000 triangles on desktops (800,000 for the Hindu and Jain temples, whose carving takes more; trees and ground cover still stop at 650,000) and 300,000 on phones
   (`js/detail.js`). Repeated parts are instanced, carved parts are merged by material, and a
   monument is built only when first opened, then cached.
 - **Loading:** the map needs only the list of monuments (`js/data.js`); each monument's code is

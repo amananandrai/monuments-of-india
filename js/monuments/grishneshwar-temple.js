@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, at, aroundRect } from '../helpers.js';
-import { nagaraTemple } from '../details/temples.js';
+import { nagaraTemple, trabeateGate, wallWithGaps } from '../details/temples.js';
 import { figureRow } from '../details/sculpture.js';
 import { addDetails } from '../details/grishneshwar-temple.js';
 
@@ -25,7 +25,11 @@ export function buildGrishneshwar() {
   }
   g.add(box(900, 4, 20, mat('#7d7a52', 0.95), 0, 0, cz + 14));
   for (let i = 0; i < 18; i++) { const x = -260 + i * 30 + (i % 3) * 4, w = 8 + (i % 4) * 3; g.add(box(w, 7 + (i % 3) * 2, 1, M.recess, x, 4, cz + 6.6 * Math.sin(Math.round((x + 400) / 100) * 1.3) + 0.1)); }
-  for (const s of [-1, 1]) f.add(box(70, 4, 2, mat('#a39079', 0.9), 0, 0, s * 40), box(2, 4, 80, mat('#a39079', 0.9), s * 35, 0, 0));
+  // The walled court, entered from the south (+z) through a gatehouse on the temple's axis.
+  const WALL = mat('#a39079', 0.9);
+  f.add(box(70, 4, 2, WALL, 0, 0, -40), wallWithGaps('x', 70, 4, 2, WALL, [[0, 9.6]], 0, 40));
+  for (const s of [-1, 1]) f.add(box(2, 4, 80, WALL, s * 35, 0, 0));
+  f.add(at(trabeateGate(10, 6.2, 4, 3.2, 4.2, { m: RED, trim: SHADE }), 0, 0, 40));
   // Red basalt temple with a five-tiered spire
   const t = nagaraTemple({ w: 11, h: 17, m: RED, shade: SHADE, plinth: 2, urus: 4, uruScale: 0.45, halls: [[16, 8, 4]], prof: (k) => 1 - 0.62 * Math.floor(k * 5) / 5 - 0.03 * k, spireBands: 5 });
   f.add(at(t, 0, 0, -12));

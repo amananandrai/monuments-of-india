@@ -1,10 +1,12 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, FACES, rng, flat, steppedPlan, planPrism, planBand, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox } from '../helpers.js';
-import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol, placeAll, chhajja, railing, cuspedArchGeo } from './components.js';
+import { M, mat, mesh, box, cyl, at, onFace, FACES, rng, flat, steppedPlan, planPrism, planBand, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox, unitCyl, inst, bulbPoints, V } from '../helpers.js';
+import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol, placeAll, chhajja, railing, cuspedArchGeo, petalRing } from './components.js';
 import { templeDoorway, templePorch, steps, grandStair, doorFrame, doorLeaves, guardian } from './doorways.js';
-import { lion, elephant, horse } from './animals.js';
+import { lion, elephant, horse, nandi } from './animals.js';
 import { detail } from '../detail.js';
-import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze, miniSpireGeo, kuta, shala } from './sculpture.js';
+import { figureGeo, kutaGeo, kuduGeo, instances, figureFrieze, miniSpireGeo, kuta, shala, figure } from './sculpture.js';
+const D_BRASS = mat('#b8913f', 0.35, 0.8);
+const DARK_STONE = mat('#4a4541', 0.9);
 
 // The shared temple builders, with real entrances: a Nagara temple's front porch, doorway and
 // side doors, a mandapa's doors, and a passage through the base of a gopuram. Moved here from
@@ -518,4 +520,92 @@ export function trabeateGate(w, h, d, pw, ph, { m, trim = m, bands = 3, bw = Mat
     else if (beasts === 'horse') { const e = Math.min(0.6, ph * 0.09), o = horse(trim, { coarse: detail.low }); o.scale.setScalar(e); g.add(at(o, s * (ow + 1.2 + e), 0, d / 2 + 2.4 * e + 0.4)); }
   }
   return mergeByMaterial(g);
+}
+
+// A manastambha, the pillar of honour that stands before a Jain temple, h tall on y = 0 (17.6 m
+// by default, as at Shravanabelagola): a base of three steps, a slender shaft girdled by carved
+// bands, a lotus capital, and on it a small open pavilion of four posts under a pointed cap. With
+// `images`, a seated tirthankara faces each way in the pavilion (the chaumukha).
+export function manastambha(h = 17.6, m = M.marble, { images = false } = {}) {
+  const p = new THREE.Group(), s = h / 17.6;
+  for (let k = 0; k < 3; k++) p.add(box((5 - k * 1.2) * s, 0.6 * s, (5 - k * 1.2) * s, m, 0, k * 0.6 * s, 0));
+  p.add(cyl(0.45 * s, 0.55 * s, 12 * s, m, 0, 1.8 * s, 0, 8));
+  for (const y of [4, 7.5, 11]) p.add(cyl(0.62 * s, 0.62 * s, 0.4 * s, frieze(m), 0, y * s, 0, 8));
+  p.add(at(petalRing(0.5 * s, 10, 1.0 * s, 0.6 * s, 0.6, m), 0, 13.8 * s, 0), box(1.8 * s, 0.3 * s, 1.8 * s, m, 0, 14.4 * s, 0));
+  for (const x of [-0.7, 0.7]) for (const z of [-0.7, 0.7]) p.add(cyl(0.08 * s, 0.08 * s, 1.4 * s, m, x * s, 14.7 * s, z * s, 6));
+  p.add(box(2 * s, 0.3 * s, 2 * s, m, 0, 16.1 * s, 0), cyl(0, 0.9 * s, 1.2 * s, m, 0, 16.4 * s, 0, 8));
+  if (images) for (const a of FACES) p.add(onFace(figure(0.9 * s, m, 'seated'), a, 0.3 * s).translateY(14.72 * s));
+  p.userData.top = h;
+  return mergeByMaterial(p);
+}
+
+// The carved timber gable (mukhappu) of a Kerala temple roof, as a small gabled dormer w wide and
+// h high whose face stands at z = 0, its roof running back d into the slope it sits on (set it
+// into a roof so the back is buried). A triangular face of carved boards in `wood`, framed by
+// barge boards that run out past the eaves, under two roof slopes in `roofM`, with a brass kalash
+// at the apex and a carved pendant hanging under it.
+export function keralaGable(w, h, d, roofM, wood) {
+  const g = new THREE.Group(), half = w / 2, ov = w * 0.12, t = Math.max(0.08, w * 0.02);
+  const tri = new THREE.Shape();
+  tri.moveTo(-half, 0); tri.lineTo(half, 0); tri.lineTo(0, h); tri.closePath();
+  g.add(mesh(new THREE.ExtrudeGeometry(tri, { depth: 0.12, bevelEnabled: false }), frieze(wood), 0, 0, -0.14));
+  // The slopes: each a board from the ridge down past the eave, over the face and back into the roof.
+  const len = Math.hypot(half + ov, h * (1 + ov / half)), a = Math.atan2(h, half);
+  for (const sgn of [-1, 1]) {
+    const pivot = new THREE.Group();
+    pivot.position.set(0, h + t, 0);
+    pivot.rotation.z = -sgn * a;
+    // From the ridge out to the eave, and 0.4 m out over the face.
+    pivot.add(box(len, t, d + 0.4, roofM, sgn * len / 2, -t, -d / 2 + 0.2));
+    // The barge board along the face's edge, under the roof's front lip.
+    pivot.add(box(len * 0.96, t * 1.6, 0.1, wood, sgn * len * 0.48, -t * 2.6, 0.3));
+    g.add(pivot);
+  }
+  g.add(at(kalash(Math.max(0.25, w * 0.07), D_BRASS), 0, h + t, 0.05));
+  g.add(cyl(0.02, Math.max(0.05, w * 0.025), h * 0.2, wood, 0, h * 0.62, 0.02, 6));
+  return g;
+}
+
+// A deepmala, the lamp tower of the temples of Maharashtra, h tall on y = 0 (9 m by default): a
+// stepped square base, a tapering octagonal shaft bristling with stone arms in staggered rings,
+// a brass lamp cup on the tip of every arm, and a small cap with a kalash. The flames show at night.
+// On phones (js/detail.js) the rings stand twice as far apart.
+export function deepmala(h = 9, m = DARK_STONE, { lampM = D_BRASS } = {}) {
+  const g = new THREE.Group(), u = h / 9, bh = 1.0 * u, sh = h - bh - 1.3 * u, r0 = 0.62 * u, r1 = 0.3 * u;
+  g.add(box(2.6 * u, 0.5 * u, 2.6 * u, m), box(2 * u, 0.5 * u, 2 * u, m, 0, 0.5 * u));
+  g.add(cyl(r1, r0, sh, m, 0, bh, 0, 8));
+  const arms = [], cups = [], flames = [], step = (detail.low ? 1.1 : 0.55) * u, n = 8;
+  for (let y = bh + 0.6 * u, k = 0; y < bh + sh - 0.3 * u; y += step, k++) {
+    const r = r0 + (r1 - r0) * ((y - bh) / sh), len = 0.5 * u;
+    for (let i = 0; i < n; i++) {
+      const a = ((i + (k % 2) * 0.5) / n) * Math.PI * 2, sa = Math.sin(a), ca = Math.cos(a);
+      arms.push([sa * (r + len / 2 - 0.05 * u), y, ca * (r + len / 2 - 0.05 * u), 0.13 * u, 0.13 * u, len, a]);
+      const tx = sa * (r + len - 0.08 * u), tz = ca * (r + len - 0.08 * u);
+      cups.push([tx, y + 0.13 * u, tz, 0.16 * u, 0.06 * u, 0.16 * u]);
+      flames.push(V(tx, y + 0.24 * u, tz));
+    }
+  }
+  g.add(inst(unitBox(), arms, m), inst(unitCyl(6), cups, lampM), bulbPoints(flames));
+  const top = bh + sh;
+  g.add(box(r1 * 3, 0.25 * u, r1 * 3, m, 0, top), cyl(r1 * 0.9, r1 * 1.4, 0.5 * u, m, 0, top + 0.25 * u, 0, 8), at(kalash(0.35 * u, M.gold), 0, top + 0.75 * u, 0));
+  g.userData.top = h;
+  return g;
+}
+
+// An open Nandi mandapa, the pavilion on a temple's axis where the bull lies facing the sanctum
+// (towards -z): a moulded platform, a ring of eight carved pillars round the bull under a flat roof
+// and a small stepped one with a kalash. w is the width of the pillared square, h the pillars'
+// height; the bull is scaled to fit (s, as nandi()).
+export function nandiMandapa(w, h, m, trim = m, { roofM = m, nandiM = m, s = w / 8.6 } = {}) {
+  const g = new THREE.Group();
+  g.add(box(w + 1.6, 1, w + 1.6, m), box(w + 0.6, 0.3, w + 0.6, trim, 0, 1));
+  const cols = new THREE.Group();
+  for (const px of [-1, 0, 1]) for (const pz of [-1, 0, 1]) if (px || pz) cols.add(at(carvedPillar(h, m), px * (w / 2 - 0.5), 1.3, pz * (w / 2 - 0.5)));
+  g.add(mergeByMaterial(cols));
+  g.add(box(w + 1.4, 0.8, w + 1.4, m, 0, 1.3 + h), box(w + 2, 0.3, w + 2, trim, 0, 2.1 + h));
+  const roof = pidaRoof(w * 0.8, w * 0.36, 3, Math.max(0.5, w * 0.09), roofM, trim);
+  g.add(at(roof, 0, 2.4 + h, 0), at(kalash(Math.max(0.5, w * 0.11), M.gold), 0, 2.4 + h + roof.userData.top, 0));
+  g.add(at(nandi(nandiM, s), 0, 1.3, 0).rotateY(Math.PI));
+  g.userData.top = 2.4 + h + roof.userData.top + w * 0.25;
+  return g;
 }
