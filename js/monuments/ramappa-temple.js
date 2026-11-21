@@ -8,7 +8,7 @@ import { addDetails } from '../details/ramappa-temple.js';
 
 const DOLERITE = photo(mat('#4d4a47', 0.8), 'blocks');
 const SAND = mat('#b49a7c', 0.9);
-const BRICK = surface(mat('#c99878', 0.95), 'brick');
+const BRICK = surface(mat('#c99878', 0.95), 'terracotta');
 
 export function buildRamappa() {
   const g = new THREE.Group(), f = new THREE.Group();

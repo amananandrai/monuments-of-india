@@ -3,7 +3,7 @@ import { M, mat, mesh, box, cyl, at, rng, inst, unitBox, onFace, surface } from 
 import { addDetails } from '../details/dhamek-stupa.js';
 
 const STONE = mat('#b8a88e', 0.9);
-const BRICK = surface(mat('#9c6a4f', 0.95), 'brick');
+const BRICK = surface(mat('#9c6a4f', 0.95), 'terracotta');
 const RUIN = mat('#a5553b', 0.95);
 const BAND = surface(mat('#b7a48c', 0.9), 'frieze');
 

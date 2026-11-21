@@ -7,10 +7,10 @@ import { trees, asiBoard, scatter, along } from './realism.js';
 // faced with stucco niches holding images of the Buddha and Bodhisattvas, in two rows; and each of
 // its brick terraces ends in a moulded cornice and is panelled in a row of niches between
 // pilasters; the great stair runs between side walls; the towers step in towards their broken tops.
-// Each monastery has its brick-lined well in the court, and steps up to its entrance; and a second, smaller temple mound stands south of Temple 3. Dimensions follow js/monuments/nalanda-mahavihara.js:
+// Temple 12's lower terrace is girdled by a band of moulded terracotta plaques. Each monastery has its brick-lined well in the court, and steps up to its entrance; and a second, smaller temple mound stands south of Temple 3. Dimensions follow js/monuments/nalanda-mahavihara.js:
 // the temple at (20, 0, 10), terraces 40 wide stepping in by 6 every 5 m, its towers 7 square at
 // (±17, ±17).
-const BRICK = surface(mat('#8c5d49', 0.95), 'brick'), STUCCO = mat('#c9b79a', 0.9);
+const BRICK = surface(mat('#8c5d49', 0.95), 'terracotta'), STUCCO = mat('#c9b79a', 0.9), PLAQUES = surface(mat('#b0714f', 0.9), 'plaques');
 function architecture(f) {
   const d = new THREE.Group(), t = at(new THREE.Group(), 20, 0, 10);
   let w = 40;
@@ -48,6 +48,8 @@ function architecture(f) {
   t12.add(box(26, 4, 26, BRICK), box(26.5, 0.4, 26.5, BRICK, 0, 4, 0), box(18, 3.6, 18, BRICK, 0, 4.4, 0), box(18.5, 0.4, 18.5, BRICK, 0, 8, 0), box(9, 2.2, 9, BRICK, 0.6, 8.4, -0.4));
   for (let k = 0; k < 6; k++) t12.add(box(6, (k + 1) * 0.72, 1.2, BRICK, 0, 0, 13 + 7.2 - k * 1.2 - 0.6));
   for (const x of [-1, 1]) for (const z of [-1, 1]) t12.add(box(4, 5.4, 4, BRICK, x * 11.4, 0, z * 11.4));
+  // A band of moulded terracotta plaques, four tiles high, round the lower terrace.
+  t12.add(box(26.08, 1.44, 26.08, PLAQUES, 0, 1.1, 0));
   d.add(t12);
   // The monasteries (34 m square at x = -78, z = -66 + 44 i, on plinths 1.2 high): a well in each
   // court, steps to the entrance on the west side that faces the temples.

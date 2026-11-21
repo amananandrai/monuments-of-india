@@ -7,7 +7,7 @@ import * as THREE from 'three';
 // patches of soot and age; strongest on brick, about half on marble, none on gilt) and a small
 // per-object tint so that repeated pieces don't look cloned. Water is its own kind: moving ripples
 // that tilt the normal, so the sky reflects in a broken, shifting band instead of a flat sheen.
-export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13, calligraphy: 14, pietra: 15, reliefs: 16, banded: 17, paving: 18, plates: 19, reeds: 20, copper: 21, giltsheet: 22 };
+export const KINDS = { none: 0, masonry: 1, marble: 2, brick: 3, rock: 4, ground: 5, lattice: 6, tiles: 7, foliage: 8, water: 9, script: 10, frieze: 11, carved: 12, facade: 13, calligraphy: 14, pietra: 15, reliefs: 16, banded: 17, paving: 18, plates: 19, reeds: 20, copper: 21, giltsheet: 22, terracotta: 23, plaques: 24 };
 
 // Seconds since the page opened, shared by every water material; main.js advances it each frame.
 export const waterTime = { value: 0 };
@@ -251,6 +251,45 @@ const PATTERN = /* glsl */ `
   sCol = mix(vec3(1.0), vec3(0.62, 1.32, 1.12), sCuPat);
   sRough += 0.25 * sCuPat;
   #endif
+#elif SURF_KIND == 23
+  // Terracotta brickwork, as the old brick temples and monasteries of the east were built: thin
+  // fired-clay bricks about 32 × 6.5 cm in stretcher courses, laid close with fine joints; each brick
+  // fired a shade of its own, from pale orange to deep red-brown, the odd one over-burnt nearly
+  // black; their arrises worn round; and the wall stained by soot and lichen in streaks washed down
+  // from the ledges and in broad patches near the ground.
+  vec2 uv = sFaceUV(sp, sn);
+  float sTcRow = floor(uv.y / 0.065), sTcX = uv.x / 0.32 + 0.5 * mod(sTcRow, 2.0);
+  vec2 sTcCell = vec2(floor(sTcX), sTcRow), sTcF = vec2(fract(sTcX), fract(uv.y / 0.065));
+  float sTcD = min(min(sTcF.x, 1.0 - sTcF.x) * 0.32, min(sTcF.y, 1.0 - sTcF.y) * 0.065);
+  float sTcJ = (1.0 - smoothstep(0.003, 0.012, sTcD)) * (1.0 - smoothstep(0.004, 0.012, sFw)) * (1.0 - step(0.7, abs(sn.y)));
+  // Each brick's own shade only where a brick is several pixels tall, else it shimmers in bands.
+  float sTcFar = 1.0 - smoothstep(0.006, 0.02, sFw);
+  float sTcB = 0.5 + (sHash(vec3(sTcCell, 11.0)) - 0.5) * sTcFar, sTcBurnt = step(0.93, sHash(vec3(sTcCell, 5.0))) * sTcFar;
+  float sTcStain = smoothstep(0.45, 0.8, sNoise(vec3(sp.x * 0.9, sp.y * 0.08, sp.z * 0.9)) * 0.7 + 0.3 * sFbm(sp * 0.2)) * 0.6;
+  sTint = (0.82 + 0.3 * sTcB - 0.45 * sTcBurnt + 0.06 * (sNoise(sp * 14.0) - 0.5)) * mix(1.0, 0.62, sTcJ) * (1.0 - 0.35 * sTcStain);
+  sCol = mix(vec3(1.0), vec3(1.06, 0.94, 0.86), sTcB) * mix(vec3(1.0), vec3(0.8, 0.9, 0.85), sTcStain);
+  sH = -sTcJ * 0.8 + sNoise(sp * 18.0) * 0.25 * sTcFar;
+  sRough = 0.05;
+#elif SURF_KIND == 24
+  // Moulded terracotta plaques set in a band: tiles about 36 cm square with fine joints, each
+  // framed by a raised rim, and in it, by turns, an open lotus (a ring of petals round a boss) or
+  // a figure standing in a niche; the reliefs worn soft, their hollows darker. From further off,
+  // an even band of warm clay.
+  vec2 uv = sFaceUV(sp, sn);
+  vec2 sPqQ = uv / 0.36, sPqC = floor(sPqQ), sPqF = fract(sPqQ) - 0.5;
+  float sPqEdge = max(abs(sPqF.x), abs(sPqF.y));
+  float sPqJoint = 1.0 - smoothstep(0.46, 0.49, sPqEdge);
+  float sPqRim = smoothstep(0.36, 0.4, sPqEdge) * sPqJoint;
+  float sPqKind = mod(sPqC.x + sPqC.y, 2.0), sPqR = length(sPqF), sPqA = atan(sPqF.y, sPqF.x);
+  float sPqLotus = (1.0 - smoothstep(0.26, 0.3, sPqR)) * (0.5 + 0.5 * cos(sPqA * 8.0)) * smoothstep(0.06, 0.1, sPqR) + (1.0 - smoothstep(0.05, 0.08, sPqR));
+  float sPqBody = (1.0 - smoothstep(0.05, 0.08, abs(sPqF.x) - 0.06 * (0.5 - sPqF.y))) * step(-0.3, sPqF.y) * step(sPqF.y, 0.12);
+  float sPqHead = 1.0 - smoothstep(0.05, 0.07, length(sPqF - vec2(0.0, 0.2)));
+  float sPqNiche = (1.0 - smoothstep(0.24, 0.27, abs(sPqF.x))) * step(sPqF.y, 0.3) * step(-0.34, sPqF.y);
+  float sPqRelief = mix(sPqLotus, max(sPqBody, sPqHead), sPqKind) * sPqJoint;
+  float sPqNear = 1.0 - smoothstep(0.02, 0.08, sFw), sPqSide = 1.0 - step(0.7, abs(sn.y));
+  sTint = mix(1.0, (0.86 + 0.12 * sHash(vec3(sPqC, 2.0))) * mix(0.62, 1.0, sPqJoint) * (1.0 + 0.18 * sPqRelief + 0.1 * sPqRim - 0.14 * sPqKind * sPqNiche * (1.0 - sPqRelief)), sPqSide * sPqNear);
+  sH = sPqSide * sPqNear * (sPqRelief * 1.0 + sPqRim * 0.6 - (1.0 - sPqJoint) * 0.8);
+  sRough = 0.04;
 #elif SURF_KIND == 13
   // A tower's walls: a band of glazing on every floor (3.4 m), box-filtered over the pixel, so a
   // floor smaller than a pixel blends into an even tone instead of shimmering in bands. Roofs plain.
@@ -356,12 +395,12 @@ const PATTERN = /* glsl */ `
 #endif
   sTint = mix(sTint, 1.0, 0.7);
 #endif
-#if SURF_KIND == 1 || SURF_KIND == 2 || SURF_KIND == 3 || SURF_KIND == 11 || SURF_KIND == 12 || SURF_KIND == 13 || SURF_KIND == 16 || SURF_KIND == 17
+#if SURF_KIND == 1 || SURF_KIND == 2 || SURF_KIND == 3 || SURF_KIND == 11 || SURF_KIND == 12 || SURF_KIND == 13 || SURF_KIND == 16 || SURF_KIND == 17 || SURF_KIND == 23 || SURF_KIND == 24
   // Weathering, from world position alone (no geometry): strongest on brick and old stone, about
   // half on marble, none on gilt, glass or ground (other kinds). sWx is that strength.
   #if SURF_KIND == 2
   float sWx = 0.5;
-  #elif SURF_KIND == 3
+  #elif SURF_KIND == 3 || SURF_KIND == 23
   float sWx = 1.2;
   #else
   float sWx = 1.0;
@@ -503,7 +542,7 @@ function patch(shader, kind, bump, photo, wave, edge, reflect) {
   normal = sPerturb(-vViewPosition, normal, vec2(dFdx(sH), dFdy(sH)) * ${bump.toFixed(2)} * (0.35 + 0.65 * sNear), faceDirection);`));
 }
 
-const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0, calligraphy: 0.2, pietra: 0.3, reliefs: 1.4, banded: 1.0, paving: 0.9, plates: 0.5, reeds: 1.6, copper: 0.6, giltsheet: 0.5 };
+const BUMP = { masonry: 1.2, marble: 0.6, brick: 1.4, rock: 2.2, ground: 0.6, lattice: 0.4, tiles: 0.6, foliage: 1.6, water: 0, script: 0.3, frieze: 0.8, carved: 0.5, facade: 0, calligraphy: 0.2, pietra: 0.3, reliefs: 1.4, banded: 1.0, paving: 0.9, plates: 0.5, reeds: 1.6, copper: 0.6, giltsheet: 0.5, terracotta: 1.3, plaques: 1.6 };
 
 // Choose a surface for a material from its look, unless one was set with surface().
 function guess(m) {

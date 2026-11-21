@@ -82,6 +82,8 @@ for (const a of FACES) d.add(onFace(at(windowFrame(2, 4.2, M.cream, { shape: 'fl
 | Chhatri | Mughal chhatri | Guldastas |
 | ![Minaret](img/minaret.jpg) | ![Jharokha](img/jharokha.jpg) | ![Copper and gilded-copper roofs](img/copper-roofs.jpg) |
 | Minaret | Jharokha | Copper and gilded-copper roofs |
+| ![Terracotta brick and plaques](img/terracotta.jpg) |   |   |
+| Terracotta brick and plaques |   |   |
 
 | Part | File | What it is |
 | --- | --- | --- |
@@ -293,6 +295,8 @@ continuous skin in `js/details/figures.js` and `js/sdf.js`. The tools for workin
 | `surface(m, 'reeds')` | surface | A penbey parapet: the maroon-painted cut ends of tamarisk twigs, in bundled courses |
 | `surface(m, 'copper')` | surface | Sheet copper: staggered sheets with standing seams worked out in space, hammer dimples, and verdigris along the seams, in streaks and in weathered patches |
 | `surface(m, 'giltsheet')` | surface | The same sheets gilded: seams and dimples, no verdigris |
+| `surface(m, 'terracotta')` | surface | Thin fired-clay bricks (32 × 6.5 cm) with fine joints, each brick its own shade, the odd one over-burnt, stained by soot and lichen; fades to an even tone where a brick is under a few pixels, so it never shimmers |
+| `surface(m, 'plaques')` | surface | A band of moulded terracotta plaques: bordered tiles with an open lotus or a standing figure in turn |
 
 ## Terrain (`js/details/terrain.js`)
 
