@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, curvedBand, chhatri, onionDome, finial } from '../helpers.js';
-import { archRing, archSlab, panel, frieze, jali, merlons, chhajja, rosette, windowFrame, mergeByMaterial } from './components.js';
+import { archRing, archSlab, panel, frieze, jali, merlons, chhajja, rosette, windowFrame, mughalChhatri, mergeByMaterial } from './components.js';
 import { towerDetail, rampart } from './forts.js';
 import { trees, shrubs, lampPosts, asiBoard, fountains, along } from './realism.js';
 
@@ -60,7 +60,22 @@ function architecture(f) {
     }
     d.add(at(panel(w - 0.4, 1.0, 0.12, Mb, frieze(Mb)), x, 13.05, 11.01));
     d.add(at(chhajja(w + 0.8, 1.4, 0.5, 0.14, Mb), x, 19.9, 11));
+    // The river front (z = 1) and the ends: screened windows over the Yamuna, a dado and an eave.
+    const back = new THREE.Group();
+    for (let k = 0; k < n; k++) back.add(at(windowFrame(p * 0.55, 4.2, Mb, { screen: jali(Mb) }), -w / 2 + (k + 0.5) * p, 14.4, 0));
+    back.add(at(panel(w - 0.4, 1.0, 0.12, Mb, frieze(Mb)), 0, 13.05, 0), at(chhajja(w + 0.8, 1.4, 0.5, 0.14, Mb), 0, 19.9, 0));
+    back.position.set(x, 0, 0.99);
+    back.rotation.y = Math.PI;
+    d.add(back);
+    for (const s of [-1, 1]) {
+      const side = at(new THREE.Group(), x + s * (w / 2 + 0.01), 0, 6);
+      side.rotation.y = s * Math.PI / 2;
+      side.add(at(windowFrame(2.6, 4.4, Mb, { screen: jali(Mb) }), 0, 14.3, 0), at(chhajja(10.8, 1.2, 0.45, 0.14, Mb), 0, 19.9, 0));
+      d.add(side);
+    }
   }
+  // Small domed kiosks at the corners of the Khas Mahal's terrace (90 × 20 at y 12 to 13).
+  for (const x of [-54, 34]) for (const z of [-1.5, 17.5]) d.add(at(mughalChhatri(1.1, 3.6, Mb, { crescent: false }), x, 13, z));
   // Musamman Burj: a screened window on each face of the octagon.
   const burj = at(new THREE.Group(), 44, 0, 6);
   for (let k = 0; k < 8; k++) burj.add(onFace(at(windowFrame(2.6, 7, Mb, { screen: jali(Mb) }), 0, 14, 0), ((k + 0.5) / 8) * Math.PI * 2, 7 * Math.cos(Math.PI / 8) + 0.01));

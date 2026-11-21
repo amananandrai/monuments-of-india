@@ -307,7 +307,7 @@ continuous skin in `js/details/figures.js` and `js/sdf.js`. The tools for workin
 From `tools/`:
 
 ```bash
-node check-budgets.mjs <id>     # triangles, against 650,000 on desktops (800,000 for temples) and 300,000 on phones
+node check-budgets.mjs <id>     # triangles, against 800,000 on desktops and 300,000 on phones
 node check-flicker.mjs <id>     # faces that share a plane
 node check-heights.mjs <id>     # the model's height against the real one
 node shoot-views.mjs <id>       # a picture of the home view

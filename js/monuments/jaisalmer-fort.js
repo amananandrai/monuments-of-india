@@ -72,10 +72,10 @@ export function buildJaisalmer() {
   const upper = wallRing(0.97, 12, 3, () => H - 2, 0.03), lower = wallRing(1.22, 9, 2.4, (x, z) => trikuta(x, z) - 2, 0.06);
   f.add(inst(unitBox(), upper, GOLD));
   // Battlements on both walls: parapets and merlons, with string courses, arrow slits and a
-  // machicolation every third length on the upper one (the lower wall's merlons are set wider apart, without gun-loops, and phones leave
-  // its crest plain).
+  // machicolation every third length on the upper one (the lower wall's merlons are set wider apart,
+  // and phones leave its crest plain).
   f.add(rampart(upper, GOLD, { trim: GOLD_DARK, kerb: false, boxes: 3 }));
-  if (!detail.low) f.add(rampart(lower, GOLD_DARK, { course: false, slits: false, kerb: false, every: 1.5, loopholes: false }));
+  if (!detail.low) f.add(rampart(lower, GOLD_DARK, { course: false, slits: false, kerb: false, every: 1.5 }));
   f.add(inst(unitCyl(12), bastions().map(([x, z], k) => [x, H - 3, z, 11, 16 + (k % 3) * 0.25, 11]), GOLD));
   f.add(inst(unitBox(), lower, GOLD_DARK));
   // The way up: a road climbing the talus from the desert to the gates, along the slope from the

@@ -10,21 +10,16 @@
 // stalls and dressed elephants round them (docs/performance.md). Every monument keeps plain trees
 // on 'low'.
 //
-// The triangle budget each level builds to: up to 650k on desktops (a monument may take two or
-// three seconds to build behind its "Loading" notice, and the fuller trees fill what is left), and
-// 300k on phones. Every monument stays under its level's budget; js/main.js replants trees up to it.
-// detail.budget is that general figure, and the one trees and ground cover are planted up to.
-//
-// Temples (the Dravidian and Nagara groups of js/filters.js: Hindu and Jain temples, north and
-// south) carry far more carving, so on desktops their architecture may take up to 800k
-// (budgetFor). The extra is for the buildings alone: trees and ground cover still stop at 650k.
-import { styleMatches } from './filters.js';
-export const BUDGET = { high: 650000, low: 300000, temple: 800000 };
-export const detail = { level: 'high', get low() { return this.level === 'low'; }, get budget() { return BUDGET[this.level]; } };
-export const isTemple = (m) => styleMatches(m, 'dravidian') || styleMatches(m, 'nagara');
+// The triangle budget each level builds to: up to 800k on desktops (a monument may take two or
+// three seconds to build behind its "Loading" notice) and 300k on phones. Every monument stays
+// under its level's budget (budgetFor). The budget is for the buildings: trees and ground cover are
+// planted only up to PLANT (detail.budget), 650k on desktops, so the extra goes to the architecture.
+export const BUDGET = { high: 800000, low: 300000 };
+export const PLANT = { high: 650000, low: 300000 };
+export const detail = { level: 'high', get low() { return this.level === 'low'; }, get budget() { return PLANT[this.level]; } };
 // The budget a monument (an entry of js/data.js) is built to at a level ('high' or 'low').
 export function budgetFor(m, level = detail.level) {
-  return level === 'high' && isTemple(m) ? BUDGET.temple : BUDGET[level];
+  return BUDGET[level];
 }
 
 // The level for this device: ?detail=low or ?detail=high in the address wins; otherwise 'low' on

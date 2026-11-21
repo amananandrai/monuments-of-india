@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, onFace, curvedBand, photo } from '../helpers.js';
+import { M, mat, box, mesh, at, onFace, curvedBand, photo, hipRoof, kalash, surface } from '../helpers.js';
 import { mergeByMaterial } from './components.js';
 import { towerDetail, rampart, bastionCrowns } from './forts.js';
 import { trees, shrubs, boats, asiBoard, scatter } from './realism.js';
@@ -8,7 +8,9 @@ import { trees, shrubs, boats, asiBoard, scatter } from './realism.js';
 // is known for them: the lowest for the nearest targets, the highest for the furthest), with a
 // string course along the round wall; the bastions and the observation tower are banded and slit.
 // Merlons crest the round wall, the neck walls and the bastions; and the broad ramp by which guns
-// were hauled up climbs the observation tower from the landward side.
+// were hauled up climbs the observation tower from the landward side. Cannon stand on the
+// sea-facing bastions; the vaulted magazine lies south-west of the tower; a paved way leads from the
+// gate; and outside the gate stands the small Mukhyaprana temple under its copper roofs.
 // Dimensions follow js/monuments/bekal-fort.js: the round wall R = 70, 3 thick, from H = 8 to 15.
 const LATERITE = photo(mat('#8f4e36', 0.95), 'laterite'), LATERITE_DARK = photo(mat('#6e3a27', 0.95), 'laterite');
 function architecture(f) {
@@ -53,8 +55,44 @@ function architecture(f) {
     rail.rotation.x = Math.atan2(18, 38);
     d.add(rail);
   }
+  // Cannon on the sea-facing bastions (their tops at H + 9), each on a timber carriage, its muzzle
+  // in an embrasure looking out to sea.
+  for (let k = 1; k < 7; k++) {
+    const a = (k / 7) * Math.PI, x = Math.cos(a) * R, z = -Math.sin(a) * R, c = cannon();
+    c.position.set(x, H + 9, z);
+    c.rotation.y = Math.atan2(x, z);
+    d.add(c);
+  }
+  // The magazine, where the powder was kept: a low vaulted store of laterite, half sunk, with a
+  // narrow door and a ventilation slit, south-west of the tower.
+  const mag = at(new THREE.Group(), -26, H, -24);
+  mag.rotation.y = 0.5;
+  const vault = mesh(new THREE.CylinderGeometry(3.4, 3.4, 12, 16, 1, false, 0, Math.PI).rotateZ(Math.PI / 2).rotateY(Math.PI / 2), LATERITE_DARK);
+  vault.position.y = 2.2;
+  mag.add(box(7, 2.2, 12, LATERITE), vault, box(1.1, 1.8, 0.1, M.recess, 0, 0.1, 6.02), box(0.3, 0.8, 0.1, M.recess, 0, 2.6, -6.02));
+  d.add(mag);
+  // A paved way from the gate to the foot of the tower's ramp.
+  d.add(box(5, 0.12, 70, LATERITE_DARK, 0, H, 70));
   mergeByMaterial(d);
   f.add(d);
+  // The Mukhyaprana (Hanuman) temple by the way in, outside the gate: a small Kerala shrine on a
+  // laterite base, its walls whitewashed, under a two-tiered roof of copper sheet.
+  const t = at(new THREE.Group(), 30, H, 128);
+  t.rotation.y = -Math.PI / 2;
+  t.add(box(9, 1, 9, LATERITE), box(6.4, 3.4, 6.4, mat('#efe9dd', 0.85), 0, 1), box(1.3, 2.3, 0.1, M.recess, 0, 1, 3.22));
+  t.add(at(hipRoof(9.2, 9.2, 2.2, COPPER), 0, 4.4, 0), box(4.2, 1.2, 4.2, mat('#efe9dd', 0.85), 0, 5.6), at(hipRoof(5.6, 5.6, 1.8, COPPER), 0, 6.8, 0), at(kalash(0.6), 0, 8.5, 0));
+  f.add(t);
+}
+
+// A cannon on its carriage, its muzzle towards +z.
+const IRON = mat('#2e2d2b', 0.5, 0.6), WOOD = mat('#5a3a24', 0.8);
+const COPPER = surface(mat('#b0773f', 0.45, 0.4), 'copper');
+function cannon() {
+  const g = new THREE.Group();
+  g.add(box(1.0, 0.5, 2.0, WOOD, 0, 0.25, 0));
+  for (const s of [-1, 1]) g.add(at(mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.16, 12).rotateZ(Math.PI / 2), WOOD), s * 0.6, 0.42, 0.55), at(mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.16, 12).rotateZ(Math.PI / 2), WOOD), s * 0.6, 0.42, -0.6));
+  g.add(at(mesh(new THREE.CylinderGeometry(0.2, 0.3, 2.8, 12).rotateX(Math.PI / 2), IRON), 0, 1.0, 0.5), at(mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.2, 12).rotateX(Math.PI / 2), IRON), 0, 1.0, 1.85));
+  return g;
 }
 
 // Bekal Fort: coconut palms along the shore and on the headland, fishing boats drawn up on the
