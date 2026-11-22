@@ -55,7 +55,7 @@ export function lomasRishi(m) {
   for (const s of [-1, 1]) for (let k = 0; k < 5; k++) {
     const t = (k + 0.5) / 5.6, a = s < 0 ? Math.PI - t * Math.PI / 2 : t * Math.PI / 2;
     const up = new THREE.Vector3(Math.cos(a), Math.sin(a), 0), fwd = new THREE.Vector3(s < 0 ? Math.sin(a) : -Math.sin(a), s < 0 ? -Math.cos(a) : Math.cos(a), 0);
-    const side = new THREE.Vector3().crossVectors(up, fwd), sc = 0.12;
+    const side = new THREE.Vector3().crossVectors(up, fwd), sc = 0.44;
     const mx = new THREE.Matrix4().makeBasis(side.multiplyScalar(sc), up.clone().multiplyScalar(sc), fwd.multiplyScalar(sc));
     mx.setPosition(Math.cos(a) * (r - 0.22), y0 + Math.sin(a) * (h - y0 - 0.99 * 0.8) - Math.sin(a) * 0.22, 0.2);
     list.push(mx);
