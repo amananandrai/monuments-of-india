@@ -23,6 +23,8 @@ import { shivajiBody } from '../parts/figures.js';
 // z = ±7 and x = ±9, side halls from x = ±9 to ±18.
 
 const CARVE = mat('#cfb37f', 0.82); // the dressed basalt of the carving, a shade lighter
+// The statue's bronze as it has weathered: a dark grey-brown, as in the photographs.
+const DARK_BRONZE = mat('#5c564c', 0.46, 0.6);
 
 // The panel between an arch of radius R (springing at s) and a rectangle w wide reaching up to
 // `top`: the spandrels of a gateway, as one slab, its back at z = 0.
@@ -192,7 +194,7 @@ function talwar(L, m) {
   return g;
 }
 export function shivajiStatue() {
-  const g = new THREE.Group(), STONE = mat('#b39a74', 0.85), CAP = mat('#4c4844', 0.55), B = M.bronze, Hp = 5.8;
+  const g = new THREE.Group(), STONE = mat('#b39a74', 0.85), CAP = mat('#4c4844', 0.55), B = DARK_BRONZE, Hp = 5.8;
   g.add(box(5.4, 0.3, 7.8, STONE), box(4.8, 1.4, 7.2, STONE, 0, 0.3), taperBox(3.4, 5.8, 3.0, 5.4, 3.8, STONE).translateY(1.7), box(3.4, 0.3, 5.8, CAP, 0, 5.5));
   g.add(box(1.6, 0.8, 0.06, mat('#1d1d1f', 0.4), 0, 0.6, 3.61));
   // The emblem on each long side of the shaft: a round shield with its bosses, two curved swords

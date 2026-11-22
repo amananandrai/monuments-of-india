@@ -47,7 +47,7 @@ function allegoryStatue(h, key, opts, held = [], { seat = false } = {}) {
   g.add(box(h * 0.36, ph * 0.18, h * 0.36, Mb), box(h * 0.3, ph * 0.66, h * 0.3, Mb, 0, ph * 0.18), box(h * 0.36, ph * 0.16, h * 0.36, Mb, 0, ph * 0.84));
   const fh = h - ph;
   if (detail.low) return g.add(at(figure(fh, Sh, 'robed'), 0, ph, 0));
-  const fig = allegory(key, opts, Sh, opts.seated ? 0.024 : 0.03), s = new THREE.Group();
+  const fig = allegory(key, opts, Sh, opts.seated ? 0.022 : 0.026), s = new THREE.Group();
   s.add(fig.mesh);
   for (const [side, kind, o] of held) hold(s, fig, side, kind, Sh, o);
   s.scale.setScalar(fh / (opts.seated ? 1.62 : 1.76));
