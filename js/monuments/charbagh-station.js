@@ -14,7 +14,7 @@ import { addDetails } from '../details/charbagh-station.js';
 // out for a game. The platforms lie behind (js/details/charbagh-station.js).
 // The front faces +z, at z = FZ. Shared with the detail file through CB.
 export const CB = { W: 168, D: 18, FZ: 9, b: 0.8, G: 6.2, H: 11.5, CW: 34, CZ: 17, PORCH: 10, MX: 44, EX: 77, PW: 14 };
-export const RED = photo(mat('#a2342b', 0.8), 'plaster'), WHITE = mat('#f2ede1', 0.75), ROOF = mat('#8d5a4c', 0.9);
+export const RED = photo(mat('#96302a', 0.8), 'plaster'), WHITE = mat('#f2ede1', 0.75), ROOF = mat('#8d5a4c', 0.9);
 
 // A pavilion w wide whose front stands at z = zf, h high above the plinth, under a white dome r in
 // radius: three arches on each floor, a white cornice and merlons, kiosks on the corners of its
@@ -114,5 +114,5 @@ export function buildCharbagh() {
   }
   addDetails(f, g);
   // The home view: the front across the garden, a little to one side.
-  return { group: g, focus: f, view: [0.3, 0.1, 1.2], zoom: 0.56 };
+  return { group: g, focus: f, view: [0.3, 0.1, 1.2], zoom: 0.7 };
 }
