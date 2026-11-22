@@ -3,11 +3,11 @@
 [![Live site](https://img.shields.io/badge/live_site-vercel.app-000000?logo=vercel&logoColor=white)](https://monuments-of-india-nu.vercel.app)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![three.js](https://img.shields.io/badge/three.js-0.160-000000?logo=threedotjs&logoColor=white)](https://threejs.org/)
-[![Monuments](https://img.shields.io/badge/monuments-101-b45309)](https://monuments-of-india-nu.vercel.app)
+[![Monuments](https://img.shields.io/badge/monuments-125-b45309)](https://monuments-of-india-nu.vercel.app)
 
 **Live site: https://monuments-of-india-nu.vercel.app**
 
-101 Indian landmarks across 26 states and union territories, modelled in interactive 3D with
+125 Indian landmarks across 28 states and union territories, modelled in interactive 3D with
 [three.js](https://threejs.org/). Every model is built in code at roughly real-world proportions,
 from simple shapes, carved detail and sculpted figures: there are no model files or scans to
 download.
@@ -16,7 +16,7 @@ download.
 | :---: | :---: | :---: |
 | [Taj Mahal](https://monuments-of-india-nu.vercel.app/#taj-mahal) | [Meenakshi Temple](https://monuments-of-india-nu.vercel.app/#meenakshi-temple) | [Golden Temple](https://monuments-of-india-nu.vercel.app/#golden-temple) |
 
-All 101, state by state, with a picture of each: **[States and monuments](monuments.md)**.
+All 125, state by state, with a picture of each: **[States and monuments](monuments.md)**.
 
 ## Contents
 
@@ -35,8 +35,8 @@ All 101, state by state, with a picture of each: **[States and monuments](monume
 
 ## Features
 
-- **101 monuments in 3D**, across 26 states and union territories: temples, forts and palaces,
-  tombs and memorials, bridges and civic buildings, each at roughly its real proportions.
+- **125 monuments in 3D**, across 28 states and union territories: temples, forts and palaces,
+  tombs and memorials, bridges, railway stations, airports and civic buildings, each at roughly its real proportions.
 - **Built in code.** Every model is assembled from shared parts (domes, kiosks, pillars, arches,
   temple towers) and sculpted figures. There are no model files or scans to download.
 - **A map of India to start from**, with a pin for every monument, a list by state, a search box,
@@ -66,8 +66,8 @@ All 101, state by state, with a picture of each: **[States and monuments](monume
   are defined in `js/filters.js`:
   - **Style:** Dravidian & Vesara, Nagara (with its regional forms: Chandela, Kalinga, Bhumija,
     Maru-Gurjara and Jain), Buddhist, Indo-Islamic, Rajput, Indo-Saracenic, Colonial & European,
-    Modern, and Regional & mixed (Sikh, the Himalayan pagoda, Keladi, Gommateshwara and the
-    buildings that mix traditions).
+    Modern, and Regional & mixed (Sikh, the Himalayan pagoda, Keladi, Gommateshwara, the brick
+    temples of Bengal, Ahom Assam, Ladakh and the buildings that mix traditions).
   - **Material:** sandstone, marble, granite, basalt, laterite, brick & lime, other stone
     (khondalite, soapstone, limestone and local stone), timber, and steel & concrete.
 - **3D view:** drag to orbit, scroll or pinch to zoom, and use ← → to move between monuments. The
@@ -111,13 +111,13 @@ How surfaces, water, landscape, lighting and the camera work is in
 
 | Page | What it covers |
 | --- | --- |
-| [States and monuments](monuments.md) | All 101 monuments by state: place, dates, style, material, a link to the 3D view and a picture of each |
+| [States and monuments](monuments.md) | All 125 monuments by state: place, dates, style, material, a link to the 3D view and a picture of each |
 | [Components](components.md) | Every shared part in pictures, on one page |
 | [Architecture](architecture.md) | The parts the buildings are made of: domes, kiosks, pillars, arches, doors and windows, eaves, temple towers, fort gates. What each takes and where it lives |
-| [The setting](realism.md) | What stands round them: the 21 kinds of tree, shrubs, lamps, flags, boats, stalls, towns, traffic and animals |
+| [The setting](realism.md) | What stands round them: the 21 kinds of tree, shrubs, lamps, flags, boats, stalls, towns, traffic, trains, aircraft and animals |
 | [How it is drawn](how-it-is-drawn.md) | Surfaces, landscape, water, sculpture, lighting, the camera, and what differs on phones |
 | [Model checks](tools/README.md) | The headless checks and picture tools in `tools/` |
-| [Video](video/README.md) | Rendering the film of all 101 monuments |
+| [Video](video/README.md) | Rendering the film, which covers the first 101 monuments |
 
 ## Components at a glance
 
@@ -151,7 +151,8 @@ renders of the home views. See
 ## Video
 
 `video/` holds a [HyperFrames](https://hyperframes.heygen.com) project that renders an hour-long
-documentary journey across India at 1920×1080, using the site's own models. For each monument it
+documentary journey across India at 1920×1080, using the site's own models; it covers the first
+101 monuments. For each monument it
 plays a 3D map flight to its location, a drone orbit and close-ups of its domes, spires and pillars.
 A narrator voiced by [Sarvam AI](https://www.sarvam.ai/) text-to-speech tells the story. See
 [`video/README.md`](video/README.md) to render it.

@@ -18,7 +18,7 @@ Each monument has two files:
 Both are named after the monument's id in `js/data.js`. The shared parts they are built from are in
 `js/helpers.js` (primitives, stones, domes) and `js/parts/` (one file per family: `components`,
 `temples`, `mughal`, `forts`, `colonial`, `doorways`, `tibetan`, `terrain`, `sculpture`, `figures`,
-`animals` and `realism`). The tables below name each part's file.
+`animals`, `realism` and `transport`). The tables below name each part's file.
 
 The builder returns `{ group, focus, view, zoom }`. `focus` is the group the home view frames;
 `group` is the whole site.
