@@ -10,14 +10,14 @@ export const STONE = photo(mat('#9d9282', 0.92), 'rubble');
 export const TRIM = photo(mat('#7f7668', 0.94), 'rubble');
 
 // Kangra Fort on its ridge, at about its real size: a long narrow spur running east (+x) between
-// two rivers, the Banganga to the south (+z) and the Patal (Majhi) to the north, which meet below
+// two rivers, the Banganga to the south (+z) and the Majhi to the north, which meet below
 // its east end. The ridge's top climbs from the town at its west end to the palace at its east
 // end, TOP above the rivers; its sides fall in cliffs. The top's half-width at x is halfW(x).
 export const TOP = 72;
 export const halfW = (x) => 34 + 10 * Math.sin(x * 0.012 + 0.6) + 6 * Math.sin(x * 0.031);
 // The height of the ridge's crest along x: low at the town end, rising past the gates to the top.
 export const crest = (x) => (22 + (TOP - 22) * smooth(-280, 120, x)) * smooth(360, 250, x);
-// The rivers' lines: z of the Banganga (south) and the Patal (north) at x, converging to the east.
+// The rivers' lines: z of the Banganga (south) and the Majhi (north) at x, converging to the east.
 const southRiver = (x) => 135 - 0.35 * Math.max(0, x - 120);
 const northRiver = (x) => -125 + 0.3 * Math.max(0, x - 120);
 

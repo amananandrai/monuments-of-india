@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, kalash, photo } from '../helpers.js';
+import { mat, mesh, box, cyl, at, kalash } from '../helpers.js';
 import { mergeByMaterial, frieze, rosette } from '../parts/components.js';
 import { addDetails } from '../details/warangal-fort.js';
 
 // The Kakatiyas' grey granite, and its darker weathered shade.
-export const STONE = photo(mat('#a39b8d', 0.9), 'blocks');
+export const STONE = mat('#a39b8d', 0.9);
 export const SHADE = mat('#7f786c', 0.93);
 
 // One Kakatiya Kala Thoranam: a free-standing gateway about 10 m high, its opening facing +z. Each
@@ -37,7 +37,7 @@ export function thorana() {
   for (const z of [-PZ, PZ]) g.add(box(8.6, 0.95, 1.05, S, 0, LIN, z), box(8.8, 0.2, 1.2, Sd, 0, LIN + 0.95, z));
   for (const x of [-PX, PX]) g.add(box(1.1, 0.9, 3.2, Sd, x, LIN + 0.02, 0));
   // The crests: a carved band, the raised middle panel and its medallion, the makara horns.
-  const horn = new THREE.TorusGeometry(0.95, 0.3, 8, 14, Math.PI * 0.9);
+  const horn = new THREE.TorusGeometry(0.7, 0.22, 8, 14, Math.PI * 0.8);
   for (const z of [-PZ, PZ]) {
     const side = Math.sign(z);
     g.add(box(7.0, 0.8, 0.8, frieze(S), 0, LIN + 1.15, z), box(7.3, 0.15, 0.95, Sd, 0, LIN + 1.95, z));
@@ -45,9 +45,9 @@ export function thorana() {
     g.add(at(rosette(0.5, S, 12), 0, LIN + 2.82, z + side * 0.47).rotateY(side > 0 ? 0 : Math.PI));
     for (const s of [-1, 1]) {
       // The horn curls up and back in over the lintel's end, its tip turned inward.
-      const h = mesh(horn, S, s * 3.2, LIN + 2.15, z);
-      h.rotation.z = s > 0 ? -0.15 : Math.PI + 0.15;
-      g.add(h, box(1.0, 0.55, 0.75, S, s * 3.55, LIN + 1.95, z));
+      const h = mesh(horn, S, s * 3.35, LIN + 2.5, z);
+      if (s < 0) h.rotation.y = Math.PI;
+      g.add(h, box(1.0, 0.55, 0.75, S, s * 3.55, LIN + 1.95, z), box(0.5, 0.55, 0.5, S, s * 4.05, LIN + 2.4, z));
     }
     g.add(at(kalash(0.9, S), 0, LIN + 3.75, z));
   }
