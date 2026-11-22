@@ -3,7 +3,7 @@
 Where everything lives, what each file is for, how a monument gets from `js/data.js` to the
 screen, and how to add one.
 
-[README](../README.md) · [Project structure](project-structure.md) · [Architecture](architecture.md) · [The setting](setting.md) · [Components](components.md) · [How it is drawn](how-it-is-drawn.md) · [States and monuments](../monuments.md)
+[README](../README.md) · [Architecture](architecture.md) · [The setting](setting.md) · [Components](components.md) · [How it is drawn](how-it-is-drawn.md) · [States and monuments](../monuments.md)
 
 ## The repository
 
@@ -48,7 +48,8 @@ assets/
   views/<id>.png           the home view of each monument (drawn by the screenshot workflow)
   textures/                CC0 photo textures and their normal-and-roughness maps
   blog/                    pictures used by articles about the site
-docs/                      the guides, and img/ with a picture of every shared part
+docs/                      the guides
+img/                       a picture of every shared part, for the guides
 monuments.md               all 201 monuments by state, with pictures (generated)
 tools/                     headless checks and picture tools (Node and Playwright)
 video/                     the HyperFrames film of the first 101 monuments

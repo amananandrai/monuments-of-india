@@ -4,7 +4,7 @@ How the site turns code into stone, light and landscape: what happens when a mon
 how its surfaces, water, sculpture and setting are made, and what changes between desktops and
 phones.
 
-[README](../README.md) · [Project structure](project-structure.md) · [Architecture](architecture.md) · [The setting](setting.md) · [Components](components.md) · [How it is drawn](how-it-is-drawn.md) · [States and monuments](../monuments.md)
+[README](../README.md) · [Architecture](architecture.md) · [The setting](setting.md) · [Components](components.md) · [Project structure](project-structure.md) · [States and monuments](../monuments.md)
 
 ## Contents
 

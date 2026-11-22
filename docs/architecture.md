@@ -4,11 +4,7 @@ Every monument is built in code from shared parts. This page is the reference fo
 one is, what you pass it, and which file it lives in. A file name in a table (`helpers`,
 `components`, `temples`…) means `js/helpers.js` or `js/parts/<name>.js`.
 
-For what stands round the buildings (trees, boats, towns, hills) see [The setting](setting.md).
-Every picture here, and the statues, are on one page in [Components](components.md). How the
-repository is laid out, and how to add a monument, is in [Project structure](project-structure.md).
-
-[README](../README.md) · [Project structure](project-structure.md) · [Architecture](architecture.md) · [The setting](setting.md) · [Components](components.md) · [How it is drawn](how-it-is-drawn.md) · [States and monuments](../monuments.md)
+[README](../README.md) · [The setting](setting.md) · [Components](components.md) · [How it is drawn](how-it-is-drawn.md) · [Project structure](project-structure.md) · [States and monuments](../monuments.md)
 
 ## Contents
 
@@ -89,10 +85,10 @@ All in `js/helpers.js`.
 
 ## Domes
 
-| ![Onion dome with its neck, lotus crown and finial](img/onion-dome.jpg) | ![Lotus dome: ribs, a cup of petals, a crescent](img/lotus-dome.jpg) | ![A hemisphere under a kalash; a Persian dome under a finial](img/plain-domes.jpg) |
+| ![Onion dome with its neck, lotus crown and finial](../img/onion-dome.jpg) | ![Lotus dome: ribs, a cup of petals, a crescent](../img/lotus-dome.jpg) | ![A hemisphere under a kalash; a Persian dome under a finial](../img/plain-domes.jpg) |
 | :---: | :---: | :---: |
 | Onion dome with its neck, lotus crown and finial | Lotus dome: ribs, a cup of petals, a crescent | A hemisphere under a kalash; a Persian dome under a finial |
-| ![Pear-shaped dome (Sheikh Chilli’s Tomb)](img/pear-dome.jpg) | ![Gurdwara dome: lotus cup, ribbed gilt onion, kalash and umbrella](img/sikh-dome.jpg) |   |
+| ![Pear-shaped dome (Sheikh Chilli’s Tomb)](../img/pear-dome.jpg) | ![Gurdwara dome: lotus cup, ribbed gilt onion, kalash and umbrella](../img/sikh-dome.jpg) |   |
 | Pear-shaped dome (Sheikh Chilli’s Tomb) | Gurdwara dome: lotus cup, ribbed gilt onion, kalash and umbrella |   |
 
 | Part | File | What it is |
@@ -110,10 +106,10 @@ All in `js/helpers.js`.
 
 ## Kiosks and turrets
 
-| ![Chhatri](img/chhatri.jpg) | ![Mughal chhatri](img/mughal-chhatri.jpg) | ![Guldastas](img/guldasta.jpg) |
+| ![Chhatri](../img/chhatri.jpg) | ![Mughal chhatri](../img/mughal-chhatri.jpg) | ![Guldastas](../img/guldasta.jpg) |
 | :---: | :---: | :---: |
 | Chhatri | Mughal chhatri | Guldastas |
-| ![Minaret](img/minaret.jpg) | ![Jharokha](img/jharokha.jpg) | ![Gothic turrets](img/gothic-turret.jpg) |
+| ![Minaret](../img/minaret.jpg) | ![Jharokha](../img/jharokha.jpg) | ![Gothic turrets](../img/gothic-turret.jpg) |
 | Minaret | Jharokha | Gothic turrets |
 
 | Part | File | What it is |
@@ -127,12 +123,12 @@ All in `js/helpers.js`.
 
 ## Pillars and columns
 
-| ![Classical columns, plain and Corinthian](img/column.jpg) | ![Carved temple pillars](img/carved-pillar.jpg) | ![Cluster pillar](img/cluster-pillar.jpg) |
+| ![Classical columns, plain and Corinthian](../img/column.jpg) | ![Carved temple pillars](../img/carved-pillar.jpg) | ![Cluster pillar](../img/cluster-pillar.jpg) |
 | :---: | :---: | :---: |
 | Classical columns, plain and Corinthian | Carved temple pillars | Cluster pillar |
-| ![Yali pillar](img/yali-pillar.jpg) | ![Column trim on bare shafts](img/column-trim.jpg) | ![Elephant-capital pillars (Karla)](img/elephant-pillar.jpg) |
+| ![Yali pillar](../img/yali-pillar.jpg) | ![Column trim on bare shafts](../img/column-trim.jpg) | ![Elephant-capital pillars (Karla)](../img/elephant-pillar.jpg) |
 | Yali pillar | Column trim on bare shafts | Elephant-capital pillars (Karla) |
-| ![Persepolitan bull columns](img/bull-column.jpg) |   |   |
+| ![Persepolitan bull columns](../img/bull-column.jpg) |   |   |
 | Persepolitan bull columns |   |   |
 
 | Part | File | What it is |
@@ -151,12 +147,12 @@ All in `js/helpers.js`.
 
 The arches and openings every tradition shares. The doorways of each tradition are under [Temples](#temples), [Mughal and Indo-Islamic](#mughal-and-indo-islamic), [Forts](#forts), [Churches and colonial buildings](#churches-and-colonial-buildings) and [Tibetan monasteries](#tibetan-monasteries).
 
-| ![Arch wall with its ring](img/arch.jpg) | ![Niche](img/niche.jpg) | ![Cusped arch between pillars](img/cusped-arch.jpg) |
+| ![Arch wall with its ring](../img/arch.jpg) | ![Niche](../img/niche.jpg) | ![Cusped arch between pillars](../img/cusped-arch.jpg) |
 | :---: | :---: | :---: |
 | Arch wall with its ring | Niche | Cusped arch between pillars |
-| ![Window with a jali screen](img/window-jali.jpg) | ![Louvred shutters](img/louvred-shutters.jpg) | ![Tree of Life and branch jalis](img/tree-jali.jpg) |
+| ![Window with a jali screen](../img/window-jali.jpg) | ![Louvred shutters](../img/louvred-shutters.jpg) | ![Tree of Life and branch jalis](../img/tree-jali.jpg) |
 | Window with a jali screen | Louvred shutters | Tree of Life and branch jalis |
-| ![Wall pierced with circles and arches](img/pierced-wall.jpg) | ![Arcaded screen](img/arcade-screen.jpg) |   |
+| ![Wall pierced with circles and arches](../img/pierced-wall.jpg) | ![Arcaded screen](../img/arcade-screen.jpg) |   |
 | Wall pierced with circles and arches | Arcaded screen |   |
 
 | Part | File | What it is |
@@ -180,10 +176,10 @@ The arches and openings every tradition shares. The doorways of each tradition a
 
 ## Walls, eaves and parapets
 
-| ![Chhajja on brackets](img/chhajja.jpg) | ![Merlons](img/merlons.jpg) | ![Railing](img/railing.jpg) |
+| ![Chhajja on brackets](../img/chhajja.jpg) | ![Merlons](../img/merlons.jpg) | ![Railing](../img/railing.jpg) |
 | :---: | :---: | :---: |
 | Chhajja on brackets | Merlons | Railing |
-| ![Base mouldings, belt course, pilasters, dentils and cornice](img/wall-trim.jpg) | ![Battered wall (Tughlaqabad)](img/battered-wall.jpg) | ![Faravahar and stepped merlons](img/persian-ornament.jpg) |
+| ![Base mouldings, belt course, pilasters, dentils and cornice](../img/wall-trim.jpg) | ![Battered wall (Tughlaqabad)](../img/battered-wall.jpg) | ![Faravahar and stepped merlons](../img/persian-ornament.jpg) |
 | Base mouldings, belt course, pilasters, dentils and cornice | Battered wall (Tughlaqabad) | Faravahar and stepped merlons |
 
 | Part | File | What it is |
@@ -203,10 +199,10 @@ The arches and openings every tradition shares. The doorways of each tradition a
 
 ## Roofs
 
-| ![Gable and lean-to roofs](img/gable-roof.jpg) | ![Ring roof round a courtyard (Kerala)](img/ring-roof.jpg) | ![Meitei roof](img/meitei-roof.jpg) |
+| ![Gable and lean-to roofs](../img/gable-roof.jpg) | ![Ring roof round a courtyard (Kerala)](../img/ring-roof.jpg) | ![Meitei roof](../img/meitei-roof.jpg) |
 | :---: | :---: | :---: |
 | Gable and lean-to roofs | Ring roof round a courtyard (Kerala) | Meitei roof |
-| ![Copper and gilded-copper roofs](img/copper-roofs.jpg) | ![Wagon-vault (shala) roof](img/wagon-roof.jpg) | ![Kerala gable](img/kerala-gable.jpg) |
+| ![Copper and gilded-copper roofs](../img/copper-roofs.jpg) | ![Wagon-vault (shala) roof](../img/wagon-roof.jpg) | ![Kerala gable](../img/kerala-gable.jpg) |
 | Copper and gilded-copper roofs | Wagon-vault (shala) roof | Kerala gable |
 
 | Part | File | What it is |
@@ -223,10 +219,10 @@ The arches and openings every tradition shares. The doorways of each tradition a
 
 ## Ornament
 
-| ![Rosette, medallion, sunburst and inlaid star](img/roundels.jpg) | ![Inlaid border](img/inlay-border.jpg) | ![Raised lettering over a carved panel](img/lettering.jpg) |
+| ![Rosette, medallion, sunburst and inlaid star](../img/roundels.jpg) | ![Inlaid border](../img/inlay-border.jpg) | ![Raised lettering over a carved panel](../img/lettering.jpg) |
 | :---: | :---: | :---: |
 | Rosette, medallion, sunburst and inlaid star | Inlaid border | Raised lettering over a carved panel |
-| ![Brass-bezelled clock face](img/clock-face.jpg) | ![Tower clock](img/tower-clock.jpg) | ![Chadar (water cascade)](img/chadar.jpg) |
+| ![Brass-bezelled clock face](../img/clock-face.jpg) | ![Tower clock](../img/tower-clock.jpg) | ![Chadar (water cascade)](../img/chadar.jpg) |
 | Brass-bezelled clock face | Tower clock | Chadar (water cascade) |
 
 | Part | File | What it is |
@@ -245,7 +241,7 @@ The arches and openings every tradition shares. The doorways of each tradition a
 
 ## Surfaces
 
-| ![Terracotta brick and plaques](img/terracotta.jpg) | ![Copper and gilded-copper roofs](img/copper-roofs.jpg) | ![Window with a jali screen](img/window-jali.jpg) |
+| ![Terracotta brick and plaques](../img/terracotta.jpg) | ![Copper and gilded-copper roofs](../img/copper-roofs.jpg) | ![Window with a jali screen](../img/window-jali.jpg) |
 | :---: | :---: | :---: |
 | Terracotta brick and plaques | Copper and gilded-copper roofs | Window with a jali screen |
 
@@ -275,22 +271,22 @@ Photo texture keys for `photo()`: `'marble'`, `'sandstone'`, `'plaster'`, `'gran
 
 Mostly `js/parts/temples.js`, with the doorways in `js/parts/doorways.js`. Nagara (north), Dravida (south), Vesara and Hoysala, Kalinga, Kerala and the Himalayan temples are all built from these.
 
-| ![Shikhara](img/shikhara.jpg) | ![Nagara temple](img/nagara-temple.jpg) | ![Dravida vimana](img/dravida-vimana.jpg) |
+| ![Shikhara](../img/shikhara.jpg) | ![Nagara temple](../img/nagara-temple.jpg) | ![Dravida vimana](../img/dravida-vimana.jpg) |
 | :---: | :---: | :---: |
 | Shikhara | Nagara temple | Dravida vimana |
-| ![Gopuram](img/gopuram.jpg) | ![Mandap](img/mandap.jpg) | ![Storeyed hall](img/storeyed-hall.jpg) |
+| ![Gopuram](../img/gopuram.jpg) | ![Mandap](../img/mandap.jpg) | ![Storeyed hall](../img/storeyed-hall.jpg) |
 | Gopuram | Mandap | Storeyed hall |
-| ![Temple doorway with carved jambs](img/temple-doorway.jpg) | ![Temple porch](img/temple-porch.jpg) | ![Post-and-lintel gate with lions, under a stepped roof](img/trabeate-gate.jpg) |
+| ![Temple doorway with carved jambs](../img/temple-doorway.jpg) | ![Temple porch](../img/temple-porch.jpg) | ![Post-and-lintel gate with lions, under a stepped roof](../img/trabeate-gate.jpg) |
 | Temple doorway with carved jambs | Temple porch | Post-and-lintel gate with lions, under a stepped roof |
-| ![Temple niche with an image](img/temple-niche.jpg) | ![Kuta, shala and a hara row](img/hara.jpg) | ![Hoysala stellate tower](img/stellate-tower.jpg) |
+| ![Temple niche with an image](../img/temple-niche.jpg) | ![Kuta, shala and a hara row](../img/hara.jpg) | ![Hoysala stellate tower](../img/stellate-tower.jpg) |
 | Temple niche with an image | Kuta, shala and a hara row | Hoysala stellate tower |
-| ![Dwajasthambha (gold flagstaff)](img/dwajasthambha.jpg) | ![Manastambha](img/manastambha.jpg) | ![Deepmala](img/deepmala.jpg) |
+| ![Dwajasthambha (gold flagstaff)](../img/dwajasthambha.jpg) | ![Manastambha](../img/manastambha.jpg) | ![Deepmala](../img/deepmala.jpg) |
 | Dwajasthambha (gold flagstaff) | Manastambha | Deepmala |
-| ![Nandi mandapa](img/nandi-mandapa.jpg) | ![Dravida hall dress](img/dravida-dress.jpg) | ![Kerala gopuram](img/kerala-gopuram.jpg) |
+| ![Nandi mandapa](../img/nandi-mandapa.jpg) | ![Dravida hall dress](../img/dravida-dress.jpg) | ![Kerala gopuram](../img/kerala-gopuram.jpg) |
 | Nandi mandapa | Dravida hall dress | Kerala gopuram |
-| ![Spire with its timber canopy](img/spire-canopy.jpg) | ![Broken and whole spires](img/broken-spire.jpg) | ![Apsidal plan](img/apse.jpg) |
+| ![Spire with its timber canopy](../img/spire-canopy.jpg) | ![Broken and whole spires](../img/broken-spire.jpg) | ![Apsidal plan](../img/apse.jpg) |
 | Spire with its timber canopy | Broken and whole spires | Apsidal plan |
-| ![Kakatiya Kala Thoranam](img/kakatiya-thorana.jpg) | ![Chandrashala in stone, gavaksha in brick](img/chandrashala.jpg) | ![Water spout (pranala)](img/pranala.jpg) |
+| ![Kakatiya Kala Thoranam](../img/kakatiya-thorana.jpg) | ![Chandrashala in stone, gavaksha in brick](../img/chandrashala.jpg) | ![Water spout (pranala)](../img/pranala.jpg) |
 | Kakatiya Kala Thoranam | Chandrashala in stone, gavaksha in brick | Water spout (pranala) |
 
 | Part | File | What it is |
@@ -328,10 +324,10 @@ Mostly `js/parts/temples.js`, with the doorways in `js/parts/doorways.js`. Nagar
 
 `js/parts/mughal.js`: the iwans, doorways and arcades of the Sultanate, Mughal, Nawabi, Qutb Shahi and Deccan buildings. Their domes, chhatris, minarets, guldastas, jalis and inlay are in the sections above.
 
-| ![Iwan](img/iwan.jpg) | ![Iwan with muqarnas and an inscription band](img/muqarnas.jpg) | ![Mughal doorway](img/mughal-doorway.jpg) |
+| ![Iwan](../img/iwan.jpg) | ![Iwan with muqarnas and an inscription band](../img/muqarnas.jpg) | ![Mughal doorway](../img/mughal-doorway.jpg) |
 | :---: | :---: | :---: |
 | Iwan | Iwan with muqarnas and an inscription band | Mughal doorway |
-| ![Arcade skin: a door, a room, a jali and shutters](img/arcade-skin.jpg) | ![Pear-shaped dome (Sheikh Chilli’s Tomb)](img/pear-dome.jpg) | ![Mughal chhatri](img/mughal-chhatri.jpg) |
+| ![Arcade skin: a door, a room, a jali and shutters](../img/arcade-skin.jpg) | ![Pear-shaped dome (Sheikh Chilli’s Tomb)](../img/pear-dome.jpg) | ![Mughal chhatri](../img/mughal-chhatri.jpg) |
 | Arcade skin: a door, a room, a jali and shutters | Pear-shaped dome (Sheikh Chilli’s Tomb) | Mughal chhatri |
 
 | Part | File | What it is |
@@ -347,10 +343,10 @@ Mostly `js/parts/temples.js`, with the doorways in `js/parts/doorways.js`. Nagar
 
 `js/parts/forts.js`.
 
-| ![Fort gate](img/fort-gate.jpg) | ![Rampart and a crowned bastion](img/rampart.jpg) | ![Machicolation](img/machicolation.jpg) |
+| ![Fort gate](../img/fort-gate.jpg) | ![Rampart and a crowned bastion](../img/rampart.jpg) | ![Machicolation](../img/machicolation.jpg) |
 | :---: | :---: | :---: |
 | Fort gate | Rampart and a crowned bastion | Machicolation |
-| ![Arrowhead bastions](img/arrow-bastion.jpg) | ![Battered wall (Tughlaqabad)](img/battered-wall.jpg) |   |
+| ![Arrowhead bastions](../img/arrow-bastion.jpg) | ![Battered wall (Tughlaqabad)](../img/battered-wall.jpg) |   |
 | Arrowhead bastions | Battered wall (Tughlaqabad) |   |
 
 | Part | File | What it is |
@@ -382,14 +378,14 @@ of the wall, framed by a moulded architrave, with leaves, glazing or a screen at
 - **Civic and palace fronts** (the Raj's stations, Hazarduari, Falaknuma, Cooch Behar, the
   Viceregal Lodge): `porch`es of paired columns under pediments, `entablature`s, urns and statues.
 
-| ![Gothic portal](img/gothic-door.jpg) | ![Gothic window](img/gothic-window.jpg) | ![Round window (oculus)](img/rose-window.jpg) |
+| ![Gothic portal](../img/gothic-door.jpg) | ![Gothic window](../img/gothic-window.jpg) | ![Round window (oculus)](../img/rose-window.jpg) |
 | :---: | :---: | :---: |
 | Gothic portal | Gothic window | Round window (oculus) |
-| ![Gothic pinnacles](img/gothic-pinnacle.jpg) | ![Gothic turrets](img/gothic-turret.jpg) | ![Tower clock](img/tower-clock.jpg) |
+| ![Gothic pinnacles](../img/gothic-pinnacle.jpg) | ![Gothic turrets](../img/gothic-turret.jpg) | ![Tower clock](../img/tower-clock.jpg) |
 | Gothic pinnacles | Gothic turrets | Tower clock |
-| ![Classical door](img/classical-door.jpg) | ![Corinthian porch under a pediment](img/porch.jpg) | ![Entablature and pediment](img/pediment.jpg) |
+| ![Classical door](../img/classical-door.jpg) | ![Corinthian porch under a pediment](../img/porch.jpg) | ![Entablature and pediment](../img/pediment.jpg) |
 | Classical door | Corinthian porch under a pediment | Entablature and pediment |
-| ![Balustrade](img/balustrade.jpg) | ![Classical columns, plain and Corinthian](img/column.jpg) | ![Gable and lean-to roofs](img/gable-roof.jpg) |
+| ![Balustrade](../img/balustrade.jpg) | ![Classical columns, plain and Corinthian](../img/column.jpg) | ![Gable and lean-to roofs](../img/gable-roof.jpg) |
 | Balustrade | Classical columns, plain and Corinthian | Gable and lean-to roofs |
 
 | Part | File | What it is |
@@ -416,14 +412,14 @@ of the wall, framed by a moulded architrave, with leaves, glazing or a screen at
 
 `js/parts/tibetan.js`, for Key, Thiksey, Tawang, Rumtek, Namdroling and Leh Palace.
 
-| ![Monks' houses](img/tibetan-houses.jpg) | ![Tibetan block](img/tibetan-block.jpg) | ![Assembly hall](img/tibetan-hall.jpg) |
+| ![Monks' houses](../img/tibetan-houses.jpg) | ![Tibetan block](../img/tibetan-block.jpg) | ![Assembly hall](../img/tibetan-hall.jpg) |
 | :---: | :---: | :---: |
 | Monks' houses | Tibetan block | Assembly hall |
-| ![Tibetan door in its portico](img/tibetan-door.jpg) | ![Rabsel (timber window bay)](img/rabsel.jpg) | ![Dharma wheel and a victory banner](img/dharma-wheel.jpg) |
+| ![Tibetan door in its portico](../img/tibetan-door.jpg) | ![Rabsel (timber window bay)](../img/rabsel.jpg) | ![Dharma wheel and a victory banner](../img/dharma-wheel.jpg) |
 | Tibetan door in its portico | Rabsel (timber window bay) | Dharma wheel and a victory banner |
-| ![Prayer wheels](img/mani-wheels.jpg) | ![Gilded roof](img/gilded-roof.jpg) | ![Two-tier gilded roof (Namdroling)](img/gold-roof-tiers.jpg) |
+| ![Prayer wheels](../img/mani-wheels.jpg) | ![Gilded roof](../img/gilded-roof.jpg) | ![Two-tier gilded roof (Namdroling)](../img/gold-roof-tiers.jpg) |
 | Prayer wheels | Gilded roof | Two-tier gilded roof (Namdroling) |
-| ![Chortens](img/chorten.jpg) |   |   |
+| ![Chortens](../img/chorten.jpg) |   |   |
 | Chortens |   |   |
 
 | Part | File | What it is |
@@ -449,7 +445,7 @@ of the wall, framed by a moulded architrave, with leaves, glazing or a screen at
 
 `js/parts/sikh.js`.
 
-| ![Gurdwara dome: lotus cup, ribbed gilt onion, kalash and umbrella](img/sikh-dome.jpg) | ![Nishan Sahib](img/nishan-sahib.jpg) | ![Arcaded storeys and a parapet of gilt domes](img/sikh-storeys.jpg) |
+| ![Gurdwara dome: lotus cup, ribbed gilt onion, kalash and umbrella](../img/sikh-dome.jpg) | ![Nishan Sahib](../img/nishan-sahib.jpg) | ![Arcaded storeys and a parapet of gilt domes](../img/sikh-storeys.jpg) |
 | :---: | :---: | :---: |
 | Gurdwara dome: lotus cup, ribbed gilt onion, kalash and umbrella | Nishan Sahib | Arcaded storeys and a parapet of gilt domes |
 
@@ -481,14 +477,14 @@ kind above as well; this is the index by style.
 | Stepwells | Rani ki Vav, Adalaj, Agrasen ki Baoli, Chand Baori | `planSolid` for the ground with the well cut out, `carvedPillar`, `frieze` |
 | Modern | IIM Ahmedabad, the Capitol Complex, the airports and bridges | `piercedWall`, the primitives, `'concrete'` photo texture, the transport kit in [The setting](setting.md#railways-and-aircraft) |
 
-| ![Torana (Sanchi)](img/torana.jpg) | ![Ashokan pillar with a single lion](img/ashokan-pillar.jpg) | ![Rock-cut doorways: Lomas Rishi and a plain Mauryan door](img/chaitya-doorway.jpg) |
+| ![Torana (Sanchi)](../img/torana.jpg) | ![Ashokan pillar with a single lion](../img/ashokan-pillar.jpg) | ![Rock-cut doorways: Lomas Rishi and a plain Mauryan door](../img/chaitya-doorway.jpg) |
 | :---: | :---: | :---: |
 | Torana (Sanchi) | Ashokan pillar with a single lion | Rock-cut doorways: Lomas Rishi and a plain Mauryan door |
-| ![Elephant-capital pillars (Karla)](img/elephant-pillar.jpg) | ![Terracotta brick and plaques](img/terracotta.jpg) | ![Meitei roof](img/meitei-roof.jpg) |
+| ![Elephant-capital pillars (Karla)](../img/elephant-pillar.jpg) | ![Terracotta brick and plaques](../img/terracotta.jpg) | ![Meitei roof](../img/meitei-roof.jpg) |
 | Elephant-capital pillars (Karla) | Terracotta brick and plaques | Meitei roof |
-| ![Kangla Sha](img/kangla-sha.jpg) | ![Persepolitan bull columns](img/bull-column.jpg) | ![Faravahar and stepped merlons](img/persian-ornament.jpg) |
+| ![Kangla Sha](../img/kangla-sha.jpg) | ![Persepolitan bull columns](../img/bull-column.jpg) | ![Faravahar and stepped merlons](../img/persian-ornament.jpg) |
 | Kangla Sha | Persepolitan bull columns | Faravahar and stepped merlons |
-| ![Ring roof round a courtyard (Kerala)](img/ring-roof.jpg) | ![Kerala gable](img/kerala-gable.jpg) | ![Wall pierced with circles and arches](img/pierced-wall.jpg) |
+| ![Ring roof round a courtyard (Kerala)](../img/ring-roof.jpg) | ![Kerala gable](../img/kerala-gable.jpg) | ![Wall pierced with circles and arches](../img/pierced-wall.jpg) |
 | Ring roof round a courtyard (Kerala) | Kerala gable | Wall pierced with circles and arches |
 
 | Part | File | What it is |
@@ -515,7 +511,7 @@ kind above as well; this is the index by style.
 
 `js/parts/doorways.js`.
 
-| ![Grand stair](img/grand-stair.jpg) | ![Plain flight of steps](img/steps.jpg) |   |
+| ![Grand stair](../img/grand-stair.jpg) | ![Plain flight of steps](../img/steps.jpg) |   |
 | :---: | :---: | :---: |
 | Grand stair | Plain flight of steps |   |
 
@@ -526,12 +522,12 @@ kind above as well; this is the index by style.
 
 ## Sculpture
 
-| ![Figure frieze](img/figure-frieze.jpg) | ![Relief idol and carved figures: standing, dancer, seated](img/idols.jpg) | ![Statue, urn and pinnacle](img/statue.jpg) |
+| ![Figure frieze](../img/figure-frieze.jpg) | ![Relief idol and carved figures: standing, dancer, seated](../img/idols.jpg) | ![Statue, urn and pinnacle](../img/statue.jpg) |
 | :---: | :---: | :---: |
 | Figure frieze | Relief idol and carved figures: standing, dancer, seated | Statue, urn and pinnacle |
-| ![Door guardian](img/guardian.jpg) | ![Ashokan pillar with a single lion](img/ashokan-pillar.jpg) | ![Kangla Sha](img/kangla-sha.jpg) |
+| ![Door guardian](../img/guardian.jpg) | ![Ashokan pillar with a single lion](../img/ashokan-pillar.jpg) | ![Kangla Sha](../img/kangla-sha.jpg) |
 | Door guardian | Ashokan pillar with a single lion | Kangla Sha |
-| ![Trimurti (Elephanta)](img/trimurti.jpg) | ![Trishul](img/trishul.jpg) |   |
+| ![Trimurti (Elephanta)](../img/trimurti.jpg) | ![Trishul](../img/trishul.jpg) |   |
 | Trimurti (Elephanta) | Trishul |   |
 
 | Part | File | What it is |
@@ -581,5 +577,5 @@ node check-budgets.mjs <id>     # triangles: 800,000 on desktops (1,000,000 with
 node check-flicker.mjs <id>     # faces that share a plane
 node check-heights.mjs <id>     # the model's height against the real one
 node shoot-views.mjs <id>       # a picture of the home view
-node shoot-components.mjs       # the pictures on this page (docs/img/), after a shared part changes
+node shoot-components.mjs       # the pictures on this page (img/), after a shared part changes
 ```

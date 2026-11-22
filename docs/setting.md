@@ -5,10 +5,7 @@ Everything that stands round a monument, and is not the monument, comes from one
 `js/parts/transport.js` and hills in `js/parts/terrain.js`. Each monument's own detail file
 (`js/details/<id>.js`) calls the kit from its `addDetails(f, g)`.
 
-For the buildings themselves (domes, kiosks, pillars, arches) see [Architecture](architecture.md).
-Every picture on this page is on one page in [Components](components.md).
-
-[README](../README.md) · [Project structure](project-structure.md) · [Architecture](architecture.md) · [The setting](setting.md) · [Components](components.md) · [How it is drawn](how-it-is-drawn.md) · [States and monuments](../monuments.md)
+[README](../README.md) · [Architecture](architecture.md) · [Components](components.md) · [How it is drawn](how-it-is-drawn.md) · [Project structure](project-structure.md) · [States and monuments](../monuments.md)
 
 ## Contents
 
@@ -49,10 +46,10 @@ g.add(trees(scatter(26, [-95, 95, -75, 75], { seed: 21, gap: 14, avoid: [[-36, 3
 
 ## Trees
 
-| ![Broadleaf: neem, mango, jamun, tamarind, teak, sal](img/trees-broadleaf.jpg) | ![Wide: banyan, peepal, chinar, willow](img/trees-wide.jpg) | ![Dry: ber, babul, khejri, dhok](img/trees-dry.jpg) |
+| ![Broadleaf: neem, mango, jamun, tamarind, teak, sal](../img/trees-broadleaf.jpg) | ![Wide: banyan, peepal, chinar, willow](../img/trees-wide.jpg) | ![Dry: ber, babul, khejri, dhok](../img/trees-dry.jpg) |
 | :---: | :---: | :---: |
 | Broadleaf: neem, mango, jamun, tamarind, teak, sal | Wide: banyan, peepal, chinar, willow | Dry: ber, babul, khejri, dhok |
-| ![Columns and conifers: ashoka, poplar, cypress, casuarina, fir, deodar](img/trees-columns.jpg) | ![Coconut palms](img/palms.jpg) |   |
+| ![Columns and conifers: ashoka, poplar, cypress, casuarina, fir, deodar](../img/trees-columns.jpg) | ![Coconut palms](../img/palms.jpg) |   |
 | Columns and conifers: ashoka, poplar, cypress, casuarina, fir, deodar | Coconut palms |   |
 
 `trees(spots, { kind, seed, y, h })` plants every kind. `h` is the height in metres (each tree
@@ -85,7 +82,7 @@ new mesh function.
 
 ## Shrubs, hedges and flower beds
 
-| ![Clipped, flowering and dry shrubs](img/shrubs.jpg) |   |   |
+| ![Clipped, flowering and dry shrubs](../img/shrubs.jpg) |   |   |
 | :---: | :---: | :---: |
 | Clipped, flowering and dry shrubs |   |   |
 
@@ -110,7 +107,7 @@ It keeps clear of:
 
 ## Lamps and street furniture
 
-| ![Lamp posts, a bench, bollards with a chain](img/lamp-posts.jpg) | ![The ASI board](img/asi-board.jpg) | ![Fountain jets](img/fountains.jpg) |
+| ![Lamp posts, a bench, bollards with a chain](../img/lamp-posts.jpg) | ![The ASI board](../img/asi-board.jpg) | ![Fountain jets](../img/fountains.jpg) |
 | :---: | :---: | :---: |
 | Lamp posts, a bench, bollards with a chain | The ASI board | Fountain jets |
 
@@ -125,7 +122,7 @@ It keeps clear of:
 
 ## Flags and garlands
 
-| ![Prayer flags](img/prayer-flags.jpg) | ![The tricolour and a saffron pennant](img/flags.jpg) | ![Marigold garlands](img/garland.jpg) |
+| ![Prayer flags](../img/prayer-flags.jpg) | ![The tricolour and a saffron pennant](../img/flags.jpg) | ![Marigold garlands](../img/garland.jpg) |
 | :---: | :---: | :---: |
 | Prayer flags | The tricolour and a saffron pennant | Marigold garlands |
 
@@ -138,10 +135,10 @@ It keeps clear of:
 
 ## Boats
 
-| ![Country boats, one with a hood](img/boats.jpg) | ![Ferry launches](img/launches.jpg) | ![A cargo ship](img/ships.jpg) |
+| ![Country boats, one with a hood](../img/boats.jpg) | ![Ferry launches](../img/launches.jpg) | ![A cargo ship](../img/ships.jpg) |
 | :---: | :---: | :---: |
 | Country boats, one with a hood | Ferry launches | A cargo ship |
-| ![Houseboats](img/houseboats.jpg) |   |   |
+| ![Houseboats](../img/houseboats.jpg) |   |   |
 | Houseboats |   |   |
 
 | Part | What it is |
@@ -155,7 +152,7 @@ It keeps clear of:
 
 ## Stalls
 
-| ![Stalls and umbrellas](img/stalls.jpg) |   |   |
+| ![Stalls and umbrellas](../img/stalls.jpg) |   |   |
 | :---: | :---: | :---: |
 | Stalls and umbrellas |   |   |
 
@@ -164,7 +161,7 @@ Spots are `[x, z, turn]`. They stand outside temple gates and in Laad Bazaar at 
 
 ## Towns and cities
 
-| ![Town houses](img/town-houses.jpg) | ![City blocks round a site](img/city.jpg) |   |
+| ![Town houses](../img/town-houses.jpg) | ![City blocks round a site](../img/city.jpg) |   |
 | :---: | :---: | :---: |
 | Town houses | City blocks round a site |   |
 
@@ -181,7 +178,7 @@ g.add(cityAround([-72, 72, -88, 108], { rows: 2, gap: 12, storeys: [2, 4], seed:
 
 ## Traffic
 
-| ![Traffic: cars, taxis, buses and trucks](img/traffic.jpg) |   |   |
+| ![Traffic: cars, taxis, buses and trucks](../img/traffic.jpg) |   |   |
 | :---: | :---: | :---: |
 | Traffic: cars, taxis, buses and trucks |   |   |
 
@@ -197,7 +194,7 @@ the subject.
 
 ## Railways and aircraft
 
-| ![Trains: an express behind its locomotive, a Vande Bharat, a suburban train](img/trains.jpg) | ![An island platform under its canopy](img/platform.jpg) | ![Airliners and a jet bridge](img/airliners.jpg) |
+| ![Trains: an express behind its locomotive, a Vande Bharat, a suburban train](../img/trains.jpg) | ![An island platform under its canopy](../img/platform.jpg) | ![Airliners and a jet bridge](../img/airliners.jpg) |
 | :---: | :---: | :---: |
 | Trains: an express behind its locomotive, a Vande Bharat, a suburban train | An island platform under its canopy | Airliners and a jet bridge |
 
@@ -220,10 +217,10 @@ g.add(at(track(300), 0, 0, 7), at(train(10, { livery: 'red' }), 0, RAIL_TOP, 7),
 
 ## Animals
 
-| ![Nandi](img/nandi.jpg) | ![Elephants, plain and dressed](img/elephants.jpg) | ![Horse and lion](img/horse-lion.jpg) |
+| ![Nandi](../img/nandi.jpg) | ![Elephants, plain and dressed](../img/elephants.jpg) | ![Horse and lion](../img/horse-lion.jpg) |
 | :---: | :---: | :---: |
 | Nandi | Elephants, plain and dressed | Horse and lion |
-| ![Deer](img/deer.jpg) | ![Yaks and camels](img/yaks-camels.jpg) | ![Lion Capital, lion and tiger](img/statue-lions.jpg) |
+| ![Deer](../img/deer.jpg) | ![Yaks and camels](../img/yaks-camels.jpg) | ![Lion Capital, lion and tiger](../img/statue-lions.jpg) |
 | Deer | Yaks and camels | The Lion Capital; a couchant lion and tiger |
 
 From `js/parts/animals.js`. The larger animals are sculpted as one continuous skin and meshed in
@@ -246,7 +243,7 @@ the browser, so they are heavier than the rest of the kit.
 
 ## Hills and mountains
 
-| ![Height-field hill](img/terrain.jpg) | ![Ring of mountains](img/mountains.jpg) |   |
+| ![Height-field hill](../img/terrain.jpg) | ![Ring of mountains](../img/mountains.jpg) |   |
 | :---: | :---: | :---: |
 | Height-field hill | Ring of mountains |   |
 

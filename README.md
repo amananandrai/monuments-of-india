@@ -3,7 +3,7 @@
 [![Live site](https://img.shields.io/badge/live_site-vercel.app-000000?logo=vercel&logoColor=white)](https://monuments-of-india-nu.vercel.app)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![three.js](https://img.shields.io/badge/three.js-0.160-000000?logo=threedotjs&logoColor=white)](https://threejs.org/)
-[![Monuments](https://img.shields.io/badge/monuments-201-b45309)](https://monuments-of-india-nu.vercel.app)
+![Monuments](https://img.shields.io/badge/monuments-201-b45309)
 
 **Live site: https://monuments-of-india-nu.vercel.app**
 
@@ -96,8 +96,7 @@ monument's `year` from `js/data.js`.
 - **One file per monument** in `js/monuments/`, and one for its finer detail and setting in
   `js/details/`, both named after the monument's id in `js/data.js`. A monument's code is fetched
   only when it is opened.
-- **Shared parts** in `js/helpers.js` and `js/parts/`: see [Architecture](docs/architecture.md)
-  and [The setting](docs/setting.md).
+- **Shared parts** in `js/helpers.js` and `js/parts/`.
 - **Procedural surfaces** in `js/surface.js`, generated in the shader from world position, with
   CC0 photo textures and their normal and roughness maps over them (`js/textures.js`).
 - **Sculpted figures:** statues and temple animals are grown from signed distance fields and
@@ -110,9 +109,6 @@ monument's `year` from `js/data.js`.
 - **Headless checks** in `tools/`, run with Node and Playwright.
 - **Hosting:** Vercel. **Video:** a [HyperFrames](https://hyperframes.heygen.com) project in `video/`.
 
-How surfaces, water, landscape, lighting and the camera work is in
-[How it is drawn](docs/how-it-is-drawn.md).
-
 ## Project structure
 
 ```text
@@ -124,14 +120,11 @@ js/monuments/<id>.js        one file per monument: the masses
 js/details/<id>.js          one file per monument: finer architecture and the setting
 js/surface.js, sdf.js, …    drawn surfaces, sculpting, and the passes run on a built model
 assets/views, textures      a picture of each monument; CC0 photo textures
-docs/                       the guides, with a picture of every shared part in docs/img
+docs/, img/                 the guides, and a picture of every shared part
 monuments.md                all 201 monuments by state (generated)
 tools/                      headless checks and picture tools
 video/                      the film
 ```
-
-Every file, how the code is layered and how to add a monument:
-[Project structure](docs/project-structure.md).
 
 ## Documentation
 
@@ -150,16 +143,16 @@ Every file, how the code is layered and how to add a monument:
 
 A few of the shared parts. All 155 pictures, statues included, are in [Components](docs/components.md).
 
-| ![Onion dome](docs/img/onion-dome.jpg) | ![Chhatri](docs/img/chhatri.jpg) | ![Carved pillars](docs/img/carved-pillar.jpg) |
+| ![Onion dome](img/onion-dome.jpg) | ![Chhatri](img/chhatri.jpg) | ![Carved pillars](img/carved-pillar.jpg) |
 | :---: | :---: | :---: |
 | [Domes](docs/architecture.md#domes) | [Kiosks](docs/architecture.md#kiosks-and-turrets) | [Pillars](docs/architecture.md#pillars-and-columns) |
-| ![Iwan](docs/img/iwan.jpg) | ![Gopuram](docs/img/gopuram.jpg) | ![Fort gate](docs/img/fort-gate.jpg) |
+| ![Iwan](img/iwan.jpg) | ![Gopuram](img/gopuram.jpg) | ![Fort gate](img/fort-gate.jpg) |
 | [Mughal](docs/architecture.md#mughal-and-indo-islamic) | [Temples](docs/architecture.md#temples) | [Forts](docs/architecture.md#forts) |
-| ![Gothic portal](docs/img/gothic-door.jpg) | ![Tibetan assembly hall](docs/img/tibetan-hall.jpg) | ![Gurdwara dome](docs/img/sikh-dome.jpg) |
+| ![Gothic portal](img/gothic-door.jpg) | ![Tibetan assembly hall](img/tibetan-hall.jpg) | ![Gurdwara dome](img/sikh-dome.jpg) |
 | [Churches and colonial](docs/architecture.md#churches-and-colonial-buildings) | [Monasteries](docs/architecture.md#tibetan-monasteries) | [Gurdwaras](docs/architecture.md#gurdwaras) |
-| ![Adiyogi](docs/img/statue-adiyogi.jpg) | ![Ramanuja](docs/img/statue-ramanuja.jpg) | ![Netaji](docs/img/statue-netaji.jpg) |
+| ![Adiyogi](img/statue-adiyogi.jpg) | ![Ramanuja](img/statue-ramanuja.jpg) | ![Netaji](img/statue-netaji.jpg) |
 | [Adiyogi](docs/components.md#statues) | [Ramanuja, Statue of Equality](docs/components.md#statues) | [Netaji, India Gate](docs/components.md#statues) |
-| ![Trees](docs/img/trees-broadleaf.jpg) | ![Boats](docs/img/boats.jpg) | ![Elephants](docs/img/elephants.jpg) |
+| ![Trees](img/trees-broadleaf.jpg) | ![Boats](img/boats.jpg) | ![Elephants](img/elephants.jpg) |
 | [Trees](docs/setting.md#trees) | [Boats](docs/setting.md#boats) | [Animals](docs/setting.md#animals) |
 
 ## Run locally
@@ -197,8 +190,7 @@ A narrator voiced by [Sarvam AI](https://www.sarvam.ai/) text-to-speech tells th
 
 ## Deploy
 
-Hosted on Vercel at https://monuments-of-india-nu.vercel.app as a static site. Every push to `main`
-deploys to production.
+Hosted on Vercel as a static site. Every push to `main` deploys to production.
 
 ## Credits
 
