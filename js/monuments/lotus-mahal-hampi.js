@@ -62,7 +62,7 @@ export function buildLotusMahal() {
   f.add(mergeByMaterial(ev));
   // The walled upper storey and its roof slab.
   f.add(storey(y2, g2, archHigh, { closed: true }));
-  f.add(planPrism(PLAN.map(([x, z]) => [x * 0.97, z * 0.97]), y2, g2, S));
+  f.add(planPrism(PLAN.map(([x, z]) => [x * 0.88, z * 0.88]), y2, g2, S));
   const ry = y2 + g2;
   f.add(planPrism(offsetPlan(PLAN, 0.35), ry, 0.6, T));
   // The nine towers: a stepped pyramid of curved-edged tiers on a square drum, a ribbed stone and a
@@ -82,5 +82,5 @@ export function buildLotusMahal() {
   f.add(roofs);
   addDetails(f, g);
   // From the south-east, inside the walls of the enclosure.
-  return { group: g, focus: f, view: [0.85, 0.32, 1], zoom: 0.75 };
+  return { group: g, focus: f, view: [0.85, 0.3, 1], zoom: 1.15 };
 }
