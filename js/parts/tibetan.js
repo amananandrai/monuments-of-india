@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, surface, inst, unitBox, unitCyl, onFace, FACES, TIBETAN, rng } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, surface, inst, unitBox, unitCyl, onFace, FACES, TIBETAN, rng, hipRoof } from '../helpers.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { detail } from '../detail.js';
 
@@ -294,5 +294,21 @@ export function hall(w, h, d, { floors = 2, wall = TIBETAN.white, cap = Math.min
   }
   g.add(hallWindows(spots), aw);
   if (bay) g.add(at(rabsel(bay, 2.2), 0, y0 + (floors - 1) * step, d / 2));
+  return g;
+}
+
+// A gilded roof in two tiers, as on Namdroling's Golden Temple: a broad hipped roof over the hall, a
+// clerestory of the wall's colour under a maroon band, and an upper hipped roof crowned by the
+// ganjira, with gilt tips at every corner and victory banners at the clerestory's corners. Stands
+// on y = 0, over a hall w × d.
+const ROOF_GILT = mat('#e7b84a', 0.3, 0.6, { emissive: '#3d2a06' }), ROOF_WALL = mat('#e2b046', 0.78);
+export function goldRoof(w, d, { rise = 5, clere = 4.5, upper = 0.55, gilt = ROOF_GILT, wall = ROOF_WALL } = {}) {
+  const g = new THREE.Group(), uw = w * upper, ud = d * upper;
+  g.add(hipRoof(w + 3, d + 3, rise, gilt), at(roofCorners(w + 3, d + 3), 0, 0.05, 0));
+  g.add(box(uw, clere, ud, wall, 0, rise * 0.7, 0), box(uw + 0.4, 0.9, ud + 0.4, TIBETAN.maroon, 0, rise * 0.7 + clere - 0.9, 0));
+  const y = rise * 0.7 + clere;
+  g.add(at(hipRoof(uw + 2.4, ud + 2.4, rise * 0.8, gilt), 0, y, 0), at(roofCorners(uw + 2.4, ud + 2.4), 0, y + 0.05, 0));
+  g.add(at(ganjira(4.2), 0, y + rise * 0.8 - 0.3, 0));
+  for (const x of [-1, 1]) for (const z of [-1, 1]) g.add(at(gyaltsen(2.2), x * uw / 2, y - 0.1, z * ud / 2));
   return g;
 }

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, lathe, archWall, barrelVault, surface, photo, inst, unitCyl, hemi } from '../helpers.js';
 import { lionCapital } from '../parts/animals.js';
+import { elephantPillar } from '../parts/sculpture.js';
 import { heightField, fbm, smooth, ridged } from '../parts/terrain.js';
 import { addDetails } from '../details/karla-caves.js';
 import { detail } from '../detail.js';
@@ -34,20 +35,6 @@ export function hillY(x, z) {
   return -0.3 - 95 * smooth(24, 160, z) - Math.max(0, ax - 40) * 0.12 * smooth(0, 30, z) + (z > 24 ? 3 * fbm(x, z, { scale: 0.03, octaves: 3 }) : 0);
 }
 
-// A pillar of the nave: a stepped base with a pot (ghata) on it, an octagonal shaft, a bell
-// capital, and on the abacus a pair of kneeling elephants, each carrying a man and a woman.
-function navePillar(h, m) {
-  const g = new THREE.Group();
-  g.add(box(1.3, 0.5, 1.3, m, 0, 0, 0), at(lathe([[0.55, 0], [0.62, 0.2], [0.66, 0.45], [0.58, 0.7], [0.4, 0.85], [0.42, 0.95]], m, 16), 0, 0.5, 0));
-  g.add(cyl(0.38, 0.42, h - 3.6, m, 0, 1.45, 0, 8));
-  g.add(at(lathe([[0.38, 0], [0.55, 0.3], [0.62, 0.6], [0.45, 0.8]], m, 16), 0, h - 2.15, 0), box(1.5, 0.35, 1.1, m, 0, h - 1.35, 0));
-  if (!detail.low) for (const s of [-1, 1]) {
-    const e = box(0.55, 0.55, 0.95, m, s * 0.42, h - 1, 0);
-    g.add(e, box(0.22, 0.45, 0.22, m, s * 0.42, h - 0.45, 0.1));
-  }
-  return g;
-}
-
 export function buildKarlaCaves() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
@@ -79,7 +66,7 @@ export function buildKarlaCaves() {
   // stupa in the apse.
   const hall = new THREE.Group(), n = 15, ph = 8.4;
   hall.add(box(hw, 0.2, hl, ROCK_LIGHT, 0, 0, z0 - hl / 2));
-  for (const s of [-1, 1]) for (let k = 0; k < n; k++) hall.add(at(navePillar(ph, ROCK_LIGHT), s * 4.4, 0.2, z0 - 3 - k * 2.1));
+  for (const s of [-1, 1]) for (let k = 0; k < n; k++) hall.add(at(elephantPillar(ph, ROCK_LIGHT), s * 4.4, 0.2, z0 - 3 - k * 2.1));
   hall.add(at(barrelVault(5, hl - 6, ROCK_LIGHT), 0, ph + 0.2, z0 - 3 - (hl - 6) / 2));
   for (let k = 0; k < 16; k++) hall.add(mesh(new THREE.TorusGeometry(4.85, 0.13, 4, 18, Math.PI), TEAK, 0, ph + 0.2, z0 - 4 - k * 1.9));
   const st = z0 - hl + 5;

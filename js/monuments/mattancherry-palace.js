@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { mat, mesh, box, at, onFace, hipRoof, kalash, photo, doubleSided } from '../helpers.js';
 import { mergeByMaterial, windowFrame, jali } from '../parts/components.js';
 import { classicalDoor } from '../parts/colonial.js';
+import { ringRoof } from '../parts/temples.js';
 import { addDetails } from '../details/mattancherry-palace.js';
 
 // Mattancherry's walls of laterite under lime plaster, washed white; the teak of its windows,
@@ -17,25 +18,6 @@ export const COPPER = mat('#b0773f', 0.45, 0.45);
 // that runs round the square with hips at its corners, its eaves OV out and its ridge RH up. The
 // entrance front faces +z.
 export const P = { W: 52, D: 42, WD: 11, H: 8.4, OV: 1.6, RH: 5.6 };
-
-// A roof that runs round a courtyard: from the outer eaves (W × D, ov beyond the walls) up to a
-// ridge over the middle of each wing (wd deep), and down again to the eaves over the courtyard,
-// with hips at the corners. One shell, shown from both sides.
-export function ringRoof(W, D, wd, ov, h, m) {
-  const rect = (hw, hd, y) => [[-hw, y, -hd], [hw, y, -hd], [hw, y, hd], [-hw, y, hd]];
-  const o = rect(W / 2 + ov, D / 2 + ov, 0), r = rect(W / 2 - wd / 2, D / 2 - wd / 2, h), i = rect(W / 2 - wd - ov, D / 2 - wd - ov, 0);
-  const pos = [...o, ...r, ...i].flat(), idx = [];
-  for (let k = 0; k < 4; k++) {
-    const n = (k + 1) % 4;
-    idx.push(k, n, 4 + n, k, 4 + n, 4 + k, 4 + k, 4 + n, 8 + n, 4 + k, 8 + n, 8 + k);
-  }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-  geo.setIndex(idx);
-  const flatGeo = geo.toNonIndexed();
-  flatGeo.computeVertexNormals();
-  return mesh(flatGeo, doubleSided(m));
-}
 
 export function buildMattancherry() {
   const g = new THREE.Group(), f = new THREE.Group();

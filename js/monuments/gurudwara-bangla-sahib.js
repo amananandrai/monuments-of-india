@@ -2,21 +2,9 @@ import * as THREE from 'three';
 import { M, box, cyl, at, onFace, chhatri } from '../helpers.js';
 import { grandStair } from '../parts/doorways.js';
 import { mergeByMaterial, chhajja } from '../parts/components.js';
-import { arcadeSkin, cellRow } from '../parts/mughal.js';
-import { sikhDome, parapetDomes, GILT } from '../details/takht-sri-hazur-sahib.js';
+import { arcadeSkin } from '../parts/mughal.js';
+import { sikhDome, parapetDomes, rectStorey, GILT } from '../parts/sikh.js';
 import { addDetails } from '../details/gurudwara-bangla-sahib.js';
-
-// A storey on a rectangle w × d: a core block with an arcade skin dp deep on each face.
-function rectStorey(w, d, h, pitch, m, { trim = m, fill = 'room', dp = 0.8, sill = 0.4, ah = h * 0.72, front = null } = {}) {
-  const g = new THREE.Group();
-  g.add(box(w - 2 * dp, h, d - 2 * dp, m));
-  for (const [ang, len, dist] of [[0, w, d / 2 - dp], [Math.PI, w, d / 2 - dp], [Math.PI / 2, d - 2 * dp, w / 2 - dp], [-Math.PI / 2, d - 2 * dp, w / 2 - dp]]) {
-    const n = Math.max(1, Math.floor(len / pitch)), p = len / n, aw = p * 0.6;
-    const cells = cellRow(n, p, sill, aw, ah).map((c) => (ang === 0 && front && Math.abs(c[0]) < p / 2 ? [...c, front] : c));
-    g.add(onFace(arcadeSkin(len, h, cells, dp, m, { trim, fill }), ang, dist));
-  }
-  return g;
-}
 
 // Gurdwara Bangla Sahib, New Delhi, on the site of Raja Jai Singh's bungalow where Guru Har Krishan
 // stayed in 1664; the present building is mostly of after 1947. From photographs: a white marble

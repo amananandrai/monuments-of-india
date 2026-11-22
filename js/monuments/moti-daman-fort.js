@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { mat, box, cyl, at, inst, unitBox, planPrism, photo, hipRoof, archWall } from '../helpers.js';
+import { arrowBastion } from '../parts/forts.js';
 import { addDetails } from '../details/moti-daman-fort.js';
 
 // Moti Daman Fort, from photographs and descriptions. The Portuguese walled town of 1559–1581 on
@@ -17,18 +18,8 @@ export const PTS = [[-150, -60], [-110, -110], [-20, -118], [70, -112], [140, -8
 // The gates: on the south wall (between angles 7 and 8) and the north wall (between 2 and 3).
 export const GATES = [{ i: 7, t: 0.5 }, { i: 2, t: 0.5 }];
 
-// The arrowhead bastion at angle i: two flanks running back to the curtain and two faces meeting
-// at a salient pointing out along the angle's bisector.
-export function bastionPlan(i) {
-  const n = PTS.length, [vx, vz] = PTS[i], [px, pz] = PTS[(i + n - 1) % n], [qx, qz] = PTS[(i + 1) % n];
-  const la = Math.hypot(px - vx, pz - vz), lb = Math.hypot(qx - vx, qz - vz);
-  const ax = (px - vx) / la, az = (pz - vz) / la, bx = (qx - vx) / lb, bz = (qz - vz) / lb;
-  let ox = -(ax + bx), oz = -(az + bz);
-  const ol = Math.hypot(ox, oz);
-  ox /= ol; oz /= ol;
-  const F = 12, S = 9, P = 22;
-  return [[vx + ax * F, vz + az * F], [vx + ax * F + ox * S, vz + az * F + oz * S], [vx + ox * P, vz + oz * P], [vx + bx * F + ox * S, vz + bz * F + oz * S], [vx + bx * F, vz + bz * F]];
-}
+// The arrowhead bastion at angle i of the curtain.
+export const bastionPlan = (i) => arrowBastion(PTS, i);
 
 export function buildMotiDamanFort() {
   const g = new THREE.Group(), f = new THREE.Group();

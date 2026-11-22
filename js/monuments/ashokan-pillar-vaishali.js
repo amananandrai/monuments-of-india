@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, lathe, ribbed, rng, inst, unitBox, surface, sheet } from '../helpers.js';
-import { lion } from '../parts/animals.js';
+import { M, mat, box, cyl, at, lathe, rng, inst, unitBox, surface, sheet } from '../helpers.js';
+import { ashokanPillar } from '../parts/animals.js';
 import { addDetails } from '../details/ashokan-pillar-vaishali.js';
 
 // The Chunar sandstone of the Mauryan pillars, polished to a sheen that has outlasted 2,200
@@ -17,26 +17,10 @@ export const BRICK_DARK = surface(mat('#7d503d', 0.95), 'terracotta');
 // Ramkund, a brick-lined tank. The pillar faces +z (north): the lion looks over the stupa.
 export const H = { shaft: 7.4, r0: 0.66, r1: 0.52 };
 
-export function pillar() {
-  const g = new THREE.Group(), { shaft, r0, r1 } = H;
-  g.add(cyl(r1, r0, shaft, POLISH, 0, 0, 0, 40));
-  // The bell: a lathe of the inverted lotus, ribbed by its petals, then a cushion and the abacus.
-  const y0 = shaft;
-  g.add(at(ribbed(lathe([[r1 * 1.02, 0], [r1 * 1.52, 0.1], [r1 * 1.48, 0.32], [r1 * 1.28, 0.62], [r1 * 1.02, 0.9], [r1 * 0.82, 1.06], [r1 * 0.88, 1.18], [r1 * 0.8, 1.25]], POLISH, 72), 24, 0.05), 0, y0, 0));
-  g.add(cyl(r1 * 0.95, r1 * 0.95, 0.22, POLISH, 0, y0 + 1.25, 0, 32), box(1.6, 0.42, 1.25, POLISH, 0, y0 + 1.47, 0));
-  // The lion, seated on its haunches, mane in curls, facing north.
-  const l = lion(1, POLISH).children[1], lg = new THREE.Group().add(l);
-  l.position.set(0, -0.45, 0.25);
-  lg.scale.setScalar(0.72);
-  lg.position.y = y0 + 1.89;
-  g.add(lg);
-  return g;
-}
-
 export function buildAshokanPillarVaishali() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(7);
   g.add(f);
-  f.add(pillar());
+  f.add(ashokanPillar(POLISH, H));
   // The low brick platform round the pillar's foot, and the railing that keeps visitors back.
   f.add(box(4.4, 0.35, 4.4, BRICK, 0, 0, 0));
   const rails = [];

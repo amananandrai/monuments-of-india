@@ -206,3 +206,31 @@ export function bastionCrowns(list, m, { trim = m, size = 1, seg = 16 } = {}) {
   if (guns.length) g.add(inst(unitBox(), guns, M.recess));
   return g;
 }
+
+// A length of battered wall, 1 × 1 × 1 standing on y = 0, for instancing with inst(): both faces
+// lean in, so its top is `top` as thick as its foot, as the walls of Tughlaqabad lean back from
+// their footings. Shared between calls with the same taper.
+const battered = new Map();
+export function batteredGeo(top = 0.55) {
+  if (battered.has(top)) return battered.get(top);
+  const geo = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0), p = geo.attributes.position;
+  for (let i = 0; i < p.count; i++) if (p.getY(i) > 0.5) p.setZ(i, p.getZ(i) * top);
+  geo.computeVertexNormals();
+  battered.set(top, geo);
+  return geo;
+}
+
+// The plan of an arrowhead (angle) bastion of a European trace, at corner i of a curtain whose
+// corners are pts ([x, z], in order): two flanks running `flank` along the curtain either side,
+// stepping out `shoulder`, and two faces meeting at a salient `point` out along the corner's
+// bisector. Five [x, z] points, for planPrism().
+export function arrowBastion(pts, i, { flank = 12, shoulder = 9, point = 22 } = {}) {
+  const n = pts.length, [vx, vz] = pts[i], [px, pz] = pts[(i + n - 1) % n], [qx, qz] = pts[(i + 1) % n];
+  const la = Math.hypot(px - vx, pz - vz), lb = Math.hypot(qx - vx, qz - vz);
+  const ax = (px - vx) / la, az = (pz - vz) / la, bx = (qx - vx) / lb, bz = (qz - vz) / lb;
+  let ox = -(ax + bx), oz = -(az + bz);
+  const ol = Math.hypot(ox, oz);
+  ox /= ol; oz /= ol;
+  const F = flank, S = shoulder, P = point;
+  return [[vx + ax * F, vz + az * F], [vx + ax * F + ox * S, vz + az * F + oz * S], [vx + ox * P, vz + oz * P], [vx + bx * F + ox * S, vz + bz * F + oz * S], [vx + bx * F, vz + bz * F]];
+}

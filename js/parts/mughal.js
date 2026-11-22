@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, rise, surface, doubleSided } from '../helpers.js';
+import { M, mat, mesh, box, at, rise, surface, doubleSided, lathe } from '../helpers.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { detail } from '../detail.js';
 import { archCurve, archRing, archSlab, tympanum, niche, jali, rosette, merlons, louvredShutter, mergeByMaterial } from './components.js';
@@ -201,4 +201,11 @@ export function cellRow(n, pitch, sill, aw, ah, skip = []) {
     if (!skip.some(([a, b]) => cx > a && cx < b)) out.push([cx, sill, aw, ah]);
   }
   return out;
+}
+
+// The pear-shaped dome of Sheikh Chilli's Tomb and the late Mughal tombs: swelling well past its
+// drum (r is the drum's radius over 0.78), then drawing in to a slender neck. About 2r high; stands
+// on y = 0, a finial goes on top.
+export function pearDome(r, m) {
+  return lathe([[0.78, 0], [0.95, 0.12], [1.1, 0.38], [1.14, 0.66], [1.05, 0.98], [0.82, 1.3], [0.52, 1.58], [0.26, 1.8], [0.1, 1.96], [0, 2.02]].map(([a, b]) => [a * r, b * r]), m, 48);
 }

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mat, mesh, box, at, inst, unitBox, photo, nagaraProfile, flat } from '../helpers.js';
 import { carved, mergeByMaterial } from '../parts/components.js';
+import { brokenSpire } from '../parts/temples.js';
 import { addDetails } from '../details/masrur-temples.js';
 
 // The Masrur temples, in the Kangra valley: fifteen Nagara shrines of the 8th century cut, not
@@ -14,27 +15,6 @@ export const ROCK = photo(mat('#a69477', 0.94), 'sandstone');
 export const ROCK_DARK = photo(mat('#85755c', 0.95), 'sandstone');
 // The spires and walls are carved over their faces: the 'reliefs' surface.
 export const CARVED = carved(mat('#a08d6f', 0.94), 'reliefs');
-
-// A Nagara spire w across its foot and h high (were it whole), on the cross-shaped plan of the
-// shikhara (js/helpers.js), but only its lower `keep` fraction: the rest broken away, the top
-// course left ragged. With keep 1 it ends in a ribbed amalaka. Its foot at y = 0.
-export function brokenSpire(w, h, keep, m = CARVED, n = 14) {
-  const g = new THREE.Group(), sh = h / n, last = Math.max(2, Math.round(n * keep));
-  for (let i = 0; i < last; i++) {
-    const wi = w * nagaraProfile(i / n), y = i * sh, ragged = i === last - 1 && keep < 1;
-    g.add(box(wi * 0.84, sh, wi * 0.84, m, 0, y, 0));
-    if (!ragged) g.add(box(wi, sh * 0.8, wi * 0.6, m, 0, y, 0), box(wi * 0.6, sh * 0.8, wi, m, 0, y, 0));
-    else g.add(box(wi * 0.6, sh * 0.6, wi * 0.4, ROCK_DARK, wi * 0.12, y + sh, -wi * 0.1), box(wi * 0.35, sh * 0.9, wi * 0.5, ROCK_DARK, -wi * 0.2, y + sh, wi * 0.08));
-  }
-  if (keep >= 1) {
-    const top = w * nagaraProfile(1), ar = top * 0.64;
-    g.add(box(top * 0.62, sh * 0.7, top * 0.62, m, 0, h, 0));
-    const am = mesh(new THREE.SphereGeometry(ar, 24, 8), flat(ROCK), 0, h + sh * 0.7 + ar * 0.42, 0);
-    am.scale.y = 0.42;
-    g.add(am);
-  }
-  return g;
-}
 
 // The shrines: [x, z, width, spire height, how much of it stands]. The central one is the
 // Thakurdwara; the rest stand in pairs either side of the axis.
@@ -60,7 +40,7 @@ export function buildMasrurTemples() {
   for (const [x, z, w, h, keep] of SHRINES) {
     const wh = w * 0.42, t = at(new THREE.Group(), x, T - 0.3, z);
     t.add(box(w, wh, w, CARVED, 0, 0, 0), box(w + 0.5, wh, w * 0.5, CARVED, 0, 0, 0), box(w * 0.5, wh, w + 0.5, CARVED, 0, 0, 0), box(w + 0.7, w * 0.06, w + 0.7, ROCK_DARK, 0, wh, 0));
-    t.add(at(brokenSpire(w * 0.96, h, keep), 0, wh + w * 0.06, 0));
+    t.add(at(brokenSpire(w * 0.96, h, keep, CARVED, { rubble: ROCK_DARK, amalakaM: ROCK }), 0, wh + w * 0.06, 0));
     d.add(t);
   }
   // The front: pilasters and dark doorways cut in the rock face, and the porch's pillar stumps.

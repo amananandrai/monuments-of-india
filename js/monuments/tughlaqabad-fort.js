@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, lathe, at, FACES, inst, photo, archWall, archPanel, rng, planPrism } from '../helpers.js';
-import { rampart, bastionCrowns } from '../parts/forts.js';
+import { rampart, bastionCrowns, batteredGeo } from '../parts/forts.js';
 import { archRing, mergeByMaterial } from '../parts/components.js';
 import { addDetails } from '../details/tughlaqabad-fort.js';
 
@@ -11,16 +11,6 @@ export const RUBBLE_D = photo(mat('#6c665b', 0.96), 'rubble');
 export const RED = photo(mat('#a5573a', 0.85), 'blocks');
 export const MARBLE = mat('#eeeae1', 0.45);
 
-// A length of battered wall, 1 x 1 x 1 standing on y = 0: its top half as thick as its foot, both
-// faces sloping in, as the walls of Tughlaqabad lean back from their footings.
-let battered = null;
-export function batteredGeo() {
-  if (battered) return battered;
-  const geo = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0), p = geo.attributes.position;
-  for (let i = 0; i < p.count; i++) if (p.getY(i) > 0.5) p.setZ(i, p.getZ(i) * 0.55);
-  geo.computeVertexNormals();
-  return (battered = geo);
-}
 // A round bastion, tapering, open at neither end: 1 across at its foot, standing on y = 0.
 let bastion = null;
 const bastionGeo = () => bastion || (bastion = new THREE.CylinderGeometry(0.4, 0.5, 1, 20).translate(0, 0.5, 0));

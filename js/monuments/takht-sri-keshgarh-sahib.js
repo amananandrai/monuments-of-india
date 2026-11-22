@@ -3,7 +3,7 @@ import { M, box, cyl, at, onFace, FACES, chhatri } from '../helpers.js';
 import { steps } from '../parts/doorways.js';
 import { mergeByMaterial, chhajja } from '../parts/components.js';
 import { arcadeSkin } from '../parts/mughal.js';
-import { sikhDome, arcadeStorey, parapetDomes, GILT } from '../details/takht-sri-hazur-sahib.js';
+import { sikhDome, arcadeStorey, parapetDomes, GILT } from '../parts/sikh.js';
 import { addDetails, TOP } from '../details/takht-sri-keshgarh-sahib.js';
 
 // Takht Sri Keshgarh Sahib, Anandpur Sahib, where Guru Gobind Singh founded the Khalsa in 1699; the

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, hipRoof, TIBETAN } from '../helpers.js';
-import { hall, ganjira, roofCorners, dharmaWheel, gyaltsen, quarters, parapetDiscs } from '../parts/tibetan.js';
+import { mat, box, cyl, at, hipRoof, TIBETAN } from '../helpers.js';
+import { hall, ganjira, roofCorners, dharmaWheel, quarters, parapetDiscs, goldRoof } from '../parts/tibetan.js';
 import { tibetanPortico } from '../parts/doorways.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { addDetails } from '../details/namdroling-monastery.js';
@@ -9,19 +9,6 @@ import { addDetails } from '../details/namdroling-monastery.js';
 export const YELLOW = mat('#e2b046', 0.78);
 export const RED = mat('#a3291f', 0.6);
 export const GILT = mat('#e7b84a', 0.3, 0.6, { emissive: '#3d2a06' });
-
-// A gilded roof in two tiers: a broad hipped roof over the hall, a clerestory, and an upper hipped
-// roof crowned by the ganjira, with gilt tips at every corner. Stands on y = 0, over a hall w x d.
-export function goldRoof(w, d, { rise = 5, clere = 4.5, upper = 0.55 } = {}) {
-  const g = new THREE.Group(), uw = w * upper, ud = d * upper;
-  g.add(hipRoof(w + 3, d + 3, rise, GILT), at(roofCorners(w + 3, d + 3), 0, 0.05, 0));
-  g.add(box(uw, clere, ud, YELLOW, 0, rise * 0.7, 0), box(uw + 0.4, 0.9, ud + 0.4, TIBETAN.maroon, 0, rise * 0.7 + clere - 0.9, 0));
-  const y = rise * 0.7 + clere;
-  g.add(at(hipRoof(uw + 2.4, ud + 2.4, rise * 0.8, GILT), 0, y, 0), at(roofCorners(uw + 2.4, ud + 2.4), 0, y + 0.05, 0));
-  g.add(at(ganjira(4.2), 0, y + rise * 0.8 - 0.3, 0));
-  for (const x of [-1, 1]) for (const z of [-1, 1]) g.add(at(gyaltsen(2.2), x * uw / 2, y - 0.1, z * ud / 2));
-  return g;
-}
 
 // Namdroling's Golden Temple, the Padmasambhava Buddhist Vihara at Bylakuppe (1999): a great hall
 // about 46 m wide and 36 deep, its ochre walls rising 24 m to a two-tiered gilded roof, about 34 m
@@ -34,7 +21,7 @@ function goldenTemple() {
   const g = new THREE.Group();
   g.add(box(HW + 6, 1.6, HD + 6, TIBETAN.white, 0, 0, 0));
   g.add(at(hall(HW, HH, HD, { floors: 4, wall: YELLOW, cap: 1.8, door: 0, doorW: 18, y0: 2.2 }), 0, 1.6, 0));
-  g.add(at(goldRoof(HW, HD, { rise: 5.5 }), 0, 1.6 + HH, 0));
+  g.add(at(goldRoof(HW, HD, { rise: 5.5, gilt: GILT, wall: YELLOW }), 0, 1.6 + HH, 0));
   // The front portico: eight red pillars, 18 m high, under three beams and a flat roof, the floors
   // marked by balconies between them; a broad stair up to it.
   const P = new THREE.Group(), pw = 32, pd = 6, ph = 18;

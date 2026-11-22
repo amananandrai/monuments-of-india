@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { mat, mesh, box, cyl, at, onFace, hipRoof, kalash, photo, doubleSided, FACES } from '../helpers.js';
 import { mergeByMaterial, windowFrame, jali } from '../parts/components.js';
-import { keralaGable } from '../parts/temples.js';
+import { keralaGable, ringRoof, keralaGopuram } from '../parts/temples.js';
 import { addDetails } from '../details/vadakkunnathan-temple.js';
 
 // Vadakkunnathan's laterite, bare on its great wall and its bases and whitewashed on the shrines;
@@ -17,51 +17,6 @@ export const BRASS = mat('#c99a3a', 0.35, 0.8);
 // The temple's measures, shared with js/details/vadakkunnathan-temple.js: the outer wall S square
 // (about 9 acres) and WH high; the cloister (chuttambalam) CW × CD, CH high to its eaves.
 export const P = { S: 190, WH: 4.2, CW: 64, CD: 54, CH: 3.8 };
-
-// A roof that runs round a courtyard: from the outer eaves up to a ridge over the middle of each
-// wing (wd deep) and down to the inner eaves, with hips at the corners. One shell, both sides drawn.
-function ringRoof(W, D, wd, ov, h, m) {
-  const rect = (hw, hd, y) => [[-hw, y, -hd], [hw, y, -hd], [hw, y, hd], [-hw, y, hd]];
-  const pos = [...rect(W / 2 + ov, D / 2 + ov, 0), ...rect(W / 2 - wd / 2, D / 2 - wd / 2, h), ...rect(W / 2 - wd - ov, D / 2 - wd - ov, 0)].flat(), idx = [];
-  for (let k = 0; k < 4; k++) { const n = (k + 1) % 4; idx.push(k, n, 4 + n, k, 4 + n, 4 + k, 4 + k, 4 + n, 8 + n, 4 + k, 8 + n, 8 + k); }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-  geo.setIndex(idx);
-  const flatGeo = geo.toNonIndexed();
-  flatGeo.computeVertexNormals();
-  return mesh(flatGeo, doubleSided(m));
-}
-
-// A Kerala gateway (gopuram): a laterite storey with the passage through it, a timber storey with
-// lattice screens over it, and three tiers of tiled roof, the upper two with carved gables to front
-// and back and a row of brass finials on the ridge. w wide, d deep, facing +z.
-export function keralaGopuram(w, d) {
-  const g = new THREE.Group(), b = 5.2, pw = 4.2;
-  g.add(box(w + 1, 0.8, d + 1, LATERITE));
-  for (const s of [-1, 1]) g.add(box((w - pw) / 2, b, d, LATERITE, s * (w + pw) / 4, 0.8, 0));
-  g.add(box(w, 0.6, d, LATERITE, 0, 0.8 + b - 0.01, 0));
-  // The first roof, low and broad; the timber storey; the second and third roofs.
-  const y1 = 0.8 + b + 0.6;
-  g.add(at(hipRoof(w + 4, d + 4, 2, TILE), 0, y1, 0));
-  g.add(box(w - 3, 4.6, d - 2.6, TEAK, 0, y1 + 0.2, 0), box(w - 2.6, 0.3, d - 2.2, TEAK, 0, y1 + 4.5, 0));
-  const lat = windowFrame(1.5, 1.6, TEAK, { shape: 'flat', screen: jali(TEAK), frame: 0.14 }), ls = new THREE.Group();
-  for (const a of [0, Math.PI]) for (let k = -2; k <= 2; k++) ls.add(onFace(at(lat.clone(), 0, y1 + 2.4, 0), a, (d - 2.6) / 2 + 0.01, k * 2.1));
-  g.add(mergeByMaterial(ls));
-  const y2 = y1 + 4.8;
-  g.add(at(hipRoof(w + 1.2, d + 1.6, 2.8, TILE), 0, y2, 0));
-  g.add(box(w - 6, 1.4, d - 4.6, TEAK, 0, y2 + 1.2, 0));
-  const y3 = y2 + 2.6;
-  g.add(at(hipRoof(w - 3, d - 2, 3.4, TILE), 0, y3, 0));
-  for (let k = -2; k <= 2; k++) g.add(at(kalash(0.32, BRASS), k * 1.2, y3 + 3.4 - 0.1, 0));
-  // The gables in the second and third roofs.
-  for (const a of [0, Math.PI]) {
-    const g2 = keralaGable(5, 1.9, 2.6, TILE, TEAK), g3 = keralaGable(3.8, 1.6, 2.2, TILE, TEAK);
-    g2.position.set(0, y2 + 0.6, Math.cos(a) * ((d + 1.6) / 2 - 0.6 * (d + 1.6) / 2 / 2.8 + 0.2)); g2.rotation.y = a;
-    g3.position.set(0, y3 + 1.2, Math.cos(a) * ((d - 2) / 2 - 1.2 * (d - 2) / 2 / 3.4 + 0.2)); g3.rotation.y = a;
-    g.add(g2, g3);
-  }
-  return g;
-}
 
 // A round shrine (vatta srikovil): a whitewashed drum r across on a moulded laterite base, under a
 // conical roof of copper in two tiers, crowned by a brass finial.
@@ -115,7 +70,7 @@ export function buildVadakkunnathanTemple() {
   }
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) wl.add(box(2.4, WH + 0.4, 2.4, LATERITE, sx * S / 2, 0, sz * S / 2));
   f.add(mergeByMaterial(wl));
-  for (const a of FACES) f.add(onFace(keralaGopuram(gw, 11), a, S / 2));
+  for (const a of FACES) f.add(onFace(keralaGopuram(gw, 11, { base: LATERITE, wood: TEAK, roof: TILE, brass: BRASS }), a, S / 2));
   // The cloister: an outer wall of laterite and lattices round a court, under one ring of roof.
   const cl = new THREE.Group(), WD = 9;
   for (const s of [-1, 1]) {

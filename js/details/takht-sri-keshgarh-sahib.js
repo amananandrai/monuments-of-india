@@ -5,7 +5,7 @@ import { arcadeSkin } from '../parts/mughal.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { trees, lampPosts, scatter, townHouses } from '../parts/realism.js';
 import { detail } from '../detail.js';
-import { nishanSahib } from './takht-sri-hazur-sahib.js';
+import { nishanSahib } from '../parts/sikh.js';
 
 // The height of the levelled hilltop on which Keshgarh Sahib stands.
 export const TOP = 16;
