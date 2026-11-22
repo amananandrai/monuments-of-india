@@ -61,5 +61,5 @@ export function buildShaniwarWada() {
   f.add(at(rampart([[0, ny + nh + 0.4, WZ, gate, 0, 10, 0]], S.brick, { trim: S.trim, size: 0.7, slits: false, kerb: false, course: false, centre: [0, 0] }), 0, 0, 0));
   addDetails(f, g, { WX, WZ, WH, T, gate, GH, bastions });
   // From the north-east, the Delhi Darwaza and its bastions in front, the walls running back.
-  return { group: g, focus: f, view: [0.6, 0.3, 1.2], zoom: 1.0 };
+  return { group: g, focus: f, view: [0.45, 0.22, 1], zoom: 0.42 };
 }

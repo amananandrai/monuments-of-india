@@ -58,7 +58,7 @@ export function addDetails(f, g, dims) {
   const sx = 0, sz = WZ + 24;
   g.add(box(4.2, 3.4, 6.2, S.trim, sx, 0, sz), box(4.8, 0.4, 6.8, S.basalt, sx, 3.4, sz));
   const h = at(horse(M.bronze, { prance: true, coarse: detail.low }), sx, 3.8, sz);
-  g.add(h, at(figure(1.8, M.bronze), sx, 5.0, sz - 0.2));
+  g.add(h, at(figure(1.8, M.bronze), sx, 5.5, sz - 0.2));
   g.add(lampPosts(along(6, [-30, WZ + 32], [30, WZ + 32])), benches([[-20, WZ + 12, Math.PI], [20, WZ + 12, Math.PI]]));
   g.add(asiBoard('Shaniwar Wada', 16, WZ + 8, 0));
   // Trees in the grounds and along the walls.
@@ -66,6 +66,6 @@ export function addDetails(f, g, dims) {
   g.add(trees([[-WX - 12, 40], [-WX - 12, -20], [WX + 12, 30], [WX + 14, -40], [-60, -WZ - 12], [50, -WZ - 12]], { kind: 'peepal', seed: 2 }));
   g.add(shrubs(along(14, [-3.5, -WZ + 10], [-3.5, WZ - 12]).map(([x, z]) => [x, z, 0.8]), { seed: 9 }));
   // The old city: rows of houses beyond the road and round the other three sides.
-  const spots = scatter(150, [-300, 300, -280, 300], { seed: 12, gap: 14 }).filter(([x, z]) => (Math.abs(x) > WX + 22 || z < -WZ - 22 || z > WZ + 56));
+  const spots = scatter(420, [-280, 280, -260, 280], { seed: 12, gap: 11 }).filter(([x, z]) => (Math.abs(x) > WX + 22 || z < -WZ - 22 || z > WZ + 56));
   g.add(townHouses(spots.map(([x, z], i) => [x, z, 7 + (i % 3) * 1.6, 9 + (i % 2) * 2, 1 + (i % 3), (i % 4) * Math.PI / 2]), { seed: 5, fine: false }));
 }
