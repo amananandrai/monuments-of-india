@@ -51,7 +51,7 @@ function sculpture(f) {
 
 // The Basilica of Bom Jesus in Old Goa: coconut palms and bougainvillea round the lawns, the stone
 // cross on its pedestal before the church, and lamps along the square.
-const LATERITE = photo(mat('#9b5b3f', 0.95), 'laterite'), LIME = mat('#ece6da', 0.85);
+const LATERITE = M.laterite, LIME = mat('#ece6da', 0.85);
 export function addDetails(f, g) {
   architecture(f);
   sculpture(f);

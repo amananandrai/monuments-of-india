@@ -3,7 +3,7 @@
 [![Live site](https://img.shields.io/badge/live_site-vercel.app-000000?logo=vercel&logoColor=white)](https://monuments-of-india-nu.vercel.app)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![three.js](https://img.shields.io/badge/three.js-0.160-000000?logo=threedotjs&logoColor=white)](https://threejs.org/)
-[![Monuments](https://img.shields.io/badge/monuments-201-b45309)](https://monuments-of-india-nu.vercel.app)
+![Monuments](https://img.shields.io/badge/monuments-201-b45309)
 
 **Live site: https://monuments-of-india-nu.vercel.app**
 
@@ -22,8 +22,9 @@ All 201, state by state, with a picture of each: **[States and monuments](monume
 
 - [Features](#features)
 - [Using the site](#using-the-site)
-- [India through time](#india-through-time)
+- [Historical Atlas of India](#historical-atlas-of-india)
 - [Technology](#technology)
+- [Project structure](#project-structure)
 - [Documentation](#documentation)
 - [Components at a glance](#components-at-a-glance)
 - [Run locally](#run-locally)
@@ -95,43 +96,64 @@ monument's `year` from `js/data.js`.
 - **One file per monument** in `js/monuments/`, and one for its finer detail and setting in
   `js/details/`, both named after the monument's id in `js/data.js`. A monument's code is fetched
   only when it is opened.
-- **Shared parts** in `js/helpers.js` and `js/parts/`: see [Architecture](architecture.md)
-  and [The setting](realism.md).
+- **Shared parts** in `js/helpers.js` and `js/parts/`.
 - **Procedural surfaces** in `js/surface.js`, generated in the shader from world position, with
   CC0 photo textures and their normal and roughness maps over them (`js/textures.js`).
 - **Sculpted figures:** statues and temple animals are grown from signed distance fields and
-  meshed in the browser (`js/sdf.js`).
-- **Triangle budgets:** 800,000 on desktops, or 1,000,000 for the twelve monuments with large sculpted figures (trees and ground cover planted only up to 650,000, so the rest goes to the architecture and the statues), and 300,000 on phones for each monument
-  (`js/detail.js`); repeated parts are instanced.
+  meshed in the browser (`js/sdf.js`), from the 182 m Statue of Unity to the
+  Adiyogi bust and Ramanuja of the Statue of Equality.
+- **Triangle budgets** for each monument (`js/detail.js`): 800,000 on desktops, 1,000,000 for the
+  twelve with large sculpted figures, and 300,000 on phones. Trees and ground cover are planted
+  only up to 650,000, so the rest goes to the architecture and the statues. Repeated parts are
+  instanced.
 - **Headless checks** in `tools/`, run with Node and Playwright.
 - **Hosting:** Vercel. **Video:** a [HyperFrames](https://hyperframes.heygen.com) project in `video/`.
 
-How surfaces, water, landscape, lighting and the camera work is in
-[How it is drawn](how-it-is-drawn.md).
+## Project structure
+
+```text
+index.html, css/style.css   the page and its styling
+js/main.js                  the app: scene, loading, camera, list, plaque
+js/data.js                  the 201 monuments: facts, and how to load each
+js/helpers.js, js/parts/    the shared kit every monument is built from
+js/monuments/<id>.js        one file per monument: the masses
+js/details/<id>.js          one file per monument: finer architecture and the setting
+js/surface.js, sdf.js, …    drawn surfaces, sculpting, and the passes run on a built model
+assets/views, textures      a picture of each monument; CC0 photo textures
+docs/, img/                 the guides, and a picture of every shared part
+monuments.md                all 201 monuments by state (generated)
+tools/                      headless checks and picture tools
+video/                      the film
+```
 
 ## Documentation
 
 | Page | What it covers |
 | --- | --- |
 | [States and monuments](monuments.md) | All 201 monuments by state: place, dates, style, material, a link to the 3D view and a picture of each |
-| [Components](components.md) | Every shared part in pictures, on one page |
-| [Architecture](architecture.md) | The parts the buildings are made of: domes, kiosks, pillars, arches, doors and windows, eaves, temple towers, fort gates. What each takes and where it lives |
-| [The setting](realism.md) | What stands round them: the 21 kinds of tree, shrubs, lamps, flags, boats, stalls, towns, traffic, trains, aircraft and animals |
-| [How it is drawn](how-it-is-drawn.md) | Surfaces, landscape, water, sculpture, lighting, the camera, and what differs on phones |
+| [Project structure](docs/project-structure.md) | Every file and folder, how the code is layered, a monument's entry in `js/data.js`, how to add a monument, conventions and automation |
+| [Components](docs/components.md) | Every shared part and every statue in pictures, on one page |
+| [Architecture](docs/architecture.md) | The parts the buildings are made of: domes, kiosks, pillars, arches, walls, roofs, ornament and surfaces, then by tradition: temples, Mughal, forts, churches and colonial buildings, Tibetan monasteries, gurdwaras, and the early and regional styles. What each takes and where it lives |
+| [The setting](docs/setting.md) | What stands round them: the 21 kinds of tree, shrubs, lamps, flags, boats, stalls, towns and cities, traffic, trains, aircraft, animals, hills and mountains |
+| [How it is drawn](docs/how-it-is-drawn.md) | What happens when a monument is opened; surfaces, water, landscape, sculpture, lighting, the camera, budgets, and what differs on phones |
 | [Model checks](tools/README.md) | The headless checks and picture tools in `tools/` |
 | [Video](video/README.md) | Rendering the film, which covers the first 101 monuments |
 
 ## Components at a glance
 
-A few of the shared parts. All of them are in [Components](components.md).
+A few of the shared parts. All 155 pictures, statues included, are in [Components](docs/components.md).
 
 | ![Onion dome](img/onion-dome.jpg) | ![Chhatri](img/chhatri.jpg) | ![Carved pillars](img/carved-pillar.jpg) |
 | :---: | :---: | :---: |
-| [Dome](architecture.md#domes) | [Chhatri](architecture.md#kiosks-and-turrets) | [Pillars](architecture.md#pillars-and-columns) |
+| [Domes](docs/architecture.md#domes) | [Kiosks](docs/architecture.md#kiosks-and-turrets) | [Pillars](docs/architecture.md#pillars-and-columns) |
 | ![Iwan](img/iwan.jpg) | ![Gopuram](img/gopuram.jpg) | ![Fort gate](img/fort-gate.jpg) |
-| [Arches and doors](architecture.md#arches-doors-and-windows) | [Temple towers](architecture.md#temples-jspartstemplesjs) | [Forts](architecture.md#forts-jspartsfortsjs) |
+| [Mughal](docs/architecture.md#mughal-and-indo-islamic) | [Temples](docs/architecture.md#temples) | [Forts](docs/architecture.md#forts) |
+| ![Gothic portal](img/gothic-door.jpg) | ![Tibetan assembly hall](img/tibetan-hall.jpg) | ![Gurdwara dome](img/sikh-dome.jpg) |
+| [Churches and colonial](docs/architecture.md#churches-and-colonial-buildings) | [Monasteries](docs/architecture.md#tibetan-monasteries) | [Gurdwaras](docs/architecture.md#gurdwaras) |
+| ![Adiyogi](img/statue-adiyogi.jpg) | ![Ramanuja](img/statue-ramanuja.jpg) | ![Netaji](img/statue-netaji.jpg) |
+| [Adiyogi](docs/components.md#statues) | [Ramanuja, Statue of Equality](docs/components.md#statues) | [Netaji, India Gate](docs/components.md#statues) |
 | ![Trees](img/trees-broadleaf.jpg) | ![Boats](img/boats.jpg) | ![Elephants](img/elephants.jpg) |
-| [Trees](realism.md#trees) | [Boats](realism.md#boats) | [Animals](realism.md#animals) |
+| [Trees](docs/setting.md#trees) | [Boats](docs/setting.md#boats) | [Animals](docs/setting.md#animals) |
 
 ## Run locally
 
@@ -147,8 +169,15 @@ npx serve .
 
 `tools/` holds headless checks that build every model in Chromium as the site does: triangle
 budgets, flicker, heights against `refs`, the filter groups, that the lists of monuments agree, and
-renders of the home views. See
-[`tools/README.md`](tools/README.md).
+renders of the home views and of the shared parts.
+
+```bash
+cd tools
+npm install
+npm run check          # registry, filters, heights, budgets and flicker, over all 201
+```
+
+See [`tools/README.md`](tools/README.md).
 
 ## Video
 
@@ -161,8 +190,7 @@ A narrator voiced by [Sarvam AI](https://www.sarvam.ai/) text-to-speech tells th
 
 ## Deploy
 
-Hosted on Vercel at https://monuments-of-india-nu.vercel.app as a static site. Every push to `main`
-deploys to production.
+Hosted on Vercel as a static site. Every push to `main` deploys to production.
 
 ## Credits
 

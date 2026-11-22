@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, lathe, archWall, barrelVault, surface, photo, inst, unitCyl, hemi } from '../helpers.js';
+import { mat, mesh, box, cyl, at, lathe, archWall, barrelVault, surface, photo, hemi } from '../helpers.js';
 import { lionCapital } from '../parts/animals.js';
 import { elephantPillar } from '../parts/sculpture.js';
 import { heightField, fbm, smooth, ridged } from '../parts/terrain.js';

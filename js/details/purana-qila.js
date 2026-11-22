@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, archPanel, sheet, rng, inst, unitBox } from '../helpers.js';
+import { M, mat, box, at, onFace, archPanel, sheet, rng, inst, unitBox } from '../helpers.js';
 import { archRing, star, inlayBorder, merlons, chhajja, jharokha, mergeByMaterial } from '../parts/components.js';
-import { iwan, arcadeSkin, cellRow } from '../parts/mughal.js';
+import { iwan } from '../parts/mughal.js';
 import { towerDetail } from '../parts/forts.js';
 import { trees, shrubs, lampPosts, benches, asiBoard, scatter, along, boats } from '../parts/realism.js';
 import { detail } from '../detail.js';

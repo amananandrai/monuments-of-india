@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, inst, unitBox, unitCyl, photo, hemi } from '../helpers.js';
+import { mat, box, cyl, at, inst, unitBox, unitCyl, photo, hemi } from '../helpers.js';
 import { fortGate, rampart, bastionCrowns } from '../parts/forts.js';
 import { mughalChhatri } from '../parts/components.js';
 import { addDetails } from '../details/purana-qila.js';

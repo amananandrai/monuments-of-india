@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, hemi, hipRoof, at, onFace, finial } from '../helpers.js';
+import { mat, box, cyl, hemi, hipRoof, at, onFace, finial } from '../helpers.js';
 import { arcadeSkin, cellRow, iwan } from '../parts/mughal.js';
 import { addDetails } from '../details/jahaz-mahal.js';
 

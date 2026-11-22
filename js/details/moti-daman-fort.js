@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, hemi, inst, unitBox, sheet, planPrism, offsetPlan, curvedBand } from '../helpers.js';
+import { M, mat, box, cyl, at, onFace, hemi, inst, unitBox, sheet, planPrism, offsetPlan } from '../helpers.js';
 import { mergeByMaterial, windowFrame, keystone } from '../parts/components.js';
 import { pediment, column } from '../parts/colonial.js';
 import { trees, boats, asiBoard, scatter, townHouses, lampPosts } from '../parts/realism.js';
 import { detail } from '../detail.js';
-import { STONE, STONE_DARK, LIME, TILE, H, PTS, GATES, bastionPlan } from '../monuments/moti-daman-fort.js';
+import { STONE, STONE_DARK, LIME, H, PTS, GATES, bastionPlan } from '../monuments/moti-daman-fort.js';
 
-const ROAD = mat('#6a645a', 0.95), DOOR = mat('#4a3424', 0.8), BLUE = mat('#3e6e9a', 0.8);
+const ROAD = mat('#6a645a', 0.95), DOOR = mat('#4a3424', 0.8);
 
 // Moti Daman Fort, finer detail. From photographs: the curtain has a rounded cordon a little below
 // its parapet and wide embrasures cut through the parapet for guns; a domed sentry box (guarita)

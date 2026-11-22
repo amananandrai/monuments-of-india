@@ -62,7 +62,7 @@ export function addDetails(f, g) {
     const x = s * (13.6 + k * 0.42), y = DECKS[0].Y + (k + 1) * ((DECKS[1].Y - DECKS[0].Y) / 16);
     steps.push([x, Math.min(groundY(x, 1.8), y) - 1, 1.8, 0.5, y - Math.min(groundY(x, 1.8), y) + 1, 1.3, 0]);
   }
-  for (const s of [-1, 1]) for (let k = 0; k < 6; k++) { const x = s * (13.4 - k * 0.0), y = DECKS[1].Y; steps.push([s * (13.2 + 0.3 * k), y - 0.4, 1.8 - k * 0.5, 0.6, 0.4, 0.6, 0]); }
+  for (const s of [-1, 1]) for (let k = 0; k < 6; k++) { const y = DECKS[1].Y; steps.push([s * (13.2 + 0.3 * k), y - 0.4, 1.8 - k * 0.5, 0.6, 0.4, 0.6, 0]); }
   g.add(inst(unitBox(), steps, STONE));
   // The banks and the forest slopes above them.
   g.add(heightField(1200, 1200, detail.low ? 140 : 220, groundY, { rock: ['#7d7a6f', '#8b887d', '#6e6b61'], cover: '#4c6a37', steep: 0.68, band: 9 }));

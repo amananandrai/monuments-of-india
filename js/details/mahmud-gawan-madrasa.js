@@ -1,5 +1,4 @@
-import * as THREE from 'three';
-import { M, mat, box, at, rng, inst, unitBox } from '../helpers.js';
+import { M, mat, box, rng, inst, unitBox } from '../helpers.js';
 import { trees, shrubs, asiBoard, scatter, along, townHouses, traffic } from '../parts/realism.js';
 import { detail } from '../detail.js';
 import { STONE } from '../monuments/mahmud-gawan-madrasa.js';

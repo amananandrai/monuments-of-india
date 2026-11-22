@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mesh, box, cyl, at, lathe } from '../helpers.js';
+import { box, cyl, at, lathe } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { detail } from '../detail.js';
 import { addDetails, ROCK, ROCK_LIGHT, DARK, DIMS } from '../details/elephanta-caves.js';

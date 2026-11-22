@@ -10,7 +10,7 @@ import { addDetails } from '../details/immaculate-conception-panaji.js';
 export const WHITE = photo(mat('#f7f5f0', 0.8), 'plaster');
 export const TRIM = mat('#ece6d8', 0.78);
 export const TILE = mat('#a4492f', 0.82);
-export const LAT = photo(mat('#9b5b3f', 0.95), 'laterite');
+export const LAT = M.laterite;
 
 // The measures, shared with js/details/immaculate-conception-panaji.js. The church stands on a
 // terrace H0 above Church Square, its front facing +z at z = FZ. The façade is FW wide: a tower

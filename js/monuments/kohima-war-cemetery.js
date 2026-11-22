@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, box, at, inst, unitBox, photo } from '../helpers.js';
+import { mat, box, inst, unitBox, photo } from '../helpers.js';
 import { addDetails } from '../details/kohima-war-cemetery.js';
 
 // Kohima War Cemetery, Garrison Hill, from photographs and the Commonwealth War Graves

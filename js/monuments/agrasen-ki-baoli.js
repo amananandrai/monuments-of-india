@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, inst, unitBox, photo, archPanel, ring } from '../helpers.js';
+import { M, mat, box, cyl, at, inst, unitBox, photo, archPanel, ring, planSolid } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { addDetails } from '../details/agrasen-ki-baoli.js';
 
@@ -16,32 +16,13 @@ export const GROUND = mat('#7c8d52', 0.95);
 // from z = Z0 at ground level down to Z1; the well's centre at z = WZ.
 export const D = 12.5, HW = 4, WT = 3.5, Z0 = 30, Z1 = -21, ZE = -30, WZ = -36.5, WR = 3.6;
 
-// A solid of height h from y = 0 over the shape `outer` with `holes`: its top and its walls as
-// separate meshes, each with its own material.
-function solid(outer, holes, h, topM, sideM) {
-  const toV = ([x, z]) => new THREE.Vector2(x, -z);
-  const sh = new THREE.Shape(outer.map(toV));
-  for (const hole of holes) sh.holes.push(Array.isArray(hole) ? new THREE.Path(hole.map(toV)) : hole);
-  const geo = new THREE.ExtrudeGeometry(sh, { depth: h, bevelEnabled: false, curveSegments: 24 }).rotateX(-Math.PI / 2);
-  const g = new THREE.Group();
-  geo.groups.forEach(({ start, count, materialIndex }) => {
-    const part = new THREE.BufferGeometry();
-    for (const k of ['position', 'normal', 'uv']) {
-      const a = geo.attributes[k];
-      part.setAttribute(k, new THREE.BufferAttribute(a.array.slice(start * a.itemSize, (start + count) * a.itemSize), a.itemSize));
-    }
-    g.add(mesh(part, materialIndex === 0 ? topM : sideM));
-  });
-  return g;
-}
-
 export function buildAgrasenKiBaoli() {
   const g = new THREE.Group(), f = new THREE.Group(), d = new THREE.Group();
   g.add(f);
   // The ground, cut by the trench and the well.
   const well = new THREE.Path();
   well.absarc(0, -WZ, WR, 0, Math.PI * 2, false);
-  g.add(solid([[-500, -500], [500, -500], [500, 500], [-500, 500]], [[[-HW, ZE], [-HW, Z0], [HW, Z0], [HW, ZE]], well], D, GROUND, STONE));
+  g.add(planSolid([[-500, -500], [500, -500], [500, 500], [-500, 500]], [[[-HW, ZE], [-HW, Z0], [HW, Z0], [HW, ZE]], well], D, GROUND, STONE));
   // The side walls' top, a little proud of the ground, as a kerb round the trench.
   for (const s of [-1, 1]) d.add(box(WT, 0.5, Z0 - ZE + WT, SHADE, s * (HW + WT / 2), D, (Z0 + ZE) / 2 - WT / 2));
   d.add(box(2 * HW, 0.5, WT, SHADE, 0, D, ZE - WT / 2));

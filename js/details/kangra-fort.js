@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { M, mat, box, at, onFace, FACES, archPanel, flag, rng, inst, unitBox } from '../helpers.js';
-import { archRing, chhajja, mergeByMaterial } from '../parts/components.js';
+import { archRing, mergeByMaterial } from '../parts/components.js';
 import { nagaraTemple } from '../parts/temples.js';
 import { towerDetail } from '../parts/forts.js';
 import { heightField, smooth, ridged, fbm } from '../parts/terrain.js';
 import { trees, shrubs, asiBoard, scatter, townHouses } from '../parts/realism.js';
 import { detail } from '../detail.js';
-import { STONE, TRIM, TOP, crest, halfW, ridge, GATES } from '../monuments/kangra-fort.js';
+import { STONE, TRIM, crest, halfW, ridge, GATES } from '../monuments/kangra-fort.js';
 
 const WHITE = mat('#ece7dc', 0.85);
 

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, box, at, onFace, FACES, surface } from '../helpers.js';
+import { mat, box, at, onFace, FACES } from '../helpers.js';
 import { windowFrame, keystone, mergeByMaterial } from '../parts/components.js';
 import { urn } from '../parts/sculpture.js';
 import { balustrade, GLASS } from '../parts/colonial.js';

@@ -8,7 +8,7 @@ import { attachSurface } from './surface.js';
 // carving, instead of meeting it in a crease. The field is turned into a mesh in the browser by
 // surface nets, once per figure, and the mesh is shared by every copy. Crevices are darkened in a
 // vertex colour baked from the field, so the folds, armpits and the gaps between legs hold shadow
-// the way weathered stone and patinated bronze do. See "Nature and figures" in how-it-is-drawn.md.
+// the way weathered stone and patinated bronze do. See "Sculpture" in docs/how-it-is-drawn.md.
 
 const len = (x, y, z) => Math.sqrt(x * x + y * y + z * z);
 

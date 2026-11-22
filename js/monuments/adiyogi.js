@@ -150,12 +150,17 @@ function ornaments() {
   return g;
 }
 
-// The trident planted before the bust: a tall black shaft, the three prongs, a damaru tied below.
-export function buildAdiyogi() {
-  const g = new THREE.Group(), f = new THREE.Group(), bust = new THREE.Group();
-  g.add(f);
+// The bust with what is laid on its skin, its foot at y = 0.
+export function adiyogi() {
+  const bust = new THREE.Group();
   bust.add(bustMesh(), ornaments());
-  f.add(at(bust, 0, BASE, 0));
+  return bust;
+}
+
+export function buildAdiyogi() {
+  const g = new THREE.Group(), f = new THREE.Group();
+  g.add(f);
+  f.add(at(adiyogi(), 0, BASE, 0));
   // The platform: a broad low plinth of dark stone in two steps.
   f.add(box(32, BASE * 0.5, 22, mat('#3a3836', 0.8), 0, 0, 0.6), box(30, BASE * 0.5, 20, mat('#4a4744', 0.75), 0, BASE * 0.5, 0.6));
   // The trishul in front, to his right.

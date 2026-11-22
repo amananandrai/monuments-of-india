@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, lathe } from '../helpers.js';
+import { mat, box, cyl, at, onFace, lathe } from '../helpers.js';
 import { mergeByMaterial, mouldings, frieze, bracketGeo, placeAll } from '../parts/components.js';
 import { doorFrame, steps } from '../parts/doorways.js';
 import { carvedPillar } from '../parts/temples.js';

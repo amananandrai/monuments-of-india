@@ -199,7 +199,8 @@ export function clockFace(R, hour = 10, minute = 10) {
 
 /* ---------- lettering ---------- */
 
-// Block capitals from straight strokes and elliptical bowls, enough for the inscriptions here.
+// Block capitals from straight strokes and elliptical bowls, enough for the inscriptions here:
+// only the letters below. A letter that is not here is left as a space, with a warning.
 // Each glyph is [width, strokes], a stroke being [x1, y1, x2, y2] or ['arc', cx, cy, rx, ry, from, to]
 // in a box one unit high.
 const GLYPHS = {
@@ -224,6 +225,7 @@ export function lettering(text, size, depth, m) {
   const g = new THREE.Group(), t = size * 0.13, gap = size * 0.2;
   let x = 0;
   for (const ch of text) {
+    if (!GLYPHS[ch]) console.warn(`lettering: no glyph for "${ch}" in "${text}"; add it to GLYPHS`);
     const [w, strokes] = GLYPHS[ch] || GLYPHS[' '];
     for (const s of strokes) {
       if (s[0] === 'arc') {

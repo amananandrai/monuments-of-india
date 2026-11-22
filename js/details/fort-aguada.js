@@ -8,7 +8,7 @@ import { trees, boats, asiBoard, scatter } from '../parts/realism.js';
 // round its lantern, a door and small windows up its shaft, and a moulded band at each floor. A
 // domed sentry box (guarita) hangs over the point of each bastion, the walls stand on a spreading
 // foot, and the block over the great cistern is arcaded. Dimensions follow js/monuments/fort-aguada.js.
-const LAT = photo(mat('#9b5b3f', 0.95), 'laterite'), TILE = mat('#a9523a', 0.8), LAT_DARK = photo(mat('#7d4530', 0.95), 'laterite'), WHITE_ = mat('#eeeae2', 0.8);
+const LAT = M.laterite, TILE = mat('#a9523a', 0.8), LAT_DARK = photo(mat('#7d4530', 0.95), 'laterite'), WHITE_ = mat('#eeeae2', 0.8);
 function architecture(f) {
   const d = new THREE.Group(), H = 24;
   const pts = [[-50, -34], [40, -40], [60, -4], [44, 34], [-30, 40], [-60, 6]];

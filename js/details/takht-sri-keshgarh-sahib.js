@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, box, at } from '../helpers.js';
-import { heightField, fbm, ridged, smooth, mountainRing } from '../parts/terrain.js';
+import { heightField, fbm, smooth, mountainRing } from '../parts/terrain.js';
 import { arcadeSkin } from '../parts/mughal.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { trees, lampPosts, scatter, townHouses } from '../parts/realism.js';

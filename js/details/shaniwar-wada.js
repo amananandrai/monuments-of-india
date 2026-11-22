@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, box, cyl, at, sheet, starPrism, inst, unitCyl } from '../helpers.js';
+import { M, box, cyl, at, starPrism, inst, unitCyl } from '../helpers.js';
 import { petalRing, mergeByMaterial, archSlab } from '../parts/components.js';
 import { steps } from '../parts/doorways.js';
 import { horse } from '../parts/animals.js';

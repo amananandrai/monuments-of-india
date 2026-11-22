@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, box, at, onFace, hipRoof, kalash, photo, FACES } from '../helpers.js';
+import { M, mat, box, at, onFace, hipRoof, kalash, photo, FACES } from '../helpers.js';
 import { mergeByMaterial, windowFrame, jali } from '../parts/components.js';
 import { keralaGable } from '../parts/temples.js';
 import { classicalDoor } from '../parts/colonial.js';
@@ -8,7 +8,7 @@ import { addDetails } from '../details/cheraman-juma-masjid.js';
 // Cheraman's walls of laterite under lime plaster, washed white, on a base of bare laterite; teak
 // for its upper storey, posts and lattices; the clay tiles of its roofs and the brass of its finials.
 export const LIME = photo(mat('#f3efe6', 0.86), 'plaster');
-export const LATERITE = photo(mat('#9b5b3f', 0.95), 'laterite');
+export const LATERITE = M.laterite;
 export const TEAK = photo(mat('#5a3a24', 0.7), 'timber');
 export const TILE = mat('#8e4630', 0.82);
 const BRASS = mat('#c99a3a', 0.35, 0.8);

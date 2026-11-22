@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, inst, unitBox, photo, surface } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, photo, surface, planSolid } from '../helpers.js';
 import { carvedPillar } from '../parts/temples.js';
 import { mergeByMaterial, frieze } from '../parts/components.js';
 import { addDetails } from '../details/adalaj-stepwell.js';
@@ -30,25 +30,6 @@ function octagon(a, cz = OZ) {
   return pts;
 }
 
-// A solid of height h from y = 0 over the shape `outer` with `holes` (lists of [x, z]): its top
-// and its walls as separate meshes, so that each takes its own material.
-function solid(outer, holes, h, topM, sideM) {
-  const toV = ([x, z]) => new THREE.Vector2(x, -z);
-  const sh = new THREE.Shape(outer.map(toV));
-  for (const hole of holes) sh.holes.push(Array.isArray(hole) ? new THREE.Path(hole.map(toV)) : hole);
-  const geo = new THREE.ExtrudeGeometry(sh, { depth: h, bevelEnabled: false, curveSegments: 24 }).rotateX(-Math.PI / 2);
-  const g = new THREE.Group();
-  geo.groups.forEach(({ start, count, materialIndex }) => {
-    const part = new THREE.BufferGeometry();
-    for (const k of ['position', 'normal', 'uv']) {
-      const a = geo.attributes[k];
-      part.setAttribute(k, new THREE.BufferAttribute(a.array.slice(start * a.itemSize, (start + count) * a.itemSize), a.itemSize));
-    }
-    g.add(mesh(part, materialIndex === 0 ? topM : sideM));
-  });
-  return g;
-}
-
 export function buildAdalajStepwell() {
   const g = new THREE.Group(), f = new THREE.Group(), d = new THREE.Group();
   g.add(f);
@@ -58,7 +39,7 @@ export function buildAdalajStepwell() {
   const open = [[-CW, OZ + OA], [-CW, 28], [-10, 28], [-10, 46], [10, 46], [10, 28], [CW, 28], ...[1, 0, 7, 6, 5, 4, 3].map((k) => oct[k])];
   const wellHole = new THREE.Path();
   wellHole.absarc(0, -WZ, 2.8, 0, Math.PI * 2, false);
-  g.add(solid([[-600, -600], [600, -600], [600, 600], [-600, 600]], [open, wellHole], D, GROUND, RELIEF));
+  g.add(planSolid([[-600, -600], [600, -600], [600, 600], [-600, 600]], [open, wellHole], D, GROUND, RELIEF));
   // The entrance: the landing a storey down, and the three flights to it.
   const yL = D - F;
   d.add(box(12, yL, 14, STONE, 0, 0, 35));

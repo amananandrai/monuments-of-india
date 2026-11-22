@@ -28,6 +28,8 @@ export const M = {
   marble: mat('#f2eee6', 0.45),
   marbleShade: mat('#c9c0b0', 0.6),
   recess: mat('#4a3f38', 0.9),
+  // The red laterite of the Konkan and Malabar coasts, cut in blocks: Goa's churches, Kerala's temples.
+  laterite: photo(mat('#9b5b3f', 0.95), 'laterite'),
   red: mat('#a4553b', 0.85),
   redLight: mat('#b86b4f', 0.85),
   buff: mat('#cfae86', 0.85),
@@ -590,6 +592,26 @@ const extrudeUp = (sh, h) => new THREE.ExtrudeGeometry(sh, { depth: h, bevelEnab
 // A block standing on a plan ([x, z] points), from y to y + h.
 export function planPrism(pts, y, h, m) { return mesh(extrudeUp(planShape(pts), h), m, 0, y, 0); }
 
+// A solid of height h from y = 0 over the plan `outer` with `holes` cut through it (each a list of
+// [x, z], or a THREE.Path for a round one): its top and its walls as separate meshes, so that each
+// takes its own material. The ground round a stepwell, with the well and its shafts cut out.
+export function planSolid(outer, holes, h, topM, sideM) {
+  const toV = ([x, z]) => new THREE.Vector2(x, -z);
+  const sh = new THREE.Shape(outer.map(toV));
+  for (const hole of holes) sh.holes.push(Array.isArray(hole) ? new THREE.Path(hole.map(toV)) : hole);
+  const geo = new THREE.ExtrudeGeometry(sh, { depth: h, bevelEnabled: false, curveSegments: 24 }).rotateX(-Math.PI / 2);
+  const g = new THREE.Group();
+  geo.groups.forEach(({ start, count, materialIndex }) => {
+    const part = new THREE.BufferGeometry();
+    for (const k of ['position', 'normal', 'uv']) {
+      const a = geo.attributes[k];
+      part.setAttribute(k, new THREE.BufferAttribute(a.array.slice(start * a.itemSize, (start + count) * a.itemSize), a.itemSize));
+    }
+    g.add(mesh(part, materialIndex === 0 ? topM : sideM));
+  });
+  return g;
+}
+
 // A moulded course h high at y, standing `proud` out from every face of a block on this plan, and
 // 2 mm clear of it, as beltCourse for a rectangle.
 export function planBand(pts, y, h, proud, m) {
@@ -625,16 +647,6 @@ export function persianDome(r, m) {
   return lathe([[1, 0], [1.04, 0.35], [0.96, 0.72], [0.72, 1.02], [0.4, 1.2], [0, 1.27]].map(([a, b]) => [a * r, b * r]), m, 48);
 }
 
-export function domeBands(cx, cy, cz, r, m) {
-  const g = new THREE.Group();
-  for (const t of [0.22, 0.5, 0.8]) {
-    const i = Math.floor(t * (ONION.length - 1)), u = t * (ONION.length - 1) - i;
-    const rr = (ONION[i][0] + (ONION[i + 1][0] - ONION[i][0]) * u) * r, yy = (ONION[i][1] + (ONION[i + 1][1] - ONION[i][1]) * u) * r;
-    g.add(cyl(rr * 1.015, rr * 1.015, r * 0.06, m, cx, cy + yy - r * 0.03, cz, 48));
-  }
-  return g;
-}
-
 // Vertical inlay stripes on a dome or shaft: n thin gores following the lathe profile pts
 // ([r, y] pairs on the surface), each frac of its share of the circle wide, centred on the angles
 // k·2π/n so they can sit on a faceted cylinder's vertices. One mesh. The gores stand `lift` off the
@@ -661,6 +673,8 @@ export function latheStripes(pts, n, frac, m, seg = 3, lift = 0.04) {
   return mesh(geo, inlays.get(m));
 }
 
+// A Hoysala tower on a star-shaped plan, r in radius and h high: `tiers` star-shaped storeys
+// stepping in under a domed cap and kalash, with darker (md) mouldings between them.
 export function stellateTower(r, h, m, md, tiers = 7) {
   const g = new THREE.Group(), th = h / tiers;
   for (let i = 0; i < tiers; i++) {
@@ -680,6 +694,8 @@ export function bulbPoints(pts) {
   return p;
 }
 
+// A torana, the gateway of a stupa's railing as at Sanchi: two square posts carrying three
+// architraves with rolled ends, uprights between them and a wheel on top.
 export function torana(m) {
   const g = new THREE.Group();
   for (const x of [-2.4, 2.4]) g.add(box(0.9, 6.5, 0.9, m, x), box(1.6, 1.4, 1.6, m, x, 6.5));

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, inst, unitBox } from '../helpers.js';
+import { M, box, at, inst, unitBox } from '../helpers.js';
 import { mergeByMaterial, frieze, templeNiche, idol } from '../parts/components.js';
 import { trees, shrubs, scatter, along, lampPosts, benches, stalls } from '../parts/realism.js';
 import { detail } from '../detail.js';

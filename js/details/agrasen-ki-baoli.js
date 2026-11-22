@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, inst, unitBox, archPanel, hemi, photo } from '../helpers.js';
+import { M, mat, box, at, inst, unitBox, archPanel, hemi } from '../helpers.js';
 import { mergeByMaterial, merlons } from '../parts/components.js';
 import { trees, shrubs, scatter, along, asiBoard, bollards, cityAround } from '../parts/realism.js';
 import { detail } from '../detail.js';
@@ -41,7 +41,6 @@ export function addDetails(f, g, { D, HW, WT, Z0, ZE, WZ }) {
   g.add(bollards([...along(7, [-3, Z0 + 4], [-3, Z0 + 26]), ...along(7, [3, Z0 + 4], [3, Z0 + 26])], { y: D }));
   g.add(asiBoard('Agrasen ki Baoli', 5, Z0 + 6, -0.3, { y: D }));
   // Trees: neem and peepal round the site.
-  const keep = [[-30, 30, -54, 60]];
   g.add(trees([[-18, 20], [18, 4], [-18, -14], [17, -30], [-24, 46], [26, 44], [24, -50], [-26, 6]], { kind: 'neem', seed: 3, y: D }));
   g.add(trees([[-32, 30], [-24, -40]], { kind: 'peepal', seed: 6, y: D }));
   g.add(shrubs(scatter(20, [-28, 28, -50, 56], { seed: 4, gap: 4, avoid: [[-X - 5, X + 5, -50, Z0 + 5], [-4, 4, Z0, 60]] }).map(([x, z]) => [x, z, 1]), { seed: 4, y: D }));

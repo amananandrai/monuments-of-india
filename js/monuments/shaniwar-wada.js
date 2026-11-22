@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, inst, unitBox, photo } from '../helpers.js';
+import { mat, box, cyl, at, inst, unitBox, photo } from '../helpers.js';
 import { fortGate, rampart, bastionCrowns } from '../parts/forts.js';
 import { arcadeSkin, cellRow } from '../parts/mughal.js';
 import { addDetails } from '../details/shaniwar-wada.js';

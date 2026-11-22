@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { mat, box, at, tricolour } from '../helpers.js';
 import { mergeByMaterial, beltCourse } from '../parts/components.js';
-import { trees, lampPosts, benches, scatter, along, townHouses } from '../parts/realism.js';
+import { trees, lampPosts, benches, along, townHouses } from '../parts/realism.js';
 import { heightField, fbm, smooth } from '../parts/terrain.js';
 import { detail } from '../detail.js';
 import { rng } from '../helpers.js';
