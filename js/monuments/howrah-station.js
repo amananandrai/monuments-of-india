@@ -8,6 +8,7 @@ import { addDetails } from '../details/howrah-station.js';
 export const BRICK = surface(mat('#9a4733', 0.85), 'brick');
 export const STONE = mat('#e6d6b2', 0.85);
 export const TILE = mat('#7b4334', 0.8);
+const ROOF = mat('#77706a', 0.9);
 
 // The site stands on the river's bank, BANK above the water; the front is LEN long, HT to its
 // parapet, and its face is at z = FRONT. The eight towers stand at TOWERS along it, 9 m square.
@@ -106,7 +107,7 @@ export function buildHowrahStation() {
   // The long front block on its plinth, with its bands of stone and its parapet.
   b.add(box(LEN + 1, 1, DEPTH + 1, STONE, 0, 0, 0), box(LEN, HT - 1, DEPTH, BRICK, 0, 1, 0));
   for (const y of [7.4, 12.5]) b.add(beltCourse(LEN, DEPTH, y, 0.55, 0.16, STONE));
-  b.add(box(LEN + 0.9, 0.6, DEPTH + 0.9, STONE, 0, HT - 0.5, 0), box(LEN + 0.3, 1.1, DEPTH + 0.3, BRICK, 0, HT + 0.1, 0), box(LEN + 0.6, 0.3, DEPTH + 0.6, STONE, 0, HT + 1.2, 0));
+  b.add(box(LEN + 0.9, 0.6, DEPTH + 0.9, STONE, 0, HT - 0.5, 0), box(LEN + 0.3, 1.1, DEPTH + 0.3, BRICK, 0, HT + 0.1, 0), box(LEN + 0.6, 0.3, DEPTH + 0.6, STONE, 0, HT + 1.2, 0), box(LEN - 1.2, 0.2, DEPTH - 1.2, ROOF, 0, HT + 1.4, 0));
   // Towers: the middle pair taller, the rest alike; each stands 2 m proud of the front.
   for (const x of TOWERS) {
     const mid = Math.abs(x) < 20, end = Math.abs(x) > 90;
@@ -123,5 +124,5 @@ export function buildHowrahStation() {
   f.add(mergeByMaterial(b));
   addDetails(f, g, s);
   // The home view: the brick front and its towers from across the forecourt, on the river side.
-  return { group: g, focus: f, view: [0.42, 0.13, 1], zoom: 0.42, target: [0, BANK + 11, 0] };
+  return { group: g, focus: f, view: [0.42, 0.11, 1], zoom: 0.6, target: [0, BANK + 11, 0] };
 }

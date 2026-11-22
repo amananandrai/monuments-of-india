@@ -102,9 +102,13 @@ function railway() {
   const fine = !detail.low;
   for (const x of TRACKS) {
     for (const sx of [-0.838, 0.838]) rails.push([x + sx, y + 0.1, Z0 - 2 - SHED / 2, 0.07, 0.42, SHED]);
-    const t = at(track(OPEN + 400, { ballast: false }), x, y, Z0 - 2 - SHED - (OPEN + 400) / 2);
-    t.rotation.y = Math.PI / 2;
-    g.add(t);
+    // Sleepered track where it is in the open beside the platforms (desktops); plain rails beyond.
+    for (const sx of [-0.838, 0.838]) rails.push([x + sx, y + 0.1, Z0 - 2 - SHED - (fine ? OPEN : 0) - (fine ? 200 : 325), 0.07, 0.42, fine ? 400 : 650]);
+    if (fine) {
+      const t = at(track(OPEN, { ballast: false }), x, y, Z0 - 2 - SHED - OPEN / 2);
+      t.rotation.y = Math.PI / 2;
+      g.add(t);
+    }
     if (fine || TRACKS.indexOf(x) % 2 === 0) {
       const o = at(overhead(OPEN + 380, { span: 54, side: TRACKS.indexOf(x) % 2 ? 1 : -1 }), x, y, Z0 - 12 - SHED - (OPEN + 380) / 2);
       o.rotation.y = Math.PI / 2;
@@ -117,7 +121,7 @@ function railway() {
   const liveries = ['blue', 'emu', 'red', 'emu', 'blue', 'green', 'emu', 'vande', 'blue', 'emu', 'red', 'blue', 'emu', 'orange'];
   let n = 0;
   TRACKS.forEach((x, i) => {
-    if ((i * 7 + 3) % (fine ? 5 : 9) > (fine ? 2 : 1)) return;
+    if ((i * 7 + 3) % (fine ? 5 : 9) > 1) return;
     const livery = liveries[n++ % liveries.length], cars = livery === 'emu' ? 9 : ['vande', 'orange'].includes(livery) ? 8 : 9 + Math.floor(R() * 4);
     const tr = train(detail.low ? Math.min(cars, 8) : cars, { livery, locoColour: R() < 0.5 ? '#c23b2e' : '#e8e2cf' });
     tr.rotation.y = Math.PI / 2;
@@ -135,7 +139,7 @@ function forecourt(s, g) {
   // Taxis waiting in two ranks before the porte-cochère and passing through it; buses at the stand.
   s.add(traffic([[34, 1], [37.5, 1]], -95, 95, { y: 0.12, gap: 7.5, seed: 4, taxis: 1, buses: 0, trucks: 0 }));
   s.add(traffic([[22.5, 1]], -60, 60, { y: 0.12, gap: 16, seed: 9, taxis: 0.8, buses: 0, trucks: 0 }));
-  s.add(traffic([[33, 1], [37, -1], [41, 1], [45, -1]], 125, 250, { y: 0.12, gap: 15, seed: 6, taxis: 0, buses: 1, trucks: 0 }));
+  s.add(traffic([[33, 1], [37, -1], [41, 1], [45, -1]], 125, 250, { y: 0.12, gap: 24, seed: 6, taxis: 0, buses: 1, trucks: 0 }));
   s.add(traffic([[51.5, 1], [55, 1], [59.5, -1], [63, -1]], -340, 340, { y: 0.12, gap: 20, seed: 12, taxis: 0.4, buses: 0.2, trucks: 0.05 }));
   // Kerbs between the cab road and the main road, and the railing along the bank.
   const d = new THREE.Group();
@@ -150,7 +154,7 @@ function forecourt(s, g) {
   // ferry jetty, a gangway out to a roofed pontoon where the launches tie up.
   const GHAT = mat('#a79f90', 0.9), gh = new THREE.Group();
   for (let k = 0; k < 9; k++) gh.add(box(60, Math.max(0.3, BANK - (k + 1) * 0.42), 1.1, GHAT, -40, 0, 78.55 + k * 1.1));
-  gh.add(box(1600, BANK, 1.2, GHAT, -810 - 70.6 + 0.6, 0, 78.6 - 0.6 + 0.6), box(1600, BANK, 1.2, GHAT, 810 - 9.4 - 0.6, 0, 78.6));
+  gh.add(box(1530, BANK + 0.3, 1.2, GHAT, -835, 0, 78.4), box(1590, BANK + 0.3, 1.2, GHAT, 785, 0, 78.4));
   gh.add(box(4.5, 0.4, 34, IRON, 30, BANK - 0.5, 95), box(46, 1.6, 12, mat('#5c6b73', 0.7, 0.3), 30, -0.5, 118));
   for (const sx of [-1, 1]) gh.add(box(0.1, 1.1, 34, IRON, 30 + sx * 2.2, BANK - 0.1, 95));
   gh.add(box(38, 0.25, 9, SHEET, 30, 4.6, 118));

@@ -48,7 +48,7 @@ function tower(d) {
 // The dhwaja on its mast, the foot of the mast at y = 0: a triangular cloth 11 m long in four
 // bands, flying east on the sea wind, with the sun and the crescent moon on both its faces.
 function dhwaja() {
-  const g = new THREE.Group(), h = 9.5, w = 11, fh = 6.4, top = h - 0.1;
+  const g = new THREE.Group(), h = 9.5, w = 13, fh = 7, top = h - 0.1;
   g.add(cyl(0.09, 0.14, h, M.wood, 0, 0, 0, 8), at(mesh(new THREE.SphereGeometry(0.22, 10, 8), M.gold), 0, h, 0));
   BANDS.forEach((m, i) => g.add(at(mesh(clothGeometry(w, fh, { taper: 0.94, y0: (fh / 4) * i, y1: (fh / 4) * (i + 1), ny: 3 }), m), 0.05, top, 0)));
   const moon = new THREE.Shape();

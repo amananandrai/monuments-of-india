@@ -134,5 +134,5 @@ export function buildDwarkadhish() {
   addDetails(f, g);
   // The view from across the Gomti: the hall on the left, the tower and its flag on the right, over
   // the steps of the Swarga Dwar.
-  return { group: g, focus: f, view: [1, 0.2, 0.5], zoom: 0.75 };
+  return { group: g, focus: f, view: [1, 0.04, 0.5], zoom: 0.42, target: [0, 32, -2] };
 }

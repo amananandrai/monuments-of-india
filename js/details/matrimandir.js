@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, lathe, group, rng } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, lathe, group, rng, doubleSided } from '../helpers.js';
 import { mergeByMaterial, petalRing } from '../parts/components.js';
 import { trees, shrubs, scatter, around } from '../parts/realism.js';
 import { detail } from '../detail.js';
@@ -62,11 +62,7 @@ function amphitheatre() {
   const a = new THREE.Group(), prof = [[0, 0.3], [9, 0.3]];
   for (let k = 0; k < 8; k++) prof.push([9 + k * 2.2, 0.3 + (k + 1) * 0.42], [11.2 + k * 2.2, 0.3 + (k + 1) * 0.42]);
   prof.push([27.2, 4.1], [29, 4.1], [29, 0]);
-  const bowl = lathe(prof, RED, detail.low ? 40 : 72);
-  bowl.material = RED;
-  a.add(bowl);
-  const bank = lathe([[29, 3.9], [31, 3.6], [38, 0.2]], M.grass, 48);
-  a.add(bank);
+  a.add(lathe(prof, doubleSided(RED), detail.low ? 40 : 72), lathe([[29, 3.9], [31, 3.6], [38, 0.2]], doubleSided(M.grass), 48));
   a.scale.set(1.3, 1, 1);
   const urn = new THREE.Group();
   urn.add(cyl(2.2, 2.5, 0.4, M.marble, 0, 0.3, 0, 24), lathe([[0.5, 0], [0.9, 0.5], [1.15, 1.2], [0.95, 2.0], [0.4, 2.6], [0, 2.75]], M.marble, 24).translateY(0.7));
@@ -86,7 +82,7 @@ export function addDetails(f, g) {
   g.add(trees([[bx, bz, 24]], { kind: 'banyan', seed: 3 }), trees(around(6, 11, bx, bz, 0.4).map(([x, z]) => [x, z, 15]), { kind: 'banyan', seed: 4 }));
   g.add(mesh(new THREE.RingGeometry(21, 22.2, 48).rotateX(-Math.PI / 2), EARTH, bx, 0.24, bz));
   // The forest beyond the lawn, and palms among it.
-  const far = scatter(detail.low ? 70 : 130, [-215, 215, -190, 190], { seed: 7, gap: 9 }).filter(([x, z]) => (x / 172) ** 2 + (z / 150) ** 2 > 0.92);
+  const far = scatter(detail.low ? 150 : 300, [-215, 215, -190, 190], { seed: 7, gap: 9 }).filter(([x, z]) => (x / 172) ** 2 + (z / 150) ** 2 > 0.92);
   g.add(trees(far.filter((_, i) => i % 3 === 0), { kind: 'neem', seed: 8 }), trees(far.filter((_, i) => i % 3 === 1), { kind: 'tamarind', seed: 9 }), trees(far.filter((_, i) => i % 3 === 2), { kind: 'jamun', seed: 10 }));
   g.add(trees(scatter(16, [-160, 160, -140, 140], { seed: 12, gap: 20 }).filter(([x, z]) => Math.hypot(x, z) > 100 && Math.hypot(x + 128, z - 28) > 50 && Math.hypot(x - bx, z - bz) > 30), { kind: 'palm', seed: 13 }));
 }

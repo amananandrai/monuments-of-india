@@ -109,5 +109,5 @@ export function buildUjjayanta() {
   f.add(bulbPoints(bulbs));
   addDetails(f, g);
   // The home view: the south front from down the approach between the two lakes.
-  return { group: g, focus: f, view: [0.2, 0.09, 1.2], zoom: 0.8 };
+  return { group: g, focus: f, view: [0.03, 0.075, 1], zoom: 0.9 };
 }

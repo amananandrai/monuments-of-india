@@ -57,7 +57,7 @@ function leaf() {
   return g;
 }
 
-function oldBridge(g) {
+function oldBridge(f, g) {
   const o = new THREE.Group(), L = 32.6, R = 7.5, open = 0.95, y0 = OLD_RAIL - 0.9;
   // The two leaves, rolled back and standing open at 54°.
   for (const s of [-1, 1]) {
@@ -74,7 +74,8 @@ function oldBridge(g) {
     // Each leaf's pier, with the level girders it rolls back along.
     o.add(box(13, y0 + 0.8, 8.4, STONE, s * (L + 5.5), -0.8, OLD_Z), box(11, 0.5, 6.4, OLD_STEEL, s * (L + 5), y0 - 0.5, OLD_Z));
   }
-  g.add(mergeByMaterial(o));
+  // (In the framed group: left outside it, the open leaves would stop the camera pulling back.)
+  f.add(mergeByMaterial(o));
   // The girder spans: 12.2 m apiece on stone piers, out to both shores.
   const piers = [], webs = [], decks = [], sp = 12.2;
   for (let x = L + 12; x <= HALF + 6; x += sp) for (const s of [-1, 1]) {
@@ -111,7 +112,7 @@ function roadBridge(g) {
 
 export function addDetails(f, g) {
   const R = rng(57);
-  oldBridge(g);
+  oldBridge(f, g);
   roadBridge(g);
   // The two shores, sand under scrub.
   for (const e of [-1, 1]) g.add(heightField(2800, 5600, detail.low ? 80 : 130, ground, { cx: e * (HALF + 1320), rock: ['#d9cba4', '#cfc09a'], cover: '#b9b083', steep: 0.985, band: 3 }));

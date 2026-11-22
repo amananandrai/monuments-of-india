@@ -57,17 +57,31 @@ function deul(f, BH, TH, dz) {
   f.add(inst(rekhaGeo(), mini, m));
   // The lions: one springing from each face, and four seated at the corners under the amalaka.
   for (const a of FACES) {
-    const l = onFace(lion(detail.low ? 2 : 2.6, m), a, wt * 0.5 + 0.3);
+    const l = onFace(detail.low ? stoneLion(2.1, m) : lion(2.1, m), a, wt * 0.5 + 0.3);
     l.position.y = BH + t * TH;
     l.position.z += dz;
-    f.add(box(2.6, 0.5, 2.4, sh, l.position.x, l.position.y - 0.5, l.position.z), l);
+    f.add(box(2.2, 0.5, 2.2, sh, l.position.x, l.position.y - 0.5, l.position.z), l);
   }
   const top = 17 * kalingaProfile(1);
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
-    const l = at(lion(1.5, m), sx * top * 0.36, BH + TH, dz + sz * top * 0.36);
+    const l = at(stoneLion(1.5, m), sx * top * 0.36, BH + TH, dz + sz * top * 0.36);
     l.rotation.y = Math.atan2(sx, sz);
     f.add(l);
   }
+}
+
+// A seated lion blocked out in a few stones, s high, facing +z: for the lions too small or too high
+// to need the sculpted one (and for all of the tower's lions on phones).
+function stoneLion(s, m) {
+  const g = new THREE.Group();
+  const body = box(0.42 * s, 0.62 * s, 0.6 * s, m, 0, 0, -0.08 * s);
+  body.rotation.x = -0.35;
+  g.add(body, box(0.5 * s, 0.14 * s, 0.34 * s, m, 0, 0, -0.3 * s));
+  for (const x of [-1, 1]) g.add(cyl(0.07 * s, 0.09 * s, 0.6 * s, m, x * 0.15 * s, 0, 0.2 * s, 6));
+  const mane = mesh(new THREE.SphereGeometry(0.3 * s, 8, 6), m, 0, 0.72 * s, 0.12 * s), head = mesh(new THREE.SphereGeometry(0.2 * s, 8, 6), m, 0, 0.8 * s, 0.3 * s);
+  mane.scale.z = 0.8;
+  g.add(mane, head, box(0.16 * s, 0.12 * s, 0.14 * s, m, 0, 0.68 * s, 0.44 * s));
+  return mergeByMaterial(g);
 }
 
 // A small rekha deul as one unit shape, for the shrines that crowd the court and the miniature
@@ -127,11 +141,11 @@ function halls(f) {
     d.add(t);
   }
   f.add(mergeByMaterial(d));
-  // The lions on the jagamohana's roof (its first flight ends at y = 10 + 5 x 0.9 x 1.55 on a
+  // The lions on the jagamohana's roof (its first flight ends at y = 10 + 9 x 0.5 x 1.55 on a
   // recess 11.9 wide).
   for (const a of [0, Math.PI / 2, -Math.PI / 2]) {
-    const l = onFace(lion(1.7, STONE), a, 6.4);
-    l.position.y = 10 + 5 * 0.9 * 1.55 - 0.9;
+    const l = onFace(a === 0 && !detail.low ? lion(1.7, STONE) : stoneLion(1.7, STONE), a, 6.4);
+    l.position.y = 10 + 9 * 0.5 * 1.55;
     l.position.z += -5.5;
     f.add(l);
   }
@@ -167,7 +181,7 @@ function court(f, g, X, Z0, Z1) {
   f.add(mergeByMaterial(bg));
   // The small shrines keep clear of the halls, the way in from the Lion Gate and the larger shrines.
   const avoid = [[-15, 15, -38, Z1], ...big.map(([x, z, w]) => [x - w - 2, x + w + 2, z - w - 2, z + w * 2.4 + 2])];
-  const R = rng(11), spots = scatter(detail.low ? 60 : 96, [-X + 6, X - 6, Z0 + 6, Z1 - 8], { seed: 9, gap: 6.5, avoid });
+  const R = rng(11), spots = scatter(detail.low ? 48 : 96, [-X + 6, X - 6, Z0 + 6, Z1 - 8], { seed: 9, gap: 6.5, avoid });
   const list = spots.map(([x, z]) => { const w = 1.5 + R() * R() * 2.4; return [x, 0, z, w, w * (0.9 + R() * 0.25), w, R() < 0.75 ? 0 : (R() < 0.5 ? 1 : -1) * Math.PI / 2]; });
   // The nearest stand inside the focus, so the home view shows the tower among them.
   f.add(inst(rekhaGeo(), list, STONE));
@@ -176,7 +190,8 @@ function court(f, g, X, Z0, Z1) {
   // The Vrisha stambha, east of the bhogamandapa.
   const p = at(new THREE.Group(), 0, 0, 47);
   p.add(box(2.6, 0.8, 2.6, SHADE), box(1.9, 0.6, 1.9, STONE, 0, 0.8, 0), cyl(0.5, 0.6, 8, STONE, 0, 1.4, 0, 16), cyl(1.0, 0.55, 0.7, SHADE, 0, 9.4, 0, 16), box(1.9, 0.3, 1.9, STONE, 0, 10.1, 0));
-  f.add(mergeByMaterial(p), at(nandi(STONE, 0.42), 0, 10.4, 47));
+  f.add(mergeByMaterial(p));
+  if (!detail.low) f.add(at(nandi(STONE, 0.42), 0, 10.4, 47));
 }
 
 // The Lingaraja at Bhubaneswar: the crowded court inside its laterite wall; the Bindusagar, the
@@ -201,6 +216,7 @@ export function addDetails(f, g, { BH = 15, TH = 30, dz = -24, X = 70, Z0 = -90,
     keep: [[-9, 9, Z1, 600], [X, 600, 2, 18], [tx - tw / 2 - 12, 700, -td / 2 - 12, td / 2 + 12]], paint: ['#e9d9b8', '#f1e6cf', '#d9c7a8', '#e7b9b0', '#cfd8d4', '#d6b06a', '#c9d6a3'] }));
   g.add(trees(scatter(26, [-130, 130, -150, 130], { seed: 5, gap: 14, avoid: [[-X - 44, X + 44, Z0 - 44, Z1 + 44]] }), { kind: 'palm', seed: 5 }));
   g.add(trees([...along(9, [tx - tw / 2 - 12, -td / 2 - 16], [tx + tw / 2, -td / 2 - 16]), ...along(9, [tx - tw / 2 - 12, td / 2 + 16], [tx + tw / 2, td / 2 + 16])], { kind: 'mango', seed: 6 }));
+  g.add(trees(scatter(detail.low ? 20 : 44, [-200, 150, -220, 200], { seed: 13, gap: 16, avoid: [[-X - 44, X + 44, Z0 - 44, Z1 + 44]] }), { kind: 'mango', seed: 13 }));
   g.add(trees([[-40, -76], [48, -70], [52, 56], [-54, 58], [-58, -12]], { kind: 'banyan', seed: 7, h: 10 }));
   g.add(lampPosts([...along(4, [-7, 76], [-7, 130]), ...along(4, [7, 76], [7, 130])]));
 }

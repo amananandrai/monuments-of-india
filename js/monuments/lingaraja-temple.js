@@ -45,10 +45,10 @@ export function buildLingaraja() {
   // (nine and seven), under a bell, an amalaka and a kalasha. The natamandira, open and flat
   // roofed, and the bhogamandapa under its own pyramid were added to the east of it.
   const halls = [
-    // [width, wall height, z, flights of the roof as [w0, w1, slabs]]
-    [19, 10, -5.5, [[21, 14.5, 5], [12.5, 7.5, 4]]],
+    // [width, wall height, z, flights of the roof as [w0, w1, slabs, slab height]]
+    [19, 10, -5.5, [[21, 14.5, 9, 0.5], [12.5, 7.5, 7, 0.5]]],
     [15, 8, 11.5, null],
-    [17, 8, 27.5, [[18.5, 8, 6]]],
+    [17, 8, 27.5, [[18.5, 8, 10, 0.55]]],
   ];
   for (const [w, h, z, roofs] of halls) {
     f.add(box(w, h, w, m, 0, 0, z), box(w + 2.4, h, w * 0.56, m, 0, 0, z), box(w * 0.56, h, w + 2.4, m, 0, 0, z));
@@ -58,8 +58,8 @@ export function buildLingaraja() {
       f.add(box(w + 3.4, 0.5, w + 3.4, d, 0, y, z), box(w + 1.6, 0.6, w + 1.6, m, 0, y + 0.5, z), box(w - 0.6, 0.7, w - 0.6, d, 0, y + 1.1, z));
       continue;
     }
-    roofs.forEach(([w0, w1, n], i) => {
-      const r = pidaRoof(w0, w1, n, 0.9, m, d);
+    roofs.forEach(([w0, w1, n, u], i) => {
+      const r = pidaRoof(w0, w1, n, u, m, d);
       f.add(at(r, 0, y, z));
       y += r.userData.top;
       if (i < roofs.length - 1) { f.add(box(w1 - 2.6, 1.1, w1 - 2.6, d, 0, y, z)); y += 1.1; }
@@ -80,5 +80,5 @@ export function buildLingaraja() {
   f.add(mergeByMaterial(doors));
   addDetails(f, g, { BH, TH, dz, X, Z0, Z1 });
   // From the north-east, over the wall, as the temple is seen from the viewing platform.
-  return { group: g, focus: f, view: [1.0, 0.36, 0.75] };
+  return { group: g, focus: f, view: [1, 0.3, 0.8], zoom: 0.42 };
 }

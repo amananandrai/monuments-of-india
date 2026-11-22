@@ -118,8 +118,7 @@ export function buildPambanBridge() {
   room.add(box(8.04, 1.5, 6.6, GLAZE, 0, PIER_TOP + 6.0, 0), box(6.6, 1.5, 8.04, GLAZE, 0, PIER_TOP + 6.0, 0), box(9, 0.3, 9, STEEL_DARK, 0, PIER_TOP + 8.6, 0));
   f.add(at(mergeByMaterial(room), -TOWER_X - 2, 0, -15.5));
   // The plate-girder spans: every pier a rounded wall on a pile cap with a cap beam, wide enough
-  // for two lines; the one line laid on the seaward side... kept on the centre line here, as built
-  // through the lift span. Two girders a span, with flanges, stiffeners and cross frames, an
+  // for two lines, the one line that is laid kept on the centre line here. Two girders a span, with flanges, stiffeners and cross frames, an
   // inspection walkway and handrail each side. The 200 m either side of the towers belong to the
   // framed view; the rest of the two kilometres is scenery.
   const near = (x) => Math.abs(x) < 260;
@@ -155,5 +154,5 @@ export function buildPambanBridge() {
   f.add(at(train(detail.low ? 9 : 12, { livery: 'blue', locoColour: '#b8402f' }), -28, RAIL_Y + 0.1, TRACK_Z));
   addDetails(f, g);
   // The home view: low over the water from the seaward side, the towers and the train on the span.
-  return { group: g, focus: f, view: [0.42, 0.11, 1], zoom: 0.62, target: [0, 17, 0] };
+  return { group: g, focus: f, view: [0.5, 0.07, 1], zoom: 0.33, target: [0, 20, 0] };
 }
