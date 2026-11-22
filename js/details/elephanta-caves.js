@@ -15,7 +15,7 @@ export const DARK = mat('#2a2622', 0.95);
 
 // The hall HW wide and HD deep, HH high, its mouth at z = 0; the rock H high over it; the
 // Trimurti's recess RW wide, RD deep and RH high in the middle of the back wall.
-export const DIMS = { HW: 39, HD: 39, HH: 5.5, H: 16, RW: 10, RD: 3.6, RH: 6.8 };
+export const DIMS = { HW: 39, HD: 39, HH: 5.5, H: 11, RW: 10, RD: 3.6, RH: 6.8 };
 
 // The Trimurti: Sadashiva as a bust of three heads, some 6 m high. In the middle, calm, the
 // creator; on the viewer's left, Aghora-Bhairava, the destroyer, with a snake; on the right, Uma,
