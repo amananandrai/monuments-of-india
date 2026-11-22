@@ -127,6 +127,82 @@ import { buildVidhanaSoudha } from './monuments/vidhana-soudha.js';
 import { buildMatrimandir } from './monuments/matrimandir.js';
 import { buildStatueOfEquality } from './monuments/statue-of-equality.js';
 import { buildSriharikota } from './monuments/satish-dhawan-space-centre.js';
+import { buildPremMandir } from './monuments/prem-mandir.js';
+import { buildIskconBangalore } from './monuments/iskcon-temple-bangalore.js';
+import { buildAdiyogi } from './monuments/adiyogi.js';
+import { buildSheikhChilli } from './monuments/sheikh-chilli-tomb.js';
+import { buildMartand } from './monuments/martand-sun-temple.js';
+import { buildJahazMahal } from './monuments/jahaz-mahal.js';
+import { buildPanchaRathas } from './monuments/pancha-rathas.js';
+import { buildAiravatesvara } from './monuments/airavatesvara-temple.js';
+import { buildMukteswara } from './monuments/mukteswara-temple.js';
+import { buildKumbhalgarh } from './monuments/kumbhalgarh-fort.js';
+import { buildWarangalFort } from './monuments/warangal-fort.js';
+import { buildLepakshi } from './monuments/lepakshi-temple.js';
+import { buildJageshwar } from './monuments/jageshwar-temples.js';
+import { buildHazarduari } from './monuments/hazarduari-palace.js';
+import { buildShaniwarWada } from './monuments/shaniwar-wada.js';
+import { buildKangraFort } from './monuments/kangra-fort.js';
+import { buildTalatalGhar } from './monuments/talatal-ghar.js';
+import { buildMattancherry } from './monuments/mattancherry-palace.js';
+import { buildSeCathedral } from './monuments/se-cathedral.js';
+import { buildLaxmanSirpur } from './monuments/laxman-temple-sirpur.js';
+import { buildPuranaQila } from './monuments/purana-qila.js';
+import { buildPattadakal } from './monuments/pattadakal-temples.js';
+import { buildVikramshila } from './monuments/vikramshila-mahavihara.js';
+import { buildJahangirMahal } from './monuments/jahangir-mahal-orchha.js';
+import { buildBhojeshwar } from './monuments/bhojeshwar-temple.js';
+import { buildLotusMahal } from './monuments/lotus-mahal-hampi.js';
+import { buildTakhtSriHazurSahib } from './monuments/takht-sri-hazur-sahib.js';
+import { buildTakhtSriPatnaSahib } from './monuments/takht-sri-patna-sahib.js';
+import { buildTakhtSriKeshgarhSahib } from './monuments/takht-sri-keshgarh-sahib.js';
+import { buildGurudwaraBanglaSahib } from './monuments/gurudwara-bangla-sahib.js';
+import { buildHemkundSahib } from './monuments/hemkund-sahib.js';
+import { buildStPaulsCathedralKolkata } from './monuments/st-pauls-cathedral-kolkata.js';
+import { buildSanThomeBasilica } from './monuments/san-thome-basilica.js';
+import { buildChristChurchShimla } from './monuments/christ-church-shimla.js';
+import { buildImmaculateConceptionPanaji } from './monuments/immaculate-conception-panaji.js';
+import { buildSolomonsTempleAizawl } from './monuments/solomons-temple-aizawl.js';
+import { buildStFrancisChurchKochi } from './monuments/st-francis-church-kochi.js';
+import { buildTajUlMasajid } from './monuments/taj-ul-masajid.js';
+import { buildMeccaMasjidHyderabad } from './monuments/mecca-masjid-hyderabad.js';
+import { buildAdhaiDinKaJhonpra } from './monuments/adhai-din-ka-jhonpra.js';
+import { buildCheramanJumaMasjid } from './monuments/cheraman-juma-masjid.js';
+import { buildSidiSaiyyedMosque } from './monuments/sidi-saiyyed-mosque.js';
+import { buildParadesiSynagogue } from './monuments/paradesi-synagogue.js';
+import { buildKnessethEliyahooSynagogue } from './monuments/knesseth-eliyahoo-synagogue.js';
+import { buildWadiajiAtashBehram } from './monuments/wadiaji-atash-behram.js';
+import { buildNamdrolingMonastery } from './monuments/namdroling-monastery.js';
+import { buildDholavira } from './monuments/dholavira.js';
+import { buildLothal } from './monuments/lothal.js';
+import { buildBarabarCaves } from './monuments/barabar-caves.js';
+import { buildAshokanPillarVaishali } from './monuments/ashokan-pillar-vaishali.js';
+import { buildKarlaCaves } from './monuments/karla-caves.js';
+import { buildElephantaCaves } from './monuments/elephanta-caves.js';
+import { buildGangaikondaCholapuram } from './monuments/gangaikonda-cholapuram.js';
+import { buildKailasanatharTemple } from './monuments/kailasanathar-temple.js';
+import { buildHoysaleswaraTemple } from './monuments/hoysaleswara-temple.js';
+import { buildDurgaTempleAihole } from './monuments/durga-temple-aihole.js';
+import { buildTeliKaMandir } from './monuments/teli-ka-mandir.js';
+import { buildVadakkunnathanTemple } from './monuments/vadakkunnathan-temple.js';
+import { buildMasrurTemples } from './monuments/masrur-temples.js';
+import { buildBateshwarTemples } from './monuments/bateshwar-temples.js';
+import { buildAdalajStepwell } from './monuments/adalaj-stepwell.js';
+import { buildAgrasenKiBaoli } from './monuments/agrasen-ki-baoli.js';
+import { buildTughlaqabadFort } from './monuments/tughlaqabad-fort.js';
+import { buildMahmudGawanMadrasa } from './monuments/mahmud-gawan-madrasa.js';
+import { buildIbrahimRauza } from './monuments/ibrahim-rauza.js';
+import { buildBaraGumbad } from './monuments/bara-gumbad.js';
+import { buildViceregalLodgeShimla } from './monuments/viceregal-lodge-shimla.js';
+import { buildErosCinema } from './monuments/eros-cinema.js';
+import { buildUmaidBhawanPalace } from './monuments/umaid-bhawan-palace.js';
+import { buildIimAhmedabad } from './monuments/iim-ahmedabad.js';
+import { buildFalaknumaPalace } from './monuments/falaknuma-palace.js';
+import { buildKanglaFort } from './monuments/kangla-fort.js';
+import { buildLivingRootBridgeNongriat } from './monuments/living-root-bridge-nongriat.js';
+import { buildKohimaWarCemetery } from './monuments/kohima-war-cemetery.js';
+import { buildMotiDamanFort } from './monuments/moti-daman-fort.js';
+import { buildAayiMandapam } from './monuments/aayi-mandapam.js';
 
 // Builders by the name js/data.js gives each monument (its `fn`).
 export const BUILDERS = {
@@ -255,4 +331,80 @@ export const BUILDERS = {
   buildMatrimandir,
   buildStatueOfEquality,
   buildSriharikota,
+  buildPremMandir,
+  buildIskconBangalore,
+  buildAdiyogi,
+  buildSheikhChilli,
+  buildMartand,
+  buildJahazMahal,
+  buildPanchaRathas,
+  buildAiravatesvara,
+  buildMukteswara,
+  buildKumbhalgarh,
+  buildWarangalFort,
+  buildLepakshi,
+  buildJageshwar,
+  buildHazarduari,
+  buildShaniwarWada,
+  buildKangraFort,
+  buildTalatalGhar,
+  buildMattancherry,
+  buildSeCathedral,
+  buildLaxmanSirpur,
+  buildPuranaQila,
+  buildPattadakal,
+  buildVikramshila,
+  buildJahangirMahal,
+  buildBhojeshwar,
+  buildLotusMahal,
+  buildTakhtSriHazurSahib,
+  buildTakhtSriPatnaSahib,
+  buildTakhtSriKeshgarhSahib,
+  buildGurudwaraBanglaSahib,
+  buildHemkundSahib,
+  buildStPaulsCathedralKolkata,
+  buildSanThomeBasilica,
+  buildChristChurchShimla,
+  buildImmaculateConceptionPanaji,
+  buildSolomonsTempleAizawl,
+  buildStFrancisChurchKochi,
+  buildTajUlMasajid,
+  buildMeccaMasjidHyderabad,
+  buildAdhaiDinKaJhonpra,
+  buildCheramanJumaMasjid,
+  buildSidiSaiyyedMosque,
+  buildParadesiSynagogue,
+  buildKnessethEliyahooSynagogue,
+  buildWadiajiAtashBehram,
+  buildNamdrolingMonastery,
+  buildDholavira,
+  buildLothal,
+  buildBarabarCaves,
+  buildAshokanPillarVaishali,
+  buildKarlaCaves,
+  buildElephantaCaves,
+  buildGangaikondaCholapuram,
+  buildKailasanatharTemple,
+  buildHoysaleswaraTemple,
+  buildDurgaTempleAihole,
+  buildTeliKaMandir,
+  buildVadakkunnathanTemple,
+  buildMasrurTemples,
+  buildBateshwarTemples,
+  buildAdalajStepwell,
+  buildAgrasenKiBaoli,
+  buildTughlaqabadFort,
+  buildMahmudGawanMadrasa,
+  buildIbrahimRauza,
+  buildBaraGumbad,
+  buildViceregalLodgeShimla,
+  buildErosCinema,
+  buildUmaidBhawanPalace,
+  buildIimAhmedabad,
+  buildFalaknumaPalace,
+  buildKanglaFort,
+  buildLivingRootBridgeNongriat,
+  buildKohimaWarCemetery,
+  buildMotiDamanFort,
+  buildAayiMandapam,
 };

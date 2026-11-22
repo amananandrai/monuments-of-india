@@ -19,12 +19,13 @@ export const STYLE_GROUPS = [
   { id: 'indo-saracenic', label: 'Indo-Saracenic', test: /indo-saracenic/i },
   // European styles: Portuguese Goa, Gothic Revival, Renaissance, Baroque, Lutyens' Delhi.
   { id: 'european', label: 'Colonial & European', test: /gothic|baroque|portuguese|renaissance|lutyens|colonial|memorial arch/i },
-  // Twentieth- and twenty-first-century buildings, memorials, statues and bridges.
-  { id: 'modern', label: 'Modern', test: /contemporary|modernist|expressionist|modern memorial|monumental statue|cable-stayed|cantilever|steel arch|vertical-lift/i },
+  // Twentieth- and twenty-first-century buildings, memorials, statues and bridges, and Art Deco.
+  { id: 'modern', label: 'Modern', test: /contemporary|modernist|expressionist|modern memorial|monumental statue|cable-stayed|cantilever|steel arch|vertical-lift|deco/i },
   // Styles of their own: Sikh, the Himalayan pagoda, Keladi forts, the Gommateshwara monolith, the
-  // brick temples of Bengal, Ahom Assam, Ladakh's palace, and the buildings that mix several
-  // traditions.
-  { id: 'regional', label: 'Regional & mixed', test: /sikh|pagoda|keladi|monolithic|mixed|bengal|ahom|ladakhi/i },
+  // brick temples of Bengal, Ahom Assam, Ladakh's palace, the Karkota temples of Kashmir, the
+  // Maratha wada, the Bundela palaces, the Harappan cities, the Parsi fire temple, Meitei Manipur,
+  // the Khasi root bridges, Elephanta, and the buildings that mix several traditions.
+  { id: 'regional', label: 'Regional & mixed', test: /sikh|pagoda|keladi|monolithic|mixed|bengal|ahom|ladakhi|kashmiri|maratha wada|bundela|harappan|assyrian|meitei|khasi|kalachuri/i },
 ];
 
 export const MATERIAL_GROUPS = [
@@ -38,7 +39,7 @@ export const MATERIAL_GROUPS = [
   { id: 'brick', label: 'Brick & lime', test: /brick|stucco|\blime\b/i },
   // Other stone: khondalite, soapstone, limestone, slabs of local stone, and stone not named further.
   { id: 'stone', label: 'Other stone', test: /khondalite|soapstone|limestone|\bstone\b/i },
-  { id: 'timber', label: 'Timber', test: /timber|wood/i },
+  { id: 'timber', label: 'Timber', test: /timber|wood|roots/i },
   { id: 'modern', label: 'Steel & concrete', test: /steel|concrete|bronze/i },
 ];
 

@@ -1,6 +1,6 @@
 # States and monuments
 
-125 monuments in 28 states and union territories. Each entry gives the place, the dates, the
+201 monuments in 35 states and union territories. Each entry gives the place, the dates, the
 architectural style and the main material, as shown on the monument's plaque and used by the
 filters (all from `js/data.js`), then the home view of the model.
 
@@ -13,33 +13,40 @@ studio views from `tools/shoot-views.mjs`; the site adds shadows, photo textures
 ## Contents
 
 - [Andaman and Nicobar](#andaman-and-nicobar) (1)
-- [Andhra Pradesh](#andhra-pradesh) (3)
+- [Andhra Pradesh](#andhra-pradesh) (4)
 - [Arunachal Pradesh](#arunachal-pradesh) (1)
-- [Assam](#assam) (2)
-- [Bihar](#bihar) (3)
+- [Assam](#assam) (3)
+- [Bihar](#bihar) (7)
 - [Chandigarh](#chandigarh) (1)
-- [Chhattisgarh](#chhattisgarh) (1)
-- [Delhi](#delhi) (12)
-- [Goa](#goa) (2)
-- [Gujarat](#gujarat) (9)
-- [Himachal Pradesh](#himachal-pradesh) (2)
-- [Jammu and Kashmir](#jammu-and-kashmir) (2)
+- [Chhattisgarh](#chhattisgarh) (2)
+- [Dadra and Nagar Haveli and Daman and Diu](#dadra-and-nagar-haveli-and-daman-and-diu) (1)
+- [Delhi](#delhi) (17)
+- [Goa](#goa) (4)
+- [Gujarat](#gujarat) (14)
+- [Haryana](#haryana) (1)
+- [Himachal Pradesh](#himachal-pradesh) (6)
+- [Jammu and Kashmir](#jammu-and-kashmir) (3)
 - [Jharkhand](#jharkhand) (2)
-- [Karnataka](#karnataka) (9)
-- [Kerala](#kerala) (2)
+- [Karnataka](#karnataka) (17)
+- [Kerala](#kerala) (7)
 - [Ladakh](#ladakh) (3)
-- [Madhya Pradesh](#madhya-pradesh) (6)
-- [Maharashtra](#maharashtra) (11)
-- [Odisha](#odisha) (3)
-- [Punjab](#punjab) (2)
-- [Rajasthan](#rajasthan) (11)
+- [Madhya Pradesh](#madhya-pradesh) (12)
+- [Maharashtra](#maharashtra) (18)
+- [Manipur](#manipur) (1)
+- [Meghalaya](#meghalaya) (1)
+- [Mizoram](#mizoram) (1)
+- [Nagaland](#nagaland) (1)
+- [Odisha](#odisha) (4)
+- [Puducherry](#puducherry) (1)
+- [Punjab](#punjab) (3)
+- [Rajasthan](#rajasthan) (14)
 - [Sikkim](#sikkim) (1)
-- [Tamil Nadu](#tamil-nadu) (8)
-- [Telangana](#telangana) (5)
+- [Tamil Nadu](#tamil-nadu) (14)
+- [Telangana](#telangana) (8)
 - [Tripura](#tripura) (1)
-- [Uttar Pradesh](#uttar-pradesh) (13)
-- [Uttarakhand](#uttarakhand) (2)
-- [West Bengal](#west-bengal) (7)
+- [Uttar Pradesh](#uttar-pradesh) (14)
+- [Uttarakhand](#uttarakhand) (4)
+- [West Bengal](#west-bengal) (9)
 
 ## Andaman and Nicobar
 
@@ -50,6 +57,12 @@ Port Blair, Andaman Islands · 1896–1906 · Colonial prison · Brick · [view 
 ![Cellular Jail](assets/views/cellular-jail.png)
 
 ## Andhra Pradesh
+
+### Lepakshi Temple
+
+Lepakshi, Sri Sathya Sai, Andhra Pradesh · 1530s · Vijayanagara · Granite · [view in 3D](https://monuments-of-india-nu.vercel.app/#lepakshi-temple)
+
+![Lepakshi Temple](assets/views/lepakshi-temple.png)
 
 ### Mallikarjuna Temple
 
@@ -91,7 +104,25 @@ Sivasagar, Assam · 1744–1750 · Ahom · Brick and lime · [view in 3D](https:
 
 ![Rang Ghar](assets/views/rang-ghar.png)
 
+### Talatal Ghar
+
+Sivasagar, Assam · 1751–1769 · Ahom · Brick and lime · [view in 3D](https://monuments-of-india-nu.vercel.app/#talatal-ghar)
+
+![Talatal Ghar](assets/views/talatal-ghar.png)
+
 ## Bihar
+
+### Ashokan Pillar, Vaishali
+
+Kolhua, Vaishali, Bihar · c. 250 BCE · Buddhist (Mauryan) · Polished sandstone and brick · [view in 3D](https://monuments-of-india-nu.vercel.app/#ashokan-pillar-vaishali)
+
+![Ashokan Pillar, Vaishali](assets/views/ashokan-pillar-vaishali.png)
+
+### Barabar Caves
+
+Jehanabad, Bihar · 3rd century BCE · Rock-cut (Mauryan) · Granite · [view in 3D](https://monuments-of-india-nu.vercel.app/#barabar-caves)
+
+![Barabar Caves](assets/views/barabar-caves.png)
 
 ### Mahabodhi Temple
 
@@ -111,6 +142,18 @@ Sasaram, Bihar · 1540–1545 · Indo-Afghan (Sur) · Red sandstone · [view in 
 
 ![Sher Shah Suri’s Tomb](assets/views/sher-shah-suri-tomb.png)
 
+### Takht Sri Patna Sahib
+
+Patna City, Bihar · Rebuilt 1954–1957 · Sikh · White marble · [view in 3D](https://monuments-of-india-nu.vercel.app/#takht-sri-patna-sahib)
+
+![Takht Sri Patna Sahib](assets/views/takht-sri-patna-sahib.png)
+
+### Vikramshila Mahavihara
+
+Antichak, Bhagalpur, Bihar · Late 8th–9th centuries · Buddhist (Pala) · Brick with terracotta plaques · [view in 3D](https://monuments-of-india-nu.vercel.app/#vikramshila-mahavihara)
+
+![Vikramshila Mahavihara](assets/views/vikramshila-mahavihara.png)
+
 ## Chandigarh
 
 ### Capitol Complex, Chandigarh
@@ -127,7 +170,39 @@ Kabirdham, Chhattisgarh · c. 1089 CE · Nagara · Carved stone · [view in 3D](
 
 ![Bhoramdeo Temple](assets/views/bhoramdeo-temple.png)
 
+### Laxman Temple, Sirpur
+
+Sirpur, Mahasamund, Chhattisgarh · 7th century · Nagara (Panduvamshi brick) · Brick on a stone platform · [view in 3D](https://monuments-of-india-nu.vercel.app/#laxman-temple-sirpur)
+
+![Laxman Temple, Sirpur](assets/views/laxman-temple-sirpur.png)
+
+## Dadra and Nagar Haveli and Daman and Diu
+
+### Moti Daman Fort
+
+Moti Daman, Daman · 1559–1581 · Portuguese · Stone and laterite · [view in 3D](https://monuments-of-india-nu.vercel.app/#moti-daman-fort)
+
+![Moti Daman Fort](assets/views/moti-daman-fort.png)
+
 ## Delhi
+
+### Agrasen ki Baoli
+
+Hailey Road, New Delhi · 14th century · Indo-Islamic (Tughlaq) · Rubble stone · [view in 3D](https://monuments-of-india-nu.vercel.app/#agrasen-ki-baoli)
+
+![Agrasen ki Baoli](assets/views/agrasen-ki-baoli.png)
+
+### Bara Gumbad
+
+Lodhi Gardens, New Delhi · 1490 · Indo-Islamic (Lodi) · Grey quartzite and red sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#bara-gumbad)
+
+![Bara Gumbad](assets/views/bara-gumbad.png)
+
+### Gurudwara Bangla Sahib
+
+Connaught Place, New Delhi · Shrine from 1783; rebuilt 20th century · Sikh · White marble with a gilded dome · [view in 3D](https://monuments-of-india-nu.vercel.app/#gurudwara-bangla-sahib)
+
+![Gurudwara Bangla Sahib](assets/views/gurudwara-bangla-sahib.png)
 
 ### Humayun’s Tomb
 
@@ -171,6 +246,12 @@ Sansad Marg, New Delhi · 1921–1927 · Lutyens’ Delhi · Red and buff sandst
 
 ![Old Parliament House](assets/views/old-parliament-house.png)
 
+### Purana Qila
+
+Mathura Road, New Delhi · 1538–1545 · Indo-Afghan (Sur) · Red sandstone, quartzite and marble · [view in 3D](https://monuments-of-india-nu.vercel.app/#purana-qila)
+
+![Purana Qila](assets/views/purana-qila.png)
+
 ### Qutub Minar
 
 Mehrauli, Delhi · 1199–1220 · Indo-Islamic · Red sandstone and marble · [view in 3D](https://monuments-of-india-nu.vercel.app/#qutub-minar)
@@ -201,6 +282,12 @@ New Delhi · 2000–2005 · Maru-Gurjara · Pink sandstone and Italian marble ·
 
 ![Swaminarayan Akshardham](assets/views/akshardham.png)
 
+### Tughlaqabad Fort
+
+Tughlaqabad, New Delhi · 1321–1325 · Indo-Islamic (Tughlaq) · Rubble stone · [view in 3D](https://monuments-of-india-nu.vercel.app/#tughlaqabad-fort)
+
+![Tughlaqabad Fort](assets/views/tughlaqabad-fort.png)
+
 ## Goa
 
 ### Basilica of Bom Jesus
@@ -209,19 +296,49 @@ Old Goa, Goa · 1594–1605 · Baroque · Laterite and basalt · [view in 3D](ht
 
 ![Basilica of Bom Jesus](assets/views/basilica-of-bom-jesus.png)
 
+### Church of Our Lady of the Immaculate Conception
+
+Panaji, Goa · 1541; rebuilt 1619 · Portuguese Baroque · Laterite and lime plaster · [view in 3D](https://monuments-of-india-nu.vercel.app/#immaculate-conception-panaji)
+
+![Church of Our Lady of the Immaculate Conception](assets/views/immaculate-conception-panaji.png)
+
 ### Fort Aguada
 
 Candolim, Goa · 1612 · Portuguese · Laterite · [view in 3D](https://monuments-of-india-nu.vercel.app/#fort-aguada)
 
 ![Fort Aguada](assets/views/fort-aguada.png)
 
+### Sé Cathedral
+
+Old Goa, Goa · 1562–1619 · Portuguese Manueline, Tuscan outside · Laterite and lime plaster · [view in 3D](https://monuments-of-india-nu.vercel.app/#se-cathedral)
+
+![Sé Cathedral](assets/views/se-cathedral.png)
+
 ## Gujarat
+
+### Adalaj Stepwell
+
+Adalaj, Gandhinagar, Gujarat · 1498–1499 · Indo-Islamic and Solanki · Sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#adalaj-stepwell)
+
+![Adalaj Stepwell](assets/views/adalaj-stepwell.png)
+
+### Dholavira
+
+Khadir Bet, Kutch, Gujarat · c. 3000–1500 BCE · Harappan · Sandstone and limestone · [view in 3D](https://monuments-of-india-nu.vercel.app/#dholavira)
+
+![Dholavira](assets/views/dholavira.png)
 
 ### Dwarkadhish Temple
 
 Dwarka, Gujarat · 15th–16th c. · Maru-Gurjara · Limestone · [view in 3D](https://monuments-of-india-nu.vercel.app/#dwarkadhish-temple)
 
 ![Dwarkadhish Temple](assets/views/dwarkadhish-temple.png)
+
+### IIM Ahmedabad
+
+Vastrapur, Ahmedabad · 1962–1974 · Modernist · Brick and concrete · [view in 3D](https://monuments-of-india-nu.vercel.app/#iim-ahmedabad)
+
+![IIM Ahmedabad](assets/views/iim-ahmedabad.png)
 
 ### Kirti Mandir
 
@@ -234,6 +351,12 @@ Porbandar, Gujarat · 1947–1950 · Mixed · Stone · [view in 3D](https://monu
 Vadodara, Gujarat · 1878–1890 · Indo-Saracenic · Sandstone and marble · [view in 3D](https://monuments-of-india-nu.vercel.app/#laxmi-vilas-palace)
 
 ![Laxmi Vilas Palace](assets/views/laxmi-vilas-palace.png)
+
+### Lothal
+
+Saragwala, Ahmedabad, Gujarat · c. 2400–1900 BCE · Harappan · Mud brick and fired brick · [view in 3D](https://monuments-of-india-nu.vercel.app/#lothal)
+
+![Lothal](assets/views/lothal.png)
 
 ### Nageshwar Temple
 
@@ -253,6 +376,12 @@ Patan, Gujarat · 11th century · Maru-Gurjara · Sandstone · [view in 3D](http
 
 ![Rani ki Vav](assets/views/rani-ki-vav.png)
 
+### Sidi Saiyyed Mosque
+
+Lal Darwaja, Ahmedabad · 1572–1573 · Indo-Islamic (Gujarat Sultanate) · Yellow sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#sidi-saiyyed-mosque)
+
+![Sidi Saiyyed Mosque](assets/views/sidi-saiyyed-mosque.png)
+
 ### Somnath Temple
 
 Prabhas Patan, Gujarat · Rebuilt 1951 · Maru-Gurjara (Chalukya) · Sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#somnath-temple)
@@ -271,7 +400,21 @@ Modhera, Gujarat · 1026–1027 CE · Maru-Gurjara · Sandstone · [view in 3D](
 
 ![Sun Temple, Modhera](assets/views/modhera-sun-temple.png)
 
+## Haryana
+
+### Sheikh Chilli’s Tomb
+
+Thanesar, Kurukshetra, Haryana · c. 1650 · Mughal · White marble and red sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#sheikh-chilli-tomb)
+
+![Sheikh Chilli’s Tomb](assets/views/sheikh-chilli-tomb.png)
+
 ## Himachal Pradesh
+
+### Christ Church, Shimla
+
+The Ridge, Shimla · 1846–1857 · Neo-Gothic · Stone and lime plaster · [view in 3D](https://monuments-of-india-nu.vercel.app/#christ-church-shimla)
+
+![Christ Church, Shimla](assets/views/christ-church-shimla.png)
 
 ### Hidimba Devi Temple
 
@@ -279,11 +422,29 @@ Manali, Himachal Pradesh · 1553 · Himalayan pagoda · Stone and deodar wood ·
 
 ![Hidimba Devi Temple](assets/views/hidimba-devi-temple.png)
 
+### Kangra Fort
+
+Kangra, Himachal Pradesh · Recorded by 1009 CE · Rajput (Katoch) · Stone · [view in 3D](https://monuments-of-india-nu.vercel.app/#kangra-fort)
+
+![Kangra Fort](assets/views/kangra-fort.png)
+
 ### Key Monastery
 
 Spiti Valley, Himachal Pradesh · Founded c. 11th c. · Tibetan Buddhist · Stone and mud brick · [view in 3D](https://monuments-of-india-nu.vercel.app/#key-monastery)
 
 ![Key Monastery](assets/views/key-monastery.png)
+
+### Masrur Rock-cut Temples
+
+Masrur, Kangra, Himachal Pradesh · 8th century · Nagara (rock-cut monolith) · Sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#masrur-temples)
+
+![Masrur Rock-cut Temples](assets/views/masrur-temples.png)
+
+### Viceregal Lodge
+
+Observatory Hill, Shimla · 1880–1888 · Colonial (Jacobethan) · Grey stone · [view in 3D](https://monuments-of-india-nu.vercel.app/#viceregal-lodge-shimla)
+
+![Viceregal Lodge](assets/views/viceregal-lodge-shimla.png)
 
 ## Jammu and Kashmir
 
@@ -298,6 +459,12 @@ Reasi, Jammu and Kashmir · 2004–2022 · Steel arch bridge · Steel and concre
 Srinagar, Jammu and Kashmir · 1968–1979 · Mughal-inspired · White marble · [view in 3D](https://monuments-of-india-nu.vercel.app/#hazratbal-shrine)
 
 ![Hazratbal Shrine](assets/views/hazratbal-shrine.png)
+
+### Martand Sun Temple
+
+Mattan, Anantnag, Jammu and Kashmir · 8th century · Kashmiri (Karkota) · Grey limestone · [view in 3D](https://monuments-of-india-nu.vercel.app/#martand-sun-temple)
+
+![Martand Sun Temple](assets/views/martand-sun-temple.png)
 
 ## Jharkhand
 
@@ -327,6 +494,12 @@ Somanathapura, Karnataka · 1258 · Hoysala · Soapstone · [view in 3D](https:/
 
 ![Chennakesava Temple](assets/views/chennakesava-temple.png)
 
+### Durga Temple, Aihole
+
+Aihole, Bagalkot, Karnataka · 7th–8th centuries · Dravidian and Nagara (early Chalukya) · Sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#durga-temple-aihole)
+
+![Durga Temple, Aihole](assets/views/durga-temple-aihole.png)
+
 ### Gol Gumbaz
 
 Vijayapura, Karnataka · 1626–1656 · Deccan (Adil Shahi) · Dark basalt with lime plaster · [view in 3D](https://monuments-of-india-nu.vercel.app/#gol-gumbaz)
@@ -339,11 +512,53 @@ Shravanabelagola, Karnataka · c. 983 CE · Monolithic statue · Granite · [vie
 
 ![Gommateshwara Statue](assets/views/gommateshwara.png)
 
+### Hoysaleswara Temple
+
+Halebidu, Karnataka · 1121–1160 · Hoysala · Soapstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#hoysaleswara-temple)
+
+![Hoysaleswara Temple](assets/views/hoysaleswara-temple.png)
+
+### Ibrahim Rauza
+
+Vijayapura, Karnataka · 1626–1627 · Deccan (Adil Shahi) · Basalt · [view in 3D](https://monuments-of-india-nu.vercel.app/#ibrahim-rauza)
+
+![Ibrahim Rauza](assets/views/ibrahim-rauza.png)
+
+### ISKCON Temple Bangalore
+
+Hare Krishna Hill, Rajajinagar, Bengaluru · 1997 · Contemporary, with a Dravidian gopuram · Granite and concrete, with gilded towers and glass · [view in 3D](https://monuments-of-india-nu.vercel.app/#iskcon-temple-bangalore)
+
+![ISKCON Temple Bangalore](assets/views/iskcon-temple-bangalore.png)
+
+### Lotus Mahal
+
+Zenana Enclosure, Hampi, Karnataka · 16th century · Vijayanagara and Indo-Islamic · Brick, stucco and granite · [view in 3D](https://monuments-of-india-nu.vercel.app/#lotus-mahal-hampi)
+
+![Lotus Mahal](assets/views/lotus-mahal-hampi.png)
+
+### Mahmud Gawan Madrasa
+
+Bidar, Karnataka · 1472 · Deccan (Bahmani) · Stone with glazed tiles · [view in 3D](https://monuments-of-india-nu.vercel.app/#mahmud-gawan-madrasa)
+
+![Mahmud Gawan Madrasa](assets/views/mahmud-gawan-madrasa.png)
+
 ### Mysore Palace
 
 Mysuru, Karnataka · 1897–1912 · Indo-Saracenic · Grey granite with pink marble domes · [view in 3D](https://monuments-of-india-nu.vercel.app/#mysore-palace)
 
 ![Mysore Palace](assets/views/mysore-palace.png)
+
+### Namdroling Monastery
+
+Bylakuppe, Karnataka · 1963; Golden Temple 1999 · Tibetan Buddhist · Concrete with gilded roofs · [view in 3D](https://monuments-of-india-nu.vercel.app/#namdroling-monastery)
+
+![Namdroling Monastery](assets/views/namdroling-monastery.png)
+
+### Pattadakal Temples
+
+Pattadakal, Bagalkot, Karnataka · 7th–8th centuries · Dravidian and Nagara (Chalukya) · Sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#pattadakal-temples)
+
+![Pattadakal Temples](assets/views/pattadakal-temples.png)
 
 ### Tipu Sultan’s Gumbaz
 
@@ -377,11 +592,41 @@ Kasaragod, Kerala · c. 1650 · Keladi · Laterite · [view in 3D](https://monum
 
 ![Bekal Fort](assets/views/bekal-fort.png)
 
+### Cheraman Juma Masjid
+
+Methala, Kodungallur, Kerala · Traditionally 629; restored 2022 · Mixed (Kerala Islamic) · Laterite and timber · [view in 3D](https://monuments-of-india-nu.vercel.app/#cheraman-juma-masjid)
+
+![Cheraman Juma Masjid](assets/views/cheraman-juma-masjid.png)
+
+### Mattancherry Palace
+
+Mattancherry, Kochi, Kerala · c. 1555; rebuilt 1663 · Mixed (Kerala and Portuguese) · Laterite, lime plaster and timber · [view in 3D](https://monuments-of-india-nu.vercel.app/#mattancherry-palace)
+
+![Mattancherry Palace](assets/views/mattancherry-palace.png)
+
 ### Padmanabhaswamy Temple
 
 Thiruvananthapuram, Kerala · 16th–18th c. · Dravidian and Kerala · Granite · [view in 3D](https://monuments-of-india-nu.vercel.app/#padmanabhaswamy-temple)
 
 ![Padmanabhaswamy Temple](assets/views/padmanabhaswamy-temple.png)
+
+### Paradesi Synagogue
+
+Jew Town, Mattancherry, Kochi · 1568 · Mixed (Kerala Jewish) · Laterite, lime plaster and timber · [view in 3D](https://monuments-of-india-nu.vercel.app/#paradesi-synagogue)
+
+![Paradesi Synagogue](assets/views/paradesi-synagogue.png)
+
+### St Francis Church, Kochi
+
+Fort Kochi, Kerala · 1503; rebuilt in stone c. 1516 · Portuguese · Laterite and lime plaster · [view in 3D](https://monuments-of-india-nu.vercel.app/#st-francis-church-kochi)
+
+![St Francis Church, Kochi](assets/views/st-francis-church-kochi.png)
+
+### Vadakkunnathan Temple
+
+Thrissur, Kerala · Rebuilt 12th–16th centuries · Kerala (Dravidian) · Laterite, timber and copper · [view in 3D](https://monuments-of-india-nu.vercel.app/#vadakkunnathan-temple)
+
+![Vadakkunnathan Temple](assets/views/vadakkunnathan-temple.png)
 
 ## Ladakh
 
@@ -405,11 +650,35 @@ Near Leh, Ladakh · 15th century · Tibetan Buddhist (Gelug) · Stone, mud brick
 
 ## Madhya Pradesh
 
+### Bateshwar Temples
+
+Padavali, Morena, Madhya Pradesh · 8th–10th centuries · Nagara (Gurjara-Pratihara) · Sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#bateshwar-temples)
+
+![Bateshwar Temples](assets/views/bateshwar-temples.png)
+
+### Bhojeshwar Temple
+
+Bhojpur, Raisen, Madhya Pradesh · 11th century (unfinished) · Bhumija (Paramara, unfinished) · Sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#bhojeshwar-temple)
+
+![Bhojeshwar Temple](assets/views/bhojeshwar-temple.png)
+
 ### Gwalior Fort
 
 Gwalior, Madhya Pradesh · 8th–16th c. · Rajput (Tomar) · Sandstone with glazed tiles · [view in 3D](https://monuments-of-india-nu.vercel.app/#gwalior-fort)
 
 ![Gwalior Fort](assets/views/gwalior-fort.png)
+
+### Jahangir Mahal
+
+Orchha, Niwari, Madhya Pradesh · Early 17th century · Rajput and Mughal (Bundela) · Stone and lime plaster with glazed tiles · [view in 3D](https://monuments-of-india-nu.vercel.app/#jahangir-mahal-orchha)
+
+![Jahangir Mahal](assets/views/jahangir-mahal-orchha.png)
+
+### Jahaz Mahal
+
+Mandu, Dhar, Madhya Pradesh · Late 15th century · Indo-Islamic (Malwa Sultanate) · Local stone and lime plaster · [view in 3D](https://monuments-of-india-nu.vercel.app/#jahaz-mahal)
+
+![Jahaz Mahal](assets/views/jahaz-mahal.png)
 
 ### Kandariya Mahadeva Temple
 
@@ -440,6 +709,18 @@ Khajuraho, Madhya Pradesh · c. 950–970 CE · Nagara (Chandela) · Sandstone �
 Sanchi, Madhya Pradesh · 3rd c. BCE · Buddhist (Mauryan) · Sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#sanchi-stupa)
 
 ![Sanchi Stupa](assets/views/sanchi-stupa.png)
+
+### Taj-ul-Masajid
+
+Bhopal, Madhya Pradesh · 1877–1985 · Mughal · Pink sandstone with white marble domes · [view in 3D](https://monuments-of-india-nu.vercel.app/#taj-ul-masajid)
+
+![Taj-ul-Masajid](assets/views/taj-ul-masajid.png)
+
+### Teli ka Mandir
+
+Gwalior Fort, Madhya Pradesh · 8th–9th centuries · Nagara (Pratihara, wagon-vault roof) · Sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#teli-ka-mandir)
+
+![Teli ka Mandir](assets/views/teli-ka-mandir.png)
 
 ## Maharashtra
 
@@ -479,6 +760,18 @@ Near Chhatrapati Sambhajinagar, Maharashtra · 12th–15th c. · Deccan · Stone
 
 ![Daulatabad Fort](assets/views/daulatabad-fort.png)
 
+### Elephanta Caves
+
+Elephanta Island, Mumbai Harbour · 5th–6th centuries · Rock-cut Shaiva (Kalachuri) · Basalt · [view in 3D](https://monuments-of-india-nu.vercel.app/#elephanta-caves)
+
+![Elephanta Caves](assets/views/elephanta-caves.png)
+
+### Eros Cinema
+
+Churchgate, Mumbai · 1935–1938 · Art Deco · Concrete and red Agra sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#eros-cinema)
+
+![Eros Cinema](assets/views/eros-cinema.png)
+
 ### Gateway of India
 
 Apollo Bunder, Mumbai · 1913–1924 · Indo-Saracenic · Yellow basalt and concrete · [view in 3D](https://monuments-of-india-nu.vercel.app/#gateway-of-india)
@@ -497,17 +790,79 @@ Ellora, Maharashtra · 8th century · Dravidian (Rashtrakuta) · Basalt, carved 
 
 ![Kailasa Temple, Ellora](assets/views/kailasa-temple.png)
 
+### Karla Caves
+
+Karla, Pune, Maharashtra · 1st century BCE–2nd century CE · Rock-cut Buddhist (Satavahana) · Basalt · [view in 3D](https://monuments-of-india-nu.vercel.app/#karla-caves)
+
+![Karla Caves](assets/views/karla-caves.png)
+
+### Knesseth Eliyahoo Synagogue
+
+Kala Ghoda, Mumbai · 1884 · Colonial (Victorian) · Brick and lime plaster, painted blue · [view in 3D](https://monuments-of-india-nu.vercel.app/#knesseth-eliyahoo-synagogue)
+
+![Knesseth Eliyahoo Synagogue](assets/views/knesseth-eliyahoo-synagogue.png)
+
 ### Mumbai Airport Terminal 2
 
 Sahar, Mumbai · 2007–2014 · Contemporary · Steel, glass and concrete · [view in 3D](https://monuments-of-india-nu.vercel.app/#mumbai-airport-t2)
 
 ![Mumbai Airport Terminal 2](assets/views/mumbai-airport-t2.png)
 
+### Shaniwar Wada
+
+Pune, Maharashtra · 1730–1732 · Maratha wada · Stone and brick · [view in 3D](https://monuments-of-india-nu.vercel.app/#shaniwar-wada)
+
+![Shaniwar Wada](assets/views/shaniwar-wada.png)
+
+### Takht Sri Hazur Sahib
+
+Nanded, Maharashtra · 1832–1837 · Sikh · White marble and gilded copper · [view in 3D](https://monuments-of-india-nu.vercel.app/#takht-sri-hazur-sahib)
+
+![Takht Sri Hazur Sahib](assets/views/takht-sri-hazur-sahib.png)
+
 ### Trimbakeshwar Temple
 
 Trimbak, Nashik · 1755–1786 · Nagara · Black basalt · [view in 3D](https://monuments-of-india-nu.vercel.app/#trimbakeshwar-temple)
 
 ![Trimbakeshwar Temple](assets/views/trimbakeshwar-temple.png)
+
+### Wadiaji Atash Behram
+
+Princess Street, Dhobi Talao, Mumbai · 1830 · Persian and Assyrian Revival (Parsi) · Stone · [view in 3D](https://monuments-of-india-nu.vercel.app/#wadiaji-atash-behram)
+
+![Wadiaji Atash Behram](assets/views/wadiaji-atash-behram.png)
+
+## Manipur
+
+### Kangla Fort
+
+Imphal, Manipur · Seat of the Meitei kings; Kangla Sha rebuilt 2006 · Meitei · Brick and lime · [view in 3D](https://monuments-of-india-nu.vercel.app/#kangla-fort)
+
+![Kangla Fort](assets/views/kangla-fort.png)
+
+## Meghalaya
+
+### Double-Decker Living Root Bridge
+
+Nongriat, East Khasi Hills, Meghalaya · Grown over about 200 years · Khasi living root bridge · Living roots of rubber fig trees · [view in 3D](https://monuments-of-india-nu.vercel.app/#living-root-bridge-nongriat)
+
+![Double-Decker Living Root Bridge](assets/views/living-root-bridge-nongriat.png)
+
+## Mizoram
+
+### Solomon’s Temple, Aizawl
+
+Kidron Valley, Aizawl, Mizoram · 1996–2017 · Contemporary · White marble and concrete · [view in 3D](https://monuments-of-india-nu.vercel.app/#solomons-temple-aizawl)
+
+![Solomon’s Temple, Aizawl](assets/views/solomons-temple-aizawl.png)
+
+## Nagaland
+
+### Kohima War Cemetery
+
+Garrison Hill, Kohima, Nagaland · 1944 onwards · Modern memorial · Stone with bronze plaques · [view in 3D](https://monuments-of-india-nu.vercel.app/#kohima-war-cemetery)
+
+![Kohima War Cemetery](assets/views/kohima-war-cemetery.png)
 
 ## Odisha
 
@@ -529,6 +884,20 @@ Bhubaneswar, Odisha · 11th century · Kalinga · Sandstone and laterite · [vie
 
 ![Lingaraja Temple](assets/views/lingaraja-temple.png)
 
+### Mukteswara Temple
+
+Bhubaneswar, Odisha · c. 950 CE · Kalinga · Red sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#mukteswara-temple)
+
+![Mukteswara Temple](assets/views/mukteswara-temple.png)
+
+## Puducherry
+
+### Aayi Mandapam
+
+Bharathi Park, Puducherry · c. 1854 · Colonial (French Greco-Roman) · Brick and lime plaster, painted white · [view in 3D](https://monuments-of-india-nu.vercel.app/#aayi-mandapam)
+
+![Aayi Mandapam](assets/views/aayi-mandapam.png)
+
 ## Punjab
 
 ### Golden Temple
@@ -543,7 +912,19 @@ Amritsar, Punjab · Memorial 1961 · Modern memorial · Red sandstone · [view i
 
 ![Jallianwala Bagh](assets/views/jallianwala-bagh.png)
 
+### Takht Sri Keshgarh Sahib
+
+Anandpur Sahib, Punjab · Rebuilt 1936–1944 · Sikh · White marble and lime plaster · [view in 3D](https://monuments-of-india-nu.vercel.app/#takht-sri-keshgarh-sahib)
+
+![Takht Sri Keshgarh Sahib](assets/views/takht-sri-keshgarh-sahib.png)
+
 ## Rajasthan
+
+### Adhai Din Ka Jhonpra
+
+Ajmer, Rajasthan · 1192–1199; screen 1229 · Indo-Islamic (early Sultanate) · Yellow limestone · [view in 3D](https://monuments-of-india-nu.vercel.app/#adhai-din-ka-jhonpra)
+
+![Adhai Din Ka Jhonpra](assets/views/adhai-din-ka-jhonpra.png)
 
 ### Amber Fort
 
@@ -593,6 +974,12 @@ Jaipur, Rajasthan · 1728–1734 · Rajput observatory · Local stone, marble an
 
 ![Jantar Mantar, Jaipur](assets/views/jantar-mantar-jaipur.png)
 
+### Kumbhalgarh Fort
+
+Rajsamand, Rajasthan · 15th century · Rajput · Stone and lime · [view in 3D](https://monuments-of-india-nu.vercel.app/#kumbhalgarh-fort)
+
+![Kumbhalgarh Fort](assets/views/kumbhalgarh-fort.png)
+
 ### Mehrangarh Fort
 
 Jodhpur, Rajasthan · From 1459 · Rajput · Red sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#mehrangarh-fort)
@@ -611,6 +998,12 @@ Ajmer, Rajasthan · 1864–1895 · Jain · Red sandstone and gilded wood · [vie
 
 ![Soniji Ki Nasiyan](assets/views/soniji-ki-nasiyan.png)
 
+### Umaid Bhawan Palace
+
+Jodhpur, Rajasthan · 1929–1943 · Indo-Deco · Chittar sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#umaid-bhawan-palace)
+
+![Umaid Bhawan Palace](assets/views/umaid-bhawan-palace.png)
+
 ## Sikkim
 
 ### Rumtek Monastery
@@ -620,6 +1013,18 @@ Near Gangtok, Sikkim · 1960s · Tibetan Buddhist · Stone, timber and gilt · [
 ![Rumtek Monastery](assets/views/rumtek-monastery.png)
 
 ## Tamil Nadu
+
+### Adiyogi Shiva Statue
+
+Isha Yoga Centre, Coimbatore, Tamil Nadu · 2017 · Monumental statue · Steel · [view in 3D](https://monuments-of-india-nu.vercel.app/#adiyogi)
+
+![Adiyogi Shiva Statue](assets/views/adiyogi.png)
+
+### Airavatesvara Temple
+
+Darasuram, Kumbakonam, Tamil Nadu · 12th century · Dravidian (Chola) · Granite · [view in 3D](https://monuments-of-india-nu.vercel.app/#airavatesvara-temple)
+
+![Airavatesvara Temple](assets/views/airavatesvara-temple.png)
 
 ### Brihadeeswara Temple
 
@@ -632,6 +1037,18 @@ Thanjavur, Tamil Nadu · 1003–1010 CE · Dravidian (Chola) · Granite · [view
 Park Town, Chennai · 1873 · Gothic Revival · Red brick · [view in 3D](https://monuments-of-india-nu.vercel.app/#chennai-central)
 
 ![Chennai Central](assets/views/chennai-central.png)
+
+### Gangaikonda Cholapuram
+
+Ariyalur, Tamil Nadu · c. 1035 · Dravidian (Chola) · Granite · [view in 3D](https://monuments-of-india-nu.vercel.app/#gangaikonda-cholapuram)
+
+![Gangaikonda Cholapuram](assets/views/gangaikonda-cholapuram.png)
+
+### Kailasanathar Temple
+
+Kanchipuram, Tamil Nadu · c. 700 · Dravidian (Pallava) · Sandstone on granite · [view in 3D](https://monuments-of-india-nu.vercel.app/#kailasanathar-temple)
+
+![Kailasanathar Temple](assets/views/kailasanathar-temple.png)
 
 ### Matrimandir
 
@@ -651,11 +1068,23 @@ Rameswaram, Tamil Nadu · 2019–2025 · Vertical-lift bridge · Steel and concr
 
 ![New Pamban Bridge](assets/views/new-pamban-bridge.png)
 
+### Pancha Rathas
+
+Mamallapuram, Tamil Nadu · 7th century · Dravidian (Pallava) · Granite, carved from one outcrop · [view in 3D](https://monuments-of-india-nu.vercel.app/#pancha-rathas)
+
+![Pancha Rathas](assets/views/pancha-rathas.png)
+
 ### Ramanathaswamy Temple
 
 Rameswaram, Tamil Nadu · 12th–17th c. · Dravidian · Granite · [view in 3D](https://monuments-of-india-nu.vercel.app/#ramanathaswamy-temple)
 
 ![Ramanathaswamy Temple](assets/views/ramanathaswamy-temple.png)
+
+### San Thome Basilica
+
+Mylapore, Chennai · 1893–1896 · Neo-Gothic · Brick and lime plaster · [view in 3D](https://monuments-of-india-nu.vercel.app/#san-thome-basilica)
+
+![San Thome Basilica](assets/views/san-thome-basilica.png)
 
 ### Shore Temple
 
@@ -677,11 +1106,23 @@ Hyderabad, Telangana · 1591 · Qutb Shahi · Granite, limestone and lime mortar
 
 ![Charminar](assets/views/charminar.png)
 
+### Falaknuma Palace
+
+Falaknuma, Hyderabad · 1884–1893 · Colonial (Italian Palladian) · Italian marble · [view in 3D](https://monuments-of-india-nu.vercel.app/#falaknuma-palace)
+
+![Falaknuma Palace](assets/views/falaknuma-palace.png)
+
 ### Golconda Fort
 
 Hyderabad, Telangana · 13th–17th c. · Deccan · Granite · [view in 3D](https://monuments-of-india-nu.vercel.app/#golconda-fort)
 
 ![Golconda Fort](assets/views/golconda-fort.png)
+
+### Mecca Masjid
+
+Old City, Hyderabad · 1617–1694 · Qutb Shahi · Granite · [view in 3D](https://monuments-of-india-nu.vercel.app/#mecca-masjid-hyderabad)
+
+![Mecca Masjid](assets/views/mecca-masjid-hyderabad.png)
 
 ### Qutb Shahi Tombs
 
@@ -700,6 +1141,12 @@ Palampet, Telangana · 1213 CE · Kakatiya · Sandstone, dolerite and light bric
 Muchintal, Hyderabad · 2014–2022 · Monumental statue · Panchaloha (five-metal alloy) on a concrete base · [view in 3D](https://monuments-of-india-nu.vercel.app/#statue-of-equality)
 
 ![Statue of Equality](assets/views/statue-of-equality.png)
+
+### Warangal Fort
+
+Warangal, Telangana · 13th century · Kakatiya · Granite · [view in 3D](https://monuments-of-india-nu.vercel.app/#warangal-fort)
+
+![Warangal Fort](assets/views/warangal-fort.png)
 
 ## Tripura
 
@@ -771,6 +1218,12 @@ Fatehpur Sikri, Uttar Pradesh · 1570s · Mughal · Red sandstone · [view in 3D
 
 ![Panch Mahal](assets/views/panch-mahal.png)
 
+### Prem Mandir
+
+Vrindavan, Mathura, Uttar Pradesh · 2001–2012 · Contemporary Nagara · White Italian marble · [view in 3D](https://monuments-of-india-nu.vercel.app/#prem-mandir)
+
+![Prem Mandir](assets/views/prem-mandir.png)
+
 ### Ram Mandir
 
 Ayodhya, Uttar Pradesh · 2020–2024 · Nagara · Pink Bansi Paharpur sandstone · [view in 3D](https://monuments-of-india-nu.vercel.app/#ram-mandir)
@@ -796,6 +1249,18 @@ Agra, Uttar Pradesh · 1632–1653 · Mughal · White Makrana marble · [view in
 Badrinath, Uttarakhand · 9th century, rebuilt often · Nagara (Garhwali) · Stone with a painted façade · [view in 3D](https://monuments-of-india-nu.vercel.app/#badrinath-temple)
 
 ![Badrinath Temple](assets/views/badrinath-temple.png)
+
+### Hemkund Sahib
+
+Chamoli, Uttarakhand · Mid-1960s · Sikh, modern · Concrete and stone · [view in 3D](https://monuments-of-india-nu.vercel.app/#hemkund-sahib)
+
+![Hemkund Sahib](assets/views/hemkund-sahib.png)
+
+### Jageshwar Temples
+
+Jageshwar, Almora, Uttarakhand · 7th–12th centuries · Nagara (Katyuri) · Local stone · [view in 3D](https://monuments-of-india-nu.vercel.app/#jageshwar-temples)
+
+![Jageshwar Temples](assets/views/jageshwar-temples.png)
 
 ### Kedarnath Temple
 
@@ -823,6 +1288,12 @@ Dakshineswar, Kolkata · 1847–1855 · Bengal navaratna · Brick and lime plast
 
 ![Dakshineswar Kali Temple](assets/views/dakshineswar-kali-temple.png)
 
+### Hazarduari Palace
+
+Murshidabad, West Bengal · 1829–1837 · Colonial (Greek Revival) · Brick and lime plaster · [view in 3D](https://monuments-of-india-nu.vercel.app/#hazarduari-palace)
+
+![Hazarduari Palace](assets/views/hazarduari-palace.png)
+
 ### Howrah Bridge
 
 Kolkata, West Bengal · 1936–1943 · Cantilever truss · Riveted high-tensile steel · [view in 3D](https://monuments-of-india-nu.vercel.app/#howrah-bridge)
@@ -840,6 +1311,12 @@ Howrah, West Bengal · 1901–1905 · Colonial (Romanesque Revival) · Red brick
 Maidan, Kolkata · 1828 · Mixed (Egyptian, Syrian, Turkish) · Stone · [view in 3D](https://monuments-of-india-nu.vercel.app/#shaheed-minar)
 
 ![Shaheed Minar](assets/views/shaheed-minar.png)
+
+### St Paul’s Cathedral, Kolkata
+
+Cathedral Road, Kolkata · 1839–1847 · Gothic Revival · Brick and stucco · [view in 3D](https://monuments-of-india-nu.vercel.app/#st-pauls-cathedral-kolkata)
+
+![St Paul’s Cathedral, Kolkata](assets/views/st-pauls-cathedral-kolkata.png)
 
 ### Victoria Memorial
 
