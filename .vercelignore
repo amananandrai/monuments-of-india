@@ -1,0 +1,18 @@
+# Keep the deploy to what the site loads: index.html, css/, js/ and assets/textures/.
+# Everything below is for GitHub, the docs or local tools, and is never fetched by the site.
+
+# Monument screenshots, refreshed by the screenshot workflow on every push (about 69 MB)
+assets/views/
+
+# Pictures for the guides and README
+assets/blog/
+img/
+
+# Guides and notes
+docs/
+*.md
+
+# Dev tooling, the HyperFrames film and CI
+tools/
+video/
+.github/
