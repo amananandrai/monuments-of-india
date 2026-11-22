@@ -58,7 +58,7 @@ function columnGeos(h) {
 export function concourse(len, w = 34) {
   const g = new THREE.Group();
   g.add(box(len, 7, w, PANEL, len / 2, 0, 0), box(len, 9.5, w - 1.2, GLASS, len / 2, 7, 0), cyl(w / 2, w / 2, 7, PANEL, len, 0, 0, 24), cyl(w / 2 - 0.6, w / 2 - 0.6, 9.5, GLASS, len, 7, 0, 24));
-  g.add(box(len, 1.3, w - 1.16, GLASS_DARK, len / 2, 2.6, 0));
+  g.add(box(len, 1.3, w + 0.5, GLASS_DARK, len / 2, 2.6, 0));
   const roof = new THREE.CylinderGeometry(w / 2 + 3, w / 2 + 3, len, 24, 1, true).rotateZ(Math.PI / 2).scale(1, 0.2, 1);
   g.add(mesh(roof, WHITE, len / 2, 16.5, 0), box(len, 0.5, w + 6, WHITE, len / 2, 16, 0));
   g.add(at(mesh(new THREE.SphereGeometry(w / 2 + 3, 24, 8, 0, Math.PI * 2, 0, Math.PI / 2).scale(1, 0.2, 1), WHITE), len, 16.5, 0), cyl(w / 2 + 3, w / 2 + 3, 0.5, WHITE, len, 16, 0, 24));
@@ -73,7 +73,7 @@ function controlTower() {
   const g = new THREE.Group();
   const shaft = new THREE.LatheGeometry([[7.5, 0], [5.2, 14], [4.2, 34], [4.4, 52], [6.2, 62], [9.6, 68]].map(([r, y]) => new THREE.Vector2(r, y)), 3);
   g.add(mesh(shaft, WHITE), cyl(10.5, 9.6, 2.2, WHITE, 0, 68, 0, 24), cyl(11.2, 9.8, 5, GLASS_DARK, 0, 70.2, 0, 24), cyl(11.8, 11.8, 1.1, WHITE, 0, 75.2, 0, 24), cyl(5, 6, 3, PANEL, 0, 76.3, 0, 16), cyl(0.25, 0.25, 5, PANEL, 0, 79.3, 0, 8));
-  g.add(box(46, 9, 30, PANEL, 0, 0, -4), box(46.1, 1.6, 30.1, GLASS_DARK, 0, 4.6, -4));
+  g.add(box(46, 9, 30, PANEL, 0, 0, -4), box(46.6, 1.6, 30.6, GLASS_DARK, 0, 4.6, -4));
   return mergeByMaterial(g);
 }
 
@@ -82,7 +82,7 @@ export function buildMumbaiT2() {
   g.add(f);
   // The headhouse: the arrivals floor as a podium, and above the departures level the hall behind
   // its glass, back from the roof's edge on every side.
-  f.add(box(404, DECK_Y, 164, PANEL, 0, 0, -16), box(404.1, 3.6, 164.1, GLASS_DARK, 0, 3.4, -16), box(400, ROOF_Y - DECK_Y - 0.4, 160, GLASS, 0, DECK_Y, -16));
+  f.add(box(404, DECK_Y, 164, PANEL, 0, 0, -16), box(404.6, 3.6, 164.6, GLASS_DARK, 0, 3.4, -16), box(400, ROOF_Y - DECK_Y - 0.4, 160, GLASS, 0, DECK_Y, -16));
   // The roof: a thin-edged white slab, and a low plant deck set back on top of it.
   const sh = new THREE.Shape(roofPlan(7).map(([x, z]) => new THREE.Vector2(x, -z)));
   const slab = new THREE.ExtrudeGeometry(sh, { depth: 0.6, bevelEnabled: true, bevelThickness: 1.45, bevelSize: 7, bevelSegments: 3, curveSegments: 1 }).rotateX(-Math.PI / 2);

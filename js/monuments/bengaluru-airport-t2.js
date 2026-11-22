@@ -34,7 +34,7 @@ export function clusterGeo(h) {
 // glazed upper floor and a brick-red ground floor.
 function gates() {
   const g = new THREE.Group(), L = 660, W = 40;
-  g.add(box(L, 5.5, W, BRICK, 0, 0, 0), box(L + 0.1, 1.6, W + 0.1, GLASS_DARK, 0, 2.2, 0), box(L - 2, 8.5, W - 2, GLASS, 0, 5.5, 0));
+  g.add(box(L, 5.5, W, BRICK, 0, 0, 0), box(L + 0.6, 1.6, W + 0.6, GLASS_DARK, 0, 2.2, 0), box(L - 2, 8.5, W - 2, GLASS, 0, 5.5, 0));
   g.add(box(L + 12, 0.5, W + 14, BAMBOO, 0, 14, 0), box(L + 13, 1.5, W + 15, ROOF, 0, 14.5, 0));
   return g;
 }
@@ -43,7 +43,7 @@ export function buildBengaluruT2() {
   const g = new THREE.Group(), f = new THREE.Group(), [hw, z0, z1] = HALL, zc = (z0 + z1) / 2, d = z1 - z0;
   g.add(f);
   // The hall: the brick-red arrivals floor, and the glazed hall over it from the departures level.
-  f.add(box(2 * hw + 4, DECK_Y, d + 4, BRICK, 0, 0, zc), box(2 * hw + 4.1, 2.6, d + 4.1, GLASS_DARK, 0, 2.6, zc), box(2 * hw, ROOF_Y - DECK_Y - 0.5, d, GLASS, 0, DECK_Y, zc));
+  f.add(box(2 * hw + 4, DECK_Y, d + 4, BRICK, 0, 0, zc), box(2 * hw + 4.6, 2.6, d + 4.6, GLASS_DARK, 0, 2.6, zc), box(2 * hw, ROOF_Y - DECK_Y - 0.5, d, GLASS, 0, DECK_Y, zc));
   // The roof: a bamboo ceiling under a pale deck with a deeper fascia set back from the edge.
   f.add(box(430, 0.5, 182, BAMBOO, 0, ROOF_Y, 9), box(432, 0.9, 184, ROOF, 0, ROOF_Y + 0.5, 9), box(412, 1.7, 164, ROOF, 0, ROOF_Y + 1.4, 9));
   // Cluster columns: two rows across the front on the departures deck (at the kerb's outer edge and
@@ -57,5 +57,5 @@ export function buildBengaluruT2() {
   for (const x of [-95, 95]) f.add(box(13, 5.5, 97, GLASS, x, DECK_Y, -117), box(15, 0.5, 99, BAMBOO_DARK, x, DECK_Y + 5.5, -117), box(15.5, 0.5, 99.5, ROOF, x, DECK_Y + 6, -117), box(13.4, 0.8, 97, BAMBOO_DARK, x, DECK_Y - 0.8, -117));
   addDetails(f, g);
   // The home view: from the gardens before the kerb, the bamboo ceiling and its hanging green.
-  return { group: g, focus: f, view: [0.5, 0.05, 1], zoom: 0.115, target: [15, 14, 80], batch: true };
+  return { group: g, focus: f, view: [0.5, 0.05, 1], zoom: 0.085, target: [15, 13, 80], batch: true };
 }

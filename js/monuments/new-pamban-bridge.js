@@ -91,7 +91,7 @@ function tower(dir) {
     g.add(box(0.09, top + 3.9 - (RAIL_Y + 0.3), 0.09, ROPE, -dir * 2.3, RAIL_Y + 0.3, sz * (az - 1.2) + dz));
     g.add(box(0.09, 7.5, 0.09, ROPE, dir * 2.3, top - 3.6, sz * (az - 1.2) + dz));
   }
-  g.add(box(5.2, 3.4, 7.4, CABIN, 0, top + 1.4, 0), box(5.6, 0.25, 7.8, STEEL_DARK, 0, top + 4.8, 0), box(5.24, 1.1, 5.4, GLAZE, 0, top + 2.8, 0));
+  g.add(box(5.2, 3.4, 7.4, CABIN, 0, top + 1.4, 0), box(5.6, 0.25, 7.8, STEEL_DARK, 0, top + 4.8, 0), box(5.6, 1.1, 5.4, GLAZE, 0, top + 2.8, 0));
   g.add(box(1.5, 9, 2 * az - 3.2, CONCRETE, dir * 2.3, top - 12.6, 0), box(1.7, 0.6, 2 * az - 1.6, STEEL_DARK, dir * 2.3, top - 3.6, 0));
   // A stair tower up the side away from the sea, and a gallery round the head.
   g.add(box(2.2, H, 2.2, STEEL_DARK, dir * (ax + 0.2), y0, -az - 1.9));
@@ -114,8 +114,8 @@ export function buildPambanBridge() {
   for (const dir of [-1, 1]) f.add(at(tower(dir), dir * TOWER_X, 0, 0));
   // The operator's control room beside the Pamban tower, on its own pier: two glazed floors.
   const room = new THREE.Group();
-  room.add(box(7, PIER_TOP + 1.2, 7, CONCRETE, 0, 0, 0), box(8, 7.4, 8, CABIN, 0, PIER_TOP + 1.2, 0), box(8.04, 1.5, 6.6, GLAZE, 0, PIER_TOP + 2.6, 0), box(6.6, 1.5, 8.04, GLAZE, 0, PIER_TOP + 2.6, 0));
-  room.add(box(8.04, 1.5, 6.6, GLAZE, 0, PIER_TOP + 6.0, 0), box(6.6, 1.5, 8.04, GLAZE, 0, PIER_TOP + 6.0, 0), box(9, 0.3, 9, STEEL_DARK, 0, PIER_TOP + 8.6, 0));
+  room.add(box(7, PIER_TOP + 1.2, 7, CONCRETE, 0, 0, 0), box(8, 7.4, 8, CABIN, 0, PIER_TOP + 1.2, 0), box(8.4, 1.5, 6.6, GLAZE, 0, PIER_TOP + 2.6, 0), box(6.6, 1.5, 8.4, GLAZE, 0, PIER_TOP + 2.6, 0));
+  room.add(box(8.4, 1.5, 6.6, GLAZE, 0, PIER_TOP + 6.0, 0), box(6.6, 1.5, 8.4, GLAZE, 0, PIER_TOP + 6.0, 0), box(9, 0.3, 9, STEEL_DARK, 0, PIER_TOP + 8.6, 0));
   f.add(at(mergeByMaterial(room), -TOWER_X - 2, 0, -15.5));
   // The plate-girder spans: every pier a rounded wall on a pile cap with a cap beam, wide enough
   // for two lines, the one line that is laid kept on the centre line here. Two girders a span, with flanges, stiffeners and cross frames, an

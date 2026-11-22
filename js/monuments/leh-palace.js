@@ -74,5 +74,5 @@ export function buildLehPalace() {
   addDetails(f, g);
   // From the old town below, to the south-west: the south front rising nine storeys from its
   // rock, the Tsemo on the peak behind.
-  return { group: g, focus: f, view: [-0.42, 0.09, 1], zoom: 0.9, fog: 16 };
+  return { group: g, focus: f, view: [-0.42, 0.09, 1], zoom: 0.95, target: [8, 43, 0], fog: 16 };
 }

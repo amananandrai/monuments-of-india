@@ -43,11 +43,11 @@ function ceiling(f) {
   for (const cx of COLS_X) for (const cz of COLS_Z) {
     for (const [r, n] of detail.low ? [[19.5, 18]] : [[18.6, 22], [22, 26]]) for (let k = 0; k < n; k++) {
       const a = ((k + (r > 20 ? 0.5 : 0)) / n) * Math.PI * 2, x = cx + r * Math.cos(a), z = cz + r * Math.sin(a);
-      if (under(x, z, 11)) eyes.push([x, ROOF_Y - 0.16, z, 1.5, 0.14, 1.5]);
+      if (under(x, z, 11)) eyes.push([x, ROOF_Y - 0.3, z, 1.5, 0.28, 1.5]);
     }
     for (const [r, n] of detail.low ? [[6, 8], [12, 14]] : [[4, 8], [7.5, 14], [11, 20], [14.5, 26]]) for (let k = 0; k < n; k++) {
       const a = ((k + r) / n) * Math.PI * 2;
-      lights.push([cx + r * Math.cos(a), ROOF_Y + 3.46, cz + r * Math.sin(a), 1.5, 0.12, 1.5]);
+      lights.push([cx + r * Math.cos(a), ROOF_Y + 3.46, cz + r * Math.sin(a), 1.5, 0.3, 1.5]);
     }
   }
   const e = inst(unitCyl(8), eyes, EYE), l = inst(unitCyl(8), lights, SKY);
@@ -107,7 +107,7 @@ function roads(f, g) {
   f.add(inst(new THREE.LatheGeometry(new THREE.SplineCurve(prof).getPoints(10), detail.low ? 10 : 16), small, WHITE));
   // Lane lines on the deck, and the arrivals road below with its kerb.
   const lines = [];
-  for (const z of [zc - 4, zc + 0.5, zc + 5, zc + 9.5, zc + 14]) for (let x = -X + 4; x < X; x += detail.low ? 24 : 12) lines.push([x, DECK_Y + 0.05, z, 4.5, 0.02, 0.15]);
+  for (const z of [zc - 4, zc + 0.5, zc + 5, zc + 9.5, zc + 14]) for (let x = -X + 4; x < X; x += detail.low ? 24 : 12) lines.push([x, DECK_Y + 0.05, z, 4.5, 0.06, 0.2]);
   const lm = inst(unitBox(), lines, PAINT);
   lm.castShadow = false;
   f.add(lm);

@@ -6,8 +6,8 @@ import { addDetails } from '../details/bishnupur-temples.js';
 
 // The Malla kings' temples at Bishnupur: no stone in the country, so laterite for the plinths and
 // thin brick for everything else, faced with moulded terracotta plaques.
-export const BRICK = surface(mat('#9c5a3e', 0.93), 'terracotta');
-export const BRICK_DARK = surface(mat('#82482f', 0.95), 'terracotta');
+export const BRICK = surface(mat('#8a4a33', 0.93), 'terracotta');
+export const BRICK_DARK = surface(mat('#733d29', 0.95), 'terracotta');
 export const PLAQUES = surface(mat('#a8633f', 0.9), 'plaques');
 export const LATERITE = photo(mat('#7a4b3a', 0.95), 'laterite');
 

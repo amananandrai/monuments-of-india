@@ -43,8 +43,8 @@ function architecture(f) {
   f.add(lm);
   // Skylights across the roof, one over every second bay; bamboo fins up the glass on every front.
   const sky = [], fins = [];
-  for (let x = -198; x <= 198.01; x += 36) sky.push([x, ROOF_Y + 3.08, 9, 5, 0.1, 150]);
-  for (let x = -315; x <= 315.01; x += 30) sky.push([x, 15.98, GATES_Z, 4, 0.1, 30]);
+  for (let x = -198; x <= 198.01; x += 36) sky.push([x, ROOF_Y + 3.08, 9, 5, 0.3, 150]);
+  for (let x = -315; x <= 315.01; x += 30) sky.push([x, 15.98, GATES_Z, 4, 0.3, 30]);
   const fs = detail.low ? 6 : 3;
   for (let x = -189; x <= 189.01; x += fs) fins.push([x, DECK_Y, 55.2, 0.22, ROOF_Y - DECK_Y, 0.6], [x, DECK_Y, -70.2, 0.22, ROOF_Y - DECK_Y, 0.6]);
   for (let z = -67; z <= 52.01; z += fs) for (const s of [-1, 1]) fins.push([s * 190.2, DECK_Y, z, 0.6, ROOF_Y - DECK_Y, 0.22]);
@@ -107,7 +107,7 @@ function roads(f, g) {
   const posts = [];
   for (let x = -243; x <= 243.01; x += 18) for (const z of [62, 92]) posts.push([x, 0, z, 1.3, DECK_Y - 1.1, 1.3]);
   f.add(inst(unitCyl(10), posts, BRICK));
-  g.add(box(760, 0.06, 20, M.asphalt, 0, 0.3, 80), box(760, 0.06, 12, M.asphalt, 0, 0.3, 112));
+  g.add(box(760, 0.2, 20, M.asphalt, 0, 0.3, 80), box(760, 0.2, 12, M.asphalt, 0, 0.3, 112));
   // Garden walls of brick, low and long, stepping through the planting before the kerb.
   const w = new THREE.Group();
   for (const [x, z, len, h, turn] of [[-150, 128, 90, 1.6, 0], [-40, 136, 70, 1.1, 0.08], [70, 130, 80, 1.8, -0.05], [170, 140, 60, 1.2, 0.1], [-205, 170, 50, 1.4, 1.2], [205, 178, 60, 1.4, -1.2], [0, 190, 110, 0.9, 0]]) {
@@ -178,7 +178,7 @@ export function addDetails(f, g) {
   roads(f, g);
   apron(f, g);
   // The garden's ground, from the far end of the forecourt back to the gates.
-  g.add(box(1500, 0.3, 780, M.grass, 0, 0, 185));
+  g.add(box(1500, 0.3, 780, M.grass, 0, 0, 191));
   // Ponds: three in the garden before the kerb, and a long one in the forest belt.
   pond(g, -95, 215, 62, 30, 2); pond(g, 70, 175, 44, 24, 5); pond(g, 150, 265, 50, 28, 9); pond(g, 0, -118, 70, 17, 4);
   const water = [[-165, -25, 180, 250], [18, 122, 146, 204], [92, 208, 232, 298]], belt = [-320, 320, -160, -76], links = [[-104, -86, -170, -60], [86, 104, -170, -60], [-78, 78, -138, -98]];
@@ -189,7 +189,7 @@ export function addDetails(f, g) {
   g.add(trees(scatter(detail.low ? 20 : 44, lawn, { seed: 5, gap: 17, avoid: [...water, ...road] }).map((p) => H(p, 7, 11)), { kind: 'mango', seed: 5 }));
   g.add(trees(scatter(detail.low ? 16 : 36, [-300, 300, 126, 260], { seed: 8, gap: 15, avoid: [...water, ...road] }).map((p) => H(p, 6, 9)), { kind: 'jamun', seed: 8 }));
   g.add(trees([...along(9, [-240, 124], [-30, 124]), ...along(9, [30, 124], [240, 124]), ...scatter(18, lawn, { seed: 13, gap: 20, avoid: [...water, ...road] })].map((p) => H(p, 9, 13)), { kind: 'palm', seed: 13 }));
-  g.add(box(30, 0.06, 420, M.asphalt, 0, 0.3, 330));
+  g.add(box(30, 0.2, 420, M.asphalt, 0, 0.3, 330.5));
   // The forest belt between the hall and the gates: tall and close, with palms through it.
   g.add(trees(scatter(detail.low ? 60 : 170, belt, { seed: 21, gap: 7, avoid: links }).map((p) => H(p, 11, 17)), { kind: 'jamun', seed: 21 }));
   g.add(trees(scatter(detail.low ? 36 : 100, belt, { seed: 22, gap: 8, avoid: links }).map((p) => H(p, 12, 18)), { kind: 'teak', seed: 22 }));
