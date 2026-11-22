@@ -90,5 +90,5 @@ export function buildPuranaQila() {
   addDetails(f, g);
   // From the south-west, outside: the Bara Darwaza between its bastions, the walls running away
   // to either side, the mosque's dome over them.
-  return { group: g, focus: f, view: [0.55, 0.22, 1], zoom: 0.28, target: [10, 14, 140] };
+  return { group: g, focus: f, view: [0.55, 0.2, 1], zoom: 0.2, target: [10, 13, 145] };
 }
