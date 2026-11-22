@@ -18,7 +18,7 @@ export const STONE = mat('#d8c4a2', 0.85), TRIM = mat('#b89a74', 0.88), DARK = m
 const GOLD = mat('#e3b23c', 0.3, 0.8), GOLD_PALE = mat('#f0cc6a', 0.3, 0.75), GOLD_DEEP = mat('#c9952c', 0.34, 0.8);
 const FLAG = surface(mat('#e9bd45', 0.5, 0.5, { side: THREE.DoubleSide }), 'none');
 // In the figure's own units (1 = FIGURE / 0.955): where the staff stands in the lap, and the water pot.
-const FOOT = [0.07, 0.06, 0.2], POT = [0.15, 0.13, 0.33];
+const FOOT = [0.07, 0.06, 0.2], POT = [0.19, 0.125, 0.34];
 
 // His hands joined before the chest (anjali), in the figure's own units: two flat palms pressed
 // together and tipped a little forward, the fingers side by side, the thumbs towards the chest,
@@ -46,7 +46,7 @@ function anjaliField() {
 // a flag flying from its head; and the small domed water pot before the left knee.
 export function ramanuja() {
   const g = new THREE.Group(), s = new THREE.Group(), k = FIGURE / 0.955;
-  const fig = crossLegged('ramanuja-bare', { male: true, adorn: false, head: 'bare', right: 'chest', left: 'chest' }, GOLD, detail.low ? 0.012 : 0.009, { low: 2 });
+  const fig = crossLegged('ramanuja-dhoti2', { male: true, slim: true, adorn: false, dhoti: true, head: 'bare', right: 'chest', left: 'chest', face: { down: -0.7, full: 0.9, lip: 0.5, lids: 0.5 } }, GOLD, detail.low ? 0.012 : 0.009, { low: 2 });
   fig.mesh.clear();
   // Where the body's surface is, seen from the front at (x, y): the first face behind the arms.
   fig.mesh.updateMatrixWorld(true);
@@ -62,9 +62,9 @@ export function ramanuja() {
   const thread = [];
   for (let i = 0; i <= 16; i++) { const t = i / 16; thread.push([0.085 - 0.2 * t, 0.7 - 0.4 * t + 0.03 * Math.sin(t * Math.PI)]); }
   trim.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(lay(thread, 0.003)), 40, 0.003, 6), GOLD));
-  for (const [w, drop, r] of [[0.07, 0.2, 0.0042], [0.085, 0.4, 0.0046]]) {
+  for (const [w, drop, r] of [[0.07, 0.17, 0.0042], [0.085, 0.37, 0.0046]]) {
     const pts = [];
-    for (let i = 0; i <= 28; i++) { const a = (i / 28) * Math.PI; pts.push([Math.cos(a) * w * (1 + 0.15 * Math.sin(a)), 0.735 - drop * Math.sin(a) ** 1.3]); }
+    for (let i = 0; i <= 28; i++) { const a = (i / 28) * Math.PI; pts.push([Math.cos(a) * w * (0.72 + 0.5 * Math.sin(a)), 0.705 - drop * Math.sin(a) ** 1.3]); }
     const c = new THREE.CatmullRomCurve3(lay(pts, r)), n = Math.round(c.getLength() / (r * 1.9));
     for (let i = 0; i <= n; i++) { const q = c.getPointAt(i / n); beads.push([q.x, q.y, q.z, r]); }
   }
@@ -130,6 +130,9 @@ function lotus() {
   g.add(lathe([[R + 1.6, 0], [R + 2.0, 0.35], [R + 1.2, 0.7], [R - 0.2, 1.2], [R + 0.6, 2.2], [R + 2.6, 3.6], [R + 3.2, LOTUS - y0 - 0.5], [R + 2.4, LOTUS - y0], [0, LOTUS - y0]], GOLD_DEEP, 64).translateY(y0));
   g.add(at(petalRing(R + 1.2, 27, 2.7, 3.6, 2.25, GOLD_DEEP, 0.3), 0, y0 + 1.5, 0));
   g.add(at(petalRing(R + 0.2, 27, 4.4, 3.9, 0.62, GOLD, 0.28), 0, y0 + 1.1, 0), at(petalRing(R - 0.2, 27, 3.9, 3.7, 0.36, GOLD, 0.28), 0, y0 + 1.3, 0).rotateY(Math.PI / 27));
+  // After photographs: a second, smaller row turned down under the first, and a third row of
+  // upright petals close under the seat.
+  g.add(at(petalRing(R + 0.6, 27, 1.9, 3.0, 2.45, GOLD, 0.3), 0, y0 + 0.75, 0).rotateY(Math.PI / 27), at(petalRing(R + 1.3, 36, 2.6, 2.9, 0.2, GOLD_PALE, 0.26), 0, y0 + 2.6, 0));
   return g;
 }
 

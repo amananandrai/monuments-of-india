@@ -1055,14 +1055,15 @@ const HAND_POSES = {
 // The upper body, its shoulders at (±0.17, sy, oz): waist, chest and bust, shoulders, neck, the head
 // and what covers it, and the arms in their poses. head: 'hair' (waved, drawn back to a knot),
 // 'queen' (a veil and a small crown) or 'helmet' (Britannia's, crested); stout: the fuller figure
-// and the face of age.
-function upperBody(sy, oz, { right = 'down', left = 'down', head = 'hair', stout = false, male = false, hand: handOpt = null, mitten = false } = {}) {
-  const dy = sy - 1.41, Y = (y) => y + dy, Z = (z) => z + oz, w = stout ? 1.2 : male ? 1.12 : 1;
+// and the face of age; slim: a man's body without the breadth and the heavy arms; face: options
+// for face(), over the defaults.
+function upperBody(sy, oz, { right = 'down', left = 'down', head = 'hair', stout = false, male = false, slim = false, face: faceOpts = {}, hand: handOpt = null, mitten = false } = {}) {
+  const dy = sy - 1.41, Y = (y) => y + dy, Z = (z) => z + oz, w = stout ? 1.2 : male && !slim ? 1.12 : 1, ar = slim ? 0.86 : 1;
   const parts = [
     [E([0, Y(1.08), Z(0)], [0.135 * w, 0.09, 0.1 * w]), 0],
     [E([0, Y(1.27), Z(0.0)], [0.16 * w, 0.13, 0.098 * w]), 0.06],
     // The bust; or a man's chest, its muscles broad and flat.
-    male ? [mirrorX(E([0.07, Y(1.3), Z(0.055)], [0.075, 0.055, 0.035])), 0.05] : [mirrorX(E([0.06 * w, Y(1.285), Z(0.065 * w)], [0.05 * w, 0.045 * w, 0.04 * w])), 0.05],
+    male ? [mirrorX(E([0.07, Y(1.3), Z(slim ? 0.045 : 0.055)], [0.075, 0.055, 0.035])), 0.05] : [mirrorX(E([0.06 * w, Y(1.285), Z(0.065 * w)], [0.05 * w, 0.045 * w, 0.04 * w])), 0.05],
     [mirrorX(E([0.17, Y(1.405), Z(0)], [0.06, 0.055, 0.06])), 0.04],
     // The slope from the neck to each shoulder.
     [mirrorX(cone([0.03, Y(1.46), Z(-0.01)], [0.16, Y(1.42), Z(-0.005)], 0.05, 0.05)), 0.04],
@@ -1076,7 +1077,7 @@ function upperBody(sy, oz, { right = 'down', left = 'down', head = 'hair', stout
     // On desktops the body's forearm stops short of the wrist, so its rounded end lies inside the
     // hand's own wrist instead of standing over the palm.
     const end = detail.low ? wrist : wrist.map((v, i) => v - u[i] * 0.035);
-    parts.push([cone(sh, elbow, 0.056, 0.046), 0.03], [cone(elbow, end, 0.044, detail.low ? 0.034 : 0.0345), 0.015]);
+    parts.push([cone(sh, elbow, 0.056 * ar, 0.046 * ar), 0.03], [cone(elbow, end, 0.044 * ar, detail.low ? 0.034 : 0.0345), 0.015]);
     // The hand: on desktops sculpted with its fingers and meshed on its own (allegory() and
     // crossLegged() add it), the arm ending at the wrist here; on phones a plain lump on the arm.
     if (detail.low) parts.push([E(grip, [0.038, 0.046, 0.038]), 0.012]);
@@ -1091,7 +1092,7 @@ function upperBody(sy, oz, { right = 'down', left = 'down', head = 'hair', stout
     upper[side < 0 ? 'r' : 'l'] = [sh, elbow];
   }
   const S = 0.0076, P = (x, y, z) => [x * S, Y(1.628) + y * S * 1.05, Z(0.015) + z * S];
-  const faceF = face(P, S, { full: stout ? 1.8 : 0.2, age: stout ? 0.8 : 0, lids: 0.55 });
+  const faceF = face(P, S, { full: stout ? 1.8 : 0.2, age: stout ? 0.8 : 0, lids: 0.55, ...faceOpts });
   let top;
   if (head === 'queen') {
     // The veil falls from under the crown over the back of the head to the shoulders.
@@ -1359,12 +1360,13 @@ export function hold(g, fig, side, kind, m, { axis = [0, 1, 0], spin = 0, offset
 // knees, the shins crossed in front with the feet tucked, a cloth over the lap whose end falls over
 // the seat's front edge (drop: how far), and the upper body from upperBody() (shoulders at 0.62).
 // For a sage (male: bare-chested, with malas and armbands) or a goddess (with a necklace);
-// adorn: false leaves the malas, armbands and necklace off, for a figure dressed by its monument.
+// adorn: false leaves the malas, armbands and necklace off, for a figure dressed by its monument;
+// dhoti: the cloth round the waist and over the legs in folds, its pleated end between the knees.
 function crossLeggedField(opts = {}) {
-  const { male = false, drop = 0, adorn = true } = opts, up = upperBody(0.62, -0.02, opts);
+  const { male = false, drop = 0, adorn = true, dhoti = false, slim = false } = opts, up = upperBody(0.62, -0.02, opts);
   const parts = [
     ...up.parts,
-    [E([0, 0.36, -0.03], [0.15 * (male ? 1.12 : 1), 0.16, 0.115]), 0.06],
+    [E([0, 0.36, -0.03], [0.15 * (male && !slim ? 1.12 : 1), 0.16, 0.115]), 0.06],
     [E([0, 0.15, -0.04], [0.21, 0.13, 0.17]), 0.06],
     [mirrorX(cone([0.1, 0.14, -0.01], [0.37, 0.11, 0.2], 0.115, 0.09)), 0.06],
     [cone([0.37, 0.1, 0.23], [-0.12, 0.09, 0.33], 0.075, 0.055), 0.04],
@@ -1387,7 +1389,22 @@ function crossLeggedField(opts = {}) {
     }
     for (const [a, e] of Object.values(up.upper)) parts.push([cone(a.map((v, i) => v + (e[i] - v) * 0.4), a.map((v, i) => v + (e[i] - v) * 0.47), 0.058, 0.057), 0.01]);
   } else parts.push([(x, y, z) => torus([0, Y(1.45), 0.0], 0.1, 0.012)(x, y, (z - 0.035) * 1.5), 0.008]);
-  const body = blend(parts);
+  if (dhoti) {
+    // The cloth's rolled edge round the waist, dipping under the belly in front, and its pleated
+    // end laid in a fan before the crossed shins.
+    parts.push([(x, y, z) => torus([0, 0.262, 0], 0.158, 0.011)(x, y + 0.03 * Math.max(0, z + 0.03) / 0.13, (z + 0.035) * 1.22) - 0.0025 * Math.abs(Math.sin(Math.atan2(x, z + 0.035) * 26)), 0.008]);
+    parts.push([(x, y, z) => roundBox([0.0, 0.085, 0.362], [0.075 + (0.16 - y) * 0.25, 0.085, 0.014], 0.014)(x, y, z) + 0.0045 * Math.sin(x * 150 / (1 + (0.16 - y) * 2.5)), 0.02]);
+  }
+  const body0 = blend(parts);
+  // The dhoti's folds: creases over the thighs and knees, drawn from the lap out towards each
+  // knee and round it, fading out above the waist's cloth.
+  const body = !dhoti ? body0 : (x, y, z) => {
+    const d = body0(x, y, z);
+    if (y > 0.3 || d > 0.03) return d;
+    const m = Math.min(1, (0.3 - y) / 0.06) * Math.min(1, Math.max(0, (Math.abs(x) - 0.06) / 0.08 + Math.max(0, 0.12 - z) * 4));
+    const u = z + y * 0.8 - Math.abs(x) * 0.35;
+    return d + m * (0.0058 * Math.sin(u * 85 + 2 * Math.sin(Math.abs(x) * 14)) + 0.0018 * Math.sin(u * 190 + x * 25));
+  };
   const all = (x, y, z) => smin(body(x, y, z), y > 0.7 ? up.head(x, y, z) : Infinity, 0.012);
   return { f: flatBase(all, -drop - 0.01), lo: [-0.5, -drop - 0.02, -0.3], hi: [0.5, 1.15, 0.5], hands: up.hands, dirs: up.dirs, centre: up.centre };
 }
