@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, photo } from '../helpers.js';
-import { mergeByMaterial, windowFrame, sunburst } from '../parts/components.js';
+import { mergeByMaterial, windowFrame, sunburst, gableRoof } from '../parts/components.js';
 import { classicalDoor, balustrade } from '../parts/colonial.js';
 import { trees, shrubs, lampPosts, benches, asiBoard, scatter, along } from '../parts/realism.js';
-import { S, LIME, TRIM, TILE, gableRoof } from '../monuments/se-cathedral.js';
+import { S, LIME, TRIM, TILE } from '../monuments/se-cathedral.js';
 
 // The Sé Cathedral, finer detail. From photographs: Tuscan pilasters of grey stone divide the
 // façade into five bays on every storey, with moulded bases and capitals; the corners of the bell

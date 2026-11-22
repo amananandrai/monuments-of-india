@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, mesh, box, at, inst, unitBox, photo, nagaraProfile, flat } from '../helpers.js';
+import { mat, box, at, inst, unitBox, photo } from '../helpers.js';
 import { carved, mergeByMaterial } from '../parts/components.js';
 import { brokenSpire } from '../parts/temples.js';
 import { addDetails } from '../details/masrur-temples.js';

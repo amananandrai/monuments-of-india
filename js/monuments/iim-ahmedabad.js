@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, at, surface } from '../helpers.js';
-import { mergeByMaterial } from '../parts/components.js';
+import { M, mat, box, at, surface } from '../helpers.js';
+import { mergeByMaterial, piercedWall } from '../parts/components.js';
 import { addDetails } from '../details/iim-ahmedabad.js';
 
 // Kahn's brick, laid by hand in the local manner, and the bare concrete of his tie beams and slabs.
@@ -13,24 +13,6 @@ export const CONC = mat('#b8b1a5', 0.9);
 // plaza either side, their faces deep arches tied by concrete beams. The dormitories stand to the
 // south-east, turned at 45°, each a brick block cut with circles over its stair and loggia.
 export const P = { PW: 38, PL: 70, MW: 84, MD: 22, MH: 19, CW: 16, CH: 13 };
-
-// A brick wall w wide, h high and t thick, its face at z = 0 facing +z, pierced by `holes`: circles
-// [x, y, r] and arches ['arch', x, y0, r, spring] (a round head of radius r on straight sides).
-export function piercedWall(w, h, t, holes, m) {
-  const s = new THREE.Shape([new THREE.Vector2(-w / 2, 0), new THREE.Vector2(w / 2, 0), new THREE.Vector2(w / 2, h), new THREE.Vector2(-w / 2, h)]);
-  for (const hole of holes) {
-    const p = new THREE.Path();
-    if (hole[0] === 'arch') {
-      const [, x, y0, r, spring] = hole;
-      p.moveTo(x + r, y0); p.lineTo(x + r, spring); p.absarc(x, spring, r, 0, Math.PI, false); p.lineTo(x - r, y0); p.closePath();
-    } else {
-      const [x, y, r] = hole;
-      p.absarc(x, y, r, 0, Math.PI * 2, false);
-    }
-    s.holes.push(p);
-  }
-  return mesh(new THREE.ExtrudeGeometry(s, { depth: t, bevelEnabled: false, curveSegments: 20 }).translate(0, 0, -t), m);
-}
 
 // Concrete ties across the openings: a beam across each circle's lower chord, and one across each
 // arch at its springing; and a dark recess behind each opening.

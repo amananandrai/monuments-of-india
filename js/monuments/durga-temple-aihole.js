@@ -12,8 +12,6 @@ import { addDetails, STONE as S, SHADE as Sd, DIMS } from '../details/durga-temp
 // and before them a pillared porch, the whole about 18 m by 11 m with the porch reaching 7 m further.
 // Stairs climb to the porch from either side. Over the rounded sanctum rises a short curved Nagara
 // tower, its amalaka fallen and lying beside the temple.
-export { apse };
-
 export function buildDurgaTempleAihole() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);

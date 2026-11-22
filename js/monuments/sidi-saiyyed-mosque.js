@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { M, box, cyl, at, archPanel } from '../helpers.js';
 import { arcadeSkin, cellRow } from '../parts/mughal.js';
-import { merlons, mergeByMaterial } from '../parts/components.js';
-import { addDetails, STONE, SHADE, treeJali } from '../details/sidi-saiyyed-mosque.js';
+import { merlons, mergeByMaterial, treeJali } from '../parts/components.js';
+import { addDetails, STONE, SHADE } from '../details/sidi-saiyyed-mosque.js';
 
 // The Sidi Saiyyed Mosque, Ahmedabad, 1572–73. From photographs: a small prayer hall of yellow
 // sandstone, about 22 m long, 11 m deep and 9 m high under a flat roof. Its east front is open in

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, photo, doubleSided } from '../helpers.js';
-import { mergeByMaterial } from '../parts/components.js';
+import { mat, mesh, box, cyl, at, photo } from '../helpers.js';
+import { mergeByMaterial, gableRoof, leanTo } from '../parts/components.js';
 import { gothicDoor, gothicWindow, oculus } from '../parts/colonial.js';
 import { gothicPinnacle } from '../parts/sculpture.js';
 import { addDetails } from '../details/san-thome-basilica.js';
@@ -10,20 +10,6 @@ import { addDetails } from '../details/san-thome-basilica.js';
 export const WHITE = photo(mat('#f6f4ef', 0.82), 'plaster');
 export const TRIM = mat('#d2d0cb', 0.8);
 export const ROOF = mat('#77706a', 0.8);
-
-// A gable roof w across x, d along z and h high, standing on y = 0.
-function gable(w, d, h, m) {
-  const s = new THREE.Shape();
-  s.moveTo(-w / 2, 0); s.lineTo(w / 2, 0); s.lineTo(0, h); s.closePath();
-  return mesh(new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: false }).translate(0, 0, -d / 2), m);
-}
-
-// A lean-to roof over an aisle: w wide, d long, falling h from x = 0 out to x = side * w.
-function leanTo(w, d, h, m, side) {
-  const s = new THREE.Shape();
-  s.moveTo(0, 0); s.lineTo(side * w, 0); s.lineTo(0, h); s.closePath();
-  return mesh(new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: false }).translate(0, 0, -d / 2), doubleSided(m));
-}
 
 // The basilica's measures, shared with js/details/san-thome-basilica.js. The front faces +z at
 // z = FZ and the church runs back 64 m to its apse. The nave is NW wide with walls NH high, the
@@ -37,13 +23,13 @@ export function buildSanThomeBasilica() {
   const { FZ, LEN, NW, NH, AW, AH, T, TH } = S, BZ = FZ - LEN, body = LEN - 8, bz = FZ - 0.5 - body / 2;
   const d = new THREE.Group();
   // The nave under its steep roof, the aisles under lean-tos, and the apse at the east end.
-  d.add(box(NW, NH, body, WHITE, 0, 0, bz), at(gable(NW + 1, body, 7.5, ROOF), 0, NH, bz));
+  d.add(box(NW, NH, body, WHITE, 0, 0, bz), at(gableRoof(NW + 1, body, 7.5, ROOF), 0, NH, bz));
   for (const s of [-1, 1]) d.add(box(AW, AH, body - 6, WHITE, s * (NW / 2 + AW / 2), 0, bz + 3), at(leanTo(AW + 0.8, body - 6, 3.2, ROOF, s), s * NW / 2, AH, bz + 3));
   const apse = new THREE.Group(), az = FZ - 0.5 - body;
   apse.add(cyl(NW / 2, NW / 2, NH - 2, WHITE, 0, 0, az, 7), mesh(new THREE.ConeGeometry(NW / 2 + 0.5, 5.5, 7), ROOF, 0, NH - 2 + 2.75, az));
   d.add(apse);
   // The transept, short, two-thirds of the way back.
-  for (const s of [-1, 1]) d.add(box(3, NH - 2, 10, WHITE, s * (NW / 2 + AW + 1.5), 0, BZ + 22), at(gable(10.6, 3.4, 4.5, ROOF).rotateY(Math.PI / 2), s * (NW / 2 + AW + 1.6), NH - 2, BZ + 22));
+  for (const s of [-1, 1]) d.add(box(3, NH - 2, 10, WHITE, s * (NW / 2 + AW + 1.5), 0, BZ + 22), at(gableRoof(10.6, 3.4, 4.5, ROOF).rotateY(Math.PI / 2), s * (NW / 2 + AW + 1.6), NH - 2, BZ + 22));
   // Pinnacled buttresses between the aisle windows, and the clerestory above them.
   const pin = gothicPinnacle(2.2, TRIM), win = gothicWindow(1.7, 4.6, { m: WHITE, trim: TRIM, depth: 0.25 });
   const cl = gothicWindow(1.4, 3.4, { m: WHITE, trim: TRIM, depth: 0.2 });
@@ -59,7 +45,7 @@ export function buildSanThomeBasilica() {
   for (const s of [-1, 1]) {
     const x = s * (NW / 2 + AW / 2) * 0.86;
     d.add(box(NW / 2 + AW - T / 2 + 0.6, AH + 3, 1.4, WHITE, s * (T / 2 + (NW / 2 + AW - T / 2) / 2), 0, FZ - 0.4));
-    d.add(at(gable(NW / 2 + AW - T / 2 + 0.6, 1.4, 3.6, WHITE), s * (T / 2 + (NW / 2 + AW - T / 2) / 2), AH + 3, FZ - 0.4));
+    d.add(at(gableRoof(NW / 2 + AW - T / 2 + 0.6, 1.4, 3.6, WHITE), s * (T / 2 + (NW / 2 + AW - T / 2) / 2), AH + 3, FZ - 0.4));
     d.add(at(gothicDoor(1.8, 4.2, { m: WHITE, trim: TRIM, orders: 2, gable: false, pinnacles: false }), x, 0, FZ + 0.3));
     d.add(at(oculus(1.1, { m: WHITE, trim: TRIM }), x, 7.6, FZ + 0.3));
     const tx = s * (NW / 2 + AW + 0.2);
@@ -90,7 +76,7 @@ export function buildSanThomeBasilica() {
   d.add(box(T + 0.8, 0.5, T + 0.8, TRIM, 0, sy, cz));
   for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) {
     const l = new THREE.Group();
-    l.add(box(1.8, 2.6, 1, WHITE, 0, 0, 0), at(gable(2.2, 1.2, 1.6, WHITE), 0, 2.6, 0), box(0.9, 1.6, 0.05, mat('#3a3d42', 0.4), 0, 0.5, 0.52));
+    l.add(box(1.8, 2.6, 1, WHITE, 0, 0, 0), at(gableRoof(2.2, 1.2, 1.6, WHITE), 0, 2.6, 0), box(0.9, 1.6, 0.05, mat('#3a3d42', 0.4), 0, 0.5, 0.52));
     l.position.set(Math.sin(a) * (T / 2 - 1.4), sy + 0.5, cz + Math.cos(a) * (T / 2 - 1.4));
     l.rotation.y = a;
     d.add(l);

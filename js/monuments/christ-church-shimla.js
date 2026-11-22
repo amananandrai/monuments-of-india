@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, photo } from '../helpers.js';
-import { mergeByMaterial, clockFace } from '../parts/components.js';
+import { mat, box, at, photo } from '../helpers.js';
+import { mergeByMaterial, clockFace, gableRoof } from '../parts/components.js';
 import { gothicDoor, gothicWindow } from '../parts/colonial.js';
 import { gothicPinnacle } from '../parts/sculpture.js';
 import { addDetails } from '../details/christ-church-shimla.js';
@@ -10,13 +10,6 @@ import { addDetails } from '../details/christ-church-shimla.js';
 export const YELLOW = photo(mat('#e2c77a', 0.86), 'plaster');
 export const WHITE = mat('#f1ece0', 0.82);
 export const ROOF = mat('#4f4d4f', 0.75, 0.15);
-
-// A gable roof w across x, d along z and h high, standing on y = 0.
-function gable(w, d, h, m) {
-  const s = new THREE.Shape();
-  s.moveTo(-w / 2, 0); s.lineTo(w / 2, 0); s.lineTo(0, h); s.closePath();
-  return mesh(new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: false }).translate(0, 0, -d / 2), m);
-}
 
 // The church's measures, shared with js/details/christ-church-shimla.js. It stands on the Ridge
 // with its tower to the open square (+z) at z = FZ. The nave runs back LEN, NW wide, its walls WH
@@ -29,12 +22,12 @@ export function buildChristChurchShimla() {
   g.add(f);
   const { FZ, LEN, NW, WH, T, TH } = S, d = new THREE.Group(), nz = FZ - T - LEN / 2;
   // The nave under its steep roof, with white-trimmed gables front and back, and the chancel.
-  d.add(box(NW, WH, LEN, YELLOW, 0, 0, nz), at(gable(NW + 1.2, LEN + 0.8, 7.2, ROOF), 0, WH, nz));
-  d.add(box(9, WH - 1.5, 7, YELLOW, 0, 0, nz - LEN / 2 - 3.5), at(gable(10, 7.6, 5, ROOF), 0, WH - 1.5, nz - LEN / 2 - 3.6));
-  for (const z of [nz + LEN / 2 + 0.05, nz - LEN / 2 - 0.05]) d.add(at(gable(NW + 0.2, 0.3, 6.8, YELLOW), 0, WH, z));
+  d.add(box(NW, WH, LEN, YELLOW, 0, 0, nz), at(gableRoof(NW + 1.2, LEN + 0.8, 7.2, ROOF), 0, WH, nz));
+  d.add(box(9, WH - 1.5, 7, YELLOW, 0, 0, nz - LEN / 2 - 3.5), at(gableRoof(10, 7.6, 5, ROOF), 0, WH - 1.5, nz - LEN / 2 - 3.6));
+  for (const z of [nz + LEN / 2 + 0.05, nz - LEN / 2 - 0.05]) d.add(at(gableRoof(NW + 0.2, 0.3, 6.8, YELLOW), 0, WH, z));
   // Side porches near the front.
   for (const s of [-1, 1]) {
-    d.add(box(4, 5, 4.5, YELLOW, s * (NW / 2 + 2), 0, FZ - T - 4), at(gable(4.6, 5, 2.4, ROOF).rotateY(Math.PI / 2), s * (NW / 2 + 2.2), 5, FZ - T - 4));
+    d.add(box(4, 5, 4.5, YELLOW, s * (NW / 2 + 2), 0, FZ - T - 4), at(gableRoof(4.6, 5, 2.4, ROOF).rotateY(Math.PI / 2), s * (NW / 2 + 2.2), 5, FZ - T - 4));
     d.add(at(gothicDoor(1.5, 3.4, { m: YELLOW, trim: WHITE, orders: 2, gable: false, pinnacles: false }), s * (NW / 2 + 4), 0, FZ - T - 4).rotateY(s * Math.PI / 2));
   }
   // Buttresses between tall lancets down both sides, white, each with a weathered set-off.

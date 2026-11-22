@@ -429,8 +429,8 @@ export function gothicTurret(r, h, m, trim = m, spire = r * 4) {
 }
 
 // A tower clock d across standing proud of a wall's face at z = 0: a white dial in a ring, its
-// twelve marks and two hands at ten past ten. (components' clockFace is a richer dial with Roman
-// numerals, for station and palace clocks.)
+// twelve marks and two hands at ten past ten. (components' clockFace is a larger dial with a brass
+// bezel, for station and palace clocks.)
 const CLOCK_RING = mat('#8da3b3', 0.8), CLOCK_DIAL = mat('#f7f4ea', 0.6), CLOCK_HAND = mat('#1d1d1f', 0.6);
 export function towerClock(d, { ring = CLOCK_RING, dial = CLOCK_DIAL, hand = CLOCK_HAND } = {}) {
   const g = new THREE.Group(), r = d / 2;

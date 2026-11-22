@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mesh, box, cyl, at, kalash, flat } from '../helpers.js';
-import { dravidaVimana, dravidaDress } from '../parts/temples.js';
+import { dravidaVimana, dravidaDress, wagonRoof } from '../parts/temples.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { haraRow } from '../parts/sculpture.js';
 import { nandi, elephant, lion } from '../parts/animals.js';

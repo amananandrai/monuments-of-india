@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { mat, mesh, box, cyl, at, onFace, hipRoof, photo, FACES } from '../helpers.js';
 import { mergeByMaterial, windowFrame, jali } from '../parts/components.js';
-import { classicalDoor } from '../parts/colonial.js';
+import { classicalDoor, towerClock } from '../parts/colonial.js';
 import { addDetails } from '../details/paradesi-synagogue.js';
 
 // The synagogue's walls of laterite under lime, washed white; the blue-grey of its trim; the
@@ -10,24 +10,10 @@ export const LIME = photo(mat('#f2efe6', 0.86), 'plaster');
 export const TRIM = mat('#8da3b3', 0.8);
 export const TILE = mat('#8c4630', 0.82);
 export const TEAK = photo(mat('#5d3c25', 0.7), 'timber');
-const DIAL = mat('#f7f4ea', 0.6), HAND = mat('#1d1d1f', 0.6);
 
 // The measures, shared with js/details/paradesi-synagogue.js: the sanctuary W × D, its walls H
 // high; the entrance block before it, to z = FZ; the clock tower T square at (TX, TZ).
 export const P = { W: 11, D: 20, H: 7, FZ: 17, T: 4.2, TX: 7.3, TZ: 14.8 };
-
-// A clock face d across standing proud of a wall's face at z = 0: a white dial in a dark ring, its
-// twelve marks and two hands.
-function clockFace(d) {
-  const g = new THREE.Group(), r = d / 2;
-  const ringM = cyl(r + 0.1, r + 0.1, 0.08, TRIM, 0, 0, 0, 28); ringM.rotation.x = Math.PI / 2; ringM.position.z = 0.04;
-  const dial = cyl(r, r, 0.06, DIAL, 0, 0, 0, 28); dial.rotation.x = Math.PI / 2; dial.position.z = 0.1;
-  g.add(ringM, dial);
-  for (let k = 0; k < 12; k++) { const a = (k / 12) * Math.PI * 2, m = box(0.05, 0.14, 0.02, HAND, Math.sin(a) * r * 0.82, Math.cos(a) * r * 0.82 - 0.07, 0.14); m.rotation.z = -a; g.add(m); }
-  const h1 = box(0.06, r * 0.5, 0.02, HAND, 0, 0, 0.15); h1.rotation.z = -0.9; const h2 = box(0.05, r * 0.75, 0.02, HAND, 0, 0, 0.16); h2.rotation.z = 2.4;
-  g.add(h1, h2);
-  return g;
-}
 
 // The Paradesi Synagogue, Jew Town, Kochi, 1568. From photographs: a whitewashed sanctuary under a
 // steep hipped roof of clay tiles, lit by tall windows with blue-grey frames; before it a lower
@@ -54,7 +40,7 @@ export function buildParadesiSynagogue() {
   t.add(box(T - 0.2, 0.3, T - 0.2, TRIM, 0, y3 - 0.3, 0), box(T - 0.6, 0.1, T - 0.6, TRIM, 0, y2 + 0.28, 0));
   t.add(mesh(new THREE.CylinderGeometry(0.22, 0.42, 0.6, 14, 1, true), mat('#9a7a3a', 0.4, 0.7), 0, y3 - 0.7, 0));
   t.add(at(hipRoof(T + 1.4, T + 1.4, 2, TILE), 0, y3, 0), at(cyl(0.04, 0.12, 0.7, TRIM, 0, 0, 0, 8), 0, y3 + 1.95, 0));
-  for (const a of FACES) t.add(onFace(at(clockFace(1.5), 0, y1 + 1.75, 0), a, T / 2 - 0.15));
+  for (const a of FACES) t.add(onFace(at(towerClock(1.5, { ring: TRIM }), 0, y1 + 1.75, 0), a, T / 2 - 0.15));
   // Small arched windows down the shaft, on the lane's face.
   const tw = classicalDoor(0.6, 1.2, { m: LIME, trim: TRIM, fill: 'glass', top: null, depth: 0.15, frame: 0.15, keystone: false });
   for (const a of [0, Math.PI / 2]) for (const y of [1.6, 4]) t.add(onFace(at(tw.clone(), 0, y, 0), a, T / 2 + 0.01));

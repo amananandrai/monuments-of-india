@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, kalash } from '../helpers.js';
-import { mergeByMaterial, frieze, rosette } from '../parts/components.js';
+import { mat, box, at } from '../helpers.js';
+import { kakatiyaThorana } from '../parts/temples.js';
 import { addDetails } from '../details/warangal-fort.js';
 
 // The Kakatiyas' grey granite, and its darker weathered shade.

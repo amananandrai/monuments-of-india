@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { mat, mesh, box, at, onFace, photo, doubleSided } from '../helpers.js';
-import { mergeByMaterial } from '../parts/components.js';
+import { mat, box, at, onFace, photo } from '../helpers.js';
+import { mergeByMaterial, gableRoof, leanTo } from '../parts/components.js';
 import { classicalDoor, oculus, pediment } from '../parts/colonial.js';
 import { addDetails } from '../details/se-cathedral.js';
 
@@ -9,21 +9,6 @@ import { addDetails } from '../details/se-cathedral.js';
 export const LIME = photo(mat('#f1ece2', 0.88), 'plaster');
 export const TRIM = mat('#bdb5a6', 0.85);
 export const TILE = mat('#a24a33', 0.82);
-
-// A gable roof w wide (across x), d deep (along z) and h high, standing on y = 0.
-export function gableRoof(w, d, h, m) {
-  const s = new THREE.Shape();
-  s.moveTo(-w / 2, 0); s.lineTo(w / 2, 0); s.lineTo(0, h); s.closePath();
-  return mesh(new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: false }).translate(0, 0, -d / 2), m);
-}
-
-// A lean-to roof over an aisle: w wide, d long, falling by h from its inner edge (x = 0) out to
-// x = side * w. Shown from both sides, so its winding does not matter.
-function leanTo(w, d, h, m, side) {
-  const s = new THREE.Shape();
-  s.moveTo(0, 0); s.lineTo(side * w, 0); s.lineTo(0, h); s.closePath();
-  return mesh(new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: false }).translate(0, 0, -d / 2), doubleSided(m));
-}
 
 // The church's measures, shared with js/details/se-cathedral.js. The façade faces +z (in Old Goa it
 // faces east, over the square towards Bom Jesus) at z = FZ; the church runs back 76 m. The nave

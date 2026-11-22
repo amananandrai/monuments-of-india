@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mat, mesh, box, at, onFace, photo, doubleSided } from '../helpers.js';
-import { mergeByMaterial } from '../parts/components.js';
+import { mergeByMaterial, gableRoof } from '../parts/components.js';
 import { classicalDoor, oculus } from '../parts/colonial.js';
 import { addDetails } from '../details/st-francis-church-kochi.js';
 
@@ -15,13 +15,6 @@ export const TEAK = photo(mat('#5a3a24', 0.7), 'timber');
 // L long, its walls H high, under a roof RH high; the front's face at z = FZ.
 export const P = { W: 15, L: 40, H: 8.6, RH: 5.4, FZ: 20 };
 
-// A gable roof w wide over d, h high at the ridge, overhanging nothing: a prism along z.
-export function gableRoof(w, d, h, m) {
-  const s = new THREE.Shape();
-  s.moveTo(-w / 2, 0); s.lineTo(w / 2, 0); s.lineTo(0, h); s.closePath();
-  return mesh(new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: false }).translate(0, 0, -d / 2), doubleSided(m));
-}
-
 // St Francis Church, Fort Kochi, built by the Portuguese in 1503 and rebuilt in stone about 1516.
 // From photographs: a long whitewashed nave under a tiled gable roof, with round-arched windows
 // between buttresses down its sides; a lower chancel at the east end; and the front, facing the
@@ -35,10 +28,10 @@ export function buildStFrancisChurchKochi() {
   // The plinth, the nave and its roof; the chancel behind.
   f.add(box(W + 1.4, 0.5, L + 1.4, TRIM, 0, 0, z0));
   f.add(box(W, H, L, LIME, 0, 0.5, z0), box(W + 0.5, 0.45, L + 0.3, TRIM, 0, 0.5 + H - 0.45, z0 - 0.15));
-  f.add(at(gableRoof(W + 2.2, L + 0.6, RH, TILE), 0, 0.5 + H, z0 - 0.3));
+  f.add(at(gableRoof(W + 2.2, L + 0.6, RH, doubleSided(TILE)), 0, 0.5 + H, z0 - 0.3));
   const cz = z0 - L / 2 - 4.5;
   f.add(box(10, H - 2, 9, LIME, 0, 0.5, cz), box(10.4, 0.4, 9.4, TRIM, 0, 0.5 + H - 2.4, cz));
-  f.add(at(gableRoof(12, 9.8, 3.8, TILE), 0, 0.5 + H - 2, cz));
+  f.add(at(gableRoof(12, 9.8, 3.8, doubleSided(TILE)), 0, 0.5 + H - 2, cz));
   // Buttresses down the sides, and a round-arched window between each pair.
   const side = new THREE.Group(), win = classicalDoor(1.5, 3.2, { m: LIME, trim: TRIM, fill: 'glass', top: null, depth: 0.25, frame: 0.3, keystone: false });
   for (const s of [-1, 1]) {
@@ -84,7 +77,7 @@ export function buildStFrancisChurchKochi() {
   po.add(box(5.4, 0.3, 4.2, TRIM, 0, 0.5, pz + 2.1));
   for (const s of [-1, 1]) po.add(box(1, 4.4, 4, LIME, s * 2.2, 0.8, pz + 2));
   po.add(box(5.4, 1.4, 4, LIME, 0, 5.2 - 0.01, pz + 2), box(5.8, 0.3, 4.3, TRIM, 0, 6.58, pz + 2.1));
-  po.add(at(gableRoof(6.2, 4.4, 1.6, TILE), 0, 6.88, pz + 2.2));
+  po.add(at(gableRoof(6.2, 4.4, 1.6, doubleSided(TILE)), 0, 6.88, pz + 2.2));
   po.add(onFace(at(classicalDoor(3.4, 4.4, { m: LIME, trim: TRIM, fill: 'room', top: null, depth: 0.3, frame: 0.6, keystone: true }), 0, 0.8, 0), 0, pz + 4.02));
   po.add(onFace(at(classicalDoor(2, 3.6, { m: LIME, trim: TRIM, leafM: TEAK, top: null, depth: 0.3, frame: 0.3 }), 0, 0.5, 0), 0, pz + 0.01));
   f.add(mergeByMaterial(po));
