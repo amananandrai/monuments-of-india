@@ -15,25 +15,25 @@ export const DARK = mat('#2a2622', 0.95);
 
 // The hall HW wide and HD deep, HH high, its mouth at z = 0; the rock H high over it; the
 // Trimurti's recess RW wide, RD deep and RH high in the middle of the back wall.
-export const DIMS = { HW: 39, HD: 39, HH: 5.5, H: 11, RW: 10, RD: 3.6, RH: 6.8 };
+export const DIMS = { HW: 39, HD: 39, HH: 5.5, H: 11, RW: 10, RD: 3.6, RH: 7.8 };
 
 // The Trimurti: Sadashiva as a bust of three heads, some 6 m high. In the middle, calm, the
 // creator; on the viewer's left, Aghora-Bhairava, the destroyer, with a snake; on the right, Uma,
 // gentle; each under a tall crown of piled locks, their shoulders and chest heavy with jewels.
 function trimurti(m) {
   const g = new THREE.Group(), fine = !detail.low;
-  g.add(box(9, 1, 3, m), box(8.4, 0.25, 2.8, m, 0, 1));
-  const chest = ellipsoid(2.7, 1.5, 1.05, m, 0, 2.5, 0.5);
-  g.add(chest, ellipsoid(1.1, 1.3, 0.8, m, -2.1, 2.9, 0.2), ellipsoid(1.1, 1.3, 0.8, m, 2.1, 2.9, 0.2));
-  // The necklaces over the chest.
-  for (const [r, y] of [[1.25, 3.1], [1.6, 2.75], [1.9, 2.35]]) {
-    const t = mesh(new THREE.TorusGeometry(r, 0.07, 6, 28, Math.PI), m, 0, y + 0.6, 1.05);
-    t.rotation.x = Math.PI;
-    t.scale.z = 0.4;
+  g.add(box(9, 0.8, 3, m), box(8.4, 0.2, 2.8, m, 0, 0.8));
+  // The chest and shoulders, broad and shallow, rising from the ledge.
+  g.add(ellipsoid(2.5, 1.25, 0.75, m, 0, 1.6, 0.45), ellipsoid(0.95, 0.9, 0.7, m, -2.2, 2.05, 0.25), ellipsoid(0.95, 0.9, 0.7, m, 2.2, 2.05, 0.25));
+  // The necklaces lying on the chest.
+  for (const [r, y] of [[0.7, 2.35], [1.05, 2.05], [1.4, 1.7]]) {
+    const t = mesh(new THREE.TorusGeometry(r, 0.06, 6, 28, Math.PI), m, 0, y + r * 0.55, 1.05);
+    t.rotation.set(-0.35, 0, Math.PI);
+    t.scale.y = 0.55;
     g.add(t);
   }
   const head = (x, z, a, s) => {
-    const h = at(new THREE.Group(), x, 3.55, z);
+    const h = at(new THREE.Group(), x, 2.6, z);
     h.rotation.y = a;
     h.add(cyl(0.42, 0.5, 0.7, m, 0, 0, 0, 14));
     const fc = fine ? face(0.72, 0.92, 0.68, m) : ellipsoid(0.72, 0.92, 0.68, m);
@@ -47,11 +47,11 @@ function trimurti(m) {
     h.scale.setScalar(s);
     return h;
   };
-  g.add(head(0, 0.75, 0, 1), head(-1.75, 0.1, -1.2, 0.95), head(1.75, 0.1, 1.2, 0.95));
+  g.add(head(0, 0.55, 0, 1.2), head(-1.7, 0.05, -1.25, 1.12), head(1.7, 0.05, 1.25, 1.12));
   // The snake held up on the left, its hood raised.
-  const snake = mesh(new THREE.TorusGeometry(0.45, 0.09, 6, 16, Math.PI * 1.4), m, -2.6, 3.1, 0.8);
+  const snake = mesh(new THREE.TorusGeometry(0.45, 0.09, 6, 16, Math.PI * 1.4), m, -2.7, 2.6, 0.8);
   snake.rotation.set(0.2, 0.6, 1.2);
-  g.add(snake, ellipsoid(0.22, 0.14, 0.18, m, -2.85, 3.7, 0.9));
+  g.add(snake, ellipsoid(0.22, 0.14, 0.18, m, -2.95, 3.2, 0.9));
   return g;
 }
 
@@ -67,7 +67,7 @@ function reliefPanel(w, h, kind, m) {
 function hall(f) {
   const { HW, HD, HH, RW, RD } = DIMS, L = ROCK_LIGHT, d = new THREE.Group();
   // The recess and its sculpture, with the two guardians at its sides.
-  d.add(at(trimurti(L), 0, 0, -HD - RD + 0.4));
+  d.add(box(RW, 0.1, RD, L, 0, 0, -HD - RD / 2), at(trimurti(L), 0, 0.1, -HD - RD + 0.4));
   // The six great panels: either side of the recess on the back wall, two on the east wall and two
   // round the west entrance.
   d.add(at(reliefPanel(5.4, 4.6, 'standing', L), -11, 0.5, -HD + 0.01), at(reliefPanel(5.4, 4.6, 'standing', L), 11, 0.5, -HD + 0.01));
