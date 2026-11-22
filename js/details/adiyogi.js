@@ -31,6 +31,6 @@ export function addDetails(f, g) {
   g.add(trees([...scatter(16, [-110, -40, -80, 120], { seed: 42, gap: 10 }), ...scatter(16, [40, 110, -80, 120], { seed: 43, gap: 10 })], { kind: 'neem', seed: 44 }));
   g.add(shrubs([...along(14, [-30, 60], [-30, 120]), ...along(14, [30, 60], [30, 120])], { flowers: '#e8a23a' }));
   // The Velliangiri hills behind, rising steeply from the plain.
-  g.add(mountainRing({ inner: 260, outer: 700, h: 520, vary: 160, size: 3200, cz: 200, aspect: 1.2, cover: '#3f6a34', rock: ['#5d6b4a', '#6a7653'], steep: 0.62 }));
-  if (!detail.low) g.add(trees(scatter(60, [-300, 300, -320, -140], { seed: 45, gap: 14 }), { kind: 'teak', seed: 46 }));
+  g.add(mountainRing({ inner: 520, outer: 1300, h: 560, vary: 160, size: 4000, cz: 300, aspect: 1.1, cover: '#3f6a34', rock: ['#5d6b4a', '#6a7653'], steep: 0.62 }));
+  if (!detail.low) g.add(trees(scatter(60, [-300, 300, -260, -90], { seed: 45, gap: 14 }), { kind: 'teak', seed: 46 }));
 }

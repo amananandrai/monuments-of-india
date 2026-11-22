@@ -16,31 +16,31 @@ import { addDetails } from '../details/adiyogi.js';
 export const STEEL = mat('#1f1f22', 0.36, 0.55), BASE = 1.6, H = 34.24;
 // The head's layout, after the face of the seated Shiva (js/parts/figures.js), in units P maps to
 // metres: S metres a unit, the middle of the skull at y = HY.
-const S = 0.56, HY = 22.2, HZ = 0.9;
+const S = 0.62, HY = 24.3, HZ = 1.0;
 const P = (x, y, z) => [x * S, HY + y * S * 1.08, HZ + z * S], k = (v) => v * S;
 
 // The long locks over each shoulder: from behind the ear, over the shoulder and down the chest.
-const LOCKS = [[-1.2, 0.9], [0, 1.0], [1.1, 0.85], [2.2, 0.75]];
+const LOCKS = [[-1.0, 0.85, 1], [0.2, 0.95, 1], [1.4, 0.85, 0.75], [2.6, 0.8, 0.5]];
 function locks(sx) {
-  return LOCKS.map(([o, r]) => chain([
-    [sx * (5.2 + o * 0.25), 19.8, -1.6 - o * 0.4, r * 0.8],
-    [sx * (7.8 + o * 0.35), 15.4, -0.4 - o * 0.6, r],
-    [sx * (9.6 + o * 0.3), 11.2, 1.6 - o * 0.7, r * 0.95],
-    [sx * (9.4 + o * 0.25), 6.6, 3.0 - o * 0.6, r * 0.8],
-    [sx * (8.9 + o * 0.2), 3.2, 3.4 - o * 0.5, r * 0.6],
+  return LOCKS.map(([o, r, len]) => chain([
+    [sx * (5.4 + o * 0.4), 21.6, -3.6 - o * 0.3, r * 0.8],
+    [sx * (7.6 + o * 0.3), 17.0, -2.6 - o * 0.5, r],
+    [sx * (8.8 + o * 0.2), 13.6, -0.2 - o * 0.8, r],
+    [sx * (8.9 + o * 0.1), 13.6 - 6.2 * len, 2.6 - o * 1.1, r * 0.85],
+    [sx * (8.5 + o * 0.1), 13.6 - 9.6 * len, 3.2 - o * 1.2, r * 0.6],
   ], 0.3));
 }
 
 function adiyogiField() {
   // The torso, cut flat at y = 0: chest, belly, shoulders, trapezius, the upper arms and the neck.
   const torso = blend([
-    [E([0, 7.2, 0], [10.2, 8.6, 5.4]), 0],
-    [E([0, 1.4, 0.4], [9.0, 5.0, 5.0]), 2.0],
-    [mirrorX(E([9.8, 12.2, -0.5], [4.3, 3.4, 4.3])), 2.2],
-    [E([0, 14.4, -1.2], [7.6, 2.6, 4.0]), 2.0],
-    [mirrorX(cone([11.4, 11.4, -0.4], [12.4, 0.4, 0.3], 3.5, 3.1)), 1.6],
-    [mirrorX(E([4.4, 9.8, 3.6], [4.6, 2.7, 2.4])), 1.4],
-    [cone([0, 13.4, -0.6], [0, 19.6, 0.4], 3.35, 3.0), 1.6],
+    [E([0, 7.2, 0], [8.8, 8.6, 5.4]), 0],
+    [E([0, 1.4, 0.4], [8.0, 5.0, 5.0]), 2.0],
+    [mirrorX(E([8.4, 12.4, -0.5], [3.9, 3.3, 4.1])), 2.2],
+    [E([0, 14.6, -1.2], [6.6, 2.6, 4.0]), 2.0],
+    [mirrorX(cone([9.8, 11.6, -0.4], [10.8, 0.4, 0.3], 3.1, 2.8)), 1.6],
+    [mirrorX(E([3.9, 10.0, 3.6], [4.1, 2.6, 2.4])), 1.4],
+    [cone([0, 13.4, -0.6], [0, 20.4, 0.6], 3.4, 3.1), 1.6],
   ]);
   // The line between the breasts and the slight hollow at the throat.
   let body = carve(torso, E([0, 9.6, 5.6], [0.45, 2.4, 0.7]), 0.6);
@@ -78,20 +78,19 @@ function adiyogiField() {
   // three rings of piled locks rising to the top; and the locks down the back.
   const hair = blend([
     [E(P(0, 4.8, -2.4), [k(10.6), k(9.6), k(11.0)]), 0],
-    [E(P(0, 11.2, -2.6), [k(6.4), k(3.6), k(6.0)]), k(1.6)],
-    [E(P(0, 14.6, -2.9), [k(5.0), k(3.0), k(4.8)]), k(1.2)],
-    [E(P(0, 17.6, -3.2), [k(3.4), k(2.4), k(3.4)]), k(1.0)],
+    [E(P(0, 10.4, -2.6), [k(6.2), k(2.8), k(5.8)]), k(1.4)],
+    [E(P(0, 12.8, -2.9), [k(4.4), k(2.1), k(4.2)]), k(1.0)],
     [E(P(0, -1.0, -6.5), [k(11.0), k(12.0), k(6.0)]), k(2.0)],
-    [E([0, 12.5, -4.8], [7.5, 6.0, 2.4]), 2.0],
+    [E([0, 14.5, -4.8], [7.0, 6.0, 2.4]), 2.0],
   ]);
   // Grooves between the coils of the knot and the locks of the cap.
   let hairC = hair;
-  for (const [y, r] of [[9.6, 6.6], [12.9, 5.6], [16.2, 4.2]]) hairC = carve(hairC, (x, yy, z) => Math.hypot(Math.hypot(x, (z - P(0, 0, -2.6)[2]) * 1.05) - k(r), yy - P(0, y, 0)[1]) - k(0.35), k(0.3));
-  const headB = bounded(blend([[head, 0], [hairC, k(0.6)]]), [0, 24, -0.5], 12.5, 1.5);
+  for (const [y, r] of [[9.2, 6.4], [11.6, 5.2], [13.6, 3.6]]) hairC = carve(hairC, (x, yy, z) => Math.hypot(Math.hypot(x, (z - P(0, 0, -2.6)[2]) * 1.05) - k(r), yy - P(0, y, 0)[1]) - k(0.35), k(0.3));
+  const headB = bounded(blend([[head, 0], [hairC, k(0.6)]]), [0, 25.5, -0.5], 13.5, 1.5);
   const lockL = locks(-1), lockR = locks(1);
   const locksF = blend([...lockL, ...lockR].map((f) => [f, 0.2]));
   const all = (x, y, z) => smin(smin(body(x, y, z), headB(x, y, z), 1.2), locksF(x, y, z), 0.35);
-  return { f: flatBase(all, 0, 0.3), lo: [-17, -0.2, -10], hi: [17, H + 0.6, 10.5], head };
+  return { f: flatBase(all, 0, 0.3), lo: [-15, -0.2, -10.5], hi: [15, H + 0.6, 11.5], head };
 }
 
 let fieldP = null;
@@ -102,7 +101,7 @@ function bustMesh() {
   const low = detail.low;
   return mesh(sculpt(low ? 'adiyogi-coarse' : 'adiyogi', adiyogiField, {
     h: low ? 0.34 : 0.17, reach: 1.4, deep: [0.4, 0.4, 0.42], wear: 0.25,
-    split: [{ region: E(P(0, -1.2, 7.4), [k(10.2), k(10.4), k(6.2)]), h: low ? 0.12 : 0.065, lo: [-6.2, 15.2, 1.4], hi: [6.2, 29.4, 8.4] }],
+    split: [{ region: E(P(0, -1.2, 7.4), [k(10.2), k(10.4), k(6.2)]), h: low ? 0.13 : 0.07, lo: [-6.9, 16.6, 1.6], hi: [6.9, 32.4, 9.6] }],
   }), statueMaterial(STEEL));
 }
 
@@ -139,7 +138,7 @@ function ornaments() {
   g.add(inst(new THREE.IcosahedronGeometry(1, detail.low ? 1 : 2), beads, STEEL));
   // The crescent in the knot, on his left, its horns turned up and out.
   const moon = mesh(new THREE.TorusGeometry(1.5, 0.42, 10, 28, Math.PI * 1.15), STEEL);
-  moon.position.set(4.1, 30.2, 0.4);
+  moon.position.set(4.6, HY + k(10.6) * 1.08, HZ + k(0.5));
   moon.rotation.set(0.1, -0.5, -0.4 - Math.PI * 0.07);
   g.add(moon);
   // Heavy round earrings hanging from the lobes.
@@ -174,9 +173,9 @@ export function buildAdiyogi() {
   bust.add(bustMesh(), ornaments());
   f.add(at(bust, 0, BASE, 0));
   // The platform: a broad low plinth of dark stone in two steps.
-  f.add(box(34, BASE * 0.5, 22, mat('#3a3836', 0.8), 0, 0, 0.6), box(32, BASE * 0.5, 20, mat('#4a4744', 0.75), 0, BASE * 0.5, 0.6));
+  f.add(box(32, BASE * 0.5, 22, mat('#3a3836', 0.8), 0, 0, 0.6), box(30, BASE * 0.5, 20, mat('#4a4744', 0.75), 0, BASE * 0.5, 0.6));
   // The trishul in front, to his right.
-  f.add(at(trishul(17), -6, 0, 24));
+  f.add(at(trishul(17), 13, 0, 21));
   addDetails(f, g, { BASE });
   // Square on to the face, a little from his right, looking up.
   return { group: g, focus: f, view: [-0.35, 0.12, 1], zoom: 0.95 };

@@ -12,15 +12,15 @@ const HOLLOW = M.recess;
 
 // The trefoil opening of Kashmiri building, w wide, its jambs rising to `spring` and its head a
 // trefoil: two side lobes and a taller middle lobe, as a closed path (for a hole or a solid).
-function trefoilPath(w, spring, path = new THREE.Path()) {
+function trefoilPath(w, spring, path = new THREE.Path(), y0 = 0) {
   const r1 = w * 0.26, r2 = w * 0.3;
-  path.moveTo(-w / 2, 0);
+  path.moveTo(-w / 2, y0);
   path.lineTo(-w / 2, spring);
   path.absarc(-w / 2 + r1, spring, r1, Math.PI, Math.PI * 0.35, true);
   path.absarc(0, spring + w * 0.2, r2, Math.PI * 0.92, Math.PI * 0.08, true);
   path.absarc(w / 2 - r1, spring, r1, Math.PI * 0.65, 0, true);
-  path.lineTo(w / 2, 0);
-  path.lineTo(-w / 2, 0);
+  path.lineTo(w / 2, y0);
+  path.lineTo(-w / 2, y0);
   return path;
 }
 
@@ -31,7 +31,7 @@ export function portal(w, h, m, trim) {
   const g = new THREE.Group(), ph = Math.min(h * 0.38, w * 0.62), fh = h - ph, aw = w * 0.5, depth = 0.7;
   const outer = new THREE.Shape();
   outer.moveTo(-w / 2, 0); outer.lineTo(w / 2, 0); outer.lineTo(w / 2, fh); outer.lineTo(0, h); outer.lineTo(-w / 2, fh); outer.lineTo(-w / 2, 0);
-  outer.holes.push(trefoilPath(aw, fh - aw * 0.75));
+  outer.holes.push(trefoilPath(aw, fh - aw * 0.75, undefined, 0.03));
   const slab = new THREE.ExtrudeGeometry(outer, { depth, bevelEnabled: false, curveSegments: 6 }).translate(0, 0, -depth / 2);
   g.add(mesh(slab, m));
   // The pilasters, the cornice over the frame, the pediment's raking mouldings, and its niche.
@@ -71,10 +71,10 @@ export function cellNiches(list) {
   const frame = new THREE.Group(), w = 1.6, fh = 3.0;
   const outer = new THREE.Shape();
   outer.moveTo(-1.15, 0); outer.lineTo(1.15, 0); outer.lineTo(1.15, fh); outer.lineTo(0, fh + 1.3); outer.lineTo(-1.15, fh); outer.lineTo(-1.15, 0);
-  outer.holes.push(trefoilPath(w, fh - w * 0.75));
+  outer.holes.push(trefoilPath(w, fh - w * 0.75, undefined, 0.03));
   frame.add(mesh(new THREE.ExtrudeGeometry(outer, { depth: 0.15, bevelEnabled: false, curveSegments: 4 }), STONE));
   const fg = mergeByMaterial(frame).children[0].geometry;
-  const hole = new THREE.ShapeGeometry(trefoilPath(w, fh - w * 0.75, new THREE.Shape()), 4).translate(0, 0, 0.01);
+  const hole = new THREE.ShapeGeometry(trefoilPath(w, fh - w * 0.75, new THREE.Shape(), 0.03), 4).translate(0, 0, 0.01);
   return new THREE.Group().add(inst(fg, list, STONE), inst(hole, list, HOLLOW));
 }
 

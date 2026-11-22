@@ -31,7 +31,8 @@ export function ridge(x, z) {
   const banks = 6 + 14 * smooth(30, 160, toRiver) + 30 * fbm(x, z, { scale: 0.004, octaves: 3 }) * smooth(60, 260, toRiver);
   const hills = (40 + 60 * ridged(x, z, { scale: 0.003, octaves: 4 })) * smooth(240, 520, Math.abs(z));
   const ground = Math.max(banks, hills) * smooth(16, 55, toRiver);
-  return Math.max(top * cliff + (crest(x) * 0.45 * slope + ground * (1 - slope)) * (1 - cliff), ground) - 0.4;
+  // The rivers' beds stay level and below the water, so the water is never buried.
+  return Math.max(top * cliff + (crest(x) * 0.45 * slope + ground * (1 - slope)) * (1 - cliff), ground) * smooth(18, 50, toRiver) - 0.4;
 }
 
 // The gates on the way up along the ridge from the west, at x, each in a wall across the top:
@@ -42,7 +43,7 @@ export const GATES = [[-215, 'Ranjit Singh'], [-160, 'Jahangiri'], [-105, 'Ahani
 export function buildKangraFort() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
-  g.add(box(3000, 0.2, 3000, mat('#7d8a55', 0.95), 0, -1.2, 0));
+  g.add(box(8000, 0.2, 8000, mat('#7d8a55', 0.95), 0, -1.2, 0));
   g.add(heightField(1300, 1100, detail.low ? 130 : 220, ridge, { rock: ['#857a68', '#91856f', '#7a705f'], cover: '#5f7a3f', steep: 0.74, band: 10 }));
   // The two rivers in their beds.
   for (const [fn, w] of [[southRiver, 34], [northRiver, 28]]) for (let x = -650; x < 520; x += 40) {
@@ -78,5 +79,5 @@ export function buildKangraFort() {
   addDetails(f, g);
   // From the south-east, above the Banganga: the walls along the cliff, the gates climbing the
   // ridge, and the palace and temples at its top.
-  return { group: g, focus: f, view: [0.35, 0.3, 1], zoom: 0.55, target: [40, 50, 10] };
+  return { group: g, focus: f, view: [0.35, 0.28, 1], zoom: 0.45, target: [30, 50, 10] };
 }

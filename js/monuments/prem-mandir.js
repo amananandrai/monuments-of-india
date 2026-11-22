@@ -15,7 +15,7 @@ import { addDetails } from '../details/prem-mandir.js';
 // kalash and saffron flag stand 125 ft (38 m) over the ground. Faces +z (east).
 export const WHITE = mat('#f4f1ea', 0.4), CARVE = mat('#e2dccf', 0.55), DARK = mat('#5c544c', 0.9);
 // Heights: the platform's two tiers, the ground storey (G), its parapet, the upper storey (U).
-export const P1 = 1.2, P2 = 3.6, G = 8.2, U = 6.6;
+export const P1 = 1.2, P2 = 3.2, G = 7.2, U = 5.6;
 export const W0 = 28, W1 = 20;   // the ground storey's core and the upper storey, square
 
 // A storey's arcade: carved pillars at spacing ~3.4 m round a square of side w, cusped arches between
@@ -97,18 +97,18 @@ export function buildPremMandir() {
   for (const a of FACES) for (const lat of [-9, -3, 3, 9]) nich.add(onFace(at(templeNiche(1.5, 3, S, { figure: idol(2.4, C) }), 0, y1 + 1.5, 0), a, W0 / 2, lat));
   f.add(mergeByMaterial(nich));
   // The main spire, its foot ringed by four spires on its faces and four on its corners.
-  const y4 = y3 + 1.5, main = shikhara(12.5, 14.2, S, nagaraProfile, 18, M.gold, 1.15);
-  f.add(at(main, 0, y4, 0), at(flag(4.2, M.saffron, M.gold), 0, y4 + main.userData.top - 0.6, 0));
+  const y4 = y3 + 1.5, main = shikhara(12, 11.6, S, nagaraProfile, 16, M.gold, 1.0);
+  f.add(at(main, 0, y4, 0), at(flag(3, M.saffron, M.gold), 0, y4 + main.userData.top - 0.5, 0));
   for (const a of FACES) {
-    f.add(onFace(at(shikhara(6.5, 8.2, S, nagaraProfile, 11), 0, y4, 0), a, 5.2));
-    const c = onFace(at(shikhara(4.2, 5.2, S, nagaraProfile, 8), 0, y4, 0), a + Math.PI / 4, 8.4);
+    f.add(onFace(at(shikhara(6.2, 7, S, nagaraProfile, 10), 0, y4, 0), a, 5));
+    const c = onFace(at(shikhara(4, 4.6, S, nagaraProfile, 8), 0, y4, 0), a + Math.PI / 4, 8.1);
     c.rotation.y = 0;
     f.add(c);
   }
   // Ribbed amalakas on the main spire's corners, marking its storeys.
   const am = new THREE.SphereGeometry(1, 14, 6), amal = new THREE.Group();
   for (let k = 1; k <= 4; k++) {
-    const t = k / 5, wt = 12.5 * nagaraProfile(t), yk = y4 + t * 14.2, r = wt * 0.085;
+    const t = k / 5, wt = 12 * nagaraProfile(t), yk = y4 + t * 11.6, r = wt * 0.085;
     for (const sx of [-1, 1]) for (const sz of [-1, 1]) { const o = mesh(am, S, sx * wt * 0.42, yk, sz * wt * 0.42); o.scale.set(r, r * 0.42, r); amal.add(o); }
   }
   f.add(mergeByMaterial(amal));
@@ -117,7 +117,7 @@ export function buildPremMandir() {
     f.add(at(kiosk(1.9, 3.2, S), sx * (W0 + 4) / 2, y2, sz * (W0 + 4) / 2));
     f.add(at(kiosk(1.4, 2.6, S), sx * (W1 / 2 + 0.2), y3 + 1.5, sz * (W1 / 2 + 0.2)));
   }
-  if (!detail.low) f.add(at(petalRing(6.6, 24, 1.4, 0.9, 0.9, S), 0, y4, 0));
+  if (!detail.low) f.add(at(petalRing(6.4, 24, 1.3, 0.9, 0.9, S), 0, y4, 0));
   addDetails(f, g, { y1, y2, y3, y4, S, C });
   // From the south-east, a little above the gardens.
   return { group: g, focus: f, view: [0.7, 0.3, 1], zoom: 0.85 };
