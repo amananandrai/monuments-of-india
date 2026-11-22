@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, lathe, onFace, inst, unitBox, unitCyl, kalash, FACES } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, lathe, onFace, inst, unitBox, kalash, surface, FACES } from '../helpers.js';
 import { mergeByMaterial, petalRing, railing, frieze } from '../parts/components.js';
 import { grandStair } from '../parts/doorways.js';
 import { crossLegged } from '../parts/figures.js';
@@ -15,7 +15,7 @@ const FT = 0.3048;
 export const VEDI = 54 * FT, LOTUS = 27 * FT, FIGURE = 108 * FT, STAFF = 135 * FT;
 export const TIERS = [40, 33, 26];   // half-widths of the Bhadra Vedi's three storeys
 export const STONE = mat('#d8c4a2', 0.85), TRIM = mat('#b89a74', 0.88), DARK = mat('#4a4541', 0.7);
-const PINK = mat('#e48fa3', 0.6), PINK_DEEP = mat('#c9667f', 0.65);
+const PINK = surface(mat('#e48fa3', 0.6), 'none'), PINK_DEEP = surface(mat('#c9667f', 0.65), 'none');
 const GOLD = mat('#d9a93e', 0.3, 0.85);
 
 // His hands joined before the chest (anjali), in the figure's own units: two flat palms pressed
