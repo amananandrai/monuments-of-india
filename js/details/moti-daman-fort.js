@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { M, mat, box, cyl, at, onFace, hemi, inst, unitBox, sheet, planPrism, offsetPlan, curvedBand } from '../helpers.js';
 import { mergeByMaterial, windowFrame, keystone } from '../parts/components.js';
 import { pediment, column } from '../parts/colonial.js';
-import { trees, boats, asiBoard, scatter, townHouses, lampPosts, cityAround } from '../parts/realism.js';
+import { trees, boats, asiBoard, scatter, townHouses, lampPosts } from '../parts/realism.js';
 import { detail } from '../detail.js';
 import { STONE, STONE_DARK, LIME, TILE, H, PTS, GATES, bastionPlan } from '../monuments/moti-daman-fort.js';
 
@@ -80,7 +80,7 @@ export function addDetails(f, g, dims) {
   architecture(f, dims);
   const out = offsetPlan(PTS, 26), moatOut = offsetPlan(PTS, 42);
   // The ground round the fort, and the moat's water between the walls and its counterscarp.
-  g.add(sheet(1600, 1400, M.grass, 0, -0.2, 300));
+  g.add(sheet(1500, 1160, M.grass, 50, -0.2, 430), sheet(1500, 500, M.grass, 50, -0.2, -760));
   const ring = new THREE.Shape(moatOut.map(([x, z]) => new THREE.Vector2(x, -z)));
   ring.holes.push(new THREE.Path(out.map(([x, z]) => new THREE.Vector2(x, -z))));
   const moat = new THREE.Mesh(new THREE.ShapeGeometry(ring).rotateX(-Math.PI / 2), M.water);
@@ -113,8 +113,11 @@ export function addDetails(f, g, dims) {
   g.add(lampPosts([[-18, 62], [-2, 62], [-18, 120], [-2, 120]]));
   g.add(asiBoard('Fort of Moti Daman', 12, 160, 0.2));
   // The Damanganga to the north, its mouth to the west in the Arabian Sea, with fishing boats.
-  g.add(sheet(1600, 360, M.river, 0, -0.35, -330), sheet(700, 1400, M.sea, -1100, -0.36, 300));
+  g.add(sheet(1600, 360, M.river, 0, -0.35, -330), sheet(760, 2400, M.sea, -1080, -0.36, 0));
   g.add(boats([[-60, -200, 0.4], [-20, -240, 1.2], [40, -210, -0.3], [120, -260, 2.1], [-140, -230, 0.9], [200, -220, 1.6], [10, -290, 0.2]], { y: -0.35, size: 2.4, canopy: true }));
   // Nani Daman on the far bank.
-  g.add(cityAround([-500, 500, -900, -540], { rows: detail.low ? 1 : 2, every: detail.low ? 3 : 1, fine: false, gap: 4, storeys: [2, 4], seed: 33, keep: [[-600, 600, -540, -400]] }));
+  const far = [];
+  for (let x = -480; x < 560; x += 16) for (let z = -540; z > -800; z -= 18) if (R() < (detail.low ? 0.35 : 0.75)) far.push([x + R() * 4, z - R() * 4, 9 + R() * 4, 10 + R() * 3, 1 + Math.floor(R() * 3), R() < 0.5 ? 0 : Math.PI]);
+  g.add(townHouses(far, { seed: 9, roof: 'pitched', roofs: ['#a0503a', '#9a4632', '#7a7f84'], tanks: 0.3, fine: false }));
+  g.add(trees(scatter(detail.low ? 20 : 50, [-480, 560, -800, -530], { seed: 13, gap: 20 }), { kind: 'palm', seed: 13 }));
 }

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at } from '../helpers.js';
+import { M, box, cyl, at } from '../helpers.js';
 import { mergeByMaterial, beltCourse } from '../parts/components.js';
 import { classicalDoor } from '../parts/colonial.js';
 import { trees, shrubs, lampPosts, benches, scatter, along, traffic, townHouses } from '../parts/realism.js';
@@ -63,5 +63,4 @@ export function addDetails(f, g) {
   }
   g.add(trees(T.filter((_, k) => k % 3), { kind: 'mango', seed: 8 }), trees(T.filter((_, k) => !(k % 3)), { kind: 'palm', seed: 9 }));
   g.add(trees([[-26, FZ - 10, 13, S.H0], [26, FZ - 16, 13, S.H0], [-24, FZ - 40, 12, S.H0]], { kind: 'palm', seed: 11 }));
-  g.add(box(1, 0.01, 1, mat('#000000'), 0, -5, 0));
 }

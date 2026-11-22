@@ -37,8 +37,8 @@ function jaliTexture(kind, aw, ah) {
     if (depth <= 0) {
       // A palm frond: a fan of leaves curling from the tip.
       for (let q = -3; q <= 3; q++) {
-        const a2 = ang + q * 0.32; t.lineWidth = 0.035 * k; t.beginPath(); t.moveTo(X(ex), Y(ey));
-        t.quadraticCurveTo(X(ex + Math.cos(a2) * 0.3), Y(ey + Math.sin(a2) * 0.3), X(ex + Math.cos(a2 - 0.4) * 0.45), Y(ey + Math.sin(a2 - 0.4) * 0.45)); t.stroke();
+        const a2 = ang + q * 0.34; t.lineWidth = 0.055 * k; t.beginPath(); t.moveTo(X(ex), Y(ey));
+        t.quadraticCurveTo(X(ex + Math.cos(a2) * 0.36), Y(ey + Math.sin(a2) * 0.36), X(ex + Math.cos(a2 - 0.5) * 0.55), Y(ey + Math.sin(a2 - 0.5) * 0.55)); t.stroke();
       }
       return;
     }
@@ -52,12 +52,13 @@ function jaliTexture(kind, aw, ah) {
     for (let y = 0.2; y < ah * 0.45; y += 0.05) t.lineTo(X(Math.sin(y * 9) * 0.14), Y(y));
     t.stroke();
     for (const side of [-1, 1]) {
-      branch(0, ah * 0.25, Math.PI / 2 + side * 1.15, aw * 0.3, 0.1, 3);
-      branch(0, ah * 0.45, Math.PI / 2 + side * 0.55, aw * 0.26, 0.09, 3);
+      branch(0, ah * 0.18, Math.PI / 2 + side * 1.3, aw * 0.3, 0.13, 3);
+      branch(0, ah * 0.3, Math.PI / 2 + side * 0.9, aw * 0.3, 0.12, 4);
+      branch(0, ah * 0.45, Math.PI / 2 + side * 0.45, aw * 0.28, 0.11, 4);
     }
-    branch(0, ah * 0.45, Math.PI / 2, ah * 0.22, 0.09, 2);
+    branch(0, ah * 0.45, Math.PI / 2, ah * 0.24, 0.1, 3);
   } else if (kind === 'branches') {
-    for (let n = 0; n < 7; n++) branch(-r + R() * aw, 0.1, Math.PI / 2 + (R() - 0.5) * 1.4, ah * 0.32, 0.08, 3);
+    for (let n = 0; n < 9; n++) branch(-r + R() * aw, 0.1, Math.PI / 2 + (R() - 0.5) * 1.4, ah * 0.32, 0.11, 4);
   } else {
     // Six-pointed stars on a grid, linked by bars.
     t.lineWidth = 0.05 * k;

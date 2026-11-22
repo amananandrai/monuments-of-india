@@ -53,7 +53,7 @@ export function buildMahmudGawanMadrasa() {
       const l = -len / 2 + (k + 0.5) * (len / n);
       if (skip(l, y)) continue;
       const w = at(windowFrame(1.6, 2.6, DRESSED, { frame: 0.25 }), 0, y, 0);
-      w.position.x = cx + Math.cos(ry) * l; w.position.z = cz - Math.sin(ry) * l; w.rotation.y = ry;
+      w.position.x = cx + Math.cos(ry) * l + Math.sin(ry) * 0.03; w.position.z = cz - Math.sin(ry) * l + Math.cos(ry) * 0.03; w.rotation.y = ry;
       d.add(w);
     }
   };
@@ -80,7 +80,7 @@ export function buildMahmudGawanMadrasa() {
   // The court's floor, a little below the rooms.
   d.add(box(CW, 0.2, CD, DRESSED, 0, 0, 0));
   // The north minaret and its dome behind it; the stump of the south one.
-  d.add(at(minaretGeo(30, 2.6), -W / 2 + 2.6, 0, D / 2 - 2.6), cyl(2.6, 2.9, 5, STONE, W / 2 - 2.6, 0, D / 2 - 2.6, 20));
+  d.add(at(minaretGeo(31, 2.1), -W / 2 + 2.1, 0, D / 2 - 2.1), cyl(2.1, 2.4, 5, STONE, W / 2 - 2.1, 0, D / 2 - 2.1, 20));
   d.add(cyl(5.4, 5.6, 2, STONE, -W / 2 + 10, H, D / 2 - 7.5, 24));
   const dome = [];
   for (let k = 0; k <= 14; k++) { const t = (k / 14) * Math.PI / 2; dome.push([5.4 * Math.cos(t), 6.4 * Math.sin(t)]); }

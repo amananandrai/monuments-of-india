@@ -45,6 +45,6 @@ export function addDetails(f, g, { sz, tz, tw, tl, R }) {
   g.add(trees(along(8, [-40, -75], [40, -75]), { kind: 'ashoka', seed: 4 }));
   g.add(trees(scatter(14, [-300, 300, -300, 300], { seed: 9, gap: 50 }).filter(away), { kind: 'peepal', seed: 9 }));
   g.add(shrubs(scatter(40, [-100, 100, -85, 95], { seed: 5, gap: 6 }).filter(([x, z]) => Math.hypot(x, z - sz) > 14 && Math.hypot(x, z) > 6 && Math.abs(z - tz) > tl / 2 + 3), { size: 0.9 }));
-  g.add(townHouses(scatter(30, [150, 320, -160, 160], { seed: 6, gap: 13 }), { seed: 6, roof: 'pitched' }));
+  g.add(townHouses(scatter(30, [150, 320, -160, 160], { seed: 6, gap: 13 }).map(([x, z], k) => [x, z, 6 + (k % 3) * 1.5, 7 + (k % 2) * 2, 1 + (k % 4 === 0), (k * 0.7) % 1.57]), { seed: 6, roof: 'pitched' }));
   void M;
 }

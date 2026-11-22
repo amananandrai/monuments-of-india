@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, lathe, rng, inst, unitBox, surface, sheet } from '../helpers.js';
+import { M, mat, box, cyl, at, lathe, ribbed, rng, inst, unitBox, surface, sheet } from '../helpers.js';
 import { lion } from '../parts/animals.js';
 import { addDetails } from '../details/ashokan-pillar-vaishali.js';
 
@@ -22,14 +22,7 @@ export function pillar() {
   g.add(cyl(r1, r0, shaft, POLISH, 0, 0, 0, 40));
   // The bell: a lathe of the inverted lotus, ribbed by its petals, then a cushion and the abacus.
   const y0 = shaft;
-  g.add(at(lathe([[r1 * 0.95, 0], [r1 * 1.35, 0.12], [r1 * 1.5, 0.35], [r1 * 1.35, 0.7], [r1 * 0.95, 1.0], [r1 * 0.78, 1.15], [r1 * 0.85, 1.25]], POLISH, 40), 0, y0, 0));
-  for (let k = 0; k < 24; k++) {
-    const a = (k / 24) * Math.PI * 2, rib = box(0.05, 0.9, 0.06, POLISH, 0, 0, 0);
-    rib.position.set(Math.sin(a) * r1 * 1.42, y0 + 0.12, Math.cos(a) * r1 * 1.42);
-    rib.rotation.y = a;
-    rib.rotateX(-0.25);
-    g.add(rib);
-  }
+  g.add(at(ribbed(lathe([[r1 * 1.02, 0], [r1 * 1.52, 0.1], [r1 * 1.48, 0.32], [r1 * 1.28, 0.62], [r1 * 1.02, 0.9], [r1 * 0.82, 1.06], [r1 * 0.88, 1.18], [r1 * 0.8, 1.25]], POLISH, 72), 24, 0.05), 0, y0, 0));
   g.add(cyl(r1 * 0.95, r1 * 0.95, 0.22, POLISH, 0, y0 + 1.25, 0, 32), box(1.6, 0.42, 1.25, POLISH, 0, y0 + 1.47, 0));
   // The lion, seated on its haunches, mane in curls, facing north.
   const l = lion(1, POLISH).children[1], lg = new THREE.Group().add(l);

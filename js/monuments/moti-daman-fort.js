@@ -88,5 +88,5 @@ export function buildMotiDamanFort() {
   }
   addDetails(f, g, { cw, cl, ch });
   // From the south-east, over the moat and the land gate.
-  return { group: g, focus: f, view: [0.65, 0.45, 1], zoom: 0.8 };
+  return { group: g, focus: f, view: [0.6, 0.38, 1], zoom: 0.5 };
 }

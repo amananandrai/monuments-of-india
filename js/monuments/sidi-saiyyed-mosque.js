@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { box, cyl, at } from '../helpers.js';
+import { M, box, cyl, at, archPanel } from '../helpers.js';
 import { arcadeSkin, cellRow } from '../parts/mughal.js';
 import { merlons, mergeByMaterial } from '../parts/components.js';
 import { addDetails, STONE, SHADE, treeJali } from '../details/sidi-saiyyed-mosque.js';
@@ -19,7 +19,7 @@ export function buildSidiSaiyyedMosque() {
   const S = STONE, Sd = SHADE, d = new THREE.Group();
   d.add(box(L + 4, P, D + 4, Sd, 0, 0, 0), box(L + 4.4, 0.25, D + 4.4, S, 0, P - 0.2, 0));
   // The west wall (+z): five bays, a window high in each but the middle one, which is walled up.
-  const wt = 1.2, wins = cellRow(5, L / 5, 3.6, 3.1, 3.4);
+  const wt = 1.2, wins = cellRow(5, L / 5, 3.4, 3.5, 3.7);
   d.add(at(arcadeSkin(L, H, wins.filter((c, k) => k !== 2), wt, S, { trim: Sd, fill: 'none', pointed: true }), 0, P, D / 2 - wt));
   // The side walls, each with two jali windows.
   for (const s of [-1, 1]) {
@@ -47,6 +47,8 @@ export function buildSidiSaiyyedMosque() {
     const [cx, sill, aw, ah] = wins[k];
     f.add(at(treeJali(aw * 0.99, ah * 0.99, kind), cx, P + sill, D / 2 - wt + 0.35));
   }
+  // The hall is dim inside: from the street the lattices show dark behind.
+  for (const k of [0, 1, 3, 4]) { const [cx, sill, aw, ah] = wins[k]; f.add(at(archPanel(aw + 0.3, ah + 0.25, true, M.recess, 0.05), cx, P + sill - 0.1, D / 2 - wt - 0.07)); }
   // The other windows of the west wall: geometric jalis.
   for (const k of [0, 4]) {
     const [cx, sill, aw, ah] = wins[k];

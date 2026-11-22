@@ -67,6 +67,6 @@ export function addDetails(f, g) {
   g.add(churchgate(125));
   g.add(traffic([[46, -1], [52, 1]], -120, 120, { gap: 16, seed: 9, taxis: 0.35, buses: 0.12, trucks: 0.02 }));
   g.add(cityAround([-110, 110, -150, 64], { rows: detail.low ? 1 : 2, every: detail.low ? 3 : 1, gap: 10, storeys: [4, 7], seed: 21, fine: !detail.low,
-    keep: [[-60, 60, 100, 140], [-200, 200, -40, 70]],
+    keep: [[-300, 300, 30, 300]],
     paint: ['#efe6d2', '#e9dcc0', '#d9c9a8', '#e4d6c8', '#cfd8d4', '#f1e9d8'] }));
 }

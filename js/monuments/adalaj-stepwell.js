@@ -55,10 +55,10 @@ export function buildAdalajStepwell() {
   // The ground, cut through by the well: the entrance square, the corridor and the octagon as one
   // opening, and the round well as another.
   const oct = octagon(OA);
-  const open = [[-CW, OZ + OA], [-CW, 28], [-10, 28], [-10, 46], [10, 46], [10, 28], [CW, 28], ...oct.slice(1, 8).map(([x, z]) => [x, z]).filter(([x, z]) => !(Math.abs(x + CW) < 0.01 && Math.abs(z - (OZ + OA)) < 0.01))];
+  const open = [[-CW, OZ + OA], [-CW, 28], [-10, 28], [-10, 46], [10, 46], [10, 28], [CW, 28], ...[1, 0, 7, 6, 5, 4, 3].map((k) => oct[k])];
   const wellHole = new THREE.Path();
   wellHole.absarc(0, -WZ, 2.8, 0, Math.PI * 2, false);
-  f.add(solid([[-160, -160], [160, -160], [160, 160], [-160, 160]], [open, wellHole], D, GROUND, RELIEF));
+  g.add(solid([[-600, -600], [600, -600], [600, 600], [-600, 600]], [open, wellHole], D, GROUND, RELIEF));
   // The entrance: the landing a storey down, and the three flights to it.
   const yL = D - F;
   d.add(box(12, yL, 14, STONE, 0, 0, 35));
@@ -68,13 +68,12 @@ export function buildAdalajStepwell() {
     for (const s of [-1, 1]) d.add(box(run, h, 12, STONE, s * (10 - (k + 0.5) * run), 0, 36));
     d.add(box(12, h, run, STONE, 0, 0, 46 - (k + 0.5) * run));
   }
-  for (const s of [-1, 1]) d.add(box(4, D - 0.02, 2, GROUND, s * 8, 0, 29), box(4, D - 0.02, 4, GROUND, s * 8, 0, 44));
+  for (const s of [-1, 1]) d.add(box(4, D - 0.02, 2, STONE, s * 8, 0, 29), box(4, D - 0.02, 4, STONE, s * 8, 0, 44));
   // Its pavilion: sixteen carved pillars and a roof at ground level open in the middle, with a
   // parapet round the opening.
   for (const x of [-4.5, -1.5, 1.5, 4.5]) for (const z of [29.6, 33.4, 37.2, 41]) { const p = carvedPillar(F - 0.4, STONE); p.scale.set(0.7, 1, 0.7); d.add(at(p, x, yL, z)); }
   d.add(box(12, 0.4, 3.2, SHADE, 0, D - 0.4, 29.6), box(12, 0.4, 3.2, SHADE, 0, D - 0.4, 41), box(3.8, 0.4, 8.2, SHADE, -4.1, D - 0.4, 35.3), box(3.8, 0.4, 8.2, SHADE, 4.1, D - 0.4, 35.3));
-  d.add(box(12.4, 0.35, 15, STONE, 0, D, 35.3, 0));
-  for (const s of [-1, 1]) d.add(box(4.6, 0.7, 0.3, SHADE, 0, D + 0.35, 35.3 + s * 2.3), box(0.3, 0.7, 4.6, SHADE, s * 2.3, D + 0.35, 35.3));
+  for (const s of [-1, 1]) d.add(box(4.6, 0.7, 0.3, SHADE, 0, D, 35.3 + s * 2.15), box(0.3, 0.7, 4.0, SHADE, s * 2.15, D, 35.3));
   // The corridor: four flights down, a landing with its gallery after each of the first three, and
   // the floor at the foot running on to the octagon.
   const FN = 16, frun = 4.8 / FN;
@@ -90,13 +89,14 @@ export function buildAdalajStepwell() {
   // four pillars, beams across, and a walk along each wall, open in the middle.
   const piers = [];
   for (const [zk, y0] of KUTAS) {
-    const zc = zk - 4.8 - 3;
+    const zc = zk - 3;
     for (let y = y0; y < D - 0.1; y += F) {
       for (const x of [-1.95, -0.7, 0.7, 1.95]) for (const dz of [-2.3, 2.3]) piers.push([x, y, zc + dz]);
       d.add(box(2 * CW, 0.45, 0.7, SHADE, 0, y + F - 0.45, zc - 2.3), box(2 * CW, 0.45, 0.7, SHADE, 0, y + F - 0.45, zc + 2.3));
       for (const s of [-1, 1]) d.add(box(1.1, 0.35, 5.3, SHADE, s * (CW - 0.55), y + F - 0.45, zc), box(0.12, 0.5, 4.6, frieze(STONE), s * (CW - 1.16), y + F - 0.95, zc));
     }
-    d.add(box(2 * CW + 0.8, 0.3, 6.4, STONE, 0, D, zc));
+    for (const dz of [-2.3, 2.3]) d.add(box(2 * CW + 0.8, 0.3, 1.2, STONE, 0, D, zc + dz));
+    for (const sx of [-1, 1]) d.add(box(1.3, 0.3, 3.4, STONE, sx * (CW - 0.25), D, zc));
   }
   for (const [x, y, zz] of piers) { const p = carvedPillar(F - 0.45, STONE); p.scale.set(0.42, 1, 0.42); d.add(at(p, x, y, zz)); }
   // The octagon: a gallery round the shaft at every storey, on pillars at its corners, and the
@@ -123,5 +123,5 @@ export function buildAdalajStepwell() {
   f.add(mergeByMaterial(d));
   addDetails(f, g, { D, F, CW, OZ, OA, WZ });
   // From above the entrance, looking down the length of the well to the octagon.
-  return { group: g, focus: f, view: [0.35, 0.75, 0.75], zoom: 0.5, target: [0, 8, 6], minElevation: 0.35 };
+  return { group: g, focus: f, view: [0.3, 0.7, 0.75], zoom: 0.48, target: [0, 8, 4], minElevation: 0.35 };
 }

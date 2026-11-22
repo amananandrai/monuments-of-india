@@ -63,22 +63,23 @@ export function buildViceregalLodgeShimla() {
   const tz = fz + 1.5;
   d.add(box(TW, TH - 1, TW, STONE, TX, 1, tz), box(TW + 1, 0.6, TW + 1, DRESSED, TX, TH - 1, tz), box(TW + 0.8, 1.4, TW + 0.8, STONE, TX, TH - 0.4, tz));
   for (const [a, x, z] of [[0, 0, TW / 2 + 0.4], [Math.PI, 0, -TW / 2 - 0.4], [Math.PI / 2, TW / 2 + 0.4, 0], [-Math.PI / 2, -TW / 2 - 0.4, 0]]) d.add(at(merlons(TW + 0.8, 0.9, 1.1, 0.5, STONE, 0.5), TX + x, TH + 1, tz + z).rotateY(a));
-  for (let k = 3; k < 6; k++) { const y = 1.4 + k * FL; win.glass.push([TX, y, tz + TW / 2 + 0.03, 1.6, 2.6, 0.08]); win.frame.push([TX, y - 0.25, tz + TW / 2 + 0.12, 2.1, 0.25, 0.3], [TX, y + 2.6, tz + TW / 2 + 0.12, 2.1, 0.3, 0.3]); }
+  for (let k = 2; k < 6; k++) { const y = 1.4 + k * FL; win.glass.push([TX, y, tz + TW / 2 + 0.03, 1.6, 2.6, 0.08]); win.frame.push([TX, y - 0.25, tz + TW / 2 + 0.12, 2.1, 0.25, 0.3], [TX, y + 2.6, tz + TW / 2 + 0.12, 2.1, 0.3, 0.3]); }
   const ox = TX - TW / 2, oz = tz + TW / 2;
   d.add(cyl(1.9, 1.9, TH + 4, STONE, ox, 1, oz, 8), cyl(2.2, 2.2, 0.5, DRESSED, ox, TH + 5, oz, 8));
   d.add(at(new THREE.Mesh(new THREE.ConeGeometry(2.2, 5.5, 8), SLATE), ox, TH + 8.25, oz), cyl(0.06, 0.06, 4, M.steel, ox, TH + 11, oz, 6));
-  // The porch before the entrance: a stone porte-cochère of round arches, crenellated.
-  d.add(box(10, 6, 0.8, STONE, TX + 12, 1, fz + 9.6), box(0.9, 6, 9.6, STONE, TX + 7.45, 1, fz + 5), box(0.9, 6, 9.6, STONE, TX + 16.55, 1, fz + 5));
-  d.add(box(10.8, 1, 10.4, STONE, TX + 12, 7, fz + 5), at(merlons(10.8, 0.8, 0.9, 0.4, STONE, 0.4), TX + 12, 8, fz + 10));
-  d.add(at(classicalDoor(3, 4.4, { m: STONE, trim: DRESSED, fill: 'room', top: null, depth: 0.3 }), TX + 12, 1, fz + 10.01));
-  d.add(at(classicalDoor(2.4, 3.8, { m: STONE, trim: DRESSED, top: null, depth: 0.3 }), TX + 12, 1, fz + 0.01));
+  // The porch before the entrance at the tower's foot: a stone porte-cochère of round arches,
+  // crenellated.
+  const pz = tz + TW / 2;
+  d.add(box(10, 6, 0.8, STONE, TX, 1, pz + 8.8), box(0.9, 6, 9.6, STONE, TX - 4.55, 1, pz + 4.4), box(0.9, 6, 9.6, STONE, TX + 4.55, 1, pz + 4.4));
+  d.add(box(10.8, 1, 10, STONE, TX, 7, pz + 4.6), at(merlons(10.8, 0.8, 0.9, 0.4, STONE, 0.4), TX, 8, pz + 9.4));
+  d.add(at(classicalDoor(3, 4.4, { m: STONE, trim: DRESSED, fill: 'room', top: null, depth: 0.3 }), TX, 1, pz + 9.21));
+  d.add(at(classicalDoor(2.4, 3.8, { m: STONE, trim: DRESSED, top: null, depth: 0.3 }), TX, 1, pz + 0.01));
   // Tall chimney stacks along the ridge.
   for (const x of [-32, -18, -4, 14, 30]) d.add(box(1.6, 5.5, 1, DRESSED, x, EH + 4, 0), box(2, 0.4, 1.4, DRESSED, x, EH + 9.5, 0));
   // The service wing running back from the east end, a storey lower, on its own ridge.
   const sx = L / 2 - 8, sz = -fz - 17;
   d.add(box(14, EH - FL, 34, STONE, sx, 1, sz), box(14.6, 0.4, 34.6, DRESSED, sx, 1 + EH - FL, sz));
   d.add(at(pitched(34.6, 15, 5.5, SLATE), sx, 1.4 + EH - FL, sz).rotateY(Math.PI / 2), at(gableWall(14, 5.2, 0.5, STONE), sx, 1.4 + EH - FL, sz - 17.2).rotateY(Math.PI));
-  windows(0, 28, 7, 0, 1, 2, { glass: [], frame: [] });
   for (const s of [-1, 1]) for (let fl = 0; fl < 2; fl++) for (let k = 0; k < 6; k++) {
     const z = sz - 14 + k * 5.6, y = 1.4 + fl * FL, x = sx + s * 7.03;
     win.glass.push([x, y, z, 0.08, 2.2, 1.6]);

@@ -24,14 +24,14 @@ export function gable(w, d, h, m) {
 // TW wide at each end, three storeys to TH, and between them the central bay carried up as the
 // great belfry gable. The nave behind is NW wide, NH high and LEN long. The famous stairs fall from
 // the terrace in three zig-zag stages, each a pair of flights along a retaining wall STEP apart.
-export const S = { H0: 6.4, FZ: 0, FW: 22, TW: 6, TH: 21, NW: 13, NH: 14, LEN: 40, STEP: 3, LEVELS: 3 };
+export const S = { H0: 9, FZ: 0, FW: 22, TW: 6, TH: 21, NW: 13, NH: 14, LEN: 40, STEP: 3.4, LEVELS: 3 };
 
 export function buildImmaculateConceptionPanaji() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   const { H0, FZ, FW, TW, TH, NW, NH, LEN, STEP, LEVELS } = S, d = new THREE.Group(), c = new THREE.Group();
   // The terrace the church stands on: laterite retaining walls, plastered white across the front.
-  d.add(box(FW + 16, H0, LEN + 20, LAT, 0, 0, FZ - LEN / 2 - 2), box(FW + 16, H0, 0.4, WHITE, 0, 0, FZ + 7.8));
+  d.add(box(FW + 16, H0, LEN + 20, WHITE, 0, 0, FZ - LEN / 2 - 2), box(FW + 16.4, 0.6, LEN + 20.4, LAT, 0, 0, FZ - LEN / 2 - 2));
   d.add(box(FW + 16, 0.3, 7.1, M.path, 0, H0, FZ + 4.45));
   // The nave and its tiled roof, the sacristy behind, and the side chapels.
   c.add(box(NW, NH, LEN, WHITE, 0, 0, FZ - 1 - LEN / 2), at(gable(NW + 1.2, LEN, 5.2, TILE), 0, NH, FZ - 1 - LEN / 2));
@@ -86,9 +86,9 @@ export function buildImmaculateConceptionPanaji() {
   // The zig-zag stairs: at each stage a retaining wall, white, with a balustrade along its edge,
   // and two flights against its face, running outward from the middle at the first and third
   // stages and inward from the ends at the second.
-  const rise = H0 / LEVELS, n = 12, tread = 0.42, run = n * tread;
+  const rise = H0 / LEVELS, n = 16, tread = 0.42, run = n * tread;
   for (let i = 0; i < LEVELS; i++) {
-    const zw = FZ + 8 + i * STEP, ytop = H0 - i * rise, ybot = ytop - rise, wl = 18 - i * 0;
+    const zw = FZ + 8 + i * STEP, ytop = H0 - i * rise, ybot = ytop - rise, wl = 26;
     if (i > 0) d.add(box(wl, ytop, STEP, WHITE, 0, 0, zw - STEP / 2), box(wl + 0.2, 0.18, STEP + 0.1, M.path, 0, ytop, zw - STEP / 2));
     for (const s of [-1, 1]) {
       const outward = i % 2 === 0, x0 = outward ? s * 1.2 : s * (1.2 + run + 1.6);
