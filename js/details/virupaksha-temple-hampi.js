@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, FACES } from '../helpers.js';
+import { mat, box, cyl, at, onFace, FACES } from '../helpers.js';
 import { mouldings, chhajja, mergeByMaterial } from '../parts/components.js';
 import { haraRow } from '../parts/sculpture.js';
 import { dravidaDress, dwajasthambha, nandiMandapa } from '../parts/temples.js';

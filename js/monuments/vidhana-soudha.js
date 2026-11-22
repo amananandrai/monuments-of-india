@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, photo, mesh, box, cyl, lathe, at, onFace, FACES, inst, unitBox, kalash } from '../helpers.js';
+import { M, mat, photo, box, cyl, lathe, at, onFace, FACES, inst, unitBox, kalash } from '../helpers.js';
 import { mergeByMaterial, chhajja, chhajjaRing, jali, carved, windowFrame } from '../parts/components.js';
 import { arcadeSkin } from '../parts/mughal.js';
 import { column } from '../parts/colonial.js';
@@ -76,7 +76,7 @@ function tower() {
 }
 
 export function buildVidhanaSoudha() {
-  const g = new THREE.Group(), f = new THREE.Group(), { W, D, FZ, G, T, vd, CW, PZ, TW, TH, DZ } = VS;
+  const g = new THREE.Group(), f = new THREE.Group(), { W, D, FZ, G, T, vd, CW, PZ, TW, DZ } = VS;
   g.add(f);
   const R = 20, hx = W / 2, hz = D / 2, ROOF = mat('#a9a69e', 0.9);
 

@@ -13,7 +13,7 @@ import { detail } from '../detail.js';
 // bay (three storeys of them), red and green cornices with eaves, slender blue and white turrets
 // at the corners of the bays, a parapet, and three small gilt cupolas, the middle one largest.
 const paint = (c) => surface(mat(c, 0.75), 'none');
-const YELLOW = paint('#e9b62e'), RED = paint('#b5302a'), BLUE = paint('#2c5aa6'), GREEN = paint('#2e8a57'), WHITE = paint('#f3eee2');
+const RED = paint('#b5302a'), BLUE = paint('#2c5aa6'), GREEN = paint('#2e8a57'), WHITE = paint('#f3eee2');
 const STONE = photo(mat('#8f8b84', 0.9), 'blocks'), STONE_DARK = photo(mat('#6f6b64', 0.9), 'blocks');
 const STEEL = surface(mat('#9aa0a4', 0.45, 0.6), 'none'), SNOW = mat('#f4f6f8', 0.8);
 const GHAT = 0.6, COURT = 2.4, PL = 3.8;

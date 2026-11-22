@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { V, mat, mesh, box, cyl, at, strut, inst, unitBox, unitCyl, surface, photo } from '../helpers.js';
+import { V, mat, mesh, box, at, strut, inst, unitBox, unitCyl, surface, photo } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { track, train } from '../parts/transport.js';
 import { detail } from '../detail.js';

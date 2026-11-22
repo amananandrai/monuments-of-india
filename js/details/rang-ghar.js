@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, archWall } from '../helpers.js';
-import { beltCourse, pilasters, frieze, carved, archRing, banglaRoof, mergeByMaterial } from '../parts/components.js';
+import { beltCourse, pilasters, carved, archRing, banglaRoof, mergeByMaterial } from '../parts/components.js';
 import { steps, interior } from '../parts/doorways.js';
 import { wallWithGaps } from '../parts/temples.js';
 import { trees, shrubs, lampPosts, benches, asiBoard, scatter, along } from '../parts/realism.js';

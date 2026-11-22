@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, hemi, rng, inst, unitBox, TIBETAN, surface } from '../helpers.js';
+import { mat, mesh, box, cyl, at, hemi, rng, inst, unitBox, TIBETAN, surface } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { rabsel, quarters, hall, maniWheels } from '../parts/tibetan.js';
 import { tibetanDoor } from '../parts/doorways.js';

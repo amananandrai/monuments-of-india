@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, onFace, FACES, inst, aroundRect } from '../helpers.js';
-import { mouldings, frieze, templeNiche, idol, cuspedArchGeo, bracketGeo, placeAll, mergeByMaterial } from '../parts/components.js';
+import { mouldings, frieze, templeNiche, idol, cuspedArchGeo, bracketGeo, mergeByMaterial } from '../parts/components.js';
 import { templeDoorway, steps } from '../parts/doorways.js';
 import { figureRow, figureFrieze } from '../parts/sculpture.js';
 import { trees, shrubs, asiBoard, lampPosts, scatter, along } from '../parts/realism.js';
@@ -91,7 +91,7 @@ function torana(f) {
 // among them) and a smaller row above, between carved bands; the hall has a balconied window on
 // each side and its door on the east behind a porch of two pillars. Dimensions follow
 // js/monuments/modhera-sun-temple.js: the block 15 x 24 at z = -28, the base B and the wall WH.
-function shrine(f, { B, WH, hz, gz }) {
+function shrine(f, { B, hz, gz }) {
   const d = at(new THREE.Group(), 0, D, 0), S = SAND, Sd = SHADE;
   const base = [[0.15, 0.35, 0.12, S], [0.6, 0.4, 0.06, frieze(S)], [1.15, 0.3, 0.14, S], [B + 0.3, 0.25, 0.08, Sd], [B + 3.3, 0.25, 0.1, Sd], [B + 5.2, 0.5, 0.06, frieze(S)]];
   const up = (k) => base.map(([y, h, p, c]) => [y + k * 0.01, h, p + (y < B ? 0.45 : 0), c]);

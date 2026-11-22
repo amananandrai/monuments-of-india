@@ -17,7 +17,7 @@ const PAVE = mat('#c9bfa8', 0.95);
 // Gomti lies to the south, +x. T: the height of the mound the temple court stands on, above the
 // ghat; P: the temple's own plinth; F: a storey of the hall and of the tower beside it.
 const T = 5, P = 2, F = 4.2, Y0 = T + P;
-const TOWER_Z = -14, TOWER_W = 16, SPIRE_Y = Y0 + 5 * F, SPIRE_H = 41, SPIRE_W = 14.5;
+const TOWER_Z = -14, TOWER_W = 16, SPIRE_H = 41, SPIRE_W = 14.5;
 const HALL_BACK = -5, HALL_W = [24, 24, 21, 18, 15];
 // The spire holds its width over the lower storeys and curves in late: taller and straighter than
 // Somnath's.

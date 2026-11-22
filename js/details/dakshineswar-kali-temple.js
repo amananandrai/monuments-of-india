@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { M, V, mat, box, at, onFace, FACES, strut } from '../helpers.js';
+import { M, V, box, at, onFace, FACES, strut } from '../helpers.js';
 import { beltCourse, archSlab, archRing, mergeByMaterial } from '../parts/components.js';
 import { arcadeSkin, cellRow } from '../parts/mughal.js';
 import { trees, shrubs, lampPosts, boats, launches, scatter, along } from '../parts/realism.js';
 import { detail } from '../detail.js';
-import { D, WHITE, CREAM, RED } from '../monuments/dakshineswar-kali-temple.js';
+import { D, CREAM, RED } from '../monuments/dakshineswar-kali-temple.js';
 
 // Dakshineswar, finer detail. From photographs: every storey of the temple is lined in red, a
 // band under each curved cornice and another at the springing of the arches; the second storey

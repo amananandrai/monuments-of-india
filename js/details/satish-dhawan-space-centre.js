@@ -3,7 +3,7 @@ import { M, mat, mesh, box, cyl, at, lathe, inst, unitBox, unitCyl } from '../he
 import { mergeByMaterial, lettering } from '../parts/components.js';
 import { trees, shrubs, scatter, along } from '../parts/realism.js';
 import { detail } from '../detail.js';
-import { DECK, Y0, UT, MAST, VAB, WHITE, STEEL, CONCRETE, bars, lattice } from '../monuments/satish-dhawan-space-centre.js';
+import { DECK, Y0, UT, VAB, WHITE, STEEL, CONCRETE, bars } from '../monuments/satish-dhawan-space-centre.js';
 
 const BLUE = mat('#2f5f9e', 0.6), DOOR = mat('#9aa3aa', 0.5, 0.3), DARK = mat('#2b2d30', 0.6), ASPHALT = M.asphalt;
 

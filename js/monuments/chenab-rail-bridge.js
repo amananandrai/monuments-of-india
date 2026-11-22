@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, V, mat, box, at, strut, surface } from '../helpers.js';
+import { V, mat, box, at, strut, surface } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { heightField, fbm, ridged, smooth } from '../parts/terrain.js';
 import { detail } from '../detail.js';

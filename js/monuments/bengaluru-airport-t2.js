@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, mesh, box, at, inst, unitBox, surface, photo } from '../helpers.js';
+import { mat, mesh, box, at, inst, surface, photo } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { detail } from '../detail.js';
 import { addDetails } from '../details/bengaluru-airport-t2.js';

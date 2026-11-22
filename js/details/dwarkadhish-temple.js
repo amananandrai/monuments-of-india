@@ -16,7 +16,7 @@ import { detail } from '../detail.js';
 // from a mast at its top flies the dhwaja, a very large triangular flag in bands of colour with
 // the sun and the moon on it, changed several times a day.
 const STONE = photo(mat('#cdc1a8', 0.88), 'blocks'), SHADE = mat('#a89b84', 0.9);
-const T = 5, F = 4.2, Y0 = 7, TZ = -14, SY = Y0 + 5 * F, SH = 41, SW = 14.5;
+const T = 5, F = 4.2, Y0 = 7, TZ = -14, SH = 41, SW = 14.5;
 const prof = (t) => 1 - 0.62 * Math.pow(t, 1.8);
 const cloth = (c) => doubleSided(surface(mat(c, 0.7), 'none'));
 const BANDS = ['#e23a2e', '#f4b51e', '#2f8f4e', '#e8582a'].map(cloth), EMBLEM = surface(mat('#fbf6e6', 0.7), 'none');
