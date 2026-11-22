@@ -50,7 +50,7 @@ export function buildFalaknumaPalace() {
   // The corner towers: a storey higher, each under a ribbed cupola.
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
     const x = sx * (W / 2 - 4), z = sz * (fz - 4);
-    d.add(box(8.6, H + 5, 8.6, WHITE, x, S, z), box(9.2, 0.7, 9.2, TRIM, x, S + H + 5, z));
+    d.add(box(8.8, H + 5, 8.8, WHITE, x, S, z), box(9.4, 0.7, 9.4, TRIM, x, S + H + 5, z));
     d.add(cyl(3, 3, 2, WHITE, x, S + H + 5.7, z, 16), at(lathe([[3.3, 0], [3.1, 1.4], [2.3, 2.7], [1, 3.4], [0, 3.6]], TRIM, 16), x, S + H + 7.7, z), at(finial(1.6, M.gold), x, S + H + 11.2, z));
   }
   // The portico: paired Corinthian columns through both storeys under a pediment, before the

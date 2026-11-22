@@ -10,7 +10,7 @@ import { detail } from '../detail.js';
 // polished like glass where the Mauryan masons cut it.
 export const GRANITE = surface(mat('#8d8073', 0.9), 'rock');
 export const POLISHED = surface(mat('#8a7f74', 0.3), 'none');
-const DARK = mat('#1c1916', 0.95);
+const DARK = surface(mat('#1c1916', 0.95), 'none');
 
 // The cut face: the caves open in a sheer wall of granite FW wide and FH high at z = 0, cut into
 // the south side of the dome of rock.
@@ -49,16 +49,16 @@ export function lomasRishi(m) {
   g.add(archBand(w, y0, h, 0, 0.18, 0.32, m), archBand(w, y0, h, 0.18, 0.62, 0.22, jali(m)), archBand(w, y0, h, 0.62, 0.74, 0.3, m));
   g.add(archBand(w, y0, h, 0.74, 1.24, 0.16, m), archBand(w, y0, h, 1.24, 1.36, 0.26, m));
   // The elephants, walking in the lower band towards the stupa at its crown.
-  const geo = elephantGeo(), r = w / 2 - 0.99, list = [], o = new THREE.Object3D();
+  const geo = elephantGeo(), r = w / 2 - 0.99, list = [];
+  // Each elephant stands on the inner edge of the band, its back to the outside, walking up the
+  // curve towards the crown: its up is the radius, its forward the tangent.
   for (const s of [-1, 1]) for (let k = 0; k < 5; k++) {
     const t = (k + 0.5) / 5.6, a = s < 0 ? Math.PI - t * Math.PI / 2 : t * Math.PI / 2;
-    const x = Math.cos(a) * r, y = y0 + Math.sin(a) * (h - y0 - 0.99 * 0.8);
-    o.position.set(x, y - 0.17, 0.14);
-    o.rotation.set(0, s < 0 ? Math.PI / 2 : -Math.PI / 2, 0);
-    o.rotateX(s < 0 ? a - Math.PI : a);
-    o.scale.set(0.11, 0.11, 0.1);
-    o.updateMatrix();
-    list.push(o.matrix.clone());
+    const up = new THREE.Vector3(Math.cos(a), Math.sin(a), 0), fwd = new THREE.Vector3(s < 0 ? Math.sin(a) : -Math.sin(a), s < 0 ? -Math.cos(a) : Math.cos(a), 0);
+    const side = new THREE.Vector3().crossVectors(up, fwd), sc = 0.12;
+    const mx = new THREE.Matrix4().makeBasis(side.multiplyScalar(sc), up.clone().multiplyScalar(sc), fwd.multiplyScalar(sc));
+    mx.setPosition(Math.cos(a) * (r - 0.22), y0 + Math.sin(a) * (h - y0 - 0.99 * 0.8) - Math.sin(a) * 0.22, 0.2);
+    list.push(mx);
   }
   const im = new THREE.InstancedMesh(geo, m, list.length);
   list.forEach((mx, i) => im.setMatrixAt(i, mx));
