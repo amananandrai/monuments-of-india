@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, surface, flat, mesh, box, cyl, at, onFace, FACES, inst, sheet, kalash, hipRoof, nagaraProfile, rng } from '../helpers.js';
+import { M, mat, surface, flat, mesh, box, cyl, at, onFace, FACES, inst, sheet, hipRoof, nagaraProfile, rng } from '../helpers.js';
 import { mouldings, frieze, templeNiche, idol, medallion, mergeByMaterial } from '../parts/components.js';
 import { carvedPillar } from '../parts/temples.js';
 import { heightField, fbm, ridged, smooth } from '../parts/terrain.js';
@@ -10,19 +10,9 @@ import { detail } from '../detail.js';
 // canopies; and the grey slate of the halls' roofs.
 export const STONE = mat('#8c877c', 0.94);
 export const SHADE = mat('#6d695f', 0.95);
-const TIMBER = surface(mat('#4e3a2a', 0.85), 'ground');
+export const TIMBER = surface(mat('#4e3a2a', 0.85), 'ground');
 const SLATE = mat('#5f6266', 0.9);
 const PAVING = surface(mat('#9b9588', 0.95), 'paving');
-
-// The timber canopy (chhatra) set over the amalaka of a spire: a short post, a square pyramidal
-// roof w wide with a thin eave and a small kalasha on its peak. Stands on y = 0.
-export function canopy(w, m) {
-  const g = new THREE.Group();
-  g.add(cyl(w * 0.06, w * 0.08, w * 0.35, TIMBER, 0, 0, 0, 8));
-  g.add(box(w * 1.02, w * 0.05, w * 1.02, TIMBER, 0, w * 0.35, 0), at(hipRoof(w * 1.3, w * 1.3, w * 0.32, TIMBER), 0, w * 0.4, 0));
-  g.add(at(kalash(w * 0.12, m), 0, w * 0.7, 0));
-  return g;
-}
 
 // A hall before a sanctum, w wide and d deep, h high to its beams: a stone floor, carved pillars in
 // rows (the front ones free, the rest against low parapets), beams, and a roof of grey slate

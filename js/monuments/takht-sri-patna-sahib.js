@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { M, box, cyl, at, onFace, FACES, chhatri } from '../helpers.js';
 import { grandStair } from '../parts/doorways.js';
 import { mergeByMaterial, chhajja } from '../parts/components.js';
-import { sikhDome, arcadeStorey, parapetDomes, GILT } from '../details/takht-sri-hazur-sahib.js';
+import { sikhDome, arcadeStorey, parapetDomes, GILT } from '../parts/sikh.js';
 import { addDetails } from '../details/takht-sri-patna-sahib.js';
 
 // Takht Sri Harimandir Ji, Patna Sahib, over the birthplace of Guru Gobind Singh, rebuilt in marble

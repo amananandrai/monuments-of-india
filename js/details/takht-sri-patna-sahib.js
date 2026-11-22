@@ -4,7 +4,7 @@ import { arcadeSkin } from '../parts/mughal.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { trees, lampPosts, cityAround, traffic } from '../parts/realism.js';
 import { detail } from '../detail.js';
-import { nishanSahib, sikhDome } from './takht-sri-hazur-sahib.js';
+import { nishanSahib, sikhDome } from '../parts/sikh.js';
 
 // Patna Sahib in the lanes of old Patna (Patna City): the marble court before the Takht, ranges of
 // white rooms for pilgrims on three sides, the arched gate onto the street, the Nishan Sahib, and

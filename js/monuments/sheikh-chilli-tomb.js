@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, lathe, at, onFace, finial, chhatri } from '../helpers.js';
-import { iwan, arcadeSkin, cellRow } from '../parts/mughal.js';
+import { M, mat, box, cyl, at, onFace, finial, chhatri } from '../helpers.js';
+import { iwan, arcadeSkin, cellRow, pearDome } from '../parts/mughal.js';
 import { mughalChhatri } from '../parts/components.js';
 import { addDetails } from '../details/sheikh-chilli-tomb.js';
 
@@ -9,11 +9,6 @@ import { addDetails } from '../details/sheikh-chilli-tomb.js';
 export const STONE = {
   marble: mat('#f1ede4', 0.45), shade: mat('#cfc6b6', 0.6), red: mat('#a9583c', 0.85), redLight: mat('#bd7153', 0.85),
 };
-
-// The pear-shaped dome: swelling well past its drum, then drawing in to a slender neck.
-export function pearDome(r, m) {
-  return lathe([[0.78, 0], [0.95, 0.12], [1.1, 0.38], [1.14, 0.66], [1.05, 0.98], [0.82, 1.3], [0.52, 1.58], [0.26, 1.8], [0.1, 1.96], [0, 2.02]].map(([a, b]) => [a * r, b * r]), m, 48);
-}
 
 // Sheikh Chilli's Tomb, Thanesar, c. 1650. From photographs: the tomb, an octagon of white marble
 // about 12 m across, each face a framed arch, stands on a high terrace of red sandstone whose

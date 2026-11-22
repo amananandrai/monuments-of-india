@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { M, box, cyl, at, onFace, FACES, chhatri } from '../helpers.js';
 import { steps } from '../parts/doorways.js';
 import { mergeByMaterial } from '../parts/components.js';
-import { addDetails, GILT, sikhDome, arcadeStorey, parapetDomes } from '../details/takht-sri-hazur-sahib.js';
+import { GILT, sikhDome, arcadeStorey, parapetDomes } from '../parts/sikh.js';
+import { addDetails } from '../details/takht-sri-hazur-sahib.js';
 
 // Takht Sachkhand Sri Hazur Sahib, Nanded, built 1832–1837 for Maharaja Ranjit Singh over the place
 // where Guru Gobind Singh died. From photographs: a square shrine of two storeys in the middle of a

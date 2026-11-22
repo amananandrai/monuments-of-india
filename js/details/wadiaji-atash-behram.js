@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, mesh, surface } from '../helpers.js';
-import { mergeByMaterial } from '../parts/components.js';
+import { mergeByMaterial, faravahar, steppedMerlons } from '../parts/components.js';
 import { trees, lampPosts, along, cityAround, traffic } from '../parts/realism.js';
 import { detail } from '../detail.js';
 
@@ -12,36 +12,6 @@ export const COLUMN = surface(mat('#e7dcc4', 0.6), 'marble');
 export const CREAM = mat('#d9ccb0', 0.85);
 export const GREY = mat('#8c877e', 0.9);
 const IRON = mat('#2a2c2e', 0.5, 0.5);
-
-// The winged Faravahar, the emblem of Zoroastrianism, w across: a ring (the circle of eternity),
-// above it the upper body of a man, one hand raised; spreading either side three tiers of
-// feathers, and a fan of tail feathers below.
-function faravahar(w, m) {
-  const g = new THREE.Group(), s = w / 6;
-  g.add(at(mesh(new THREE.TorusGeometry(s * 0.55, s * 0.12, 8, 24), m), 0, s * 0.9, 0.12));
-  g.add(box(s * 0.5, s * 0.95, s * 0.25, m, 0, s * 1.35, 0.1), box(s * 0.4, s * 0.42, s * 0.25, m, 0, s * 2.3, 0.1));
-  for (const side of [-1, 1]) {
-    for (let k = 0; k < 3; k++) {
-      const len = s * (2.4 - k * 0.45), y = s * (1.15 + k * 0.24);
-      const wing = box(len, s * 0.22, s * 0.18, m, side * (s * 0.6 + len / 2), y, 0.08);
-      wing.rotation.z = side * (0.08 + k * 0.05);
-      g.add(wing);
-    }
-    g.add(box(s * 0.08, s * 0.9, s * 0.12, m, side * s * 0.4, s * 1.4, 0.15));
-  }
-  for (let k = -2; k <= 2; k++) { const t = box(s * 0.26, s * 0.75, s * 0.15, m, k * s * 0.24, s * 0.05, 0.06); t.rotation.z = k * 0.12; g.add(t); }
-  return g;
-}
-
-// Stepped merlons, as on the walls of Persepolis: each a block stepped back three times.
-function steppedMerlons(len, w, h, m) {
-  const g = new THREE.Group(), n = Math.floor(len / (w * 1.4));
-  for (let k = 0; k < n; k++) {
-    const x = -len / 2 + (k + 0.5) * (len / n);
-    for (let q = 0; q < 3; q++) g.add(box(w * (1 - q * 0.3), h / 3, 0.4, m, x, q * h / 3, 0));
-  }
-  return g;
-}
 
 // The Wadiaji Atash Behram, finer detail and setting. From photographs: the Faravahar over the
 // portico; stepped merlons along the parapet; a moulded cornice; the forecourt behind a low wall with

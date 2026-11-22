@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mesh, box, cyl, at, kalash, flat } from '../helpers.js';
-import { dravidaVimana, dravidaDress } from '../parts/temples.js';
+import { dravidaVimana, dravidaDress, wagonRoof } from '../parts/temples.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { haraRow } from '../parts/sculpture.js';
 import { nandi, elephant, lion } from '../parts/animals.js';
@@ -32,27 +32,6 @@ function storey(w, d, h, { porch = 0 } = {}) {
     }
     g.add(mergeByMaterial(cols));
     g.add(box(w + 0.3, 0.5, porch + 0.3, Sd, 0, P + h, d / 2 - porch / 2), box(w, 0.04, porch - 0.2, Sd, 0, P, d / 2 - porch / 2));
-  }
-  return g;
-}
-
-// A barrel (wagon) roof len long along x over a body d deep: the vault, and at each gable end a
-// great horseshoe arch (kudu) round a blind window.
-function wagonRoof(len, d, m) {
-  const g = new THREE.Group(), r = d / 2;
-  const v = mesh(new THREE.CylinderGeometry(r, r, len, 16, 1, false, 0, Math.PI), m);
-  v.rotation.z = Math.PI / 2;
-  v.scale.set(1, 1, 1.25);
-  g.add(v);
-  // The ridge with its row of finials (stupis).
-  g.add(box(len, 0.25, 0.5, m, 0, r * 1.25 - 0.08, 0));
-  for (let k = 0; k < 7; k++) g.add(at(kalash(0.32, m), -len / 2 + 0.6 + (k / 6) * (len - 1.2), r * 1.25 + 0.15, 0));
-  const kg = new THREE.TorusGeometry(r * 0.96, r * 0.13, 4, 14, Math.PI * 1.25).rotateZ(-Math.PI * 0.125);
-  for (const s of [-1, 1]) {
-    const k = mesh(kg, m, s * (len / 2 + 0.02), 0, 0);
-    k.rotation.y = Math.PI / 2;
-    k.scale.set(1, 1.2, 1);
-    g.add(k);
   }
   return g;
 }

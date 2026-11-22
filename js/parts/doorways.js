@@ -2,10 +2,10 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, surface, pidaRoof, bell, kalash, inst, unitBox } from '../helpers.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { detail } from '../detail.js';
-import { D, frieze, rosette, bracketGeo, chhajja } from './components.js';
+import { D, frieze, rosette, bracketGeo, chhajja, jali } from './components.js';
 import { guardian } from './figures.js';
 import { elephant, lion, horse } from './animals.js';
-import { statue } from './sculpture.js';
+import { statue, elephantGeo } from './sculpture.js';
 
 export { guardian };
 
@@ -332,5 +332,71 @@ export function tibetanPortico(pw, pd, ph, door, { parapet = T_RED } = {}) {
   g.add(box(pw, 0.24, 0.5, T_RED, 0, ph - 0.44, pd - 0.45), box(pw + 0.2, 0.2, 0.55, T_GREEN, 0, ph - 0.2, pd - 0.45));
   for (const s of [-1, 1]) g.add(box(0.4, 0.4, pd, T_RED, s * (pw / 2 - 0.5), ph - 0.4, pd / 2));
   g.add(box(pw + 0.6, 0.3, pd + 0.3, T_WHITE, 0, ph, (pd + 0.3) / 2), box(pw + 0.7, 0.55, pd + 0.4, parapet, 0, ph + 0.3, (pd + 0.4) / 2));
+  return g;
+}
+
+// ---- Rock-cut doorways of the Mauryan caves (Barabar), cut in a polished face at z = 0.
+
+const CAVE_DARK = surface(mat('#1c1916', 0.95), 'none');
+
+// The outline of a Lomas Rishi arch w wide: a horseshoe, its sides rising straight to the spring at
+// y0, an ogee point at its crown h high. Points from the left foot round to the right foot, `off`
+// inside the outline.
+function chaityaArchLine(w, y0, h, off, n = 28) {
+  const pts = [], r = w / 2 - off;
+  pts.push([-r, 0]);
+  for (let k = 0; k <= n; k++) {
+    const a = Math.PI - (k / n) * Math.PI, x = Math.cos(a) * r, y = y0 + Math.sin(a) * (h - y0 - off * 0.8);
+    // The crown drawn up into an ogee point.
+    pts.push([x, y + Math.pow(Math.max(0, 1 - Math.abs(x) / (r * 0.35)), 2) * 0.45]);
+  }
+  pts.push([r, 0]);
+  return pts;
+}
+// A band between two arch lines, extruded `depth` out of the face.
+function chaityaArchBand(w, y0, h, o0, o1, depth, m) {
+  const a = chaityaArchLine(w, y0, h, o0), b = chaityaArchLine(w, y0, h, o1).reverse();
+  const sh = new THREE.Shape([...a, ...b].map(([x, y]) => new THREE.Vector2(x, y)));
+  return mesh(new THREE.ExtrudeGeometry(sh, { depth, bevelEnabled: false }), m);
+}
+
+// The rock-cut chaitya doorway of the Lomas Rishi cave, the earliest chaitya arch: a doorway with
+// sloping jambs inside a carved copy of a thatched hut's gable end, 4.4 m wide and 5.2 m high; the
+// gable's two arched bands, the upper a lattice, the lower a row of elephants walking towards a
+// stupa at the middle; the crown drawn up into an ogee point, as on the timber roofs it copies.
+// dark: the material of the opening.
+export function chaityaDoorway(m, { dark = CAVE_DARK } = {}) {
+  const g = new THREE.Group(), w = 4.4, y0 = 2.5, h = 5.2;
+  g.add(chaityaArchBand(w, y0, h, 0, 0.18, 0.32, m), chaityaArchBand(w, y0, h, 0.18, 0.62, 0.22, jali(m)), chaityaArchBand(w, y0, h, 0.62, 0.74, 0.3, m));
+  g.add(chaityaArchBand(w, y0, h, 0.74, 1.24, 0.16, m), chaityaArchBand(w, y0, h, 1.24, 1.36, 0.26, m));
+  // The elephants, walking in the lower band towards the stupa at its crown: each stands on the
+  // inner edge of the band, its back to the outside, its up the radius, its forward the tangent.
+  const geo = elephantGeo(), r = w / 2 - 0.99, list = [];
+  for (const s of [-1, 1]) for (let k = 0; k < 5; k++) {
+    const t = (k + 0.5) / 5.6, a = s < 0 ? Math.PI - t * Math.PI / 2 : t * Math.PI / 2;
+    const up = new THREE.Vector3(Math.cos(a), Math.sin(a), 0), fwd = new THREE.Vector3(s < 0 ? Math.sin(a) : -Math.sin(a), s < 0 ? -Math.cos(a) : Math.cos(a), 0);
+    const side = new THREE.Vector3().crossVectors(up, fwd), sc = 0.44;
+    const mx = new THREE.Matrix4().makeBasis(side.multiplyScalar(sc), up.clone().multiplyScalar(sc), fwd.multiplyScalar(sc));
+    mx.setPosition(Math.cos(a) * (r - 0.22), y0 + Math.sin(a) * (h - y0 - 0.99 * 0.8) - Math.sin(a) * 0.22, 0.2);
+    list.push(mx);
+  }
+  const im = new THREE.InstancedMesh(geo, m, list.length);
+  list.forEach((mx, i) => im.setMatrixAt(i, mx));
+  g.add(im);
+  // A small stupa at the crown of the band, and the doorway: a trapezoid, its jambs leaning in.
+  g.add(box(0.28, 0.32, 0.18, m, 0, h - 1.2, 0.05));
+  const door = new THREE.Shape([[-0.66, 0], [0.66, 0], [0.5, 2.4], [-0.5, 2.4]].map(([x, y]) => new THREE.Vector2(x, y)));
+  g.add(mesh(new THREE.ExtrudeGeometry(door, { depth: 0.04, bevelEnabled: false }), dark, 0, 0, 0.02));
+  return g;
+}
+
+// A plain Mauryan rock-cut doorway (Sudama, Barabar): a trapezoid wb wide at its foot and h high,
+// its jambs sloping in, in a slight frame, opening into darkness.
+export function mauryanDoor(wb, h, m, { dark = CAVE_DARK } = {}) {
+  const g = new THREE.Group(), wt = wb * 0.78;
+  const door = new THREE.Shape([[-wb / 2, 0], [wb / 2, 0], [wt / 2, h], [-wt / 2, h]].map(([x, y]) => new THREE.Vector2(x, y)));
+  g.add(mesh(new THREE.ExtrudeGeometry(door, { depth: 0.04, bevelEnabled: false }), dark, 0, 0, 0.02));
+  const fr = new THREE.Shape([[-wb / 2 - 0.25, 0], [wb / 2 + 0.25, 0], [wt / 2 + 0.25, h + 0.25], [-wt / 2 - 0.25, h + 0.25]].map(([x, y]) => new THREE.Vector2(x, y)));
+  g.add(mesh(new THREE.ExtrudeGeometry(fr, { depth: 0.015, bevelEnabled: false }), m));
   return g;
 }

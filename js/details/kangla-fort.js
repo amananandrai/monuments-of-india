@@ -1,30 +1,12 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, sheet, hemi, inst, unitBox, archWall } from '../helpers.js';
-import { mergeByMaterial } from '../parts/components.js';
+import { M, mat, box, cyl, at, sheet, hemi, inst, unitBox, archWall } from '../helpers.js';
+import { mergeByMaterial, meiteiRoof } from '../parts/components.js';
 import { mountainRing } from '../parts/terrain.js';
 import { trees, shrubs, scatter, along, lampPosts, townHouses, boats } from '../parts/realism.js';
 import { detail } from '../detail.js';
 import { LIME, BRICK, BRICK_DARK } from '../monuments/kangla-fort.js';
 
 const THATCH = mat('#7a5a3a', 0.95), TIN = mat('#8d2f2a', 0.6, 0.3), WOOD = mat('#5d3b26', 0.85), RED = mat('#b2392c', 0.75), ROAD = mat('#6b665c', 0.95);
-
-// A Meitei roof w wide, d long and h high over y = 0: a steep gable whose sides sag a little, the
-// ridge running along z and sweeping up at both ends into horns, as on the halls and shrines of
-// Manipur.
-function meiteiRoof(w, d, h, m, horn = m) {
-  const g = new THREE.Group(), s = new THREE.Shape(), e = w * 0.08;
-  s.moveTo(-w / 2 - e, 0);
-  for (let k = 1; k <= 8; k++) { const t = k / 8; s.lineTo(-w / 2 - e + (w / 2 + e) * t, h * (t - 0.18 * t * (1 - t))); }
-  for (let k = 7; k >= 0; k--) { const t = k / 8; s.lineTo(w / 2 + e - (w / 2 + e) * t, h * (t - 0.18 * t * (1 - t))); }
-  s.lineTo(w / 2 + e, -0.25); s.lineTo(-w / 2 - e, -0.25); s.closePath();
-  g.add(mesh(new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: false }).translate(0, 0, -d / 2), m));
-  for (const sz of [-1, 1]) {
-    const pts = [];
-    for (let k = 0; k <= 8; k++) { const t = k / 8; pts.push(new THREE.Vector3(0, h + 0.1 + t * t * h * 0.35, sz * (d / 2 - 0.2 + t * h * 0.32))); }
-    g.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 10, Math.max(0.06, w * 0.02), 6, false), horn));
-  }
-  return g;
-}
 
 // The Uttra's ruins: stumps of brick walls and the bases of its pillars on the plinth (at z = -26).
 function uttra(f) {

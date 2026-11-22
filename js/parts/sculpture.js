@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { mesh, box, cyl, at, lathe, nagaraProfile, finial, inst } from '../helpers.js';
+import { mesh, box, cyl, at, lathe, nagaraProfile, finial, inst, ribbed, ellipsoid, face } from '../helpers.js';
 import { petalRing, bracketGeo, placeAll, frieze, mergeByMaterial } from './components.js';
 import { detail } from '../detail.js';
 
@@ -518,4 +518,83 @@ export function kutaGeo() {
 let kuduGeo_ = null;
 export function kuduGeo() {
   return kuduGeo_ || (kuduGeo_ = new THREE.TorusGeometry(0.42, 0.09, 3, 6, Math.PI * 1.3).rotateZ(-Math.PI * 0.15));
+}
+
+/* ---------- pillars and images of the rock-cut halls ---------- */
+
+// A pillar of a Satavahana chaitya hall, as in the nave at Karla: a stepped base with a pot (ghata)
+// on it, an octagonal shaft, a bell capital, and on the abacus a pair of kneeling elephants, each
+// carrying a man and a woman (blocks; left off on phones). h high, standing on y = 0.
+export function elephantPillar(h, m) {
+  const g = new THREE.Group();
+  g.add(box(1.3, 0.5, 1.3, m, 0, 0, 0), at(lathe([[0.55, 0], [0.62, 0.2], [0.66, 0.45], [0.58, 0.7], [0.4, 0.85], [0.42, 0.95]], m, 16), 0, 0.5, 0));
+  g.add(cyl(0.38, 0.42, h - 3.6, m, 0, 1.45, 0, 8));
+  g.add(at(lathe([[0.38, 0], [0.55, 0.3], [0.62, 0.6], [0.45, 0.8]], m, 16), 0, h - 2.15, 0), box(1.5, 0.35, 1.1, m, 0, h - 1.35, 0));
+  if (!detail.low) for (const s of [-1, 1]) {
+    const e = box(0.55, 0.55, 0.95, m, s * 0.42, h - 1, 0);
+    g.add(e, box(0.22, 0.45, 0.22, m, s * 0.42, h - 0.45, 0.1));
+  }
+  return g;
+}
+
+// The Trimurti of Elephanta: Sadashiva as a bust of three heads, some 6 m high, rising from a
+// ledge 9 m wide. In the middle, calm, the creator; on the viewer's left, Aghora-Bhairava, the
+// destroyer, with a snake; on the right, Uma, gentle; each under a tall crown of piled locks, their
+// shoulders and chest heavy with jewels. Faces modelled on desktops. Facing +z, on y = 0.
+export function trimurti(m) {
+  const g = new THREE.Group(), fine = !detail.low;
+  g.add(box(9, 0.8, 3, m), box(8.4, 0.2, 2.8, m, 0, 0.8));
+  // The chest and shoulders, broad and shallow, rising from the ledge.
+  g.add(ellipsoid(2.5, 1.25, 0.75, m, 0, 1.6, 0.45), ellipsoid(0.95, 0.9, 0.7, m, -2.2, 2.05, 0.25), ellipsoid(0.95, 0.9, 0.7, m, 2.2, 2.05, 0.25));
+  // The necklaces lying on the chest.
+  for (const [r, y] of [[0.7, 2.35], [1.05, 2.05], [1.4, 1.7]]) {
+    const t = mesh(new THREE.TorusGeometry(r, 0.06, 6, 28, Math.PI), m, 0, y + r * 0.55, 1.05);
+    t.rotation.set(-0.35, 0, Math.PI);
+    t.scale.y = 0.55;
+    g.add(t);
+  }
+  const head = (x, z, a, s) => {
+    const h = at(new THREE.Group(), x, 2.25, z);
+    h.rotation.y = a;
+    h.add(cyl(0.42, 0.5, 0.7, m, 0, 0, 0, 14));
+    const fc = fine ? face(0.72, 0.92, 0.68, m) : ellipsoid(0.72, 0.92, 0.68, m);
+    fc.position.y = 1.35;
+    h.add(fc);
+    // The crown of piled, jewelled locks (jatamukuta), wider at its top.
+    const crown = lathe([[0.62, 0], [0.7, 0.3], [0.78, 0.8], [0.86, 1.3], [0.8, 1.6], [0.5, 1.78], [0, 1.82]], m, fine ? 24 : 12);
+    crown.position.y = 1.95;
+    h.add(crown, mesh(new THREE.TorusGeometry(0.66, 0.08, 6, 20), m, 0, 2.05, 0).rotateX(Math.PI / 2));
+    for (const sx of [-1, 1]) h.add(ellipsoid(0.12, 0.3, 0.12, m, sx * 0.74, 1.05, 0.05));
+    h.scale.setScalar(s);
+    return h;
+  };
+  g.add(head(0, 0.55, 0, 1.2), head(-1.7, 0.05, -1.25, 1.12), head(1.7, 0.05, 1.25, 1.12));
+  // The snake held up on the left, its hood raised.
+  const snake = mesh(new THREE.TorusGeometry(0.45, 0.09, 6, 16, Math.PI * 1.4), m, -2.7, 2.6, 0.8);
+  snake.rotation.set(0.2, 0.6, 1.2);
+  g.add(snake, ellipsoid(0.22, 0.14, 0.18, m, -2.95, 3.2, 0.9));
+  return g;
+}
+
+/* ---------- Persepolitan column ---------- */
+
+// A Persepolitan column h high, after the palace at Persepolis, as on the Parsi fire temples of
+// Bombay: a bell-shaped base, a fluted shaft, a scrolled block, and a capital of two bulls'
+// forequarters back to back, their heads to either side, carrying the beam; `trim` for the base,
+// block, horns and beam. 3.4 m across at the capital, facing +z.
+export function bullColumn(h, m, trim = m) {
+  const g = new THREE.Group(), r = 0.42, capH = 1.5;
+  g.add(lathe([[0.75, 0], [0.8, 0.12], [0.7, 0.45], [0.5, 0.75], [r * 1.05, 0.9], [0, 0.9]], trim, 24));
+  g.add(ribbed(cyl(r * 0.92, r, h - 0.9 - capH - 0.6, m, 0, 0.9, 0, 32), 24, 0.06));
+  g.add(box(1.0, 0.6, 1.0, trim, 0, h - capH - 0.6, 0));
+  // The bulls: a body block either way, a head with horns, folded forelegs.
+  const y = h - capH;
+  g.add(box(1.0, capH * 0.55, 1.0, m, 0, y, 0));
+  for (const s of [-1, 1]) {
+    g.add(box(1.0, capH * 0.6, 0.85, m, s * 0.85, y + capH * 0.2, 0));
+    g.add(box(0.5, 0.55, 0.55, m, s * 1.5, y + capH * 0.45, 0), box(0.18, capH * 0.35, 0.7, trim, s * 1.15, y, 0));
+    for (const z of [-0.22, 0.22]) { const horn = cyl(0, 0.06, 0.45, trim, s * 1.55, y + capH, z, 6); horn.rotation.z = -s * 0.5; g.add(horn); }
+  }
+  g.add(box(3.4, 0.25, 1.1, trim, 0, h - 0.25, 0));
+  return g;
 }

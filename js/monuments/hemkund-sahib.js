@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, starPrism } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { arcadeSkin } from '../parts/mughal.js';
-import { sikhDome, GILT } from '../details/takht-sri-hazur-sahib.js';
+import { sikhDome, GILT } from '../parts/sikh.js';
 import { addDetails } from '../details/hemkund-sahib.js';
 
 // Grey concrete washed pale, and the darker stone of the base.

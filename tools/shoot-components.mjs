@@ -24,6 +24,7 @@ const PARTS = `
   const Mu = await import('/js/parts/mughal.js'), Co = await import('/js/parts/colonial.js'), D = await import('/js/parts/doorways.js');
   const F = await import('/js/parts/forts.js'), Tb = await import('/js/parts/tibetan.js'), S = await import('/js/parts/sculpture.js');
   const Fi = await import('/js/parts/figures.js'), R = await import('/js/parts/realism.js'), A = await import('/js/parts/animals.js'), Tr = await import('/js/parts/transport.js');
+  const Sk = await import('/js/parts/sikh.js');
   const { M, mat, box, cyl, at, group, onFace } = H;
   // The statues: each monument's own builder for them.
   const SoU = await import('/js/monuments/statue-of-unity.js'), Gom = await import('/js/monuments/gommateshwara.js'), Viv = await import('/js/monuments/vivekananda-rock-memorial.js');
@@ -89,6 +90,34 @@ const PARTS = `
     'grand-stair': () => group(box(14, 3, 6, M.pinkShade, 0, 0, -3), D.grandStair(3, 8, M.pinkShade, M.pink)),
     'figure-frieze': () => group(wall(9, 3.4, M.pink), at(S.figureFrieze(8.4, 1.6, M.pink, { kinds: ['standing', 'dancer', 'elephant'] }), 0, 0.9, 0)),
     'statue': () => group(S.statue(5, M.bronze, 'standing', M.granite), at(S.urn(1.6, M.marble), 3, 0, 0), at(S.pinnacle(2.4, M.buff), 5, 0, 0)),
+    // Parts from the monuments added later: gurdwaras, Kerala, the early temples, churches and forts.
+    'sikh-dome': () => group(cyl(3.6, 3.6, 1.4, M.marble, 0, 0, 0, 32), at(Sk.sikhDome(4, Sk.GILT), 0, 1.4, 0)),
+    'nishan-sahib': () => Sk.nishanSahib(14),
+    'sikh-storeys': () => group(Sk.arcadeStorey(16, 6, 5, M.marble, { trim: Sk.GILT, centre: 'door' }), at(Sk.parapetDomes(16, 0, 5, Sk.GILT), 0, 6, 0), at(Sk.rectStorey(12, 9, 4.5, 3, M.marble, { fill: 'jali', front: 'door' }), 0, 6, 0)),
+    'gold-roof-tiers': () => group(box(20, 6, 14, H.TIBETAN.white), at(Tb.goldRoof(20, 14), 0, 6, 0)),
+    'pear-dome': () => group(cyl(3.2, 3.2, 3, M.marble, 0, 0, 0, 40), at(Mu.pearDome(4, M.marble), 0, 3, 0), at(H.finial(3), 0, 3 + 8.1, 0)),
+    'battered-wall': () => H.inst(F.batteredGeo(), [[0, 0, 0, 30, 12, 8]], M.buff),
+    'arrow-bastion': () => { const P = [[-30, 20], [30, 20], [30, -20], [-30, -20]]; return group(H.planPrism(P, 0, 5, M.buff), ...P.map((_, i) => H.planPrism(F.arrowBastion(P, i, { flank: 6, shoulder: 4, point: 11 }), 0, 6, M.buff))); },
+    'ring-roof': () => group(box(22, 4, 22, M.cream, 0, 0, 0), at(T.ringRoof(22, 22, 6, 1.2, 3.6, mat('#8e4630', 0.82)), 0, 4, 0)),
+    'kerala-gopuram': () => T.keralaGopuram(16, 11),
+    'chandrashala': () => group(wall(9, 7, M.buff), at(T.chandrashala(1.6, M.buff), -2, 3.6, 0), at(T.gavaksha(2.2, mat('#9a5640', 0.93), mat('#5e3326', 0.95)), 2.4, 2.2, 0)),
+    'wagon-roof': () => group(box(11, 4, 4.4, M.granite, 0, 0, 0), at(T.wagonRoof(11, 4.4, M.granite), 0, 4, 0)),
+    'spire-canopy': () => { const s = H.shikhara(5, 7, M.buff, H.nagaraProfile, 16, M.buff, 0.3); return group(s, at(T.spireCanopy(3, M.buff), 0, s.userData.top - 0.8, 0)); },
+    'broken-spire': () => group(T.brokenSpire(5, 9, 0.55, M.buff), at(T.brokenSpire(5, 9, 1, M.buff), 6.5, 0, 0)),
+    'apse': () => group(H.planPrism(T.apsePlan(10, -8, 6), 0, 1.2, M.buff), H.planPrism(T.apsePlan(8, -7, 6), 1.2, 4, M.buff)),
+    'kakatiya-thorana': () => T.kakatiyaThorana(mat('#a39b8d', 0.9), mat('#7f786c', 0.93)),
+    'chaitya-doorway': () => group(wall(12, 6.5, M.granite), at(D.chaityaDoorway(M.granite), -2.5, 0, 0), at(D.mauryanDoor(1.15, 2.1, M.granite), 3.5, 0, 0)),
+    'gable-roof': () => group(box(8, 5, 14, M.cream), at(C.gableRoof(9, 14.6, 4, mat('#9a4a32', 0.8)), 0, 5, 0), box(4, 3, 14, M.cream, 6, 0, 0), at(C.leanTo(4.4, 14.6, 2.2, mat('#9a4a32', 0.8), 1), 4, 3, 0)),
+    'meitei-roof': () => group(box(8, 3, 10, M.cream), at(C.meiteiRoof(8, 10, 6, mat('#8d2f2a', 0.6)), 0, 3, 0)),
+    'tree-jali': [() => group(wall(9, 6.5, M.buff), at(C.treeJali(3.6, 5.2, 'tree'), -2.1, 0.6, 0.05), at(C.treeJali(3.6, 5.2, 'branches'), 2.1, 0.6, 0.05)), { view: [0, 0.1, 1] }],
+    'persian-ornament': () => group(wall(12, 7, M.cream), at(C.faravahar(5.4, M.cream), 0, 3, 0.05), at(C.steppedMerlons(12, 0.8, 1.2, M.cream), 0, 7, -0.3)),
+    'pierced-wall': () => C.piercedWall(16, 10, 0.8, [[-4, 7, 2.2], [4, 7, 2.2], ['arch', -4, 0, 1.6, 2.6], ['arch', 4, 0, 1.6, 2.6]], mat('#a0573c', 0.9)),
+    'trishul': () => C.trishul(8),
+    'gothic-turret': () => group(Co.gothicTurret(1.2, 10, M.cream, M.buff, 5), at(Co.gothicTurret(0.8, 7, M.cream, M.buff, 3.2), 3.5, 0, 0)),
+    'tower-clock': () => group(wall(4, 5, M.cream), at(Co.towerClock(1.5), 0, 3, 0.02)),
+    'elephant-pillar': () => group(S.elephantPillar(7, M.buff), at(S.elephantPillar(7, M.buff), 2.6, 0, 0)),
+    'bull-column': () => group(S.bullColumn(9, M.cream, M.buff), at(S.bullColumn(9, M.cream, M.buff), 4, 0, 0)),
+    'ashokan-pillar': [() => A.ashokanPillar(), { view: [-1, 0.25, 0.4] }],
     // ---- the statues
     'statue-patel': [() => SoU.patel(H.surface(mat('#7b6a48', 0.62, 0.45), 'plates')), { view: [0.35, 0.08, 1], fit: 1.15 }],
     'statue-bahubali': [() => Gom.bahubali(), { view: [0.25, 0.1, 1], fit: 1.1 }],
@@ -110,6 +139,8 @@ const PARTS = `
     'statue-commerce-agriculture': [() => group(CsD.commerce(), at(CsD.agriculture(), 7, 0, 0)), { view: [0.15, 0.1, 1], fit: 0.85 }],
     'statue-gajalakshmi': [() => Mys.gajalakshmi(), { view: [0.15, 0.1, 1], fit: 0.85 }],
     'statue-lions': [() => group(A.lionCapital(M.bronze, 1), at(A.couchant(M.cream), 3.6, 0, 0), at(A.couchant(M.cream, { tiger: true }), 7.2, 0, 0)), { floor: 'sand', view: [0.6, 0.2, 1] }],
+    'kangla-sha': () => A.kanglaSha(),
+    'trimurti': () => S.trimurti(M.buff),
     // ---- the setting
     'trees-broadleaf': [() => row(['neem', 'mango', 'jamun', 'tamarind', 'teak', 'sal'], 9), { floor: 'grass', view: [0, 0.12, 1] }],
     'trees-wide': [() => row(['banyan', 'peepal', 'chinar', 'willow'], 17), { floor: 'grass', view: [0, 0.12, 1] }],

@@ -3,7 +3,7 @@ import { M, mat, box, at, flag } from '../helpers.js';
 import { heightField, mountainRing, fbm, smooth, ridged } from '../parts/terrain.js';
 import { scatter, shrubs } from '../parts/realism.js';
 import { detail } from '../detail.js';
-import { nishanSahib } from './takht-sri-hazur-sahib.js';
+import { nishanSahib } from '../parts/sikh.js';
 
 // The lake: a bowl of water some 240 × 180 m north (-z) of the gurdwara.
 const LZ = -150, LA = 120, LB = 90;

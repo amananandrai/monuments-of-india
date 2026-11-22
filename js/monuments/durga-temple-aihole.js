@@ -1,17 +1,9 @@
 import * as THREE from 'three';
 import { mesh, box, at, inst, unitBox, planPrism, planBand, flat } from '../helpers.js';
-import { carvedPillar } from '../parts/temples.js';
+import { carvedPillar, apsePlan as apse } from '../parts/temples.js';
 import { templeDoorway, steps } from '../parts/doorways.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { addDetails, STONE as S, SHADE as Sd, DIMS } from '../details/durga-temple-aihole.js';
-
-// An apsidal plan: a rectangle w wide whose front (+z) is straight at z = z1 and whose back is a
-// half circle of radius w / 2 ending at z = z0; [x, z] points round it.
-export function apse(w, z0, z1, n = 14) {
-  const r = w / 2, c = z0 + r, pts = [[r, z1], [-r, z1]];
-  for (let k = 0; k <= n; k++) { const a = Math.PI - (k / n) * Math.PI; pts.push([Math.cos(a) * r, c - Math.sin(a) * r]); }
-  return pts;
-}
 
 // The Durga temple at Aihole, of the early Chalukyas, about 700–730. Its name comes not from the
 // goddess but from durg, a fort, for the lookout the Marathas later built on its roof. It faces east

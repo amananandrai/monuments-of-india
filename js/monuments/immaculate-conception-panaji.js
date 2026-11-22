@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, photo, hemi } from '../helpers.js';
-import { mergeByMaterial, sunburst } from '../parts/components.js';
+import { mergeByMaterial, sunburst, gableRoof } from '../parts/components.js';
 import { classicalDoor, oculus, balustrade } from '../parts/colonial.js';
 import { steps } from '../parts/doorways.js';
 import { addDetails } from '../details/immaculate-conception-panaji.js';
@@ -11,13 +11,6 @@ export const WHITE = photo(mat('#f7f5f0', 0.8), 'plaster');
 export const TRIM = mat('#ece6d8', 0.78);
 export const TILE = mat('#a4492f', 0.82);
 export const LAT = photo(mat('#9b5b3f', 0.95), 'laterite');
-
-// A gable roof w across x, d along z and h high, standing on y = 0.
-export function gable(w, d, h, m) {
-  const s = new THREE.Shape();
-  s.moveTo(-w / 2, 0); s.lineTo(w / 2, 0); s.lineTo(0, h); s.closePath();
-  return mesh(new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: false }).translate(0, 0, -d / 2), m);
-}
 
 // The measures, shared with js/details/immaculate-conception-panaji.js. The church stands on a
 // terrace H0 above Church Square, its front facing +z at z = FZ. The façade is FW wide: a tower
@@ -34,9 +27,9 @@ export function buildImmaculateConceptionPanaji() {
   d.add(box(FW + 16, H0, LEN + 20, WHITE, 0, 0, FZ - LEN / 2 - 2), box(FW + 16.4, 0.6, LEN + 20.4, LAT, 0, 0, FZ - LEN / 2 - 2));
   d.add(box(FW + 16, 0.3, 7.1, M.path, 0, H0, FZ + 4.45));
   // The nave and its tiled roof, the sacristy behind, and the side chapels.
-  c.add(box(NW, NH, LEN, WHITE, 0, 0, FZ - 1 - LEN / 2), at(gable(NW + 1.2, LEN, 5.2, TILE), 0, NH, FZ - 1 - LEN / 2));
-  for (const s of [-1, 1]) c.add(box(4, 8, LEN - 12, WHITE, s * (NW / 2 + 2), 0, FZ - 8 - (LEN - 12) / 2), at(gable(4.6, LEN - 11.4, 1.6, TILE), s * (NW / 2 + 2), 8, FZ - 8 - (LEN - 12) / 2));
-  c.add(box(10, 9, 8, WHITE, 0, 0, FZ - LEN - 4), at(gable(10.8, 8.6, 3, TILE), 0, 9, FZ - LEN - 4));
+  c.add(box(NW, NH, LEN, WHITE, 0, 0, FZ - 1 - LEN / 2), at(gableRoof(NW + 1.2, LEN, 5.2, TILE), 0, NH, FZ - 1 - LEN / 2));
+  for (const s of [-1, 1]) c.add(box(4, 8, LEN - 12, WHITE, s * (NW / 2 + 2), 0, FZ - 8 - (LEN - 12) / 2), at(gableRoof(4.6, LEN - 11.4, 1.6, TILE), s * (NW / 2 + 2), 8, FZ - 8 - (LEN - 12) / 2));
+  c.add(box(10, 9, 8, WHITE, 0, 0, FZ - LEN - 4), at(gableRoof(10.8, 8.6, 3, TILE), 0, 9, FZ - LEN - 4));
   // The façade, set a little forward of the nave: three storeys of white between pilastered
   // towers, cornices across the whole width at each floor.
   const zf = FZ + 0.9;

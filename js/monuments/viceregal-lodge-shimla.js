@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, photo, mesh, box, cyl, at, inst, unitBox } from '../helpers.js';
-import { mergeByMaterial, merlons } from '../parts/components.js';
+import { mergeByMaterial, merlons, gableRoof } from '../parts/components.js';
 import { classicalDoor } from '../parts/colonial.js';
 import { addDetails } from '../details/viceregal-lodge-shimla.js';
 
@@ -16,12 +16,6 @@ export const SLATE = mat('#565c63', 0.75);
 // entrance to TH, crenellated, a turret at one corner; a kitchen and service wing runs back from
 // the east end, lower, on the falling ground.
 export const P = { L: 74, D: 22, FL: 4.6, EH: 13.8, RH: 7.5, TX: 6, TW: 11, TH: 30 };
-
-// A pitched roof len long along x over a span d deep, h high: a triangular prism.
-export function pitched(len, d, h, m) {
-  const s = new THREE.Shape([new THREE.Vector2(-d / 2, 0), new THREE.Vector2(d / 2, 0), new THREE.Vector2(0, h)]);
-  return mesh(new THREE.ExtrudeGeometry(s, { depth: len, bevelEnabled: false }).rotateY(Math.PI / 2).translate(-len / 2, 0, 0), m);
-}
 
 // A gable wall, w wide and h high, t thick, facing +z: a triangle of stone.
 function gableWall(w, h, t, m) {
@@ -47,14 +41,14 @@ export function buildViceregalLodgeShimla() {
   d.add(box(L + 4, 1, D + 4, DRESSED, 0, 0, 0));
   d.add(box(L, EH, D, STONE, 0, 1, 0));
   for (const y of [1 + FL, 1 + 2 * FL]) d.add(box(L + 0.3, 0.3, D + 0.3, DRESSED, 0, y, 0));
-  d.add(box(L + 0.8, 0.5, D + 0.8, DRESSED, 0, 1 + EH, 0), at(pitched(L + 1, D + 1.6, RH, SLATE), 0, 1.5 + EH, 0));
+  d.add(box(L + 0.8, 0.5, D + 0.8, DRESSED, 0, 1 + EH, 0), at(gableRoof(D + 1.6, L + 1, RH, SLATE, { axis: 'x' }), 0, 1.5 + EH, 0));
   for (const s of [-1, 1]) d.add(at(gableWall(D, RH - 0.3, 0.6, STONE), s * (L / 2 + 0.25), 1.5 + EH, 0).rotateY(s * Math.PI / 2));
   windows(-20, 30, 7, fz, 1, 3, win); windows(26, 18, 4, fz, 1, 3, win);
   windows(0, L - 6, 15, -fz, -1, 3, win);
   // Gabled bays standing forward on the entrance front, each with a tall gable over its windows.
   for (const [x, w] of [[-28, 10], [-12, 8], [22, 10], [34, 6]]) {
     d.add(box(w, EH + 1.6, 3.4, STONE, x, 1, fz + 1.7), box(w + 0.4, 0.4, 3.8, DRESSED, x, 1 + EH + 1.2, fz + 1.9));
-    d.add(at(gableWall(w + 0.4, 5.4, 0.5, STONE), x, 2.6 + EH, fz + 3.4), at(pitched(4.6, w + 1.2, 5.6, SLATE), x, 2.6 + EH, fz + 0.9).rotateY(Math.PI / 2));
+    d.add(at(gableWall(w + 0.4, 5.4, 0.5, STONE), x, 2.6 + EH, fz + 3.4), at(gableRoof(w + 1.2, 4.6, 5.6, SLATE, { axis: 'x' }), x, 2.6 + EH, fz + 0.9).rotateY(Math.PI / 2));
     d.add(box(0.8, 1.2, 0.8, DRESSED, x, 7.9 + EH, fz + 3.1));
     windows(x, w - 2, Math.max(1, Math.round(w / 3.4)), fz + 3.4, 1, 3, win, { w: 1.6 });
   }
@@ -79,7 +73,7 @@ export function buildViceregalLodgeShimla() {
   // The service wing running back from the east end, a storey lower, on its own ridge.
   const sx = L / 2 - 8, sz = -fz - 17;
   d.add(box(14, EH - FL, 34, STONE, sx, 1, sz), box(14.6, 0.4, 34.6, DRESSED, sx, 1 + EH - FL, sz));
-  d.add(at(pitched(34.6, 15, 5.5, SLATE), sx, 1.4 + EH - FL, sz).rotateY(Math.PI / 2), at(gableWall(14, 5.2, 0.5, STONE), sx, 1.4 + EH - FL, sz - 17.2).rotateY(Math.PI));
+  d.add(at(gableRoof(15, 34.6, 5.5, SLATE, { axis: 'x' }), sx, 1.4 + EH - FL, sz).rotateY(Math.PI / 2), at(gableWall(14, 5.2, 0.5, STONE), sx, 1.4 + EH - FL, sz - 17.2).rotateY(Math.PI));
   for (const s of [-1, 1]) for (let fl = 0; fl < 2; fl++) for (let k = 0; k < 6; k++) {
     const z = sz - 14 + k * 5.6, y = 1.4 + fl * FL, x = sx + s * 7.03;
     win.glass.push([x, y, z, 0.08, 2.2, 1.6]);

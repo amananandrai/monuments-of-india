@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, mesh, box, cyl, at, surface, ribbed } from '../helpers.js';
 import { archCurve, jali, mergeByMaterial } from './components.js';
-import { corinthianCapital } from './sculpture.js';
+import { corinthianCapital, gothicPinnacle } from './sculpture.js';
 import { interior, doorLeaves, steps } from './doorways.js';
 
 // Doors, windows and porches for the colonial, Gothic Revival, Baroque and Indo-Saracenic
@@ -415,4 +415,30 @@ export function oculus(R, { m, trim = m, depth = Math.max(0.2, R * 0.25), frame 
   g.add(box(b, R * 2, 0.06, trim, 0, -R, 0.05), box(R * 2, b, 0.06, trim, 0, -b / 2, 0.05));
   g.add(at(mesh(new THREE.TorusGeometry(R * 0.38, b * 0.6, 6, 24), trim), 0, 0, 0.06));
   return mergeByMaterial(g);
+}
+
+// An octagonal Gothic turret r in radius and h high, as at the corners of a tower or a west front:
+// a shaft ringed by string courses every third of its height, a moulded cap at the top, and a
+// crocketed pinnacle `spire` high (in `trim`) on it.
+export function gothicTurret(r, h, m, trim = m, spire = r * 4) {
+  const g = new THREE.Group();
+  g.add(cyl(r, r * 1.08, h, m, 0, 0, 0, 8));
+  for (let y = h / 3; y < h - 1; y += h / 3) g.add(cyl(r * 1.12, r * 1.12, 0.35, trim, 0, y, 0, 8));
+  g.add(cyl(r * 1.22, r * 1.22, 0.5, trim, 0, h, 0, 8), at(gothicPinnacle(spire, trim), 0, h + 0.5, 0));
+  return g;
+}
+
+// A tower clock d across standing proud of a wall's face at z = 0: a white dial in a ring, its
+// twelve marks and two hands at ten past ten. (components' clockFace is a larger dial with a brass
+// bezel, for station and palace clocks.)
+const CLOCK_RING = mat('#8da3b3', 0.8), CLOCK_DIAL = mat('#f7f4ea', 0.6), CLOCK_HAND = mat('#1d1d1f', 0.6);
+export function towerClock(d, { ring = CLOCK_RING, dial = CLOCK_DIAL, hand = CLOCK_HAND } = {}) {
+  const g = new THREE.Group(), r = d / 2;
+  const ringM = cyl(r + 0.1, r + 0.1, 0.08, ring, 0, 0, 0, 28); ringM.rotation.x = Math.PI / 2; ringM.position.z = 0.04;
+  const face = cyl(r, r, 0.06, dial, 0, 0, 0, 28); face.rotation.x = Math.PI / 2; face.position.z = 0.1;
+  g.add(ringM, face);
+  for (let k = 0; k < 12; k++) { const a = (k / 12) * Math.PI * 2, m = box(0.05, 0.14, 0.02, hand, Math.sin(a) * r * 0.82, Math.cos(a) * r * 0.82 - 0.07, 0.14); m.rotation.z = -a; g.add(m); }
+  const h1 = box(0.06, r * 0.5, 0.02, hand, 0, 0, 0.15); h1.rotation.z = -0.9; const h2 = box(0.05, r * 0.75, 0.02, hand, 0, 0, 0.16); h2.rotation.z = 2.4;
+  g.add(h1, h2);
+  return g;
 }

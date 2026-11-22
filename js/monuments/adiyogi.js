@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, inst } from '../helpers.js';
-import { mergeByMaterial } from '../parts/components.js';
+import { mat, mesh, box, at, inst } from '../helpers.js';
+import { trishul } from '../parts/components.js';
 import { ellipsoid as E, cone, chain, blend, carve, mirrorX, flatBase, bounded, sculpt, statueMaterial, snap, onSkin, smin } from '../sdf.js';
 import { detail } from '../detail.js';
 import { addDetails } from '../details/adiyogi.js';
@@ -151,22 +151,6 @@ function ornaments() {
 }
 
 // The trident planted before the bust: a tall black shaft, the three prongs, a damaru tied below.
-function trishul(h) {
-  const g = new THREE.Group(), m = STEEL;
-  g.add(cyl(0.16, 0.2, h, m, 0, 0, 0, 10), cyl(0.36, 0.36, 0.5, m, 0, h * 0.78, 0, 12));
-  const y = h + 0.1;
-  const prong = (s) => {
-    const c = new THREE.CatmullRomCurve3([[0, y, 0], [s * 1.2, y + 0.25, 0], [s * 1.55, y + 1.3, 0], [s * 1.35, y + 2.6, 0]].map((p) => new THREE.Vector3(...p)));
-    return mesh(new THREE.TubeGeometry(c, 16, 0.16, 8), m);
-  };
-  g.add(prong(-1), prong(1), cyl(0.0, 0.24, 3.6, m, 0, y, 0, 8), box(3.2, 0.3, 0.35, m, 0, y - 0.15, 0));
-  for (const s of [-1, 1]) g.add(mesh(new THREE.ConeGeometry(0.2, 0.7, 8), m, s * 1.35, y + 2.9, 0));
-  const dam = new THREE.Group();
-  for (const s of [-1, 1]) { const c = mesh(new THREE.ConeGeometry(0.42, 0.55, 14), m, 0, s * 0.28, 0); if (s > 0) c.rotation.x = Math.PI; dam.add(c); }
-  g.add(at(dam, 0.45, h * 0.7, 0));
-  return mergeByMaterial(g);
-}
-
 export function buildAdiyogi() {
   const g = new THREE.Group(), f = new THREE.Group(), bust = new THREE.Group();
   g.add(f);
@@ -175,7 +159,7 @@ export function buildAdiyogi() {
   // The platform: a broad low plinth of dark stone in two steps.
   f.add(box(32, BASE * 0.5, 22, mat('#3a3836', 0.8), 0, 0, 0.6), box(30, BASE * 0.5, 20, mat('#4a4744', 0.75), 0, BASE * 0.5, 0.6));
   // The trishul in front, to his right.
-  f.add(at(trishul(17), 13, 0, 21));
+  f.add(at(trishul(17, STEEL), 13, 0, 21));
   addDetails(f, g, { BASE });
   // Square on to the face, a little from his right, looking up.
   return { group: g, focus: f, view: [-0.35, 0.12, 1], zoom: 0.95 };

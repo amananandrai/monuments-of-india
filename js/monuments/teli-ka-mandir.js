@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { mat, mesh, box, at, onFace, kalash, photo, inst } from '../helpers.js';
 import { templeDoorway, steps } from '../parts/doorways.js';
 import { mergeByMaterial, carved, templeNiche, idol, mouldings } from '../parts/components.js';
+import { chandrashala } from '../parts/temples.js';
 import { addDetails } from '../details/teli-ka-mandir.js';
 
 // Teli ka Mandir, the tallest building on Gwalior Fort: a Pratihara temple of the 8th or 9th
@@ -15,21 +16,6 @@ export const STONE = photo(mat('#b4a083', 0.9), 'sandstone');
 export const SHADE = photo(mat('#93805f', 0.92), 'sandstone');
 // The tiers of the tower carry a mesh of little arch-windows: the 'reliefs' surface.
 export const MESHED = carved(mat('#a8946f', 0.92), 'reliefs');
-
-// A horseshoe arch-window (chandrashala) of radius r on a wall at z = 0: a thick ring open at the
-// foot, a dark recess inside it, and a finial above. Faces +z, its centre at y = 0.
-export function chaitya(r, m, depth = 0.4) {
-  const g = new THREE.Group(), arc = Math.PI * 1.45;
-  const ring = mesh(new THREE.TorusGeometry(r, r * 0.16, 6, 28, arc), m);
-  // The torus is drawn from +x anticlockwise: start it so that the gap is at the foot.
-  ring.rotation.z = -Math.PI / 2 + (Math.PI * 2 - arc) / 2;
-  ring.position.z = depth * 0.5;
-  ring.scale.z = depth / (r * 0.32);
-  g.add(ring);
-  const disc = mesh(new THREE.CircleGeometry(r * 0.86, 24), mat('#3e342b', 0.9), 0, 0, 0.03);
-  g.add(disc, box(r * 0.5, r * 0.5, depth * 0.8, m, 0, r * 1.05, depth * 0.4));
-  return g;
-}
 
 export function buildTeliKaMandir() {
   const g = new THREE.Group(), f = new THREE.Group(), d = new THREE.Group();
@@ -70,12 +56,12 @@ export function buildTeliKaMandir() {
   for (let k = -2; k <= 2; k++) d.add(at(kalash(0.75, S), k * 2.4, VY + VR - 0.1, 0));
   // Its ends, closed by great horseshoe arches, and the arches stacked up the front and the back.
   for (const s of [-1, 1]) {
-    const e = at(chaitya(2.1, S, 0.5), s * (VL / 2), VY + 0.2, 0);
+    const e = at(chandrashala(2.1, S, 0.5), s * (VL / 2), VY + 0.2, 0);
     e.rotation.y = s * Math.PI / 2;
     d.add(e);
     for (const [y, r] of [[Y + 2.5, 1.9], [Y + 6.6, 1.6], [Y + 10.4, 1.3]]) {
       const zz = s * ((11 - 6.4 * ((y - Y) / TH) / (TN - 1)) / 2 + 0.62);
-      d.add(onFace(at(chaitya(r, S, 0.45), 0, y, 0), s > 0 ? 0 : Math.PI, Math.abs(zz)));
+      d.add(onFace(at(chandrashala(r, S, 0.45), 0, y, 0), s > 0 ? 0 : Math.PI, Math.abs(zz)));
     }
   }
   // The front bay: the doorway, almost the height of the walls, and an image in a niche in the

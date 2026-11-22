@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, FACES, rng, flat, steppedPlan, planPrism, planBand, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox, unitCyl, inst, bulbPoints, V } from '../helpers.js';
-import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol, placeAll, chhajja, railing, cuspedArchGeo, petalRing } from './components.js';
+import { M, mat, mesh, box, cyl, at, onFace, FACES, rng, flat, steppedPlan, planPrism, planBand, shikhara, pidaRoof, bell, kalash, flag, onionDome, nagaraProfile, PAINT, unitBox, unitCyl, inst, bulbPoints, V, hipRoof, doubleSided, photo, surface } from '../helpers.js';
+import { frieze, mergeByMaterial, mouldings, templeNiche, pilasters, idol, placeAll, chhajja, railing, cuspedArchGeo, petalRing, rosette, windowFrame, jali } from './components.js';
 import { templeDoorway, templePorch, steps, grandStair, doorFrame, doorLeaves, guardian } from './doorways.js';
 import { lion, elephant, horse, nandi } from './animals.js';
 import { detail } from '../detail.js';
@@ -624,5 +624,199 @@ export function dravidaDress(w, d, h, m, { eaveM = m, haraM = m, base = true, ha
     if (hara && len > 4 * ks) g.add(onFace(at(haraRow(len - 2.4 * ks, ks, haraM), 0, h, 0), a, dist - 0.64 * ks));
   }
   if (hara) for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(at(kuta(ks, haraM), sx * (w / 2 - 0.64 * ks), h, sz * (d / 2 - 0.64 * ks)));
+  return mergeByMaterial(g);
+}
+
+// ---- Regional forms: Kerala roofs and gateways, the chaitya arch, the Valabhi and shala roofs, the
+// timber canopy of Himalayan spires, the broken spire of a ruin, the apsidal plan and the Kakatiya
+// gateway. Each faces +z and stands on y = 0 unless it says otherwise.
+
+// The materials of Kerala's temples and palaces: laterite, teak, clay tiles and brass.
+const K_LATERITE = photo(mat('#99583c', 0.95), 'laterite');
+const K_TEAK = photo(mat('#57381f', 0.7), 'timber');
+const K_TILE = mat('#8e4630', 0.82);
+const K_BRASS = mat('#c99a3a', 0.35, 0.8);
+
+// A roof that runs round a courtyard (Kerala's nalukettu, a temple's cloister): from the outer
+// eaves (W × D, ov beyond the walls) up to a ridge over the middle of each wing (wd deep), and down
+// again to the eaves over the courtyard, with hips at the corners. One shell, drawn from both sides.
+export function ringRoof(W, D, wd, ov, h, m) {
+  const rect = (hw, hd, y) => [[-hw, y, -hd], [hw, y, -hd], [hw, y, hd], [-hw, y, hd]];
+  const pos = [...rect(W / 2 + ov, D / 2 + ov, 0), ...rect(W / 2 - wd / 2, D / 2 - wd / 2, h), ...rect(W / 2 - wd - ov, D / 2 - wd - ov, 0)].flat(), idx = [];
+  for (let k = 0; k < 4; k++) { const n = (k + 1) % 4; idx.push(k, n, 4 + n, k, 4 + n, 4 + k, 4 + k, 4 + n, 8 + n, 4 + k, 8 + n, 8 + k); }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setIndex(idx);
+  const flatGeo = geo.toNonIndexed();
+  flatGeo.computeVertexNormals();
+  return mesh(flatGeo, doubleSided(m));
+}
+
+// A Kerala gateway (gopuram), w wide and d deep: a laterite storey with the passage through it, a
+// timber storey with lattice screens over it, and three tiers of tiled roof, the upper two with
+// carved gables (keralaGable) to front and back and a row of brass finials on the ridge.
+export function keralaGopuram(w, d, { base = K_LATERITE, wood = K_TEAK, roof = K_TILE, brass = K_BRASS } = {}) {
+  const g = new THREE.Group(), b = 5.2, pw = 4.2;
+  g.add(box(w + 1, 0.8, d + 1, base));
+  for (const s of [-1, 1]) g.add(box((w - pw) / 2, b, d, base, s * (w + pw) / 4, 0.8, 0));
+  g.add(box(w, 0.6, d, base, 0, 0.8 + b - 0.01, 0));
+  // The first roof, low and broad; the timber storey; the second and third roofs.
+  const y1 = 0.8 + b + 0.6;
+  g.add(at(hipRoof(w + 4, d + 4, 2, roof), 0, y1, 0));
+  g.add(box(w - 3, 4.6, d - 2.6, wood, 0, y1 + 0.2, 0), box(w - 2.6, 0.3, d - 2.2, wood, 0, y1 + 4.5, 0));
+  const lat = windowFrame(1.5, 1.6, wood, { shape: 'flat', screen: jali(wood), frame: 0.14 }), ls = new THREE.Group();
+  for (const a of [0, Math.PI]) for (let k = -2; k <= 2; k++) ls.add(onFace(at(lat.clone(), 0, y1 + 2.4, 0), a, (d - 2.6) / 2 + 0.01, k * 2.1));
+  g.add(mergeByMaterial(ls));
+  const y2 = y1 + 4.8;
+  g.add(at(hipRoof(w + 1.2, d + 1.6, 2.8, roof), 0, y2, 0));
+  g.add(box(w - 6, 1.4, d - 4.6, wood, 0, y2 + 1.2, 0));
+  const y3 = y2 + 2.6;
+  g.add(at(hipRoof(w - 3, d - 2, 3.4, roof), 0, y3, 0));
+  for (let k = -2; k <= 2; k++) g.add(at(kalash(0.32, brass), k * 1.2, y3 + 3.4 - 0.1, 0));
+  // The gables in the second and third roofs.
+  for (const a of [0, Math.PI]) {
+    const g2 = keralaGable(5, 1.9, 2.6, roof, wood), g3 = keralaGable(3.8, 1.6, 2.2, roof, wood);
+    g2.position.set(0, y2 + 0.6, Math.cos(a) * ((d + 1.6) / 2 - 0.6 * (d + 1.6) / 2 / 2.8 + 0.2)); g2.rotation.y = a;
+    g3.position.set(0, y3 + 1.2, Math.cos(a) * ((d - 2) / 2 - 1.2 * (d - 2) / 2 / 3.4 + 0.2)); g3.rotation.y = a;
+    g.add(g2, g3);
+  }
+  return g;
+}
+
+// A horseshoe arch-window (chandrashala) of radius r carved on a wall at z = 0: a thick ring open
+// at the foot, a dark recess inside it, and a finial block above. Its centre at y = 0. depth: how
+// far the ring stands out; recess: the material of the hollow (a dark stone by default).
+export function chandrashala(r, m, depth = 0.4, recess = null) {
+  const g = new THREE.Group(), arc = Math.PI * 1.45;
+  const ring = mesh(new THREE.TorusGeometry(r, r * 0.16, 6, 28, arc), m);
+  // The torus is drawn from +x anticlockwise: start it so that the gap is at the foot.
+  ring.rotation.z = -Math.PI / 2 + (Math.PI * 2 - arc) / 2;
+  ring.position.z = depth * 0.5;
+  ring.scale.z = depth / (r * 0.32);
+  g.add(ring);
+  const disc = mesh(new THREE.CircleGeometry(r * 0.86, 24), recess || mat('#3e342b', 0.9), 0, 0, 0.03);
+  g.add(disc, box(r * 0.5, r * 0.5, depth * 0.8, m, 0, r * 1.05, depth * 0.4));
+  return g;
+}
+
+// The chaitya window (gavaksha) moulded in brick, as on the brick temples of Sirpur and Bhitargaon,
+// w wide on a wall at z = 0 from y = 0: a dark round-headed recess in a ring, on two short jambs,
+// with a little finial on its crown. hollow: the recess's material (give it a polygon offset, as it
+// lies against the wall).
+export function gavaksha(w, m, hollow) {
+  const g = new THREE.Group(), r = w * 0.5;
+  g.add(mesh(new THREE.CircleGeometry(r * 0.72, 12, 0, Math.PI), hollow, 0, r * 0.4, 0.04));
+  g.add(box(r * 1.44, r * 0.4, 0.04, hollow, 0, 0, 0.02));
+  g.add(at(mesh(new THREE.TorusGeometry(r * 0.84, r * 0.14, 4, 12, Math.PI), m), 0, r * 0.4, 0.06));
+  for (const s of [-1, 1]) g.add(box(r * 0.26, r * 0.42, 0.12, m, s * r * 0.84, 0, 0.06));
+  g.add(box(r * 0.22, r * 0.3, 0.1, m, 0, r * 1.25, 0.05));
+  return g;
+}
+
+// A barrel (wagon) roof, the shala of a Dravidian rock-cut or early temple: the vault len long along
+// x over a body d deep, its ridge with a row of finials, and at each gable end a great horseshoe arch
+// (kudu) round a blind window. Its eaves at y = 0.
+export function wagonRoof(len, d, m) {
+  const g = new THREE.Group(), r = d / 2;
+  const v = mesh(new THREE.CylinderGeometry(r, r, len, 16, 1, false, 0, Math.PI), m);
+  v.rotation.z = Math.PI / 2;
+  v.scale.set(1, 1, 1.25);
+  g.add(v);
+  // The ridge with its row of finials (stupis).
+  g.add(box(len, 0.25, 0.5, m, 0, r * 1.25 - 0.08, 0));
+  for (let k = 0; k < 7; k++) g.add(at(kalash(0.32, m), -len / 2 + 0.6 + (k / 6) * (len - 1.2), r * 1.25 + 0.15, 0));
+  const kg = new THREE.TorusGeometry(r * 0.96, r * 0.13, 4, 14, Math.PI * 1.25).rotateZ(-Math.PI * 0.125);
+  for (const s of [-1, 1]) {
+    const k = mesh(kg, m, s * (len / 2 + 0.02), 0, 0);
+    k.rotation.y = Math.PI / 2;
+    k.scale.set(1, 1.2, 1);
+    g.add(k);
+  }
+  return g;
+}
+
+// The timber canopy (chhatra) set over the amalaka of a Himalayan spire (Jageshwar): a short post,
+// a square pyramidal roof w wide with a thin eave, and a small kalasha of `m` on its peak.
+export function spireCanopy(w, m, wood = surface(mat('#4e3a2a', 0.85), 'ground')) {
+  const g = new THREE.Group();
+  g.add(cyl(w * 0.06, w * 0.08, w * 0.35, wood, 0, 0, 0, 8));
+  g.add(box(w * 1.02, w * 0.05, w * 1.02, wood, 0, w * 0.35, 0), at(hipRoof(w * 1.3, w * 1.3, w * 0.32, wood), 0, w * 0.4, 0));
+  g.add(at(kalash(w * 0.12, m), 0, w * 0.7, 0));
+  return g;
+}
+
+// A Nagara spire w across its foot and h high (were it whole), in courses on the cross-shaped plan,
+// of which only the lower `keep` fraction stands: the rest broken away, the top course left ragged
+// with a few blocks of `rubble`. With keep 1 it ends in a ribbed amalaka of `amalakaM`. n: courses.
+export function brokenSpire(w, h, keep, m, { n = 14, rubble = m, amalakaM = m } = {}) {
+  const g = new THREE.Group(), sh = h / n, last = Math.max(2, Math.round(n * keep));
+  for (let i = 0; i < last; i++) {
+    const wi = w * nagaraProfile(i / n), y = i * sh, ragged = i === last - 1 && keep < 1;
+    g.add(box(wi * 0.84, sh, wi * 0.84, m, 0, y, 0));
+    if (!ragged) g.add(box(wi, sh * 0.8, wi * 0.6, m, 0, y, 0), box(wi * 0.6, sh * 0.8, wi, m, 0, y, 0));
+    else g.add(box(wi * 0.6, sh * 0.6, wi * 0.4, rubble, wi * 0.12, y + sh, -wi * 0.1), box(wi * 0.35, sh * 0.9, wi * 0.5, rubble, -wi * 0.2, y + sh, wi * 0.08));
+  }
+  if (keep >= 1) {
+    const top = w * nagaraProfile(1), ar = top * 0.64;
+    g.add(box(top * 0.62, sh * 0.7, top * 0.62, m, 0, h, 0));
+    const am = mesh(new THREE.SphereGeometry(ar, 24, 8), flat(amalakaM), 0, h + sh * 0.7 + ar * 0.42, 0);
+    am.scale.y = 0.42;
+    g.add(am);
+  }
+  return g;
+}
+
+// An apsidal plan, for planPrism and planBand: a rectangle w wide whose front (+z) is straight at
+// z = z1 and whose back is a half circle of radius w / 2 ending at z = z0; [x, z] points round it,
+// n segments to the half circle. The plan of a chaitya hall, and of the Durga temple at Aihole.
+export function apsePlan(w, z0, z1, n = 14) {
+  const r = w / 2, c = z0 + r, pts = [[r, z1], [-r, z1]];
+  for (let k = 0; k <= n; k++) { const a = Math.PI - (k / n) * Math.PI; pts.push([Math.cos(a) * r, c - Math.sin(a) * r]); }
+  return pts;
+}
+
+// A Kakatiya Kala Thoranam (Warangal): a free-standing gateway about 10 m high, its opening facing
+// +z. Two frames, one behind the other: in each two square pillars on moulded bases, carved in
+// bands, with a capital block; angled brackets spring from the pillars on both sides to carry a
+// long lintel; over it a crest, a carved band with a raised panel and a medallion in its middle and
+// the curled, upturned horns of makaras at its two ends; a kalasha on top. Cross-beams join the
+// frames over the pillars. shade: the darker stone of the bases, beams and cornices.
+export function kakatiyaThorana(m, shade = m) {
+  const PX = 2.35, PZ = 1.1, LIN = 6.6, g = new THREE.Group(), S = m, Sd = shade;
+  g.add(box(8.4, 0.45, 4.2, Sd), box(7.8, 0.2, 3.6, S, 0, 0.45));
+  for (const x of [-PX, PX]) for (const z of [-PZ, PZ]) {
+    // The pillar: a moulded base, a shaft square below and octagonal-cornered above, three carved
+    // bands, a cushion and a capital block.
+    g.add(box(1.35, 0.5, 1.35, Sd, x, 0.65, z), box(1.2, 0.3, 1.2, S, x, 1.15, z), box(1.0, 1.6, 1.0, S, x, 1.45, z));
+    g.add(box(1.08, 0.5, 1.08, frieze(S), x, 3.05, z), box(0.96, 1.2, 0.96, S, x, 3.55, z), box(1.06, 0.45, 1.06, frieze(S), x, 4.75, z));
+    g.add(box(0.92, 0.85, 0.92, S, x, 5.2, z), cyl(0.62, 0.5, 0.25, Sd, x, 6.05, z, 8), box(1.3, 0.3, 1.3, S, x, 6.3, z));
+  }
+  // The angled brackets (two per pillar, inward and outward) under the lintel.
+  const brk = new THREE.Shape();
+  brk.moveTo(0, 0); brk.lineTo(0, 1.2); brk.lineTo(1.25, 1.2); brk.lineTo(1.25, 0.95); brk.lineTo(0.32, 0); brk.closePath();
+  const bg = new THREE.ExtrudeGeometry(brk, { depth: 0.6, bevelEnabled: false }).translate(0, 0, -0.3);
+  for (const x of [-PX, PX]) for (const z of [-PZ, PZ]) for (const s of [-1, 1]) {
+    const b = mesh(bg, S, x + s * 0.5, 5.4, z);
+    if (s < 0) b.rotation.y = Math.PI;
+    g.add(b);
+  }
+  // The lintels of the two frames, and the cross-beams over the pillars.
+  for (const z of [-PZ, PZ]) g.add(box(8.6, 0.95, 1.05, S, 0, LIN, z), box(8.8, 0.2, 1.2, Sd, 0, LIN + 0.95, z));
+  for (const x of [-PX, PX]) g.add(box(1.1, 0.9, 3.2, Sd, x, LIN + 0.02, 0));
+  // The crests: a carved band, the raised middle panel and its medallion, the makara horns.
+  const horn = new THREE.TorusGeometry(0.7, 0.22, 8, 14, Math.PI * 0.8);
+  for (const z of [-PZ, PZ]) {
+    const side = Math.sign(z);
+    g.add(box(7.0, 0.8, 0.8, frieze(S), 0, LIN + 1.15, z), box(7.3, 0.15, 0.95, Sd, 0, LIN + 1.95, z));
+    g.add(box(2.4, 1.45, 0.9, S, 0, LIN + 2.1, z), box(2.7, 0.2, 1.05, Sd, 0, LIN + 3.55, z));
+    g.add(at(rosette(0.5, S, 12), 0, LIN + 2.82, z + side * 0.47).rotateY(side > 0 ? 0 : Math.PI));
+    for (const s of [-1, 1]) {
+      // The horn curls up and back in over the lintel's end, its tip turned inward.
+      const h = mesh(horn, S, s * 3.35, LIN + 2.5, z);
+      if (s < 0) h.rotation.y = Math.PI;
+      g.add(h, box(1.0, 0.55, 0.75, S, s * 3.55, LIN + 1.95, z), box(0.5, 0.55, 0.5, S, s * 4.05, LIN + 2.4, z));
+    }
+    g.add(at(kalash(0.9, S), 0, LIN + 3.75, z));
+  }
   return mergeByMaterial(g);
 }

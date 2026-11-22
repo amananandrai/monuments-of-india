@@ -4,7 +4,7 @@ import { templeNiche, idol, mergeByMaterial, frieze } from '../parts/components.
 import { figureFrieze } from '../parts/sculpture.js';
 import { heightField, fbm, smooth } from '../parts/terrain.js';
 import { trees, shrubs, asiBoard, along, scatter, townHouses } from '../parts/realism.js';
-import { apse } from '../monuments/durga-temple-aihole.js';
+import { apsePlan as apse } from '../parts/temples.js';
 import { detail } from '../detail.js';
 
 // Aihole's sandstone, a warm brown, weathered darker and patched with lichen.

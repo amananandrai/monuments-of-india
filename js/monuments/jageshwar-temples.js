@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { box, at, shikhara, nagaraProfile } from '../helpers.js';
 import { templeDoorway, steps } from '../parts/doorways.js';
 import { mergeByMaterial } from '../parts/components.js';
-import { addDetails, STONE, SHADE, canopy, porch } from '../details/jageshwar-temples.js';
+import { spireCanopy } from '../parts/temples.js';
+import { addDetails, STONE, SHADE, TIMBER, porch } from '../details/jageshwar-temples.js';
 
 // Jageshwar, in a valley of deodars in the Kumaon hills: a walled court of some 125 stone temples
 // built between the 7th and 12th centuries. The two greatest stand in it: the Mahamrityunjaya,
@@ -23,7 +24,7 @@ export function buildJageshwar() {
   const sp = shikhara(MW + 0.4, MT, STONE, nagaraProfile, 22, STONE, 0.5);
   t.add(at(sp, 0, 0.8 + MH, 0));
   const top = 0.8 + MH + sp.userData.top;
-  t.add(at(canopy(MW * 0.55, STONE), 0, top - 1.3, 0));
+  t.add(at(spireCanopy(MW * 0.55, STONE, TIMBER), 0, top - 1.3, 0));
   // Its hall (mandapa): 7 m wide, open at the front between pillars, under a gabled slab roof.
   t.add(at(porch(7, 6, 3.4), 0, 0.8, MW / 2 + 3));
   t.add(at(steps(2.6, 0.8, 3, SHADE), 0, 0, MW / 2 + 6.4));
@@ -35,7 +36,7 @@ export function buildJageshwar() {
   j.add(box(JW + 1.2, 0.7, JW + 1.2, SHADE, 0, 0, 0), box(JW, JH, JW, STONE, 0, 0.7, 0), box(JW + 0.5, JH, JW * 0.5, STONE, 0, 0.7, 0), box(JW * 0.5, JH, JW + 0.5, STONE, 0, 0.7, 0));
   j.add(box(JW + 1, 0.28, JW + 1, SHADE, 0, 0.7 + JH - 0.28, 0));
   const js = shikhara(JW + 0.2, JT, STONE, nagaraProfile, 18, STONE, 0.5);
-  j.add(at(js, 0, 0.7 + JH, 0), at(canopy(JW * 0.55, STONE), 0, 0.7 + JH + js.userData.top - 1.1, 0));
+  j.add(at(js, 0, 0.7 + JH, 0), at(spireCanopy(JW * 0.55, STONE, TIMBER), 0, 0.7 + JH + js.userData.top - 1.1, 0));
   j.add(at(porch(5.6, 8, 3.2), 0, 0.7, JW / 2 + 4), at(steps(2.4, 0.7, 3, SHADE), 0, 0, JW / 2 + 8.4));
   f.add(at(j, jx, 0, jz));
   // Doors into the two sanctums, behind their halls.

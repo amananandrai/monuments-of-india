@@ -5,7 +5,7 @@ import { mergeByMaterial } from '../parts/components.js';
 import { steps } from '../parts/doorways.js';
 import { trees, lampPosts, scatter, traffic, cityAround } from '../parts/realism.js';
 import { detail } from '../detail.js';
-import { GILT, SAFFRON } from './takht-sri-hazur-sahib.js';
+import { GILT, SAFFRON } from '../parts/sikh.js';
 
 // Bangla Sahib in Lutyens' Delhi: the marble forecourt and its gilded Nishan Sahib, the sarovar to
 // the west (-x) inside a marble walk with arcaded ranges round it, lawns and trees, Baba Kharak
