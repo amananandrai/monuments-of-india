@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { M, box, at, onFace, FACES, lathe } from '../helpers.js';
-import { petalRing, jharokha, windowFrame, mergeByMaterial } from '../parts/components.js';
+import { M, mat, mesh, box, cyl, at, onFace, FACES, lathe, archWall, chhatri, hemi, flag } from '../helpers.js';
+import { petalRing, jharokha, windowFrame, mergeByMaterial, archRing, archSlab } from '../parts/components.js';
+import { balustrade } from '../parts/colonial.js';
 import { STONE, DARK, PINK, TOWER, DURBAR, EAST, CENTRE } from '../monuments/laxmi-vilas-palace.js';
 import { trees, shrubs, lampPosts, fountains, scatter, along } from '../parts/realism.js';
 import { detail } from '../detail.js';
@@ -45,8 +46,37 @@ function urn(s) {
   for (const k of [-1, 1]) u.add(box(0.25 * s, 1.6 * s, 0.6 * s, M.marble, k * 0.75 * s, 3.6 * s, 0));
   return u;
 }
+// The palace's gate on the road, after a photograph: in pale stone, a round arch under a broad
+// half-round hood, between two slender towers that carry a balcony and a domed kiosk each; a low
+// domed lodge either side; and the Gaekwads' saffron flag over the middle.
+function gate(g) {
+  const d = at(new THREE.Group(), 0, 0, 176), W = mat('#e6dfd0', 0.8), SH = mat('#cfc6b4', 0.85);
+  const kiosk = (r, h) => (detail.low ? new THREE.Group().add(cyl(r * 0.85, r * 0.85, h * 0.45, W, 0, 0, 0, 8), at(hemi(r, W, 10), 0, h * 0.45, 0)) : chhatri(r, h, W, W));
+  d.add(archWall(14, 10, 4.2, 6.6, 7.8, false, W));
+  const hood = new THREE.Shape();
+  hood.absarc(0, 0, 7.2, 0, Math.PI, false); hood.closePath();
+  d.add(mesh(new THREE.ExtrudeGeometry(hood, { depth: 4.6, bevelEnabled: false, curveSegments: detail.low ? 8 : 20 }).translate(0, 0, -2.3), W, 0, 10, 0), box(15, 0.4, 5, SH, 0, 10, 0));
+  for (const fz of [1, -1]) d.add(at(archRing(6.6, 7.8, false, 0.45, 0.16, SH), 0, 0, fz * 2.11).rotateY(fz > 0 ? 0 : Math.PI), at(archSlab(10, 5.6, false, SH, 0.08), 0, 10.4, fz * 2.31).rotateY(fz > 0 ? 0 : Math.PI));
+  for (const s of [-1, 1]) {
+    d.add(box(2.9, 15, 2.9, W, s * 8.6, 0, 0), box(4, 0.4, 4, SH, s * 8.6, 15, 0), box(3.4, 1.1, 3.4, W, s * 8.6, 15.4, 0), at(kiosk(1.5, 4.8), s * 8.6, 16.5, 0));
+    d.add(box(6.4, 5.6, 5.4, W, s * 13.6, 0, 0), box(6.8, 0.35, 5.8, SH, s * 13.6, 5.6, 0), cyl(2.5, 2.5, 0.9, W, s * 13.6, 5.95, 0, 16), at(hemi(2.5, W, detail.low ? 8 : 16), s * 13.6, 6.85, 0));
+    for (const fz of [1, -1]) d.add(at(archSlab(1.5, 3, false, M.recess, 0.06), s * 13.6, 0.2, fz * 2.71).rotateY(fz > 0 ? 0 : Math.PI));
+    // The boundary wall beyond the lodges.
+    d.add(box(60, 3, 0.8, W, s * 46.8, 0, 0), box(60.4, 0.3, 1.1, SH, s * 46.8, 3, 0));
+  }
+  d.add(at(flag(7, M.saffron), 0, 17.2, 0));
+  g.add(mergeByMaterial(d));
+}
+
 export function addDetails(f, g) {
   architecture(f);
+  gate(g);
+  // The terrace wall across the lawn's front, as in the best-known photograph: a long low
+  // balustrade in pale stone, open at the drive, with an urn at each end of each length.
+  for (const s of [-1, 1]) {
+    g.add(detail.low ? box(86, 1, 0.5, M.lime, s * 53, 0, 150) : at(balustrade(86, 1.1, M.lime), s * 53, 0, 150));
+    if (!detail.low) g.add(at(urn(0.4), s * 10, 0, 150), at(urn(0.4), s * 96, 0, 150));
+  }
   g.add(at(urn(1), 0, 0, 40), at(urn(0.55), -9, 0, 13), at(urn(0.55), 9, 0, 13));
   g.add(lampPosts([...along(6, [-7, 30], [-7, 140]), ...along(6, [7, 30], [7, 140])]));
   // Stone paths across the lawn to the fountains, and round them.

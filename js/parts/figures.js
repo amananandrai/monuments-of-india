@@ -368,19 +368,31 @@ function patelField() {
     [mirrorX(E(P(9.9, -0.4, -0.6), [1.3, 3.5, 2.5])), 0.6],
     // The full jowls at the corners of the jaw.
     [mirrorX(E(P(5.8, -7.6, 3.0), [2.3, 2.3, 2.6])), 1.2],
+    // After the portraits: a heavy brow drawn down over the eyes, a broad nose, the fold of a
+    // second chin, and large ears with long lobes.
+    [mirrorX(E(P(3.6, 2.45, 8.5), [3.1, 1.0, 1.9])), 0.9],
+    [E(P(0, -2.9, 11.7), [2.15, 1.45, 1.5]), 0.6],
+    [mirrorX(E(P(1.9, -3.2, 10.3), [1.25, 1.0, 1.0])), 0.5],
+    [E(P(0, -10.0, 3.6), [5.2, 2.2, 4.6]), 1.8],
+    [mirrorX(E(P(10.1, -0.2, -0.8), [1.25, 4.0, 2.9])), 0.6],
+    [mirrorX(E(P(9.7, -4.2, -0.2), [1.0, 1.6, 1.5])), 0.6],
   ]);
   head = carve(head, mirrorX(E(P(3.4, 0.5, 9.2), [2.4, 1.5, 2.0])), 0.9);
   head = blend([[head, 0],
     // The eyes open under heavy lids, looking ahead.
     [mirrorX(E(P(3.4, 0.25, 7.85), [1.85, 1.1, 1.5])), 0.3],
-    [mirrorX(E(P(3.4, 1.25, 8.0), [2.2, 0.5, 1.4])), 0.3],
-    [mirrorX(E(P(3.5, -0.95, 8.2), [1.9, 0.55, 1.05])), 0.4],
+    [mirrorX(E(P(3.4, 1.5, 8.0), [2.2, 0.42, 1.4])), 0.3],
+    [mirrorX(E(P(3.5, -1.05, 8.2), [1.9, 0.5, 1.05])), 0.4],
     [E(P(0, -4.45, 9.45), [2.8, 0.6, 1.0]), 0.5],
     [E(P(0, -5.6, 9.05), [2.4, 0.7, 1.0]), 0.5]]);
   head = carve(head, E(P(0, -5.0, 9.95), [2.7, 0.17, 1.0]), 0.2);
   head = carve(head, mirrorX(E(P(2.85, -5.35, 9.15), [0.5, 0.3, 0.6])), 0.2);
   head = carve(head, mirrorX(cone(P(1.95, -2.3, 9.95), P(3.7, -6.7, 8.5), 0.33, 0.33)), 0.4);
-  head = carve(head, mirrorX(E(P(10.6, -0.2, -0.2), [0.6, 2.2, 1.4])), 0.2);
+  // The hollow of each ear, shallow, inside its rim; the corners of the mouth drawn down; and a
+  // furrow between the brows.
+  head = carve(head, mirrorX(E(P(11.55, 0.4, -0.5), [0.4, 2.3, 1.4])), 0.35);
+  head = carve(head, mirrorX(cone(P(2.7, -5.0, 9.7), P(3.9, -6.6, 8.7), 0.26, 0.22)), 0.3);
+  head = carve(head, mirrorX(cone(P(0.7, 3.6, 10.6), P(0.5, 1.6, 10.9), 0.2, 0.2)), 0.2);
   // The iris cut shallow in each eye, and two lines across the forehead.
   head = carve(head, mirrorX(E(P(3.35, 0.15, 9.45), [0.65, 0.65, 0.3])), 0.12);
   head = carve(carve(head, E(P(0, 4.6, 10.79), [5.5, 0.3, 1.6]), 0.15), E(P(0, 6.0, 10.27), [5.0, 0.3, 1.6]), 0.15);
@@ -399,7 +411,7 @@ export const patelSurface = () => (patelF ||= patelField().f);
 // bronze are rubbed bright.
 export const patelBody = (m) => body(detail.low ? 'patel-coarse' : 'patel', patelField, detail.low ? 1.5 : 1.1, m, [0.3, 0.34, 0.28], {
   wear: 0.3, split: [
-    { region: E([0, 162.5, 2], [13.5, 13.5, 14]), h: detail.low ? 0.48 : 0.32, lo: [-14, 148, -13], hi: [14, 177, 17] },
+    { region: E([0, 162.5, 2], [13.5, 13.5, 14]), h: detail.low ? 0.48 : 0.24, lo: [-14, 148, -13], hi: [14, 177, 17] },
     // The front of the torso, where the bandi shows between the shawl's ends with its placket,
     // pockets and collar.
     // A box, not an ellipsoid, so its sides cross the shawl squarely and the seam stays a line.
@@ -679,7 +691,11 @@ function toLine(pts) {
 // eyes in their sockets under their lids, the lips and the line between them, and the ears. full:
 // how round the cheeks and jaw are; age: deeper lids and the folds from nose to mouth; lids: how
 // low the upper lids come; tall: the skull's height (a child's is rounder).
-function face(P, S, { full = 0, age = 0, lids = 0.5, tall = 1 } = {}) {
+// A likeness is made with the further options, each 0 for the plain face: brow (a heavier ridge
+// over the eyes), nose (longer and more forward), noseW (broader at the tip and wings), cheek
+// (fuller cheekbones), chin (broader and more forward), lip (fuller lips), down (the corners of
+// the mouth turned down).
+function face(P, S, { full = 0, age = 0, lids = 0.5, tall = 1, brow = 0, nose = 0, noseW = 0, cheek = 0, chin = 0, lip = 0, down = 0 } = {}) {
   const k = (v) => v * S;
   let h = blend([
     [E(P(0, 1.4, -0.5), [9.8 * S, 10.8 * S * 1.05 * tall, 10.3 * S]), 0],
@@ -691,6 +707,10 @@ function face(P, S, { full = 0, age = 0, lids = 0.5, tall = 1 } = {}) {
     [mirrorX(E(P(1.45, -3.0, 10.1), [1.0 * S, 0.9 * S, 0.9 * S])), k(0.5)],
     [E(P(0, -8.4, 6.6), [3.1 * S, 2.1 * S, 2.5 * S]), k(1.5)],
     [mirrorX(E(P(9.9, -0.4, -0.6), [1.3 * S, 3.5 * S, 2.5 * S])), k(0.6)],
+    ...(brow ? [[mirrorX(E(P(3.5, 2.5, 8.5), [3.0 * S, (0.6 + 0.35 * brow) * S, (1.5 + 0.3 * brow) * S])), k(0.9)]] : []),
+    ...(nose || noseW ? [[E(P(0, -2.6 - 0.4 * nose, 11.3 + 0.7 * nose), [(1.7 + 0.5 * noseW) * S, 1.3 * S, 1.35 * S]), k(0.6)], [mirrorX(E(P(1.45 + 0.35 * noseW, -3.0, 10.1), [(1.0 + 0.25 * noseW) * S, 0.9 * S, 0.9 * S])), k(0.5)]] : []),
+    ...(cheek ? [[mirrorX(E(P(5.3, -1.7, 6.7), [(2.4 + 0.4 * cheek) * S, (2.0 + 0.3 * cheek) * S, (2.2 + 0.4 * cheek) * S])), k(1.6)]] : []),
+    ...(chin ? [[E(P(0, -8.8, 7.0 + 0.5 * chin), [(3.1 + 0.7 * chin) * S, 2.1 * S, (2.5 + 0.4 * chin) * S]), k(1.5)]] : []),
   ]);
   h = carve(h, mirrorX(E(P(3.4, 0.5, 9.2), [2.4 * S, 1.5 * S, 2.0 * S])), k(0.9));
   h = blend([[h, 0],
@@ -698,11 +718,14 @@ function face(P, S, { full = 0, age = 0, lids = 0.5, tall = 1 } = {}) {
     [mirrorX(E(P(3.4, 0.9 + lids * 0.6, 8.0), [2.2 * S, 0.5 * S, 1.4 * S])), k(0.3)],
     [mirrorX(E(P(3.45, -0.9, 8.1), [1.9 * S, (0.35 + 0.2 * age) * S, 1.0 * S])), k(0.3)],
     [E(P(0, -4.5, 9.4), [2.5 * S, 0.6 * S, 1.0 * S]), k(0.5)],
-    [E(P(0, -5.6, 9.0), [2.2 * S, 0.72 * S, 1.0 * S]), k(0.5)]]);
-  h = carve(h, E(P(0, -5.05, 9.95), [2.5 * S, 0.17 * S, 1.0 * S]), k(0.2));
+    [E(P(0, -5.6, 9.0), [2.2 * S, 0.72 * S, 1.0 * S]), k(0.5)],
+    ...(lip ? [[E(P(0, -4.45, 9.6), [2.5 * S, (0.6 + 0.25 * lip) * S, 1.1 * S]), k(0.5)], [E(P(0, -5.75, 9.25), [2.2 * S, (0.72 + 0.3 * lip) * S, 1.1 * S]), k(0.5)]] : [])]);
+  h = carve(h, E(P(0, -5.05, 9.95 + 0.2 * lip), [2.5 * S, 0.17 * S, 1.0 * S]), k(0.2));
+  if (down) h = carve(h, mirrorX(cone(P(2.3, -5.1, 9.7), P(3.3, -5.1 - 1.3 * down, 8.9), k(0.22), k(0.2))), k(0.25));
   h = carve(h, mirrorX(E(P(3.35, 0.2, 9.4), [0.6 * S, 0.6 * S, 0.3 * S])), k(0.1));
   if (age) h = carve(h, mirrorX(cone(P(1.95, -2.3, 9.95), P(3.7, -6.4, 8.5), k(0.3), k(0.3))), k(0.4));
-  return carve(h, mirrorX(E(P(10.6, -0.2, -0.2), [0.6 * S, 2.2 * S, 1.4 * S])), k(0.2));
+  // (The hollow of the ear is shallow, inside its rim: cut deeper it reads as a hole.)
+  return carve(h, mirrorX(E(P(11.05, 0.1, -0.3), [0.4 * S, 2.0 * S, 1.2 * S])), k(0.3));
 }
 
 // Netaji Subhas Chandra Bose under the canopy at India Gate, carved from one block of black granite
@@ -759,7 +782,7 @@ function netajiField() {
     [roundBox([0, 0.015, 0.0], [0.26, 0.015, 0.22], 0.005), 0.01],
   ]);
   // The head: a full round face, clean-shaven; the side cap, boat-shaped, creased along its top.
-  const head = face(netajiP, NETAJI_HEAD.S, { full: 2.2, lids: 0.4, tall: 0.96 });
+  const head = face(netajiP, NETAJI_HEAD.S, { full: 2.4, lids: 0.4, tall: 0.96, cheek: 1, chin: 0.7, lip: 0.5, noseW: 0.5, brow: 0.3 });
   // The side cap: two flat sides rising from a band round the head to a creased top, longer than
   // the head front to back and pointed at each end, set low over the forehead and tilted down to
   // the right.
@@ -772,7 +795,7 @@ function netajiField() {
 // 7 mm, and the head with the saluting hand, and the fist, on 5 mm (on phones 2, 1.2 and 0.9 cm).
 export const netajiBody = (m) => body(detail.low ? 'netaji-coarse' : 'netaji', netajiField, detail.low ? 0.02 : 0.012, m, undefined, {
   wear: 0.2, split: [
-    { region: (x, y, z) => Math.min(E([0, 1.71, 0.02], [0.11, 0.14, 0.14])(x, y, z), E([-0.15, 1.69, 0.1], [0.065, 0.09, 0.045])(x, y, z)), h: detail.low ? 0.009 : 0.005, lo: [-0.22, 1.56, -0.13], hi: [0.12, 1.86, 0.17] },
+    { region: (x, y, z) => Math.min(E([0, 1.71, 0.02], [0.11, 0.14, 0.14])(x, y, z), E([-0.15, 1.69, 0.1], [0.065, 0.09, 0.045])(x, y, z)), h: detail.low ? 0.009 : 0.0036, lo: [-0.22, 1.56, -0.13], hi: [0.12, 1.86, 0.17] },
     { region: (x, y, z) => Math.max(Math.abs(x) - 0.185, Math.abs(y - 1.12) - 0.36, 0.03 - z), h: detail.low ? 0.012 : 0.007, lo: [-0.2, 0.75, 0.02], hi: [0.2, 1.49, 0.16] },
     { region: E([0.236, 0.82, 0.035], [0.044, 0.075, 0.06]), h: detail.low ? 0.009 : 0.005, lo: [0.19, 0.74, -0.03], hi: [0.285, 0.9, 0.1] },
   ],
@@ -844,11 +867,11 @@ function shivajiField() {
     [E([-0.335, 0.17, -0.13], [0.035, 0.045, 0.038]), 0.01],
   ]);
   const P = shivajiP, S = SHIVAJI_HEAD.S, k = (v) => v * S;
-  let head = face(P, S, { age: 0.6, lids: 0.6 });
+  let head = face(P, S, { age: 0.3, lids: 0.3, brow: 0.8, cheek: 0.6, nose: 0.6 });
   // The hooked nose, the moustache turned up at its ends, and the pointed beard from the cheeks.
   head = blend([[head, 0],
     [cone(P(0, 2.6, 9.8), P(0, -1.2, 12.6), k(0.9), k(1.2)), k(0.6)],
-    [mirrorX(chain([[...P(0.4, -4.1, 11.0), k(0.75)], [...P(2.6, -4.3, 10.4), k(0.8)], [...P(5.2, -3.6, 8.9), k(0.55)], [...P(6.6, -2.0, 7.6), k(0.32)]], k(0.3))), k(0.3)],
+    [mirrorX(chain([[...P(0.4, -4.0, 11.0), k(0.95)], [...P(2.6, -4.3, 10.5), k(1.0)], [...P(5.0, -3.9, 9.1), k(0.75)], [...P(6.7, -2.4, 7.7), k(0.42)]], k(0.5))), k(0.5)],
     [cone(P(0, -7.2, 7.6), P(0, -15.5, 9.4), k(5.4), k(1.0)), k(2.0)],
     [mirrorX(E(P(6.4, -4.8, 4.6), [2.6 * S, 4.4 * S, 3.2 * S])), k(1.2)]]);
   // The turban: wound in bands, wider at its top, a knot over the forehead, the plume rising from
@@ -863,7 +886,7 @@ function shivajiField() {
 }
 // The rider on 1.2 cm cells (3.6 cm on the statue) and his head, beard and turban on 5 mm.
 export const shivajiBody = (m) => body(detail.low ? 'shivaji-coarse' : 'shivaji', shivajiField, detail.low ? 0.02 : 0.012, m, undefined, {
-  wear: 0.25, split: { region: E([0, 0.87, 0.02], [0.11, 0.15, 0.12]), h: detail.low ? 0.009 : 0.005, lo: [-0.12, 0.71, -0.11], hi: [0.12, 1.1, 0.15] },
+  wear: 0.25, split: { region: E([0, 0.87, 0.02], [0.11, 0.15, 0.12]), h: detail.low ? 0.009 : 0.0036, lo: [-0.12, 0.71, -0.11], hi: [0.12, 1.1, 0.15] },
 });
 
 // The Statue of Oneness at Omkareshwar (2023, in bronze): Adi Shankaracharya as a boy of twelve,
