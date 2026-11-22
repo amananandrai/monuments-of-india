@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, FACES, chhatri, hemi, finial, kalash, sheet, rng } from '../helpers.js';
+import { M, mat, box, cyl, at, chhatri, hemi, finial, kalash, sheet, rng } from '../helpers.js';
 import { jharokha, chhajja, windowFrame, beltCourse, mergeByMaterial } from '../parts/components.js';
 import { nagaraTemple, carvedPillar } from '../parts/temples.js';
 import { towerDetail } from '../parts/forts.js';

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, photo } from '../helpers.js';
+import { M, box, cyl, at, onFace } from '../helpers.js';
 import { mergeByMaterial, windowFrame, sunburst, gableRoof } from '../parts/components.js';
 import { classicalDoor, balustrade } from '../parts/colonial.js';
 import { trees, shrubs, lampPosts, benches, asiBoard, scatter, along } from '../parts/realism.js';
@@ -52,7 +52,7 @@ function architecture(f) {
 // of Assisi on the north side, with lamps along the path.
 export function addDetails(f, g) {
   architecture(f);
-  const { FZ, NW, AW } = S, L = photo(mat('#9b5b3f', 0.95), 'laterite');
+  const { FZ, NW, AW } = S, L = M.laterite;
   g.add(box(420, 0.06, 380, M.grass, 0, -0.06, -20));
   g.add(box(36, 0.05, 70, M.path, 0, 0, FZ + 36), box(220, 0.05, 8, M.asphalt, 0, 0, FZ + 76));
   // The church of St Francis of Assisi beside it, to the north (-x), and its convent.

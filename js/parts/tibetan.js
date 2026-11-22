@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, surface, inst, unitBox, unitCyl, onFace, FACES, TIBETAN, rng, hipRoof } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, hemi, surface, inst, unitBox, unitCyl, onFace, FACES, TIBETAN, rng, hipRoof } from '../helpers.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { detail } from '../detail.js';
 
@@ -310,5 +310,14 @@ export function goldRoof(w, d, { rise = 5, clere = 4.5, upper = 0.55, gilt = ROO
   g.add(at(hipRoof(uw + 2.4, ud + 2.4, rise * 0.8, gilt), 0, y, 0), at(roofCorners(uw + 2.4, ud + 2.4), 0, y + 0.05, 0));
   g.add(at(ganjira(4.2), 0, y + rise * 0.8 - 0.3, 0));
   for (const x of [-1, 1]) for (const z of [-1, 1]) g.add(at(gyaltsen(2.2), x * uw / 2, y - 0.1, z * ud / 2));
+  return g;
+}
+
+// A whitewashed chorten (stupa) about 4.6·s high: two square steps, the dome and a gilt spire.
+// They stand in rows at the foot of the monasteries of Ladakh and Spiti.
+const CHORTEN_WHITE = mat('#efece4', 0.85), CHORTEN_GILT = mat('#b8862a', 0.4, 0.6);
+export function chorten(s = 1, m = CHORTEN_WHITE) {
+  const g = new THREE.Group();
+  g.add(box(3 * s, 1.2 * s, 3 * s, m), box(2.4 * s, 0.8 * s, 2.4 * s, m, 0, 1.2 * s), at(hemi(1.1 * s, m, 16), 0, 2 * s, 0), cyl(0.25 * s, 0.4 * s, 1.6 * s, CHORTEN_GILT, 0, 3 * s, 0, 8));
   return g;
 }

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, mesh, box, at, onFace, hipRoof, kalash, photo, doubleSided } from '../helpers.js';
+import { M, mat, mesh, box, at, onFace, hipRoof, kalash, photo, doubleSided } from '../helpers.js';
 import { mergeByMaterial, windowFrame, jali } from '../parts/components.js';
 import { classicalDoor } from '../parts/colonial.js';
 import { ringRoof } from '../parts/temples.js';
@@ -8,7 +8,7 @@ import { addDetails } from '../details/mattancherry-palace.js';
 // Mattancherry's walls of laterite under lime plaster, washed white; the teak of its windows,
 // doors and eaves; the clay tiles of its roofs, and the copper of the shrine's finial.
 export const LIME = photo(mat('#efebe1', 0.88), 'plaster');
-export const LATERITE = photo(mat('#9b5b3f', 0.95), 'laterite');
+export const LATERITE = M.laterite;
 export const TEAK = photo(mat('#5a3a24', 0.7), 'timber');
 export const TILE = mat('#8e4630', 0.82);
 export const COPPER = mat('#b0773f', 0.45, 0.45);

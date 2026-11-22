@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, hemi, rng, inst, unitBox, TIBETAN, surface } from '../helpers.js';
+import { mat, mesh, box, cyl, at, rng, inst, unitBox, TIBETAN, surface } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
-import { rabsel, quarters, hall, maniWheels } from '../parts/tibetan.js';
+import { rabsel, quarters, hall, maniWheels, chorten } from '../parts/tibetan.js';
 import { tibetanDoor } from '../parts/doorways.js';
 import { trees, prayerFlags, scatter } from '../parts/realism.js';
 import { detail } from '../detail.js';
@@ -139,12 +139,6 @@ function oldTown(g) {
 
 // Namgyal Tsemo on the peak: the white fort and, below it, the red temple of Maitreya, with the
 // white gompa beside it; strings of flags from the fort down the ridge.
-const WHITE = mat('#efece4', 0.85);
-function chorten(s) {
-  const g = new THREE.Group();
-  g.add(box(3 * s, 1.2 * s, 3 * s, WHITE), box(2.4 * s, 0.8 * s, 2.4 * s, WHITE, 0, 1.2 * s), at(hemi(1.1 * s, WHITE, 16), 0, 2 * s, 0), cyl(0.25 * s, 0.4 * s, 1.6 * s, mat('#b8862a', 0.4, 0.6), 0, 3 * s, 0, 8));
-  return g;
-}
 function tsemo(g) {
   const { x, y, z } = PEAK, d = new THREE.Group();
   d.add(at(hall(11, 12, 9, { floors: 3, cap: 0.9, y0: 2.4, awnings: false }), x + 2, y - 3, z - 2));

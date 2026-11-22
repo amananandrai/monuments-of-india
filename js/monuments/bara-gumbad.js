@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, lathe, at, onFace, FACES, photo, guldasta } from '../helpers.js';
+import { mat, box, cyl, lathe, at, onFace, FACES, photo, guldasta } from '../helpers.js';
 import { iwan, arcadeSkin, cellRow } from '../parts/mughal.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { addDetails } from '../details/bara-gumbad.js';

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, box, at } from '../helpers.js';
+import { mat, box } from '../helpers.js';
 import { kakatiyaThorana } from '../parts/temples.js';
 import { addDetails } from '../details/warangal-fort.js';
 

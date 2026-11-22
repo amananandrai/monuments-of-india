@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, inst, unitBox, unitCyl, photo, sheet } from '../helpers.js';
+import { M, mat, box, at, inst, unitBox, unitCyl, photo, sheet } from '../helpers.js';
 import { fortGate, rampart, bastionCrowns } from '../parts/forts.js';
 import { heightField, rough, smooth, fbm, ridged } from '../parts/terrain.js';
 import { detail } from '../detail.js';

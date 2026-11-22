@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { mat, cyl, at, hemi, box, onFace, FACES } from '../helpers.js';
+import { at, onFace, FACES } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
-import { dharmaWheel, gyaltsen, parapetDiscs, maniWheels } from '../parts/tibetan.js';
+import { dharmaWheel, gyaltsen, parapetDiscs, maniWheels, chorten } from '../parts/tibetan.js';
 import { prayerFlags } from '../parts/realism.js';
 import { yaks } from '../parts/animals.js';
 import { HILL_H, HILL_R } from '../monuments/key-monastery.js';
@@ -21,13 +21,6 @@ function architecture(f) {
 
 // Key Monastery in Spiti: strings of prayer flags running from the top hall down the hill,
 // whitewashed chortens at the foot of the hill, and yaks grazing on the scree below.
-const WHITE = mat('#efece4', 0.85);
-function chorten(s) {
-  const g = new THREE.Group();
-  g.add(box(3 * s, 1.2 * s, 3 * s, WHITE), box(2.4 * s, 0.8 * s, 2.4 * s, WHITE, 0, 1.2 * s), at(hemi(1.1 * s, WHITE, 16), 0, 2 * s, 0));
-  g.add(cyl(0.25 * s, 0.4 * s, 1.6 * s, mat('#b8862a', 0.4, 0.6), 0, 3 * s, 0, 8));
-  return g;
-}
 export function addDetails(f, g) {
   architecture(f);
   const H = HILL_H, r = HILL_R * 0.66;

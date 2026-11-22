@@ -1,20 +1,12 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, hipRoof, photo } from '../helpers.js';
-import { mergeByMaterial } from '../parts/components.js';
+import { M, mat, box, cyl, at, onFace, hipRoof, photo } from '../helpers.js';
+import { mergeByMaterial, gableRoof } from '../parts/components.js';
 import { classicalDoor, oculus } from '../parts/colonial.js';
 import { addDetails } from '../details/basilica-of-bom-jesus.js';
 
-const LATERITE = photo(mat('#9b5b3f', 0.95), 'laterite');
+const LATERITE = M.laterite;
 const BASALT = photo(mat('#8a847a', 0.85), 'blocks');
 const TILE = mat('#b5523b', 0.8);
-
-function gableRoof(w, d, h, m) {
-  const s = new THREE.Shape();
-  s.moveTo(-w / 2, 0); s.lineTo(w / 2, 0); s.lineTo(0, h); s.closePath();
-  const geo = new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: false });
-  geo.translate(0, 0, -d / 2);
-  return mesh(geo, m);
-}
 
 export function buildBomJesus() {
   const g = new THREE.Group(), f = new THREE.Group();

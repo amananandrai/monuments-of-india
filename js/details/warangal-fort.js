@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, FACES, archPanel, inst, unitBox, unitCyl, rng, sheet, photo } from '../helpers.js';
+import { M, mat, box, at, onFace, FACES, archPanel, inst, unitBox, rng, sheet, photo } from '../helpers.js';
 import { mergeByMaterial, frieze, idol, archRing } from '../parts/components.js';
 import { carvedPillar } from '../parts/temples.js';
 import { nandi } from '../parts/animals.js';

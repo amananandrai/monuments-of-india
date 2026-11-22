@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, lathe, at, rng, inst, unitBox, photo, hemi } from '../helpers.js';
+import { mat, box, cyl, lathe, at, rng, inst, unitBox, photo, hemi } from '../helpers.js';
 import { iwan, arcadeSkin, cellRow } from '../parts/mughal.js';
 import { carved, windowFrame, mergeByMaterial } from '../parts/components.js';
 import { addDetails } from '../details/mahmud-gawan-madrasa.js';

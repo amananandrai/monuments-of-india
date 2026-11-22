@@ -1,6 +1,6 @@
 # Monuments of India: the video
 
-A documentary journey across India through all 101 monuments from the website, about an hour long (57 min with the `aditya` voice) (1920×1080 at 30 fps), made with [HyperFrames](https://hyperframes.heygen.com): HTML rendered to MP4 frame by frame.
+A documentary journey across India through the first 101 monuments of the website (which now has 201), about an hour long (57 min with the `aditya` voice) (1920×1080 at 30 fps), made with [HyperFrames](https://hyperframes.heygen.com): HTML rendered to MP4 frame by frame.
 
 Each monument gets one slot, timed to its narration:
 

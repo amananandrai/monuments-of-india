@@ -1,13 +1,22 @@
 # The setting: trees, boats, flags and the rest
 
 Everything that stands round a monument, and is not the monument, comes from one shared kit:
-`js/parts/realism.js`, with the animals in `js/parts/animals.js`. Each monument's own detail
-file (`js/details/<monument>.js`) calls the kit from its `addDetails(f, g)`.
+`js/parts/realism.js`, with the animals in `js/parts/animals.js`, railways and aircraft in
+`js/parts/transport.js` and hills in `js/parts/terrain.js`. Each monument's own detail file
+(`js/details/<id>.js`) calls the kit from its `addDetails(f, g)`.
 
-For the buildings themselves (domes, kiosks, pillars, arches) see [architecture.md](architecture.md).
-Every picture on this page is on one page in [components.md](components.md).
+For the buildings themselves (domes, kiosks, pillars, arches) see [Architecture](architecture.md).
+Every picture on this page is on one page in [Components](components.md).
 
-[Back to the README](README.md) · [States and monuments](monuments.md) · [How it is drawn](how-it-is-drawn.md)
+[README](../README.md) · [Project structure](project-structure.md) · [Architecture](architecture.md) · [The setting](setting.md) · [Components](components.md) · [How it is drawn](how-it-is-drawn.md) · [States and monuments](../monuments.md)
+
+## Contents
+
+- [How the kit works](#how-the-kit-works)
+- [Trees](#trees) · [Shrubs, hedges and flower beds](#shrubs-hedges-and-flower-beds) · [The ground](#the-ground)
+- [Lamps and street furniture](#lamps-and-street-furniture) · [Flags and garlands](#flags-and-garlands)
+- [Boats](#boats) · [Stalls](#stalls) · [Towns and cities](#towns-and-cities) · [Traffic](#traffic) · [Railways and aircraft](#railways-and-aircraft)
+- [Animals](#animals) · [Hills and mountains](#hills-and-mountains) · [Adding a new part](#adding-a-new-part)
 
 ## How the kit works
 
@@ -153,11 +162,11 @@ It keeps clear of:
 `stalls(spots, { awnings, goods })`: market stalls under coloured awnings, with heaps of goods.
 Spots are `[x, z, turn]`. They stand outside temple gates and in Laad Bazaar at Charminar.
 
-## Towns
+## Towns and cities
 
-| ![Town houses](img/town-houses.jpg) |   |   |
+| ![Town houses](img/town-houses.jpg) | ![City blocks round a site](img/city.jpg) |   |
 | :---: | :---: | :---: |
-| Town houses |   |   |
+| Town houses | City blocks round a site |   |
 
 | Part | What it is |
 | --- | --- |
@@ -179,8 +188,12 @@ g.add(cityAround([-72, 72, -88, 108], { rows: 2, gap: 12, storeys: [2, 4], seed:
 `traffic(lanes, x0, x1, { y, gap, taxis, buses, trucks })` puts vehicles on a road running along x. Each
 lane is `[z, direction]`. Each kind is drawn from its side profile and stands on wheels: saloon cars,
 the yellow Ambassador taxis of Kolkata, buses with their window bands, and trucks with a painted
-wooden body under a tarpaulin; on desktops they also have head and tail lights and bumpers. Only the bridges, stations and airports use it; there are
-no motor vehicles anywhere else, and no people at all, so that the monument stays the subject.
+wooden body under a tarpaulin; on desktops they also have head and tail lights and bumpers.
+
+Traffic runs only where a road is part of the picture: on the bridges, and on the city streets
+beside the stations, the airports and the town churches and synagogues. The temples, forts, tombs
+and gardens have no motor vehicles, and there are no people anywhere, so that the monument stays
+the subject.
 
 ## Railways and aircraft
 
@@ -210,8 +223,8 @@ g.add(at(track(300), 0, 0, 7), at(train(10, { livery: 'red' }), 0, RAIL_TOP, 7),
 | ![Nandi](img/nandi.jpg) | ![Elephants, plain and dressed](img/elephants.jpg) | ![Horse and lion](img/horse-lion.jpg) |
 | :---: | :---: | :---: |
 | Nandi | Elephants, plain and dressed | Horse and lion |
-| ![Deer](img/deer.jpg) | ![Yaks and camels](img/yaks-camels.jpg) |   |
-| Deer | Yaks and camels |   |
+| ![Deer](img/deer.jpg) | ![Yaks and camels](img/yaks-camels.jpg) | ![Lion Capital, lion and tiger](img/statue-lions.jpg) |
+| Deer | Yaks and camels | The Lion Capital; a couchant lion and tiger |
 
 From `js/parts/animals.js`. The larger animals are sculpted as one continuous skin and meshed in
 the browser, so they are heavier than the rest of the kit.
@@ -228,6 +241,28 @@ the browser, so they are heavier than the rest of the kit.
 | `deer(spots)` | The deer of Sarnath and Sikandra |
 | `yaks(spots)` | Yaks, in the mountains |
 | `camels(spots, { cloths })` | Camels in saddle cloths, in the Thar |
+| `lionCapital(material, scale)` | The Lion Capital of Ashoka: four lions back to back on the abacus with its wheels, over the lotus bell |
+| `ashokanPillar(material, { shaft })`, `kanglaSha({ m, plinth, h })` | The single-lion pillar of Vaishali and the dragon-headed guardian of Kangla: see [Architecture: Sculpture](architecture.md#sculpture) |
+
+## Hills and mountains
+
+| ![Height-field hill](img/terrain.jpg) | ![Ring of mountains](img/mountains.jpg) |   |
+| :---: | :---: | :---: |
+| Height-field hill | Ring of mountains |   |
+
+From `js/parts/terrain.js`: ground as one height-field mesh coloured by height and slope, in place
+of cones and domes. A monument on a hill writes a height function (`hillY(x, z)`, `ridge(x, z)`),
+passes it to `heightField`, and stands its walls and trees on the same function, so nothing floats
+or sinks.
+
+| Part | What it is |
+| --- | --- |
+| `heightField(w, d, n, fn, { rock, cover, steep })` | Ground shaped by a height function: rock where it is steep, scrub or grass where it is not |
+| `mountainRing({ inner, outer, h, snow })` | A ring of mountains round a valley, snow above `snow` metres |
+| `rough`, `smooth`, `fbm`, `ridged` | Noise helpers for writing a height function |
+
+Rocks, hills and tree crowns blocked out in the monuments' own files are rebuilt smoother and
+sculpted with noise when the monument loads (`js/naturalize.js`).
 
 ## Adding a new part
 

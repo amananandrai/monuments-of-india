@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, FACES, archWall } from '../helpers.js';
+import { mat, box, cyl, at, onFace, FACES, archWall } from '../helpers.js';
 import { iwan, arcadeSkin, cellRow } from '../parts/mughal.js';
 import { lotusDome, crescentFinial, chhajja, bracketGeo, placeAll, alongFace, mergeByMaterial } from '../parts/components.js';
 import { addDetails } from '../details/ibrahim-rauza.js';

@@ -3,7 +3,7 @@ import { M, box, at, cyl } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { trees, shrubs, lampPosts, benches, asiBoard, scatter, along, townHouses, traffic } from '../parts/realism.js';
 import { detail } from '../detail.js';
-import { P, LIME, TRIM, TILE } from '../monuments/st-francis-church-kochi.js';
+import { P, LIME, TRIM } from '../monuments/st-francis-church-kochi.js';
 
 // The memorial stones in the churchyard: low whitewashed tombs with a slab on top, and a few
 // headstones, as along the north side of St Francis.

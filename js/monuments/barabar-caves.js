@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, surface, rng, ellipsoid } from '../helpers.js';
+import { mat, box, at, surface, rng, ellipsoid } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { chaityaDoorway, mauryanDoor } from '../parts/doorways.js';
 import { heightField, fbm, ridged, smooth } from '../parts/terrain.js';

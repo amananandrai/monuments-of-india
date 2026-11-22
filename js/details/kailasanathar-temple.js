@@ -35,7 +35,7 @@ function architecture(f) {
     d.add(o);
   }
   // The images in the cells, facing the sanctum from all sides.
-  const fig = [], CH = 3.2, ix = cx - 1.45 - 0.96;
+  const fig = [], ix = cx - 1.45 - 0.96;
   const row = (x0, z0, x1, z1, n, a) => { for (let k = 0; k < n; k++) { const t = (k + 0.5) / n; fig.push([x0 + (x1 - x0) * t, 0.35, z0 + (z1 - z0) * t, 0.5, 0.6, 0.5, a]); } };
   row(-cx + 1.45, cz0 + 1.45 + 0.96, cx - 1.45, cz0 + 1.45 + 0.96, 15, 0);
   row(-ix, cz0 + 3.45, -ix, cz1 - 3.45, 13, Math.PI / 2);

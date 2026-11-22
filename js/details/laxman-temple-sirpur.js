@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { M, mat, surface, flat, mesh, box, at, onFace, FACES, inst, nagaraProfile } from '../helpers.js';
-import { mouldings, medallion, pilasters, mergeByMaterial } from '../parts/components.js';
+import { mouldings, pilasters, mergeByMaterial } from '../parts/components.js';
 import { templeDoorway } from '../parts/doorways.js';
 import { gavaksha } from '../parts/temples.js';
 import { trees, shrubs, scatter, along, lampPosts, asiBoard, bollards, benches } from '../parts/realism.js';

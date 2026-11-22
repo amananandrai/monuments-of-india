@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { mat, cyl, at, hemi, box } from '../helpers.js';
+import { at } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
-import { dharmaWheel, gyaltsen, parapetDiscs, maniWheels } from '../parts/tibetan.js';
+import { dharmaWheel, gyaltsen, parapetDiscs, maniWheels, chorten } from '../parts/tibetan.js';
 import { trees, prayerFlags, along } from '../parts/realism.js';
 
 // Thiksey, finer detail. From photographs: the Dharma wheel and its deer stand over the front of
@@ -20,12 +20,6 @@ function architecture(f) {
 // Thiksey above the Indus: strings of prayer flags from the top of the hill down over the
 // monastery, a row of whitewashed chortens at the foot of the hill, and the poplars and willows
 // that grow along the river.
-const WHITE = mat('#efece4', 0.85);
-function chorten(s) {
-  const g = new THREE.Group();
-  g.add(box(3 * s, 1.2 * s, 3 * s, WHITE), box(2.4 * s, 0.8 * s, 2.4 * s, WHITE, 0, 1.2 * s), at(hemi(1.1 * s, WHITE, 16), 0, 2 * s, 0), cyl(0.25 * s, 0.4 * s, 1.6 * s, mat('#b8862a', 0.4, 0.6), 0, 3 * s, 0, 8));
-  return g;
-}
 export function addDetails(f, g) {
   architecture(f);
   const H = 48;

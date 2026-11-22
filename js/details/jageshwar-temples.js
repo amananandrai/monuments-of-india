@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, surface, flat, mesh, box, cyl, at, onFace, FACES, inst, sheet, hipRoof, nagaraProfile, rng } from '../helpers.js';
+import { M, mat, surface, flat, mesh, box, cyl, at, onFace, inst, sheet, hipRoof, nagaraProfile, rng } from '../helpers.js';
 import { mouldings, frieze, templeNiche, idol, medallion, mergeByMaterial } from '../parts/components.js';
 import { carvedPillar } from '../parts/temples.js';
 import { heightField, fbm, ridged, smooth } from '../parts/terrain.js';

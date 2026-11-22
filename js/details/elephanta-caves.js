@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, lathe, ellipsoid, face, sheet, surface } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, sheet, surface } from '../helpers.js';
 import { mergeByMaterial, panel } from '../parts/components.js';
 import { figure, trimurti } from '../parts/sculpture.js';
 import { guardian } from '../parts/figures.js';

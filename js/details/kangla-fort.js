@@ -6,7 +6,7 @@ import { trees, shrubs, scatter, along, lampPosts, townHouses, boats } from '../
 import { detail } from '../detail.js';
 import { LIME, BRICK, BRICK_DARK } from '../monuments/kangla-fort.js';
 
-const THATCH = mat('#7a5a3a', 0.95), TIN = mat('#8d2f2a', 0.6, 0.3), WOOD = mat('#5d3b26', 0.85), RED = mat('#b2392c', 0.75), ROAD = mat('#6b665c', 0.95);
+const TIN = mat('#8d2f2a', 0.6, 0.3), WOOD = mat('#5d3b26', 0.85), RED = mat('#b2392c', 0.75), ROAD = mat('#6b665c', 0.95);
 
 // The Uttra's ruins: stumps of brick walls and the bases of its pillars on the plinth (at z = -26).
 function uttra(f) {

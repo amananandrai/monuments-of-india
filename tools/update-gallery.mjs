@@ -40,7 +40,7 @@ const lines = [
   'redraws a monument\'s picture when that monument\'s own code changes. The pictures are the plain',
   'studio views from `tools/shoot-views.mjs`; the site adds shadows, photo textures and haze.',
   '',
-  '[Back to the README](README.md) · [Architecture](architecture.md) · [The setting](realism.md) · [Components](components.md)',
+  '[README](README.md) · [Project structure](docs/project-structure.md) · [Architecture](docs/architecture.md) · [The setting](docs/setting.md) · [Components](docs/components.md) · [How it is drawn](docs/how-it-is-drawn.md)',
   '',
   '## Contents',
   '',

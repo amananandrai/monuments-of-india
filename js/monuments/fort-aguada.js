@@ -4,7 +4,7 @@ import { fortGate } from '../parts/forts.js';
 import { heightField, rough, smooth } from '../parts/terrain.js';
 import { addDetails } from '../details/fort-aguada.js';
 
-const LATERITE = photo(mat('#9b5b3f', 0.95), 'laterite');
+const LATERITE = M.laterite;
 const LATERITE_DARK = photo(mat('#7d4530', 0.95), 'laterite');
 const WHITE = mat('#eeeae2', 0.8);
 

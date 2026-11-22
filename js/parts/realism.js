@@ -5,9 +5,9 @@ import { detail } from '../detail.js';
 
 // The setting round a monument, used by every file in js/details: trees and shrubs, heritage
 // lamp posts, benches, the blue board of the Archaeological Survey of India, marigold garlands,
-// prayer flags, boats, bollards with chains, stalls, and fountain jets. There are no people. The
-// Howrah Bridge and the Bandra-Worli Sea Link carry traffic (traffic(), below); nowhere else has
-// motor vehicles. Everything here is instanced, so a garden of fifty trees costs a few draw calls
+// prayer flags, boats, bollards with chains, stalls, and fountain jets. There are no people. Motor
+// traffic (traffic(), below) runs only on the bridges and on the city streets beside the stations,
+// airports and town churches. Everything here is instanced, so a garden of fifty trees costs a few draw calls
 // and a few thousand triangles. Places are lists of [x, z] (or [x, y, z] where it says so); `seed` makes the
 // variation repeatable.
 

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, mesh, box, at, inst, rng, photo, nagaraProfile, flat, kalash, shikhara, flag, M } from '../helpers.js';
+import { mat, mesh, box, at, inst, rng, photo, nagaraProfile, shikhara, flag, M } from '../helpers.js';
 import { carvedPillar } from '../parts/temples.js';
 import { templeDoorway, steps } from '../parts/doorways.js';
 import { mergeByMaterial, mouldings, templeNiche, idol } from '../parts/components.js';

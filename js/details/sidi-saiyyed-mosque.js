@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, mat, box, at, archPanel } from '../helpers.js';
 import { archRing, mergeByMaterial } from '../parts/components.js';
-import { trees, shrubs, lampPosts, bollards, along, scatter, cityAround, traffic } from '../parts/realism.js';
+import { trees, shrubs, lampPosts, bollards, along, cityAround, traffic } from '../parts/realism.js';
 import { detail } from '../detail.js';
 
 // The mosque's honey-coloured sandstone, and the same stone in shade.
