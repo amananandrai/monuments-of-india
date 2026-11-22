@@ -12,7 +12,7 @@ import { addDetails } from '../details/dakshineswar-kali-temple.js';
 export const WHITE = photo(mat('#f1ebdc', 0.8), 'plaster');
 export const CREAM = photo(mat('#e4d3ac', 0.85), 'plaster');
 export const RED = photo(mat('#9d3f30', 0.85), 'plaster');
-export const PAVE = mat('#c9bfae', 0.95);
+export const PAVE = mat('#b7a991', 0.95);
 
 // The site's measures, shared with js/details/dakshineswar-kali-temple.js. +z is south, the way
 // the temple faces; the river is to the west (-x). B: the courtyard's height over the river's

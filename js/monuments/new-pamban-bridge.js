@@ -25,7 +25,7 @@ const STEEL = surface(mat('#a9b0b4', 0.5, 0.45), 'none'), STEEL_DARK = surface(m
 const ROPE = surface(mat('#3c4043', 0.5, 0.6), 'none'), CABIN = surface(mat('#e9ebec', 0.5, 0.1), 'none');
 const GLAZE = surface(mat('#22303a', 0.15, 0.6), 'none'), DECK = surface(mat('#8b9094', 0.7, 0.3), 'none');
 // The shallow sea over the sand of the strait: blue-green, not the deep blue of open water.
-const SHALLOWS = surface(mat('#2a8f96', 0.06, 0, { envMapIntensity: 1 }), 'water');
+const SHALLOWS = surface(mat('#1f8089', 0.06, 0, { envMapIntensity: 1 }), 'water');
 SHALLOWS.userData.wave = [6, 0.5, 0.05];
 SHALLOWS.userData.reflect = true;
 

@@ -166,5 +166,5 @@ export function buildVidhanaSoudha() {
 
   addDetails(f, g);
   // The home view: the east front and its steps from across the road, a little to one side.
-  return { group: g, focus: f, view: [0.26, 0.07, 1.2], zoom: 0.62 };
+  return { group: g, focus: f, view: [0.26, 0.07, 1.2], zoom: 0.56 };
 }

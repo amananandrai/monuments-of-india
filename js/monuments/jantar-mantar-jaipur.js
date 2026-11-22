@@ -94,7 +94,7 @@ export function samrat(H, { T = H * 0.13, R = H * 0.62, lat = LAT, m = OCHRE, tr
       scale.push([P(th, R, -wm), P(th, R, wm), P(th, R + 0.3, wm), P(th, R + 0.3, -wm)]);
       [-1, 1].forEach((s, i) => kerbs[i].push([P(th, R - R * 0.025, s * (wM - R * 0.03)), P(th, R - R * 0.025, s * wM), P(th, R + 0.3, s * wM), P(th, R + 0.3, s * (wM - R * 0.03))]));
     }
-    g.add(sweep(ramp, m), sweep(scale, MARBLE), sweep(kerbs[0], trim), sweep(kerbs[1], trim));
+    g.add(sweep(ramp, m === OCHRE ? OCHRE_DARK : m), sweep(scale, MARBLE), sweep(kerbs[0], trim), sweep(kerbs[1], trim));
     // The hours, cut across the scale: six to each quadrant.
     if (ticks) for (let k = 1; k < 6; k++) g.add(strut(P(k * Math.PI / 12, R - 0.01, -wm * 0.98), P(k * Math.PI / 12, R - 0.01, wm * 0.98), Math.max(0.03, R * 0.006), INK));
     // The landing at the head of each quadrant.
