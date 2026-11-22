@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, sheet, mown, chhatri, flag, hipRoof, inst, unitBox } from '../helpers.js';
-import { mergeByMaterial, merlons, jharokha } from '../parts/components.js';
+import { M, mat, mesh, box, at, sheet, mown, chhatri, flag, hipRoof, inst, unitBox } from '../helpers.js';
+import { mergeByMaterial, merlons } from '../parts/components.js';
 import { wallWithGaps } from '../parts/temples.js';
 import { heightField, fbm, smooth } from '../parts/terrain.js';
 import { trees, shrubs, lampPosts, benches, asiBoard, along, scatter, cityAround } from '../parts/realism.js';
 import { detail } from '../detail.js';
-import { samrat, arcBlock, LAT, OCHRE, OCHRE_DARK, RED, SAND, MARBLE, BRASS, INK, SAMRAT } from '../monuments/jantar-mantar-jaipur.js';
+import { samrat, LAT, OCHRE, OCHRE_DARK, RED, SAND, MARBLE, BRASS, SAMRAT } from '../monuments/jantar-mantar-jaipur.js';
 
 // Jantar Mantar, finer detail. From photographs and the plan of the yard: besides the great
 // instruments (js/monuments/jantar-mantar-jaipur.js) there are

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, onFace, sheet } from '../helpers.js';
+import { M, mat, mesh, box, at, onFace, sheet } from '../helpers.js';
 import { mouldings, frieze, templeNiche, idol, medallion, mergeByMaterial } from '../parts/components.js';
 import { figureFrieze } from '../parts/sculpture.js';
 import { heightField, fbm, ridged, smooth } from '../parts/terrain.js';
@@ -84,7 +84,7 @@ export function addDetails(f, g, dims) {
   const floor = scatter(detail.low ? 50 : 90, [-150, 150, -120, 44], { seed: 4, gap: 9, avoid: [[-26, 26, -28, 44], [-80, 0, 0, 60], [30, 190, -34, 52]] });
   g.add(trees(floor, { kind: 'sal', seed: 4 }));
   const slope = scatter(detail.low ? 110 : 340, [-420, 420, -420, 160], { seed: 8, gap: 10 }).filter(([x, z]) => { const y = hillY(x, z); return y > 1.5 && y < 95; }).map(([x, z]) => [x, z, 13, hillY(x, z) - 0.4]);
-  g.add(trees(slope, { kind: 'sal', seed: 9 }), trees(slope.filter((_, k) => k % 3 === 0).map(([x, z, h, y]) => [x + 7, z + 5, 11, hillY(x + 7, z + 5) - 0.4]), { kind: 'teak', seed: 10 }));
+  g.add(trees(slope, { kind: 'sal', seed: 9 }), trees(slope.filter((_, k) => k % 3 === 0).map(([x, z]) => [x + 7, z + 5, 11, hillY(x + 7, z + 5) - 0.4]), { kind: 'teak', seed: 10 }));
   g.add(trees([[19, 32], [-24, -10], [23, -12]], { kind: 'mango', seed: 3 }), trees([[-30, -34], [28, -42]], { kind: 'peepal', seed: 5, h: 12 }));
   g.add(shrubs([...along(7, [-13, 18], [-13, 44]), ...along(7, [13, 18], [13, 44])].map(([x, z]) => [x, z, 1]), { seed: 4, flowers: '#d0306f' }));
   g.add(benches([[-6, 46.8], [6, 46.8]]));

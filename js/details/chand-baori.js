@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, sheet, hemi, flag, inst, unitBox } from '../helpers.js';
+import { M, mat, box, cyl, at, sheet, hemi, flag, inst, unitBox } from '../helpers.js';
 import { mergeByMaterial, arcadeScreen, jharokha, templeNiche, idol, chhajja, frieze, railing } from '../parts/components.js';
 import { carvedPillar } from '../parts/temples.js';
 import { steps } from '../parts/doorways.js';
-import { trees, shrubs, asiBoard, along, scatter, townHouses } from '../parts/realism.js';
+import { trees, shrubs, asiBoard, scatter, townHouses } from '../parts/realism.js';
 import { detail } from '../detail.js';
-import { STONE, BUFF, BUFF_DARK, EARTH, D, S, TIER, ZA, ZB, ZC } from '../monuments/chand-baori.js';
+import { STONE, BUFF, BUFF_DARK, D, S, TIER, ZA, ZB, ZC } from '../monuments/chand-baori.js';
 
 // Chand Baori, finer detail. From photographs of the north side, which is not stepped like the
 // other three but built up in storeys, the upper ones added by later (Chauhan and Mughal) hands:

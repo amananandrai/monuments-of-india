@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, inst, unitBox, surface, photo } from '../helpers.js';
+import { mat, mesh, box, cyl, at, inst, surface } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { detail } from '../detail.js';
 import { addDetails } from '../details/mumbai-airport-t2.js';
@@ -14,7 +14,7 @@ import { addDetails } from '../details/mumbai-airport-t2.js';
 export const ROOF_Y = 42.5, DECK_Y = 11, COLS_X = [-160, -96, -32, 32, 96, 160], COLS_Z = [84, 50, 16, -18, -52];
 const WHITE = surface(mat('#f1f1ee', 0.55), 'none'), RIB = surface(mat('#d9dad6', 0.6), 'none');
 const GLASS = surface(mat('#587a8f', 0.12, 0.65), 'none'), GLASS_DARK = surface(mat('#2c3d49', 0.15, 0.6), 'none');
-const CONCRETE = photo(mat('#c9c6be', 0.9), 'concrete'), PANEL = surface(mat('#dcdcd8', 0.6, 0.1), 'none');
+const PANEL = surface(mat('#dcdcd8', 0.6, 0.1), 'none');
 
 // The roof's plan: straight sides and back, the front bowed out over the forecourt.
 export function roofPlan(inset = 0) {

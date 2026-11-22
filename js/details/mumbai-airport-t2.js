@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, rng, inst, unitBox, unitCyl, surface, photo, mown } from '../helpers.js';
+import { M, mat, mesh, box, rng, inst, unitBox, unitCyl, surface, photo, mown } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { trees, shrubs, scatter, along, townHouses, houseRow } from '../parts/realism.js';
 import { airliner, jetBridge } from '../parts/transport.js';

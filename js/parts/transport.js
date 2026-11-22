@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, inst, unitBox, unitCyl, surface } from '../helpers.js';
+import { mat, mesh, box, cyl, at, inst, unitBox, surface } from '../helpers.js';
 import { mergeByMaterial } from './components.js';
 import { detail } from '../detail.js';
 

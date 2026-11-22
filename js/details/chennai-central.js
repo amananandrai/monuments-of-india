@@ -5,7 +5,7 @@ import { GLASS, cutSlab } from '../parts/colonial.js';
 import { track, train, overhead, platform } from '../parts/transport.js';
 import { trees, lampPosts, along, scatter, cityAround, traffic } from '../parts/realism.js';
 import { detail } from '../detail.js';
-import { BANK, W, D, H, BRICK, WHITE, TILE } from '../monuments/chennai-central.js';
+import { BANK, D, H, BRICK, WHITE, TILE } from '../monuments/chennai-central.js';
 
 // Chennai Central, finer detail and the setting. The front faces south (+z here) over its
 // forecourt onto Poonamallee High Road; the Buckingham Canal passes under the road and along the

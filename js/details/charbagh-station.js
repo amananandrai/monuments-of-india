@@ -4,7 +4,7 @@ import { mergeByMaterial } from '../parts/components.js';
 import { detail } from '../detail.js';
 import { track, train, overhead, platform, RAIL_TOP } from '../parts/transport.js';
 import { trees, shrubs, lampPosts, fountains, benches, cityAround, scatter, along, around } from '../parts/realism.js';
-import { CB, RED, WHITE } from '../monuments/charbagh-station.js';
+import { CB, WHITE } from '../monuments/charbagh-station.js';
 
 // Charbagh Station, finer detail. From photographs: slender Lucknow turrets (guldastas) stand on
 // the parapet between the kiosks and at the corners of every pavilion; a white clock panel and the
@@ -39,7 +39,7 @@ function yard() {
   c.add(inst(unitBox(), posts, IRON), box(152, 0.2, 18, M.path, 0, 0, -18));
   g.add(c);
   const lines = [];
-  PZ.forEach((z, k) => {
+  PZ.forEach((z) => {
     g.add(at(platform(L, 9, { canopy: true }), 0, 0, z));
     lines.push([z - 6.3, -1], [z - 11.7, 1]);
     // Benches' worth of shelter is the canopy; a name board at each end of the platform.

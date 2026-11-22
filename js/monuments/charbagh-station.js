@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, photo, box, cyl, at, onFace, FACES, archWall, chhatri, finial, inst, unitBox } from '../helpers.js';
+import { mat, photo, box, cyl, at, onFace, FACES, archWall, chhatri, finial, inst, unitBox } from '../helpers.js';
 import { mergeByMaterial, chhajja, merlons, lotusDome, mughalChhatri } from '../parts/components.js';
 import { arcadeSkin } from '../parts/mughal.js';
 import { detail } from '../detail.js';

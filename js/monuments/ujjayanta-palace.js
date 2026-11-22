@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, V, mat, box, cyl, lathe, at, onFace, FACES, archWall, chhatri, finial, ribbed, bulbPoints } from '../helpers.js';
+import { V, mat, box, cyl, lathe, at, onFace, FACES, archWall, chhatri, finial, ribbed, bulbPoints } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { arcadeSkin } from '../parts/mughal.js';
 import { addDetails } from '../details/ujjayanta-palace.js';

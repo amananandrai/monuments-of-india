@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, box, at, onFace, hipRoof, surface, FACES } from '../helpers.js';
+import { mat, box, at, onFace, hipRoof, surface, FACES } from '../helpers.js';
 import { mergeByMaterial, windowFrame, beltCourse } from '../parts/components.js';
 import { cutSlab, headRing, gothicWindow } from '../parts/colonial.js';
 import { addDetails } from '../details/chennai-central.js';
