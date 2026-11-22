@@ -4,17 +4,19 @@ import { ellipsoid as E, cone, chain, blend, carve, mirrorX, flatBase, bounded, 
 import { detail } from '../detail.js';
 import { addDetails } from '../details/adiyogi.js';
 
-// Adiyogi at the Isha Yoga Centre near Coimbatore (2017), from photographs: a bust of Shiva as the
-// first yogi, 112 ft (34.24 m) high, 45 m across and 25 m deep, of black steel, at the foot of the
-// Velliangiri hills. The head, half the statue's height, stands on a thick neck that rises out of
-// very broad shoulders, which slope away to the ground on either side like a mound: there are no
-// arms. The face is calm and smooth, the eyes closed under arched lids, the lips full and a little
-// smiling; the third eye is a pale upright almond of bright steel on the brow. The hair is a mass
-// of matted locks piled into a knot, with a large pale crescent moon standing out of it on his
-// left, and it falls behind the neck in a broad cloak that spreads over the shoulders, long locks
-// running down them to the ground. A copper ring hangs in each ear. A cobra coils round the foot
-// of the neck and rears its hood beside it on his right, and a thin cord hangs in a V on the
-// chest. The bust faces +z; it stands on a low platform BASE high.
+// Adiyogi at the Isha Yoga Centre near Coimbatore (2017), from photographs taken from the front,
+// both sides, below and behind (Wikimedia Commons, "Adiyogi Shiva bust" and the Isha Yoga Centre
+// series): a bust of Shiva as the first yogi, 112 ft (34.24 m) high, 45 m across and 25 m deep, of
+// black steel, at the foot of the Velliangiri hills. The head, half the statue's height, stands on
+// a thick neck that rises out of very broad shoulders, which slope away to the ground on either
+// side like a mound: there are no arms. The face is calm and smooth, the eyes closed, the brows
+// arched, the lips full and a little smiling; the third eye is a tall white flame on the brow.
+// The hair is a mass of thick wavy ropes that start at the crown, sweep back over the head and
+// fall down the sides and the back to the shoulders and the ground, twice as deep as the head
+// behind. A thin bright crescent stands on the hair on his left, and a copper ring hangs in each
+// ear. A cobra stands on his right shoulder beside the neck, its broad hood spread and facing
+// forward as high as the jaw, and a thin cord hangs in a V on the chest. The bust faces +z; it
+// stands on a terrace BASE high.
 export const STEEL = mat('#1f1f22', 0.36, 0.55), BASE = 1.6, H = 34.24;
 const BRIGHT = mat('#c9ccd0', 0.3, 0.8), COPPER = mat('#b9753a', 0.35, 0.8);
 // The head's layout, after the face of the seated Shiva (js/parts/figures.js), in units P maps to
@@ -22,16 +24,30 @@ const BRIGHT = mat('#c9ccd0', 0.3, 0.8), COPPER = mat('#b9753a', 0.35, 0.8);
 const S = 0.62, HY = 24.3, HZ = 1.0;
 const P = (x, y, z) => [x * S, HY + y * S * 1.08, HZ + z * S], k = (v) => v * S;
 
-// The long locks over each shoulder: from behind the ear, down beside the neck and out along the
-// slope of the shoulder to the ground, five a side, fanning backwards.
-function locks(sx) {
-  return [0, 1, 2, 3, 4].map((j) => chain([
-    [sx * (6.2 + 0.25 * j), 21.5, -2.4 - 0.6 * j, 0.8],
-    [sx * (8.0 + 0.6 * j), 16.5, -2.4 - 0.7 * j, 1.0],
-    [sx * (10.5 + 1.2 * j), 11.2 - 0.35 * j, -1.2 - 0.9 * j, 1.0],
-    [sx * (13.2 + 1.5 * j), 9.0 - 0.6 * j, 0.2 - 1.0 * j, 0.9],
-    [sx * (15.4 + 1.5 * j), 6.6 - 0.75 * j, 1.2 - 1.1 * j, 0.7],
-  ], 0.3));
+// The top of the mound of the shoulders at (x, z), or 0 beyond it.
+const mound = (x, z) => { const q = 1 - (x / 22.5) ** 2 - ((z + 1) / 11.5) ** 2; return q > 0 ? 11.5 * Math.sqrt(q) : 0; };
+// The ropes of hair: each starts at the crown, runs over the head towards its own side (phi, the
+// angle from the front) and falls beside the neck and down the shoulders or the back, waving from
+// side to side as it goes. C is the middle of the hair's cap.
+function ropes(C) {
+  const out = [];
+  for (const sx of [-1, 1]) for (let i = 0; i < 10; i++) {
+    const phi0 = sx * (1.52 + i * 0.178), ph = i * 1.7 + (sx > 0 ? 0.6 : 0), pts = [[0.4 * sx, C[1] + 6.1, C[2] + 2.6, 1.0]];
+    const wave = (t) => phi0 + 0.13 * Math.sin(ph + t * 5.2);
+    [[1.02, 1.05], [0.5, 1.2], [-0.05, 1.25]].forEach(([e, r], n) => { const a = wave(n + 1); pts.push([C[0] + 7.5 * Math.sin(a) * Math.cos(e), C[1] + 6.3 * Math.sin(e), C[2] + 7.7 * Math.cos(a) * Math.cos(e), r]); });
+    [[8.8, 18.2], [10.6, 13.6], [13.2, 0], [16.2, 0], [19.4, 0]].forEach(([R, y], n) => {
+      const a = wave(n + 4), x = R * Math.sin(a), z = Math.max(-14.6, R * 0.8 * Math.cos(a) - 2.2);
+      pts.push([x, y || Math.max(0.6, mound(x, z) + 0.35), z, n < 4 ? 1.25 : 0.9]);
+    });
+    out.push([chain(pts, 0.4), 0.5]);
+  }
+  // Shorter ropes over the temples, from the crown down to above the ears, which stay bare.
+  for (const sx of [-1, 1]) for (const [a, e1] of [[0.62, 0.42], [1.08, 0.3]]) {
+    const pts = [[0.4 * sx, C[1] + 6.1, C[2] + 2.6, 0.9]];
+    for (const [e, r, w, q] of [[1.0, 1.0, 0.1, 1], [0.68, 1.1, -0.08, 1], [e1, 0.5, 0.06, 0.95]]) pts.push([C[0] + 7.4 * q * Math.sin(sx * (a + w)) * Math.cos(e), C[1] + 6.3 * Math.sin(e), C[2] + 7.6 * q * Math.cos(a + w) * Math.cos(e), r]);
+    out.push([chain(pts, 0.4), 0.5]);
+  }
+  return blend(out);
 }
 
 function adiyogiField() {
@@ -58,44 +74,32 @@ function adiyogiField() {
     [mirrorX(E(P(9.9, -0.4, -0.6), [k(1.3), k(3.5), k(2.5)])), k(0.6)],
   ]);
   head = carve(head, mirrorX(E(P(3.4, 0.5, 9.2), [k(2.4), k(1.5), k(2.0)])), k(0.9));
-  // The eyes half closed: the eyeball low in its socket, the upper lid heavy and drawn down over
-  // most of it, the lower lid a thin rim; full lips, the corners turned a little up.
+  // The eyes closed: the upper lid drawn right down over the eyeball to meet the lower, the line
+  // between them a shallow curve; full lips, the corners turned a little up.
   head = blend([[head, 0],
-    [mirrorX(E(P(3.4, 0.3, 7.8), [k(1.9), k(1.1), k(1.5)])), k(0.2)],
-    [mirrorX(E(P(3.4, 0.75, 8.1), [k(2.25), k(0.85), k(1.45)])), k(0.25)],
+    [mirrorX(E(P(3.4, 0.15, 8.35), [k(2.2), k(1.2), k(1.6)])), k(0.45)],
     [mirrorX(E(P(3.45, -0.85, 8.0), [k(1.9), k(0.3), k(0.95)])), k(0.3)],
     [E(P(0, -4.4, 9.4), [k(2.7), k(0.75), k(1.1)]), k(0.5)],
     [E(P(0, -5.65, 9.1), [k(2.4), k(0.9), k(1.1)]), k(0.5)]]);
   // The slit between the lids, the line between the lips, the philtrum, the ears' hollows.
-  head = carve(head, mirrorX(E(P(3.4, 0.02, 9.2), [k(1.7), k(0.12), k(0.7)])), k(0.12));
+  head = carve(head, mirrorX(E(P(3.4, -0.5, 9.85), [k(1.75), k(0.1), k(0.5)])), k(0.1));
+  head = carve(head, mirrorX(E(P(2.9, -4.85, 9.5), [k(0.3), k(0.22), k(0.3)])), k(0.2));
   head = carve(head, E(P(0, -5.05, 10.0), [k(2.7), k(0.17), k(1.0)]), k(0.2));
-  head = carve(head, E(P(0, -3.65, 10.25), [k(0.35), k(0.6), k(0.3)]), k(0.15));
+  head = carve(head, E(P(0, -3.65, 10.4), [k(0.3), k(0.5), k(0.2)]), k(0.2));
   head = carve(head, mirrorX(E(P(10.7, -0.2, -0.2), [k(0.5), k(2.0), k(1.2)])), k(0.25));
-  // The hair: a cap of locks over the skull, from a hairline high on the brow, and the knot,
-  // three rings of piled locks rising to the top; and the locks down the back.
-  const hair = blend([
-    [E(P(0, 4.8, -2.4), [k(10.6), k(9.6), k(11.0)]), 0],
-    [E(P(0, 10.4, -2.6), [k(6.2), k(2.8), k(5.8)]), k(1.4)],
-    [E(P(0, 12.8, -2.9), [k(4.4), k(2.1), k(4.2)]), k(1.0)],
-    [E(P(0, -1.0, -6.5), [k(11.0), k(12.0), k(6.0)]), k(2.0)],
+  // The hair: a full cap over the skull from a hairline high on the brow, deeper behind than the
+  // head itself, and the mass that falls behind the neck and spreads over the back of the
+  // shoulders; the ropes lie on both.
+  const C = P(0, 4.8, -3.0);
+  const cap = blend([
+    [E(C, [7.0, 6.2, 7.4]), 0],
+    [E(P(0, -1.0, -7.5), [k(11.4), k(12.0), k(7.0)]), k(2.0)],
   ]);
-  // The cloak of hair behind the neck, spreading over the shoulders.
-  const cloak = blend([[E([0, 15, -5.4], [10.5, 9, 4.6]), 0], [E([0, 8.5, -6.8], [16.5, 6.5, 4.8]), 3]]);
-  // Grooves between the coils of the knot and the locks of the cap.
-  let hairC = hair;
-  for (const [y, r] of [[9.2, 6.4], [11.6, 5.2], [13.6, 3.6]]) hairC = carve(hairC, (x, yy, z) => Math.hypot(Math.hypot(x, (z - P(0, 0, -2.6)[2]) * 1.05) - k(r), yy - P(0, y, 0)[1]) - k(0.35), k(0.3));
-  // The matted locks: ropes of hair running back from the hairline over the cap to the knot.
-  const C = P(0, 4.8, -2.4), ropes = [];
-  for (let i = -7; i <= 7; i++) {
-    const phi = i * 0.36, pts = [];
-    for (const [e, r] of [[0.4, 0.45], [0.7, 0.85], [1.02, 0.95], [1.3, 0.95]]) pts.push([C[0] + k(10.7) * Math.sin(phi) * Math.cos(e), C[1] + k(9.7) * Math.sin(e), C[2] + k(11.1) * Math.cos(phi) * Math.cos(e), k(r)]);
-    ropes.push([chain(pts, k(0.3)), k(0.35)]);
-  }
-  const headB = bounded(blend([[head, 0], [blend([[hairC, 0], ...ropes]), k(0.6)]]), [0, 25.5, -0.5], 13.5, 1.5);
-  const lockL = locks(-1), lockR = locks(1);
-  const locksF = blend([...lockL, ...lockR].map((f) => [f, 0.2]));
-  const all = (x, y, z) => smin(smin(smin(body(x, y, z), headB(x, y, z), 1.2), cloak(x, y, z), 0.8), locksF(x, y, z), 0.45);
-  return { f: flatBase(all, 0, 0.3), lo: [-24, -0.2, -14], hi: [24, H + 0.6, 12.5], head };
+  const headB = bounded(blend([[head, 0], [cap, k(0.6)]]), [0, 25.5, -0.5], 14.5, 1.5);
+  const fall = blend([[E([0, 15, -6.2], [9.5, 10, 5.0]), 0], [E([0, 7.5, -7.6], [14.5, 7.5, 5.6]), 3]]);
+  const hairF = blend([[fall, 0], [ropes(C), 0.6]]);
+  const all = (x, y, z) => smin(smin(body(x, y, z), headB(x, y, z), 1.2), hairF(x, y, z), 0.6);
+  return { f: flatBase(all, 0, 0.3), lo: [-24, -0.2, -16.5], hi: [24, H + 1.6, 12.5], head };
 }
 
 let fieldP = null;
@@ -113,43 +117,44 @@ function bustMesh() {
 // What is laid on the skin: the cobra, the cord, the crescent, the third eye and the earrings.
 function ornaments() {
   const f = parts().f, g = new THREE.Group(), V = (p) => new THREE.Vector3(...p);
-  // The cobra: its body comes round the back of the neck and over his right shoulder, then rises
-  // beside the neck, the hood spread and facing forward at the height of the jaw.
-  const coil = [[4.2, 13.2, -4.4], [0, 13.4, -5.7], [-4.2, 13.4, -4.2], [-6.1, 13.7, -1.6]];
-  const rise = [[-6.6, 14.6, 0.4], [-6.9, 15.9, 1.1], [-7.0, 17.0, 1.7]];
-  const curve = new THREE.CatmullRomCurve3([...coil, ...rise].map(V));
-  g.add(mesh(new THREE.TubeGeometry(curve, detail.low ? 60 : 120, 0.55, detail.low ? 8 : 12, false), STEEL));
-  const hood = mesh(new THREE.SphereGeometry(1, 20, 14), STEEL, -7.0, 17.6, 1.9);
-  hood.scale.set(1.5, 2.0, 0.5);
-  hood.rotation.x = -0.15;
-  const snout = mesh(new THREE.SphereGeometry(0.55, 14, 10), STEEL, -7.0, 18.7, 2.5);
-  snout.scale.set(0.9, 0.7, 1.3);
+  // The cobra on his right shoulder: its body comes out of the hair behind, rises beside the neck
+  // and spreads a broad hood, hollowed in front, with the head at its top looking forward.
+  const body = new THREE.CatmullRomCurve3([[-11.2, 9.2, -1.2], [-10.3, 10.2, 1.4], [-9.4, 11.4, 3.0], [-8.8, 13.0, 3.6], [-8.6, 14.4, 3.7]].map(V));
+  g.add(mesh(new THREE.TubeGeometry(body, 40, 0.75, 12, false), STEEL));
+  const hood = mesh(new THREE.SphereGeometry(1, 28, 20), STEEL, -8.6, 15.6, 3.8);
+  hood.scale.set(2.5, 3.3, 0.6);
+  hood.rotation.set(-0.12, 0.25, 0);
+  const snout = mesh(new THREE.SphereGeometry(1, 16, 12), STEEL, -8.5, 18.3, 4.6);
+  snout.scale.set(0.95, 0.7, 1.35);
+  snout.rotation.x = 0.35;
   g.add(hood, snout);
   // The cord: two thin lines from the sides of the neck, meeting low on the chest.
   for (const sx of [-1, 1]) {
     const pts = [];
     for (let i = 0; i <= 14; i++) { const t = i / 14; pts.push([sx * 4.8 * (1 - t), 12.2 - 8.2 * t, 12]); }
-    g.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(onSkin(f, pts, 0.1).map(V)), 60, 0.14, 6), STEEL));
+    g.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(onSkin(f, pts, 0.1).map(V)), 60, 0.14, 6), COPPER));
   }
-  // The crescent in the knot, on his left: of bright steel, its belly against the hair, one horn
-  // in the locks and the other standing out to the side.
-  const R = 2.7, lune = new THREE.Shape(), N = 28;
-  for (let i = 0; i <= N; i++) { const a = (i / N * 2 - 1) * 1.85; lune[i ? 'lineTo' : 'moveTo'](R * Math.cos(a), R * Math.sin(a)); }
-  for (let i = N; i >= 0; i--) { const t = i / N * 2 - 1, a = t * 1.85, r = R - 0.85 * (1 - t * t) ** 0.8; lune.lineTo(r * Math.cos(a), r * Math.sin(a)); }
-  const moon = mesh(new THREE.ExtrudeGeometry(lune, { depth: 0.3, bevelEnabled: true, bevelThickness: 0.08, bevelSize: 0.08, bevelSegments: 2 }).translate(0, 0, -0.15), BRIGHT);
-  moon.position.set(6.3, 31.9, HZ + k(1.5));
-  moon.rotation.set(0, -0.25, 3.95);
+  // The crescent standing on the hair, on his left: thin, of bright steel, its horns turned up.
+  const R = 2.3, lune = new THREE.Shape(), N = 28;
+  for (let i = 0; i <= N; i++) { const a = (i / N * 2 - 1) * 1.8; lune[i ? 'lineTo' : 'moveTo'](R * Math.cos(a), R * Math.sin(a)); }
+  for (let i = N; i >= 0; i--) { const t = i / N * 2 - 1, a = t * 1.8, r = R - 0.6 * (1 - t * t) ** 0.8; lune.lineTo(r * Math.cos(a), r * Math.sin(a)); }
+  const moon = mesh(new THREE.ExtrudeGeometry(lune, { depth: 0.26, bevelEnabled: true, bevelThickness: 0.07, bevelSize: 0.07, bevelSegments: 2 }).translate(0, 0, -0.13), BRIGHT);
+  moon.position.set(5.0, 35.3, HZ + k(0.4));
+  moon.rotation.set(0, -0.2, 4.15);
   g.add(moon);
-  // The third eye: a pale upright almond on the brow.
-  const eye = mesh(new THREE.SphereGeometry(1, 16, 20), BRIGHT);
-  eye.scale.set(0.42, 1.15, 0.16);
-  // Set on the brow by stepping in along z until the skin is met.
-  let ez = 10;
-  while (f(0, P(0, 5.0, 0)[1], ez) > 0 && ez > 4) ez -= 0.02;
-  eye.position.set(0, P(0, 5.0, 0)[1], ez);
+  // The third eye: a tall white flame on the brow, round below and pointed above.
+  const flame = new THREE.Shape();
+  for (let i = 0; i <= 24; i++) { const a = Math.PI + (i / 24) * Math.PI; flame[i ? 'lineTo' : 'moveTo'](0.5 * Math.cos(a), 0.5 * Math.sin(a)); }
+  flame.quadraticCurveTo(0.42, 1.0, 0, 2.3); flame.quadraticCurveTo(-0.42, 1.0, -0.5, 0);
+  const eye = mesh(new THREE.ExtrudeGeometry(flame, { depth: 0.2, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.06, bevelSegments: 2 }), BRIGHT);
+  // Set on the brow by stepping in along z until the skin is met, and leant back with it.
+  const ey = P(0, 3.6, 0)[1], skin = (y) => { let z = 11; while (f(0, y, z) > 0 && z > 3) z -= 0.02; return z; };
+  const z0 = skin(ey), z1 = skin(ey + 2.2);
+  eye.position.set(0, ey, z0 - 0.12);
+  eye.rotation.x = -Math.atan2(z0 - z1, 2.2);
   g.add(eye);
   // A copper ring hanging from each ear lobe.
-  for (const s of [-1, 1]) g.add(mesh(new THREE.TorusGeometry(0.95, 0.2, 10, 28), COPPER, s * (k(10.3) + 0.1), HY - k(5.6) * 1.08, HZ + k(1.2)));
+  for (const s of [-1, 1]) g.add(mesh(new THREE.TorusGeometry(0.8, 0.17, 10, 28), COPPER, s * (k(10.3) + 0.1), HY - k(5.4) * 1.08, HZ + k(1.2)));
   return g;
 }
 
@@ -165,6 +170,6 @@ export function buildAdiyogi() {
   g.add(f);
   f.add(at(adiyogi(), 0, BASE, 0));
   addDetails(f, g, { BASE });
-  // Square on to the face, from the forecourt, looking up.
-  return { group: g, focus: f, view: [-0.12, 0.1, 1], zoom: 0.9 };
+  // From the forecourt, a little to his right, looking up at the face.
+  return { group: g, focus: f, view: [-0.28, 0.04, 1], zoom: 0.9 };
 }
