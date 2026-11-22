@@ -71,6 +71,35 @@ function archHood(w, h, d) {
   return g;
 }
 
+// Small pinnacles standing along the rim of an archHood(w, h): n of them, each a little ribbed
+// bulb on a neck with a spike, as the palace's gables bristle with them. In the hood's own frame.
+function hoodPinnacles(w, h, n, size = 0.5) {
+  const g = new THREE.Group();
+  for (let k = 1; k < n; k++) {
+    const u = k / n, y = (h + 0.35) * Math.pow(Math.sin(u * Math.PI), 0.7);
+    g.add(cyl(size * 0.3, size * 0.36, size * 0.7, DARK, -w / 2 + u * w, y, -0.5, 8), at(lvDome(size * 0.5, DOME, 8), -w / 2 + u * w, y + size * 0.7, -0.5), cyl(0.03, 0.06, size * 0.9, DARK, -w / 2 + u * w, y + size * 1.4, -0.5, 6));
+  }
+  return g;
+}
+// A coloured surround on an archHood's face: a band of pink stone following the rim inside it.
+function hoodBand(w, h, t = 0.55) {
+  const s = new THREE.Shape(), n = 20, f = (ww, hh, u) => [-ww / 2 + u * ww, hh * Math.pow(Math.sin(u * Math.PI), 0.7)];
+  for (let k = 0; k <= n; k++) { const [x, y] = f(w - 1.2, h - 0.6, k / n); k ? s.lineTo(x, y + 0.2) : s.moveTo(x, y + 0.2); }
+  for (let k = n; k >= 0; k--) { const [x, y] = f(w - 1.2 - 2 * t, h - 0.6 - t, k / n); s.lineTo(x, y + 0.2); }
+  s.closePath();
+  return mesh(new THREE.ExtrudeGeometry(s, { depth: 0.08, bevelEnabled: false }), PINK);
+}
+// A square tower w wide and h high carrying an open belvedere under a dome: the towers that flank
+// the Durbar Hall and stand at the ends of the fronts.
+function belvedere(w, h, r = w * 0.52) {
+  const g = new THREE.Group(), bh = w * 0.9;
+  g.add(box(w, h, w, STONE), box(w + 0.6, 0.5, w + 0.6, DARK, 0, h, 0), box(w + 1.3, 0.3, w + 1.3, DARK, 0, h + bh + 0.5, 0));
+  for (const y of [6, 11.8]) if (y < h - 2) g.add(box(w + 0.3, 0.5, w + 0.3, DARK, 0, y, 0));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(cyl(0.22, 0.26, bh, STONE, sx * (w / 2 - 0.3), h + 0.5, sz * (w / 2 - 0.3), 8));
+  g.add(box(w * 0.5, bh, w * 0.5, M.recess, 0, h + 0.5, 0), at(domeOnDrum(r, 1.1, { ribs: 12, fin: r * 0.6 }), 0, h + bh + 0.8, 0));
+  return g;
+}
+
 // A range of the palace, w long, d deep and h high, its foot at y = 0 and its front at z = d / 2:
 // three storeys, a ground arcade of cusped arches, a middle storey of windows in pink panels and an
 // open loggia above on a balcony; a darker course at each floor, a cornice and a crested parapet.
@@ -196,7 +225,8 @@ export function buildLaxmiVilas() {
   for (const s of [-1, 1]) {
     const x = s * (bay / 2 + side / 2);
     C.add(box(side, h, cd - 3.2, STONE, x, 0, cz - 1.6), at(arcadeSkin(side, h, cells(side, 2, 'room'), 1.6, STONE, { trim: DARK }), x, 0, front - 1.6));
-    C.add(box(side + 0.6, 0.8, cd + 0.6, DARK, x, h, cz), at(archHood(side - 1, 5, 1.2), x, h + 0.8, front - 0.4));
+    C.add(box(side + 0.6, 0.8, cd + 0.6, DARK, x, h, cz), at(archHood(side - 0.6, 6.6, 1.2), x, h + 0.8, front - 0.4));
+    if (!detail.low) C.add(at(hoodBand(side - 0.6, 6.6), x, h + 0.8, front - 0.4), at(hoodPinnacles(side - 0.6, 6.6, 6, 0.42), x, h + 0.8, front - 0.4), at(railing(side - 3, 0.8, 0.14, STONE, 1.4), x, h + 0.8, front + 0.5));
     // Behind each gable a dome on a drum.
     C.add(at(domeOnDrum(2.8, 2.2, { ribs: 12 }), x, h + 0.8, front - 6));
   }
@@ -206,12 +236,18 @@ export function buildLaxmiVilas() {
   for (const s of [-1, 1]) for (const z of [front - 0.6, cz - cd / 2 + 1]) C.add(at(turret(1.1, bayH + 1), s * (w / 2 - 0.4), 0, z));
   for (const s of [-1, 1]) C.add(at(turret(0.8, bayH + 0.8), s * (bay / 2), 0, front + 0.3));
   // The great dome over the middle bay, on its drum ringed by eight small domed kiosks.
-  const great = domeOnDrum(6.6, 5.4, { fin: 3 });
-  C.add(at(great, 0, bayH + 0.9, cz + 3));
+  // (After the photograph: the drum is tall, in two stages. Round the lower stand eight domed
+  // kiosks on a ledge, each before an arched opening; the dome springs above their roofs, and ends
+  // in a tall finial of stacked discs.)
+  const gy = bayH + 0.9, gz = cz + 3, great = domeOnDrum(6.6, 9.2, { fin: 2 });
+  C.add(at(great, 0, gy, gz), cyl(8.6, 8.6, 0.5, DARK, 0, gy + 2.6, gz, 8).rotateY(Math.PI / 8), cyl(7.2, 7.2, 0.45, DARK, 0, gy + 7.4, gz, 8).rotateY(Math.PI / 8));
   for (let k = 0; k < 8; k++) {
     const a = (k / 8) * Math.PI * 2 + Math.PI / 8;
-    C.add(at(mughalChhatri(0.9, 3.4, STONE, { domeM: DOME, finialM: DARK, crescent: false }), Math.sin(a) * 7.8, bayH + 0.9, cz + 3 + Math.cos(a) * 7.8));
+    C.add(at(mughalChhatri(1.15, 4.4, STONE, { domeM: DOME, finialM: DARK, crescent: false }), Math.sin(a) * 7.4, gy + 3.1, gz + Math.cos(a) * 7.4));
   }
+  const tip = gy + 9.2 + 6.6 * 1.56;
+  for (const [r, y] of [[0.9, 0], [0.65, 0.5], [0.42, 1.0]]) C.add(cyl(r * 0.8, r, 0.4, DARK, 0, tip + y, gz, 12));
+  C.add(cyl(0.05, 0.12, 2.6, DARK, 0, tip + 1.4, gz, 6));
   // The entrance block's own carving, on desktops: the same colonnettes, hoods, pier columns and
   // bracket courses as the wings, without their parapet kiosks (the gables stand there).
   if (!detail.low) {
@@ -230,16 +266,14 @@ export function buildLaxmiVilas() {
   T.add(box(tw, th, tw, STONE));
   for (const y of [6, 11.8, 18, 24, 30, 36, 42]) T.add(box(tw + 0.5, 0.6, tw + 0.5, DARK, 0, y));
   T.add(box(tw + 2.2, 1, tw + 2.2, DARK, 0, th), box(tw + 0.4, 0.8, tw + 0.4, PINK, 0, th - 2));
-  const lantern = cyl(3.4, 3.6, 5, STONE, 0, th + 1, 0, 8);
-  lantern.rotation.y = Math.PI / 8;
-  T.add(lantern, cyl(3.9, 3.9, 0.6, DARK, 0, th + 6, 0, 8).rotateY(Math.PI / 8));
-  for (let k = 0; k < 8; k++) {
-    const a = (k / 8) * Math.PI * 2, rr = 3.4 * Math.cos(Math.PI / 8);
-    const o = at(windowFrame(1.4, 3.4, DARK, { frame: 0.2 }), Math.sin(a) * rr, th + 1.6, Math.cos(a) * rr);
-    o.rotation.y = a;
-    T.add(o);
-  }
-  T.add(at(lvDome(3.2, DOME, 12), 0, th + 6.6, 0), at(finial(2.4, DARK), 0, th + 6.6 + 4.8, 0));
+  // The top, after the photograph: a narrower square stage with three slits to a face, then an
+  // open octagonal pavilion of eight columns under a broad eave, a drum and the dome.
+  const s2 = tw - 2.6;
+  T.add(box(s2, 3.4, s2, STONE, 0, th + 1, 0), box(s2 + 0.9, 0.5, s2 + 0.9, DARK, 0, th + 4.4, 0));
+  for (const a of FACES) for (const k of [-1.2, 0, 1.2]) T.add(onFace(box(0.45, 1.5, 0.06, M.recess, 0, th + 2, 0), a, s2 / 2 + 0.02, k));
+  for (let k = 0; k < 8; k++) { const a = (k / 8) * Math.PI * 2 + Math.PI / 8; T.add(cyl(0.2, 0.24, 3.6, STONE, Math.sin(a) * 2.5, th + 4.9, Math.cos(a) * 2.5, 8)); }
+  T.add(cyl(1.5, 1.5, 3.6, M.recess, 0, th + 4.9, 0, 8), cyl(3.7, 3.1, 0.35, DARK, 0, th + 8.5, 0, 8), cyl(2.5, 2.6, 1.0, STONE, 0, th + 8.85, 0, 8));
+  T.add(at(lvDome(2.6, DOME, 12), 0, th + 9.85, 0), at(finial(2.2, DARK), 0, th + 9.85 + 3.9, 0));
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) T.add(at(mughalChhatri(1.1, 4.4, STONE, { domeM: DOME, finialM: DARK, crescent: false }), sx * (tw / 2 + 0.2), th + 1, sz * (tw / 2 + 0.2)));
   // On desktops: an octagonal shaft up each corner, a course of small brackets under every band,
   // and the balcony at the top carried on a row of carved brackets.
@@ -260,7 +294,10 @@ export function buildLaxmiVilas() {
   const D = new THREE.Group();
   D.add(at(wing(18, 20, 30), 0, 0, 0));
   D.add(at(domeOnDrum(6, 3.4, { fin: 3 }), 0, 20.8, 0));
-  for (const sx of [-1, 1]) for (const sz of [-1, 1]) D.add(at(turret(1.2, 21.5), sx * 9, 0, sz * 15));
+  // Either side of its front a square tower carrying an open belvedere under a dome, as tall as
+  // the hall's own drum; plain turrets at the back.
+  for (const sx of [-1, 1]) D.add(at(belvedere(3.4, 21.5), sx * 10.6, 0, 13.4), at(turret(1.2, 21.5), sx * 9, 0, -15));
+  if (!detail.low) for (let k = 0; k < 4; k++) { const a = (k / 4) * Math.PI * 2 + Math.PI / 4; D.add(at(mughalChhatri(0.9, 3.4, STONE, { domeM: DOME, finialM: DARK, crescent: false }), Math.sin(a) * 7.3, 20.8, Math.cos(a) * 7.3)); }
   f.add(at(D, DURBAR[0], 0, DURBAR[1]));
 
   // The east pavilion, 40 m of the front: a middle block under one great curved gable (a
@@ -269,8 +306,17 @@ export function buildLaxmiVilas() {
   const E = new THREE.Group();
   E.add(at(wing(22, 19, 30), 0, 0, 0), at(archHood(20, 8.5, 1.2), 0, 19.8, 15.2));
   E.add(at(domeOnDrum(5.2, 2.8, { fin: 2.4 }), 0, 19.8, -6));
-  for (const sx of [-1, 1]) E.add(at(wing(9, 17, 26), sx * 15.5, 0, -1), at(domeOnDrum(3, 2.6, { ribs: 12, fin: 1.6 }), sx * 15.5, 17.8, 4));
-  for (const [x, z] of [[-11, 15], [11, 15], [-20, 12], [20, 12], [-11, -15], [11, -15]]) E.add(at(turret(1.1, Math.abs(x) > 12 ? 19 : 21), x, 0, z));
+  // Each side bay under a curved gable of its own, its dome behind; between the bays and the
+  // middle a slender spire, tiered like a temple's; and the gables' rims bristling with pinnacles
+  // round surrounds of pink stone.
+  for (const sx of [-1, 1]) {
+    E.add(at(wing(9, 17, 26), sx * 15.5, 0, -1), at(archHood(8.4, 5, 1), sx * 15.5, 17.8, 12.2), at(domeOnDrum(3, 2.6, { ribs: 12, fin: 1.6 }), sx * 15.5, 17.8, 4));
+    for (let k = 0; k < 5; k++) E.add(cyl(0.95 - k * 0.17, 1.1 - k * 0.17, 1.1, STONE, sx * 11, 21 + k * 1.1, 13, 8));
+    E.add(cyl(0.04, 0.1, 1.4, DARK, sx * 11, 26.5, 13, 6));
+    if (!detail.low) E.add(at(hoodBand(8.4, 5, 0.4), sx * 15.5, 17.8, 12.2), at(hoodPinnacles(8.4, 5, 5, 0.4), sx * 15.5, 17.8, 12.2));
+  }
+  if (!detail.low) E.add(at(hoodBand(20, 8.5, 0.8), 0, 19.8, 15.2), at(hoodPinnacles(20, 8.5, 12, 0.55), 0, 19.8, 15.2));
+  for (const [x, z] of [[-20, 12], [20, 12], [-11, -15], [11, -15]]) E.add(at(turret(1.1, Math.abs(x) > 12 ? 19 : 21), x, 0, z));
   f.add(at(E, EAST[0], 0, EAST[1]));
 
   addDetails(f, g);

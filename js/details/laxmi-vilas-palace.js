@@ -26,7 +26,7 @@ function architecture(f) {
     tw.add(onFace(at(jharokha(2.8, 2.8, STONE, { d: 1.1, trim: DARK, roof: 'bangla' }), 0, 37.6, 0), a, 4.27));
   }
   d.add(tw);
-  d.add(at(petalRing(6.6 * 0.9, 24, 2.8, 1.9, 0.55, STONE, 0.3), 0, CENTRE.bayH + 0.9 + 5.4, CENTRE.front - 15 + 3));
+  d.add(at(petalRing(6.6 * 0.9, 24, 2.8, 1.9, 0.55, STONE, 0.3), 0, CENTRE.bayH + 0.9 + 9.2, CENTRE.front - 15 + 3));
   d.add(at(petalRing(6 * 0.9, 24, 2.8, 1.9, 0.55, STONE, 0.3), DURBAR[0], 20.8 + 3.4, DURBAR[1]));
   // Jharokhas: on the Durbar Hall's front and the east pavilion's, between the storeys.
   for (const x of [-5, 5]) for (const y of [8, 14]) d.add(at(jharokha(2.4, 2.8, STONE, { d: 1, trim: DARK, roof: x < 0 ? 'bangla' : 'dome' }), DURBAR[0] + x, y, DURBAR[1] + 15.02));
