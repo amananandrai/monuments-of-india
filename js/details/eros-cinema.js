@@ -36,7 +36,7 @@ function road(s, len, off, width) {
   const { A } = P, n = [s * Math.cos(A), Math.sin(A)], u = [s * Math.sin(A), -Math.cos(A)], ry = s * (Math.PI / 2 - A);
   const r = new THREE.Group();
   r.add(box(len, 0.06, width, M.asphalt, 0, 0, 0), box(len, 0.18, 4.5, M.path, 0, 0, -width / 2 - 2.25));
-  r.add(traffic([[-width / 4, 1], [width / 4, -1]], -len / 2, len / 2, { gap: 18, seed: 3 + s, taxis: 0.35, buses: 0.12, trucks: 0.02, colours: ['#e8e6e1', '#3c4046', '#b9bcc0', '#8c2f2a'] }));
+  r.add(traffic([[-width / 4, 1], [width / 4, -1]], -len / 2, len / 2 - 50, { gap: 18, seed: 3 + s, taxis: 0.35, buses: 0.12, trucks: 0.02, colours: ['#e8e6e1', '#3c4046', '#b9bcc0', '#8c2f2a'] }));
   r.add(trees(along(8, [-len / 2 + 10, -width / 2 - 2.5], [len / 2 - 40, -width / 2 - 2.5]), { kind: 'peepal', seed: 5 + s, h: 13 }));
   r.add(lampPosts(along(7, [-len / 2 + 6, -width / 2 - 0.6], [len / 2 - 10, -width / 2 - 0.6])));
   r.rotation.y = ry;
@@ -62,7 +62,7 @@ export function addDetails(f, g) {
   const { R } = P;
   g.add(box(600, 0.05, 600, M.asphalt, 0, -0.06, 0));
   g.add(box(70, 0.06, 40, M.asphalt, 0, 0.002, 40));
-  for (const s of [-1, 1]) g.add(road(s, 200, R - 1.2, 16));
+  for (const s of [-1, 1]) g.add(road(s, 150, R - 1.2, 16));
   g.add(cyl(R + 6, R + 6, 0.18, M.path, 0, 0, 0, 48));
   g.add(churchgate(104));
   g.add(traffic([[66, -1], [72, 1]], -120, 120, { gap: 16, seed: 9, taxis: 0.35, buses: 0.12, trucks: 0.02 }));

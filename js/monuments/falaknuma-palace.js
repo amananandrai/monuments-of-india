@@ -74,8 +74,8 @@ export function buildFalaknumaPalace() {
     d.add(at(lathe([[4.6, 0], [4.3, 2], [3.2, 3.8], [1.4, 4.8], [0, 5]], TRIM, 24), x, S + WH + 4.7, z), at(finial(1.8, M.gold), x, S + WH + 9.6, z));
   }
   // The tail: the zenana's courts and the kitchens trailing behind.
-  d.add(box(40, 10, 50, WHITE, 0, S, -fz - 25), box(40.8, 0.7, 50.8, TRIM, 0, S + 10, -fz - 25), box(22, 8, 30, WHITE, 0, S, -fz - 64));
-  for (const s of [-1, 1]) d.add(at(arcadeSkin(50, 10, cells(50, 4.2, 10), 0.8, WHITE, { trim: TRIM, pointed: false, fill: 'room' }), s * 20.2, S, -fz - 25).rotateY(s * Math.PI / 2));
+  d.add(box(40, 10, 50, WHITE, 0, S, -fz - 24.5), box(42.2, 0.7, 50.8, TRIM, 0, S + 10, -fz - 24.6), box(22, 8, 30, WHITE, 0, S, -fz - 64));
+  for (const s of [-1, 1]) d.add(at(arcadeSkin(50, 10, cells(50, 4.2, 7), 0.8, WHITE, { trim: TRIM, pointed: false, fill: 'room' }), s * 20.2, S, -fz - 24.5).rotateY(s * Math.PI / 2));
   f.add(mergeByMaterial(d));
   addDetails(f, g);
   // From the north-east, above the forecourt in the claws' embrace.
