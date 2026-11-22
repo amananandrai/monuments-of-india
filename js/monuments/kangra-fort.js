@@ -30,7 +30,7 @@ export function ridge(x, z) {
   const sr = southRiver(x), nr = northRiver(x), toRiver = Math.min(Math.abs(z - sr), Math.abs(z - nr));
   const banks = 6 + 14 * smooth(30, 160, toRiver) + 30 * fbm(x, z, { scale: 0.004, octaves: 3 }) * smooth(60, 260, toRiver);
   const hills = (40 + 60 * ridged(x, z, { scale: 0.003, octaves: 4 })) * smooth(240, 520, Math.abs(z));
-  const ground = Math.max(banks, hills) * smooth(8, 40, toRiver);
+  const ground = Math.max(banks, hills) * smooth(16, 55, toRiver);
   return Math.max(top * cliff + (crest(x) * 0.45 * slope + ground * (1 - slope)) * (1 - cliff), ground) - 0.4;
 }
 
@@ -45,8 +45,8 @@ export function buildKangraFort() {
   g.add(box(3000, 0.2, 3000, mat('#7d8a55', 0.95), 0, -1.2, 0));
   g.add(heightField(1300, 1100, detail.low ? 130 : 220, ridge, { rock: ['#857a68', '#91856f', '#7a705f'], cover: '#5f7a3f', steep: 0.74, band: 10 }));
   // The two rivers in their beds.
-  for (const [fn, w] of [[southRiver, 26], [northRiver, 20]]) for (let x = -650; x < 520; x += 40) {
-    const z0 = fn(x), z1 = fn(x + 40), r = sheet(Math.hypot(40, z1 - z0) + 2, w, M.river, x + 20, 0.4, (z0 + z1) / 2);
+  for (const [fn, w] of [[southRiver, 34], [northRiver, 28]]) for (let x = -650; x < 520; x += 40) {
+    const z0 = fn(x), z1 = fn(x + 40), r = sheet(Math.hypot(40, z1 - z0) + 2, w, M.river, x + 20, 0.5, (z0 + z1) / 2);
     r.rotation.y = -Math.atan2(z1 - z0, 40);
     g.add(r);
   }

@@ -24,7 +24,7 @@ export function buildMartand() {
     for (let k = 0; k < n; k++) {
       const u = (k + 0.5) / n, x = x0 + (x1 - x0) * u, z = z0 + (z1 - z0) * u;
       if (gap && Math.abs(x) < gap) continue;
-      const h = WH * (0.45 + 0.55 * (0.5 + 0.5 * Math.sin(x * 0.31 + z * 0.17 + 1.3))) + R() * 0.6;
+      const h = WH * (0.72 + 0.28 * (0.5 + 0.5 * Math.sin(x * 0.31 + z * 0.17 + 1.3))) + R() * 0.6;
       walls.push([x, 0, z, WT, Math.min(WH, h), len / n + 0.02, ry]);
     }
   };
@@ -74,5 +74,5 @@ export function buildMartand() {
   for (const s of [-1, 1]) f.add(box(5.6, 1.2, 6, SHADE, s * 10, 0, sz + 1), box(4.4, 3.6 - s * 0.6, 4.6, STONE, s * 10, 1.2, sz + 1));
   addDetails(f, g, { X, Z, WH, P, sz });
   // From the north-west, over the court, the shrine's front portal before the mountains.
-  return { group: g, focus: f, view: [0.75, 0.34, 1], zoom: 1.2 };
+  return { group: g, focus: f, view: [0.55, 0.24, 1], zoom: 1.05 };
 }

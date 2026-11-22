@@ -50,10 +50,11 @@ function top(f) {
 
 // The Dhauladhar range to the north, its peaks under snow, beyond the hills of the valley.
 function dhauladhar() {
-  return heightField(4200, 1600, detail.low ? 90 : 150, (x, z) => {
-    const t = smooth(-700, -1300, z);
-    return t * (420 + 380 * ridged(x, z, { scale: 0.0016, octaves: 5 }) + 120 * fbm(x, z, { scale: 0.003, octaves: 3 })) - 5;
-  }, { cz: -1500, rock: ['#6f6a64', '#7c766e', '#666059'], cover: '#4f6a3a', steep: 0.72, snow: 520, band: 40 });
+  // Compressed: the real range stands 30 km off and rises 3,000 m over the valley.
+  return heightField(7000, 2000, detail.low ? 90 : 150, (x, z) => {
+    const t = smooth(-2300, -2900, z);
+    return t * (260 + 300 * ridged(x, z, { scale: 0.0012, octaves: 5 }) + 80 * fbm(x, z, { scale: 0.002, octaves: 3 })) - 5;
+  }, { cz: -3200, rock: ['#6f6a64', '#7c766e', '#666059'], cover: '#4f6a3a', steep: 0.72, snow: 330, band: 40 });
 }
 
 // Kangra: the palace at the top, the snows behind, chir pine and mango over the slopes, the town
@@ -63,14 +64,14 @@ export function addDetails(f, g) {
   g.add(dhauladhar());
   const R = rng(4), houses = [];
   for (let k = 0; k < (detail.low ? 30 : 60); k++) {
-    const x = -330 - R() * 200, z = -60 + R() * 120, w = 6 + R() * 5, d = 7 + R() * 5;
+    const x = -300 - R() * 130, z = -45 + R() * 90, w = 6 + R() * 5, d = 7 + R() * 5;
     houses.push([x, z, w, d, 1 + Math.floor(R() * 3), R() * 0.3, ridge(x, z) - 0.4]);
   }
-  g.add(townHouses(houses, { seed: 3, roof: 'gable' }));
+  g.add(townHouses(houses, { seed: 3, roof: 'pitched' }));
   const spots = scatter(detail.low ? 300 : 600, [-640, 640, -540, 540], { seed: 12, gap: 10 }).filter(([x, z]) => {
     const onTop = Math.abs(z - 4) < halfW(x) * 1.15 && x > -250 && x < 320;
     const y = ridge(x, z);
-    return !onTop && y > 2 && !(x < -320 && Math.abs(z) < 70);
+    return !onTop && y > 2 && !(x < -290 && x > -440 && Math.abs(z) < 55);
   });
   g.add(trees(spots.filter((_, i) => i % 3 === 0).map(([x, z]) => [x, z, null, ridge(x, z) - 0.2]), { kind: 'fir', seed: 5, h: 14 }));
   g.add(trees(spots.filter((_, i) => i % 3 === 1).map(([x, z]) => [x, z, null, ridge(x, z) - 0.2]), { kind: 'mango', seed: 6 }));
