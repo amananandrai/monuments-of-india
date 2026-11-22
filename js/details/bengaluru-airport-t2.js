@@ -110,7 +110,7 @@ function roads(f, g) {
   g.add(box(760, 0.2, 20, M.asphalt, 0, 0.3, 80), box(760, 0.2, 12, M.asphalt, 0, 0.3, 112));
   // Garden walls of brick, low and long, stepping through the planting before the kerb.
   const w = new THREE.Group();
-  for (const [x, z, len, h, turn] of [[-150, 128, 90, 1.6, 0], [-40, 136, 70, 1.1, 0.08], [70, 130, 80, 1.8, -0.05], [170, 140, 60, 1.2, 0.1], [-205, 170, 50, 1.4, 1.2], [205, 178, 60, 1.4, -1.2], [0, 190, 110, 0.9, 0]]) {
+  for (const [x, z, len, h, turn] of [[-150, 128, 90, 1.6, 0], [-40, 136, 70, 1.1, 0.08], [70, 130, 80, 1.8, -0.05], [170, 140, 60, 1.2, 0.1], [-205, 170, 50, 1.4, 1.2], [205, 178, 60, 1.4, -1.2]]) {
     const b = box(len, h, 0.9, BRICK, 0, 0.3, 0);
     b.position.x = x; b.position.z = z; b.rotation.y = turn;
     w.add(b);
