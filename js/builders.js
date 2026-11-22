@@ -127,6 +127,32 @@ import { buildVidhanaSoudha } from './monuments/vidhana-soudha.js';
 import { buildMatrimandir } from './monuments/matrimandir.js';
 import { buildStatueOfEquality } from './monuments/statue-of-equality.js';
 import { buildSriharikota } from './monuments/satish-dhawan-space-centre.js';
+import { buildPremMandir } from './monuments/prem-mandir.js';
+import { buildIskconBangalore } from './monuments/iskcon-temple-bangalore.js';
+import { buildAdiyogi } from './monuments/adiyogi.js';
+import { buildSheikhChilli } from './monuments/sheikh-chilli-tomb.js';
+import { buildMartand } from './monuments/martand-sun-temple.js';
+import { buildJahazMahal } from './monuments/jahaz-mahal.js';
+import { buildPanchaRathas } from './monuments/pancha-rathas.js';
+import { buildAiravatesvara } from './monuments/airavatesvara-temple.js';
+import { buildMukteswara } from './monuments/mukteswara-temple.js';
+import { buildKumbhalgarh } from './monuments/kumbhalgarh-fort.js';
+import { buildWarangalFort } from './monuments/warangal-fort.js';
+import { buildLepakshi } from './monuments/lepakshi-temple.js';
+import { buildJageshwar } from './monuments/jageshwar-temples.js';
+import { buildHazarduari } from './monuments/hazarduari-palace.js';
+import { buildShaniwarWada } from './monuments/shaniwar-wada.js';
+import { buildKangraFort } from './monuments/kangra-fort.js';
+import { buildTalatalGhar } from './monuments/talatal-ghar.js';
+import { buildMattancherry } from './monuments/mattancherry-palace.js';
+import { buildSeCathedral } from './monuments/se-cathedral.js';
+import { buildLaxmanSirpur } from './monuments/laxman-temple-sirpur.js';
+import { buildPuranaQila } from './monuments/purana-qila.js';
+import { buildPattadakal } from './monuments/pattadakal-temples.js';
+import { buildVikramshila } from './monuments/vikramshila-mahavihara.js';
+import { buildJahangirMahal } from './monuments/jahangir-mahal-orchha.js';
+import { buildBhojeshwar } from './monuments/bhojeshwar-temple.js';
+import { buildLotusMahal } from './monuments/lotus-mahal-hampi.js';
 
 // Builders by the name js/data.js gives each monument (its `fn`).
 export const BUILDERS = {
@@ -255,4 +281,30 @@ export const BUILDERS = {
   buildMatrimandir,
   buildStatueOfEquality,
   buildSriharikota,
+  buildPremMandir,
+  buildIskconBangalore,
+  buildAdiyogi,
+  buildSheikhChilli,
+  buildMartand,
+  buildJahazMahal,
+  buildPanchaRathas,
+  buildAiravatesvara,
+  buildMukteswara,
+  buildKumbhalgarh,
+  buildWarangalFort,
+  buildLepakshi,
+  buildJageshwar,
+  buildHazarduari,
+  buildShaniwarWada,
+  buildKangraFort,
+  buildTalatalGhar,
+  buildMattancherry,
+  buildSeCathedral,
+  buildLaxmanSirpur,
+  buildPuranaQila,
+  buildPattadakal,
+  buildVikramshila,
+  buildJahangirMahal,
+  buildBhojeshwar,
+  buildLotusMahal,
 };

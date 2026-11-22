@@ -23,7 +23,7 @@ export const detail = { level: 'high', get low() { return this.level === 'low'; 
 // A monument whose subject is sculpture, or which carries large sculpted figures, may build to a
 // million triangles on desktops: a statue's face and hands are meshed finely, and the triangles go
 // there. Phones keep to 300k for every monument.
-export const STATUES = new Set(['statue-of-unity', 'india-gate', 'gateway-of-india', 'nageshwar-temple', 'gommateshwara', 'vivekananda-rock-memorial', 'kedarnath-temple', 'omkareshwar-temple', 'victoria-memorial', 'csmt', 'mysore-palace']);
+export const STATUES = new Set(['statue-of-unity', 'india-gate', 'gateway-of-india', 'nageshwar-temple', 'gommateshwara', 'vivekananda-rock-memorial', 'kedarnath-temple', 'omkareshwar-temple', 'victoria-memorial', 'csmt', 'mysore-palace', 'adiyogi']);
 export const STATUE_BUDGET = 1000000;
 export function budgetFor(m, level = detail.level) {
   return level === 'high' && m && STATUES.has(m.id) ? STATUE_BUDGET : BUDGET[level];
