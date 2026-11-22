@@ -94,7 +94,7 @@ limbs grow out of bodies as in a carving. Every statue is pictured in
   combed beard and upswept moustache.
 - **The great statues.** Patel in dhoti, kurta and shawl (182 m, bronze plates); Bahubali with
   creepers up his legs and arms; Thiruvalluvar built of granite blocks; the seated Shiva of
-  Nageshwar with his trishul, malas and cobra; the Adiyogi bust in black steel; Ramanuja of the
+  Nageshwar with his trishul, malas and cobra; the Adiyogi bust in black steel, 45 m across its shoulders; Ramanuja of the
   Statue of Equality, gilt, with joined hands and the tridandam.
 - **Modern and colonial statues.** Netaji saluting under the canopy at India Gate; Shivaji on a
   prancing horse at the Gateway of India; Adi Shankaracharya at Kedarnath and the boy Shankara of
