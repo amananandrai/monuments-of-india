@@ -66,5 +66,5 @@ export function buildMeccaMasjidHyderabad() {
   for (const x of [-1, 1]) for (const z of [0, -HD]) f.add(at(cornerTower(35), x * (HW / 2 + 0.6), P, z + (z ? 0.6 : -0.6)));
   addDetails(f, g, { P, HW, HD, HH });
   // From the court, a little to the south-east, the five arches full on.
-  return { group: g, focus: f, view: [0.4, 0.22, 1], zoom: 0.7, target: [0, 14, -20] };
+  return { group: g, focus: f, view: [0.4, 0.17, 1], zoom: 0.55, target: [0, 13, -18] };
 }

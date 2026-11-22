@@ -32,11 +32,9 @@ export function addDetails(f, g, { R }) {
   // The path to the ledge, the board, and palms, mango and scrub on the plain.
   g.add(box(3, 0.05, 70, M.path, -4, 0, 44));
   g.add(asiBoard('Barabar Caves', 4, 14, -0.3));
-  g.add(trees(along(5, [-14, 22], [-14, 70]), { kind: 'palm', seed: 2 }));
-  const plain = scatter(60, [-300, 300, 14, 300], { seed: 3, gap: 16 }).filter(([x, z]) => Math.abs(x + 4) > 8);
+  g.add(trees(along(5, [30, 30], [44, 80]), { kind: 'palm', seed: 2 }));
+  const plain = scatter(60, [-300, 300, 14, 300], { seed: 3, gap: 16 }).filter(([x, z]) => Math.abs(x + 4) > 8 && !(x < 10 && x > -120 && z < 110));
   g.add(trees(plain.slice(0, 24), { kind: 'palm', seed: 3 }), trees(plain.slice(24, 44), { kind: 'mango', seed: 4 }), trees(plain.slice(44), { kind: 'babul', seed: 5 }));
   g.add(shrubs(scatter(60, [-160, 160, -40, 0], { seed: 6, gap: 6 }).filter(([x]) => Math.abs(x) > FW / 2 + 2).map(([x, z]) => [x, z]), { dry: true }));
-  // Fields round the hill.
-  g.add(box(2400, 0.2, 1400, mat('#8b8e55', 0.95), 0, -0.45, 400));
   void detail; void FH; void R;
 }

@@ -14,7 +14,7 @@ const DARK = mat('#1c1916', 0.95);
 
 // The cut face: the caves open in a sheer wall of granite FW wide and FH high at z = 0, cut into
 // the south side of the dome of rock.
-export const FW = 40, FH = 8;
+export const FW = 40, FH = 6.5;
 // The caves along the face: [x, door width at the foot, door height, name]. Lomas Rishi has the
 // carved front; Sudama a plain doorway with sloping jambs.
 export const CAVES = [[-8, 1.25, 2.3, 'Lomas Rishi'], [8, 1.15, 2.1, 'Sudama']];
@@ -89,8 +89,8 @@ export function rockY(x, z) {
   return y;
 }
 export function hillY(x, z) {
-  const ridge = Math.exp(-Math.pow((z + 190) / 80, 2)) * smooth(600, 250, Math.abs(x + 40));
-  return (60 * ridge + 12 * ridged(x, z, { scale: 0.008, octaves: 3 }) * ridge) * smooth(-60, -110, z) - 0.3 + 0.5 * fbm(x, z, { scale: 0.02, octaves: 2 });
+  const ridge = Math.exp(-Math.pow((z + 230) / 110, 2)) * smooth(700, 250, Math.abs(x + 40));
+  return (38 * ridge + 10 * ridged(x, z, { scale: 0.008, octaves: 3 }) * ridge) * smooth(-60, -110, z) - 0.3 + 0.5 * fbm(x, z, { scale: 0.02, octaves: 2 });
 }
 
 export function buildBarabarCaves() {
@@ -100,10 +100,18 @@ export function buildBarabarCaves() {
   f.add(box(FW, FH, 12, POLISHED, 0, 0, -6));
   const seg = detail.low ? 40 : 72;
   for (const [cx, , cz, rx, ry, rz] of DOMES) {
-    const d = new THREE.Mesh(new THREE.SphereGeometry(1, seg, seg / 2, 0, Math.PI * 2, 0, Math.PI / 2), GRANITE);
+    // A dome of exfoliating granite: its surface swelling and sinking a little in broad sheets.
+    const geo = new THREE.SphereGeometry(1, seg, seg / 2, 0, Math.PI * 2, 0, Math.PI / 2), p = geo.attributes.position;
+    for (let k = 0; k < p.count; k++) {
+      const x = p.getX(k), y = p.getY(k), z = p.getZ(k), n = 1 + 0.035 * Math.sin(x * 7 + z * 3) * Math.cos(z * 5 - y * 4) + 0.02 * Math.sin(y * 13 + x * 9);
+      p.setXYZ(k, x * n, y * (y > 0.02 ? n : 1), z * n);
+    }
+    geo.computeVertexNormals();
+    const d = new THREE.Mesh(geo, GRANITE);
     d.scale.set(rx, ry, rz);
     d.position.set(cx, -0.2, cz);
-    f.add(d);
+    d.castShadow = d.receiveShadow = true;
+    g.add(d);
   }
   g.add(heightField(2000, 1400, detail.low ? 100 : 150, hillY, { cz: -300, rock: ['#8d8073', '#9a8c7d', '#7f7468'], band: 10, cover: '#7d7f4c', steep: 0.82 }));
   // Boulders tumbled at the ends of the face and along the foot of the hill.
@@ -120,5 +128,5 @@ export function buildBarabarCaves() {
   for (let k = 0; k < 4; k++) f.add(box(8, 0.6 * (4 - k) / 5 + 0.0, 0.5, GRANITE, -4, 0, 7.25 + k * 0.5));
   addDetails(f, g, { R });
   // From the south-west, along the face, Lomas Rishi nearest.
-  return { group: g, focus: f, view: [-0.6, 0.22, 1], zoom: 0.75 };
+  return { group: g, focus: f, view: [-0.55, 0.2, 1], zoom: 1.7 };
 }
