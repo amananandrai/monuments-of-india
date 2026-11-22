@@ -585,7 +585,7 @@ export function trimurti(m) {
 export function bullColumn(h, m, trim = m) {
   const g = new THREE.Group(), r = 0.42, capH = 1.5;
   g.add(lathe([[0.75, 0], [0.8, 0.12], [0.7, 0.45], [0.5, 0.75], [r * 1.05, 0.9], [0, 0.9]], trim, 24));
-  g.add(at(ribbed(cyl(r * 0.92, r, h - 0.9 - capH - 0.6, m, 0, 0, 0, 32), 24, 0.06), 0, 0.9, 0));
+  g.add(ribbed(cyl(r * 0.92, r, h - 0.9 - capH - 0.6, m, 0, 0.9, 0, 32), 24, 0.06));
   g.add(box(1.0, 0.6, 1.0, trim, 0, h - capH - 0.6, 0));
   // The bulls: a body block either way, a head with horns, folded forelegs.
   const y = h - capH;
