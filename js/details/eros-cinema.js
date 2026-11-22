@@ -64,7 +64,9 @@ export function addDetails(f, g) {
   g.add(box(70, 0.06, 40, M.asphalt, 0, 0.002, 40));
   for (const s of [-1, 1]) g.add(road(s, 150, R - 1.2, 16));
   g.add(cyl(R + 6, R + 6, 0.18, M.path, 0, 0, 0, 48));
-  g.add(churchgate(104));
+  g.add(at(churchgate(0), -120, 0, 110).rotateY(-0.5));
+  // The Oval Maidan beyond the road in front, an open lawn.
+  g.add(box(260, 0.08, 200, M.grass, 90, 0, 182));
   g.add(traffic([[66, -1], [72, 1]], -120, 120, { gap: 16, seed: 9, taxis: 0.35, buses: 0.12, trucks: 0.02 }));
   g.add(cityAround([-110, 110, -150, 64], { rows: detail.low ? 1 : 2, every: detail.low ? 3 : 1, gap: 10, storeys: [4, 7], seed: 21, fine: !detail.low,
     keep: [[-300, 300, 30, 300]],

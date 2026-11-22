@@ -28,13 +28,13 @@ export function buildElephantaCaves() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   const { HW, HD, HH, H } = DIMS;
-  // The rock round the hall: two flanks, the mass over the ceiling, and the rock behind the back
+  // The rock round the hall, its face cut sheer either side of the mouth: two flanks, the mass over the ceiling, and the rock behind the back
   // wall, cut by the Trimurti's recess (RW wide, RD deep, RH high). The cliff's face is at z = 0.
-  const R = new THREE.Group(), back = HD + 12, { RW, RD, RH } = DIMS;
-  for (const s of [-1, 1]) R.add(box(34, H, back, ROCK, s * (HW / 2 + 17), 0, -back / 2));
-  R.add(box(HW + 0.02, H - HH, HD, ROCK, 0, HH, -HD / 2), box(HW + 0.02, H - RH, 12, ROCK, 0, RH, -HD - 6));
-  for (const s of [-1, 1]) R.add(box((HW - RW) / 2 + 0.01, RH + 0.01, 12, ROCK, s * (RW + HW) / 4, -0.01, -HD - 6));
-  R.add(box(RW, RH + 0.01, 12 - RD, ROCK, 0, -0.01, -HD - RD - (12 - RD) / 2));
+  const R = new THREE.Group(), back = HD + 31, { RW, RD, RH } = DIMS;
+  for (const s of [-1, 1]) R.add(box(14, H, back, ROCK, s * (HW / 2 + 7), 0, -back / 2));
+  R.add(box(HW + 0.02, H - HH, HD, ROCK, 0, HH, -HD / 2), box(HW + 0.02, H - RH, 31, ROCK, 0, RH, -HD - 15.5));
+  for (const s of [-1, 1]) R.add(box((HW - RW) / 2 + 0.01, RH + 0.01, 31, ROCK, s * (RW + HW) / 4, -0.01, -HD - 15.5));
+  R.add(box(RW, RH + 0.01, 31 - RD, ROCK, 0, -0.01, -HD - RD - (31 - RD) / 2));
   g.add(mergeByMaterial(R));
   // The hall's floor, a little lighter, and the ceiling's soffit, dark.
   f.add(box(HW, 0.1, HD, ROCK_LIGHT, 0, 0, -HD / 2), box(HW, 0.05, HD, DARK, 0, HH - 0.06, -HD / 2));
@@ -56,5 +56,5 @@ export function buildElephantaCaves() {
   for (let j = 0; j < 6; j++) f.add(box(HW, 0.5, 0.9, ROCK_LIGHT, 0, HH - 0.56, -4.6 - j * 6));
   addDetails(f, g);
   // From the north, up the steps into the hall towards the Trimurti.
-  return { group: g, focus: f, view: [0.25, 0.14, 1], zoom: 0.55, target: [0, 4, -8] };
+  return { group: g, focus: f, view: [0.1, 0.12, 1], zoom: 0.7, target: [0, 3.5, -10] };
 }

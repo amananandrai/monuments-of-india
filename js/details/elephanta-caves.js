@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, at, lathe, ellipsoid, face, sheet } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at, lathe, ellipsoid, face, sheet, surface } from '../helpers.js';
 import { mergeByMaterial, panel } from '../parts/components.js';
 import { figure } from '../parts/sculpture.js';
 import { guardian } from '../parts/figures.js';
@@ -9,8 +9,8 @@ import { detail } from '../detail.js';
 
 // Elephanta's basalt: grey-brown outside, weathered and stained; paler where it was cut and is
 // sheltered; and the dark of the hall's depths.
-export const ROCK = mat('#5f574d', 0.96);
-export const ROCK_LIGHT = mat('#857b6d', 0.93);
+export const ROCK = surface(mat('#5f574d', 0.96), 'rock');
+export const ROCK_LIGHT = surface(mat('#857b6d', 0.93), 'rock');
 export const DARK = mat('#2a2622', 0.95);
 
 // The hall HW wide and HD deep, HH high, its mouth at z = 0; the rock H high over it; the
@@ -94,29 +94,36 @@ function hall(f) {
   if (!detail.low) for (const s of [-1, 1]) f.add(at(guardian(3.8, L), sx + sw / 2 + 0.9, 0.8, sz + s * 2.1).rotateY(Math.PI / 2));
 }
 
-// The island's hill: the cliff of the cave's face at z = 0, the slope rising behind it to a wooded
-// crest, and in front the terrace and the steps down towards the jetty.
+// The island's hill. The rock round the hall is solid blocks (the builder's), 70 m deep, its face
+// cut sheer for 14 m either side of the mouth; beyond them the hillside slopes up from the terrace.
+// Behind the face the ground climbs inside the rock to its top, then on up to the wooded crest. Over
+// the hall and the recess it stays down under the floor, so it never shows inside; there a cap of
+// turf (TOP) lies on the rock instead.
 export const hillY = (x, z) => {
-  const cliff = smooth(3, -2, z), rise = smooth(-10, -220, z), side = smooth(80, 260, Math.abs(x));
-  return cliff * (DIMS.H + 0.6 + 38 * rise + 10 * fbm(x, z, { scale: 0.012, octaves: 4 })) * (1 - 0.6 * side) - 0.4 + (1 - cliff) * (-6 * smooth(40, 150, z));
+  const { H } = DIMS, ax = Math.abs(x);
+  if (ax < 22 && z > -58 && z < 1) return -0.4;
+  const w = smooth(33.5, 42, ax), rise = smooth(0.5, -7, z) * (1 - w) + smooth(9, -9, z) * w;
+  const crest = smooth(-60, -300, z) * (40 + 12 * fbm(x, z, { scale: 0.01, octaves: 4 })) * (1 - 0.5 * smooth(150, 380, ax));
+  return rise * (H + 0.6 + 1.5 * fbm(x, z, { scale: 0.04, octaves: 2 }) * smooth(-8, -20, z)) + crest - 0.4 * (1 - rise) - 4 * smooth(60, 160, z);
 };
 
 // Elephanta: the forested hill over the cave, the terrace before it, the path down past the stalls
 // to the jetty, the launches from the Gateway of India, and the harbour, with the ASI board.
 export function addDetails(f, g) {
   hall(f);
+  g.add(box(48, 0.55, 64, mat('#4e6a37', 0.95), 0, DIMS.H, -6 - 32));
   g.add(heightField(900, 700, detail.low ? 110 : 170, hillY, { cz: -60, rock: ['#5d564c', '#675f53', '#544d44'], cover: '#4e6a37', steep: 0.68 }));
   // The terrace before the cave, paved, and the path down to the sea.
-  g.add(box(70, 0.3, 26, M.path, 0, -0.25, 13), box(6, 0.2, 110, M.path, 8, -3.4, 82).rotateX(0.06));
+  g.add(box(52, 0.3, 16, M.path, 0, -0.25, 8), box(6, 0.2, 110, M.path, 8, -3.4, 82).rotateX(0.06));
   g.add(sheet(1600, 900, M.sea, 0, -6.2, 420));
   g.add(box(10, 1.4, 40, mat('#7a7166', 0.9), 8, -6.6, 178));
   g.add(launches([[0, 175, 0], [18, 182, 0.3], [-14, 190, -0.2]], { y: -6.2 }));
-  const hillTrees = scatter(detail.low ? 60 : 140, [-420, 420, -380, -6], { seed: 3, gap: 14, avoid: [[-60, 60, -60, 0]] }).map(([x, z]) => [x, z, 0, hillY(x, z)]);
+  const hillTrees = scatter(detail.low ? 60 : 140, [-420, 420, -340, -12], { seed: 3, gap: 12, avoid: [[-36, 36, -64, 0]] }).map(([x, z]) => [x, z, 0, hillY(x, z)]);
   g.add(trees(hillTrees.filter((_, k) => k % 3), { kind: 'mango', seed: 4 }), trees(hillTrees.filter((_, k) => !(k % 3)), { kind: 'banyan', seed: 5 }));
-  const front = scatter(detail.low ? 14 : 30, [-160, 160, 25, 160], { seed: 6, gap: 12, avoid: [[-2, 20, 20, 170]] }).map(([x, z]) => [x, z, 0, hillY(x, z)]);
+  const front = scatter(detail.low ? 14 : 30, [-160, 160, 25, 160], { seed: 6, gap: 12, avoid: [[-2, 20, 20, 170], [-70, 70, 0, 110]] }).map(([x, z]) => [x, z, 0, hillY(x, z)]);
   g.add(trees(front, { kind: 'palm', seed: 7 }));
   g.add(stalls([[14, 40, -Math.PI / 2], [14, 52, -Math.PI / 2], [14, 64, -Math.PI / 2], [2, 46, Math.PI / 2], [2, 58, Math.PI / 2]], { y: -1.6 }));
   g.add(shrubs(along(10, [-30, 4], [30, 4]), { size: 1.1 }));
-  if (!detail.low) g.add(umbrellas([[-16, 18], [18, 20]]));
-  g.add(asiBoard('Elephanta Caves', -8, 20, 0.3, { line2: 'WORLD HERITAGE SITE' }));
+  if (!detail.low) g.add(umbrellas([[-16, 12], [18, 13]]));
+  g.add(asiBoard('Elephanta Caves', -9, 13, 0.3, { line2: 'WORLD HERITAGE SITE' }));
 }

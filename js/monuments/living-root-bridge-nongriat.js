@@ -64,5 +64,5 @@ export function buildLivingRootBridgeNongriat() {
   f.add(deck(DECKS[0], detail.low ? 14 : 26, 3), deck(DECKS[1], detail.low ? 10 : 20, 7));
   addDetails(f, g);
   // From downstream, below the lower deck, looking up at both.
-  return { group: g, focus: f, view: [0.35, 0.12, 1], zoom: 0.95 };
+  return { group: g, focus: f, view: [0.3, 0.1, 1], zoom: 0.6 };
 }
