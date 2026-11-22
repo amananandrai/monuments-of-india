@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, V, mat, surface, box, cyl, mesh, lathe, at, onFace, ONION, onionDome, finial, chhatri, bulbPoints, ribbed } from '../helpers.js';
 import { mergeByMaterial, jharokha } from '../parts/components.js';
-import { arcadeSkin } from '../parts/mughal.js';
+import { arcadeSkin, cellRow } from '../parts/mughal.js';
 import { addDetails } from '../details/mysore-palace.js';
 import { detail } from '../detail.js';
 
@@ -30,7 +30,9 @@ const TOWERM = surface(mat('#c2a274', 0.82), 'carved');
 // ribs. Of unit radius at its widest and 1.6 high.
 const BULB = [[0.74, 0], [0.93, 0.18], [1.0, 0.52], [0.95, 0.86], [0.76, 1.16], [0.46, 1.4], [0.16, 1.54], [0, 1.6]];
 const bulb = (r, m, ribs = 16) => ribbed(lathe(BULB.map(([a, c]) => [a * r, c * r]), m, 40), ribs, 0.025);
-export const PALACE = { CREAM, TAN, RED };
+// The yellow wash of the side and back ranges.
+const YELLOW = surface(mat('#e7c868', 0.8), 'carved');
+export const PALACE = { CREAM, TAN, RED, YELLOW };
 // The end towers, [x, z, turn, width]: at each end of the front an inner and an outer tower, and
 // behind the outer one a third that faces sideways, so each side of the palace shows two domes.
 export const END_TOWERS = [-1, 1].flatMap((s) => [[s * 46.1, 19.5, 0, 8.4], [s * 60.8, 19.5, 0, 7.6], [s * 60.1, 3.6, s * Math.PI / 2, 7.6]]);
@@ -185,7 +187,18 @@ export function buildMysorePalace() {
   }
   for (const s of [-1, 1]) {
     // The side range from the corner tower back to the tower behind it.
-    f.add(box(7.6, 19.2, 7.6, TAN, s * 60.6, b, 11.3), box(8, 0.5, 7.6, L, s * 60.6, b + 19.2, 11.3));
+    // Its outer face, as photographed from the side: three storeys of three arched windows.
+    const rows = (n, pitch, aw, list) => list.flatMap(([y, ah]) => cellRow(n, pitch, y, aw, ah).map((c) => [...c, 'room']));
+    f.add(box(7.1, 19.2, 7.6, TAN, s * 60.35, b, 11.3), box(8, 0.5, 7.6, L, s * 60.6, b + 19.2, 11.3));
+    f.add(at(arcadeSkin(7.2, 19.2, rows(3, 2.2, 1.3, [[1.2, 3.8], [7.6, 3.3], [13.6, 3.3]]), 0.5, TAN, { trim: L, pointed: false }), s * 63.9, b, 11.3).rotateY(s * Math.PI / 2));
+    // Behind the towers the palace runs back in a yellow range of three storeys, a square turret
+    // standing out of the middle of its side.
+    f.add(box(20.5, 15.5, 20, YELLOW, s * 52.25, b, -10.2), box(21.8, 0.5, 20.6, L, s * 52.5, b + 15.5, -10.2), box(21.2, 0.9, 20.2, YELLOW, s * 52.5, b + 16, -10.2));
+    // (On phones the range's side is a plain wall.)
+    if (detail.low) f.add(box(0.6, 15.5, 20, YELLOW, s * 62.8, b, -10.2));
+    else f.add(at(arcadeSkin(20, 15.5, rows(5, 3.6, 1.6, [[1.2, 3.6], [6.6, 3.2], [11.4, 3.0]]), 0.6, YELLOW, { trim: L, pointed: false }), s * 62.5, b, -10.2).rotateY(s * Math.PI / 2));
+    f.add(box(5.6, 21.5, 5.6, YELLOW, s * 61, b, -10.2), box(6.2, 0.45, 6.2, L, s * 61, b + 21.5, -10.2), box(5.2, 1.1, 5.2, YELLOW, s * 61, b + 21.95, -10.2));
+    if (!detail.low) f.add(at(arcadeSkin(5.6, 21.5, rows(2, 2.2, 1.2, [[17, 3]]), 0.4, YELLOW, { trim: L, pointed: false }), s * 63.4, b, -10.2).rotateY(s * Math.PI / 2));
     const cx = s * 53.65, r = new THREE.Group();
     r.add(box(6.8, 19.2, 7.6, TAN, 0, 0, 0), at(arcadeSkin(6.8, 19.2, [[0, 0.5, 4.4, 9.4, 'room'], [-1.6, 12.6, 1.3, 3, 'room'], [0, 12.6, 1.3, 3, 'room'], [1.6, 12.6, 1.3, 3, 'room']], 0.6, CREAM, { trim: L, pointed: false }), 0, 0, 3.8), box(7.2, 0.5, 8.2, L, 0, 19.2, 0));
     f.add(at(mergeByMaterial(r), cx, b, 19.6));

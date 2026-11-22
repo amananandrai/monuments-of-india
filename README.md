@@ -99,7 +99,7 @@ monument's `year` from `js/data.js`.
   CC0 photo textures and their normal and roughness maps over them (`js/textures.js`).
 - **Sculpted figures:** statues and temple animals are grown from signed distance fields and
   meshed in the browser (`js/sdf.js`).
-- **Triangle budgets:** 800,000 on desktops (trees and ground cover planted only up to 650,000, so the rest goes to the architecture) and 300,000 on phones for each monument
+- **Triangle budgets:** 800,000 on desktops, or 1,000,000 for the eleven monuments with large sculpted figures (trees and ground cover planted only up to 650,000, so the rest goes to the architecture and the statues), and 300,000 on phones for each monument
   (`js/detail.js`); repeated parts are instanced.
 - **Headless checks** in `tools/`, run with Node and Playwright.
 - **Hosting:** Vercel. **Video:** a [HyperFrames](https://hyperframes.heygen.com) project in `video/`.

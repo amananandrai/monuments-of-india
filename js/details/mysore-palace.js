@@ -111,8 +111,18 @@ function sculpture(f) {
 //   slender mullions, red posts at its corners, and a curved eave drooping at its ends; the top one
 //   under a curved red hood with a gilt finial; the whole carried on carved corbels;
 // - red colonnettes and yellow panels at the three windows under the eave.
-function towerCarving(w, GLASS, OCHRE) {
+function towerCarving(w, GLASS, OCHRE, { bay = true, side = 0 } = {}) {
   const t = new THREE.Group(), L = M.lime, { TAN, RED } = PALACE;
+  // A window of the side fronts: a round-headed opening glazed dark, a yellow shutter across its
+  // lower half, a white moulded ring, and a shelf of a sill on two small brackets.
+  const win = (a, dist, lat, y, h) => {
+    t.add(onFace(at(archSlab(1.3, h, false, GLASS, 0.06), 0, y, 0), a, dist + 0.02, lat), onFace(at(archRing(1.3, h, false, 0.16, 0.1, L), 0, y, 0), a, dist + 0.03, lat));
+    t.add(onFace(box(1.2, h * 0.42, 0.05, OCHRE, 0, y + 0.05, 0), a, dist + 0.1, lat), onFace(box(1.8, 0.14, 0.5, L, 0, y - 0.16, 0), a, dist + 0.25, lat));
+  };
+  // The towers' side faces carry a pair of such windows on each of three storeys; so does the front
+  // of a tower that faces sideways, which has no bay.
+  for (const a of side ? [side * Math.PI / 2] : []) for (const [y, h] of [[1.2, 3.6], [9.4, 3.2], [18.4, 3.0]]) for (const lat of [-1.5, 1.5]) win(a, w / 2, lat, y, h);
+  if (!bay) for (const lat of [-w / 4, w / 4]) win(0, 4.5, lat, 9.4, 3.2);
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) t.add(cyl(0.38, 0.4, 23.6, TAN, sx * (w / 2), 0, sz * 4.5, 8));
   for (const a of FACES) {
     const len = a === 0 || a === Math.PI ? w : 9, dist = (a === 0 || a === Math.PI ? 9 : w) / 2;
@@ -121,7 +131,7 @@ function towerCarving(w, GLASS, OCHRE) {
     t.add(placeAll(bracketGeo(0.9, 0.85, 0.22), alongFace(a, dist + 0.02, len - 0.6, Math.round(len / 0.95), 22.95), L));
   }
   const bw = w * 0.62, z0 = 4.5, aw = (bw - 0.24) / 6, head = cuspedArchGeo(aw - 0.1, 0.6, 0.1), SCREEN = jali(L);
-  for (let k = 0; k < 3; k++) {
+  for (let k = 0; bay && k < 3; k++) {
     const y = 7.0 + k * 3.25;
     t.add(box(bw + 0.5, 0.2, 1.3, L, 0, y - 0.2, z0 + 0.6), box(bw, 1.0, 1.0, SCREEN, 0, y, z0 + 0.5), box(bw, 0.3, 1.0, L, 0, y + 2.55, z0 + 0.5));
     t.add(box(bw - 0.25, 1.55, 0.95, GLASS, 0, y + 1.0, z0 + 0.42));
@@ -131,8 +141,8 @@ function towerCarving(w, GLASS, OCHRE) {
     // The curved eave over each storey; over the top one the red hood.
     t.add(at(banglaRoof(bw + 0.9, 1.6, k < 2 ? 0.4 : 1.15, k < 2 ? L : RED), 0, y + 2.85, z0 + 0.7));
   }
-  t.add(cyl(0.12, 0.03, 0.7, M.gild, 0, 7.0 + 2 * 3.25 + 3.95, z0 + 0.7, 6));
-  t.add(placeAll(bracketGeo(1.5, 1.0, 0.3), [-bw / 2 + 0.4, 0, bw / 2 - 0.4].map((x) => [x, 6.8, z0 + 0.02, 0]), L));
+  if (bay) t.add(cyl(0.12, 0.03, 0.7, M.gild, 0, 7.0 + 2 * 3.25 + 3.95, z0 + 0.7, 6));
+  if (bay) t.add(placeAll(bracketGeo(1.5, 1.0, 0.3), [-bw / 2 + 0.4, 0, bw / 2 - 0.4].map((x) => [x, 6.8, z0 + 0.02, 0]), L));
   for (const x of [-w * 0.3, 0, w * 0.3]) {
     t.add(box(1.3, 1.4, 0.05, OCHRE, x, 20.1, z0 - 0.1));
     for (const k of [-1, 1]) t.add(cyl(0.08, 0.08, 2.3, RED, x + k * 0.82, 18.6, z0 + 0.08, 8));
@@ -165,10 +175,25 @@ function carving(f) {
   d.add(placeAll(ring, rings, L));
 
   // The end towers (END_TOWERS): each carved in its own frame and set where the tower stands.
+  // (A tower turned sideways has windows, not a bay, on its front; the outer front tower has
+  // windows on the side that faces out.)
   for (const [x, z, ry, w] of END_TOWERS) {
-    const t = at(towerCarving(w, GLASS, OCHRE), x, b, z);
+    const t = at(towerCarving(w, GLASS, OCHRE, { bay: !ry, side: !ry && Math.abs(x) > 55 ? Math.sign(x) : 0 }), x, b, z);
     t.rotation.y = ry;
     d.add(t);
+  }
+  // The side fronts, after photographs: before the range between the two towers a yellow porch of
+  // three arches, with a balustrade on its roof and on the range above; and yellow shutters in the
+  // lower halves of the windows of the yellow range behind.
+  const { YELLOW } = PALACE;
+  for (const s of [-1, 1]) {
+    const p = at(new THREE.Group(), s * 66.4, b, 11.3);
+    p.rotation.y = s * Math.PI / 2;
+    for (const x of [-2.1, 0, 2.1]) p.add(at(archWall(2.1, 4.9, 0.5, 1.5, 3.9, false, YELLOW), x, 0, 1.75), at(archRing(1.5, 3.9, false, 0.14, 0.1, L), x, 0, 2.01));
+    for (const sx of [-1, 1]) p.add(at(archWall(4, 4.9, 0.5, 2.4, 3.9, false, YELLOW), sx * 2.9, 0, 0).rotateY(Math.PI / 2));
+    p.add(box(6.9, 0.4, 4.6, L, 0, 4.9, -0.1), at(balustrade(6.4, 0.9, L, { t: 0.25 }), 0, 5.3, 1.9));
+    d.add(p, at(balustrade(7, 1.0, L, { t: 0.3 }), s * 64.1, b + 19.7, 11.3).rotateY(s * Math.PI / 2));
+    for (const [y, h] of [[1.2, 3.6], [6.6, 3.2], [11.4, 3.0]]) for (let k = -2; k <= 2; k++) panes2.push([s * 62.82, b + y + 0.05, -10.2 + k * 3.6, 0.05, h * 0.42, 1.5]);
   }
   // Between each pair of towers: the tall arch closed with a yellow screen, and a balustrade along
   // the roof of the range.
