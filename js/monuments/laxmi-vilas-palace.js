@@ -173,18 +173,21 @@ function turret(r, h) {
 // of three storeys; the Durbar Hall at the west end under the biggest dome, and the east pavilion
 // with curved gables and domes; lower ranges beyond, and wings running back round the courts.
 // Positions shared with the details file.
-export const TOWER = [-20, 2], DURBAR = [-55, -4], EAST = [57, -4], CENTRE = { w: 30, front: 6, h: 19, bay: 12, bayH: 24 };
+// (Set out from a photograph square to the front: the palace is about 155 m long, the Durbar Hall
+// at its west end and the zenana pavilion at its east, with no lower ranges beyond them.)
+export const TOWER = [-27, 1], DURBAR = [-60, -4], EAST = [56, -4], CENTRE = { w: 30, front: 6, h: 19, bay: 12, bayH: 24 };
 export function buildLaxmiVilas() {
   const g = new THREE.Group(), f = new THREE.Group();
   g.add(f);
   g.add(box(420, 0.15, 320, M.grass, 0, 0, 40), box(10, 0.25, 140, M.path, 0, 0, 80), box(80, 0.22, 14, M.path, 0, 0, 14));
   // The wings between the pavilions, and the lower ranges beyond them.
-  f.add(at(wing(31, 18, 18), -30.5, 0, -4), at(wing(31, 18, 18), 30.5, 0, -4));
-  f.add(at(wing(34, 15, 16), -81, 0, -6), at(wing(32, 15, 16), 84, 0, -6));
+  f.add(at(wing(36, 18, 18), -33, 0, -4), at(wing(21, 18, 18), 25.5, 0, -4));
+  // The low end of the west front beyond the Durbar Hall, under a small dome.
+  f.add(at(wing(8, 13, 14), -73, 0, -6), at(domeOnDrum(2.2, 2, { ribs: 12 }), -73, 13.8, -6));
   // Wings running back from the ends, round the courts.
-  f.add(at(wing(60, 15, 16), -90, 0, -43.9).rotateY(Math.PI / 2), at(wing(60, 15, 16), 92, 0, -43.9).rotateY(-Math.PI / 2));
-  // A domed kiosk on the west wing, beside the tower.
-  f.add(at(domeOnDrum(2.6, 2.4, { ribs: 12 }), -38, 18.8, -6));
+  f.add(at(wing(60, 15, 16), -68, 0, -43.9).rotateY(Math.PI / 2), at(wing(60, 15, 16), 68, 0, -43.9).rotateY(-Math.PI / 2));
+  // A domed kiosk on the west wing, between the tower and the Durbar Hall.
+  f.add(at(domeOnDrum(2.6, 2.4, { ribs: 12 }), -44, 18.8, -6));
 
   // The entrance block: two side bays under curved gables, the middle bay rising higher to the
   // great dome; turrets with small domes at its corners.
@@ -221,11 +224,11 @@ export function buildLaxmiVilas() {
   C.add(at(porch(12, 5, 7, { m: STONE, trim: DARK, colM: STONE, cols: 4, r: 0.6, top: 'balustrade', stepsDown: 0.5 }), 0, 0.5, front));
   f.add(C);
 
-  // The tower: square and banded, 8.5 m, rising to 40 m, above the great dome; a corbelled balcony, then an arcaded
+  // The tower: square and banded, 8.5 m, rising to 46 m (60 m to the top of its finial), well above the great dome; a corbelled balcony, then an arcaded
   // octagonal lantern under a dome, with a kiosk at each corner of the balcony.
-  const T = new THREE.Group(), tw = 8.5, th = 40;
+  const T = new THREE.Group(), tw = 8.5, th = 46;
   T.add(box(tw, th, tw, STONE));
-  for (const y of [6, 11.8, 18, 24, 30, 36]) T.add(box(tw + 0.5, 0.6, tw + 0.5, DARK, 0, y));
+  for (const y of [6, 11.8, 18, 24, 30, 36, 42]) T.add(box(tw + 0.5, 0.6, tw + 0.5, DARK, 0, y));
   T.add(box(tw + 2.2, 1, tw + 2.2, DARK, 0, th), box(tw + 0.4, 0.8, tw + 0.4, PINK, 0, th - 2));
   const lantern = cyl(3.4, 3.6, 5, STONE, 0, th + 1, 0, 8);
   lantern.rotation.y = Math.PI / 8;
@@ -244,7 +247,7 @@ export function buildLaxmiVilas() {
     const td = [];
     for (const sx of [-1, 1]) for (const sz of [-1, 1]) T.add(cyl(0.5, 0.55, th, DARK, sx * tw / 2, 0, sz * tw / 2, 8));
     for (const a of FACES) {
-      for (const y of [6, 11.8, 18, 24, 30, 36]) for (const [x, yy, z, ry] of alongFace(a, tw / 2 + 0.16, tw - 1.2, 12, y - 0.38)) td.push([x, yy, z, 0.2, 0.38, 0.36, ry]);
+      for (const y of [6, 11.8, 18, 24, 30, 36, 42]) for (const [x, yy, z, ry] of alongFace(a, tw / 2 + 0.16, tw - 1.2, 12, y - 0.38)) td.push([x, yy, z, 0.2, 0.38, 0.36, ry]);
       T.add(placeAll(bracketGeo(1.5, 1.1, 0.3), alongFace(a, tw / 2 + 0.02, tw - 0.8, 7, th), DARK));
       T.add(onFace(at(railing(tw + 2, 0.9, 0.14, STONE, 1.6), 0, th + 1, 0), a, tw / 2 + 1));
     }
@@ -260,12 +263,14 @@ export function buildLaxmiVilas() {
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) D.add(at(turret(1.2, 21.5), sx * 9, 0, sz * 15));
   f.add(at(D, DURBAR[0], 0, DURBAR[1]));
 
-  // The east pavilion: two curved gables over its front, a dome behind them, domed turrets round it.
+  // The east pavilion, 40 m of the front: a middle block under one great curved gable (a
+  // bangla arch as broad as the block, a deep arched window in it) with the dome behind; and a
+  // bay either side under its own dome, a domed turret at each corner.
   const E = new THREE.Group();
-  E.add(at(wing(22, 19, 30), 0, 0, 0));
-  for (const x of [-5.5, 5.5]) E.add(at(archHood(9.4, 5.4, 1.2), x, 19.8, 15.2));
-  E.add(at(domeOnDrum(5.2, 2.8, { fin: 2.4 }), 0, 19.8, -4));
-  for (const [x, z] of [[-11, 15], [11, 15], [0, 15.6], [-11, -15], [11, -15]]) E.add(at(turret(x ? 1.1 : 0.8, x ? 21 : 20.6), x, 0, z));
+  E.add(at(wing(22, 19, 30), 0, 0, 0), at(archHood(20, 8.5, 1.2), 0, 19.8, 15.2));
+  E.add(at(domeOnDrum(5.2, 2.8, { fin: 2.4 }), 0, 19.8, -6));
+  for (const sx of [-1, 1]) E.add(at(wing(9, 17, 26), sx * 15.5, 0, -1), at(domeOnDrum(3, 2.6, { ribs: 12, fin: 1.6 }), sx * 15.5, 17.8, 4));
+  for (const [x, z] of [[-11, 15], [11, 15], [-20, 12], [20, 12], [-11, -15], [11, -15]]) E.add(at(turret(1.1, Math.abs(x) > 12 ? 19 : 21), x, 0, z));
   f.add(at(E, EAST[0], 0, EAST[1]));
 
   addDetails(f, g);

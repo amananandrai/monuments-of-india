@@ -23,6 +23,7 @@ function architecture(f) {
     tw.add(onFace(at(jharokha(2.4, 2.6, STONE, { d: 1, trim: DARK, roof: 'bangla' }), 0, 19.6, 0), a, 4.27));
     tw.add(onFace(at(jharokha(2.8, 2.8, STONE, { d: 1.1, trim: DARK, roof: 'bangla' }), 0, 25.6, 0), a, 4.27));
     tw.add(onFace(at(jharokha(2.8, 2.8, STONE, { d: 1.1, trim: DARK, roof: 'bangla' }), 0, 31.6, 0), a, 4.27));
+    tw.add(onFace(at(jharokha(2.8, 2.8, STONE, { d: 1.1, trim: DARK, roof: 'bangla' }), 0, 37.6, 0), a, 4.27));
   }
   d.add(tw);
   d.add(at(petalRing(6.6 * 0.9, 24, 2.8, 1.9, 0.55, STONE, 0.3), 0, CENTRE.bayH + 0.9 + 5.4, CENTRE.front - 15 + 3));
