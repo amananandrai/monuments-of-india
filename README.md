@@ -3,11 +3,11 @@
 [![Live site](https://img.shields.io/badge/live_site-vercel.app-000000?logo=vercel&logoColor=white)](https://monuments-of-india-nu.vercel.app)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![three.js](https://img.shields.io/badge/three.js-0.160-000000?logo=threedotjs&logoColor=white)](https://threejs.org/)
-[![Monuments](https://img.shields.io/badge/monuments-125-b45309)](https://monuments-of-india-nu.vercel.app)
+[![Monuments](https://img.shields.io/badge/monuments-151-b45309)](https://monuments-of-india-nu.vercel.app)
 
 **Live site: https://monuments-of-india-nu.vercel.app**
 
-125 Indian landmarks across 28 states and union territories, modelled in interactive 3D with
+151 Indian landmarks across 29 states and union territories, modelled in interactive 3D with
 [three.js](https://threejs.org/). Every model is built in code at roughly real-world proportions,
 from simple shapes, carved detail and sculpted figures: there are no model files or scans to
 download.
@@ -16,7 +16,7 @@ download.
 | :---: | :---: | :---: |
 | [Taj Mahal](https://monuments-of-india-nu.vercel.app/#taj-mahal) | [Meenakshi Temple](https://monuments-of-india-nu.vercel.app/#meenakshi-temple) | [Golden Temple](https://monuments-of-india-nu.vercel.app/#golden-temple) |
 
-All 125, state by state, with a picture of each: **[States and monuments](monuments.md)**.
+All 151, state by state, with a picture of each: **[States and monuments](monuments.md)**.
 
 ## Contents
 
@@ -35,7 +35,7 @@ All 125, state by state, with a picture of each: **[States and monuments](monume
 
 ## Features
 
-- **125 monuments in 3D**, across 28 states and union territories: temples, forts and palaces,
+- **151 monuments in 3D**, across 29 states and union territories: temples, forts and palaces,
   tombs and memorials, bridges, railway stations, airports and civic buildings, each at roughly its real proportions.
 - **Built in code.** Every model is assembled from shared parts (domes, kiosks, pillars, arches,
   temple towers) and sculpted figures. There are no model files or scans to download.
@@ -67,7 +67,8 @@ All 125, state by state, with a picture of each: **[States and monuments](monume
   - **Style:** Dravidian & Vesara, Nagara (with its regional forms: Chandela, Kalinga, Bhumija,
     Maru-Gurjara and Jain), Buddhist, Indo-Islamic, Rajput, Indo-Saracenic, Colonial & European,
     Modern, and Regional & mixed (Sikh, the Himalayan pagoda, Keladi, Gommateshwara, the brick
-    temples of Bengal, Ahom Assam, Ladakh and the buildings that mix traditions).
+    temples of Bengal, Ahom Assam, Ladakh, the Karkota temples of Kashmir, the Maratha wada, the
+    Bundela palaces and the buildings that mix traditions).
   - **Material:** sandstone, marble, granite, basalt, laterite, brick & lime, other stone
     (khondalite, soapstone, limestone and local stone), timber, and steel & concrete.
 - **3D view:** drag to orbit, scroll or pinch to zoom, and use ← → to move between monuments. The
@@ -99,7 +100,7 @@ monument's `year` from `js/data.js`.
   CC0 photo textures and their normal and roughness maps over them (`js/textures.js`).
 - **Sculpted figures:** statues and temple animals are grown from signed distance fields and
   meshed in the browser (`js/sdf.js`).
-- **Triangle budgets:** 800,000 on desktops, or 1,000,000 for the eleven monuments with large sculpted figures (trees and ground cover planted only up to 650,000, so the rest goes to the architecture and the statues), and 300,000 on phones for each monument
+- **Triangle budgets:** 800,000 on desktops, or 1,000,000 for the twelve monuments with large sculpted figures (trees and ground cover planted only up to 650,000, so the rest goes to the architecture and the statues), and 300,000 on phones for each monument
   (`js/detail.js`); repeated parts are instanced.
 - **Headless checks** in `tools/`, run with Node and Playwright.
 - **Hosting:** Vercel. **Video:** a [HyperFrames](https://hyperframes.heygen.com) project in `video/`.
@@ -111,7 +112,7 @@ How surfaces, water, landscape, lighting and the camera work is in
 
 | Page | What it covers |
 | --- | --- |
-| [States and monuments](monuments.md) | All 125 monuments by state: place, dates, style, material, a link to the 3D view and a picture of each |
+| [States and monuments](monuments.md) | All 151 monuments by state: place, dates, style, material, a link to the 3D view and a picture of each |
 | [Components](components.md) | Every shared part in pictures, on one page |
 | [Architecture](architecture.md) | The parts the buildings are made of: domes, kiosks, pillars, arches, doors and windows, eaves, temple towers, fort gates. What each takes and where it lives |
 | [The setting](realism.md) | What stands round them: the 21 kinds of tree, shrubs, lamps, flags, boats, stalls, towns, traffic, trains, aircraft and animals |

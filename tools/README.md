@@ -24,7 +24,7 @@ npx playwright install chromium   # once, if Playwright has no browser yet
 | `node shoot-views.mjs --site [id ...] [--size WxH] [--night] [--back] [--level high\|low] [--out dir]` | Pictures from the site itself, with its shadows, surfaces, haze and trees: the home view (`<id>-site.png`), a close view (`<id>-site-close.png`) and, with `--back`, the opposite side. Shoot into `--out views/before` ahead of a change and `views/after` behind it. Slow: 20 to 60 seconds a monument. |
 | `node probe-top.mjs id ...` | Lists the topmost meshes of each monument (top, bottom, width, colour, geometry), to find what makes a model too tall. |
 
-With no ids, a check runs over all 125 monuments.
+With no ids, a check runs over all 151 monuments.
 
 `python3 pack-textures.py [slug ...]` fetches photo textures from Poly Haven into `assets/textures`
 (the 1K diffuse map, and a 512 px map of the normals and roughness) and prints the average colour
