@@ -32,7 +32,7 @@ export function buildKnessethEliyahooSynagogue() {
   for (const y of [5.4, 10.2]) f.add(box(W + 0.3, 0.35, D + 0.3, WHITE, 0, y, z0));
   f.add(box(W + 0.7, 0.6, D + 0.7, WHITE, 0, H - 0.6, z0));
   // The balustrade along the front's top.
-  for (const s of [-1, 1]) f.add(at(balustrade(W / 2 - 4.4, 1.1, WHITE), s * (W / 4 + 2.2), H, 0.1));
+  for (const s of [-1, 1]) f.add(at(balustrade(W / 2 - 4.4, 1.1, WHITE), s * (W / 4 + 2.2), H, -0.3));
   // The central bay: a little proud of the front, rising to a pediment, then the clock tower.
   const cb = new THREE.Group(), bw = 7.2;
   cb.add(box(bw, H - 1.2, 0.8, BLUE, 0, 1.2, 0.4), box(bw + 0.5, 0.6, 1.3, WHITE, 0, H - 0.6, 0.45));
@@ -50,16 +50,16 @@ export function buildKnessethEliyahooSynagogue() {
   f.add(mergeByMaterial(cb));
   // White pilasters on the front, from the base to the cornice.
   const pl = new THREE.Group();
-  for (const x of [-W / 2 + 0.4, -bw / 2 - 1.4, bw / 2 + 1.4, W / 2 - 0.4]) pl.add(box(0.8, H - 1.8, 0.3, WHITE, x, 1.2, 0.15));
+  for (const x of [-W / 2 + 0.4, -7, -bw / 2 - 0.4, bw / 2 + 0.4, 7, W / 2 - 0.4]) pl.add(box(0.8, H - 1.8, 0.3, WHITE, x, 1.2, 0.15));
   for (const x of [-bw / 2 + 0.3, bw / 2 - 0.3]) pl.add(box(0.6, H - 1.8, 0.3, WHITE, x, 1.2, 0.95));
   f.add(mergeByMaterial(pl));
   // The windows: round-arched on the two upper floors, the tallest in the central bay; arched doors
   // on the ground floor, the main door in the middle under a cornice on brackets.
   const ws = new THREE.Group(), o = { m: BLUE, trim: WHITE, fill: 'glass', top: null, depth: 0.25, frame: 0.3 };
-  const w1 = classicalDoor(1.5, 3.2, o), w2 = classicalDoor(1.5, 2.8, o), wc = classicalDoor(2.6, 6.4, { ...o, frame: 0.4 });
-  for (const x of [-8.3, -5.3, 5.3, 8.3]) {
+  const w1 = classicalDoor(1.4, 3.2, o), w2 = classicalDoor(1.4, 2.8, o), wc = classicalDoor(2.6, 6.4, { ...o, frame: 0.4 });
+  for (const x of [-8.6, -5.4, 5.4, 8.6]) {
     ws.add(onFace(at(w1.clone(), 0, 6.2, 0), 0, 0.01, x), onFace(at(w2.clone(), 0, 10.9, 0), 0, 0.01, x));
-    ws.add(onFace(at(classicalDoor(1.5, 3, { ...o, fill: 'door' }), 0, 1.2, 0), 0, 0.01, x));
+    ws.add(onFace(at(classicalDoor(1.4, 3, { ...o, fill: 'door' }), 0, 1.2, 0), 0, 0.01, x));
   }
   ws.add(onFace(at(wc, 0, 6.6, 0), 0, 0.81, 0));
   ws.add(onFace(at(classicalDoor(2.4, 3.6, { m: BLUE, trim: WHITE, top: 'cornice', depth: 0.35, frame: 0.4 }), 0, 1.2, 0), 0, 0.81, 0));
@@ -69,8 +69,8 @@ export function buildKnessethEliyahooSynagogue() {
   // A Star of David in the pediment.
   const star = new THREE.Shape();
   for (let k = 0; k < 12; k++) { const a = (k / 12) * Math.PI * 2, rr = k % 2 ? 0.34 : 0.62; (k ? star.lineTo.bind(star) : star.moveTo.bind(star))(Math.sin(a) * rr, Math.cos(a) * rr); }
-  f.add(mesh(new THREE.ExtrudeGeometry(star, { depth: 0.08, bevelEnabled: false }), WHITE, 0, H + 0.95, 1.33));
+  f.add(mesh(new THREE.ExtrudeGeometry(star, { depth: 0.08, bevelEnabled: false }), WHITE, 0, H + 0.95, 1.37));
   addDetails(f, g);
   // From across the street, the blue front and its clock.
-  return { group: g, focus: f, view: [0.45, 0.22, 1], zoom: 0.95 };
+  return { group: g, focus: f, view: [0.4, 0.36, 1], zoom: 0.95 };
 }
