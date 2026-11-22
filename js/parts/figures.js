@@ -1358,9 +1358,10 @@ export function hold(g, fig, side, kind, m, { axis = [0, 1, 0], spin = 0, offset
 // A figure seated cross-legged on a flat seat (y = 0), facing +z: the hips, the thighs out to the
 // knees, the shins crossed in front with the feet tucked, a cloth over the lap whose end falls over
 // the seat's front edge (drop: how far), and the upper body from upperBody() (shoulders at 0.62).
-// For a sage (male: bare-chested, with malas and armbands) or a goddess (with a necklace).
+// For a sage (male: bare-chested, with malas and armbands) or a goddess (with a necklace);
+// adorn: false leaves the malas, armbands and necklace off, for a figure dressed by its monument.
 function crossLeggedField(opts = {}) {
-  const { male = false, drop = 0 } = opts, up = upperBody(0.62, -0.02, opts);
+  const { male = false, drop = 0, adorn = true } = opts, up = upperBody(0.62, -0.02, opts);
   const parts = [
     ...up.parts,
     [E([0, 0.36, -0.03], [0.15 * (male ? 1.12 : 1), 0.16, 0.115]), 0.06],
@@ -1374,7 +1375,7 @@ function crossLeggedField(opts = {}) {
   ];
   if (drop) parts.push([(x, y, z) => roundBox([0.02, 0.04 - drop / 2, 0.36], [0.1, 0.06 + drop / 2, 0.022], 0.02)(x, y, z) + 0.005 * Math.sin(x * 70), 0.05]);
   const Y = (y) => y - 0.79;
-  if (male) {
+  if (!adorn) { /* bare */ } else if (male) {
     // Rudraksha malas, three strands from the neck down the chest, and armbands.
     // Each strand rings the neck behind and hangs in a curve down the chest in front, lying on it.
     const chest = blend(up.parts.slice(0, 5));
