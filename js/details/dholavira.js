@@ -47,12 +47,13 @@ export function addDetails(f, g, { w, d, top, pf, cx0, cx1, cz0, cz1, bx, R }) {
   g.add(asiBoard('Dholavira', -8, gz + 26, 0, { line2: 'WORLD HERITAGE SITE' }));
   // Khadir Bet: low, scrubby hills rising round the city, falling at the island's edge to the salt.
   g.add(heightField(2600, 2600, detail.low ? 120 : 180, (x, z) => {
-    const r = Math.hypot(x, (z - 60) * 1.15), inCity = smooth(260, 330, r);
+    const r = Math.hypot(x, (z - 60) * 1.15), inCity = smooth(370, 470, r);
     const hills = inCity * (10 + 45 * Math.max(0, fbm(x, z, { scale: 0.003, octaves: 4 }) + 0.3));
-    if (x > cx0 - 18 && x < cx1 + 18 && z > cz0 - 18 && z < cz1 + 18) return -12;
-    return -0.7 + hills * smooth(1150, 780, r) - 3 * smooth(900, 1200, r);
+    if (x > cx0 - 30 && x < cx1 + 30 && z > cz0 - 30 && z < cz1 + 30) return -12;
+    return -0.7 + hills * smooth(1150, 780, r) - 0.6 * smooth(900, 1150, r);
   }, { cz: 60, cover: '#a99872', rock: ['#9b8a6b', '#8a7a5e', '#a69476'], band: 6, steep: 0.82 }));
-  g.add(box(9000, 0.2, 9000, SALT, 0, -1.9, 0));
+  // The salt beyond the island, round the square of ground.
+  for (const [x, z, w, d] of [[0, 60 - 2900, 9000, 3200], [0, 60 + 2900, 9000, 3200], [-2900, 60, 3200, 2600], [2900, 60, 3200, 2600]]) g.add(box(w, 0.2, d, SALT, x, -1.5, z));
   // Thorn scrub: babul, khejri and ber, on the island round the city, thinner inside its walls.
   const out = ([x, z]) => x < cx0 - 20 || x > cx1 + 20 || z < cz0 - 20 || z > cz1 + 20;
   g.add(trees(scatter(70, [-650, 650, -500, 700], { seed: 4, gap: 22 }).filter(out), { kind: 'babul', seed: 4 }));

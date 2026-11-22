@@ -73,7 +73,7 @@ export function addDetails(f, g) {
   const { cx, cz0, cz1 } = DIMS;
   g.add(box(260, 0.2, 260, M.grass, 0, -0.25, 0), box(cx * 2 + 16, 0.06, cz1 - cz0 + 18, mat('#7d9757', 0.95), 0, -0.1, (cz0 + cz1) / 2 + 2));
   g.add(box(cx * 2 - 2, 0.05, cz1 - cz0 - 2, M.path, 0, 0, (cz0 + cz1) / 2), box(6, 0.06, 60, M.path, 0, 0, cz1 + 34));
-  g.add(trees([...along(6, [-cx - 15, cz0 - 4], [-cx - 15, cz1 + 6]), ...along(6, [cx + 15, cz0 - 4], [cx + 15, cz1 + 6]), ...scatter(16, [-110, 110, -110, -40], { seed: 3, gap: 10 })], { kind: 'palm', seed: 5 }));
+  g.add(trees([...along(6, [-cx - 30, cz0 - 4], [-cx - 30, cz1 + 6]), ...along(6, [cx + 30, cz0 - 4], [cx + 30, cz1 + 6]), ...scatter(16, [-110, 110, -110, -40], { seed: 3, gap: 10 })], { kind: 'palm', seed: 5 }));
   g.add(trees([...scatter(detail.low ? 6 : 12, [-110, -40, -30, 110], { seed: 6, gap: 12 }), ...scatter(detail.low ? 6 : 12, [40, 110, -30, 110], { seed: 8, gap: 12 })], { kind: 'neem', seed: 7 }));
   g.add(shrubs([...along(6, [-6, cz1 + 10], [-6, cz1 + 40]), ...along(6, [6, cz1 + 10], [6, cz1 + 40])], { size: 0.9 }));
   if (!detail.low) g.add(townHouses(scatter(30, [-120, 120, 75, 160], { seed: 9, gap: 15 }).map(([x, z], k) => [x, z, 7 + (k % 3), 9, 1 + (k % 2)]), { seed: 4, roof: 'pitched', roofs: ['#9a4a32', '#8a3f2c', '#a65a3c'], tanks: 0.2 }));

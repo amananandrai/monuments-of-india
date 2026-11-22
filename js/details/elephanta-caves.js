@@ -11,7 +11,7 @@ import { detail } from '../detail.js';
 // sheltered; and the dark of the hall's depths.
 export const ROCK = surface(mat('#5f574d', 0.96), 'rock');
 export const ROCK_LIGHT = surface(mat('#857b6d', 0.93), 'rock');
-export const DARK = mat('#2a2622', 0.95);
+export const DARK = surface(mat('#2a2622', 0.95), 'rock');
 
 // The hall HW wide and HD deep, HH high, its mouth at z = 0; the rock H high over it; the
 // Trimurti's recess RW wide, RD deep and RH high in the middle of the back wall.
@@ -33,7 +33,7 @@ function trimurti(m) {
     g.add(t);
   }
   const head = (x, z, a, s) => {
-    const h = at(new THREE.Group(), x, 2.6, z);
+    const h = at(new THREE.Group(), x, 2.25, z);
     h.rotation.y = a;
     h.add(cyl(0.42, 0.5, 0.7, m, 0, 0, 0, 14));
     const fc = fine ? face(0.72, 0.92, 0.68, m) : ellipsoid(0.72, 0.92, 0.68, m);
@@ -98,20 +98,20 @@ function hall(f) {
 // cut sheer for 14 m either side of the mouth; beyond them the hillside slopes up from the terrace.
 // Behind the face the ground climbs inside the rock to its top, then on up to the wooded crest. Over
 // the hall and the recess it stays down under the floor, so it never shows inside; there a cap of
-// turf (TOP) lies on the rock instead.
+// turf lies on the rock instead, with trees on it.
 export const hillY = (x, z) => {
   const { H } = DIMS, ax = Math.abs(x);
   if (ax < 22 && z > -58 && z < 1) return -0.4;
-  const w = smooth(33.5, 42, ax), rise = smooth(0.5, -7, z) * (1 - w) + smooth(9, -9, z) * w;
+  const w = smooth(40, 75, ax), rise = smooth(0.5, -7, z) * (1 - w) + smooth(9, -9, z) * w;
   const crest = smooth(-60, -300, z) * (40 + 12 * fbm(x, z, { scale: 0.01, octaves: 4 })) * (1 - 0.5 * smooth(150, 380, ax));
-  return rise * (H + 0.6 + 1.5 * fbm(x, z, { scale: 0.04, octaves: 2 }) * smooth(-8, -20, z)) + crest - 0.4 * (1 - rise) - 4 * smooth(60, 160, z);
+  return rise * (H + 0.6 + 1.5 * fbm(x, z, { scale: 0.04, octaves: 2 }) * smooth(-75, -100, z)) + crest - 0.4 * (1 - rise) - 4 * smooth(60, 160, z);
 };
 
 // Elephanta: the forested hill over the cave, the terrace before it, the path down past the stalls
 // to the jetty, the launches from the Gateway of India, and the harbour, with the ASI board.
 export function addDetails(f, g) {
   hall(f);
-  g.add(box(48, 0.55, 64, mat('#4e6a37', 0.95), 0, DIMS.H, -6 - 32));
+  g.add(box(67.2, 0.55, 70, mat('#4e6a37', 0.95), 0, DIMS.H, -35));
   g.add(heightField(900, 700, detail.low ? 110 : 170, hillY, { cz: -60, rock: ['#5d564c', '#675f53', '#544d44'], cover: '#4e6a37', steep: 0.68 }));
   // The terrace before the cave, paved, and the path down to the sea.
   g.add(box(52, 0.3, 16, M.path, 0, -0.25, 8), box(6, 0.2, 110, M.path, 8, -3.4, 82).rotateX(0.06));
@@ -122,6 +122,7 @@ export function addDetails(f, g) {
   g.add(trees(hillTrees.filter((_, k) => k % 3), { kind: 'mango', seed: 4 }), trees(hillTrees.filter((_, k) => !(k % 3)), { kind: 'banyan', seed: 5 }));
   const front = scatter(detail.low ? 14 : 30, [-160, 160, 25, 160], { seed: 6, gap: 12, avoid: [[-2, 20, 20, 170], [-70, 70, 0, 110]] }).map(([x, z]) => [x, z, 0, hillY(x, z)]);
   g.add(trees(front, { kind: 'palm', seed: 7 }));
+  g.add(trees(scatter(detail.low ? 6 : 12, [-30, 30, -64, -8], { seed: 8, gap: 9 }), { kind: 'mango', seed: 9, y: DIMS.H + 0.55 }));
   g.add(stalls([[14, 40, -Math.PI / 2], [14, 52, -Math.PI / 2], [14, 64, -Math.PI / 2], [2, 46, Math.PI / 2], [2, 58, Math.PI / 2]], { y: -1.6 }));
   g.add(shrubs(along(10, [-30, 4], [30, 4]), { size: 1.1 }));
   if (!detail.low) g.add(umbrellas([[-16, 12], [18, 13]]));

@@ -56,6 +56,6 @@ export function buildHoysaleswaraTemple() {
   // The two Nandi pavilions on the shrines' axes, the Surya shrine behind the southern one.
   for (const x of xs) f.add(at(nandiMandapa(7, 3.6, S, Sd, { nandiM: Sd }), x, 0, hz + 26));
   addDetails(f, g);
-  // From the south-east, along the jagged front and its two pavilions.
-  return { group: g, focus: f, view: [0.42, 0.3, 1], zoom: 0.6 };
+  // From the north-east, along the jagged front and its two pavilions.
+  return { group: g, focus: f, view: [-0.75, 0.3, 1], zoom: 0.58 };
 }

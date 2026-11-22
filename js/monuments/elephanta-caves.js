@@ -56,5 +56,5 @@ export function buildElephantaCaves() {
   for (let j = 0; j < 6; j++) f.add(box(HW, 0.5, 0.9, ROCK_LIGHT, 0, HH - 0.56, -4.6 - j * 6));
   addDetails(f, g);
   // From the north, up the steps into the hall towards the Trimurti.
-  return { group: g, focus: f, view: [0.18, 0.1, 1], zoom: 0.55, target: [0, 3.2, -14] };
+  return { group: g, focus: f, view: [0.6, 0.22, 1], zoom: 0.8, target: [0, 4, -12] };
 }

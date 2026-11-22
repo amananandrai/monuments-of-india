@@ -8,7 +8,7 @@ import { detail } from '../detail.js';
 // The Deccan basalt of the Sahyadri, dark grey-brown and streaked with weather; and the teak of the
 // vault's ribs and the great window's arch, which has lasted some two thousand years.
 export const ROCK = photo(surface(mat('#6e655c', 0.93), 'rock'), 'rubble');
-export const ROCK_LIGHT = surface(mat('#8a7f72', 0.9), 'masonry');
+export const ROCK_LIGHT = surface(mat('#8a7f72', 0.9), 'none');
 export const TEAK = surface(mat('#5a3d27', 0.8), 'carved');
 const DARK = surface(mat('#1e1a17', 0.95), 'none');
 
@@ -28,9 +28,10 @@ export const HALL = { w: 13.9, h: 14, l: 37.9, z0: -9 };
 // -54 < z < 2) it is sunk out of the way; the cut rock is built of blocks.
 export function hillY(x, z) {
   if (Math.abs(x) < 22 && z > -54 && z < 2) return -2;
-  if (z < 0) return 32 + Math.max(0, -z - 50) * 0.32 + 6 * ridged(x, z, { scale: 0.01, octaves: 3 }) * smooth(-40, -120, z) + 2 * fbm(x, z, { scale: 0.05, octaves: 2 });
-  const court = Math.abs(x) < 40 ? 0 : 0;
-  return court - 95 * smooth(24, 160, z) - Math.max(0, Math.abs(x) - 40) * 0.12 * smooth(0, 30, z) + (z > 24 ? 3 * fbm(x, z, { scale: 0.03, octaves: 3 }) : 0);
+  const ax = Math.abs(x), top = 32 - 16 * smooth(30, 240, ax) + 5 * fbm(x * 0.6, 7, { scale: 0.03, octaves: 3 }) * smooth(24, 60, ax);
+  const zE = 0.2 * Math.max(0, ax - 26) + 4 * Math.sin(x * 0.07) * smooth(24, 40, ax);
+  if (z < zE) return top + Math.max(0, -z - 50) * 0.32 + 6 * ridged(x, z, { scale: 0.01, octaves: 3 }) * smooth(-40, -120, z) + 2 * fbm(x, z, { scale: 0.05, octaves: 2 });
+  return -0.3 - 95 * smooth(24, 160, z) - Math.max(0, ax - 40) * 0.12 * smooth(0, 30, z) + (z > 24 ? 3 * fbm(x, z, { scale: 0.03, octaves: 3 }) : 0);
 }
 
 // A pillar of the nave: a stepped base with a pot (ghata) on it, an octagonal shaft, a bell
