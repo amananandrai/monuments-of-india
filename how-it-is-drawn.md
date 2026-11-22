@@ -48,6 +48,13 @@ what changes between desktops and phones.
   open (the small figures on roofs and gables get the hand's shape with the fingers as one). The
   triangles for them come from inside the statues: where a figure is meshed in parts, the caps
   that closed each part inside the body, a tenth to a fifth of its triangles, are no longer kept.
+  The portrait statues are given their sitters' features through options of the one shared face
+  (a heavier brow, a broader nose, fuller cheeks, the eyes open): Patel's heavy brow and set mouth,
+  Netaji's round face behind his spectacles, and Shivaji as his statue shows him, with the full
+  short beard combed in strands, the upswept moustache, a ring in each ear, and the flat plume
+  sweeping back from his turban. The monuments with such statues may build to a million triangles
+  on desktops, and spend them here: heads on 3 mm cells, fists on 3.5 mm, bodies fine enough for
+  the folds of cloth to hold.
   On phones these allegories are the light kit's robed figures. Seated cross-legged figures are
   sculpted the same way: Adi Shankaracharya in black stone at Kedarnath, on his lotus bud, and
   Gajalakshmi between her elephants in the gable of Mysore Palace. Every statue is shown, with

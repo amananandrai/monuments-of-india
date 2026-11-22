@@ -94,7 +94,7 @@ function sculpture(f) {
 // holding what `held` lists ([side, kind, opts] for hold()).
 function robed(h, key, opts, held = []) {
   if (detail.low) return figure(h, CREAM_, 'robed');
-  const fig = allegory(key, opts, CREAM_, opts.seated ? 0.024 : 0.028), g = new THREE.Group();
+  const fig = allegory(key, opts, CREAM_, opts.seated ? 0.02 : 0.023), g = new THREE.Group();
   g.add(fig.mesh);
   for (const [side, kind, o] of held) hold(g, fig, side, kind, CREAM_, o);
   g.scale.setScalar(h / (opts.seated ? 1.62 : 1.76));
