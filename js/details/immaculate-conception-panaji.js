@@ -51,7 +51,7 @@ export function addDetails(f, g) {
   // Old Panaji: rows of two-storey houses under tiled roofs along the road on either side of the
   // church, and round the square.
   const R = rng(13), houses = [], paint = ['#e8c35a', '#5f86b8', '#d98c4a', '#f1e6c8', '#9cc08c', '#c25b4a', '#e7d6a0'];
-  for (const s of [-1, 1]) for (let x = 26; x < 180; x += 11 + R() * 3) houses.push([s * x, foot - 6, 10, 12, 2, 0]);
+  for (const s of [-1, 1]) for (let x = 32; x < 180; x += 11 + R() * 3) houses.push([s * x, foot - 6, 10, 12, 2, 0]);
   for (const s of [-1, 1]) for (let z = foot + 26; z < foot + 140; z += 12 + R() * 3) houses.push([s * (60 + R() * 4), z, 11, 12, 2 + Math.floor(R() * 2), s > 0 ? -Math.PI / 2 : Math.PI / 2]);
   for (let x = -50; x < 60; x += 12 + R() * 3) houses.push([x, foot + 98, 11, 12, 2 + Math.floor(R() * 2), Math.PI]);
   g.add(townHouses(houses, { seed: 7, roof: 'pitched', roofs: ['#a4492f', '#94402a', '#b0573a'], tanks: 0, paint, fine: !detail.low }));

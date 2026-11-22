@@ -92,7 +92,7 @@ export function buildSolomonsTempleAizawl() {
       o2.rotation.y = a;
       d.add(o, o2);
     }
-    for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) d.add(at(balustrade(T, 1, MARBLE), x + Math.sin(a) * (T / 2 - 0.2), P + TH, z + Math.cos(a) * (T / 2 - 0.2)).rotateY(a));
+    for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) d.add(at(balustrade(T, 1, MARBLE, { t: 0.5 }), x + Math.sin(a) * (T / 2 - 0.2), P + TH, z + Math.cos(a) * (T / 2 - 0.2)).rotateY(a));
     d.add(cyl(1.9, 2.1, 1.4, MARBLE, x, P + TH, z, 20), at(crown(1.9, 3.6, M.gild), x, P + TH + 1.4, z));
   }
   f.add(mergeByMaterial(d));

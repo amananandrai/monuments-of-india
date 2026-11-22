@@ -29,11 +29,13 @@ export function buildElephantaCaves() {
   g.add(f);
   const { HW, HD, HH, H } = DIMS;
   // The rock round the hall: two flanks, the mass over the ceiling, and the rock behind the back
-  // wall; the cliff's face is at z = 0 and the rock runs back to z = -HD - 12.
-  const R = new THREE.Group(), back = HD + 12;
+  // wall, cut by the Trimurti's recess (RW wide, RD deep, RH high). The cliff's face is at z = 0.
+  const R = new THREE.Group(), back = HD + 12, { RW, RD, RH } = DIMS;
   for (const s of [-1, 1]) R.add(box(34, H, back, ROCK, s * (HW / 2 + 17), 0, -back / 2));
-  R.add(box(HW + 0.02, H - HH, back, ROCK, 0, HH, -back / 2), box(HW + 0.02, HH + 0.02, 12, ROCK, 0, -0.01, -HD - 6));
-  f.add(mergeByMaterial(R));
+  R.add(box(HW + 0.02, H - HH, HD, ROCK, 0, HH, -HD / 2), box(HW + 0.02, H - RH, 12, ROCK, 0, RH, -HD - 6));
+  for (const s of [-1, 1]) R.add(box((HW - RW) / 2 + 0.01, RH + 0.01, 12, ROCK, s * (RW + HW) / 4, -0.01, -HD - 6));
+  R.add(box(RW, RH + 0.01, 12 - RD, ROCK, 0, -0.01, -HD - RD - (12 - RD) / 2));
+  g.add(mergeByMaterial(R));
   // The hall's floor, a little lighter, and the ceiling's soffit, dark.
   f.add(box(HW, 0.1, HD, ROCK_LIGHT, 0, 0, -HD / 2), box(HW, 0.05, HD, DARK, 0, HH - 0.06, -HD / 2));
   // The front: a deep beam over the opening on four pillars and two half pillars, a step up.

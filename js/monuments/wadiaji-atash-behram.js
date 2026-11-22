@@ -3,7 +3,7 @@ import { box, cyl, at, lathe, ribbed } from '../helpers.js';
 import { arcadeSkin, cellRow } from '../parts/mughal.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { steps } from '../parts/doorways.js';
-import { addDetails, WHITE, CREAM, GREY } from '../details/wadiaji-atash-behram.js';
+import { addDetails, WHITE, CREAM, GREY, PORCH, COLUMN } from '../details/wadiaji-atash-behram.js';
 
 // The Wadiaji Atash Behram, Mumbai, consecrated in 1830. From photographs: a pale, three-storey
 // temple set back from Princess Street behind a railing and a gate. Like other Parsi fire temples of
@@ -49,16 +49,16 @@ export function buildWadiajiAtashBehram() {
     for (const y of [5.2, 10]) d.add(box(wing + 0.2, 0.3, 0.2, C, s * (MW / 2 + wing / 2), P + y, 0.1));
   }
   // The middle: a door and windows on the back wall of the portico.
-  d.add(at(arcadeSkin(MW, 8, [[0, 0, 2.6, 5.4, 'door'], [-3.6, 1.5, 1.4, 3.2, 'shutters'], [3.6, 1.5, 1.4, 3.2, 'shutters']], 0.3, W, { trim: C, fill: 'door', pointed: false }), 0, P, -PD));
-  d.add(at(arcadeSkin(MW, 4, cellRow(3, 3.4, 0.4, 1.4, 3), 0.3, W, { trim: C, fill: 'shutters', pointed: false }), 0, P + 8.6, -PD));
+  d.add(at(arcadeSkin(MW, 8, [[0, 0, 2.6, 5.4, 'door'], [-3.6, 1.5, 1.4, 3.2, 'shutters'], [3.6, 1.5, 1.4, 3.2, 'shutters']], 0.3, PORCH, { trim: C, fill: 'door', pointed: false }), 0, P, -PD));
+  d.add(at(arcadeSkin(MW, 4, cellRow(3, 3.4, 0.4, 1.4, 3), 0.3, PORCH, { trim: C, fill: 'shutters', pointed: false }), 0, P + 8.6, -PD));
   // The portico's floor and steps, its four columns, the beam and the entablature.
   const CH = 10.2;
   d.add(box(MW, 0.5, PD + 0.2, C, 0, P, -PD / 2));
   d.add(at(steps(MW - 2, P + 0.5, 5, GREY), 0, 0, 0.1));
-  for (const x of [-4.2, -1.4, 1.4, 4.2]) d.add(at(column(CH, W, C), x, P + 0.5, -0.9));
+  for (const x of [-4.2, -1.4, 1.4, 4.2]) d.add(at(column(CH, COLUMN, C), x, P + 0.5, -0.9));
   d.add(box(MW + 0.6, 1.0, PD + 0.3, C, 0, P + 0.5 + CH, -PD / 2 + 0.15), box(MW + 0.6, FH - CH - 1.5, 0.6, W, 0, P + 1.5 + CH, -0.15));
   f.add(mergeByMaterial(d));
   addDetails(f, g, { FW, FD, FH, P, MW, CH });
   // From across the street, a little to the south-west.
-  return { group: g, focus: f, view: [-0.35, 0.14, 1], zoom: 0.62, target: [0, 8, -4] };
+  return { group: g, focus: f, view: [-0.3, 0.13, 1], zoom: 0.55, target: [0, 8, -4] };
 }

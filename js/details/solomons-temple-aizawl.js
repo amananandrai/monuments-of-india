@@ -42,8 +42,8 @@ export function addDetails(f, g) {
   g.add(trees(T.filter((_, k) => k % 3 === 0), { kind: 'fir', seed: 7 }), trees(T.filter((_, k) => k % 3 === 1), { kind: 'teak', seed: 8 }), trees(T.filter((_, k) => k % 3 === 2), { kind: 'jamun', seed: 9 }));
   // Aizawl across the valley: tall houses crowded along the ridges to the north and west.
   const houses = [];
-  for (let k = 0; k < (detail.low ? 140 : 320); k++) {
-    const a = -Math.PI * 0.15 + R() * Math.PI * 1.1, r = 300 + R() * 520, x = -Math.cos(a) * r, z = -Math.sin(a) * r, y = HILLS(x, z);
+  for (let k = 0; k < (detail.low ? 90 : 420); k++) {
+    const a = -Math.PI * 0.15 + R() * Math.PI * 1.1, r = 260 + R() * 420, x = -Math.cos(a) * r, z = -Math.sin(a) * r, y = HILLS(x, z);
     houses.push([x, z, 9 + R() * 6, 9 + R() * 5, 3 + Math.floor(R() * 4), Math.atan2(-x, -z), y - 3]);
   }
   g.add(townHouses(houses, { seed: 5, fine: false, tanks: 0.6, paint: ['#f1e6cf', '#9fc3c9', '#e7b9b0', '#c9d6a3', '#f4f1ea', '#b9a7cf', '#e9d9b8'] }));

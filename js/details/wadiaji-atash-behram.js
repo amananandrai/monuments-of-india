@@ -1,11 +1,14 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, mesh } from '../helpers.js';
+import { M, mat, box, cyl, at, mesh, surface } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { trees, lampPosts, along, cityAround, traffic } from '../parts/realism.js';
 import { detail } from '../detail.js';
 
-// The temple's whitewashed walls, its cream trim and the grey stone of its plinth.
-export const WHITE = mat('#ece6d8', 0.85);
+// The temple's whitewashed plaster walls, its cream trim and the grey stone of its plinth.
+export const WHITE = surface(mat('#eee9de', 0.85), 'none');
+// The portico's back wall, in shade, and its columns of pale stone.
+export const PORCH = surface(mat('#bdb19b', 0.88), 'none');
+export const COLUMN = surface(mat('#e7dcc4', 0.6), 'marble');
 export const CREAM = mat('#d9ccb0', 0.85);
 export const GREY = mat('#8c877e', 0.9);
 const IRON = mat('#2a2c2e', 0.5, 0.5);
@@ -68,10 +71,13 @@ export function addDetails(f, g, dims) {
   g.add(box(400, 0.2, 400, M.asphalt, 0, -0.2, 0));
   g.add(box(160, 0.2, 3, M.path, 0, 0, 11), box(160, 0.2, 3, M.path, 0, 0, 25));
   g.add(traffic([[16, 1], [20, -1]], -80, 80, { y: 0.02, gap: 11, seed: 5, taxis: 0.45, buses: 0.06, trucks: 0.03 }));
-  g.add(trees([[-12, 4], [12, 4], [-30, 11.5], [32, 11.5]], { kind: 'peepal', seed: 3, h: 10 }));
+  g.add(trees([[-30, 11.5], [32, 11.5]], { kind: 'peepal', seed: 3, h: 10 }));
   g.add(lampPosts(along(6, [-60, 11], [60, 11])));
-  // The old city round the temple: tall buildings close on either side and across the street.
+  // The old city round the temple: tall buildings close on either side, and across the street
+  // beyond an open ground.
   g.add(cityAround([-18, 18, -26, 12], { rows: detail.low ? 1 : 2, every: detail.low ? 2 : 1, gap: 1.5, storeys: [3, 6], seed: 52, fine: !detail.low,
-    paint: ['#e8d8b8', '#cfd8d4', '#f1e6cf', '#d9b48f', '#9fc3c9', '#e7b9b0'], keep: [[-400, 400, 9.5, 26]] }));
-  g.add(cityAround([-70, 70, 25, 26.5], { rows: 1, gap: 0.5, storeys: [3, 6], seed: 9, fine: false, keep: [[-400, 400, -400, 26.5]] }));
+    paint: ['#e8d8b8', '#cfd8d4', '#f1e6cf', '#d9b48f', '#9fc3c9', '#e7b9b0'], keep: [[-400, 400, 9.5, 400]] }));
+  g.add(cityAround([-70, 70, 25, 26.5], { rows: 1, gap: 0.5, storeys: [3, 6], seed: 9, fine: false, keep: [[-400, 400, -400, 26.5], [-50, 50, 26.5, 95]] }));
+  // Across the street, a small open ground with trees, from where the temple is seen.
+  g.add(trees([[-40, 34], [-36, 70], [38, 36], [40, 72]], { kind: 'neem', seed: 8 }), box(100, 0.25, 66, M.grass, 0, 0, 61));
 }

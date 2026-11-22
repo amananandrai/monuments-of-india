@@ -1,36 +1,34 @@
 import * as THREE from 'three';
 import { M, mat, box, cyl, at, flag, inst, unitBox } from '../helpers.js';
 import { trees, shrubs, asiBoard, scatter, along } from '../parts/realism.js';
-import { hillY, FW, FH, POLISHED } from '../monuments/barabar-caves.js';
+import { rockY, FW, FH, POLISHED, DOMES } from '../monuments/barabar-caves.js';
 import { detail } from '../detail.js';
 
 const WHITE = mat('#ece7dc', 0.85), INK = mat('#6c635a', 0.6);
 
-// Barabar, finer detail and setting. From photographs: Ashoka's dedications, short Brahmi
-// inscriptions, cut beside the doorways of Sudama and Karan Chaupar; a stair of rough steps
+// Barabar, finer detail and setting. From photographs: Ashoka's dedication, a short Brahmi
+// inscription, cut beside the doorway of Sudama; a stair of rough steps
 // climbing the rock east of the face towards the shrine of Siddheshwarnath on the summit, a small
 // white temple with a saffron flag; the dry plain below planted with palmyra palms, mango and
 // scrub; and a path from the road to the ledge before the caves. Dimensions follow
-// js/monuments/barabar-caves.js: the face FW wide and FH high at z = 0, the caves at x = -12, 6
-// and 22.
+// js/monuments/barabar-caves.js: the face FW wide and FH high at z = 0, the caves at x = -8 and 8,
+// the domes of rock in DOMES.
 export function addDetails(f, g, { R }) {
   // Inscription panels beside the plain doorways: rows of tiny incised letters.
   const ins = [];
-  for (const x0 of [8.4, 24.2]) for (let r = 0; r < 4; r++) for (let k = 0; k < 9; k++) ins.push([x0 + k * 0.13, 2.4 + r * 0.22, 0.01, 0.07, 0.1, 0.01, 0]);
+  for (const x0 of [9.4]) for (let r = 0; r < 4; r++) for (let k = 0; k < 9; k++) ins.push([x0 + k * 0.13, 2.4 + r * 0.22, 0.01, 0.07, 0.1, 0.01, 0]);
   f.add(inst(unitBox(), ins, INK));
   // Rough steps up the rock beside the face, and the summit shrine.
   const st = [];
-  for (let k = 0; k < 40; k++) {
-    const x = FW / 2 + 3 + k * 0.4, z = -1 - k * 1.6, y = hillY(x, z);
-    st.push([x, y - 0.4, z, 2.2, 0.7, 1.4, 0.3]);
+  for (let k = 0; k < 44; k++) {
+    const x = FW / 2 + 6 + k * 0.5, z = -1 - k * 0.75, y = rockY(x, z);
+    if (y > 0.3) st.push([x, y - 0.35, z, 2, 0.6, 1, 0.3]);
   }
   g.add(inst(unitBox(), st, POLISHED));
-  // The temple on the summit.
-  let best = [0, -70, 0];
-  for (let x = -60; x <= 40; x += 10) for (let z = -120; z <= -30; z += 10) { const y = hillY(x, z); if (y > best[2]) best = [x, z, y]; }
-  const t = new THREE.Group();
+  // The temple on the summit of the dome.
+  const [cx, , cz, , ry] = DOMES[0], t = new THREE.Group();
   t.add(box(5, 3.4, 5, WHITE, 0, 0, 0), box(5.6, 0.3, 5.6, WHITE, 0, 3.4, 0), cyl(0.4, 2.2, 3.6, WHITE, 0, 3.7, 0, 12), at(flag(3, M.flagSaffron), 1.6, 3.7, 0));
-  g.add(at(t, best[0], best[2] - 0.4, best[1]));
+  g.add(at(t, cx, ry - 0.6, cz));
   // The path to the ledge, the board, and palms, mango and scrub on the plain.
   g.add(box(3, 0.05, 70, M.path, -4, 0, 44));
   g.add(asiBoard('Barabar Caves', 4, 14, -0.3));

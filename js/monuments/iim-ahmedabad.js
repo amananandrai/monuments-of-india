@@ -87,5 +87,5 @@ export function buildIimAhmedabad() {
   f.add(mergeByMaterial(d));
   addDetails(f, g);
   // From the south, down the length of the plaza to the main building's circles.
-  return { group: g, focus: f, view: [0.35, 0.3, 1], zoom: 0.85 };
+  return { group: g, focus: f, view: [0.12, 0.36, 1], zoom: 0.9 };
 }

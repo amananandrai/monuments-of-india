@@ -12,12 +12,12 @@ export const GRANITE = surface(mat('#8d8073', 0.9), 'rock');
 export const POLISHED = surface(mat('#8a7f74', 0.3), 'none');
 const DARK = mat('#1c1916', 0.95);
 
-// The cut face: the caves open in a sheer wall of granite FW wide and FH high at z = 0, the hill
-// rising behind it.
-export const FW = 64, FH = 9;
+// The cut face: the caves open in a sheer wall of granite FW wide and FH high at z = 0, cut into
+// the south side of the dome of rock.
+export const FW = 40, FH = 8;
 // The caves along the face: [x, door width at the foot, door height, name]. Lomas Rishi has the
-// carved front; Sudama and Karan Chaupar plain doorways with sloping jambs.
-export const CAVES = [[-12, 1.25, 2.3, 'Lomas Rishi'], [6, 1.15, 2.1, 'Sudama'], [22, 1.05, 2, 'Karan Chaupar']];
+// carved front; Sudama a plain doorway with sloping jambs.
+export const CAVES = [[-8, 1.25, 2.3, 'Lomas Rishi'], [8, 1.15, 2.1, 'Sudama']];
 
 // The outline of the Lomas Rishi arch: a horseshoe, its sides rising straight to the spring at
 // y0, an ogee point at its crown. Points from the left foot round to the right foot, at a distance
@@ -80,25 +80,36 @@ export function plainDoor(wb, h, m) {
   return g;
 }
 
-// The hill: a long whaleback of granite rising behind the cut face to about 45 m, bare rock with
-// scrub in its folds, falling away in boulders at its ends.
+// The rock: a great dome of granite, smooth and bare, 30 m high, out of whose south side the face
+// was cut; another dome east of it; and the long ridge of the Barabar hills behind.
+export const DOMES = [[0, 30, -36, 62, 30, 34], [92, 22, -30, 40, 22, 30]];
+export function rockY(x, z) {
+  let y = 0;
+  for (const [cx, , cz, rx, ry, rz] of DOMES) { const q = 1 - ((x - cx) / rx) ** 2 - ((z - cz) / rz) ** 2; if (q > 0) y = Math.max(y, ry * Math.sqrt(q)); }
+  return y;
+}
 export function hillY(x, z) {
-  const ridge = Math.exp(-Math.pow((z + 70) / 70, 2)) * smooth(260, 90, Math.abs(x + 10));
-  const face = z < -0.5 && Math.abs(x) < FW / 2 - 2 ? FH + 1.5 + (-z) * 0.35 : 0;
-  return Math.max(face * smooth(-40, -2, z) + 45 * ridge * smooth(-2, -30, z), 46 * ridge + 6 * ridged(x, z, { scale: 0.012, octaves: 3 }) * ridge) - 0.3 + 0.6 * fbm(x, z, { scale: 0.02, octaves: 2 });
+  const ridge = Math.exp(-Math.pow((z + 190) / 80, 2)) * smooth(600, 250, Math.abs(x + 40));
+  return (60 * ridge + 12 * ridged(x, z, { scale: 0.008, octaves: 3 }) * ridge) * smooth(-60, -110, z) - 0.3 + 0.5 * fbm(x, z, { scale: 0.02, octaves: 2 });
 }
 
 export function buildBarabarCaves() {
   const g = new THREE.Group(), f = new THREE.Group(), R = rng(5);
   g.add(f);
-  // The cut face, its top left rough, and the hill above and behind.
-  f.add(box(FW, FH, 14, POLISHED, 0, 0, -7));
-  for (let x = -FW / 2 + 2; x < FW / 2 - 1; x += 4) f.add(box(4.2, 1 + R() * 2.4, 13, GRANITE, x, FH - 0.2, -7.5 - R()));
-  g.add(heightField(1400, 1000, detail.low ? 120 : 190, hillY, { cz: -150, rock: ['#8d8073', '#9a8c7d', '#7f7468'], band: 10, cover: '#7d7f4c', steep: 0.9 }));
+  // The cut face, the domes of rock it is cut into, and the hills behind.
+  f.add(box(FW, FH, 12, POLISHED, 0, 0, -6));
+  const seg = detail.low ? 40 : 72;
+  for (const [cx, , cz, rx, ry, rz] of DOMES) {
+    const d = new THREE.Mesh(new THREE.SphereGeometry(1, seg, seg / 2, 0, Math.PI * 2, 0, Math.PI / 2), GRANITE);
+    d.scale.set(rx, ry, rz);
+    d.position.set(cx, -0.2, cz);
+    f.add(d);
+  }
+  g.add(heightField(2000, 1400, detail.low ? 100 : 150, hillY, { cz: -300, rock: ['#8d8073', '#9a8c7d', '#7f7468'], band: 10, cover: '#7d7f4c', steep: 0.82 }));
   // Boulders tumbled at the ends of the face and along the foot of the hill.
   const bould = new THREE.Group();
   for (let k = 0; k < 26; k++) {
-    const side = k % 2 ? 1 : -1, x = side * (FW / 2 + 4 + R() * 50), z = -6 - R() * 30, s = 2 + R() * 5;
+    const side = k % 2 ? 1 : -1, x = k < 4 ? side * (FW / 2 + 1 + R() * 3) : side * (FW / 2 + 8 + R() * 60), z = k < 4 ? -2 - R() * 3 : -2 - R() * 20, s = k < 4 ? 5 + R() * 2 : 1.5 + R() * 4;
     bould.add(ellipsoid(s * (1 + R() * 0.5), s * (0.6 + R() * 0.3), s * (0.8 + R() * 0.4), GRANITE, x, s * 0.35, z));
   }
   g.add(mergeByMaterial(bould));
@@ -109,5 +120,5 @@ export function buildBarabarCaves() {
   for (let k = 0; k < 4; k++) f.add(box(8, 0.6 * (4 - k) / 5 + 0.0, 0.5, GRANITE, -4, 0, 7.25 + k * 0.5));
   addDetails(f, g, { R });
   // From the south-west, along the face, Lomas Rishi nearest.
-  return { group: g, focus: f, view: [-0.75, 0.25, 1], zoom: 0.9 };
+  return { group: g, focus: f, view: [-0.6, 0.22, 1], zoom: 0.75 };
 }

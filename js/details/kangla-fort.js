@@ -59,7 +59,7 @@ export function addDetails(f, g) {
   g.add(lampPosts([...along(8, [-5.5, 14], [-5.5, 112]), ...along(8, [5.5, 14], [5.5, 112])]));
   g.add(shrubs(along(30, [-14, 8], [-14, 110]).concat(along(30, [14, 8], [14, 110])).map(([x, z]) => [x, z, 1.1]), { seed: 3, flowers: '#e8a22b' }));
   // The Pakhangba temple north-east of the Uttra, and the old Govindajee temple's brick shrines.
-  f.add(at(shrine(8, 6, TIN), 50, 0, -10).rotateY(Math.PI / 2));
+  g.add(at(shrine(8, 6, TIN), 50, 0, -10).rotateY(Math.PI / 2));
   const gov = new THREE.Group();
   for (const x of [-7, 7]) {
     gov.add(box(9, 1.2, 9, BRICK_DARK, x, 0, 0), box(7, 6.5, 7, BRICK, x, 1.2, 0), at(hemi(3.4, BRICK, 20), x, 7.7, 0), cyl(0.3, 0.6, 1.2, BRICK_DARK, x, 11, 0, 8));
@@ -92,8 +92,8 @@ export function addDetails(f, g) {
   g.add(sheet(90, 2400, M.river, A + 120, -0.25, 0));
   g.add(boats([[A + 110, 60, 1.5], [A + 130, -140, 1.4]], { y: -0.25, size: 1.4 }));
   const R = (s => () => (s = (s * 16807) % 2147483647) / 2147483647)(5), town = [];
-  for (let x = A + 190; x < 1100; x += 16) for (let z = -900; z < 900; z += 15) if (R() < (detail.low ? 0.25 : 0.55)) town.push([x, z, 9 + R() * 4, 10 + R() * 3, 1 + Math.floor(R() * 3), Math.PI / 2 * Math.floor(R() * 4)]);
-  for (let z = A + 60; z < 1100; z += 16) for (let x = -900; x < A + 60; x += 16) if (R() < (detail.low ? 0.15 : 0.4)) town.push([x, z, 9 + R() * 4, 10 + R() * 3, 1 + Math.floor(R() * 2), Math.PI / 2 * Math.floor(R() * 4)]);
+  for (let x = A + 190; x < 900; x += 22) for (let z = -700; z < 700; z += 20) if (R() < (detail.low ? 0.2 : 0.45)) town.push([x, z, 9 + R() * 4, 10 + R() * 3, 1 + Math.floor(R() * 3), Math.PI / 2 * Math.floor(R() * 4)]);
+  for (let z = A + 60; z < 800; z += 22) for (let x = -700; x < A + 60; x += 22) if (R() < (detail.low ? 0.12 : 0.3)) town.push([x, z, 9 + R() * 4, 10 + R() * 3, 1 + Math.floor(R() * 2), Math.PI / 2 * Math.floor(R() * 4)]);
   g.add(townHouses(town, { seed: 4, roof: 'pitched', roofs: ['#8d2f2a', '#2f5d9a', '#3c7a4f', '#7a7f84'], tanks: 0.4, fine: false }));
   g.add(mountainRing({ inner: 1500, outer: 2600, h: 420, size: 6400, cover: '#4a6838' }));
 }
