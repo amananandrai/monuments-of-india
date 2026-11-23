@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { M, V, mat, box, cyl, at, sheet, hemi, mesh, inst, unitBox, archWall, capsule, hipRoof, photo, surface } from '../helpers.js';
 import { mergeByMaterial, meiteiRoof } from '../parts/components.js';
-import { balustrade } from '../parts/colonial.js';
+import { balustrade as turned } from '../parts/colonial.js';
 import { horse } from '../parts/animals.js';
 import { heightField, smooth, mountainRing } from '../parts/terrain.js';
 import { trees, shrubs, scatter, along, lampPosts, townHouses, boats, bollards } from '../parts/realism.js';
@@ -14,6 +14,8 @@ const TIN = mat('#8d2f2a', 0.6, 0.3), SLATE = mat('#6f7a84', 0.6, 0.3), WOOD = m
 // blue-grey wash of the Uttra hall; the brick paving of the forecourt.
 const PLASTER = surface(mat('#c98a66', 0.9), 'none'), PLASTER_DARK = surface(mat('#a96f52', 0.9), 'none'), WASH = surface(mat('#6d7c8c', 0.85), 'none'), DARK = mat('#2b2622', 0.9);
 const PAVE = surface(mat('#a8695a', 0.95), 'paving'), BRONZE = mat('#4a3a2c', 0.45, 0.6), HORN = mat('#e9d9d2', 0.7), GILT = M.gold;
+// A balustrade of turned balusters; on phones a plain parapet.
+const balustrade = (len, h, m) => (detail.low ? box(len, h, 0.25, m) : turned(len, h, m));
 const LAWN = M.grass, TURF = mat('#7c9a52', 0.95);
 
 /* ---------- the Kangla Sha ---------- */
@@ -45,7 +47,7 @@ function shaField() {
 // teeth and the fangs, and the drops hanging from each collar.
 export function standingSha(m) {
   const g = new THREE.Group(), low = detail.low;
-  g.add(mesh(sculpt(low ? 'kangla-sha-standing-low' : 'kangla-sha-standing', shaField, { h: low ? 0.11 : 0.065, reach: 0.3, deep: [0.72, 0.71, 0.7] }), statueMaterial(m)));
+  g.add(mesh(sculpt(low ? 'kangla-sha-standing-low' : 'kangla-sha-standing', shaField, { h: low ? 0.13 : 0.065, reach: 0.3, deep: [0.72, 0.71, 0.7] }), statueMaterial(m)));
   const d = new THREE.Group();
   for (const s of [-1, 1]) {
     d.add(capsule(V(s * 0.22, 4.9, 0.85), V(s * 0.5, 5.9, 0.15), 0.07, HORN, 0.03), capsule(V(s * 0.38, 5.42, 0.48), V(s * 0.42, 5.78, 0.72), 0.04, HORN, 0.02));
@@ -271,7 +273,7 @@ export function addDetails(f, g) {
   // Trees: the old trees of the Kangla's lawns and groves.
   const avoid = [[-34, 34, -52, A], [-82, -42, 14, 54], [48, 92, -60, -12], [P.x0 - 5, P.x1 + 5, P.z0 - 5, P.z1 + 5], [I.x0 - I.w - 4, I.x0 + 8, I.z0 - I.w - 4, I.z1 + I.w + 4], [I.x1 - 8, I.x1 + I.w + 4, I.z0 - I.w - 4, I.z1 + I.w + 4],
     [I.x0 - I.w, I.x1 + I.w, I.z0 - I.w - 4, I.z0 + 8], [I.x0 - I.w, I.x1 + I.w, I.z1 - 8, I.z1 + I.w + 4], [polo.x - polo.w / 2 - 6, polo.x + polo.w / 2 + 6, polo.z - polo.d / 2 - 6, polo.z + polo.d / 2 + 6], [-228, -202, 30, 90]];
-  const spots = scatter(detail.low ? 90 : 220, [-i + 8, i - 8, -i + 8, i - 8], { seed: 5, gap: 12, avoid });
+  const spots = scatter(detail.low ? 70 : 220, [-i + 8, i - 8, -i + 8, i - 8], { seed: 5, gap: 12, avoid });
   const kinds = ['peepal', 'banyan', 'mango', 'jamun', 'teak'];
   kinds.forEach((k, j) => S.add(trees(spots.filter((_, n) => n % kinds.length === j), { kind: k, seed: 3 + j })));
   S.add(trees(along(12, [-26, -52], [26, -52]), { kind: 'ashoka', seed: 9 }));

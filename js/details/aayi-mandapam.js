@@ -111,7 +111,7 @@ export function addDetails(f, g, dims) {
   g.add(mergeByMaterial(p));
   // The round bed the monument stands in: lawn held half a metre above the paving by a low red
   // wall with a pale coping, cut by the four paved approaches to the arches, and planted with
-  // variegated agaves.
+  // variegated agaves and beds of red and yellow flowers.
   const bed = new THREE.Group(), quad = (r, h) => { const q = [[h, h]]; for (let k = 0; k <= 12; k++) { const t0 = Math.asin(h / r), t = t0 + (k / 12) * (Math.PI / 2 - 2 * t0); q.push([r * Math.cos(t), r * Math.sin(t)]); } return q; };
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
     const flip = (q) => { const o = q.map(([x, z]) => [sx * x, sz * z]); return sx * sz < 0 ? o.reverse() : o; };
@@ -119,13 +119,15 @@ export function addDetails(f, g, dims) {
   }
   bed.add(box(3, 0.06, 21.8, M.path, 0, 0.14, 0), box(9.4, 0.06, 3, M.path, 6.2, 0.14, 0), box(9.4, 0.06, 3, M.path, -6.2, 0.14, 0));
   const ag = new THREE.ConeGeometry(0.16, 1.5, 4).translate(0, 0.75, 0);
-  for (const [k, [x, z]] of around(12, 8.3, 0, 0, 0.26).entries()) for (let i = 0; i < 9; i++) {
+  for (const [k, [x, z]] of around(8, 8.3, 0, 0, Math.PI / 8).entries()) for (let i = 0; i < 9; i++) {
     const l = mesh(ag, AGAVE, x, 0.65, z), t = i * 0.7 + k;
     l.rotation.set(i ? 0.75 * Math.cos(t) : 0, 0, i ? 0.75 * Math.sin(t) : 0);
     l.scale.setScalar(i ? 0.8 + 0.3 * ((i * 7 + k) % 3) / 2 : 1.1);
     bed.add(l);
   }
   g.add(mergeByMaterial(bed));
+  const inBed = (pts) => pts.filter(([x, z]) => Math.abs(x) > 2.6 && Math.abs(z) > 2.6);
+  g.add(shrubs(inBed(around(20, 9.6, 0, 0, 0.1)), { seed: 12, y: 0.68, size: 0.9, flowers: '#c2352b' }), shrubs(inBed(around(14, 7, 0, 0, 0.3)), { seed: 13, y: 0.68, size: 0.9, flowers: '#e9c531' }));
   // Flower beds and clipped hedges in the quarters, palms along the walks, rain trees and banyans
   // shading the lawns, and fountains in two round pools.
   const beds = [];
@@ -137,7 +139,7 @@ export function addDetails(f, g, dims) {
   const walks = [];
   for (let k = 0; k < 8; k++) { const a = (k / 8) * Math.PI * 2 + 0.22; for (const r of [22, 34, 46]) walks.push([Math.sin(a) * r, Math.cos(a) * r]); }
   g.add(trees(walks.filter(([x, z]) => Math.abs(x) < PW / 2 - 4 && Math.abs(z) < PD / 2 - 4), { kind: 'palm', seed: 4, y: 0.12 }));
-  const lawn = scatter(detail.low ? 14 : 26, [-PW / 2 + 6, PW / 2 - 6, -PD / 2 + 8, PD / 2 - 8], { seed: 7, gap: 13, avoid: [[-20, 20, -20, 20], [-55, -40, 25, 40], [40, 55, -40, -25]] });
+  const lawn = scatter(detail.low ? 14 : 26, [-PW / 2 + 6, PW / 2 - 6, -PD / 2 + 8, PD / 2 - 8], { seed: 7, gap: 13, avoid: [[-30, 34, -20, 48], [-55, -40, 25, 40], [40, 55, -40, -25]] });
   g.add(trees(lawn.filter((_, i) => i % 3 === 0), { kind: 'banyan', seed: 2, y: 0.12 }));
   g.add(trees(lawn.filter((_, i) => i % 3 === 1), { kind: 'tamarind', seed: 3, y: 0.12 }));
   g.add(trees(lawn.filter((_, i) => i % 3 === 2), { kind: 'neem', seed: 9, y: 0.12 }));

@@ -131,5 +131,5 @@ export function buildGurudwaraBanglaSahib() {
   mergeByMaterial(f);
   addDetails(f, g, { P, w, d, bz, TH, fz });
   // From the south-east: the entrance front, the dome over it, the sarovar beyond the hall.
-  return { group: g, focus: f, view: [0.6, 0.28, 1], zoom: 0.9, batch: true };
+  return { group: g, focus: f, view: [0.6, 0.26, 1], zoom: 0.78, batch: true };
 }
