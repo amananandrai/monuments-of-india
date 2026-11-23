@@ -82,7 +82,7 @@ export function buildGurudwaraBanglaSahib() {
   // The entrance block: its front, then the sides and back where they stand clear of the hall.
   const t = new THREE.Group(), y1 = 6.5, y2 = 10.7, cols = [5.5, 8.4, 11.4];
   t.add(box(tw - 2 * DP, TH, td - 2 * DP, W));
-  const front = [[0, 0.05, 3.6, 5.2, 'door'], [0, 12.4, 4.6, 1.9, 'jali']];
+  const front = [[0, 0.05, 3.6, 5.2, 'door']];
   for (const s of [-1, 1]) front.push([s * cols[1], 0.05, 1.7, 3.6, 'door'], [s * cols[2], 1.2, 1.4, 2.6, 'room']);
   t.add(onFace(arcadeSkin(tw, TH, front, DP, W, { trim: Ws }), 0, td / 2 - DP));
   const top = cellRow(4, 4.4, 12.3, 1.5, 2.2);
@@ -96,8 +96,10 @@ export function buildGurudwaraBanglaSahib() {
   const z0 = td / 2;
   for (const x of [-tw / 2 + 0.3, -9.9, -6.95, -3.6, 3.6, 6.95, 9.9, tw / 2 - 0.3]) t.add(box(Math.abs(x) < 4 ? 0.7 : 0.4, TH, Math.abs(x) < 4 ? 0.3 : 0.14, W, x, 0, z0 + (Math.abs(x) < 4 ? 0.15 : 0.07)));
   for (const s of [-1, 1]) for (const y of [5.75, 10]) t.add(box(tw / 2 - 3.95, 0.25, 0.14, Ws, s * (tw / 4 + 1.975), y, z0 + 0.07));
-  t.add(mesh(cuspedArchGeo(6.5, 2.3, 0.3), W, 0, 11.9, z0 + 0.15), box(6.5, 0.3, 0.36, Ws, 0, 11.9, z0 + 0.18), box(6.5, 0.25, 0.3, Ws, 0, 5.75, z0 + 0.15));
+  t.add(box(6.5, 5.9, 0.04, Ws, 0, 6, z0 + 0.02), mesh(cuspedArchGeo(6.5, 2.6, 0.5), W, 0, 11.9, z0 + 0.25), box(6.5, 0.3, 0.36, Ws, 0, 11.9, z0 + 0.18), box(6.5, 0.25, 0.3, Ws, 0, 5.75, z0 + 0.15));
   t.add(at(jharokha(3, 2.5, W, { d: 1.1, roof: 'dome', trim: Ws }), 0, 7.2, z0 + 0.02));
+  // A pierced grille over the arch, under the board.
+  t.add(at(panel(5.6, 1.6, 0.14, Ws, jali(W)), 0, 12.7, z0 + 0.01));
   for (const s of [-1, 1]) cols.forEach((x, k) => { for (const y of k ? [y1, y2] : [y2]) t.add(at(jharokha(1.9, 2.1, W, { d: 0.9, roof: 'dome', trim: Ws }), s * x, y, z0 + 0.02)); });
   t.add(cornice(tw, td, TH, W));
   // On its roof: gilt-domed kiosks at the corners, and the gilt-roofed pavilion at the front.

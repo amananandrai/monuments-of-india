@@ -3,8 +3,9 @@ import { M, mat, mesh, box, cyl, at, onFace, FACES, sheet, lathe, inst, planPris
 import { dentils, archRing, rosette, medallion, mergeByMaterial } from '../parts/components.js';
 import { trees, shrubs, lampPosts, benches, fountains, scatter, along, around, traffic, cityAround } from '../parts/realism.js';
 import { detail } from '../detail.js';
+import { WHITE, SHADE } from '../monuments/aayi-mandapam.js';
 
-const WHITE = mat('#f4f2ec', 0.75), SHADE = mat('#dcd7cc', 0.85), YELLOW = mat('#e9c46a', 0.85), TRIM = mat('#f7f3ea', 0.8);
+const YELLOW = mat('#e9c46a', 0.85), TRIM = mat('#f7f3ea', 0.8);
 const ROAD = mat('#57575a', 0.92), KERB = mat('#bdb7ab', 0.9), HEDGE_BED = mat('#5f4a36', 0.95);
 
 // Aayi Mandapam, finer detail, from the same photographs: a moulded ring and imposts on each arch;
@@ -34,17 +35,17 @@ function architecture(f, { P, C, PW, PJ, G, E, K, A, T, D, U }) {
     // On the portico's front: the frieze, the dentils, the attic's scroll and the tympanum.
     const z = PJ + 0.02;
     face.add(box(PW + 0.06, 0.08, PJ + 0.03, SHADE, 0, E + 0.48, PJ / 2));
-    for (let i = -2; i <= 2; i++) face.add(at(detail.low ? medallion(0.17, SHADE) : rosette(0.19, SHADE), i * 1.22, E + 0.8, z));
-    for (let i = -2; i < 2; i++) face.add(box(0.5, 0.36, 0.04, SHADE, (i + 0.5) * 1.22, E + 0.62, z));
-    for (const s of [-1, 1]) face.add(at(medallion(0.17, SHADE), s * (PW / 2 + 0.02), E + 0.8, PJ / 2).rotateY(s * Math.PI / 2));
-    face.add(at(dentils(PW + 0.3, 0.14, 0.16, 0.12, SHADE), 0, K - 0.17, PJ + 0.06));
+    for (let i = -2; i <= 2; i++) face.add(at(detail.low ? medallion(0.17, SHADE) : rosette(0.19, SHADE), i * 1.22, E + 0.74, z));
+    for (let i = -2; i < 2; i++) face.add(box(0.5, 0.32, 0.04, SHADE, (i + 0.5) * 1.22, E + 0.58, z));
+    for (const s of [-1, 1]) face.add(at(medallion(0.17, SHADE), s * (PW / 2 + 0.02), E + 0.74, PJ / 2).rotateY(s * Math.PI / 2));
+    face.add(at(dentils(PW + 0.3, 0.14, 0.12, 0.12, SHADE), 0, K - 0.12, PJ + 0.06));
     const sz = PJ - 0.08, sy = (A + T - 0.16) / 2;
     face.add(box(PW - 0.5, 0.05, 0.05, SHADE, 0, A + 0.1, sz), box(PW - 0.5, 0.05, 0.05, SHADE, 0, T - 0.33, sz));
     for (let i = -2; i <= 2; i++) {
       face.add(at(mesh(new THREE.TorusGeometry(0.3, 0.04, 4, detail.low ? 10 : 16), SHADE), i * 1.1, sy, sz), at(fleur(0.36, SHADE), i * 1.1, sy + 0.02, sz));
       if (i < 2) for (const s of [-1, 1]) face.add(at(mesh(new THREE.TorusGeometry(0.2, 0.035, 4, 8, Math.PI), SHADE), (i + 0.5) * 1.1 + s * 0.14, sy + s * 0.12, sz).rotateZ(s > 0 ? 0 : Math.PI));
     }
-    const ty = T + 0.55, tz = PJ + 0.02;
+    const ty = T + 0.55, tz = PJ - 0.01;
     face.add(at(mesh(new THREE.TorusGeometry(0.36, 0.06, 5, 16), SHADE), 0, ty, tz), at(mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.05, 16).rotateX(Math.PI / 2), SHADE), 0, ty, tz));
     const lg = new THREE.SphereGeometry(1, 6, 4);
     for (const s of [-1, 1]) for (let i = 0; i < 4; i++) { const l = mesh(lg, SHADE, s * (0.62 + i * 0.36), ty - 0.2 + 0.1 * Math.sin(i * 2), tz); l.scale.set(0.24, 0.1 - i * 0.012, 0.05); l.rotation.z = s * (0.5 - i * 0.2); face.add(l); }

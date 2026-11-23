@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, onFace, FACES, hemi, archWall, planPrism, ribbed, lathe } from '../helpers.js';
+import { mat, mesh, box, cyl, at, onFace, FACES, hemi, archWall, planPrism, ribbed, lathe, surface, group } from '../helpers.js';
 import { pediment } from '../parts/colonial.js';
 import { detail } from '../detail.js';
 import { addDetails } from '../details/aayi-mandapam.js';
@@ -14,8 +14,8 @@ import { addDetails } from '../details/aayi-mandapam.js';
 // pediment on each arm, their roofs meeting under a low dome of fish-scale tiles, and on the dome
 // a great leafy urn: about 12.5 m to its top. Lime plaster, painted white throughout, stained
 // dark on the cornices. Faces the four ways; the park's main avenue meets it from the south (+z).
-export const WHITE = mat('#f4f2ec', 0.75), SHADE = mat('#dcd7cc', 0.85), DARK = mat('#5b5650', 0.9);
-const STAIN = mat('#b9b4a8', 0.9);
+export const WHITE = surface(mat('#f4f2ec', 0.75), 'carved'), SHADE = surface(mat('#dcd7cc', 0.85), 'carved'), DARK = mat('#5b5650', 0.9);
+const STAIN = surface(mat('#b9b4a8', 0.9), 'carved');
 // A Greek-cross plan: arms of half-width a reaching to e, round a square of half-width c.
 export const cross = (a, c, e) => [[-a, -e], [a, -e], [a, -c], [c, -c], [c, -a], [e, -a], [e, a], [c, a], [c, c], [a, c], [a, e], [-a, e], [-a, c], [-c, c], [-c, a], [-e, a], [-e, -a], [-c, -a], [-c, -c], [-a, -c]];
 
@@ -63,7 +63,7 @@ export function buildAayiMandapam() {
   const gable = new THREE.Shape();
   gable.moveTo(-a - 0.1, 0); gable.lineTo(a + 0.1, 0); gable.lineTo(0, 1.4); gable.closePath();
   for (const [k, ang] of FACES.entries()) {
-    f.add(onFace(at(pediment(PW + 0.5, 1.45, 0.8, WHITE, SHADE), 0, T, -0.8), ang, e + 0.1));
+    f.add(onFace(group(at(pediment(PW + 0.5, 1.45, 0.8, WHITE, SHADE), 0, T, -0.8)), ang, e + 0.1));
     if (k < 2) f.add(at(mesh(new THREE.ExtrudeGeometry(gable, { depth: 2 * e - 1.4, bevelEnabled: false }).translate(0, 0, -e + 0.7), STAIN), 0, T, 0).rotateY(ang));
   }
   // The dome, a low saucer, and the urn on it: a spreading foot, a collar, and a tall fluted vase
@@ -77,5 +77,5 @@ export function buildAayiMandapam() {
   f.add(top);
   addDetails(f, g, { P, C, PW, PJ, CH, G, E, K, A, T, D, U });
   // From the south-east, down the avenue of the park.
-  return { group: g, focus: f, view: [0.75, 0.22, 1], zoom: 1.35 };
+  return { group: g, focus: f, view: [0.55, 0.16, 1], zoom: 0.85 };
 }
