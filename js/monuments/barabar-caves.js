@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, mesh, box, at, surface, rng, ellipsoid } from '../helpers.js';
+import { mat, mesh, at, surface, rng, ellipsoid } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { chaityaDoorway, mauryanDoor } from '../parts/doorways.js';
 import { heightField, fbm, ridged, smooth } from '../parts/terrain.js';
@@ -64,14 +64,16 @@ export function whaleback({ L, W, H, e = 0.8, cuts = [], seed = 0, step = detail
     for (const q of cuts) if (Math.abs(x - q.x) <= q.hw + 1e-6 && a >= q.a0 - 1e-6 && a <= q.a1 + 1e-6) z = q.north ? Math.max(z, q.z) : Math.min(z, q.z);
     return [x, hAt(x) * Math.pow(sn, e) * n, z];
   };
-  // The lines of the grid: evenly spaced, with a doubled line at each edge of each cut.
-  const lines = (n, a, b, extra) => {
+  // The lines of the grid: evenly spaced along the rock, and round it closer together towards
+  // each foot, where the side is steepest; with a doubled line at each edge of each cut.
+  const lines = (n, at, extra, gap) => {
     const out = [...extra];
-    for (let i = 0; i <= n; i++) { const v = a + (b - a) * i / n; if (!extra.some((q) => Math.abs(q - v) < (b - a) / n * 0.35)) out.push(v); }
+    for (let i = 0; i <= n; i++) { const v = at(i / n); if (!extra.some((q) => Math.abs(q - v) < gap)) out.push(v); }
     return out.sort((p, q) => p - q);
   };
-  const xs = lines(Math.round(2 * L / step), -L, L, cuts.flatMap((c) => [c.x - c.hw - 0.04, c.x - c.hw, c.x + c.hw, c.x + c.hw + 0.04]));
-  const as = lines(na, 0, Math.PI, cuts.flatMap((c) => [c.a0 - 0.006, c.a0, c.a1, c.a1 + 0.006].filter((a) => a > 0 && a < Math.PI)));
+  const xs = lines(Math.round(2 * L / step), (t) => -L + 2 * L * t, cuts.flatMap((c) => [c.x - c.hw - 0.04, c.x - c.hw, c.x + c.hw, c.x + c.hw + 0.04]), step * 0.35);
+  const round = (t) => (t < 0.5 ? Math.PI / 2 * Math.pow(2 * t, 1.5) : Math.PI - Math.PI / 2 * Math.pow(2 - 2 * t, 1.5));
+  const as = lines(na, round, cuts.flatMap((c) => [c.a0 - 0.006, c.a0, c.a1, c.a1 + 0.006].filter((a) => a > 0 && a < Math.PI)), 0.012);
   const pos = [], uv = [], idx = [], rows = as.length + 2;
   for (const x of xs) for (let j = 0; j < rows; j++) {
     const a = as[Math.min(as.length - 1, Math.max(0, j - 1))], p = P(x, a);
@@ -80,7 +82,7 @@ export function whaleback({ L, W, H, e = 0.8, cuts = [], seed = 0, step = detail
   }
   for (let i = 0; i < xs.length - 1; i++) for (let j = 0; j < rows - 1; j++) {
     const a = i * rows + j, b = a + rows;
-    idx.push(a, a + 1, b, b, a + 1, b + 1);
+    idx.push(a, b, a + 1, b, b + 1, a + 1);
   }
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
@@ -98,7 +100,7 @@ export function buildBarabarCaves() {
   const { L, W, H } = ROCK, foot = (x) => W * (Math.pow(1 - Math.pow(Math.abs(x) / L, 2.6), 0.42) - 1);
   const cuts = [
     { x: SUDAMA[0], hw: SUDAMA[1] / 2 + 0.25, y0: 0, y1: SUDAMA[2] + 0.5, z: W + foot(SUDAMA[0]) - 0.14 },
-    { x: LOMAS[0], hw: 3.05, y0: 0, y1: 7.2, z: W + foot(LOMAS[0]) - 1.2 },
+    { x: LOMAS[0], hw: 3.05, y0: 0, y1: 7.2, z: W + foot(LOMAS[0]) - 1.45 },
     { x: KARAN[0], hw: KARAN[1] / 2 + 0.25, y0: 0, y1: KARAN[2] + 0.5, z: -W - foot(KARAN[0]) + 0.14, north: true },
   ];
   const rock = whaleback({ L, W, H, cuts, seed: 1 });
@@ -126,8 +128,7 @@ export function buildBarabarCaves() {
   const [, py, pz] = rock.P(-38, 1.5);
   bould.add(ellipsoid(3.4, 1.5, 2.4, GRANITE, -38, py + 1.2, pz - W));
   g.add(mergeByMaterial(bould));
-  addDetails(f, g, { R, rock, rock2, by, cuts, pc });
+  addDetails(f, g, { R, rock, by, cuts, pc });
   // From the south-west, along the rock: Sudama's door nearest, Lomas Rishi beyond it.
   return { group: g, focus: f, view: [-0.5, 0.16, 1], zoom: 0.62 };
 }
-void box;
