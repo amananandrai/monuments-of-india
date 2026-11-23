@@ -40,7 +40,7 @@ export function buildAgrasenKiBaoli() {
   }
   // The height of the flight at z.
   const stepH = (zz) => { if (zz >= Z0) return D; for (const s of steps) if (zz >= s[2] - s[5] / 2) return s[4]; return 0.4; };
-  d.add(inst(unitBox(), steps, STONE), box(2 * A2, 0.4, z - ZE, SHADE, 0, 0, (z + ZE) / 2), box(2 * A2 - 0.4, 0.1, 3, M.water, 0, 0.36, ZE + 2.2));
+  d.add(inst(unitBox(), steps, STONE), box(2 * A2, 0.4, z - ZE, SHADE, 0, 0, (z + ZE) / 2), box(2 * A2 - 0.4, 0.1, 3, M.water, 0, 0.36, ZE + 2.2), box(2 * A2, 0.4, CH, SHADE, 0, 0, ZE - CH / 2), box(2 * A2 - 0.6, 0.1, CH - 0.6, M.water, 0, 0.36, ZE - CH / 2));
   // The walks: the masses the trench steps in by, and a paved top to each.
   const len = Z0 - ZE, zm = (Z0 + ZE) / 2;
   for (const s of [-1, 1]) {
@@ -48,25 +48,29 @@ export function buildAgrasenKiBaoli() {
     d.add(box(A0 - A1 + 0.12, 0.1, len, SHADE, s * (A0 + A1 - 0.12) / 2, Y1, zm), box(A1 - A2 + 0.12, 0.1, len, SHADE, s * (A1 + A2 - 0.12) / 2, Y2, zm));
   }
   // The alcoves, tier by tier: [the wall's face, its floor, its height, its thickness, the arch's
-  // width and height, the pitch]. An alcove is cut only where the steps have left its floor clear.
+  // width and height, the pitch]. Where the steps climb past a tier, its alcoves' floors climb with
+  // them, until there is no room left under the arch.
   const pigeon = [];
   for (const [x, y, h, t, aw, ah, pitch, sill] of [[A0, Y1, D - Y1, AD, 2, 3.1, 3.05, 0], [A1, Y2, Y1 - Y2, 0.8, 1.5, 2.6, 2.75, 0], [A2, 0, Y2, 0.6, 1.4, 2.5, 2.75, 0.75]]) {
     const cells = [];
-    for (let zz = ZE + 1 + pitch / 2; zz < Z0 - 1; zz += pitch) if (stepH(zz + aw / 2 + 0.3) <= y + sill + 0.05) cells.push([zz - zm, sill, aw, ah]);
+    for (let zz = ZE + 1 + pitch / 2; zz < Z0 - 1; zz += pitch) {
+      const up = Math.max(sill, stepH(zz + aw / 2 + 0.2) - y + 0.12);
+      if (ah - up >= 0.7 * aw + 0.5) cells.push([zz - zm, up, aw, ah - up]);
+    }
     for (const s of [-1, 1]) {
       const w = pierced(len, h, cells.map(([cx, ...c]) => [-s * cx, ...c]), t, STONE);
       w.rotation.y = -s * Math.PI / 2;
       d.add(at(w, s * (x + t), y, zm));
       // Small square holes in the piers between the alcoves.
-      for (const [cx] of cells.slice(1)) pigeon.push([s * (x - 0.01), y + sill + ah * 0.62, zm + cx - pitch / 2, 0.05, 0.3, 0.3]);
+      for (const [cx] of cells.slice(1)) pigeon.push([s * (x - 0.01), y + h - 1.1, zm + cx - pitch / 2, 0.05, 0.3, 0.3]);
     }
   }
   d.add(inst(unitBox(), pigeon, M.recess));
   // The tower at the foot: its face to the steps with three arches one over another, the top one
   // a shallow recess with a small window; the brackets of a lost eave along its head; the square
   // chamber behind, a shallow dome over it, and its openings onto the well.
-  const fw = 2 * A2 + 1.2, top = [0, Y1 + 0.2, 3.2, 3.1];
-  d.add(at(pierced(fw, D, [[0, 0.4, 3, 3.3], [0, Y2 + 0.2, 2.6, 3.1], top], 0.7, STONE), 0, 0, ZE));
+  const fw = 2 * A2 + 1.2, top = [0, Y1 + 0.2, 3.6, 3.2];
+  d.add(at(pierced(fw, D, [[0, 0.4, 3.4, 3.4], [0, Y2 + 0.2, 3, 3.2], top], 0.7, STONE), 0, 0, ZE));
   d.add(box(2 * A2, D - Y1, 0.3, SHADE, 0, Y1, ZE - 0.75), at(archPanel(0.8, 1.3, true, M.recess, 0.04), 0, Y1 + 1.5, ZE - 0.6));
   for (const y of [0.5, Y2 + 0.2]) d.add(at(archPanel(2, 2.7, true, M.recess, 0.04), 0, y, ZE - CH + 0.01));
   for (let k = -3; k <= 3; k++) d.add(box(0.26, 0.34, 0.5, SHADE, k * 0.95, D - 0.5, ZE + 0.95), box(0.26, 0.16, 0.22, SHADE, k * 0.95, D - 0.66, ZE + 0.81));
@@ -91,5 +95,5 @@ export function buildAgrasenKiBaoli() {
   f.add(mergeByMaterial(d));
   addDetails(f, g, { D, HW: A0, WT, Z0, ZE, WZ, WR });
   // From the head of the steps, looking down the flight to the tower at its foot.
-  return { group: g, focus: f, view: [0.28, 0.55, 0.8], zoom: 0.55, target: [0, 6, -2], minElevation: 0.3 };
+  return { group: g, focus: f, view: [0.16, 0.5, 1], zoom: 0.46, target: [0, 6, -4], minElevation: 0.3 };
 }

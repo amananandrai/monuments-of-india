@@ -7,16 +7,15 @@ import { detail } from '../detail.js';
 import { P, STONE, DRESSED } from '../monuments/viceregal-lodge-shimla.js';
 
 // The Viceregal Lodge, finer detail. From photographs: stone bay windows on the ground floor of the
-// garden front; a low stone balustrade round the terrace; quoins at the corners of the tower.
+// north front; a low stone wall round the lawn; quoins at the corners of the main tower.
 // Measures follow js/monuments/viceregal-lodge-shimla.js.
 function architecture(f) {
-  const { L, D, TX, TW, TH } = P, d = new THREE.Group(), fz = D / 2;
+  const { L, D, TX, TZ, TW, TH, EH } = P, d = new THREE.Group(), fz = D / 2;
   for (const x of [-24, -6, 12, 28]) d.add(box(4.6, 3.4, 1.6, STONE, x, 1, -fz - 0.8), box(5, 0.4, 2, DRESSED, x, 4.4, -fz - 1), box(3.6, 2.2, 0.06, M.recess, x, 1.6, -fz - 1.63));
-  // Quoins up the tower's front corners, alternately long and short.
-  for (let k = 0; k < 14; k++) for (const s of [-1, 1]) d.add(box(k % 2 ? 0.7 : 1.2, 0.9, 0.12, DRESSED, TX + s * (TW / 2 - (k % 2 ? 0.35 : 0.6)), 2 + k * 2, fz + 1.5 + TW / 2 + 0.06));
+  // Quoins up the main tower's front corners above the roofs, alternately long and short.
+  for (let y = EH + 3, k = 0; y < TH - 9; y += 1.4, k++) for (const s of [-1, 1]) d.add(box(k % 2 ? 0.7 : 1.2, 0.7, 0.12, DRESSED, TX + s * (TW / 2 - (k % 2 ? 0.35 : 0.6)), y, TZ + TW / 2 + 0.06));
   // The terrace wall round the lawn before the entrance front.
   d.add(box(L + 30, 0.9, 0.6, DRESSED, 0, 0, fz + 40), box(0.6, 0.9, 40, DRESSED, -L / 2 - 15, 0, fz + 20), box(0.6, 0.9, 40, DRESSED, L / 2 + 15, 0, fz + 20));
-  void TH;
   f.add(mergeByMaterial(d));
 }
 
@@ -36,9 +35,9 @@ export function addDetails(f, g) {
   g.add(heightField(1100, 1100, detail.low ? 90 : 150, hillY, { rock: ['#7b7466', '#8a8272'], cover: '#4f6a3a', steep: 0.72 }));
   g.add(mountainRing({ inner: 700, outer: 1500, h: 520, vary: 180, size: 4200, snow: 520, rock: ['#6e6a60', '#7c776c'], cover: '#4b6338', steep: 0.72 }));
   g.add(box(L + 60, 0.1, 120, M.grass, 0, -0.06, 10));
-  g.add(box(L + 28, 0.06, 38, M.grass, 0, 0.02, fz + 20.5), box(8, 0.08, 60, M.path, P.TX, 0.03, fz + 40), box(L + 10, 0.08, 4, M.path, 0, 0.03, fz + 10));
+  g.add(box(L + 28, 0.06, 38, M.grass, 0, 0.02, fz + 20.5), box(8, 0.08, 60, M.path, P.PX, 0.03, fz + 40), box(L + 10, 0.08, 4, M.path, 0, 0.03, fz + 10));
   g.add(shrubs([...along(12, [-L / 2 - 10, fz + 38], [-6, fz + 38]), ...along(12, [18, fz + 38], [L / 2 + 10, fz + 38])].map(([x, z]) => [x, z, 1]), { seed: 6, flowers: '#c93a5a' }));
-  g.add(lampPosts(along(5, [P.TX - 5, fz + 18], [P.TX - 5, fz + 68])));
+  g.add(lampPosts(along(5, [P.PX - 5, fz + 18], [P.PX - 5, fz + 68])));
   g.add(benches([[-20, fz + 30], [30, fz + 30]]));
   // Deodars round the lawns and down the slopes.
   const near = scatter(40, [-140, 140, -110, 110], { seed: 4, gap: 11, avoid: [[-L / 2 - 18, L / 2 + 18, -D / 2 - 50, fz + 44]] });

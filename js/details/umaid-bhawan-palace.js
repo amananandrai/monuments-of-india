@@ -1,13 +1,16 @@
 import * as THREE from 'three';
-import { M, box, cyl, at, sheet, ring, chhatri } from '../helpers.js';
-import { mergeByMaterial, dentils, railing } from '../parts/components.js';
+import { M, mesh, box, cyl, at, sheet, ring, chhatri } from '../helpers.js';
+import { mergeByMaterial, dentils, railing, jali, rosette, panel, chhajja } from '../parts/components.js';
+import { column } from '../parts/colonial.js';
+import { steps } from '../parts/doorways.js';
 import { heightField, smooth, fbm } from '../parts/terrain.js';
 import { trees, shrubs, lampPosts, benches, fountains, scatter, along, cityAround } from '../parts/realism.js';
 import { detail } from '../detail.js';
 import { P, SAND, SAND_DEEP } from '../monuments/umaid-bhawan-palace.js';
 
 // Umaid Bhawan, finer detail. From photographs: a band of dentils under each cornice; low
-// balustrades along the wing roofs and round the base of the drum; stone lanterns on the porch.
+// balustrades along the wing roofs and round the base of the dome; stone lanterns by the steps;
+// the arms over the entrance; and the marble baradari on the front lawn.
 // Measures follow js/monuments/umaid-bhawan-palace.js.
 function architecture(f) {
   const { CW, CH, WL, WD, WH } = P, d = new THREE.Group(), B = 1.6;
@@ -18,10 +21,21 @@ function architecture(f) {
     for (const z of [-1, 1]) d.add(at(railing(WL - 4, 1, 0.25, SAND, 2.2, SAND), cx, B + WH + 1.2, z * (WD / 2 - 0.9)));
   }
   // Lanterns on piers at the foot of the entrance steps.
+  const fz = CW / 2, { PW, PD, PH } = P;
   for (const s of [-1, 1]) {
-    const x = s * 9.6, z = CW / 2 + 6 + 2.6;
-    d.add(box(1.4, 1.6, 1.4, SAND_DEEP, x, 0, z), cyl(0.35, 0.35, 1.4, M.stoneDark, x, 1.6, z, 8), cyl(0.5, 0.2, 0.6, M.stoneDark, x, 3, z, 8));
+    const x = s * (PW / 2 + 0.8), z = fz + PD + 4.2;
+    d.add(box(1.4, 1.6, 1.4, SAND_DEEP, x, B + 0.5, z - 1.2), cyl(0.35, 0.35, 1.4, M.stoneDark, x, B + 2.1, z - 1.2, 8), cyl(0.5, 0.2, 0.6, M.stoneDark, x, B + 3.5, z - 1.2, 8));
   }
+  // The arms of the Rathores over the entrance, on the portico's parapet: a shield between two
+  // supporters under a crest; and a carved cartouche on the parapet over each end of the portico.
+  const arms = new THREE.Group();
+  arms.add(box(5.2, 0.5, 0.6, SAND_DEEP, 0, 0, 0), box(1.5, 1.7, 0.4, SAND_DEEP, 0, 0.5, 0), cyl(0.001, 0.75, 0.5, SAND_DEEP, 0, 2.2, 0, 4), at(rosette(0.55, SAND), 0, 1.35, 0.21));
+  for (const s of [-1, 1]) arms.add(box(0.7, 1.5, 0.4, SAND_DEEP, s * 1.4, 0.5, 0), at(mesh(new THREE.SphereGeometry(0.34, 8, 6), SAND_DEEP), s * 1.4, 2.2, 0), box(0.9, 0.5, 0.4, SAND_DEEP, s * 2.2, 0.5, 0));
+  d.add(at(arms, 0, B + PH + 3.3, fz + PD - 0.5));
+  for (const s of [-1, 1]) d.add(at(panel(2.6, 1.5, 0.2, SAND_DEEP), s * (PW / 2 - 3.4), B + PH + 2.1, fz + PD + 0.01), at(rosette(0.6, SAND_DEEP), s * (CW / 2 - 3.2), B + 16.4, fz + 2.03));
+  // Pierced balustrade bands under the Durbar block's upper windows and round the dome's base.
+  d.add(box(PW - 2, 1.1, 0.1, jali(SAND), 0, B + PH + 3.6, fz + 0.06));
+  for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) d.add(at(railing(20, 1, 0.25, SAND, 2.2, jali(SAND)), Math.sin(a) * 17.3, B + CH + 5, Math.cos(a) * 17.3).rotateY(a));
   f.add(mergeByMaterial(d));
 }
 
@@ -49,6 +63,13 @@ export function addDetails(f, g) {
   g.add(pool, fountains([[0, pz]], { y: 0.56, h: 4 }));
   // The garden behind: a sunken lawn in a frame of terraces.
   g.add(box(150, 0.7, 6, SAND_DEEP, 0, 0, -fz - 28), box(140, 0.05, 50, M.grass, 0, 0.02, -fz - 56), sheet(30, 12, M.water, 0, 0.15, -fz - 56));
+  // The baradari on the front lawn: a pavilion of white marble, twelve columns on a stepped
+  // platform under a flat roof with a deep chhajja.
+  const bd = new THREE.Group(), bw = 13;
+  bd.add(box(bw + 3, 1.2, bw + 3, M.marble, 0, 0, 0), box(bw + 1.4, 0.5, bw + 1.4, M.marbleShade, 0, 5.9, 0), box(bw + 0.6, 0.5, bw + 0.6, M.marble, 0, 6.4, 0));
+  for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) if (i % 3 === 0 || j % 3 === 0) bd.add(at(column(0.34, 4.7, M.marble), (i - 1.5) * bw / 3.4, 1.2, (j - 1.5) * bw / 3.4));
+  for (const a of [0, Math.PI / 2, Math.PI, -Math.PI / 2]) bd.add(at(chhajja(bw + 4, 1.6, 0.5, 0.14, M.marble), Math.sin(a) * (bw / 2 + 0.7), 6.4, Math.cos(a) * (bw / 2 + 0.7)).rotateY(a), at(steps(5, 1.2, 4, M.marble, 0.4), Math.sin(a) * (bw / 2 + 1.5), 0, Math.cos(a) * (bw / 2 + 1.5)).rotateY(a));
+  g.add(at(mergeByMaterial(bd), -52, 0, fz + 66));
   // Kiosks at the corners of the front lawn.
   for (const s of [-1, 1]) g.add(at(chhatri(2.4, 6, SAND, SAND), s * 70, 0, fz + 80));
   g.add(trees([...along(9, [-12, fz + 44], [-12, fz + 140]), ...along(9, [12, fz + 44], [12, fz + 140])], { kind: 'palm', seed: 3, h: 12 }));

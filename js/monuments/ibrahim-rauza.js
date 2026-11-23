@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, mat, mesh, box, cyl, lathe, at, onFace, FACES, archWall, planSolid } from '../helpers.js';
+import { mat, mesh, box, cyl, lathe, at, onFace, FACES, archWall, planSolid } from '../helpers.js';
 import { iwan, arcadeSkin, cellRow, pierced } from '../parts/mughal.js';
 import { petalRing, bracketGeo, placeAll, alongFace, merlons, jali, mergeByMaterial } from '../parts/components.js';
 import { detail } from '../detail.js';
@@ -65,7 +65,7 @@ function crown(w, d, y, posts, { eave = 2, m = STONE, s = 1 } = {}) {
   g.add(taperBox(w + 0.3, d + 0.3, w + 2 * eave, d + 2 * eave, 0.5, SHADE, y - 0.85), box(w + 0.5, 0.5, d + 0.5, TRIM, 0, y - 0.35, 0), box(w + 0.3, 0.3, d + 0.3, m, 0, y - 1.15, 0));
   FACES.forEach((a, i) => {
     const len = i % 2 ? d : w, dist = (i % 2 ? w : d) / 2;
-    g.add(placeAll(bracketGeo(1.15, eave * 0.72, 0.32), alongFace(a, dist + 0.12, len, Math.round(len / 1.3), y - 0.86), TRIM));
+    g.add(placeAll(bracketGeo(1.5, eave * 0.75, 0.4), alongFace(a, dist + 0.12, len, Math.round(len / 1.05), y - 0.86), TRIM));
     g.add(onFace(box(len, 0.35, 0.5, m, 0, y + 0.15, 0), a, dist - 0.2), onFace(box(len - 0.6, 0.95, 0.16, jali(TRIM), 0, y + 0.5, 0), a, dist - 0.2), onFace(box(len, 0.15, 0.55, TRIM, 0, y + 1.45, 0), a, dist - 0.2));
     if (!detail.low) g.add(onFace(at(merlons(len - 1, 0.5, 0.42, 0.14, TRIM, 0.2), 0, y + 1.6, 0), a, dist - 0.2));
     for (const lat of posts[i % 2]) g.add(onFace(at(turret(s, m), 0, y + 0.15, 0), a, dist - 0.2, lat));
@@ -180,8 +180,9 @@ export function buildIbrahimRauza() {
   // in the middle of its north side, a square tower with a minaret at each front corner.
   const wall = new THREE.Group(), L = 137, WH = 5.2, WT = 5, GW = 13, GH = 13.4;
   for (const a of FACES) {
-    if (a === 0) for (const s of [-1, 1]) wall.add(onFace(box((L - GW) / 2, WH, WT - 1.2, STONE, s * (L + GW) / 4, 0, 0), a, L / 2 - WT / 2));
-    else wall.add(onFace(box(L - 2 * WT, WH, WT - 0.6, STONE, 0, 0, -0.3), a, L / 2 - WT / 2 + 0.6), onFace(box(WT, WH, WT, STONE, L / 2 - WT / 2, 0, 0), a, L / 2 - WT / 2));
+    if (a === 0) for (const s of [-1, 1]) wall.add(onFace(box((L - GW) / 2, WH, WT - 1.2, STONE), a, L / 2 - WT / 2, s * (L + GW) / 4));
+    else wall.add(onFace(box(L - 2 * WT, WH, WT - 0.6, STONE), a, L / 2 - (WT - 0.6) / 2));
+    if (a > 1) wall.add(onFace(box(WT, WH, WT, STONE), a, L / 2 - WT / 2, L / 2 - WT / 2));
   }
   const gate = new THREE.Group();
   gate.add(archWall(GW, GH, 9, 3.4, 5.4, true, STONE), at(iwan(6, 8.4, { m: STONE, trim: TRIM, shade: SHADE, depth: 1.2, frame: 1.1, top: 1, fill: 'door', band: true }), 0, 0, 4.5));
@@ -191,5 +192,5 @@ export function buildIbrahimRauza() {
   f.add(mergeByMaterial(wall));
   addDetails(f, g, { PH, TX, MX, L, WH, WT, GW, GH });
   // From the north-east, inside the garden: the tomb, and beyond the tank the mosque.
-  return { group: g, focus: f, view: [-0.85, 0.3, 1], zoom: 0.5 };
+  return { group: g, focus: f, view: [-0.8, 0.2, 1], zoom: 0.3, target: [-4, 7, 0] };
 }
