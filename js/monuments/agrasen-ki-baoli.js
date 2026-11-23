@@ -95,5 +95,5 @@ export function buildAgrasenKiBaoli() {
   f.add(mergeByMaterial(d));
   addDetails(f, g, { D, HW: A0, WT, Z0, ZE, WZ, WR });
   // From the head of the steps, looking down the flight to the tower at its foot.
-  return { group: g, focus: f, view: [0.16, 0.5, 1], zoom: 0.46, target: [0, 6, -4], minElevation: 0.3 };
+  return { group: g, focus: f, view: [-0.3, 0.5, 1], zoom: 0.5, target: [-3, 6, -2], minElevation: 0.3 };
 }
