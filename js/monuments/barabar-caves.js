@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, mesh, at, surface, rng, ellipsoid } from '../helpers.js';
+import { mat, mesh, at, surface, rng, ellipsoid, inst } from '../helpers.js';
 import { mergeByMaterial } from '../parts/components.js';
 import { chaityaDoorway, mauryanDoor } from '../parts/doorways.js';
 import { heightField, fbm, ridged, smooth } from '../parts/terrain.js';
@@ -128,7 +128,14 @@ export function buildBarabarCaves() {
   const [, py, pz] = rock.P(-38, 1.5);
   bould.add(ellipsoid(3.4, 1.5, 2.4, GRANITE, -38, py + 1.2, pz - W));
   g.add(mergeByMaterial(bould));
+  // The ridge behind is a tumble of rounded boulders from foot to crest.
+  const strewn = [];
+  for (let k = 0; k < (detail.low ? 70 : 180); k++) {
+    const x = -330 + R() * 620, z = -75 - R() * 250, s = 1.2 + R() * R() * 5;
+    strewn.push([x, groundY(x, z) - s * 0.25, z, s * (1.6 + R()), s * (1 + R() * 0.5), s * (1.4 + R()), R() * 3]);
+  }
+  g.add(inst(new THREE.SphereGeometry(0.5, 10, 6).translate(0, 0.5, 0), strewn, GRANITE));
   addDetails(f, g, { R, rock, by, cuts, pc });
   // From the south-west, along the rock: Sudama's door nearest, Lomas Rishi beyond it.
-  return { group: g, focus: f, view: [-0.5, 0.16, 1], zoom: 0.62 };
+  return { group: g, focus: f, view: [-0.55, 0.13, 1], zoom: 0.44 };
 }

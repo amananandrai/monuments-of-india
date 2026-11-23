@@ -95,7 +95,7 @@ export function addDetails(f, g, { R, rock, by, cuts, pc }) {
   const vx = ROCK2.x + pc.x, vy = by + pc.y0, vz = ROCK2.z + pc.z, v = new THREE.Group();
   v.add(box(2 * pc.hw - 0.02, 0.03, PORCH.d, POLISHED, 0, 0, PORCH.d / 2), box(2 * pc.hw - 0.02, PORCH.h - 0.02, 0.03, SHADE, 0, 0, 0.015));
   for (const s of [-1, 1]) v.add(box(0.03, PORCH.h - 0.02, PORCH.d * 0.8, SHADE, s * (pc.hw - 0.02), 0, PORCH.d * 0.4));
-  v.add(box(2 * pc.hw - 0.02, 0.03, PORCH.d * 0.7, SHADE, 0, PORCH.h - 0.05, PORCH.d * 0.35));
+  v.add(box(2 * pc.hw - 0.02, 0.03, PORCH.d * 0.9, SHADE, 0, PORCH.h - 0.06, PORCH.d * 0.45));
   v.add(at(mauryanDoor(0.7, 1.7, SHADE), 0.4, 0.03, 0.03));
   v.add(box(2 * pc.hw + 1.2, 0.5, 0.9, GRANITE, 0.2, -0.75, PORCH.d + 0.25));
   g.add(at(v, vx, vy, vz));
