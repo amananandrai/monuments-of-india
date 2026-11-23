@@ -182,5 +182,5 @@ export function buildDholavira() {
   addDetails(f, site, g, { ...CASTLE, top, gap, pf, cx0, cx1, cz0, cz1, bx, R });
   // From the north-east, over the ceremonial ground to the castle and its gates, the east
   // reservoir before it.
-  return { group: g, focus: f, view: [0.75, 0.4, 1], zoom: 0.8 };
+  return { group: g, focus: f, view: [1, 0.45, 0.8], zoom: 0.72 };
 }
