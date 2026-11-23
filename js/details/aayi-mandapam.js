@@ -1,28 +1,72 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, FACES, sheet } from '../helpers.js';
-import { dentils, keystone, rosette, mergeByMaterial } from '../parts/components.js';
+import { M, mat, mesh, box, cyl, at, onFace, FACES, sheet, lathe, inst, planPrism } from '../helpers.js';
+import { dentils, archRing, rosette, medallion, mergeByMaterial } from '../parts/components.js';
 import { trees, shrubs, lampPosts, benches, fountains, scatter, along, around, traffic, cityAround } from '../parts/realism.js';
 import { detail } from '../detail.js';
 
 const WHITE = mat('#f4f2ec', 0.75), SHADE = mat('#dcd7cc', 0.85), YELLOW = mat('#e9c46a', 0.85), TRIM = mat('#f7f3ea', 0.8);
 const ROAD = mat('#57575a', 0.92), KERB = mat('#bdb7ab', 0.9), HEDGE_BED = mat('#5f4a36', 0.95);
 
-// Aayi Mandapam, finer detail: a keystone and a ring of rosettes over each arch, dentils under the
-// cornice, a dark tablet on the attic of the south face, and fleurons at the corners of the attic.
-// Dimensions follow js/monuments/aayi-mandapam.js: plinth P high, pavilion W square and BH high,
-// entablature at E, attic at A, drum at D.
-function architecture(f, { P, W, BH, E, A }) {
-  const d = new THREE.Group();
-  for (const a of FACES) {
+// Aayi Mandapam, finer detail, from the same photographs: a moulded ring and imposts on each arch;
+// five rosettes between plain panels in the frieze of each portico, dentils under the cornice; on
+// the attic of each arm a running scroll with fleur-de-lis in its loops; a wreathed medallion
+// between sprays of leaves in each pediment; fish-scale tiles on the dome and curled leaves round
+// the urn's rim; black inscription plaques on the podium beside the south passage; wrought-iron
+// railings across the arches, and under the crossing the black bust of Aayi on a white pedestal
+// that stands in a wide basin. Dimensions follow js/monuments/aayi-mandapam.js.
+const IRON = mat('#22201e', 0.6, 0.3), BLACK = mat('#1b1a19', 0.35, 0.1), RED = mat('#b5503f', 0.9), COPING = mat('#d8c48a', 0.9), AGAVE = mat('#9aa85a', 0.85);
+// A fleur-de-lis h high facing +z: the middle petal, two curling out, and the band that ties them.
+function fleur(h, m) {
+  const g = new THREE.Group(), pg = new THREE.SphereGeometry(1, 6, 4);
+  const leaf = (x, y, rz, sy) => { const l = mesh(pg, m, x * h, y * h, 0); l.scale.set(h * 0.13, h * sy, h * 0.08); l.rotation.z = rz; return l; };
+  g.add(leaf(0, 0.12, 0, 0.42), leaf(-0.24, 0.05, 0.7, 0.3), leaf(0.24, 0.05, -0.7, 0.3), leaf(0, -0.38, 0, 0.14), box(h * 0.5, h * 0.09, h * 0.1, m, 0, -h * 0.27, 0));
+  return g;
+}
+function architecture(f, { P, C, PW, PJ, G, E, K, A, T, D, U }) {
+  const d = new THREE.Group(), c = C / 2;
+  for (const [k, ang] of FACES.entries()) {
     const face = new THREE.Group();
-    face.add(at(keystone(0.55, 0.8, 0.25, SHADE), 0, 4.3, 0.02));
-    for (const s of [-1, 1]) face.add(at(rosette(0.35, SHADE), s * 2.85, BH - 1.2, 0.33));
-    face.add(at(dentils(W + 1.6, 0.16, 0.18, 0.12, SHADE), 0, BH + 0.55, 0.6));
-    d.add(onFace(at(face, 0, P, 0), a, W / 2));
+    // On the core's face: the arch's ring and imposts, and the railing across the passage.
+    face.add(at(archRing(G * 2, 5.25, false, 0.22, 0.08, SHADE, false), 0, 0, 0));
+    for (const s of [-1, 1]) face.add(box(0.5, 0.16, 0.12, SHADE, s * (G + 0.25), 5.25 - G - 0.16, 0.06));
+    face.add(box(G * 2, 0.06, 0.06, IRON, 0, 1.2, -0.3), box(G * 2, 0.06, 0.06, IRON, 0, 0.18, -0.3));
+    for (let i = 0; i < 11; i++) face.add(box(0.035, 1.45, 0.035, IRON, -G + (i + 0.5) * (G * 2 / 11), 0.05, -0.3));
+    // On the portico's front: the frieze, the dentils, the attic's scroll and the tympanum.
+    const z = PJ + 0.02;
+    face.add(box(PW + 0.06, 0.08, PJ + 0.03, SHADE, 0, E + 0.48, PJ / 2));
+    for (let i = -2; i <= 2; i++) face.add(at(detail.low ? medallion(0.17, SHADE) : rosette(0.19, SHADE), i * 1.22, E + 0.8, z));
+    for (let i = -2; i < 2; i++) face.add(box(0.5, 0.36, 0.04, SHADE, (i + 0.5) * 1.22, E + 0.62, z));
+    for (const s of [-1, 1]) face.add(at(medallion(0.17, SHADE), s * (PW / 2 + 0.02), E + 0.8, PJ / 2).rotateY(s * Math.PI / 2));
+    face.add(at(dentils(PW + 0.3, 0.14, 0.16, 0.12, SHADE), 0, K - 0.17, PJ + 0.06));
+    const sz = PJ - 0.08, sy = (A + T - 0.16) / 2;
+    face.add(box(PW - 0.5, 0.05, 0.05, SHADE, 0, A + 0.1, sz), box(PW - 0.5, 0.05, 0.05, SHADE, 0, T - 0.33, sz));
+    for (let i = -2; i <= 2; i++) {
+      face.add(at(mesh(new THREE.TorusGeometry(0.3, 0.04, 4, detail.low ? 10 : 16), SHADE), i * 1.1, sy, sz), at(fleur(0.36, SHADE), i * 1.1, sy + 0.02, sz));
+      if (i < 2) for (const s of [-1, 1]) face.add(at(mesh(new THREE.TorusGeometry(0.2, 0.035, 4, 8, Math.PI), SHADE), (i + 0.5) * 1.1 + s * 0.14, sy + s * 0.12, sz).rotateZ(s > 0 ? 0 : Math.PI));
+    }
+    const ty = T + 0.55, tz = PJ + 0.02;
+    face.add(at(mesh(new THREE.TorusGeometry(0.36, 0.06, 5, 16), SHADE), 0, ty, tz), at(mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.05, 16).rotateX(Math.PI / 2), SHADE), 0, ty, tz));
+    const lg = new THREE.SphereGeometry(1, 6, 4);
+    for (const s of [-1, 1]) for (let i = 0; i < 4; i++) { const l = mesh(lg, SHADE, s * (0.62 + i * 0.36), ty - 0.2 + 0.1 * Math.sin(i * 2), tz); l.scale.set(0.24, 0.1 - i * 0.012, 0.05); l.rotation.z = s * (0.5 - i * 0.2); face.add(l); }
+    d.add(onFace(face, ang, c));
+    if (k === 0) for (const s of [-1, 1]) d.add(box(1.5, 0.6, 0.05, BLACK, s * (G + 1.1), 0.25, c + PJ + 0.3 + 0.025));
   }
-  // The tablet with Aayi's name, on the upper step of the attic's south face.
-  d.add(box(3.6, 0.62, 0.06, mat('#3b3a38', 0.6), 0, A + 2.04, (W - 0.6) / 2 + 0.03));
-  for (const [x, z] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) d.add(cyl(0.05, 0.28, 0.6, SHADE, x * (W / 2 + 0.2), A + 1.9, z * (W / 2 + 0.2), 8), cyl(0.18, 0.06, 0.5, SHADE, x * (W / 2 + 0.2), A + 2.5, z * (W / 2 + 0.2), 8));
+  // The dome's tiles, in rings, each tile a rounded scale lapping the one below.
+  if (!detail.low) {
+    const sc = [], sg = new THREE.SphereGeometry(0.5, 6, 3, 0, Math.PI * 2, 0, Math.PI / 2);
+    for (let r = 0; r < 7; r++) {
+      const ph = 0.2 + r * 0.14, rad = 2.7 * Math.sin(ph), y = D + 2.7 * 0.6 * Math.cos(ph), n = Math.max(8, Math.round(rad * 6.283 / 0.5));
+      for (let i = 0; i < n; i++) { const t = ((i + (r % 2) / 2) / n) * Math.PI * 2; sc.push([Math.cos(t) * rad, y - 0.1, Math.sin(t) * rad, 0.56, 0.3, 0.56, 0]); }
+    }
+    f.add(inst(sg, sc, SHADE));
+  }
+  // The leaves curling out round the urn's rim.
+  for (let i = 0; i < 12; i++) { const t = (i / 12) * Math.PI * 2, l = mesh(new THREE.SphereGeometry(1, 6, 4), WHITE, Math.cos(t) * 0.98, U + 1.9, Math.sin(t) * 0.98); l.scale.set(0.2, 0.16, 0.2); d.add(l); }
+  // The bust: a square base, a basin on a stem, a white pedestal and the black bust of Aayi.
+  d.add(box(1.5, 0.75, 1.5, WHITE, 0, 0, 0), at(lathe([[0.45, 0], [0.3, 0.12], [0.26, 0.3], [0.5, 0.45], [1.25, 0.62], [1.3, 0.7], [1.2, 0.7], [0.5, 0.55], [0, 0.55]], WHITE, 24), 0, 0.75, 0), box(0.8, 0.85, 0.8, WHITE, 0, 1.3, 0), box(0.52, 0.3, 0.4, BLACK, 0, 2.15, 0));
+  const sh = mesh(new THREE.SphereGeometry(1, 12, 8), BLACK, 0, 2.6, 0), hd = mesh(new THREE.SphereGeometry(1, 12, 8), BLACK, 0, 3.06, 0.03);
+  sh.scale.set(0.5, 0.26, 0.26); hd.scale.set(0.17, 0.22, 0.19);
+  d.add(sh, hd, cyl(0.09, 0.11, 0.2, BLACK, 0, 2.75, 0, 8));
   f.add(mergeByMaterial(d));
 }
 
@@ -64,6 +108,23 @@ export function addDetails(f, g, dims) {
   }
   p.add(box(PW - 8, 0.06, 3, M.path, 0, 0.125, -PD / 2 + 6), box(PW - 8, 0.06, 3, M.path, 0, 0.125, PD / 2 - 6));
   g.add(mergeByMaterial(p));
+  // The round bed the monument stands in: lawn held half a metre above the paving by a low red
+  // wall with a pale coping, cut by the four paved approaches to the arches, and planted with
+  // variegated agaves.
+  const bed = new THREE.Group(), quad = (r, h) => { const q = [[h, h]]; for (let k = 0; k <= 12; k++) { const t0 = Math.asin(h / r), t = t0 + (k / 12) * (Math.PI / 2 - 2 * t0); q.push([r * Math.cos(t), r * Math.sin(t)]); } return q; };
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+    const flip = (q) => { const o = q.map(([x, z]) => [sx * x, sz * z]); return sx * sz < 0 ? o.reverse() : o; };
+    bed.add(planPrism(flip(quad(10.8, 1.5)), 0.1, 0.5, RED), planPrism(flip(quad(10.86, 1.44)), 0.6, 0.06, COPING), planPrism(flip(quad(10.55, 1.75)), 0.1, 0.6, M.grass));
+  }
+  bed.add(box(3, 0.06, 21.8, M.path, 0, 0.14, 0), box(9.4, 0.06, 3, M.path, 6.2, 0.14, 0), box(9.4, 0.06, 3, M.path, -6.2, 0.14, 0));
+  const ag = new THREE.ConeGeometry(0.16, 1.5, 4).translate(0, 0.75, 0);
+  for (const [k, [x, z]] of around(12, 8.3, 0, 0, 0.26).entries()) for (let i = 0; i < 9; i++) {
+    const l = mesh(ag, AGAVE, x, 0.65, z), t = i * 0.7 + k;
+    l.rotation.set(i ? 0.75 * Math.cos(t) : 0, 0, i ? 0.75 * Math.sin(t) : 0);
+    l.scale.setScalar(i ? 0.8 + 0.3 * ((i * 7 + k) % 3) / 2 : 1.1);
+    bed.add(l);
+  }
+  g.add(mergeByMaterial(bed));
   // Flower beds and clipped hedges in the quarters, palms along the walks, rain trees and banyans
   // shading the lawns, and fountains in two round pools.
   const beds = [];

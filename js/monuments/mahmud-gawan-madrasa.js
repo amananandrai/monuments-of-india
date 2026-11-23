@@ -13,6 +13,8 @@ export const TILE_G = carved(mat('#3f8d76', 0.45), 'tiles');
 export const TILE_B = carved(mat('#2c5aa6', 0.4), 'tiles');
 export const TILE_Y = mat('#d8b24a', 0.45);
 export const TILE_W = mat('#e9e4d4', 0.45);
+// The same glazes as they are on the minaret, weathered and half lost.
+const FADE_G = mat('#6f9a86', 0.6), FADE_Y = mat('#c9a85c', 0.6), FADE_B = mat('#5f7fae', 0.6), FADE_W = mat('#d8cdb6', 0.65);
 
 // Mahmud Gawan's madrasa at Bidar (1472), a college in the manner of Khorasan: a rectangle about
 // 62 m east to west by 55 m of three storeys of rooms round a court some 30 m square, on a high
@@ -43,7 +45,7 @@ const shaftR = (y, h, r) => (y < h * 0.62 ? r * (1 - 0.2 * (y / (h * 0.62))) : y
 // Bands of chevrons round the lowest stage, from y0 to y1: each band a zig-zag strip of tile lying
 // just proud of the shaft, in turn green, yellow, white and blue.
 function chevrons(h, r, y0, y1, bh) {
-  const g = new THREE.Group(), n = 16, amp = bh * 1.6, cols = [TILE_G, TILE_Y, TILE_B, TILE_W], pos = cols.map(() => []);
+  const g = new THREE.Group(), n = 16, amp = bh * 1.6, cols = [FADE_G, FADE_Y, FADE_B, FADE_W], pos = cols.map(() => []);
   for (let j = 0, y = y0; y + bh + amp <= y1; j++, y += bh) {
     for (let k = 0; k < n; k++) {
       const a0 = (k / n) * Math.PI * 2, a1 = ((k + 1) / n) * Math.PI * 2, ya = y + (k % 2) * amp, yb = y + ((k + 1) % 2) * amp;
@@ -66,10 +68,10 @@ function minaret(h, r) {
   g.add(cyl(shaftR(y1 - 0.01, h, r), r, y1, STONE, 0, 0, 0, 16), cyl(r * 0.66, r * 0.68, y2 - y1, STONE, 0, y1, 0, 16), cyl(r * 0.53, r * 0.55, y3 - y2, STONE, 0, y2, 0, 16));
   // The chevrons of the lowest stage, between plain bands; tile bands on the upper stages.
   g.add(chevrons(h, r, 5, y1 - 1.6, 0.62));
-  for (const [y, m] of [[4.5, TILE_W], [y1 - 1.5, TILE_Y]]) g.add(cyl(shaftR(y, h, r) + 0.05, shaftR(y, h, r) + 0.05, 0.3, m, 0, y, 0, 16));
-  g.add(cyl(r * 0.69, r * 0.7, 1.5, TILE_B, 0, y1 + 3.2, 0, 16), cyl(r * 0.69, r * 0.7, 0.9, TILE_G, 0, y1 + 5, 0, 16), cyl(r * 0.56, r * 0.57, 0.8, TILE_B, 0, y2 + 1.7, 0, 16));
+  for (const [y, m] of [[4.5, FADE_W], [y1 - 1.5, FADE_Y]]) g.add(cyl(shaftR(y, h, r) + 0.05, shaftR(y, h, r) + 0.05, 0.3, m, 0, y, 0, 16));
+  g.add(cyl(r * 0.69, r * 0.7, 1.5, FADE_B, 0, y1 + 3.2, 0, 16), cyl(r * 0.69, r * 0.7, 0.9, FADE_G, 0, y1 + 5, 0, 16), cyl(r * 0.56, r * 0.57, 0.8, FADE_B, 0, y2 + 1.7, 0, 16));
   // The two balconies, swelling out of the shaft, each under a low parapet.
-  for (const [y, rr] of [[y1 - 1.3, r * 0.8], [y2 - 1.1, r * 0.68]]) g.add(at(lathe([[rr, 0], [rr * 1.06, 0.5], [rr * 1.22, 0.95], [rr * 1.42, 1.3], [rr * 1.5, 1.45], [rr * 1.5, 2.3], [rr * 1.38, 2.3], [rr * 1.38, 1.5]], DRESSED, 24), 0, y, 0));
+  for (const [y, rr] of [[y1 - 1.3, r * 0.8], [y2 - 1.1, r * 0.68]]) g.add(at(lathe([[rr, 0], [rr * 1.06, 0.5], [rr * 1.16, 0.95], [rr * 1.28, 1.3], [rr * 1.33, 1.45], [rr * 1.33, 2.3], [rr * 1.22, 2.3], [rr * 1.22, 1.5]], DRESSED, 24), 0, y, 0));
   // The cap: a small dome with its finial.
   g.add(cyl(r * 0.6, r * 0.6, 0.25, DRESSED, 0, y3, 0, 16), at(roundDome(r * 0.55, STONE, 16), 0, y3 + 0.25, 0), cyl(0.05, 0.12, 0.9, DRESSED, 0, h - 0.2, 0, 6));
   return g;
@@ -103,7 +105,7 @@ export function buildMahmudGawanMadrasa() {
     ...ragged(-C / 2, FX0, D / 2 - 6, D / 2, (x) => 0.6 + 2.2 * Math.max(fall(FX0 - 9, FX0, x), fall(-C / 2 + 6, -C / 2, x))),
   ], STONE));
   // The bands at each floor round the standing wings.
-  for (const y of [5, 10]) d.add(box(W + 0.24, 0.3, wz + 0.24, DRESSED, 0, y, -(C + wz) / 2), box(W + 0.24, 0.3, C + 0.02, DRESSED, 0, y, 0));
+  for (const y of [5, 10]) d.add(box(W + 0.24, 0.3, wz + 0.24, DRESSED, 0, y, -(C + wz) / 2), ...[-1, 1].map((q) => box(wx + 0.24, 0.3, C + 0.02, DRESSED, q * (C + wx) / 2, y, 0)));
   // Outer faces: three storeys of small arched windows in the rooms' walls.
   const row = (len, cx, cz, ry, skip = () => false) => {
     const n = Math.floor(len / 4.2);
@@ -144,10 +146,10 @@ export function buildMahmudGawanMadrasa() {
     d.add(at(roundDome(4.9, STONE), x, H + 3.8, z), cyl(0.06, 0.16, 1.1, DRESSED, x, H + 3.8 + 4.9 * 1.28, z, 6));
   }
   // The north minaret, at the corner of the front.
-  d.add(at(minaret(MINAR, 2.25), W / 2 - 1.6, 0, D / 2 + 0.6));
+  d.add(at(minaret(MINAR, 2.05), W / 2 - 1.6, 0, D / 2 + 0.6));
   f.add(at(mergeByMaterial(d), 0, BH, 0));
   addDetails(f, g, { W, D, H });
   // From the south-east, as the ruin is always photographed: the open court where the front fell,
   // the piece of the front that stands, and the minaret beside it.
-  return { group: g, focus: f, view: [-0.6, 0.3, 1], zoom: 0.8 };
+  return { group: g, focus: f, view: [-0.6, 0.26, 1], zoom: 0.62 };
 }
