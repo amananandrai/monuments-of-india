@@ -78,7 +78,11 @@ function uttra() {
   // The stair, nine steps 11 m wide, and its cheeks sweeping down and out to drums.
   for (let k = 0; k < 9; k++) g.add(box(11, h - k * (h / 9), 0.42, PLASTER_DARK, 0, 0, front + 0.66 + k * 0.42));
   for (const s of [-1, 1]) {
-    for (let k = 0; k < 6; k++) g.add(at(box(0.8, h + 0.9 - k * 0.42, 1.0, PLASTER, 0, 0, 0), s * (6 + k * 0.5), 0, front + 0.9 + k * 0.9));
+    // A wedge of wall, its coping falling from the parapet to the drum.
+    const L = 6.3, sh = new THREE.Shape([[0, 0], [L, 0], [L, 0.5], [0, h + 0.9]].map(([x, y]) => new THREE.Vector2(x, y)));
+    const cheek = mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.8, bevelEnabled: false }).translate(0, 0, -0.4), PLASTER, s * 5.9, 0, front + 0.4);
+    cheek.rotation.y = -Math.PI / 2 + s * 0.5;
+    g.add(cheek);
     g.add(cyl(0.9, 0.95, 0.5, PLASTER, s * 9.2, 0, front + 6.4, 20));
   }
   // The hall.
