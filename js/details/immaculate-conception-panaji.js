@@ -1,18 +1,42 @@
 import * as THREE from 'three';
-import { M, box, cyl, at } from '../helpers.js';
+import { M, mat, mesh, box, cyl, at } from '../helpers.js';
 import { mergeByMaterial, beltCourse } from '../parts/components.js';
 import { classicalDoor } from '../parts/colonial.js';
+import { figure } from '../parts/sculpture.js';
 import { trees, shrubs, lampPosts, benches, scatter, along, traffic, townHouses } from '../parts/realism.js';
 import { heightField, fbm, smooth } from '../parts/terrain.js';
 import { detail } from '../detail.js';
 import { rng } from '../helpers.js';
-import { S, WHITE, TRIM } from '../monuments/immaculate-conception-panaji.js';
+import { S, WHITE, TRIM, BLUE } from '../monuments/immaculate-conception-panaji.js';
 
 // The church, finer detail. From photographs: tall round-headed windows between pilasters down the
-// nave's sides, a cornice along its eaves, and a statue of the Virgin on a column at the head of
-// the stairs. Round it, the middle of Panaji: Church Square at the foot of the stairs, with its
+// nave's sides, a cornice along its eaves, and a painted statue of the Virgin on a square pedestal
+// before the door; the stairs' balustrades are a criss-cross lattice, with globe lamps on the piers. Round it, the middle of Panaji: Church Square at the foot of the stairs, with its
 // lawns, palms and the road (Emidio Gracia Road) between; old Portuguese houses under tiled roofs in
 // yellow, blue and ochre; and the wooded slope of Altinho hill rising behind the church.
+// A balustrade of criss-cross lattice len long and h high, along x on y = 0: a plinth and a rail,
+// and between them a saltire to each panel.
+export function lattice(len, h, m) {
+  const g = new THREE.Group(), n = Math.max(1, Math.round(len / (h * 1.15))), pw = len / n, ih = h - 0.24, L = Math.hypot(pw, ih), a = Math.atan2(ih, pw);
+  g.add(box(len, 0.12, 0.24, m), box(len + 0.06, 0.12, 0.28, m, 0, h - 0.12, 0));
+  for (let k = 0; k <= n; k++) g.add(box(0.1, ih, 0.16, m, -len / 2 + k * pw, 0.12, 0));
+  for (let k = 0; k < n; k++) for (const s of [-1, 1]) {
+    const o = at(box(L, 0.08, 0.1, m), -len / 2 + (k + 0.5) * pw, h / 2, s * 0.012);
+    o.geometry.translate(0, -0.04, 0);
+    o.rotation.z = s * a;
+    g.add(o);
+  }
+  return g;
+}
+
+// A pier of the stairs with its lamp: a white globe on a short stem.
+const GLOBE = mat('#fdfcf6', 0.35);
+export function lampPier(m) {
+  const g = new THREE.Group();
+  g.add(box(0.6, 1.25, 0.6, m), box(0.72, 0.12, 0.72, m, 0, 1.25, 0), cyl(0.05, 0.07, 0.3, m, 0, 1.37, 0, 8), at(mesh(new THREE.SphereGeometry(0.27, 12, 8), GLOBE), 0, 1.9, 0));
+  return g;
+}
+
 function architecture(f) {
   const { H0, FZ, NW, NH, LEN } = S, d = new THREE.Group();
   const win = classicalDoor(1.6, 3.6, { m: WHITE, trim: TRIM, fill: 'glass', top: null, depth: 0.25 });
@@ -22,9 +46,12 @@ function architecture(f) {
     d.add(box(0.6, NH - 0.6, 0.3, TRIM, s * (NW / 2 + 0.1), H0, z - 3.2));
   }
   d.add(at(beltCourse(NW + 0.2, LEN, H0 + NH - 0.6, 0.6, 0.2, TRIM), 0, 0, FZ - 1 - LEN / 2));
-  // The Virgin on her column at the head of the stairs.
-  d.add(box(1.4, 0.8, 1.4, TRIM, 0, H0 + 0.3, FZ + 6.2), cyl(0.35, 0.42, 3.4, WHITE, 0, H0 + 1.1, FZ + 6.2, 12), box(0.9, 0.3, 0.9, TRIM, 0, H0 + 4.5, FZ + 6.2));
-  d.add(cyl(0.18, 0.36, 1.5, WHITE, 0, H0 + 4.8, FZ + 6.2, 10), cyl(0.15, 0.15, 0.3, WHITE, 0, H0 + 6.3, FZ + 6.2, 10));
+  // The Virgin before the door: a statue painted blue and white on a tall square masonry pedestal.
+  const z = FZ + 5.4;
+  d.add(box(2, 0.5, 2, WHITE, 0, H0 + 0.3, z), box(1.5, 3.4, 1.5, WHITE, 0, H0 + 0.8, z), box(1.9, 0.3, 1.9, TRIM, 0, H0 + 4.2, z), box(1.1, 0.9, 0.06, TRIM, 0, H0 + 2.2, z + 0.76));
+  const mantle = cyl(0.17, 0.42, 1.75, BLUE, 0, H0 + 4.5, z - 0.06, 12);
+  mantle.scale.z = 0.7;
+  d.add(at(figure(2.3, WHITE), 0, H0 + 4.5, z + 0.05), mantle, at(mesh(new THREE.SphereGeometry(0.19, 10, 8), BLUE), 0, H0 + 6.55, z - 0.08));
   f.add(mergeByMaterial(d));
 }
 
