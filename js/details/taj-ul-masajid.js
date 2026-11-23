@@ -37,7 +37,7 @@ function architecture(f, { W, z0, z1, HH, HW, CH, CD }) {
   d.add(box(28.4, 0.1, 28.4, M.marbleShade, 0, P, pz));
   d.add(box(3, 0.9, 3, M.marble, 0, P, pz));
   // Paths across the court, from the gate to the hall.
-  d.add(box(6, 0.06, z1 - z0 - 32, PINK_LIGHT, 0, P + 0.1, z1 - (z1 - z0 - 32) / 2 - 1));
+  for (const [a, b] of [[z0 + 3, pz - 15.4], [pz + 15.4, z1 - 3]]) d.add(box(6, 0.06, b - a, PINK_LIGHT, 0, P + 0.1, (a + b) / 2));
   f.add(mergeByMaterial(d));
   f.add(sheet(28.3, 28.3, M.water, 0, P + 0.42, pz));
 }
