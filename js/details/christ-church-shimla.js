@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mat, box, at, tricolour } from '../helpers.js';
+import { mat, box, cyl, mesh, at, inst, unitBox, tricolour } from '../helpers.js';
 import { mergeByMaterial, beltCourse } from '../parts/components.js';
 import { trees, lampPosts, benches, along, townHouses } from '../parts/realism.js';
 import { heightField, fbm, smooth } from '../parts/terrain.js';
@@ -7,9 +7,11 @@ import { detail } from '../detail.js';
 import { rng } from '../helpers.js';
 import { S, WHITE } from '../monuments/christ-church-shimla.js';
 
-// Christ Church, finer detail. From photographs: a white plinth and string course run round the
-// church. Round it, the Ridge at Shimla: the open square paved in stone before the tower, with its
-// iron railing at the edge and lamps along it; the mock-Tudor State Library beside the church; and
+// Christ Church, finer detail. From photographs: a plinth and a string course run round the
+// church, and a dark iron railing on a low stone wall, between stone piers that carry globe lamps,
+// fences the forecourt before the porch and down the south side. Round it, the Ridge at Shimla:
+// the open square paved in stone before the tower, with its iron railing at the edge and lamps
+// along it; the mock-Tudor State Library beside the church; and
 // the hill falling away on every side into deodar forest and the town's houses under red, green and
 // grey iron roofs, stepping down the slopes, with Jakhu hill rising behind.
 function architecture(f) {
@@ -17,6 +19,28 @@ function architecture(f) {
   d.add(at(beltCourse(NW + 0.2, LEN, 0, 0.7, 0.18, WHITE), 0, 0, FZ - T - LEN / 2));
   d.add(at(beltCourse(NW, LEN, 1.9, 0.22, 0.12, WHITE), 0, 0, FZ - T - LEN / 2));
   f.add(mergeByMaterial(d));
+}
+
+// The forecourt railing: a low wall of grey stone, square piers every 6 m or so, dark iron bars
+// between them, and a white globe on a short iron post on the piers. From the porch's north corner
+// it runs out to the square, across the front and back along the south side of the church.
+function forecourt(g) {
+  const { FZ, PD, PW } = S, STONE = mat('#8d877b', 0.95), IRON = mat('#23262a', 0.6, 0.3), GLOBE = mat('#f4f1e6', 0.3, 0, { emissive: '#8a8468' });
+  const r = new THREE.Group(), bars = [], piers = [], x0 = -PW / 2 - 1.5, x1 = 24, z1 = FZ + PD + 9;
+  const run = (ax, az, bx, bz) => {
+    const len = Math.hypot(bx - ax, bz - az), n = Math.max(1, Math.round(len / 6)), ry = Math.atan2(-(bz - az), bx - ax);
+    r.add(at(box(len, 0.6, 0.45, STONE), (ax + bx) / 2, 0, (az + bz) / 2).rotateY(ry));
+    for (const y of [0.7, 1.7]) r.add(at(box(len, 0.06, 0.06, IRON, 0, y, 0), (ax + bx) / 2, 0, (az + bz) / 2).rotateY(ry));
+    for (let k = 0; k <= n; k++) piers.push([ax + (bx - ax) * k / n, az + (bz - az) * k / n]);
+    for (let t = 0.18; t < len; t += 0.18) bars.push([ax + (bx - ax) * t / len, 0.6, az + (bz - az) * t / len, 0.035, 1.25, 0.035]);
+  };
+  run(x0, FZ + PD, x0, z1); run(x0, z1, x1, z1); run(x1, z1, x1, FZ - 26);
+  r.add(inst(unitBox(), detail.low ? bars.filter((_, k) => k % 3 === 0) : bars, IRON));
+  piers.forEach(([x, z], k) => {
+    r.add(box(0.75, 1.9, 0.75, STONE, x, 0, z), box(0.9, 0.14, 0.9, STONE, x, 1.9, z));
+    if (k % 2 === 0) r.add(cyl(0.05, 0.07, 2.1, IRON, x, 2.04, z, 8), at(mesh(new THREE.SphereGeometry(0.34, 12, 8), GLOBE), x, 4.4, z));
+  });
+  g.add(mergeByMaterial(r));
 }
 
 // The ground: the Ridge level round the church and the square, falling away steeply to the north
@@ -35,11 +59,14 @@ export function addDetails(f, g) {
   // The paved Ridge: the square before the tower and the promenade running west along the crest.
   const P = mat('#b8b2a6', 0.92);
   g.add(box(110, 0.12, 60, P, -20, 0, FZ + 30), box(170, 0.12, 30, P, -150, 0, FZ + 20), box(30, 0.12, LEN + 20, P, 22, 0, FZ - LEN / 2));
+  // The road up the north side of the church, towards Lakkar Bazaar.
+  g.add(box(14, 0.12, LEN + 24, P, -16, 0, FZ - LEN / 2 - 2));
   // The railing along the square's southern edge, and the lamps and benches of the promenade.
   const rail = new THREE.Group(), RL = mat('#2d3a33', 0.6, 0.3);
   rail.add(box(160, 0.1, 0.1, RL, -60, 1.05, FZ + 59.5), box(160, 0.08, 0.08, RL, -60, 0.55, FZ + 59.5));
   for (let x = -140; x <= 20; x += 2.5) rail.add(box(0.1, 1.1, 0.1, RL, x, 0, FZ + 59.5));
   g.add(mergeByMaterial(rail));
+  forecourt(g);
   g.add(lampPosts([...along(7, [-70, FZ + 57], [30, FZ + 57]), ...along(5, [-220, FZ + 33], [-90, FZ + 33])]));
   g.add(benches([[-50, FZ + 55], [-25, FZ + 55], [0, FZ + 55], [-120, FZ + 30], [-160, FZ + 30]]));
   // The State Library, to the west of the church: a timber-framed Tudor gable on a stone base.

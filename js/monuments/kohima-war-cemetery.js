@@ -5,9 +5,9 @@ import { addDetails } from '../details/kohima-war-cemetery.js';
 // Kohima War Cemetery, Garrison Hill, from photographs and the Commonwealth War Graves
 // Commission's account. The cemetery climbs the north-east face of the hill in terraces, each held
 // by a grey stone retaining wall a few metres high, with a broad stair up the middle. The 1,420
-// graves stand in rows on the lawns, each a low stone pedestal carrying a bronze plaque on its
-// sloping top. At the foot of the hill stands the memorial of the 2nd Division, a great rough-hewn
-// monolith on a plinth, with the Kohima Epitaph; at the top, the Deputy Commissioner's tennis
+// graves stand in rows on the lawns, each a low block of grey stone carrying a bronze plaque on its
+// sloping top. At the foot of the hill stands the memorial of the 2nd Division, a tall rough-hewn
+// Naga stone with the Kohima Epitaph, before a curved wall of tablets; at the top, the Deputy Commissioner's tennis
 // court, its lines set in white concrete, where the fighting turned, and over it the Cross of
 // Sacrifice on a shelter; higher still the memorial to the Hindu and Sikh soldiers who were
 // cremated. Downhill is +z, so the home view looks up the terraces.

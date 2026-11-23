@@ -1,76 +1,91 @@
 import * as THREE from 'three';
-import { mat, mesh, box, cyl, at, onFace, hipRoof, photo } from '../helpers.js';
-import { mergeByMaterial } from '../parts/components.js';
+import { mat, box, at, photo } from '../helpers.js';
+import { mergeByMaterial, dentils, gableRoof } from '../parts/components.js';
 import { classicalDoor, balustrade, pediment } from '../parts/colonial.js';
-import { addDetails } from '../details/knesseth-eliyahoo-synagogue.js';
+import { addDetails, pier, banded, bayWindow } from '../details/knesseth-eliyahoo-synagogue.js';
 
-// The synagogue's brick under lime plaster, painted the sky blue that gave it its name; white for
-// its pilasters, cornices and window surrounds; a stone base; slate grey for its tower's roof.
-export const BLUE = photo(mat('#7fb3d6', 0.82), 'plaster');
-export const WHITE = mat('#f2f0ea', 0.75);
+// The synagogue's brick under lime plaster: white since the restoration of 2019, with the wall
+// behind each window sunk as a panel of indigo blue; a low stone base; clay tiles on the roof.
+export const BLUE = photo(mat('#2f4c8c', 0.82), 'plaster');
+export const WHITE = photo(mat('#f3f1ec', 0.8), 'plaster');
 export const BASE = photo(mat('#a29a8b', 0.9), 'blocks');
-const SLATE = mat('#4c5560', 0.7), DIAL = mat('#f7f4ea', 0.6), HAND = mat('#1d1d1f', 0.6);
+const TILE = mat('#8c4630', 0.82);
 
 // The measures, shared with js/details/knesseth-eliyahoo-synagogue.js: the hall W wide and D deep,
-// its front H high to the top of its cornice; the street front faces +z at z = 0.
-export const P = { W: 22, D: 32, H: 15.4 };
+// its walls H high to the top of the cornice; the pedimented west front faces +z at z = 0, its
+// middle bay BW wide standing PR proud. The storeys: a banded ground floor up to G, then two upper
+// floors from F1 and F2, each FH high between its band and the next.
+export const P = { W: 22, D: 32, H: 15.4, BW: 12.4, PR: 0.8, G: 5.2, F1: 5.6, F2: 10.3, FH: 4.4 };
+
+// One flank, len long, facing +z about x = 0: banded piers and arched windows on the ground floor,
+// then two floors of windows in blue panels between panelled piers.
+function flank(len, n) {
+  const g = new THREE.Group(), { G, F1, F2, FH } = P, pitch = (len - 1) / n;
+  for (let k = 0; k <= n; k++) {
+    const x = -len / 2 + 0.5 + k * pitch;
+    g.add(at(banded(1, G - 0.5, 0.25), x, 0.5, 0), at(pier(1, FH, 0.25), x, F1, 0), at(pier(1, FH, 0.25), x, F2, 0));
+  }
+  const w1 = bayWindow(1.5, 2.9, pitch - 1), wg = classicalDoor(1.5, 3.3, { m: WHITE, trim: WHITE, fill: 'glass', top: null, depth: 0.2, frame: 0.3 });
+  for (let k = 0; k < n; k++) {
+    const x = -len / 2 + 0.5 + (k + 0.5) * pitch;
+    g.add(at(wg.clone(), x, 1, 0), at(w1.clone(), x, F1 + 0.9, 0), at(w1.clone(), x, F2 + 0.9, 0));
+  }
+  return g;
+}
 
 // Keneseth Eliyahoo Synagogue, Kala Ghoda, Mumbai, built in 1884 by Jacob Elias Sassoon to the
-// designs of Gostling and Morris. From photographs: a Neoclassical front of three storeys on a
-// stone base, painted blue with its trim picked out in white; tall round-arched windows between
-// white pilasters on the upper floors; a central bay, a little proud, carrying a pediment and over
-// it a short tower with a clock under a slated cap; a balustrade along the roof's edge, and before
-// it a forecourt behind iron railings on the street.
+// designs of Gostling and Morris. From photographs: a Neoclassical hall of three storeys, white
+// with indigo panels. Its west front is one broad bay between narrow ones: paired fluted piers
+// carry a great pediment with a modillion cornice right across the middle bay at the roof, and
+// under it a semicircular window of three stained-glass lights fills the two upper floors over
+// the entrance porch. The ground floor is banded plaster; on the floors above, paired lights under
+// a roundel sit in arched surrounds between panelled piers, down both long sides as well. There is
+// no tower: a tiled roof runs back behind the pediment, with a parapet round the rest.
 export function buildKnessethEliyahooSynagogue() {
-  const g = new THREE.Group(), f = new THREE.Group();
+  const g = new THREE.Group(), f = new THREE.Group(), d = new THREE.Group();
   g.add(f);
-  const { W, D, H } = P, z0 = -D / 2;
-  // The stone base, the hall and its roof behind the parapet.
-  f.add(box(W + 0.6, 1.2, D + 0.6, BASE, 0, 0, z0));
-  f.add(box(W, H - 1.2, D, BLUE, 0, 1.2, z0), at(hipRoof(W - 1, D - 1, 3.6, mat('#8c4630', 0.82)), 0, H, z0));
-  // Floor bands and the main cornice, all round.
-  for (const y of [5.4, 10.2]) f.add(box(W + 0.3, 0.35, D + 0.3, WHITE, 0, y, z0));
-  f.add(box(W + 0.7, 0.6, D + 0.7, WHITE, 0, H - 0.6, z0));
-  // The balustrade along the front's top.
-  for (const s of [-1, 1]) f.add(at(balustrade(W / 2 - 4.4, 1.1, WHITE), s * (W / 4 + 2.2), H, -0.3));
-  // The central bay: a little proud of the front, rising to a pediment, then the clock tower.
-  const cb = new THREE.Group(), bw = 7.2;
-  cb.add(box(bw, H - 1.2, 0.8, BLUE, 0, 1.2, 0.4), box(bw + 0.5, 0.6, 1.3, WHITE, 0, H - 0.6, 0.45));
-  cb.add(at(pediment(bw + 0.6, 2.4, 1.1, BLUE, WHITE), 0, H, 0.35));
-  const ty = H + 0.6, th = 5.2, tw = 3.6;
-  cb.add(box(tw, th, tw, BLUE, 0, ty, -1.4), box(tw + 0.4, 0.35, tw + 0.4, WHITE, 0, ty + th, -1.4));
-  for (const sx of [-1, 1]) cb.add(box(0.35, th, 0.35, WHITE, sx * (tw / 2), ty, -1.4 + tw / 2));
-  cb.add(at(hipRoof(tw + 0.6, tw + 0.6, 2.6, SLATE), 0, ty + th + 0.35, -1.4), at(cyl(0.03, 0.08, 1.2, SLATE, 0, 0, 0, 8), 0, ty + th + 2.8, -1.4));
-  // The clock on the tower's front.
-  const r = 1.05, dial = cyl(r, r, 0.08, DIAL, 0, 0, 0, 28), rim = cyl(r + 0.14, r + 0.14, 0.06, WHITE, 0, 0, 0, 28);
-  dial.rotation.x = rim.rotation.x = Math.PI / 2;
-  dial.position.set(0, ty + th - 1.8, -1.4 + tw / 2 + 0.08); rim.position.set(0, ty + th - 1.8, -1.4 + tw / 2 + 0.03);
-  cb.add(dial, rim);
-  for (const [len, rot] of [[0.55, -0.9], [0.8, 2.3]]) { const hnd = box(0.06, len, 0.03, HAND, 0, ty + th - 1.8, -1.4 + tw / 2 + 0.13); hnd.geometry.translate(0, len / 2 - 0.05, 0); hnd.rotation.z = rot; hnd.position.y = ty + th - 1.8; cb.add(hnd); }
-  f.add(mergeByMaterial(cb));
-  // White pilasters on the front, from the base to the cornice.
-  const pl = new THREE.Group();
-  for (const x of [-W / 2 + 0.4, -7, -bw / 2 - 0.4, bw / 2 + 0.4, 7, W / 2 - 0.4]) pl.add(box(0.8, H - 1.8, 0.3, WHITE, x, 1.2, 0.15));
-  for (const x of [-bw / 2 + 0.3, bw / 2 - 0.3]) pl.add(box(0.6, H - 1.8, 0.3, WHITE, x, 1.2, 0.95));
-  f.add(mergeByMaterial(pl));
-  // The windows: round-arched on the two upper floors, the tallest in the central bay; arched doors
-  // on the ground floor, the main door in the middle under a cornice on brackets.
-  const ws = new THREE.Group(), o = { m: BLUE, trim: WHITE, fill: 'glass', top: null, depth: 0.25, frame: 0.3 };
-  const w1 = classicalDoor(1.4, 3.2, o), w2 = classicalDoor(1.4, 2.8, o), wc = classicalDoor(2.6, 6.4, { ...o, frame: 0.4 });
-  for (const x of [-8.6, -5.4, 5.4, 8.6]) {
-    ws.add(onFace(at(w1.clone(), 0, 6.2, 0), 0, 0.01, x), onFace(at(w2.clone(), 0, 10.9, 0), 0, 0.01, x));
-    ws.add(onFace(at(classicalDoor(1.4, 3, { ...o, fill: 'door' }), 0, 1.2, 0), 0, 0.01, x));
+  const { W, D, H, BW, PR, G, F1, F2, FH } = P, z0 = -D / 2;
+  // The stone base, the hall, and the middle bay of the front standing proud.
+  d.add(box(W + 0.5, 0.5, D + 0.5, BASE, 0, 0, z0), box(BW + 0.4, 0.5, PR + 0.3, BASE, 0, 0, PR / 2 + 0.1));
+  d.add(box(W, H - 0.5, D, WHITE, 0, 0.5, z0), box(BW, H - 0.5, PR, WHITE, 0, 0.5, PR / 2));
+  // The band over the ground floor, the one between the upper floors, and the main cornice with
+  // its dentils, all round and breaking forward round the middle bay.
+  for (const [y, h, p] of [[G, 0.4, 0.3], [F2 - 0.3, 0.3, 0.22], [H - 0.7, 0.3, 0.3], [H - 0.4, 0.4, 0.55]]) {
+    d.add(box(W + 2 * p, h, D + 2 * p, WHITE, 0, y, z0));
+    // The band between the upper floors stops against the great window's panel.
+    if (y !== F2 - 0.3) d.add(box(BW + 2 * p, h, PR + p, WHITE, 0, y, (PR + p) / 2));
+    else for (const s of [-1, 1]) d.add(box(1.6 + p, h, PR + p, WHITE, s * (BW / 2 - 0.8 + p / 2), y, (PR + p) / 2));
   }
-  ws.add(onFace(at(wc, 0, 6.6, 0), 0, 0.81, 0));
-  ws.add(onFace(at(classicalDoor(2.4, 3.6, { m: BLUE, trim: WHITE, top: 'cornice', depth: 0.35, frame: 0.4 }), 0, 1.2, 0), 0, 0.81, 0));
-  // Round-arched windows down the sides, on both upper floors.
-  for (const s of [-1, 1]) for (let k = 0; k < 6; k++) for (const [w, y] of [[w1, 6.2], [w2, 10.9]]) ws.add(onFace(at(w.clone(), 0, y, 0), s * Math.PI / 2, W / 2 + 0.01, -(z0 + D / 2 - 3 - k * 5.2) * s));
-  f.add(mergeByMaterial(ws));
-  // A Star of David in the pediment.
-  const star = new THREE.Shape();
-  for (let k = 0; k < 12; k++) { const a = (k / 12) * Math.PI * 2, rr = k % 2 ? 0.34 : 0.62; (k ? star.lineTo.bind(star) : star.moveTo.bind(star))(Math.sin(a) * rr, Math.cos(a) * rr); }
-  f.add(mesh(new THREE.ExtrudeGeometry(star, { depth: 0.08, bevelEnabled: false }), WHITE, 0, H + 0.95, 1.37));
+  for (const s of [-1, 1]) {
+    d.add(at(dentils(D, 0.2, 0.22, 0.2, WHITE), s * (W / 2 + 0.3), H - 0.92, z0).rotateY(s * Math.PI / 2));
+    d.add(at(dentils((W - BW) / 2, 0.2, 0.22, 0.2, WHITE), s * (W + BW) / 4, H - 0.92, 0.3));
+  }
+  d.add(at(dentils(BW, 0.2, 0.22, 0.2, WHITE), 0, H - 0.92, PR + 0.3));
+  // The pediment over the middle bay, and the tiled roof running back behind it.
+  d.add(at(pediment(BW + 1.1, 3.7, 1.3, WHITE, WHITE), 0, H + 0.45, PR + 0.5 - 1.3));
+  d.add(at(gableRoof(BW + 0.6, D - 0.6, 3.5, TILE), 0, H, z0 - 0.3));
+  // The parapet round the rest of the roof: balusters between piers.
+  for (const s of [-1, 1]) {
+    d.add(at(balustrade((W - BW) / 2 - 1.4, 1, WHITE), s * ((W + BW) / 4 + 0.35), H, -0.3));
+    d.add(at(balustrade(D - 2, 1, WHITE), s * (W / 2 - 0.3), H, z0).rotateY(Math.PI / 2));
+    for (const z of [-0.5, -D + 0.5]) d.add(box(1.2, 1.3, 1.2, WHITE, s * (W / 2 - 0.5), H, z), box(1.4, 0.2, 1.4, WHITE, s * (W / 2 - 0.5), H + 1.3, z));
+  }
+  // The front's narrow side bays: a banded ground floor, panelled piers and a window to each floor.
+  const fr = new THREE.Group(), sw = (W - BW) / 2, w1 = bayWindow(1.5, 2.9, sw - 2);
+  for (const s of [-1, 1]) {
+    for (const x of [W / 2 - 0.5, BW / 2 + 0.5]) fr.add(at(banded(1, G - 0.5, 0.25), s * x, 0.5, 0), at(pier(1, FH, 0.25), s * x, F1, 0), at(pier(1, FH, 0.25), s * x, F2, 0));
+    const x = s * (W + BW) / 4;
+    fr.add(at(classicalDoor(1.5, 3.3, { m: WHITE, trim: WHITE, fill: 'glass', top: null, depth: 0.2, frame: 0.3 }), x, 1, 0));
+    fr.add(at(w1.clone(), x, F1 + 0.9, 0), at(w1.clone(), x, F2 + 0.9, 0));
+    // The middle bay's paired fluted piers, through both upper floors, on a banded ground floor.
+    fr.add(at(banded(1.5, G - 0.5, 0.25), s * (BW / 2 - 0.75), 0.5, PR));
+    for (const y of [F1, F2]) for (const px of [BW / 2 - 0.4, BW / 2 - 1.15]) fr.add(at(pier(0.66, FH, 0.25, true), s * px, y, PR));
+  }
+  d.add(fr);
+  // The two long sides.
+  for (const s of [-1, 1]) d.add(at(flank(D, 8), s * W / 2, 0, z0).rotateY(s * Math.PI / 2));
+  f.add(mergeByMaterial(d));
   addDetails(f, g);
-  // From across the street, the blue front and its clock.
-  return { group: g, focus: f, view: [0.4, 0.36, 1], zoom: 0.95 };
+  // From across the street, the pedimented front and the side along the lane.
+  return { group: g, focus: f, view: [0.55, 0.3, 1], zoom: 0.95 };
 }

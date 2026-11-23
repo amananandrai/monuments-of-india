@@ -1,65 +1,88 @@
 import * as THREE from 'three';
-import { mat, box, cyl, lathe, at, onFace, FACES, photo, guldasta } from '../helpers.js';
+import { mat, box, cyl, lathe, at, onFace, FACES, photo } from '../helpers.js';
 import { iwan, arcadeSkin, cellRow } from '../parts/mughal.js';
 import { mergeByMaterial } from '../parts/components.js';
+import { steps } from '../parts/doorways.js';
 import { addDetails } from '../details/bara-gumbad.js';
 
-// The grey quartzite rubble of the walls, plastered in places; the red sandstone of the frames and
-// bands; the buff plaster of the mosque.
+// The grey quartzite, dressed on the gumbad and the mosque and laid as rubble in the platform and
+// the guest house; the red sandstone of the frames and bands, and the black slate set against it;
+// the old plaster of the blind arches and the stucco of the mosque; the weathered domes.
 export const RUBBLE = photo(mat('#8c8578', 0.94), 'rubble');
+export const ASHLAR = photo(mat('#a39c8e', 0.9), 'blocks');
 export const RED = photo(mat('#a65b3f', 0.86), 'blocks');
+export const BLACK = mat('#3d4046', 0.8);
 export const PLASTER = mat('#cbbfa6', 0.9);
 export const DOME = mat('#8f897c', 0.92);
 
-// Bara Gumbad, Lodhi Gardens (1490): a square domed building 20 m on a side and 29 m high, on the
-// east side of a raised court. Its walls stand about 12 m; each face has a projecting frame round a
-// tall arch, with two storeys of smaller arched openings either side, in grey rubble trimmed in red
-// sandstone. Slender turrets stand at the corners of the parapet; the dome, the first full dome in
-// Delhi, rises on a drum. West of the court stands the mosque of 1494, five arched bays 27 m long
-// under three small domes; opposite it, the guest house (mehman khana). Facing +z: the gumbad's
-// east face, the way in from the garden.
-export const P = 1.2, S = 20, WH = 13.2, MZ = -26;
+// Bara Gumbad, Lodhi Gardens (1490): a square domed building 20 m on a side, its walls 12 m high,
+// at the south end of a court raised 4 m above the garden. From photographs: each face has a tall
+// frame standing forward and above the parapet, round a pointed arch with a doorway on brackets
+// under a lintel and a window over it; either side, two storeys of two arched recesses in red
+// frames, most of them blind. Small turrets stand at the corners; a sixteen-sided drum ringed with
+// merlons carries the dome, the first full dome in Delhi, under a lotus cap. The court is some
+// 30 m east to west and 25 m north to south: the mosque of 1494 closes its west side, five arched
+// bays under three domes; the guest house (mehman khana) faces it from the east; a broad stair
+// climbs to it from the north. +z is north, the stair and the usual view; +x is west.
+export const P = 4, S = 20, WALL = 11.2, CW = 30, CD = 25, ML = 25, MD = 7.6, MH = 7.4;
+// A part built facing +z, set on the court as the mosque (side 1, west, facing east) or the guest
+// house (side -1): its front on the court's edge.
+export const onCourt = (o, side, depth) => at(o, side * (CW / 2 + depth / 2), P, S / 2 + CD / 2).rotateY(-side * Math.PI / 2);
+// The profile of a Lodi dome r across at its foot and h high, a little stilted.
+export const domeProfile = (r, h, n = 18) => Array.from({ length: n + 1 }, (_, k) => { const t = (k / n) * Math.PI / 2; return [r * Math.cos(t) ** 0.9, h * Math.sin(t)]; });
+
 export function buildBaraGumbad() {
   const g = new THREE.Group(), f = new THREE.Group(), d = new THREE.Group();
   g.add(f);
-  // The raised court: the gumbad on its east side (z = 0), the mosque on its west (z = MZ), the
-  // guest house along its north side.
-  d.add(box(36, P, 46, RUBBLE, 0, 0, -14), box(36.4, 0.25, 46.4, RED, 0, P - 0.25, -14));
-  // The square body, its band and parapet.
-  const y0 = P;
-  d.add(box(S, WH, S, RUBBLE, 0, y0, 0), box(S + 0.5, 0.45, S + 0.5, RED, 0, y0 + WH - 1.6), box(S + 0.2, 1.1, S + 0.2, RUBBLE, 0, y0 + WH));
+  // The platform under everything, with its red coping; the stair on the north, a broad lower
+  // flight and a narrower upper one; a small stair to the gumbad's south door.
+  const PW = CW + 2 * MD + 2, z0 = -S / 2 - 2.5, z1 = S / 2 + CD + 0.5;
+  d.add(box(PW, P, z1 - z0, RUBBLE, 0, 0, (z0 + z1) / 2), box(PW + 0.3, 0.25, z1 - z0 + 0.3, RED, 0, P - 0.45, (z0 + z1) / 2), box(CW, 0.06, CD, ASHLAR, 0, P, S / 2 + CD / 2));
+  d.add(box(20, P / 2, 4.6, RUBBLE, 0, 0, z1 + 2.3), at(steps(11, P / 2, 7, ASHLAR, 0.4), 0, P / 2, z1 + 0.1), at(steps(19, P / 2, 7, ASHLAR, 0.4), 0, 0, z1 + 4.6));
+  d.add(at(steps(5, P, 12, ASHLAR, 0.38), 0, 0, z0).rotateY(Math.PI));
+  // The gumbad: a core faced on each side with the frame of the great arch between two lengths of
+  // wall half a metre thick, each cut by two storeys of two recesses.
+  const y0 = P, FW = 8, FH = WALL + 1.9, side = (S - FW) / 2;
+  d.add(box(S - 1, WALL, S - 1, PLASTER, 0, y0, 0), box(S + 1, 0.7, S + 1, ASHLAR, 0, y0, 0));
+  const cells = [-1.45, 1.45].flatMap((x) => [[x, 1.1, 1.3, 3.3], [x, 6.7, 1.3, 3.1]]);
   for (const a of FACES) {
-    // The frame round the great arch, standing proud of the wall and above the parapet.
-    d.add(onFace(box(9.6, WH + 1.9, 0.8, RUBBLE, 0, y0, 0.4), a, S / 2));
-    d.add(onFace(at(iwan(5.2, 9.4, { m: RUBBLE, trim: RED, shade: PLASTER, depth: 1.4, frame: 1.8, top: 1.6, band: true, cells: false }), 0, y0 + 0.3, 0), a, S / 2 + 0.8));
-    // Two storeys of smaller arches either side of it.
-    for (const lat of [-6.9, 6.9]) for (const [y, w, h] of [[0.5, 2.6, 4.6], [6.4, 2.2, 3.8]]) {
-      d.add(onFace(at(iwan(w, h, { m: RUBBLE, trim: RED, shade: PLASTER, depth: 0.5, frame: 0.35, top: 0.35, fill: y > 1 ? 'jali' : 'door', band: false, cells: false }), 0, y0 + y, 0), a, S / 2, lat));
+    d.add(onFace(at(iwan(4.4, 9.8, { m: ASHLAR, trim: RED, shade: PLASTER, depth: 1.1, frame: (FW - 4.4) / 2, top: FH - 9.8, fill: 'none', band: true, cells: false }), 0, y0, 0), a, S / 2 - 0.5));
+    for (const s of [-1, 1]) {
+      // The inner recess of the lower storey is open, a door into the chamber.
+      const own = cells.map(([x, sill, w, h]) => [x, sill, w, h, sill < 2 && x * s < 0 ? 'room' : 'none']);
+      d.add(onFace(at(arcadeSkin(side - 0.5, WALL, own, 0.5, ASHLAR, { trim: RED }), 0, y0, 0), a, S / 2 - 0.5, s * (FW / 2 + (side - 0.5) / 2)));
     }
   }
-  // The corner turrets and the parapet's merlon-topped corners.
-  for (const x of [-1, 1]) for (const z of [-1, 1]) d.add(cyl(0.9, 1.05, WH + 1.1, RUBBLE, x * (S / 2 - 0.4), y0, z * (S / 2 - 0.4), 8), at(guldasta(3.2, 0.75, RED), x * (S / 2 - 0.4), y0 + WH + 1.1, z * (S / 2 - 0.4)));
-  // The drum and the dome, slightly stilted, crowned by a lotus and a short finial.
-  const dy = y0 + WH + 1.1;
-  d.add(cyl(7.3, 7.5, 4, RUBBLE, 0, dy, 0, 40), cyl(7.7, 7.7, 0.4, RED, 0, dy + 4, 0, 40));
-  const dome = [];
-  for (let k = 0; k <= 18; k++) { const t = (k / 18) * Math.PI / 2; dome.push([7.3 * Math.cos(t), 8.1 * Math.sin(t)]); }
-  d.add(at(lathe(dome, DOME, 48), 0, dy + 4.4, 0));
-  d.add(at(lathe([[1.2, 0], [1.4, 0.3], [0.7, 0.8], [0.35, 1.0], [0.45, 1.4], [0.15, 2.0], [0, 2.6]], RED, 16), 0, dy + 12.4, 0));
-  // The mosque: a hall 27.2 x 7.3, five arched bays facing east, three domes over the middle bays,
-  // turrets at the corners.
-  const mq = new THREE.Group(), MH = 7.6;
-  mq.add(box(27.2, MH, 7.3, PLASTER, 0, 0, 0), box(27.6, 0.4, 7.7, RED, 0, MH - 0.9), box(27.4, 0.9, 7.5, PLASTER, 0, MH));
-  mq.add(at(arcadeSkin(26.4, 6.4, cellRow(5, 5.2, 0, 3.6, 5.6), 0.7, PLASTER, { trim: RED, fill: 'room' }), 0, 0, 3.65));
-  for (const x of [-5.2, 0, 5.2]) mq.add(cyl(2.3, 2.4, 1.2, PLASTER, x, MH + 0.9, 0, 24), at(lathe(dome.map(([r, y]) => [r * 0.32, y * 0.32]), PLASTER, 32), x, MH + 2.1, 0), cyl(0.12, 0.3, 1, RED, x, MH + 4.7, 0, 8));
-  for (const x of [-13.4, 13.4]) for (const z of [-3.4, 3.4]) mq.add(cyl(0.7, 0.8, MH + 0.9, PLASTER, x, 0, z, 8), at(guldasta(2.4, 0.55, PLASTER), x, MH + 0.9, z));
-  d.add(at(mq, 0, P, MZ));
-  // The guest house along the north side of the court: a long low arcade.
-  const gh = new THREE.Group();
-  gh.add(box(24, 6, 6.4, PLASTER, 0, 0, 0), box(24.4, 0.5, 6.8, PLASTER, 0, 6), box(24.5, 0.3, 6.9, RED, 0, 5.2), at(arcadeSkin(23, 5, cellRow(5, 4.4, 0, 3, 4.2), 0.5, PLASTER, { trim: RED, fill: 'room' }), 0, 0, 3.2));
-  d.add(at(gh, 14.5, P, -14).rotateY(-Math.PI / 2));
+  for (const x of [-1, 1]) for (const z of [-1, 1]) d.add(box(0.5, WALL, 0.5, ASHLAR, x * (S / 2 - 0.25), y0, z * (S / 2 - 0.25)));
+  // The string course between the storeys, the cornice and the parapet wall.
+  for (const a of FACES) for (const s of [-1, 1]) {
+    d.add(onFace(box(side, 0.3, 0.2, ASHLAR, 0, y0 + 5.9, 0), a, S / 2 + 0.1, s * (FW / 2 + side / 2)));
+    d.add(onFace(box(side, 0.3, 0.24, ASHLAR, 0, y0 + WALL - 0.3, 0), a, S / 2 + 0.12, s * (FW / 2 + side / 2)));
+  }
+  // The drum, sixteen-sided, and the dome under its lotus cap.
+  const dy = y0 + WALL, DR = 8, DH = 4.4;
+  d.add(cyl(DR, DR, DH, ASHLAR, 0, dy, 0, 16), cyl(DR + 0.25, DR + 0.25, 0.3, RED, 0, dy + DH - 1.1, 0, 16), cyl(DR - 0.6, DR - 0.6, 0.5, ASHLAR, 0, dy + DH, 0, 32));
+  d.add(at(lathe(domeProfile(DR - 0.85, 7.6), DOME, 48), 0, dy + DH + 0.4, 0));
+  d.add(at(lathe([[1.5, 0], [1.75, 0.2], [1.6, 0.5], [0.7, 0.75], [0.55, 1.0], [0.25, 1.3], [0, 1.5]], DOME, 16), 0, dy + DH + 7.9, 0));
+  // The mosque: a hall of five bays facing east across the court, on a low plinth, the three
+  // middle bays domed; a mihrab bay stands out from its back.
+  const mq = new THREE.Group();
+  mq.add(box(ML, MH, MD - 0.9, ASHLAR, 0, 0, -0.45), box(ML + 0.4, 0.4, MD + 0.4, ASHLAR, 0, 0, 0), box(4.6, MH, 1, ASHLAR, 0, 0, -MD / 2 - 0.5));
+  mq.add(at(arcadeSkin(ML, MH, cellRow(5, 4.8, 0.4, 3.5, 5.3), 0.9, ASHLAR, { trim: PLASTER, fill: 'room' }), 0, 0, MD / 2 - 0.9));
+  mq.add(box(ML + 0.2, 0.7, MD + 0.2, ASHLAR, 0, MH, 0), box(4.8, 0.7, 1, RED, 0, MH + 0.7, MD / 2 - 0.6));
+  for (const x of [-4.8, 0, 4.8]) mq.add(cyl(2.35, 2.45, 1.3, ASHLAR, x, MH + 0.7, -0.3, 16), at(lathe(domeProfile(2.2, 2.3, 12), DOME, 32), x, MH + 2.0, -0.3), at(lathe([[0.5, 0], [0.6, 0.1], [0.25, 0.3], [0.2, 0.5], [0, 0.75]], DOME, 12), x, MH + 4.25, -0.3));
+  d.add(onCourt(mq, 1, MD));
+  // The guest house opposite: a rubble hall of five arches, its north end standing higher, in ruin.
+  const gh = new THREE.Group(), GD = 6.6, GH = 6.2;
+  gh.add(box(ML, GH, GD - 0.7, RUBBLE, 0, 0, -0.35), at(arcadeSkin(ML, GH, cellRow(5, 4.8, 0.3, 3.2, 4.4), 0.7, RUBBLE, { trim: RED, fill: 'room' }), 0, 0, GD / 2 - 0.7));
+  gh.add(box(ML + 0.2, 0.5, GD + 0.2, RUBBLE, 0, GH, 0), box(ML + 0.3, 0.3, 0.2, RED, 0, GH - 0.9, GD / 2 + 0.05));
+  gh.add(box(5.4, 2.6, GD - 0.4, RUBBLE, -ML / 2 + 2.7, GH + 0.5, 0), box(2.4, 1.3, 2.6, RUBBLE, -ML / 2 + 1.6, GH + 3.1, -1));
+  d.add(onCourt(gh, -1, GD));
+  // The walls that join the gumbad to the two halls at the court's south end, each with an arch.
+  for (const s of [-1, 1]) d.add(at(arcadeSkin(CW / 2 - S / 2 + 1.5, 4.4, [[0, 0, 1.6, 3]], 0.9, RUBBLE, { trim: RED, fill: 'room' }), s * (S / 2 + (CW / 2 - S / 2 + 1.5) / 2), y0, S / 2 - 3.5));
   f.add(mergeByMaterial(d));
-  addDetails(f, g, { P, S, WH, MZ });
-  // From the south-east, the gumbad's east face, the mosque's domes behind.
-  return { group: g, focus: f, view: [0.75, 0.32, 1], zoom: 0.85 };
+  addDetails(f, g, { P, S, WALL, FW, FH, CW, CD, ML, MD, MH, GD, GH, DR, DH, z0, z1 });
+  // From the north, a little to the east, as from the Sheesh Gumbad: the stair, the gumbad across
+  // the court, the mosque's front on the right and the guest house on the left.
+  return { group: g, focus: f, view: [-0.36, 0.15, 1], zoom: 0.55 };
 }

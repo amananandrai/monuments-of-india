@@ -7,7 +7,7 @@ import { RUBBLE, RUBBLE_D, outline } from '../monuments/tughlaqabad-fort.js';
 
 // Tughlaqabad, its setting. The lake that once surrounded the tomb is dry, a flat of grass and
 // scrub; the Mehrauli–Badarpur road now cuts across the causeway between the tomb and the fort.
-// Inside the walls: the ruins of the citadel and the palace on a rise in the south-west corner,
+// Inside the walls: the ruins of the citadel, with the Bijai Mandal tower, and the palace on a rise in the south-west corner,
 // rows of broken house walls and the great tanks, all overgrown with babul and ber. Dimensions
 // follow js/monuments/tughlaqabad-fort.js: the circuit A by B round (0, CZ), the south gate at
 // z = GATE_Z.
@@ -25,7 +25,9 @@ function ruins(g, { A, B, CZ }) {
   const c = new THREE.Group(), cx = -A * 0.42, cz = CZ + B * 0.35;
   c.add(box(150, 9, 120, RUBBLE_D, cx, 0, cz), box(150.6, 1.2, 120.6, RUBBLE, cx, 9, cz));
   for (const [x, z] of [[-75, -60], [75, -60], [-75, 60], [75, 60]]) c.add(cyl(7, 8.5, 16, RUBBLE, cx + x, 0, cz + z, 18));
-  c.add(box(40, 7, 26, RUBBLE, cx - 20, 9, cz - 10), cyl(5, 6, 14, RUBBLE, cx + 30, 9, cz + 20, 16));
+  c.add(box(40, 7, 26, RUBBLE, cx - 20, 9, cz - 10));
+  // The Bijai Mandal on the citadel's highest point: a square tower in ruin, stepping in as it rises.
+  c.add(box(22, 9, 22, RUBBLE_D, cx + 30, 9, cz + 20), box(15, 8, 15, RUBBLE, cx + 30, 18, cz + 20), box(8, 5, 9, RUBBLE_D, cx + 28, 26, cz + 21));
   g.add(mergeByMaterial(c));
 }
 
@@ -46,5 +48,5 @@ export function addDetails(f, g, dims) {
   const inside = scatter(detail.low ? 50 : 120, [-A * 0.85, A * 0.85, CZ - B * 0.8, CZ + B * 0.8], { seed: 5, gap: 22 }).filter(inFort);
   g.add(trees(out, { kind: 'babul', seed: 3 }), trees(inside, { kind: 'ber', seed: 5 }));
   g.add(shrubs(scatter(80, [-200, 200, -110, 160], { seed: 9, gap: 6, avoid: [[-50, 50, -45, 38], [-6, 6, GATE_Z, -40], [-300, 300, rz - 10, rz + 10]] }).map(([x, z]) => [x, z, 1.4]), { dry: true, seed: 9 }));
-  g.add(asiBoard('Tughlaqabad Fort', 14, 48, 0));
+  g.add(asiBoard('Tughlaqabad Fort', 14, 52, 0));
 }

@@ -1,10 +1,12 @@
 import * as THREE from 'three';
-import { M, box, rng } from '../helpers.js';
-import { mergeByMaterial } from '../parts/components.js';
+import { M, mat, box, cyl, at, group, onFace, FACES, rng } from '../helpers.js';
+import { mergeByMaterial, star } from '../parts/components.js';
+import { classicalDoor, headSlab } from '../parts/colonial.js';
+import { figure } from '../parts/sculpture.js';
 import { trees, shrubs, lampPosts, benches, scatter, along, townHouses } from '../parts/realism.js';
 import { heightField, fbm, ridged, smooth } from '../parts/terrain.js';
 import { detail } from '../detail.js';
-import { S, MARBLE, SHADE } from '../monuments/solomons-temple-aizawl.js';
+import { S, MARBLE, SHADE, crown } from '../monuments/solomons-temple-aizawl.js';
 
 // Solomon's Temple, its setting. From photographs: the temple stands alone on a levelled hilltop in
 // the Kidron Valley at the edge of Aizawl, in lawns edged with flowering shrubs, a broad drive
@@ -17,8 +19,61 @@ const HILLS = (x, z) => {
   return top + ridges + 10 * fbm(x, z, { scale: 0.006, octaves: 3 }) * smooth(60, 120, r) - 0.08;
 };
 
+// The stars, the cross and the emblem are of dark metal against the marble.
+const STEEL = mat('#6f7a86', 0.35, 0.7), BLACK = mat('#1b1b1d', 0.5, 0.3);
+
+// An angel h tall on y = 0, facing +z: a robed figure with folded wings, a long trumpet raised to
+// its lips.
+function angel(h) {
+  const a = group(figure(h, MARBLE)), horn = cyl(h * 0.05, h * 0.012, h * 0.5, MARBLE, 0, 0, 0, 8);
+  horn.rotation.x = 1.1;
+  a.add(at(horn, h * 0.05, h * 0.92, h * 0.3));
+  for (const s of [-1, 1]) {
+    const w = box(h * 0.16, h * 0.62, h * 0.05, MARBLE, 0, 0, 0);
+    w.rotation.set(-0.12, 0, -s * 0.2);
+    a.add(at(w, s * h * 0.16, h * 0.62, -h * 0.13));
+  }
+  return a;
+}
+
+// The carving of the four fronts.
+function carving(f) {
+  const { H, E, G, PD, VH, P, PW, S1, S2, SP } = S, W = H + 2 * PD, d = new THREE.Group(), pz = H / 2 - 1.2, hw = (PW - 2.8) / 2;
+  const hooded = classicalDoor(0.9, 1.5, { m: MARBLE, trim: SHADE, fill: 'glass', top: null, depth: 0.18 });
+  FACES.forEach((a, n) => {
+    const p = new THREE.Group();
+    // Small hooded windows along the upper wall, and blind arched panels in the gable and up the pillar.
+    for (const s of [-1, 1]) for (const x of [7.2, 10.6, 14, 17.2]) p.add(at(hooded.clone(), s * x, P + VH + 1.5, H / 2));
+    for (const s of [-1, 1]) for (const [x, y] of [[7.5, E + 0.9], [10.8, E + 0.7], [14.2, E + 0.5]]) p.add(at(headSlab(1, 1.3, 'round', SHADE, 0.06), s * x, P + y, H / 2));
+    for (const y of [E - 2.2, E + 1, E + 4.2]) for (const x of [-2.6, 0, 2.6]) p.add(at(headSlab(0.9, 1.4, 'round', SHADE, 0.06), x, P + y, pz + 2.5));
+    for (const y of [VH + 1.4, E - 0.4, E + 3, S1 - 2.6]) p.add(box(PW - 1.6, 0.14, 0.08, SHADE, 0, P + y, pz + 2.5));
+    // The crown emblem on the upper stage, and the black cross on the pyramid.
+    p.add(box(2.6, 2, 0.1, SHADE, 0, P + S1 + 1.8, pz + 2), at(crown(0.6, 0.9, M.gild), 0, P + S1 + 2.2, pz + 2.05));
+    const slope = Math.atan(2 / SP), cross = group(box(0.22, 2.6, 0.12, BLACK, 0, 0, 0), box(1.5, 0.22, 0.12, BLACK, 0, 1.6, 0));
+    cross.rotation.x = -slope;
+    p.add(at(cross, 0, P + S2 + 0.9, pz + 2 * (1 - 0.9 / SP) + 0.08));
+    // Seven Stars of David to each pillar: three up each side on stepped arms, and one on the tip.
+    for (const s of [-1, 1]) for (const t of [0.22, 0.44, 0.66]) {
+      const x = s * (hw * (1 - t) + 0.5), y = P + S2 + t * SP;
+      p.add(box(1.9, 0.3, 0.45, MARBLE, x, y - 0.3, pz), box(0.4, 1, 0.45, MARBLE, x + s * 0.75, y - 1, pz));
+      p.add(box(0.1, 1.1, 0.1, STEEL, x + s * 0.75, y, pz), at(star(6, 0.5, STEEL, 0.08), x + s * 0.75, y + 1.5, pz - 0.04));
+    }
+    p.add(box(0.1, 1.2, 0.1, STEEL, 0, P + S2 + SP - 0.2, pz), at(star(6, 0.55, STEEL, 0.08), 0, P + S2 + SP + 1.45, pz - 0.04));
+    // The two white angels blowing trumpets, on pedestals above the main entrance.
+    if (n === 0) for (const s of [-1, 1]) {
+      p.add(cyl(0.8, 1, 1.1, MARBLE, s * 6.2, P + VH + 0.8, W / 2 - 1.6, 16), cyl(1.05, 1.05, 0.15, SHADE, s * 6.2, P + VH + 1.9, W / 2 - 1.6, 16));
+      const o = at(angel(2.7), s * 6.2, P + VH + 2.05, W / 2 - 1.6);
+      o.rotation.y = s * 0.35;
+      p.add(o);
+    }
+    d.add(onFace(p, a, 0));
+  });
+  f.add(mergeByMaterial(d));
+}
+
 export function addDetails(f, g) {
   const { H, PD } = S, W = H + 2 * PD;
+  carving(f);
   g.add(heightField(2200, 2200, detail.low ? 110 : 170, HILLS, { rock: ['#7d7462', '#6f6a5c'], cover: '#4c7339', steep: 0.55 }));
   // The levelled hilltop: lawns, the drive to the main porch, and a white wall round the edge.
   g.add(box(150, 0.1, 130, M.grass, 0, 0, 10), box(12, 0.12, 50, M.path, 0, 0, W / 2 + 29), box(W + 14, 0.12, W + 14, M.path, 0, 0, 0));

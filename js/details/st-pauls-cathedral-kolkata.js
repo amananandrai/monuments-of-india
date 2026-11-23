@@ -1,24 +1,34 @@
 import * as THREE from 'three';
-import { M, mat, box, at } from '../helpers.js';
+import { M, mat, mesh, box, at } from '../helpers.js';
 import { mergeByMaterial, beltCourse } from '../parts/components.js';
 import { trees, shrubs, lampPosts, benches, scatter, along, traffic, cityAround } from '../parts/realism.js';
 import { detail } from '../detail.js';
 import { S, WALL, TRIM } from '../monuments/st-pauls-cathedral-kolkata.js';
 
 // St Paul's, finer detail. From photographs: a moulded plinth runs round the whole church and a
-// string course under the windows; the west porch's gable carries a cross. Round it, the cathedral
+// string course under the windows. Round it, the cathedral
 // close on the edge of the Maidan: lawns crossed by paths, rain trees, palms and mahogany, a low
 // railing on a plinth along Cathedral Road, lamps and benches, and the city's blocks beyond.
 function architecture(f) {
-  const { FZ, LEN, NW, WH, CZ, TW, TD, CW } = S, d = new THREE.Group(), nlen = FZ - (CZ + TD / 2), clen = CZ - TD / 2 - (FZ - LEN);
-  d.add(at(beltCourse(NW + 0.3, nlen, 0, 1.1, 0.25, TRIM), 0, 0, CZ + TD / 2 + nlen / 2));
-  d.add(at(beltCourse(TW + 0.3, TD + 0.3, 0, 1.1, 0.25, TRIM), 0, 0, CZ));
-  d.add(at(beltCourse(CW + 0.3, clen, 0, 1.1, 0.25, TRIM), 0, 0, CZ - TD / 2 - clen / 2));
-  d.add(at(beltCourse(NW, nlen, 3.9, 0.3, 0.18, TRIM), 0, 0, CZ + TD / 2 + nlen / 2));
-  d.add(at(beltCourse(CW, clen, 3.4, 0.3, 0.18, TRIM), 0, 0, CZ - TD / 2 - clen / 2));
-  // A low cross over the porch.
-  d.add(box(0.3, 2, 0.3, TRIM, 0, 9.75, FZ + 6.5), box(1.2, 0.3, 0.3, TRIM, 0, 10.9, FZ + 6.5));
+  const { FZ, LEN, NW, CZ, TW, TD, VD } = S, d = new THREE.Group(), hl = LEN - VD, hz = FZ - VD - hl / 2;
+  d.add(at(beltCourse(NW + 0.3, hl, 0, 1.0, 0.25, TRIM), 0, 0, hz), at(beltCourse(TW + 0.3, TD + 0.3, 0, 1.0, 0.25, TRIM), 0, 0, CZ));
+  d.add(at(beltCourse(NW, hl, 4.6, 0.3, 0.18, TRIM), 0, 0, hz), at(beltCourse(TW, TD, 4.6, 0.3, 0.18, TRIM), 0, 0, CZ));
+  d.add(at(beltCourse(19.3, VD, 0, 1.0, 0.25, TRIM), 0, 0, FZ - VD / 2 + 0.15));
   f.add(mergeByMaterial(d));
+}
+
+// The Sir William Prentice Memorial Gate on the north approach: wrought-iron leaves under an
+// arched overthrow with a lantern, between white piers, and lower side gates. It stands across
+// the x axis at the origin, facing -x.
+function prenticeGate() {
+  const g = new THREE.Group(), RL = mat('#23272a', 0.55, 0.4);
+  for (const z of [-7.2, -3, 3, 7.2]) g.add(box(1.3, 4.4, 1.3, WALL, 0, 0, z), box(1.6, 0.3, 1.6, TRIM, 0, 4.4, z), at(mesh(new THREE.ConeGeometry(0.7, 1, 4).rotateY(Math.PI / 4), TRIM), 0, 5.2, z));
+  for (const [z0, z1, h] of [[-2.35, 2.35, 3.6], [-6.55, -3.65, 3], [3.65, 6.55, 3]]) {
+    for (let z = z0; z <= z1 + 0.01; z += 0.2) g.add(box(0.04, h - 0.15 + 0.5 * Math.cos(((z - (z0 + z1) / 2) / (z1 - z0)) * Math.PI), 0.04, RL, 0, 0.15, z));
+    for (const y of [0.25, h * 0.45, h - 0.4]) g.add(box(0.06, 0.07, z1 - z0, RL, 0, y, (z0 + z1) / 2));
+  }
+  g.add(at(mesh(new THREE.TorusGeometry(2.35, 0.06, 6, 20, Math.PI).rotateY(Math.PI / 2), RL), 0, 4.2, 0), box(0.3, 0.6, 0.3, RL, 0, 6.5, 0), at(mesh(new THREE.TorusGeometry(1.5, 0.04, 6, 16, Math.PI).rotateY(Math.PI / 2), RL), 0, 4.2, 0));
+  return mergeByMaterial(g);
 }
 
 export function addDetails(f, g) {
@@ -27,6 +37,8 @@ export function addDetails(f, g) {
   g.add(box(520, 0.06, 460, M.grass, 0, -0.06, 0));
   // Paths: the drive to the porch and round the church.
   g.add(box(9, 0.05, 54, M.path, 0, 0, FZ + 33), box(76, 0.05, 6, M.path, 0, 0, FZ + 18), box(6, 0.05, LEN + 18, M.path, -30, 0, 0), box(6, 0.05, LEN + 18, M.path, 30, 0, 0));
+  // The north approach: a drive from the Prentice gate to the door under the tower.
+  g.add(box(40, 0.05, 7, M.path, -32, 0, S.CZ), at(prenticeGate(), -50, 0, S.CZ));
   // Cathedral Road along the front, behind a railing on a low plinth with gate piers.
   g.add(box(520, 0.06, 18, M.asphalt, 0, 0, FZ + 70));
   const rail = new THREE.Group(), RL = mat('#2f3330', 0.6, 0.3);
@@ -41,7 +53,7 @@ export function addDetails(f, g) {
   g.add(cityAround([-150, 150, -120, FZ + 80], { rows: detail.low ? 1 : 2, every: detail.low ? 2 : 1, fine: false, gap: 8, storeys: [3, 7], seed: 47, keep: [[-400, 400, -400, -122]] }));
   // Trees of the close: rain trees (wide neem-like crowns), mahogany, palms by the porch, and a
   // hedge of flowering shrubs along the paths.
-  const keep = [[-22, 22, -45, FZ + 12], [-24, 24, -20, 0], [-6, 6, FZ, FZ + 62]];
+  const keep = [[-22, 22, -45, FZ + 12], [-80, 0, S.CZ - 9, S.CZ + 9], [-6, 6, FZ, FZ + 62]];
   g.add(trees(scatter(26, [-140, 140, -110, FZ + 52], { seed: 3, gap: 16, avoid: [...keep, [-34, 34, -48, FZ + 24]] }), { kind: 'neem', seed: 3, h: 14 }));
   g.add(trees(scatter(10, [-140, 140, -110, FZ + 52], { seed: 8, gap: 18, avoid: [...keep, [-34, 34, -48, FZ + 24]] }), { kind: 'mango', seed: 8, h: 12 }));
   g.add(trees([...along(4, [-12, FZ + 24], [-12, FZ + 52]), ...along(4, [12, FZ + 24], [12, FZ + 52])], { kind: 'palm', seed: 5 }));
