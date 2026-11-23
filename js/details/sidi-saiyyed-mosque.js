@@ -9,7 +9,7 @@ export const STONE = mat('#c9a874', 0.88);
 export const SHADE = mat('#a88b5e', 0.9);
 const MARBLE = mat('#e8e4da', 0.6);
 
-// One of the mosque's ten jalis, filling a blunt-pointed lunette aw wide and ah to its crown: a
+// One of the mosque's ten jalis, filling a round-headed lunette aw wide and ah to its crown: a
 // slab of sandstone pierced right through, drawn on a canvas and cut out by its alpha. From
 // photographs of the windows. kind:
 // 'palm': a sinuous trunk rising to a crown of palm fronds under the point of the arch, its
@@ -26,9 +26,9 @@ function jaliTexture(kind, aw, ah, seed) {
   const W = detail.low ? 512 : 1024, Hc = Math.round(W * ah / aw), c = document.createElement('canvas');
   c.width = W; c.height = Hc;
   const t = c.getContext('2d'), k = W / aw, X = (x) => W / 2 + x * k, Y = (y) => Hc - y * k;
-  const r = aw / 2, s = ah - rise(r, true), outline = () => {
+  const r = aw / 2, s = ah - rise(r, false), outline = () => {
     t.beginPath(); t.moveTo(X(-r), Y(0));
-    for (const p of archCurve(r, s, true, 24)) t.lineTo(X(p.x), Y(p.y));
+    for (const p of archCurve(r, s, false, 24)) t.lineTo(X(p.x), Y(p.y));
     t.lineTo(X(r), Y(0)); t.closePath();
   };
   let a = 11 + seed * 7919;
@@ -72,12 +72,12 @@ function jaliTexture(kind, aw, ah, seed) {
     }
   } else {
     // The slab, pierced all over with small leaf-shaped holes; the trunk and boughs are drawn
-    // back over it solid, and each coil is ringed with its own piercing.
+    // back over it solid.
     t.fillRect(0, 0, W, Hc);
     const step = 0.085;
     punch(() => {
       for (let y = 0.06, j = 0; y < ah; y += step * 0.86, j++) for (let x = -r + (j % 2 ? step / 2 : 0); x < r; x += step) {
-        t.beginPath(); t.ellipse(X(x + (R() - 0.5) * 0.03), Y(y + (R() - 0.5) * 0.03), 0.033 * k, 0.019 * k, R() * Math.PI, 0, Math.PI * 2); t.fill();
+        t.beginPath(); t.ellipse(X(x + (R() - 0.5) * 0.03), Y(y + (R() - 0.5) * 0.03), 0.044 * k, 0.027 * k, R() * Math.PI, 0, Math.PI * 2); t.fill();
       }
     });
     // A bough from (x, y) on the trunk, sweeping out and winding into a coil of radius cr about
@@ -85,7 +85,6 @@ function jaliTexture(kind, aw, ah, seed) {
     const coil = (x, y, cx, cy, cr, dir, w) => {
       const a0 = Math.atan2(y - cy, x - cx) + dir * 1.2, pts = [[x, y]], N = 70, turns = 1.9;
       for (let i = 0; i <= N; i++) { const u = i / N, an = a0 + dir * u * turns * Math.PI * 2, rr = cr * (1 - 0.88 * u); pts.push([cx + Math.cos(an) * rr, cy + Math.sin(an) * rr]); }
-      punch(() => { t.lineWidth = 0.05 * k; t.beginPath(); t.arc(X(cx), Y(cy), (cr + 0.06) * k, 0, Math.PI * 2); t.stroke(); });
       line(pts.slice(0, 30), w); line(pts.slice(29, 55), w * 0.75); line(pts.slice(54), w * 0.55);
       // Leaves off the coil.
       for (let i = 6; i < N; i += 5) { const [px, py] = pts[i], an = Math.atan2(py - cy, px - cx); line([[px, py], [px + Math.cos(an) * 0.07, py + Math.sin(an) * 0.07]], w * 0.6); }
@@ -101,11 +100,11 @@ function jaliTexture(kind, aw, ah, seed) {
       line(tp, 0.1);
       // The palm's crown: a fan of fronds, each drooping at its tip.
       const [hx, hy] = [trunk(top), top];
-      punch(() => { t.beginPath(); t.arc(X(hx), Y(hy), 0.42 * k, 0, Math.PI * 2); t.fill(); });
+      punch(() => { t.beginPath(); t.arc(X(hx), Y(hy), 0.36 * k, 0, Math.PI * 2); t.fill(); });
       for (let q = 0; q < 15; q++) {
-        const an = -0.35 + q * (Math.PI + 0.7) / 14, fl = 0.4, fr = [];
+        const an = -0.35 + q * (Math.PI + 0.7) / 14, fl = 0.36, fr = [];
         for (let u = 0; u <= 1.001; u += 0.125) fr.push([hx + Math.cos(an) * fl * u, hy + Math.sin(an) * fl * u - 0.1 * u * u]);
-        line(fr, 0.03);
+        line(fr, 0.035);
       }
       t.beginPath(); t.arc(X(hx), Y(hy), 0.07 * k, 0, Math.PI * 2); t.fill();
     } else {
@@ -129,9 +128,9 @@ function jaliTexture(kind, aw, ah, seed) {
   return tex;
 }
 export function sidiJali(aw, ah, kind = 'tree', seed = 0) {
-  const r = aw / 2, s = ah - rise(r, true), sh = new THREE.Shape();
+  const r = aw / 2, s = ah - rise(r, false), sh = new THREE.Shape();
   sh.moveTo(-r, 0);
-  archCurve(r, s, true, 16).forEach((p) => sh.lineTo(p.x, p.y));
+  archCurve(r, s, false, 16).forEach((p) => sh.lineTo(p.x, p.y));
   sh.lineTo(r, 0); sh.closePath();
   const geo = new THREE.ShapeGeometry(sh), uv = geo.attributes.uv, pos = geo.attributes.position;
   for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / aw + 0.5, pos.getY(i) / ah);
@@ -152,7 +151,7 @@ export function sidiJali(aw, ah, kind = 'tree', seed = 0) {
 function architecture(f, { L, D, H, P, WT, WIN, SIDE }) {
   const d = new THREE.Group(), [sill, aw, ah] = WIN, zw = D / 2, BAY = L / 5, F = frieze(SHADE);
   // The west wall.
-  d.add(at(archPanel(aw, ah, true, SHADE, 0.05), 0, P + sill, zw - 0.02), at(archRing(aw, ah, true, 0.2, 0.09, SHADE), 0, P + sill, zw));
+  d.add(at(archPanel(aw, ah, false, SHADE, 0.05), 0, P + sill, zw - 0.02), at(archRing(aw, ah, false, 0.2, 0.09, SHADE), 0, P + sill, zw));
   d.add(box(L + 0.1, 0.22, 0.12, F, 0, P + sill - 0.36, zw), box(L + 0.1, 0.18, 0.1, F, 0, P + 1.5, zw), box(L + 0.16, 0.3, 0.14, SHADE, 0, P, zw));
   d.add(box(L + 0.08, 0.3, 0.07, F, 0, P + H - 0.5, zw));
   d.add(box(2.3, sill - 0.5, 0.55, STONE, 0, P, zw + 0.27), box(2.5, 0.16, 0.65, SHADE, 0, P + 1.5, zw + 0.3));

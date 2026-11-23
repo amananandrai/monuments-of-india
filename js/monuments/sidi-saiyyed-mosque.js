@@ -9,14 +9,14 @@ import { addDetails, sidiJali, STONE, SHADE } from '../details/sidi-saiyyed-mosq
 // Its east front is open in five pointed arches on square piers, under a deep eave on serpentine
 // brackets, between two great octagonal turrets (the stumps of minarets never built) that stop just
 // over the parapet. Eight pillars inside carry arches both ways, making fifteen bays, five by three.
-// The west wall is solid below and pierced high up by five blunt-pointed lunettes: the middle one,
+// The west wall is solid below and pierced high up by five round-headed lunettes: the middle one,
 // behind the mihrab, is filled with stone; the two beside it hold the famous carved trees, and the
 // outer two are grids of small square pierced panels. Each side wall has three lunettes of square
 // panels over a dado: ten jalis in all. The model is turned so the west wall, the face everyone
 // photographs from the street, looks towards +z; the open front faces -z.
 // L long, D deep, H from the floor to the roof, on a plinth P; walls WT thick. WIN: the west
 // wall's lunettes, [sill, width, height]; SIDE: the side walls'.
-export const L = 22, D = 11, H = 6.3, P = 0.6, WT = 0.9, WIN = [3.2, 3.4, 2.45], SIDE = [2.7, 2.5, 2.9];
+export const L = 22, D = 11, H = 6.3, P = 0.6, WT = 0.9, WIN = [3.2, 3.4, 2.2], SIDE = [2.7, 2.5, 2.5];
 
 // An octagonal prism, a flat face to the front.
 const octa = (rt, rb, h, m, x, y, z) => { const o = cyl(rt, rb, h, m, x, y, z, 8); o.rotation.y = Math.PI / 8; return o; };
@@ -30,12 +30,12 @@ export function buildSidiSaiyyedMosque() {
   for (let k = 0; k < 2; k++) d.add(box(L - 2.6, P - (k + 1) * 0.2, 0.45, Sd, 0, 0, -D / 2 - 0.82 - k * 0.45));
   // The west wall (+z): five bays, a lunette high in each but the middle one, which is walled up.
   const wins = cellRow(5, BAY, ...WIN);
-  d.add(at(arcadeSkin(L, H, wins.filter((c, k) => k !== 2), WT, S, { trim: Sd, fill: 'none', pointed: true }), 0, P, D / 2 - WT));
+  d.add(at(arcadeSkin(L, H, wins.filter((c, k) => k !== 2), WT, S, { trim: Sd, fill: 'none', pointed: false }), 0, P, D / 2 - WT));
   // The side walls, each with three lunettes over a dado.
   // (the turrets take the front end of each, so the three bays sit a little towards the west).
   const sl = D - WT, sides = (s) => cellRow(3, 3.03, ...SIDE).map(([cx, ...c]) => [cx - s * 0.5, ...c]);
   for (const s of [-1, 1]) {
-    const w = at(arcadeSkin(sl, H, sides(s), WT, S, { trim: Sd, fill: 'none', pointed: true }), s * (L / 2 - WT), P, -WT / 2);
+    const w = at(arcadeSkin(sl, H, sides(s), WT, S, { trim: Sd, fill: 'none', pointed: false }), s * (L / 2 - WT), P, -WT / 2);
     w.rotation.y = s * Math.PI / 2;
     d.add(w);
   }
@@ -88,11 +88,11 @@ export function buildSidiSaiyyedMosque() {
   const zj = D / 2 - WT + 0.3, kinds = ['grid', 'tree', null, 'palm', 'grid'];
   wins.forEach(([cx, sill, aw, ah], k) => {
     if (!kinds[k]) return;
-    f.add(at(sidiJali(aw, ah, kinds[k], k), cx, P + sill, zj), at(archPanel(aw + 0.2, ah + 0.15, true, M.recess, 0.04), cx, P + sill - 0.05, zj - 0.3));
+    f.add(at(sidiJali(aw, ah, kinds[k], k), cx, P + sill, zj), at(archPanel(aw + 0.2, ah + 0.15, false, M.recess, 0.04), cx, P + sill - 0.05, zj - 0.3));
   });
   for (const s of [-1, 1]) sides(s).forEach(([cx, sill, aw, ah], k) => {
     const j = new THREE.Group();
-    j.add(at(sidiJali(aw, ah, 'grid', 5 + k + (s + 1)), cx, sill, 0.3), at(archPanel(aw + 0.2, ah + 0.15, true, M.recess, 0.04), cx, sill - 0.05, 0));
+    j.add(at(sidiJali(aw, ah, 'grid', 5 + k + (s + 1)), cx, sill, 0.3), at(archPanel(aw + 0.2, ah + 0.15, false, M.recess, 0.04), cx, sill - 0.05, 0));
     j.rotation.y = s * Math.PI / 2;
     f.add(at(j, s * (L / 2 - WT), P, -WT / 2));
   });
