@@ -1,36 +1,51 @@
 import * as THREE from 'three';
-import { M, box, at } from '../helpers.js';
+import { M, box, at, onFace, FACES, chhatri } from '../helpers.js';
 import { heightField, fbm, smooth, mountainRing } from '../parts/terrain.js';
-import { arcadeSkin } from '../parts/mughal.js';
-import { mergeByMaterial } from '../parts/components.js';
+import { arcadeSkin, cellRow } from '../parts/mughal.js';
+import { mergeByMaterial, merlons } from '../parts/components.js';
 import { trees, lampPosts, scatter, townHouses } from '../parts/realism.js';
 import { detail } from '../detail.js';
 import { nishanSahib } from '../parts/sikh.js';
 
 // The height of the levelled hilltop on which Keshgarh Sahib stands.
 export const TOP = 16;
-const FLAT = 46, STAIR = [42, 112];
+// The top terrace is FLAT out from the shrine and the lower one LOW; the lower terrace's floor is
+// T1 high, and the natural mound they are built against HB.
+const FLAT = 46, LOW = 56, T1 = 10, HB = 4, STAIR = [FLAT + 0.6, 116];
 
-// The hill: a level top FLAT out from the shrine, falling to the plain over some 60 m, with a
-// straight cutting for the stair on the south (+z) side that runs evenly down from the top.
+// The mound under the terraces, falling gently to the plain.
 function hill(x, z) {
   const r = Math.max(Math.abs(x), Math.abs(z) * 0.9) + 8 * fbm(x, z, { scale: 0.02, octaves: 2 });
-  let y = TOP * smooth(FLAT + 64, FLAT + 2, r) - 0.4 + 2.5 * fbm(x, z, { scale: 0.01, octaves: 3 }) * smooth(FLAT, FLAT + 30, r);
-  if (Math.abs(x) < 9 && z > STAIR[0] - 2) {
-    const ramp = TOP * (1 - Math.min(1, Math.max(0, (z - STAIR[0]) / (STAIR[1] - STAIR[0])))) - 0.5;
-    y = THREE.MathUtils.lerp(y, ramp, smooth(9, 6, Math.abs(x)));
-  }
-  return Math.min(y, TOP - 0.1);
+  const y = HB * smooth(LOW + 70, LOW + 6, r) - 0.4 + 2.5 * fbm(x, z, { scale: 0.01, octaves: 3 }) * smooth(LOW + 10, LOW + 40, r);
+  return Math.min(y, HB + 1.5);
 }
 
-// Keshgarh Sahib's hill at Anandpur: the terrace with its white ranges and parapet, the long stair
-// on the south, the town below and the Shivalik hills to the north.
+// A parapet of leaf-shaped merlons round a square terrace of half-width hw, at height y.
+function parapet(hw, y, m) {
+  const g = new THREE.Group(), w = detail.low ? 1.6 : 0.9;
+  for (const a of FACES) g.add(onFace(box(2 * hw + 0.5, 0.6, 0.4, m, 0, y, 0), a, hw + 0.05), onFace(at(merlons(2 * hw, w, w * 1.1, 0.3, m), 0, y + 0.6, 0), a, hw + 0.05));
+  return g;
+}
+
+// Keshgarh Sahib's hill at Anandpur, faced with built terraces as it is seen from the town: a lower
+// tier of two rows of small white arches and an upper tier of taller ones, each under a parapet of
+// leaf merlons with domed kiosks at the corners; the marble court on top with its ranges; the long
+// stair on the south; the town below and the Shivalik hills to the north.
 export function addDetails(f, g) {
   g.add(heightField(900, 900, detail.low ? 120 : 180, hill, { rock: ['#9a8c74', '#a5977d'], cover: '#7c8a4e', steep: 0.7 }));
-  // The terrace: marble paving with a parapet along its edge, and pilgrims' ranges along the back.
-  const T = new THREE.Group();
-  T.add(box(2 * FLAT, 0.4, 2 * FLAT, M.marble, 0, TOP - 0.3, 0));
-  for (const s of [-1, 1]) T.add(box(2 * FLAT, 1.1, 0.5, M.marble, 0, TOP + 0.1, s * (FLAT - 0.25)), box(0.5, 1.1, 2 * FLAT, M.marble, s * (FLAT - 0.25), TOP + 0.1, 0));
+  const T = new THREE.Group(), W = M.marble, L = M.lime, gate = [[-6, 6]];
+  // The two tiers, and the arcades on their faces (left open where the stair comes down).
+  T.add(box(2 * LOW, T1 - 0.3, 2 * LOW, L, 0, 0, 0), box(2 * LOW + 1.4, 0.3, 2 * LOW + 1.4, W, 0, T1 - 0.3, 0), box(2 * FLAT, TOP - 0.3 - T1, 2 * FLAT, L, 0, T1, 0));
+  const p1 = detail.low ? 8 : 4, n1 = Math.floor((2 * LOW) / p1), p2 = detail.low ? 9 : 4.6, n2 = Math.floor((2 * FLAT) / p2);
+  for (const a of FACES) {
+    const skip = a === 0 ? gate : [];
+    T.add(onFace(at(arcadeSkin(2 * LOW + 1.2, T1 - 0.3 - HB, [...cellRow(n1, p1, 0.3, 2.2, 2.3, skip), ...cellRow(n1, p1, 3.1, 2.2, 2.3, skip)], 0.6, L, { trim: W, fill: 'room' }), 0, HB, 0), a, LOW));
+    T.add(onFace(at(arcadeSkin(2 * FLAT + 1.2, TOP - 0.3 - T1, cellRow(n2, p2, 0.2, 2.8, 4.3, skip), 0.6, L, { trim: W, fill: 'room' }), 0, T1, 0), a, FLAT));
+  }
+  T.add(parapet(LOW + 0.4, T1, W), parapet(FLAT + 0.4, TOP + 0.1, W));
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) T.add(at(chhatri(1.5, 4.4, W), sx * (LOW - 1.2), T1, sz * (LOW - 1.2)), at(chhatri(1.7, 5, W), sx * (FLAT - 1.4), TOP + 0.1, sz * (FLAT - 1.4)));
+  // The court on top: marble paving, and pilgrims' ranges along the back and sides.
+  T.add(box(2 * FLAT + 1.4, 0.4, 2 * FLAT + 1.4, W, 0, TOP - 0.3, 0));
   const range = (len, x, z, ry) => {
     const n = Math.floor(len / 4.8), cells = [];
     for (let k = 0; k < n; k++) cells.push([-len / 2 + (k + 0.5) * (len / n), 0.4, 2.8, 3.6, 'room']);
@@ -41,7 +56,7 @@ export function addDetails(f, g) {
   range(70, 0, -FLAT + 8, 0);
   range(40, -FLAT + 8, -14, Math.PI / 2);
   range(40, FLAT - 8, -14, -Math.PI / 2);
-  // The stair: a long flight of marble treads down the cutting, with a landing every twenty.
+  // The stair: a long flight of marble treads from the court down across the terraces to the town.
   const n = 84, run = STAIR[1] - STAIR[0], d = run / n;
   for (let k = 0; k < n; k++) {
     const top = TOP * (1 - (k + 0.5) / n);
@@ -52,7 +67,7 @@ export function addDetails(f, g) {
   g.add(at(nishanSahib(30), -20, TOP + 0.1, 20), lampPosts([[-14, 30], [14, 30], [-30, 14], [30, 14]], { y: TOP + 0.1 }));
   g.add(trees([[-26, 30, 7], [26, 30, 7]], { kind: 'ashoka', seed: 2, y: TOP + 0.1 }));
   // Trees on the slopes; the town on the plain; the Shivaliks behind.
-  const slope = scatter(70, [-150, 150, -150, 150], { seed: 7, gap: 10, avoid: [[-FLAT - 6, FLAT + 6, -FLAT - 6, FLAT + 6], [-12, 12, 40, 150]] });
+  const slope = scatter(70, [-150, 150, -150, 150], { seed: 7, gap: 10, avoid: [[-LOW - 6, LOW + 6, -LOW - 6, LOW + 6], [-12, 12, 40, 150]] });
   g.add(trees(slope.map(([x, z]) => [x, z, null, hill(x, z) - 0.2]), { kind: 'neem', seed: 7 }));
   const homes = [];
   for (const [x, z] of scatter(detail.low ? 50 : 110, [-260, 260, 90, 300], { seed: 11, gap: 16, avoid: [[-16, 16, 90, 300]] })) homes.push([x, z, 8 + (x * 7 % 4), 10, 2 + Math.abs(Math.round(z)) % 2, 0, hill(x, z) - 0.2]);

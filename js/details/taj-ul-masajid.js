@@ -1,31 +1,36 @@
 import * as THREE from 'three';
-import { M, mat, box, sheet, at } from '../helpers.js';
-import { merlons, star, mergeByMaterial } from '../parts/components.js';
+import { M, mat, box, sheet, at, guldasta } from '../helpers.js';
+import { merlons, mergeByMaterial } from '../parts/components.js';
 import { trees, shrubs, lampPosts, scatter, along, cityAround, traffic, boats } from '../parts/realism.js';
 import { detail } from '../detail.js';
 
-// The mosque's dusky pink stone and its lighter trim; P, the height of the court's plinth.
+// The mosque's dusky pink stone, its lighter trim, and the same stone inside the hall, out of the
+// sun; P, the height of the court's plinth above the road.
 export const PINK = mat('#c98877', 0.85);
 export const PINK_LIGHT = mat('#dda497', 0.85);
-export const P = 2.4;
+export const SHADE = mat('#5e413a', 0.9);
+export const P = 5.4;
 
-// Taj-ul-Masajid, finer detail. From photographs: a crest of merlons along the hall's parapet and
-// over the cloisters; white stars inlaid either side of the central iwan; the great square pool for
-// ablutions in the middle of the court, with a fountain; and outside, the Motia Talab lake to the
-// east of the gate, the road between, and the old city of Bhopal round the other sides.
+// Taj-ul-Masajid, finer detail. From photographs: a crest of merlons along the hall's parapet, on
+// its frontispiece, over the cloisters and on the gateway, with small white turrets standing
+// behind the hall's; the great square pool for ablutions in the middle of the court, with a
+// fountain; and outside, the Motia Talab lake to the east of the gate, the road between, and the
+// old city of Bhopal round the other sides.
 // Dimensions follow js/monuments/taj-ul-masajid.js: the court W wide from z0 (the hall's front) to
-// z1 (the gate), the hall centred at z = HZ and HH high, cloisters CH high and CD deep.
-function architecture(f, { W, z0, z1, HH, CH, CD }) {
-  const d = new THREE.Group();
-  for (const s of [-1, 1]) d.add(at(merlons(34, 0.7, 1, 0.3, PINK_LIGHT, 0.4), s * 27, P + HH + 0.7, z0 - 0.4));
-  d.add(at(merlons(20, 0.7, 1, 0.3, PINK_LIGHT, 0.4), 0, P + HH + 5.1, z0 - 0.4));
+// z1 (the gate), the hall HW wide, centred at z = HZ and HH high, cloisters CH high and CD deep.
+function architecture(f, { W, z0, z1, HH, HW, CH, CD }) {
+  const d = new THREE.Group(), wing = HW / 2 - 11.5;
   for (const s of [-1, 1]) {
+    d.add(at(merlons(wing, 0.7, 1, 0.3, PINK_LIGHT, 0.4), s * (11.5 + wing / 2), P + HH + 0.6, z0 - 0.3));
+    for (let k = 0; k < 4; k++) d.add(at(guldasta(1.8, 0.28, M.marble), s * (14 + k * 8.4), P + HH + 0.6, z0 - 1.6));
     const m = at(merlons(z1 - z0, 0.6, 0.8, 0.3, PINK_LIGHT, 0.4), s * (W / 2 + CD - 0.3), P + CH + 0.5, (z0 + z1) / 2);
     m.rotation.y = Math.PI / 2;
     d.add(m);
+    d.add(at(merlons(33, 0.6, 0.8, 0.3, PINK_LIGHT, 0.4), s * 36.5, P + CH + 0.5, z1 + CD - 0.3));
+    // The gateway's wings, and its tall middle on both faces.
+    d.add(at(merlons(12, 0.7, 0.9, 0.3, PINK_LIGHT, 0.4), s * 14, P + 11.5, z1 + 4.8), at(merlons(16, 0.9, 1.2, 0.35, PINK_LIGHT, 0.3), 0, P + 20.6, z1 + 2 + s * 4.9));
   }
-  for (const x of [-34.5, 34.5]) d.add(at(merlons(45, 0.6, 0.8, 0.3, PINK_LIGHT, 0.4), x, P + CH + 0.5, z1 + CD - 0.3));
-  for (const x of [-8.2, 8.2]) for (const y of [P + 6, P + 13]) d.add(at(star(6, 0.9, M.marble), x, y, z0 + 0.02));
+  d.add(at(merlons(23, 0.8, 1.1, 0.3, PINK_LIGHT, 0.4), 0, P + 20.4, z0 + 2.2));
   // The pool of ablution: a marble kerb round a sheet of water, a fountain in the middle.
   const pz = (z0 + z1) / 2 + 6;
   for (const s of [-1, 1]) d.add(box(30, 0.6, 0.8, M.marble, 0, P, pz + s * 14.6), box(0.8, 0.6, 28.4, M.marble, s * 14.6, P, pz));

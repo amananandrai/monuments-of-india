@@ -5,23 +5,32 @@ import { trees, shrubs, lampPosts, benches, scatter, along, cityAround, traffic 
 import { detail } from '../detail.js';
 import { S, WHITE, TRIM } from '../monuments/san-thome-basilica.js';
 
+const GILT = mat('#e2b33c', 0.5, 0.1);
+
 // San Thome, finer detail. From photographs: a grey plinth and a string course under the windows
-// run round the church; a white Calvary stands on a pedestal in the forecourt, before the tower.
+// run round the church; a white Calvary stands on a pedestal in the forecourt, and a tall gilt
+// flagmast with a cross by the road beside the tower.
 // Round it, the compound in Mylapore: a paved forecourt behind a white wall and gate on San Thome
 // High Road, the low museum over the tomb's crypt behind the church, coconut palms and neem, the
 // town's houses, and Santhome beach and the Bay of Bengal a few hundred metres behind the apse.
 function architecture(f) {
-  const { FZ, LEN, NW, AW } = S, d = new THREE.Group(), body = LEN - 8;
-  d.add(at(beltCourse(NW + 2 * AW + 0.2, body - 6, 0, 0.8, 0.2, TRIM), 0, 0, FZ - 0.5 - body / 2 + 3));
-  d.add(at(beltCourse(NW + 2 * AW, body - 6, 2.0, 0.25, 0.15, TRIM), 0, 0, FZ - 0.5 - body / 2 + 3));
+  const { FZ, LEN, NW, AW, CZ, TW, TXO, CH } = S, d = new THREE.Group(), BZ = FZ - LEN, ez = CZ - TW / 2, al = ez - (BZ + CH);
+  d.add(at(beltCourse(NW + 2 * AW + 0.2, al, 0, 0.8, 0.2, TRIM), 0, 0, ez - al / 2), at(beltCourse(NW + 2 * AW, al, 1.6, 0.25, 0.15, TRIM), 0, 0, ez - al / 2));
+  d.add(at(beltCourse(2 * TXO, TW, 0, 0.8, 0.2, TRIM), 0, 0, CZ), at(beltCourse(NW + 6, CH, 0, 0.8, 0.2, TRIM), 0, 0, BZ + CH / 2));
   // The Calvary in the forecourt.
   d.add(box(2.4, 1.6, 2.4, TRIM, 0, 0, FZ + 22), box(1.6, 1, 1.6, WHITE, 0, 1.6, FZ + 22), box(0.35, 5, 0.35, WHITE, 0, 2.6, FZ + 22), box(2.4, 0.35, 0.35, WHITE, 0, 6.1, FZ + 22));
+  // The flagmast by the road, beside the tower: a tall gilt mast ringed with mouldings on a
+  // moulded foot, a cross on its tip.
+  const mx = S.TX + 15, mz = FZ - 6;
+  d.add(cyl(0.9, 1.1, 1.2, WHITE, mx, 0, mz, 8), cyl(0.32, 0.4, 21, GILT, mx, 1.2, mz, 12), cyl(0.5, 0.5, 0.5, GILT, mx, 22.2, mz, 12));
+  for (let y = 2; y < 22; y += 0.9) d.add(cyl(0.44, 0.44, 0.22, GILT, mx, y, mz, 12));
+  d.add(box(0.12, 1.5, 0.12, GILT, mx, 22.7, mz), box(0.8, 0.12, 0.12, GILT, mx, 23.6, mz));
   f.add(mergeByMaterial(d));
 }
 
 export function addDetails(f, g) {
   architecture(f);
-  const { FZ, LEN, NW, AW } = S, BZ = FZ - LEN, W = NW + 2 * AW;
+  const { FZ, LEN, NW, AW } = S, BZ = FZ - LEN, W = NW + 2 * AW + 4;
   g.add(box(1400, 0.06, 760, M.grass, 0, -0.06, 160));
   // The forecourt, paved, and the compound's paths.
   g.add(box(W + 30, 0.05, 40, M.path, 0, 0, FZ + 20), box(8, 0.05, LEN + 20, M.path, W / 2 + 10, 0, FZ - LEN / 2), box(8, 0.05, LEN + 20, M.path, -W / 2 - 10, 0, FZ - LEN / 2));
