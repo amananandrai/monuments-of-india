@@ -27,6 +27,9 @@ export const SPIRE = carved(mat('#a3906f', 0.94), 'frieze');
 
 // The roof the spires rise from, and the sanctum's centre behind the front of the hall.
 export const TERRACE = 6.2, SANCTUM_Z = -10;
+// The shelf of rock the temple stands on is this much above the water of the pool: everything
+// here is measured from the shelf, and the whole temple is lifted by it.
+export const SHELF = 0.6;
 // The spires: [x, z, width, foot, wall height, spire height when whole, how much stands, turns of
 // the square plan (1: four spines; 2: eight, the stair spires; 4: sixteen, the free shrines),
 // depth as a fraction of the width (0.5: a half spire in relief)].
@@ -61,7 +64,7 @@ function shrine([x, z, w, y0, wh, h, keep, turns = 1, deep = 1]) {
 
 export function buildMasrurTemples() {
   const g = new THREE.Group(), f = new THREE.Group(), d = new THREE.Group();
-  g.add(f);
+  g.add(at(f, 0, SHELF, 0));
   // The cut mass. Its core under the main spire, 25 m long, with the sanctum's porch cut into its
   // front under a heavy lintel of rock; the lower wings running out to the end spires; and the two
   // blocks either side of the hall that hold the stairs.

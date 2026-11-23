@@ -7,7 +7,7 @@ import { figure, figureFrieze } from '../parts/sculpture.js';
 import { trees, shrubs, scatter, asiBoard } from '../parts/realism.js';
 import { heightField, fbm, ridged, smooth } from '../parts/terrain.js';
 import { detail } from '../detail.js';
-import { NEW, OLD, ROWS, TANK, STREET, BHUTESHWAR, VISHNU, CARVED_SHRINES } from '../monuments/bateshwar-temples.js';
+import { NEW, OLD, ROWS, LIFT, TANK, STREET, BHUTESHWAR, VISHNU, CARVED_SHRINES } from '../monuments/bateshwar-temples.js';
 
 // Bateshwar, carving and setting. On the Bhuteshwar temple: the door with Ganga and Yamuna at the
 // foot of its jambs and the nine planets on its lintel, Lakulisa, the marriage of Shiva and
@@ -22,11 +22,13 @@ const WALL = photo(mat('#8a7a63', 0.95), 'rubble');
 const EARTH = mat('#a89270', 0.95);
 const PAVE = photo(mat('#b39c7c', 0.93), 'sandstone');
 
-// Ravines and low hills round the site, cut down to level ground for it and its tank.
+// Ravines and low hills round the site, which is levelled (LIFT above the open land, so that the
+// tank can be sunk in it) and cut down for the tank. The cut is a cell of the grid wider than the
+// tank, and the slope up from it lies under the site's own ground.
 function landY(x, z) {
-  if (Math.abs(x) < TANK.w / 2 + 1 && Math.abs(z - TANK.z) < TANK.d / 2 + 1) return -3;
-  const away = Math.max(Math.abs(x) - 80, z < 0 ? -z - 60 : z - 70);
-  return smooth(0, 90, away) * (14 + 22 * ridged(x, z, { scale: 0.008, octaves: 4 })) + (z < -60 ? smooth(-60, -140, z) * 16 : 0) + 1.2 * fbm(x, z, { scale: 0.02, octaves: 3 }) - 0.3;
+  if (Math.abs(x) < TANK.w / 2 + 10.5 && Math.abs(z - TANK.z) < TANK.d / 2 + 10.5) return LIFT - 3.4;
+  const away = Math.max(Math.abs(x) - 80, z < 0 ? -z - 60 : z - 72), out = smooth(0, 90, away);
+  return LIFT * (1 - smooth(0, 60, away)) + out * (14 + 22 * ridged(x, z, { scale: 0.008, octaves: 4 })) + (z < -60 ? smooth(-60, -140, z) * 16 : 0) + 1.2 * fbm(x, z, { scale: 0.02, octaves: 3 }) * smooth(-6, 20, away) - 0.5;
 }
 
 // The images in the wall niches, h tall: Lakulisa seated with his club; Shiva taking Parvati's
@@ -67,7 +69,8 @@ function dress(s, m, { doorW = 0.34 * s, doorY = 0.28 * s, doorH = 0.62 * s, doo
   return g;
 }
 
-export function addDetails(f, g, { R, P, BW, BH }) {
+// f: the temples; g: the site's own ground (both at the level of its paving); land: the open land.
+export function addDetails(f, g, { R, P, BW, BH, land }) {
   // The Bhuteshwar temple's carving.
   const b = new THREE.Group(), fr = { kinds: ['elephant', 'musician', 'standing', 'dancer', 'standing'], pitch: 0.5 };
   b.add(at(templeDoorway(1.1, 2.1, { m: NEW, bands: 3, bw: 0.2, guardianH: 0.9, hood: false, open: 0.6 }), 0, P, BW / 2 + 0.31));
@@ -135,9 +138,9 @@ export function addDetails(f, g, { R, P, BW, BH }) {
   for (let k = 0; k < 16; k++) { const s = 0.5 + R() * 0.7; stones.push([-2 + R() * 9, 0, 14.5 + R() * 4, s * 1.5, s * 0.4, s, R() * 3]); }
   g.add(inst(unitBox(), stones, OLD));
   // The ground and the ravines; the bare levelled ground of the site at the foot of the terraces.
-  g.add(heightField(1500, 1500, detail.low ? 100 : 150, landY, { rock: ['#9b7f62', '#8d735a', '#a88d6e'], cover: '#8b8a52', steep: 0.74, band: 10 }));
+  land.add(heightField(1500, 1500, detail.low ? 100 : 150, landY, { rock: ['#9b7f62', '#8d735a', '#a88d6e'], cover: '#8b8a52', steep: 0.74, band: 10 }));
   const { z: tz, w: tw, d: td } = TANK, tank = new THREE.Group();
-  for (const [w, d, x, z] of [[150, tz - td / 2 + 3, 0, (tz - td / 2 - 5) / 2], [150, 14, 0, tz + td / 2 + 8], [75 - tw / 2 - 1, td + 2, -(75 + tw / 2 + 1) / 2, tz], [75 - tw / 2 - 1, td + 2, (75 + tw / 2 + 1) / 2, tz]]) g.add(box(w, 0.12, d, EARTH, x, -0.1, z));
+  for (const [w, d, x, z] of [[156, tz - td / 2 + 3, 0, (tz - td / 2 - 5) / 2], [156, 24, 0, tz + td / 2 + 13], [78 - tw / 2 - 1, td + 2, -(78 + tw / 2 + 1) / 2, tz], [78 - tw / 2 - 1, td + 2, (78 + tw / 2 + 1) / 2, tz]]) g.add(box(w, 0.7, d, EARTH, x, -0.68, z));
   // The tank at the foot, cut down into the rock: 30 m by 22, its sides in steps of stone, its
   // water low and green; a ledge of the living rock left standing along its western side.
   for (let k = 0; k < 7; k++) {
@@ -156,9 +159,9 @@ export function addDetails(f, g, { R, P, BW, BH }) {
   g.add(box(STREET.x1 - STREET.x0 + 4, 0.1, 4.4, PAVE, (STREET.x0 + STREET.x1) / 2, -0.04, STREET.z), box(34, 0.1, 8.5, PAVE, 4, -0.04, 17.4));
   g.add(asiBoard('Bateshwar Group of Temples', 66, 39, -0.3));
   // Babul, dhok and neem on the slopes and in the ravines.
-  const keep = [[-72, 72, -62, 56]];
-  g.add(trees(scatter(detail.low ? 30 : 60, [-260, 260, -260, 240], { seed: 3, gap: 14, avoid: keep }).map(([x, z]) => [x, z, null, landY(x, z)]), { kind: 'babul', seed: 3 }));
-  g.add(trees(scatter(detail.low ? 25 : 50, [-260, 260, -260, 240], { seed: 7, gap: 14, avoid: keep }).map(([x, z]) => [x, z, null, landY(x, z)]), { kind: 'dhok', seed: 7 }));
+  const keep = [[-82, 82, -62, 74]];
+  land.add(trees(scatter(detail.low ? 30 : 60, [-260, 260, -260, 240], { seed: 3, gap: 14, avoid: keep }).map(([x, z]) => [x, z, null, landY(x, z)]), { kind: 'babul', seed: 3 }));
+  land.add(trees(scatter(detail.low ? 25 : 50, [-260, 260, -260, 240], { seed: 7, gap: 14, avoid: keep }).map(([x, z]) => [x, z, null, landY(x, z)]), { kind: 'dhok', seed: 7 }));
   g.add(trees([[-30, 30], [-13.5, 9], [-60, 50], [60, 52]], { kind: 'neem', seed: 4 }));
-  g.add(shrubs(scatter(60, [-150, 150, -120, 120], { seed: 5, gap: 6, avoid: keep }).map(([x, z]) => [x, z, 1, landY(x, z)]), { seed: 5, dry: true }));
+  land.add(shrubs(scatter(60, [-150, 150, -120, 120], { seed: 5, gap: 6, avoid: keep }).map(([x, z]) => [x, z, 1, landY(x, z)]), { seed: 5, dry: true }));
 }

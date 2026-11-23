@@ -66,13 +66,17 @@ export function doorGeos() {
 export const ROWS = [[6, 0], [-8, 2.2], [-22, 4.4], [-36, 6.6], [-50, 8.8]];
 // The tank's centre and size, the street that leads to it from the east, and where the two large
 // temples stand: [x, z] of each sanctum.
+// The tank is sunk 2.5 m below the paving: the whole site is modelled from the level of that
+// paving (y = 0 here) and lifted by LIFT, so that the tank's floor is not under the open land.
+export const LIFT = 3;
 export const TANK = { z: 33, w: 30, d: 22 }, STREET = { x0: 19, x1: 64, z: 33 }, BHUTESHWAR = [-4, 3], VISHNU = [10.5, 3];
 // The larger spired shrines that are dressed with carving in the detail file: [x, y, z, size, turn].
 export const CARVED_SHRINES = [[-21, 0, 17, 3.2, 0], [-16.5, 0, 17.6, 2.7, 0], [20.5, 0, 20, 3, 0], [-26, 2.2, -11, 3.2, 0], [24, 2.2, -11, 3, 0]];
 
 export function buildBateshwarTemples() {
-  const g = new THREE.Group(), f = new THREE.Group();
-  g.add(f);
+  const g = new THREE.Group(), site = at(new THREE.Group(), 0, LIFT, 0), f = new THREE.Group();
+  g.add(site);
+  site.add(f);
   const R = rng(23), spired = [[], []], flat = [[], []], doors = [[], []];
   const put = (x, y, z, s, turn, kind = R() < 0.32 ? 1 : 0, age = R() < 0.72 ? 0 : 1) => {
     const sy = s * (0.92 + R() * 0.16);
@@ -114,7 +118,7 @@ export function buildBateshwarTemples() {
   b.add(box(12, 0.36, 4.6, NEW, 0, P + 2.5, 5.4), box(12.9, 0.16, 5.5, OLD, 0, P + 2.86, 5.4), box(4.4, 0.3, 3, NEW, 0, P + 3.02, 5.2));
   b.add(at(steps(3.6, P, 4, OLD), 0, 0, 8.2));
   f.add(at(mergeByMaterial(b), BHUTESHWAR[0], 0, BHUTESHWAR[1]));
-  addDetails(f, g, { R, P, BW, BH });
+  addDetails(f, site, { R, P, BW, BH, land: g });
   // From across the tank: the two large temples at its head, the terraces of shrines behind.
   return { group: g, focus: f, view: [0.3, 0.3, 1], zoom: 0.52 };
 }

@@ -195,7 +195,7 @@ export function addDetails(f, g) {
   const { hz } = DIMS;
   g.add(box(420, 0.2, 420, M.grass, 0, -0.25, 0), box(96, 0.05, 96, mat('#7d9757', 0.95), 0, -0.1, hz + 12));
   // Paths: round the platform, and from the gate on the north to the north door.
-  g.add(box(64, 0.06, 44, M.path, 0, 0, hz - 2), box(54, 0.06, 30, M.path, 0, 0, hz + 33), box(44, 0.06, 6, M.path, 54, 0, hz));
+  g.add(box(64, 0.06, 44, M.path, 0, 0, hz - 2), box(27, 0.06, 28, M.path, -13, 0, hz + 32), box(19, 0.06, 18, M.path, 13, 0, hz + 27), box(44, 0.06, 6, M.path, 54, 0, hz));
   g.add(at(garudaStambha(), -40, 0, hz + 4));
   // The site museum, a low building with a verandah, and its yard of sculpture.
   g.add(box(12, 4.5, 30, mat('#e8e0cf', 0.85), -78, 0, 10), box(14, 0.4, 32, mat('#8a3b2a', 0.8), -78, 4.5, 10));

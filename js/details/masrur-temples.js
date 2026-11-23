@@ -7,7 +7,7 @@ import { figure, figureFrieze, elephantGeo } from '../parts/sculpture.js';
 import { trees, shrubs, scatter, asiBoard, townHouses } from '../parts/realism.js';
 import { heightField, fbm, ridged, smooth } from '../parts/terrain.js';
 import { detail } from '../detail.js';
-import { ROCK, ROCK_DARK, SHRINES, SANCTUM_Z } from '../monuments/masrur-temples.js';
+import { ROCK, ROCK_DARK, SHRINES, SANCTUM_Z, SHELF } from '../monuments/masrur-temples.js';
 
 // Masrur, finer detail and setting. The sanctum's doorway in its porch, with the nine seated gods
 // over it; what is left of the hall before it (the floor, one pillar, the stumps of three); the
@@ -15,7 +15,8 @@ import { ROCK, ROCK_DARK, SHRINES, SANCTUM_Z } from '../monuments/masrur-temples
 // fallen spires, with the large fallen figures of Varuna and Agni; the pool before the temple; the
 // ridge behind; fields, mango and pine round the village; and the snows of the Dhauladhar, which
 // the temple faces, across the valley to the north-east.
-// Dimensions follow js/monuments/masrur-temples.js: the roof T high, the hall's floor 0.45 m.
+// Dimensions follow js/monuments/masrur-temples.js: the roof T high, the hall's floor 0.45 m. The
+// temple (f) stands SHELF above the ground and the pool; the setting (g) is at the ground's level.
 
 // The land: the ridge behind (south-west, -z) rising to some 60 m, a knoll off the north-west end
 // (+x), gentle fields in front, and the Dhauladhar range, snow-capped, far off in front.
@@ -23,8 +24,8 @@ function landY(x, z) {
   const ridge = smooth(-20, -120, z) * (45 + 25 * ridged(x, z, { scale: 0.006, octaves: 3 }));
   const knoll = 14 * smooth(46, 66, x) * smooth(120, 90, x) * smooth(8, -12, z) * smooth(-90, -50, z);
   const range = smooth(900, 1500, z + 0.25 * x) * (700 + 260 * ridged(x, z, { scale: 0.0018, octaves: 4 }));
-  // The pool, cut down into the rock before the temple.
-  if (Math.abs(x) < 27 && Math.abs(z - 28) < 14) return -2.6;
+  // The pool lies before the temple, its water just below the lip of the rock.
+  if (Math.abs(x) < 27 && Math.abs(z - 28) < 14.5) return -0.5;
   return ridge + knoll + range + 2.5 * fbm(x, z, { scale: 0.01, octaves: 3 }) * smooth(30, 80, Math.abs(z - 20) + Math.abs(x) * 0.5) - 0.3;
 }
 
@@ -144,19 +145,16 @@ export function addDetails(f, g, { T }) {
   f.add(mergeByMaterial(d));
   // The ground and the ridge.
   g.add(heightField(3600, 3600, detail.low ? 110 : 170, landY, { rock: ['#8c7d64', '#7a6f5e', '#9a8a70'], cover: '#5f7a3f', steep: 0.72, band: 30, snow: 520 }));
-  // The pool: 50 m by 25 (two squares), its water a metre and a half down, its sides cut in steps.
-  const tz = 28, tw = 52, td = 26, tank = new THREE.Group();
-  for (let k = 0; k < 4; k++) {
-    const i = k * 0.7, y = -k * 0.4;
-    tank.add(box(tw - 2 * i, 0.4, 0.7, ROCK, 0, y - 0.4, tz - td / 2 + i + 0.35), box(tw - 2 * i, 0.4, 0.7, ROCK, 0, y - 0.4, tz + td / 2 - i - 0.35));
-    for (const s of [-1, 1]) tank.add(box(0.7, 0.4, td - 2 * i, ROCK, s * (tw / 2 - i - 0.35), y - 0.4, tz));
-  }
-  tank.add(box(tw + 4, 0.25, 3, ROCK, 0, -0.2, tz - td / 2 - 1.5), box(tw + 4, 0.25, 3, ROCK, 0, -0.2, tz + td / 2 + 1.5));
-  for (const s of [-1, 1]) tank.add(box(2, 0.25, td + 6, ROCK, s * (tw / 2 + 1), -0.2, tz));
-  g.add(mergeByMaterial(tank), box(tw - 5, 0.4, td - 5, M.bank, 0, -2.4, tz), sheet(tw - 4.4, td - 4.4, M.lake, 0, -1.55, tz));
-  // The bare rock between the temple and the pool, and a path round the ends.
-  g.add(box(58, 0.06, 15, ROCK, 0, -0.03, 4.6), box(4, 0.06, 30, M.path, 31, -0.03, 14), box(4, 0.06, 30, M.path, -31, -0.03, 14));
-  g.add(asiBoard('Rock-cut Temples, Masrur', 27, 11.5, -0.4));
+  // The shelf of bare rock the temple is cut from, SHELF above the water (the temple itself stands
+  // on it: see the monument file), with a step down to the pool along its front.
+  g.add(box(60, SHELF, 34.4, ROCK, 0, 0, -2.2), box(50, SHELF * 0.5, 1.2, ROCK_DARK, 0, 0, 15.5));
+  // The pool: 50 m by 25 (two squares), cut in the rock, its water a little below the shelf; a low
+  // wall of stone round its other three sides.
+  const tz = 27.5, tw = 50, td = 25, tank = new THREE.Group();
+  tank.add(box(tw + 2.4, 0.45, 1.2, ROCK_DARK, 0, -0.1, tz + td / 2 + 0.6));
+  for (const s of [-1, 1]) tank.add(box(1.2, 0.45, td, ROCK_DARK, s * (tw / 2 + 0.6), -0.1, tz), box(3, 0.08, td + 6, M.path, s * (tw / 2 + 2.8), -0.04, tz + 1));
+  g.add(mergeByMaterial(tank), box(tw, 0.3, td, M.bank, 0, -0.26, tz), sheet(tw, td, M.lake, 0, 0.1, tz));
+  g.add(asiBoard('Rock-cut Temples, Masrur', 33, 13, -0.4));
   // The village: slate-roofed houses on the slopes to either side.
   g.add(townHouses([[-60, 30, 8, 9, 2], [-74, 44, 9, 8, 2], [-58, 58, 8, 9, 1], [64, 34, 9, 8, 2], [78, 50, 8, 8, 2], [60, 64, 9, 9, 1], [-88, 18, 8, 8, 2]], { seed: 6, roof: 'pitched', roofs: ['#5f6266', '#6c6f73'], paint: ['#e9e3d6', '#d8cdb8', '#efe7d6'], tanks: 0 }));
   // Fields below the pool.

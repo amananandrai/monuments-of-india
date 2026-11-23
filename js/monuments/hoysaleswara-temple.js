@@ -87,7 +87,7 @@ export function buildHoysaleswaraTemple() {
   for (const a of [0, Math.PI / 2, -Math.PI / 2]) { const o = onFace(at(chhajja((a ? SU.d : SU.w) + 1.1, 0.8, 0.35, 0.1, Sd), 0, J + WH - 0.3, 0), a, (a ? SU.w : SU.d) / 2 + 0.5); o.position.x += SU.x; o.position.z += SU.z; f.add(o); }
   addDetails(f, g);
   // From the north-east, as visitors come to it: the screened front, the Nandi halls before it.
-  return { group: g, focus: f, view: [0.75, 0.3, 1], zoom: 0.58 };
+  return { group: g, focus: f, view: [0.7, 0.22, 1], zoom: 0.5 };
 }
 
 // A miniature shrine h high, as stand in pairs beside every flight of steps: a moulded foot, a cell
