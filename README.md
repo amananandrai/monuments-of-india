@@ -128,6 +128,10 @@ video/                      the film
 
 ## Documentation
 
+The guides below are also published as a searchable site on GitHub Pages:
+**https://amananandrai.github.io/monuments-of-india/** (built from `docs/` by
+`.github/workflows/pages.yml`).
+
 | Page | What it covers |
 | --- | --- |
 | [States and monuments](monuments.md) | All 201 monuments by state: place, dates, style, material, a link to the 3D view and a picture of each |

@@ -1,0 +1,68 @@
+# Publishes the guides in docs/ to GitHub Pages: https://amananandrai.github.io/monuments-of-india/
+#
+# The guides stay plain Markdown that reads the same on github.com. They point at pictures in
+# ../img/ and at files elsewhere in the repository (../README.md, ../monuments.md), which a Pages
+# site built from docs/ alone cannot reach. So the site is built from a staged copy: docs/, with
+# img/ copied beside it, and those links rewritten (pictures to img/, other files to GitHub).
+# Links between the guides (architecture.md#domes) are turned into pages by jekyll-relative-links.
+#
+# One-time setup: Settings → Pages → Build and deployment → Source: "GitHub Actions".
+name: Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'img/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Stage the site
+        run: |
+          mkdir -p _src
+          cp -r docs/. _src/
+          cp -r img _src/img
+          # Pictures: ../img/x.jpg -> img/x.jpg. Anything else outside docs/ -> the file on GitHub.
+          find _src -name '*.md' -exec sed -i -E \
+            -e 's#\]\(\.\./img/#](img/#g' \
+            -e 's#\]\(\.\./#](https://github.com/${{ github.repository }}/blob/main/#g' {} +
+
+      - name: Set up Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./_src
+          destination: ./_site
+
+      - name: Upload
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
