@@ -1,0 +1,79 @@
+# GitHub Pages site for the guides in this folder. Built and published by
+# .github/workflows/pages.yml, which copies this folder and img/ into one site.
+# The guides stay plain Markdown that reads the same on github.com; titles and the
+# order of the sidebar are set here rather than in front matter.
+
+title: Monuments of India
+description: >-
+  201 Indian landmarks built in code and drawn in interactive 3D with three.js:
+  how the project is laid out, the parts the buildings are made of, and how it is drawn.
+url: https://amananandrai.github.io
+baseurl: /monuments-of-india
+
+remote_theme: just-the-docs/just-the-docs@v0.10.1
+plugins:
+  - jekyll-remote-theme
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+  - jekyll-seo-tag
+
+relative_links:
+  enabled: true
+  collections: false
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  auto_ids: true
+  hard_wrap: false
+
+color_scheme: light
+search_enabled: true
+heading_anchors: true
+back_to_top: true
+back_to_top_text: "Back to top"
+
+aux_links:
+  "Live site": https://monuments-of-india-nu.vercel.app
+  "GitHub": https://github.com/amananandrai/monuments-of-india
+aux_links_new_tab: true
+
+nav_external_links:
+  - title: States and monuments
+    url: https://github.com/amananandrai/monuments-of-india/blob/main/monuments.md
+  - title: Model checks
+    url: https://github.com/amananandrai/monuments-of-india/blob/main/tools/README.md
+  - title: Video
+    url: https://github.com/amananandrai/monuments-of-india/blob/main/video/README.md
+
+gh_edit_link: true
+gh_edit_link_text: "Edit this page on GitHub"
+gh_edit_repository: https://github.com/amananandrai/monuments-of-india
+gh_edit_branch: main
+gh_edit_source: docs
+gh_edit_view_mode: edit
+
+footer_content: >-
+  Monuments of India is released under the
+  <a href="https://github.com/amananandrai/monuments-of-india/blob/main/LICENSE">MIT License</a>.
+
+defaults:
+  - scope: { path: "" }
+    values: { layout: default }
+  - scope: { path: "index.md" }
+    values: { title: Home, nav_order: 1 }
+  - scope: { path: "project-structure.md" }
+    values: { title: Project structure, nav_order: 2 }
+  - scope: { path: "components.md" }
+    values: { title: Components, nav_order: 3 }
+  - scope: { path: "architecture.md" }
+    values: { title: Architecture, nav_order: 4 }
+  - scope: { path: "setting.md" }
+    values: { title: The setting, nav_order: 5 }
+  - scope: { path: "how-it-is-drawn.md" }
+    values: { title: How it is drawn, nav_order: 6 }
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
