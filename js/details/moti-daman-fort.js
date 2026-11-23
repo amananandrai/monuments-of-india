@@ -1,18 +1,19 @@
 import * as THREE from 'three';
-import { M, mat, box, cyl, at, onFace, hemi, inst, unitBox, sheet, planPrism, offsetPlan } from '../helpers.js';
-import { mergeByMaterial, windowFrame, keystone } from '../parts/components.js';
-import { pediment, column } from '../parts/colonial.js';
+import { M, mat, mesh, box, cyl, at, onFace, hemi, inst, unitBox, sheet, planPrism, offsetPlan, archWall, photo, surface } from '../helpers.js';
+import { mergeByMaterial, keystone, archRing, archSlab } from '../parts/components.js';
+import { pediment, column, oculus } from '../parts/colonial.js';
 import { trees, boats, asiBoard, scatter, townHouses, lampPosts } from '../parts/realism.js';
 import { detail } from '../detail.js';
-import { STONE, STONE_DARK, LIME, H, PTS, GATES, bastionPlan } from '../monuments/moti-daman-fort.js';
+import { STONE, STONE_DARK, LIME, H, PTS, GATES, bastionPlan, gatePose, LIGHT } from '../monuments/moti-daman-fort.js';
 
-const ROAD = mat('#6a645a', 0.95), DOOR = mat('#4a3424', 0.8);
+const ROAD = mat('#6a645a', 0.95), DOOR = mat('#4a3424', 0.8), DOOR_PALE = photo(mat('#b3a678', 0.85), 'timber');
+const ASHLAR = photo(mat('#8d887c', 0.9), 'blocks'), PLASTER = surface(mat('#9c978a', 0.95), 'carved'), TABLET = surface(mat('#b9b3a4', 0.9), 'carved'), INK = mat('#4f4a42', 0.9), BRONZE = mat('#5a4a32', 0.5, 0.6), FAN = mat('#6b2f25', 0.8);
 
 // Moti Daman Fort, finer detail. From photographs: the curtain has a rounded cordon a little below
 // its parapet and wide embrasures cut through the parapet for guns; a domed sentry box (guarita)
-// hangs over the point of each bastion; the land gate's front carries a pediment with the
-// Portuguese arms and a cross; Bom Jesus has a two-storey front of pilasters, a carved portal
-// between columns, windows and a scrolled gable with a cross. Dimensions follow
+// of weathered plaster hangs over the point of each bastion; both gates carry the arms and
+// inscription tablets over a dressed stone arch; stairs climb the inner face to the wall-walk;
+// Bom Jesus has a carved stone portal in a plain gabled front. Dimensions follow
 // js/monuments/moti-daman-fort.js.
 function architecture(f, { cw, ch }) {
   const d = new THREE.Group(), n = PTS.length, notch = [];
@@ -45,30 +46,76 @@ function architecture(f, { cw, ch }) {
     const plan = bastionPlan(i);
     d.add(planPrism(offsetPlan(plan, 0.35), H - 1.4, 0.5, STONE_DARK));
     const [sx, sz] = plan[2], [vx, vz] = PTS[i], a = Math.atan2(sx - vx, sz - vz), px = sx - Math.sin(a) * 1.1, pz = sz - Math.cos(a) * 1.1;
-    d.add(cyl(1.3, 0.3, 1.6, STONE_DARK, px, H - 1.0, pz, 12), cyl(1.3, 1.3, 2.6, LIME, px, H + 0.6, pz, 12), cyl(1.5, 1.5, 0.25, STONE_DARK, px, H + 3.2, pz, 12));
-    d.add(at(hemi(1.35, LIME, 12), px, H + 3.45, pz), cyl(0.06, 0.12, 0.7, STONE_DARK, px, H + 4.7, pz, 6));
+    d.add(cyl(1.3, 0.3, 1.6, STONE_DARK, px, H - 1.0, pz, 12), cyl(1.3, 1.3, 2.6, PLASTER, px, H + 0.6, pz, 12), cyl(1.5, 1.5, 0.25, STONE_DARK, px, H + 3.2, pz, 12));
+    d.add(at(hemi(1.35, PLASTER, 12), px, H + 3.45, pz), cyl(0.06, 0.12, 0.7, STONE_DARK, px, H + 4.7, pz, 6));
     d.add(at(onFace(box(0.3, 0.9, 0.06, M.recess, 0, H + 1.4, 0), a, 1.31), px, 0, pz));
   }
-  // The land gate's front: a pediment with the arms, a cross, and the arch's keystone.
-  {
-    const { i, t } = GATES[0], [x0, z0] = PTS[i], [x1, z1] = PTS[(i + 1) % n], ry = Math.atan2(-(z1 - z0), x1 - x0);
-    const gf = new THREE.Group();
-    gf.add(at(pediment(10, 2.6, 1.0, LIME, STONE_DARK), 0, H + 4, -0.3), box(1.8, 2.2, 0.2, STONE_DARK, 0, H + 4.1, 0.68), box(1.4, 1.6, 0.06, mat('#b8a274', 0.6), 0, H + 4.4, 0.8));
-    gf.add(box(0.3, 2.2, 0.3, STONE_DARK, 0, H + 6.5, 0), box(1.2, 0.3, 0.3, STONE_DARK, 0, H + 7.8, 0), at(keystone(0.8, 1.2, 0.4, STONE_DARK), 0, 6.2, 0.35));
-    const mx = x0 + (x1 - x0) * t, mz = z0 + (z1 - z0) * t, rot = ry + ((Math.sin(ry) * mx + Math.cos(ry) * mz) > 0 ? 0 : Math.PI);
-    gf.position.set(mx + Math.sin(rot) * 4.05, 0, mz + Math.cos(rot) * 4.05);
+  // The gates' fronts, alike at both: the arch framed in dressed stone between pilasters under an
+  // entablature; above it a plastered face with the crowned arms of Portugal between supporters
+  // over an inscription tablet, a smaller tablet either side and round holes for the drawbridge
+  // chains; a parapet block, and in its middle a domed aedicule with a shell niche.
+  for (const q of GATES) {
+    const gf = new THREE.Group(), { x, z, rot } = gatePose(q), T = H + 1.6;
+    gf.add(at(archWall(8.6, 7.3, 0.5, 4.4, 6, false, ASHLAR), 0, 0, 0.2), at(archRing(4.4, 6, false, 0.55, 0.16, ASHLAR, false), 0, 0, 0.45), at(keystone(0.6, 0.9, 0.3, ASHLAR), 0, 5.75, 0.45));
+    for (const sx of [-1, 1]) gf.add(box(1.1, 7.3, 0.3, ASHLAR, sx * 3.75, 0, 0.5), box(1.5, 0.35, 0.6, ASHLAR, sx * 3.75, 3.6, 0.45));
+    gf.add(box(9.4, 0.3, 0.8, ASHLAR, 0, 7.3, 0.4), box(9.8, 0.3, 1.0, ASHLAR, 0, 7.6, 0.45));
+    gf.add(box(8.2, T - 7.9, 0.16, PLASTER, 0, 7.9, 0.08));
+    // The arms: a shield under a crown between two rampant beasts, and the tablet of 1581 below.
+    gf.add(box(3.0, 2.0, 0.1, TABLET, 0, 9.4, 0.2), box(3.0, 1.4, 0.1, TABLET, 0, 7.95, 0.2), box(0.9, 1.15, 0.12, PLASTER, 0, 9.6, 0.3), cyl(0.45, 0.45, 0.12, PLASTER, 0, 9.54, 0.3, 12).rotateX(Math.PI / 2), box(0.7, 0.3, 0.12, PLASTER, 0, 10.85, 0.3));
+    for (const sx of [-1, 1]) gf.add(box(0.5, 1.5, 0.1, PLASTER, sx * 0.98, 9.6, 0.3), box(0.9, 1.2, 0.1, TABLET, sx * 3.1, 8.5, 0.2), at(mesh(new THREE.CircleGeometry(0.2, 10), M.recess), sx * 2.7, 10.6, 0.17), at(mesh(new THREE.CircleGeometry(0.24, 10), M.recess), sx * 2.5, T + 0.75, 0.47));
+    for (let r = 0; r < 5; r++) gf.add(box(2.5 - (r === 4 ? 0.8 : 0), 0.07, 0.02, INK, 0, 8.12 + r * 0.24, 0.26));
+    for (const sx of [-1, 1]) for (let r = 0; r < 4; r++) gf.add(box(0.6, 0.06, 0.02, INK, sx * 3.1, 8.7 + r * 0.22, 0.26));
+    gf.add(box(8.4, 1.3, 1.1, STONE, 0, T, -0.1), box(2.4, 2.2, 1.2, PLASTER, 0, T, 0), box(2.7, 0.2, 1.4, PLASTER, 0, T + 2.2, 0), box(0.7, 1.2, 0.06, M.recess, 0, T + 0.6, 0.61));
+    const cap = at(hemi(1.2, PLASTER, 14), 0, T + 2.4, 0);
+    cap.scale.y = 0.75;
+    gf.add(cap, at(mesh(new THREE.SphereGeometry(0.32, 8, 6), PLASTER), 0, T + 3.4, 0));
+    for (const sx of [-1, 1]) gf.add(box(0.3, 2.2, 0.1, PLASTER, sx * 0.95, T, 0.62));
+    gf.position.set(x + Math.sin(rot) * 3.5, 0, z + Math.cos(rot) * 3.5);
     gf.rotation.y = rot;
     d.add(gf);
+    // The gate's inner face: the plain arch ring, and the heavy plank doors folded back in the
+    // passage (one is cut with the date it was hung).
+    const gi = new THREE.Group();
+    gi.add(at(archRing(4.4, 6, false, 0.5, 0.14, ASHLAR, true), 0, 0, 0));
+    gi.position.set(x - Math.sin(rot) * 3.5, 0, z - Math.cos(rot) * 3.5);
+    gi.rotation.y = rot + Math.PI;
+    d.add(gi);
+    for (const sx of [-1, 1]) { const leaf = box(0.14, 5.2, 2.3, DOOR_PALE, sx * 2.1, 0, 1.6); const lg = new THREE.Group(); lg.add(leaf); lg.position.set(x, 0, z); lg.rotation.y = rot; d.add(lg); }
   }
-  // Bom Jesus's front (at -40, 30): pilasters on two storeys, a portal between columns, windows,
-  // and a cross on the gable.
-  const fr = new THREE.Group(), fz = 2.12;
-  for (const x of [-9.4, -3.4, 3.4, 9.4]) fr.add(box(0.9, ch + 4.6, 0.3, LIME, x, 0, fz + 0.15));
-  fr.add(box(cw + 4.4, 0.5, 0.5, mat('#d9d3c6', 0.85), 0, 8.4, fz + 0.2), box(cw + 4.6, 0.6, 0.6, mat('#d9d3c6', 0.85), 0, ch + 4.4, fz + 0.2));
-  fr.add(box(3.2, 5.6, 0.1, DOOR, 0, 0, fz + 0.06));
-  for (const s of [-1, 1]) fr.add(at(column(0.3, 6.4, LIME), s * 2.3, 0, fz + 0.5), at(windowFrame(1.4, 2.6, LIME, { shape: 'round', frame: 0.25 }), s * 6.4, 3, fz + 0.03), at(windowFrame(1.4, 2.4, LIME, { shape: 'round', frame: 0.25 }), s * 6.4, 10.2, fz + 0.03));
-  fr.add(box(5.6, 0.6, 1.1, LIME, 0, 6.4, fz + 0.55), at(windowFrame(2, 3, LIME, { shape: 'round', frame: 0.3 }), 0, 10, fz + 0.03), at(pediment(5.6, 1.3, 0.7, LIME), 0, 7, fz + 0.2));
-  fr.add(box(0.3, 2.4, 0.3, STONE_DARK, 0, ch + 12, 1), box(1.3, 0.3, 0.3, STONE_DARK, 0, ch + 13.4, 1));
+  // Stairs to the wall-walk against the inner face of the curtain, a long straight flight at five
+  // points round the town.
+  const steps = [];
+  for (const i of [0, 3, 5, 8, 9]) {
+    const [x0, z0] = PTS[i], [x1, z1] = PTS[(i + 1) % n], len = Math.hypot(x1 - x0, z1 - z0), ux = (x1 - x0) / len, uz = (z1 - z0) / len, ry = Math.atan2(-uz, ux);
+    let nx = -uz, nz = ux;
+    const mx = (x0 + x1) / 2, mz = (z0 + z1) / 2;
+    if (nx * mx + nz * mz > 0) { nx = -nx; nz = -nz; }
+    for (let k = 0; k < 20; k++) steps.push([mx + ux * (k - 9.5) * 0.8 + nx * 4.4, 0, mz + uz * (k - 9.5) * 0.8 + nz * 4.4, 0.8, (k + 1) * (H / 20), 2.8, ry]);
+  }
+  d.add(inst(unitBox(), steps, STONE));
+  // Bom Jesus's front (at -40, 30): the carved stone portal, paired columns on pedestals either
+  // side of the arched door with its fan, an entablature with ball finials, and over it a window
+  // between scrolls under a little pediment; a round window high in the gable and a cross on its
+  // point.
+  const fr = new THREE.Group(), fz = 1.6;
+  fr.add(box(7.6, 7.2, 0.2, ASHLAR, 0, 0, fz + 0.1), at(archSlab(2.7, 5.4, false, DOOR, 0.1), 0, 0, fz + 0.2), at(archRing(2.7, 5.4, false, 0.35, 0.2, ASHLAR, true), 0, 0, fz + 0.2));
+  fr.add(at(mesh(new THREE.CircleGeometry(1.33, 14, 0, Math.PI), FAN), 0, 4.05, fz + 0.31));
+  for (let k = 1; k < 8; k++) fr.add(at(box(0.05, 1.25, 0.04, DOOR, 0, 0, 0), 0, 4.05, fz + 0.32).rotateZ((k / 8 - 0.5) * Math.PI));
+  for (const sx of [-1, 1]) {
+    fr.add(box(2.0, 2.2, 1.0, ASHLAR, sx * 2.75, 0, fz + 0.5), box(2.2, 0.25, 1.2, ASHLAR, sx * 2.75, 2.2, fz + 0.6));
+    for (const dx of [2.35, 3.15]) fr.add(at(column(0.24, 4.2, ASHLAR), sx * dx, 2.45, fz + 0.65));
+    fr.add(box(0.7, 0.9, 0.7, ASHLAR, sx * 3.3, 7.5, fz + 0.6), at(mesh(new THREE.SphereGeometry(0.36, 10, 8), ASHLAR), sx * 3.3, 8.75, fz + 0.6));
+    const sc = new THREE.Shape();
+    sc.moveTo(sx * 1.05, 7.5); sc.lineTo(sx * 2.9, 7.5); sc.quadraticCurveTo(sx * 1.4, 8.1, sx * 1.05, 10.4); sc.closePath();
+    fr.add(mesh(new THREE.ExtrudeGeometry(sc, { depth: 0.3, bevelEnabled: false }), ASHLAR, 0, 0, fz + 0.05));
+    fr.add(box(0.35, 3.0, 0.4, ASHLAR, sx * 0.95, 7.5, fz + 0.2), at(mesh(new THREE.SphereGeometry(0.16, 8, 6), ASHLAR), sx * 1.0, 10.9, fz + 0.35));
+  }
+  fr.add(box(7.8, 0.35, 1.3, ASHLAR, 0, 6.65, fz + 0.65), box(8.1, 0.5, 1.5, ASHLAR, 0, 7.0, fz + 0.75));
+  fr.add(box(1.55, 2.6, 0.08, mat('#3a2a2a', 0.4), 0, 7.7, fz + 0.1), at(pediment(2.5, 0.8, 0.5, ASHLAR), 0, 10.5, fz), box(0.14, 0.7, 0.14, ASHLAR, 0, 11.3, fz + 0.3), box(0.45, 0.12, 0.14, ASHLAR, 0, 11.65, fz + 0.3));
+  fr.add(at(oculus(1.0, { m: LIME, trim: LIME }), 0, 16.2, fz));
+  fr.add(box(0.28, 1.6, 0.28, STONE_DARK, 0, 22.4, 1), box(1.0, 0.26, 0.28, STONE_DARK, 0, 23.3, 1));
+  // The three bells in their arches.
+  for (let k = 0; k < 3; k++) fr.add(cyl(0.22, 0.42, 0.7, BRONZE, -14.4 + k * 2.3, ch + 0.5 + 1.2 + k * 0.7, -2, 10));
   d.add(at(fr, -40, 0, 30));
   f.add(mergeByMaterial(d));
 }
@@ -93,7 +140,7 @@ export function addDetails(f, g, dims) {
   st.add(box(16, 0.4, 44, STONE_DARK, -10, -0.3, 136), box(14, 0.4, 36, STONE_DARK, 25, -0.3, -140));
   g.add(mergeByMaterial(st));
   // Houses on the blocks between the streets, 1–2 storeys under red tiles.
-  const keep = [[-62, -14, -18, 40], [-122, -70, -76, -30], [20, 110, 24, 56], [82, 108, -28, 30], [24, 56, -78, -46], [88, 108, -80, -60], [-14, -6, -120, 120], [-140, 150, 66, 74], [-140, 150, -24, -16], [71, 79, -110, 100], [-79, -71, -90, 100]];
+  const keep = [[-62, -14, -18, 40], [-122, -70, -76, -30], [20, 110, 24, 56], [82, 108, -28, 30], [24, 56, -78, -46], [LIGHT[0] - 9, LIGHT[0] + 9, LIGHT[1] - 9, LIGHT[1] + 9], [-14, -6, -120, 120], [-140, 150, 66, 74], [-140, 150, -24, -16], [71, 79, -110, 100], [-79, -71, -90, 100]];
   const R = (s => () => (s = (s * 16807) % 2147483647) / 2147483647)(7);
   const spots = [];
   for (let x = -128; x < 140; x += 12) for (let z = -96; z < 96; z += 15) {

@@ -167,5 +167,5 @@ export function buildChristChurchShimla() {
   f.add(mergeByMaterial(d));
   addDetails(f, g);
   // From the Ridge, south-west of the tower.
-  return { group: g, focus: f, view: [-0.7, 0.2, 1], zoom: 0.85 };
+  return { group: g, focus: f, view: [-0.7, 0.16, 1], zoom: 0.72 };
 }
