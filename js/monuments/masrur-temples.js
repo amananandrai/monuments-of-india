@@ -90,5 +90,5 @@ export function buildMasrurTemples() {
   f.add(mergeByMaterial(d));
   addDetails(f, g, { T });
   // From across the pool: the porch under the main spire, the stair towers either side.
-  return { group: g, focus: f, view: [-0.12, 0.2, 1], zoom: 0.62 };
+  return { group: g, focus: f, view: [-0.12, 0.2, 1], zoom: 0.7 };
 }

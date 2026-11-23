@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { M, V, mat, mesh, box, cyl, at, sheet, inst, unitBox, rng, strut } from '../helpers.js';
+import { M, V, mat, mesh, box, at, sheet, inst, unitBox, rng, strut } from '../helpers.js';
 import { mergeByMaterial, templeNiche } from '../parts/components.js';
 import { templeDoorway } from '../parts/doorways.js';
 import { carvedPillar } from '../parts/temples.js';
