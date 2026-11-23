@@ -112,17 +112,16 @@ function reservoir(w, l, levels, corners, well) {
   // The stairs: each runs down along a side wall from its corner to the floor at that end, with
   // a pier of masonry under it.
   for (const [sx, sz] of corners) {
-    const lv = long ? levels[sz > 0 ? 0 : n - 1] : levels[sx > 0 ? 0 : n - 1], run = 30 * 0.42, st = new THREE.Group();
+    const lv = long ? levels[sz > 0 ? 0 : n - 1] : levels[sx > 0 ? 0 : n - 1], st = new THREE.Group();
     st.add(at(steps(1.8, lv, 30, DRESSED, 0.42), 0, -lv, 0));
     if (long) { st.position.set(sx * (iw / 2 - 0.9), 0, sz * il / 2); st.rotation.y = sz > 0 ? Math.PI : 0; } else { st.position.set(sx * iw / 2, 0, sz * (il / 2 - 0.9)); st.rotation.y = sx > 0 ? -Math.PI / 2 : Math.PI / 2; }
-    void run;
     g.add(st);
   }
   if (well) {
     const wz = dc - Math.sign(dc || 1) * len * 0.1;
-    g.add(mesh(new THREE.CylinderGeometry(2.3, 2.3, 0.4, 24, 1, true), DRESSED, 0, -deep + 0.2, wz), mesh(new THREE.RingGeometry(1.9, 2.3, 24).rotateX(-Math.PI / 2), DRESSED, 0, -deep + 0.4, wz));
-    g.add(cyl(1.9, 1.9, 0.02, SHAFT, 0, -deep + 0.5, wz, 24));
-    for (let k = 0; k < 4; k++) g.add(box(0.9, 0.5 + 0.22 * (3 - k), 0.5, STONE_DARK, 1.2, -deep, wz - 0.9 + k * 0.5));
+    g.add(mesh(new THREE.CylinderGeometry(2.3, 2.3, 0.8, 24, 1, true), DRESSED, 0, -deep + 0.4, wz), mesh(new THREE.RingGeometry(1.9, 2.3, 24).rotateX(-Math.PI / 2), DRESSED, 0, -deep + 0.8, wz));
+    g.add(cyl(1.9, 1.9, 0.02, SHAFT, 0, -deep + 0.6, wz, 24));
+    for (let k = 0; k < 4; k++) g.add(box(1, 0.2 * (k + 1), 0.5, STONE_DARK, 3, -deep, wz - 0.75 + k * 0.5));
   }
   return mergeByMaterial(g);
 }
@@ -134,7 +133,7 @@ export function buildDholavira() {
   const { w, d, h } = CASTLE;
   // The ground of the walled city, open over the reservoirs.
   const cx0 = -CITY.w / 2, cx1 = CITY.w / 2, cz0 = CITY.cz - CITY.d / 2, cz1 = CITY.cz + CITY.d / 2;
-  site.add(ground(cx0 - 40, cx1 + 40, cz0 - 40, cz1 + 40, RES, EARTH));
+  site.add(ground(cx0 - 100, cx1 + 40, cz0 - 40, cz1 + 40, RES, EARTH));
   for (const [x, z, rw, rl, levels, corners, well] of RES) f.add(at(reservoir(rw, rl, levels, corners, well), x, 0, z));
   // The castle: its battered faces on all four sides, the north face broken by the north gate
   // and the east by the east gate, and its top a platform of rammed earth and stone.
@@ -161,7 +160,7 @@ export function buildDholavira() {
   const eg = new THREE.Group(), ep = top - 2.4;
   for (const s of [-1, 1]) eg.add(box(4.5, top + 1.2, 15, DRESSED, s * 4.25, 0, -6.5));
   eg.add(box(4, ep, 17, STONE_DARK, 0, 0, -7.5), at(steps(4, ep, Math.round(ep / 0.3), DRESSED, 0.42), 0, 0, 1));
-  eg.add(at(steps(4, top - ep, 9, DRESSED, 0.4), 0, ep, -12.4).rotateY(Math.PI));
+  eg.add(at(steps(4, top - ep, 9, DRESSED, 0.4), 0, ep, -16));
   f.add(at(mergeByMaterial(eg), w / 2, 0, EAST_GATE.z).rotateY(Math.PI / 2));
   // Houses and halls within the castle: low walls on a grid.
   f.add(inst(unitBox(), houses(-w / 2 + 16, w / 2 - 22, -d / 2 + 16, d / 2 - 22, top + 0.3, R, 10), STONE));
@@ -180,7 +179,7 @@ export function buildDholavira() {
   run(cx0, cz0, cx1, cz0); run(cx0, cz1, cx1, cz1); run(cx0, cz0, cx0, cz1); run(cx1, cz0, cx1, cz1);
   for (const x of [cx0, cx1]) for (const z of [cz0, cz1]) cw.push([x, 0, z, 22, 5.5, 22, 0]);
   site.add(inst(unitBox(), cw, STONE));
-  addDetails(f, site, g, { ...CASTLE, top, gap, pf, ep, cx0, cx1, cz0, cz1, bx, R });
+  addDetails(f, site, g, { ...CASTLE, top, gap, pf, cx0, cx1, cz0, cz1, bx, R });
   // From the north-east, over the ceremonial ground to the castle and its gates, the east
   // reservoir before it.
   return { group: g, focus: f, view: [0.75, 0.4, 1], zoom: 0.8 };
